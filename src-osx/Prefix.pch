@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'CFDA' target in the 'CFDA' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

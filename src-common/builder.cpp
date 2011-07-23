@@ -1,0 +1,699 @@
+// builder.cpp
+// this file is part of Context Free
+// ---------------------
+// Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
+// Copyright (C) 2005-2009 John Horigan - john@glyphic.com
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// John Horigan can be contacted at john@glyphic.com or at
+// John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
+//
+// Mark Lentczner can be contacted at markl@glyphic.com or at
+// Mark Lentczner, 1209 Villa St., Mountain View, CA 94041-1123, USA
+//
+//
+
+
+#include "builder.h"
+#include "astreplacement.h"
+
+#define _USE_MATH_DEFINES
+
+#include "agg_trans_affine.h"
+#include "agg_path_storage.h"
+#include "agg_basics.h"
+#include "cfdgimpl.h"
+#include "primShape.h"
+#include <string.h>
+#include <math.h>
+#include <typeinfo>
+#include <cassert>
+#include <limits>
+#include "scanner.h"
+#include <cstring>
+
+using namespace AST;
+
+std::map<std::string, int> Builder::FlagNames;
+Builder* Builder::CurrentBuilder = 0;
+
+Builder::Builder(CFDGImpl* cfdg, int variation)
+: m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
+  mInPathContainer(false), mCurrentShape(-1), mUsesAlpha(false),
+  mWant2ndPass(false), mCompilePhase(1),
+  mLocalStackDepth(0), mIncludeDepth(0), lexer(0), mErrorOccured(false)
+{ 
+    //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
+    mSeed.seed((unsigned long long)variation); 
+    if (FlagNames.empty()) {
+        FlagNames.insert(std::pair<std::string, int>("CF::None", AST::CF_NONE));
+        FlagNames.insert(std::pair<std::string, int>("CF::MiterJoin", AST::CF_MITER_JOIN));
+        FlagNames.insert(std::pair<std::string, int>("CF::RoundJoin", AST::CF_ROUND_JOIN));
+        FlagNames.insert(std::pair<std::string, int>("CF::BevelJoin", AST::CF_BEVEL_JOIN));
+        FlagNames.insert(std::pair<std::string, int>("CF::ButtCap", AST::CF_BUTT_CAP));
+        FlagNames.insert(std::pair<std::string, int>("CF::RoundCap", AST::CF_ROUND_CAP));
+        FlagNames.insert(std::pair<std::string, int>("CF::SquareCap", AST::CF_SQUARE_CAP));
+        FlagNames.insert(std::pair<std::string, int>("CF::ArcCW", AST::CF_ARC_CW));
+        FlagNames.insert(std::pair<std::string, int>("CF::ArcLarge", AST::CF_ARC_LARGE));
+        FlagNames.insert(std::pair<std::string, int>("CF::Continuous", AST::CF_CONTINUOUS));
+        FlagNames.insert(std::pair<std::string, int>("CF::Align", AST::CF_ALIGN));
+        FlagNames.insert(std::pair<std::string, int>("CF::EvenOdd", AST::CF_EVEN_ODD));
+        FlagNames.insert(std::pair<std::string, int>("CF::IsoWidth", AST::CF_ISO_WIDTH));
+        FlagNames.insert(std::pair<std::string, int>("~~CF_FILL~~", AST::CF_FILL));
+    }
+    assert(Builder::CurrentBuilder == NULL);    // ensure singleton
+    Builder::CurrentBuilder = this;
+    ASTparameter::Impure = false;
+    mContainerStack.push_back(&(cfdg->mCFDGcontents));
+}
+
+Builder::~Builder()
+{
+    for (ASTexpArray::iterator it = mCanonicalMods.begin(); it != mCanonicalMods.end(); ++it) 
+        delete (*it);
+    mCanonicalMods.clear();
+    pop_repContainer(NULL);
+    delete m_CFDG;
+    Builder::CurrentBuilder = 0;
+    while (!m_streamsToLoad.empty()) {
+        delete m_streamsToLoad.top();
+        m_streamsToLoad.pop();
+    }
+}
+
+static const char*
+getUniqueFile(const std::string* base, const std::string* file)
+{
+    const char* b = base->c_str();
+    const char* f = file->c_str();
+    for (; *b && *f; ++b, ++f) {
+        if (*b != *f)
+            return f;
+    }
+    if (*b == '\0' && *f == '\0')
+        return NULL;
+    return file->c_str();
+}
+
+
+void
+Builder::error(const yy::location& l, const std::string& msg)
+{
+    mErrorOccured = true;
+    warning(l, msg);
+}
+
+void
+Builder::warning(const yy::location& l, const std::string& msg)
+{
+    CfdgError err(l, msg.c_str());
+    if (l.begin.filename) {
+        const char* fname = getUniqueFile(m_basePath, l.begin.filename);
+        if (fname == 0) {
+            m_CFDG->system()->syntaxError(err);
+        } else {
+            m_CFDG->system()->error();
+            m_CFDG->system()->message("Error in %s at line %d - %s", 
+                                      fname, err.where.begin.line, msg.c_str());
+        }
+    } else {
+        m_CFDG->system()->error();
+        m_CFDG->system()->message("Error - %s", msg.c_str());
+    }
+}
+
+void Builder::error(int line, const char* msg)
+{
+    yy::location loc;
+    loc.initialize(m_currentPath);
+    loc.begin.line = line;
+    loc.end.line = line + 1;
+    CfdgError err(loc, msg);
+    const char* fname = getUniqueFile(m_basePath, loc.begin.filename);
+    mErrorOccured = true;
+    if (fname == 0) {
+        m_CFDG->system()->syntaxError(err);
+    } else {
+        m_CFDG->system()->message("Error in %s at line %d - %s", 
+                                  fname, loc.begin.line, msg);
+    }
+}
+
+static bool
+stringcompare(const char *lhs, const char *rhs) {
+    return std::strcmp(lhs, rhs) < 0;
+}
+
+int
+Builder::StringToShape(const std::string& name, const yy::location& loc,
+                       bool colonsAllowed)
+{
+    CheckName(name, loc, colonsAllowed);
+    if (mCurrentNameSpace.length() == 0) {
+        return m_CFDG->encodeShapeName(name);
+    } else {
+        static const char* const Globals[] = {
+            "CIRCLE", "FILL", "SQUARE", "TRIANGLE"
+        };
+        bool maybeGlobal = std::binary_search(Globals, Globals + 4, name.c_str(), stringcompare);
+        std::string n(mCurrentNameSpace);
+        n.append(name);
+        if (maybeGlobal && m_CFDG->tryEncodeShapeName(n) == -1)
+            return m_CFDG->encodeShapeName(name);
+        else
+            return m_CFDG->encodeShapeName(n);
+    }
+}
+
+// Switch parser input to a new file
+void
+Builder::IncludeFile(const std::string& fname)
+{
+    std::string path =
+        m_CFDG->system()->relativeFilePath(*m_currentPath, fname.c_str());
+    std::istream* input = m_CFDG->system()->openFileForRead(path);
+    if (!input || !input->good()) {
+        delete input;
+        input = 0;
+        m_CFDG->system()->error();
+        m_CFDG->system()->message("Couldn't open rules file %s", path.c_str());
+        return;
+    }
+    
+    m_CFDG->fileNames.push_back(path);
+    m_currentPath = &(m_CFDG->fileNames.back());
+    m_filesToLoad.push(m_currentPath);
+    m_streamsToLoad.push(input);
+    m_includeNamespace.push(false);
+    ++m_pathCount;
+    ++mIncludeDepth;
+    mCurrentShape = -1;
+    SetShape(NULL);
+    
+    m_CFDG->system()->message("Reading rules file %s", fname.c_str());
+    
+    lexer->yypush_buffer_state(lexer->yy_create_buffer(input, 16384));
+    lexer->nextLocAction = yy::Scanner::pushLoc;
+}
+
+// Return parser input to previous file
+bool
+Builder::EndInclude()
+{
+    bool endOfInput = mIncludeDepth == 0;
+    SetShape(NULL);
+    lexer->yypop_buffer_state();
+    lexer->nextLocAction = yy::Scanner::popLoc;
+    --mIncludeDepth;
+    
+    if (m_streamsToLoad.empty())
+        return endOfInput;
+    
+    if (m_includeNamespace.top())
+        PopNameSpace();
+    delete m_streamsToLoad.top();
+    m_streamsToLoad.pop();
+    m_filesToLoad.pop();
+    m_includeNamespace.pop();
+    m_currentPath = m_filesToLoad.empty() ? NULL : m_filesToLoad.top();
+    return endOfInput;
+}
+
+// Store parsed contents of startshape lines
+void
+Builder::Initialize(rep_ptr init)
+{
+    m_CFDG->setInitialShape(init, mIncludeDepth);
+}
+
+void
+Builder::SetShape(AST::ASTshape* s)
+{
+    if (s == NULL) {
+        mCurrentShape = -1;
+        mUsesAlpha = false;
+        return;
+    }
+	mCurrentShape = s->mNameIndex;
+    const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize);
+    if (err)
+        CfdgError::Error(s->mLocation, err);
+}
+
+void
+Builder::AddRule(ASTrule* rule)
+{
+    bool isShapeItem = rule->mNameIndex == -1;
+    
+    if (isShapeItem)
+        rule->mNameIndex = mCurrentShape;
+    else
+        mCurrentShape = -1;
+    
+    if (rule->mNameIndex == -1) {
+        CfdgError::Error(rule->mLocation, "Shape rules/paths must follow a shape declaration");
+        return;
+    }
+
+    int type = m_CFDG->getShapeType(rule->mNameIndex);
+    if ((rule->isPath &&  type == CFDGImpl::ruleType) ||
+        (!rule->isPath && type == CFDGImpl::pathType))
+        CfdgError::Error(rule->mLocation, "Cannot mix rules and shapes with the same name.");
+    if (rule->isPath && type != CFDGImpl::newShape)
+        CfdgError::Error(rule->mLocation, "A given path can only be defined once");
+    
+    bool matchesShape = m_CFDG->addRule(rule);
+    
+    if (!isShapeItem && matchesShape)
+        CfdgError::Error(rule->mLocation, "Rule/path name matches existing shape name");
+}
+
+void
+Builder::NextParameterDecl(const std::string& type, const std::string& name,
+                           const yy::location& typeLoc, const yy::location& nameLoc) 
+{
+    int nameIndex = StringToShape(name, nameLoc, false);
+    mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
+}
+
+void
+Builder::NextParameter(const std::string& name, exp_ptr e,
+                       const yy::location& nameLoc, const yy::location& expLoc) 
+{
+    if (strncmp(name.c_str(), "CF::", 4) == 0) {
+        if (!mContainerStack.back()->isGlobal)
+            CfdgError::Error(nameLoc, "Configuration parameters must be at global scope");
+        if (name == "CF::Impure") {
+            double v = 0.0;
+            if (!e->isConstant || e->evaluate(&v, 1) != 1) {
+                CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
+            } else {
+                ASTparameter::Impure = v != 0.0;
+            }
+            return;
+        }
+        e.reset(e.release()->simplify());
+        if (!m_CFDG->addParameter(name, e, mIncludeDepth))
+            warning(nameLoc, "Unknown configuration parameter");
+        return;
+    } 
+ 
+    int nameIndex = StringToShape(name, nameLoc, false);
+    ASTdefine* def = e->mType == ASTexpression::ModType ? new ASTdefine(name, e, 1) :
+                                                          new ASTdefine(name, e);
+    ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
+ 
+    if (!b.mDefinition) { 
+        b.mStackIndex = mLocalStackDepth;
+        mContainerStack.back()->mStackCount += b.mTuplesize;
+        mLocalStackDepth += b.mTuplesize;
+        push_rep(def);
+    } 
+} 
+
+ASTexpression*
+Builder::MakeVariable(const std::string& name, const yy::location& loc)
+{
+    std::map<std::string,int>::iterator flagItem = FlagNames.find(name);
+    if (flagItem != FlagNames.end()) {
+        ASTreal* flag = new ASTreal((double)(flagItem->second), loc);
+        flag->mType = ASTexpression::FlagType;
+        return flag;
+    }
+    
+    if (strncmp(name.c_str(), "CF::", 4) == 0)
+        CfdgError::Error(loc, "Configuration parameter names are reserved");
+    int varNum = StringToShape(name, loc, true);
+    bool isGlobal = false;
+    const ASTparameter* bound = findExpression(varNum, isGlobal);
+    if (bound == 0) {
+        return new ASTruleSpecifier(varNum, name, exp_ptr(), loc, 
+                                    m_CFDG->getShapeParams(varNum),
+                                    m_CFDG->getShapeParams(mCurrentShape));
+    }
+    if (bound->mStackIndex == -1) {
+        assert(bound->mDefinition);
+        switch (bound->mType) {
+            case ASTexpression::NumericType: {
+                double data[8];
+                bool natural = bound->isNatural;
+                int valCount = bound->mDefinition->mExpression->evaluate(data, 8);
+                if (valCount != bound->mTuplesize)
+                    CfdgError::Error(loc, "Unexpected compile error.");                   // this also shouldn't happen
+                
+                // Create a new cons-tree based on the evaluated variable's expression
+                ASTexpression* top = new ASTreal(data[valCount - 1], 
+                                                 bound->mDefinition->mExpression->where);
+                static_cast<ASTreal*>(top)->text = name;                // use variable name for entropy
+                for (int i = valCount - 2; i >= 0; --i) {
+                    ASTreal* left = new ASTreal(data[i], 
+                                                bound->mDefinition->mExpression->where);
+                    top = new ASTcons(left, top);
+                }
+                top->isNatural = natural;
+                return top;
+            }
+            case ASTexpression::ModType:
+                return new ASTmodification(bound->mDefinition->mChildChange, loc);
+            case ASTexpression::RuleType: {
+                // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
+                const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression);
+                if (r == 0) {
+                    CfdgError::Error(loc, "Internal error computing bound rule specifier");
+                    return new ASTruleSpecifier(varNum, name, exp_ptr(), loc, NULL, NULL);
+                }
+                return new ASTruleSpecifier(r->shapeType, name, exp_ptr(), loc, NULL, NULL);
+            }
+            default:
+                break;
+        }
+    } else {
+        if (bound->mType == ASTexpression::RuleType) {
+            return new ASTruleSpecifier(name, loc, bound->mStackIndex - mLocalStackDepth);
+        }
+        
+        ASTvariable* v = new ASTvariable(varNum, name, loc);
+        v->count = bound->mType == ASTexpression::NumericType ? bound->mTuplesize : 1;
+        v->stackIndex = bound->mStackIndex - (isGlobal ? 0 : mLocalStackDepth);
+        v->mType = bound->mType;
+        v->isNatural = bound->isNatural;
+        v->isLocal = bound->isLocal;
+        v->isParameter = bound->isParameter;
+        return v;
+    }
+    CfdgError::Error(loc, "Cannot determine what to do with this variable.");
+    return new ASTexpression(loc);
+}
+
+ASTruleSpecifier*  
+Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
+{
+    int nameIndex = StringToShape(name, loc, true);
+    bool isGlobal = false;
+    const ASTparameter* bound = findExpression(nameIndex, isGlobal);
+    if (bound == 0 || bound->mType != ASTexpression::RuleType)
+        return new ASTruleSpecifier(nameIndex, name, args, loc, 
+                                    m_CFDG->getShapeParams(nameIndex),
+                                    m_CFDG->getShapeParams(mCurrentShape));
+    
+    if (args.get() != NULL)
+        CfdgError::Error(loc, "Cannot bind parameters twice");
+    
+    if (bound->mStackIndex == -1) {
+        // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
+        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression);
+        if (r == 0) {
+            CfdgError::Error(loc, "Internal error computing bound rule specifier");
+            return new ASTruleSpecifier(nameIndex, name, args, loc, NULL, NULL);
+        }
+        return new ASTruleSpecifier(r, name, loc);
+    }
+    
+    return new ASTruleSpecifier(name, loc, bound->mStackIndex - 
+                                (isGlobal ? 0 : mLocalStackDepth));
+}
+
+ASTexpression*
+Builder::MakeModTerm(int t, exp_ptr a, const yy::location& loc)
+{
+    if (t == ASTmodTerm::time)
+        timeWise();
+    if (t == ASTmodTerm::sat || t == ASTmodTerm::satTarg)
+        inColor();
+    if (t == ASTmodTerm::alpha || t == ASTmodTerm::alphaTarg)
+        mUsesAlpha = true;
+    
+    if (mCurrentShape != -1 && t >= ASTmodTerm::hueTarg && t <= ASTmodTerm::targAlpha)
+        CfdgError::Error(loc, "Color target feature unavailable in shapes");
+    
+    int argcount = 0;
+    if (a.get() && a->mType == ASTexpression::NumericType)
+        argcount = a->evaluate(0, 0);
+    if (argcount != 3 || (t != ASTmodTerm::size && t != ASTmodTerm::x))
+        return new ASTmodTerm((ASTmodTerm::modTypeEnum)t, a.release(), loc);
+    
+    ASTexpArray arglist;
+    
+    a.release()->flatten(arglist);
+    
+    // If there is a three component x or size then flag it as such. 
+    ASTexpression* xyargs = new ASTcons(arglist[0], arglist[1]);
+    ASTmodTerm* xymod = new ASTmodTerm((ASTmodTerm::modTypeEnum)t, xyargs, loc);
+    ASTmodTerm* zmod = new ASTmodTerm(t == ASTmodTerm::size ? ASTmodTerm::zsize : 
+                                                              ASTmodTerm::z, 
+                                      arglist[2], loc);
+    
+    // Convert size 1 1 foo to zsize foo.
+    if (t == ASTmodTerm::size) {
+        if (arglist[0]->isConstant && arglist[1]->isConstant) {
+            double x, y;
+            if (arglist[0]->evaluate(&x, 0) == 1 && x == 1.0 &&
+                arglist[1]->evaluate(&y, 0) == 1 && y == 1.0) 
+            {
+                delete xymod;
+                return zmod;
+            }
+        }
+    }
+    
+    return new ASTcons(xymod, zmod);
+}
+
+rep_ptr
+Builder::MakeElement(const std::string& s, exp_ptr mods, exp_ptr params, 
+                     const yy::location& loc, bool subPath)
+{
+    if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
+        return rep_ptr(new ASTpathCommand(s, mods, params, loc));
+    
+    ruleSpec_ptr r(MakeRuleSpec(s, params, loc));
+    ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
+    if (mInPathContainer) {
+        if (!subPath) {
+            error(loc, "Replacements are not allowed in paths");
+        } else if (m_CFDG->getShapeType(r->shapeType) != CFDGImpl::pathType) {
+            error(loc, "Subpath references must be to previously declared paths");
+        } else {
+            const ASTrule* rule = m_CFDG->findRule(r->shapeType);
+            if (rule) {
+                t = (ASTreplacement::repElemListEnum)rule->mRuleBody.mRepType;
+            } else {
+                error(loc, "Subpath references must be to previously declared paths");
+            }
+        }
+    }
+    return rep_ptr(new ASTreplacement(*r, r->entropyVal, mods, loc, t));
+}
+
+AST::ASTexpression*
+Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc, 
+                      const yy::location& argsLoc, bool consAllowed)
+{
+    int nameIndex = StringToShape(*name, nameLoc, true);
+    bool dummy;
+    const ASTparameter* bound = findExpression(nameIndex, dummy);
+    
+    if (bound) {
+        if (!consAllowed)
+            error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
+        return new ASTcons(MakeVariable(*name, nameLoc), args.release());
+    }
+    
+    if (*name == "select")
+        return new ASTselect(args, nameLoc + argsLoc);
+    
+    ASTfunction::FuncType t = ASTfunction::GetFuncType(*name);
+    if (t == ASTfunction::Ftime || t == ASTfunction::Frame)
+        m_CFDG->addParameter(CFDGImpl::FrameTime);
+    if (t != ASTfunction::NotAFunction)
+        return new ASTfunction(*name, args, mSeed, nameLoc, argsLoc);
+    
+    const ASTparameters* p = m_CFDG->getShapeParams(nameIndex);
+    if (p ? !(p->empty()) : mCompilePhase == 1)
+        return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+                                    m_CFDG->getShapeParams(mCurrentShape));
+    
+    if (!consAllowed)
+        error(nameLoc + argsLoc, "Cannot bind arguments to unknown shape");
+    return new ASTcons(new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
+                                            p, m_CFDG->getShapeParams(mCurrentShape)), 
+                       args.release());
+}
+
+AST::ASTexpression*
+Builder::CheckModification(exp_ptr modExp, const yy::location& loc)
+{
+    if (!mCanonicalMods.empty()) {
+        for (ASTexpArray::iterator it = mCanonicalMods.begin(); it != mCanonicalMods.end(); ++it) {
+            warning((*it)->where, "Duplicate adjustment is dropped");
+            delete (*it);
+        }
+        mCanonicalMods.clear();
+    }
+    if (modExp.get()) {
+        if (modExp->mType != ASTexpression::ModType)
+            error(loc, "Illegal mix of non-adjustment expressions in an adjustment context");
+        return modExp.release();
+    } else {
+        return new ASTmodTerm(ASTmodTerm::Entropy, "empty mod", loc);
+    }
+}
+
+void
+Builder::push_repContainer(ASTrepContainer& c)
+{
+    mContainerStack.push_back(&c);
+    process_repContainer(c);
+}
+
+void
+Builder::process_repContainer(ASTrepContainer& c)
+{
+    for (ASTparameters::iterator it = c.mParameters.begin(),
+         eit= c.mParameters.end(); it != eit; ++it)
+    {
+        if (it->isParameter || !it->mDefinition) {
+            it->mStackIndex = mLocalStackDepth;
+            c.mStackCount += it->mTuplesize;
+            mLocalStackDepth += it->mTuplesize;
+        }
+    }
+}
+
+void
+Builder::pop_repContainer(ASTreplacement* r)
+{
+    if (m_CFDG) m_CFDG->reportStackDepth(mLocalStackDepth);
+    ASTrepContainer* lastContainer = mContainerStack.back();
+    mLocalStackDepth -= lastContainer->mStackCount;
+    if (r) {
+        r->mRepType |= lastContainer->mRepType;
+        if (r->mPathOp == unknownPathop)
+            r->mPathOp = lastContainer->mPathOp;
+    }
+    for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
+         eit = lastContainer->mParameters.end(); it != eit; ++it)
+    {
+        delete it->mDefinition;
+        it->mDefinition = 0;
+    }
+    mContainerStack.pop_back();
+}
+
+static bool badContainer(int containerType)
+{
+    return (containerType & (ASTreplacement::op | ASTreplacement::replacement)) == 
+            (ASTreplacement::op | ASTreplacement::replacement);
+}
+
+void
+Builder::push_rep(ASTreplacement* r, bool global)
+{
+    if (r == 0) return;
+    ASTrepContainer* container = mContainerStack.back();
+    
+    container->mBody.push_back(r);
+    if (container->mPathOp == unknownPathop)
+        container->mPathOp = r->mPathOp;
+    int oldType = container->mRepType;
+    container->mRepType = oldType | r->mRepType;
+    
+    if (badContainer(container->mRepType) && !badContainer(oldType) && !global)
+        error(r->mLocation, "Cannot mix path elements and replacements in the same container");
+}
+
+ASTparameter*
+Builder::findExpression(int nameIndex, bool& isGlobal)
+{
+    for (ContainerStack_t::reverse_iterator cit = mContainerStack.rbegin();
+         cit != mContainerStack.rend(); ++cit)
+    {
+        for (ASTparameters::reverse_iterator pit = (*cit)->mParameters.rbegin();
+             pit != (*cit)->mParameters.rend(); ++pit)
+        {
+            if (pit->mName == nameIndex) {
+                isGlobal = (*cit)->isGlobal;
+                return &(*pit);
+            }
+        }
+    }
+    return 0;
+}
+
+void
+Builder::PushNameSpace(AST::str_ptr n, const yy::location& loc)
+{
+    if (n->compare("CF") == 0) {
+        error(loc, "CF namespace is reserved");
+        return;
+    }
+    if (n->length() == 0) {
+        error(loc, "zero-length namespace");
+        return;
+    }
+    CheckName(*n, loc, false);
+    m_includeNamespace.top() = true;
+    mCurrentNameSpace.append(*n);
+    mCurrentNameSpace.append("::");
+}   // delete n
+
+void
+Builder::PopNameSpace()
+{
+    mCurrentNameSpace.resize(mCurrentNameSpace.length() - 2);
+    size_t end = mCurrentNameSpace.find_last_of(':');
+    if (end == std::string::npos) {
+        mCurrentNameSpace.clear();
+    } else {
+        mCurrentNameSpace.resize(end + 1);
+    }
+}
+
+void
+Builder::CheckName(const std::string& name, const yy::location& loc,
+                   bool colonsAllowed)
+{
+    size_t pos = name.find_first_of(':');
+    if (pos == std::string::npos) return;
+    if (!colonsAllowed) {
+        error(loc, "namespace specification not allowed in this context");
+        return;
+    }
+    if (pos == 0) {
+        error(loc, "improper namespace specification");
+        return;
+    }
+    for(;;) {
+        if (pos == name.length() - 1 || name[pos + 1] != ':') break;
+        size_t next = name.find_first_of(':', pos + 2);
+        if (next == std::string::npos) return;
+        if (next == pos + 2) break;
+        pos = next;
+    }
+    error(loc, "improper namespace specification");
+}
+
+void
+Builder::inColor()
+{
+    m_CFDG->addParameter(CFDGImpl::Color);
+}
+
+void
+Builder::timeWise()
+{
+    m_CFDG->addParameter(CFDGImpl::Time);
+}

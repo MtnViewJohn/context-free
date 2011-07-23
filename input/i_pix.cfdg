@@ -1,0 +1,649 @@
+// This is a library file that is included in other files
+// It offers a dot-matix like alphabet based on a 5 by 5 grid
+
+startshape the5by5_test
+
+rule the5by5_test {
+	random_test {}
+	the5by5_line {}
+}
+
+rule random_test {
+	5* {y 1.2} random_test_row {x 24.0 y -21.0} 
+}
+
+rule random_test_row {
+	5* {x 1.2} RANDOM_ALNUM_5by5 {}
+}
+
+
+rule the5by5_line {
+A_5by5 {x 0}
+B_5by5 {x 1.2 }
+C_5by5 {x 2.4}
+D_5by5 {x 3.6}
+E_5by5 {x 4.8}
+F_5by5 {x 6.0}
+G_5by5 {x 7.2}
+H_5by5 {x 8.4}
+I_5by5 {x 9.6}
+J_5by5 {x 10.8}
+K_5by5 {x 12.0}
+L_5by5 {x 13.2}
+M_5by5 {x 14.4}
+N_5by5 {x 15.6}
+O_5by5 {x 16.8}
+P_5by5 {x 18.0}
+Q_5by5 {x 19.2}
+R_5by5 {x 20.4}
+S_5by5 {x 21.6}
+T_5by5 {x 22.8}
+U_5by5 {x 24.0}
+V_5by5 {x 25.2}
+W_5by5 {x 26.4}
+X_5by5 {x 27.6}
+Y_5by5 {x 28.8}
+Z_5by5 {x 30.0}
+the5by5_line {y -2.4 size 0.90 x 0.2}
+NUM_0_5by5 {y -1.2 x 0}
+NUM_1_5by5 {y -1.2 x 1.2}
+NUM_2_5by5 {y -1.2 x 2.4}
+NUM_3_5by5 {y -1.2 x 3.6}
+NUM_4_5by5 {y -1.2 x 4.8}
+NUM_5_5by5 {y -1.2 x 6.0}
+NUM_6_5by5 {y -1.2 x 7.2}
+NUM_7_5by5 {y -1.2 x 8.4}
+NUM_8_5by5 {y -1.2 x 9.6}
+NUM_9_5by5 {y -1.2 x 10.8}
+}
+
+rule pix_5by5_00 { block_5by5 {size 0.20 x -0.4 y 0.4} }
+rule pix_5by5_10 { block_5by5 {size 0.20 x -0.2 y 0.4} }
+rule pix_5by5_20 { block_5by5 {size 0.20 x 0.0 y 0.4} }
+rule pix_5by5_30 { block_5by5 {size 0.20 x 0.2 y 0.4} }
+rule pix_5by5_40 { block_5by5 {size 0.20 x 0.4 y 0.4} }
+rule pix_5by5_01 { block_5by5 {size 0.20 x -0.4 y 0.2} }
+rule pix_5by5_11 { block_5by5 {size 0.20 x -0.2 y 0.2} }
+rule pix_5by5_21 { block_5by5 {size 0.20 x 0.0 y 0.2} }
+rule pix_5by5_31 { block_5by5 {size 0.20 x 0.2 y 0.2} }
+rule pix_5by5_41 { block_5by5 {size 0.20 x 0.4 y 0.2} }
+rule pix_5by5_02 { block_5by5 {size 0.20 x -0.4 y 0.0} }
+rule pix_5by5_12 { block_5by5 {size 0.20 x -0.2 y 0.0} }
+rule pix_5by5_22 { block_5by5 {size 0.20 x 0.0 y 0.0} }
+rule pix_5by5_32 { block_5by5 {size 0.20 x 0.2 y 0.0} }
+rule pix_5by5_42 { block_5by5 {size 0.20 x 0.4 y 0.0} }
+rule pix_5by5_03 { block_5by5 {size 0.20 x -0.4 y -0.2} }
+rule pix_5by5_13 { block_5by5 {size 0.20 x -0.2 y -0.2} }
+rule pix_5by5_23 { block_5by5 {size 0.20 x 0.0 y -0.2} }
+rule pix_5by5_33 { block_5by5 {size 0.20 x 0.2 y -0.2} }
+rule pix_5by5_43 { block_5by5 {size 0.20 x 0.4 y -0.2} }
+rule pix_5by5_04 { block_5by5 {size 0.20 x -0.4 y -0.4} }
+rule pix_5by5_14 { block_5by5 {size 0.20 x -0.2 y -0.4} }
+rule pix_5by5_24 { block_5by5 {size 0.20 x 0.0 y -0.4} }
+rule pix_5by5_34 { block_5by5 {size 0.20 x 0.2 y -0.4} }
+rule pix_5by5_44 { block_5by5 {size 0.20 x 0.4 y -0.4} }
+
+rule block_5by5 {
+SQUARE {size 0.7}
+}
+
+rule A_5by5 {
+pix_5by5_04 {}
+pix_5by5_44 {}
+pix_5by5_03 {}
+pix_5by5_43 {}
+pix_5by5_02 {}
+pix_5by5_42 {}
+pix_5by5_11 {}
+pix_5by5_31 {}
+pix_5by5_20 {}
+pix_5by5_20 {}
+pix_5by5_13 {}
+pix_5by5_23 {}
+pix_5by5_33 {}
+
+}
+rule B_5by5 {
+pix_5by5_04 {}
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_31 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+}
+
+rule C_5by5 {
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_10 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_34 {}
+pix_5by5_40 {}
+pix_5by5_44 {}
+}
+rule D_5by5 {
+pix_5by5_04 {}
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_34 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+}
+rule E_5by5 {
+pix_5by5_04 {}
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_34 {}
+pix_5by5_40 {}
+pix_5by5_44 {}
+}
+
+rule F_5by5 {
+pix_5by5_04 {}
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_30 {}
+pix_5by5_40 {}
+}
+
+rule G_5by5 {
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_10 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_40 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+}
+
+rule H_5by5 {
+pix_5by5_00 {}
+pix_5by5_04 {}
+pix_5by5_03 {}
+pix_5by5_02 {}
+pix_5by5_01 {}
+pix_5by5_12 {}
+pix_5by5_22 {}
+pix_5by5_32 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+pix_5by5_44 {}
+}
+
+rule I_5by5 {
+H_5by5 {rotate 90}
+}
+
+
+rule J_5by5 {
+pix_5by5_00 {}
+pix_5by5_03 {}
+pix_5by5_10 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_31 {}
+pix_5by5_32 {}
+pix_5by5_33 {}
+pix_5by5_40 {}
+}
+
+rule K_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_04 {}
+pix_5by5_12 {}
+pix_5by5_23 {}
+pix_5by5_21 {}
+pix_5by5_34 {}
+pix_5by5_30 {}
+pix_5by5_44 {}
+pix_5by5_44 {}
+}
+
+rule L_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_04 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+pix_5by5_44 {}
+
+}
+
+rule M_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_04 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+pix_5by5_44 {}
+pix_5by5_10 {}
+pix_5by5_21 {}
+pix_5by5_30 {}
+}
+
+rule N_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_04 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+pix_5by5_44 {}
+pix_5by5_11 {}
+pix_5by5_22 {}
+pix_5by5_33 {}
+}
+
+
+rule O_5by5 {
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+pix_5by5_10 {}
+pix_5by5_20 {}
+pix_5by5_30 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+}
+
+rule P_5by5 {
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_04 {}
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_41 {}
+}
+
+rule Q_5by5 {
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_10 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_24 {}
+pix_5by5_22 {}
+pix_5by5_30 {}
+pix_5by5_33 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_44 {}
+
+}
+
+rule R_5by5 {
+P_5by5{}
+pix_5by5_33 {}
+pix_5by5_44 {}
+}
+
+rule S_5by5 {
+pix_5by5_01 {}
+pix_5by5_04 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_24 {}
+pix_5by5_22 {}
+pix_5by5_30 {}
+pix_5by5_34 {}
+pix_5by5_32 {}
+pix_5by5_40 {}
+pix_5by5_43 {}
+
+}
+
+rule T_5by5 {
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_20 {}
+pix_5by5_30 {}
+pix_5by5_40 {}
+pix_5by5_21 {}
+pix_5by5_22 {}
+pix_5by5_23 {}
+pix_5by5_24 {}
+}
+
+rule U_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+}
+
+rule V_5by5 {
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_13 {}
+pix_5by5_24 {}
+pix_5by5_33 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+}
+
+rule W_5by5 {
+M_5by5 {rotate 180}
+}
+
+rule X_5by5 {
+pix_5by5_00 {}
+pix_5by5_04 {}
+pix_5by5_11 {}
+pix_5by5_13 {}
+pix_5by5_22 {}
+pix_5by5_31 {}
+pix_5by5_33 {}
+pix_5by5_40 {}
+pix_5by5_44 {}
+}
+
+rule Y_5by5 {
+pix_5by5_00 {}
+pix_5by5_11 {}
+pix_5by5_22 {}
+pix_5by5_31 {}
+pix_5by5_23 {}
+pix_5by5_24 {}
+pix_5by5_40 {}
+}
+
+rule Z_5by5 {
+N_5by5 {rotate 90}
+}
+
+rule RANDOM_LETTER_5by5 { A_5by5 {}}
+rule RANDOM_LETTER_5by5 { B_5by5 {}}
+rule RANDOM_LETTER_5by5 { C_5by5 {}}
+rule RANDOM_LETTER_5by5 { D_5by5 {}}
+rule RANDOM_LETTER_5by5 { E_5by5 {}}
+rule RANDOM_LETTER_5by5 { F_5by5 {}}
+rule RANDOM_LETTER_5by5 { G_5by5 {}}
+rule RANDOM_LETTER_5by5 { H_5by5 {}}
+rule RANDOM_LETTER_5by5 { I_5by5 {}}
+rule RANDOM_LETTER_5by5 { J_5by5 {}}
+rule RANDOM_LETTER_5by5 { K_5by5 {}}
+rule RANDOM_LETTER_5by5 { L_5by5 {}}
+rule RANDOM_LETTER_5by5 { M_5by5 {}}
+rule RANDOM_LETTER_5by5 { N_5by5 {}}
+rule RANDOM_LETTER_5by5 { O_5by5 {}}
+rule RANDOM_LETTER_5by5 { P_5by5 {}}
+rule RANDOM_LETTER_5by5 { Q_5by5 {}}
+rule RANDOM_LETTER_5by5 { R_5by5 {}}
+rule RANDOM_LETTER_5by5 { S_5by5 {}}
+rule RANDOM_LETTER_5by5 { T_5by5 {}}
+rule RANDOM_LETTER_5by5 { U_5by5 {}}
+rule RANDOM_LETTER_5by5 { V_5by5 {}}
+rule RANDOM_LETTER_5by5 { W_5by5 {}}
+rule RANDOM_LETTER_5by5 { X_5by5 {}}
+rule RANDOM_LETTER_5by5 { Y_5by5 {}}
+rule RANDOM_LETTER_5by5 { Z_5by5 {}}
+
+//generate numbers randomly
+rule RANDOM_NUMBER_5by5 { NUM_0_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_1_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_2_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_3_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_4_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_5_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_6_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_7_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_8_5by5 {} }
+rule RANDOM_NUMBER_5by5 { NUM_9_5by5 {} }
+
+rule RANDOM_ALNUM_5by5 26 { RANDOM_LETTER_5by5 {} }
+rule RANDOM_ALNUM_5by5 10 { RANDOM_NUMBER_5by5 {} }
+
+
+rule NUM_0_5by5 {
+//make 0
+
+pix_5by5_10 {}
+pix_5by5_20 {}
+pix_5by5_30 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+pix_5by5_31 {}
+pix_5by5_22 {}
+pix_5by5_13 {}
+}
+
+rule NUM_1_5by5 {
+//make 1
+
+pix_5by5_20 {}
+pix_5by5_21 {}
+pix_5by5_22 {}
+pix_5by5_23 {}
+pix_5by5_24 {}
+pix_5by5_04 {}
+pix_5by5_14 {}
+pix_5by5_34 {}
+pix_5by5_44 {}
+pix_5by5_01 {}
+pix_5by5_10 {}
+}
+
+rule NUM_2_5by5 {
+//make 2
+pix_5by5_20 {}
+pix_5by5_30 {}
+pix_5by5_41 {}
+pix_5by5_32 {}
+pix_5by5_22 {}
+pix_5by5_22 {}
+pix_5by5_04 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+pix_5by5_44 {}
+pix_5by5_13 {}
+pix_5by5_01 {}
+pix_5by5_10 {}
+}
+
+rule NUM_3_5by5 {
+//make 3
+pix_5by5_20 {}
+pix_5by5_30 {}
+pix_5by5_41 {}
+pix_5by5_32 {}
+pix_5by5_22 {}
+pix_5by5_22 {}
+pix_5by5_03 {}
+pix_5by5_14 {}
+pix_5by5_24 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+pix_5by5_01 {}
+pix_5by5_10 {}
+}
+
+rule NUM_4_5by5 {
+//make 4
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_10 {}
+pix_5by5_13 {}
+pix_5by5_23 {}
+pix_5by5_30 {}
+pix_5by5_31 {}
+pix_5by5_32 {}
+pix_5by5_33 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+}
+
+rule NUM_5_5by5 {
+//make 5
+
+pix_5by5_00 {}
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_04 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+}
+
+rule NUM_6_5by5 {
+//make 6
+pix_5by5_01 {}
+pix_5by5_02 {}
+pix_5by5_03 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+}
+
+rule NUM_7_5by5 {
+//make 7
+
+pix_5by5_00 {}
+pix_5by5_10 {}
+pix_5by5_20 {}
+pix_5by5_23 {}
+pix_5by5_24 {}
+pix_5by5_32 {}
+pix_5by5_30 {}
+pix_5by5_40 {}
+pix_5by5_41 {}
+}
+
+rule NUM_8_5by5 {
+//make 8
+pix_5by5_01 {}
+pix_5by5_03 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_43 {}
+pix_5by5_41 {}
+}
+
+rule NUM_9_5by5 {
+//make 9
+pix_5by5_01 {}
+pix_5by5_04 {}
+pix_5by5_10 {}
+pix_5by5_12 {}
+pix_5by5_14 {}
+pix_5by5_20 {}
+pix_5by5_22 {}
+pix_5by5_24 {}
+pix_5by5_30 {}
+pix_5by5_32 {}
+pix_5by5_34 {}
+pix_5by5_41 {}
+pix_5by5_42 {}
+pix_5by5_43 {}
+}
