@@ -1,0 +1,76 @@
+syntax: regexp
+# Boring file regexps:
+\.hi$
+\.o$
+(^|/)CVS($|/)
+(^|/)RCS($|/)
+~$
+#(^|/)\.[^/]
+(^|/)_darcs($|/)
+\.bak$
+\.BAK$
+\.orig$
+(^|/)vssver\.scc$
+\.swp$
+(^|/)MT($|/)
+(^|/)\{arch\}($|/)
+(^|/).arch-ids($|/)
+(^|/),
+\.class$
+\.prof$
+(^|/)\.DS_Store$
+(^|/)BitKeeper($|/)
+(^|/)ChangeSet($|/)
+(^|/)\.svn($|/)
+\.py[co]$
+\#
+\.cvsignore$
+\.gdb_history$
+### Mark's additions ###
+# Xcode build
+^build$
+^build/
+# Xcode user files
+\.mode1$
+\.pbxuser$
+# Silly thing
+^cfdg-orig/help_src/gen$
+# Editor backups
+~$
+~\.
+# Finder caches
+\.DS_Store$
+### John's Additions ###
+^cfdg$
+^output$
+^output/
+\.mch$
+\.exe$
+\.dll$
+\.ncb$
+\.sdf$
+\.opensdf$
+\.opt$
+\.old$
+\.plg$
+\.aps$
+\.manifest$
+#VC++ Build Directories
+^ContextFree_Data$
+^ContextFree_Data/
+(^|/)Debug($|/)
+(^|/)debug($|/)
+(^|/)Release($|/)
+(^|/)release($|/)
+(^|/)obj($|/)
+(^|/)bin($|/)
+^ContextFree___Win32_ReleaseANSI$
+^ContextFree___Win32_ReleaseANSI/
+^ContextFree___Win32_DebugANSI$
+^ContextFree___Win32_DebugANSI/
+/Thumbs.db$
+^objs$
+^objs/
+\.suo$
+\.user$
+
