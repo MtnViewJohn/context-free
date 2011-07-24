@@ -59,8 +59,10 @@ syntax: regexp
 ^ContextFree_Data$
 ^ContextFree_Data/
 (^|/)Debug($|/)
+(^|/)Debug64($|/)
 (^|/)debug($|/)
 (^|/)Release($|/)
+(^|/)Release64($|/)
 (^|/)release($|/)
 (^|/)obj($|/)
 (^|/)bin($|/)
