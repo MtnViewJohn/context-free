@@ -437,11 +437,6 @@ namespace {
     if (action == @selector(stopRender:))
         return mRendering && !mRendererStopping;
     
-#ifdef __x86_64__
-    if (action == @selector(saveAsMovie:))
-        return true;
-#endif
-    
     if (action == @selector(saveImage:)
     ||  action == @selector(saveAsSVG:)
     ||  action == @selector(saveAsMovie:)
