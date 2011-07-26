@@ -1,0 +1,282 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type"
+	content="text/html;
+	charset=utf-8" />
+<style type="text/css">
+/* @override http://ciliasun.local/gallery/widget-style.css */
+
+/**
+ * This was written by CC as a demonstration of how to interoperate
+ * with the Creative Commons JsWidget.  No rights reserved.
+ * 
+ * See README for a little more detail.
+ */
+
+/** Edit me to fit your particular look **/
+#cc_js_lic-menu 
+{{
+        margin: 0 auto;
+}}
+
+
+.cc_js_body {{
+  background-color: #fff;
+  color: #343434;
+  font: 71%/145% "Lucida Grande", verdana, sans-serif;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}}
+
+#cc_js_header-main {{
+    width:  93%;
+    min-width:  700px;
+    margin: 0 3%;
+    padding: 10px 0 2px 1%;
+    text-align: left;
+    font-size: 11px !important;
+}}
+
+/* -- elements */
+
+a.cs_js_a, a:link.cs_js_a {{
+  text-decoration: none;
+  color: #00b;
+}}
+
+a:hover.cs_js_a {{
+  text-decoration: underline;
+}}
+
+/**
+ * This was written by CC as a demonstration of how to interoperate
+ * with the Creative Commons JsWidget.  No rights reserved.
+ * 
+ * See README for a little more detail.
+ */
+
+#cc_js_license_selected
+{{
+    border:         1px solid #c2e0cf;
+    text-align:     center;
+    padding:        3%;
+    margin-bottom: 0;
+
+}}
+
+#cc_js_jurisdiction_box
+{{
+    /* border: 1px solid black; */
+    padding: 0.5% 2% 1% 2%;
+    margin-bottom: 1%;
+}}
+
+#cc_js_lic-menu h2
+{{
+    /* text-decoration: underline; */
+    /* border-bottom: 1px solid black; */
+    padding: 3% 0 1% 0;
+    border: none;
+}}
+
+#cc_js_lic-result
+{{
+    padding: 0;
+    margin: 0;
+}}
+    
+select#cc_js_jurisdiction
+{{
+    margin-bottom: 2%;
+}}
+
+textarea#cc_js_result
+{{
+    width: 9%;
+    border: 1px solid #ccc;
+    color: gray;
+    margin-top: 1%;
+}}
+
+a.cc_js_a img
+{{
+    border: none;
+    text-decoration: none;
+}}
+
+#cc_js_more_info
+{{
+    border: 1px solid #eee;
+    padding: 0.5% 2% 1% 2%;
+    margin-bottom: 1%;
+    margin-top: 1%;
+		width: 87%;
+}}
+#cc_js_more_info table
+{{
+    width: 65%;
+}}
+
+#cc_js_more_info .header
+{{
+    width: 35%;
+}}
+
+#cc_js_more_info input
+{{
+    width: 100%;
+    border: 1px solid #ccc;
+}}
+
+#cc_js_required
+{{
+    padding: 4% 2%;
+    margin-bottom: -30px;
+    margin-top: 10px;
+    /* background: #efefef; 
+    background: #eef6e6;*/
+
+}}
+
+
+#cc_js_work_title
+{{
+    font-style: italic;
+}}
+
+
+#cc_js_optional
+{{
+    border: 1px solid #eee;
+    padding: 0.5% 2% 1% 2%;
+    margin-bottom: 1%;
+    margin-top: 1%;
+		width: 87%;
+}}
+
+
+.cc_js_cc-button
+{{
+    padding-bottom: 1%;
+}}
+
+.cc_js_info
+{{
+    vertical-align: middle;
+}}
+
+img.cc_js_info {{
+	float: right;
+}}
+
+#cc_js_jurisdiction_box {{
+  clear: left;
+  
+}}
+
+#cc_js_lic-menu p{{
+	padding: 3px 0 5px 0;
+  margin: 0 0 5px 0;
+}}
+
+.cc_js_tooltip
+{{
+    background:     white;
+    border:         2px solid gray;
+    padding:        3px 10px 3px 10px;
+    width:          300px;
+    text-align:     left;
+}}
+
+.cc_js_tooltip .cc_js_icon
+{{
+    float:          left; 
+    padding-right:  4%;
+    padding-bottom: 20%;
+}}
+
+.cc_js_tooltipimage
+{{
+    border:         2px solid gray;
+}}
+
+.cc_js_infobox
+{{
+    cursor:         help;
+}}
+
+.cc_js_question
+{{
+    cursor:         help;
+    /*color:          #00b;*/
+    border-bottom: 1px dashed #66b;
+}}
+
+.cc_js_hidden {{
+    display: none;
+}}
+
+#cc_js_required .cc_js_question {{ border: none; }}
+
+
+
+#cc_js_want_cc_license_at_all {{
+  padding: 0;
+  padding-left: 0;
+}}
+
+#cc_js_want_cc_license_at_all span {{
+  padding: 0.25em;
+	display: block;
+}}
+#cc_js_want_cc_license_at_all span span {{
+  margin: 0;
+  padding: 0;
+	display: inline;
+}}
+
+#cc_js_required p {{ padding-bottom: 26px; }}
+
+#cc_js_remix-label span {{
+  background: url('http://creativecommons.org/images/deed/remix.png') no-repeat top left;
+  padding-left: 60px;
+  padding-bottom: 20px;
+	padding-top: 15px;
+}}
+
+#cc_js_nc-label span {{
+  background: url('http://creativecommons.org/images/deed/nc.png') no-repeat top left;
+  padding-left: 60px;
+  padding-bottom: 20px;
+	padding-top: 15px;
+}}
+
+#cc_js_sa-label span {{
+  background: url('http://creativecommons.org/images/deed/sa.png') no-repeat top left;
+  padding-left: 60px;
+  padding-bottom: 20px;
+	padding-top: 15px;
+}}
+</style>
+</head>
+<body>
+ <form id='cc_js_seed_container'>
+  <input type='hidden' id='cc_js_seed_uri' value='{0}' />
+ </form>
+
+ <form action='upload.php' method='post' enctype='multipart/form-data'>
+ <table class='upload'>
+  <tr>
+   <td ><script type='text/javascript' src='http://api.creativecommons.org/jswidget/tags/0.92/complete.js?locale=en_US{1}'></script>
+   </td>
+  </tr>
+ </table>
+ </form>
+</body>
+</html>

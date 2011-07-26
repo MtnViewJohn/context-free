@@ -1,0 +1,410 @@
+// astexpression.h
+// this file is part of Context Free
+// ---------------------
+// Copyright (C) 2011 John Horigan - john@glyphic.com
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// John Horigan can be contacted at john@glyphic.com or at
+// John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
+//
+//
+
+
+#ifndef INCLUDE_ASTEXPRESSION_H
+#define INCLUDE_ASTEXPRESSION_H
+
+#include "ast.h"
+#include "location.hh"
+#include "cfdg.h"
+#include "shape.h"
+#include <string>
+#include "Rand64.h"
+
+namespace AST {
+
+    class ASTexpression {
+    public:
+        enum expType {
+            NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
+        };
+        class iterator {
+        public:
+            ASTexpression* _Ptr;
+            
+            iterator() : _Ptr(NULL) {}
+            iterator(ASTexpression* e) : _Ptr(e) {}
+            
+            ASTexpression& operator*() const { return *(_Ptr->current()); }
+            ASTexpression* operator->() const { return _Ptr->current(); }
+            ASTexpression& operator++()
+            {
+                if (_Ptr) {
+                    _Ptr = _Ptr->next();
+                }
+                return *_Ptr;
+            }
+            ASTexpression& operator++(int)
+            {
+                ASTexpression* tmp = _Ptr;
+                ++(*this);
+                return *tmp;
+            }
+            bool operator==(const iterator& o) const { return _Ptr == o._Ptr; }
+            bool operator!=(const iterator& o) const { return _Ptr != o._Ptr; }
+        };
+        class const_iterator {
+        public:
+            const ASTexpression* _Ptr;
+            
+            const_iterator() : _Ptr(NULL) {}
+            const_iterator(const ASTexpression* e) : _Ptr(e) {}
+            
+            const ASTexpression& operator*() const { return *(_Ptr->current()); }
+            const ASTexpression* operator->() const { return _Ptr->current(); }
+            const ASTexpression& operator++()
+            {
+                if (_Ptr) {
+                    _Ptr = _Ptr->next();
+                }
+                return *_Ptr;
+            }
+            const ASTexpression& operator++(int)
+            {
+                const ASTexpression* tmp = _Ptr;
+                ++(*this);
+                return *tmp;
+            }
+            bool operator==(const const_iterator& o) const { return _Ptr == o._Ptr; }
+            bool operator!=(const const_iterator& o) const { return _Ptr != o._Ptr; }
+        };
+        
+        bool isConstant;
+        bool isNatural;
+        bool isLocal;
+        expType mType;
+        yy::location where;
+        
+        ASTexpression(const yy::location& loc) : isConstant(false), isNatural(false),
+        isLocal(true), mType(NoType), where(loc) {};
+        ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
+        : isConstant(c), isNatural(n), isLocal(true), mType(t), where(loc) {};
+        virtual ~ASTexpression() {};
+        virtual int evaluate(double* , int, Renderer* = 0) const 
+        { return 0; }
+        virtual void evaluate(Modification& , std::string* , double* , 
+                              bool , int& , 
+                              Renderer* = 0) const
+        { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
+        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const
+        { CfdgError::Error(where, "Cannot convert this expression into a shape"); return NULL; }
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string&) const {};
+        virtual ASTexpression* simplify() { return this; }
+        
+        virtual ASTexpression* current() { return this; }
+        virtual ASTexpression* next() { return NULL; }
+        virtual const ASTexpression* current() const { return this; }
+        virtual const ASTexpression* next() const { return NULL; }
+        iterator begin() { return iterator(this); }
+        iterator end() { return iterator(); }
+        const_iterator begin() const { return const_iterator(this); }
+        const_iterator end() const { return const_iterator(); }
+    };
+    class ASTfunction : public ASTexpression {
+    public:
+        enum FuncType { IllegalArguments = -2, NotAFunction = -1, 
+            Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
+            Cosh, Sinh, Tanh, Acosh, Asinh, Atanh, Log, Log10,
+            Sqrt, Exp, Abs, Floor, Infinity, Factorial, Sg,
+            Atan2, Mod, Divides, Div,
+            Min, Max, Ftime, Frame,
+            Rand_Static, Rand, Rand2, RandInt, LastOne
+        };
+        static const char* FuncNames[LastOne];
+        static const char* Entropies[LastOne];
+        static FuncType GetFuncType(const std::string& func);
+        FuncType functype;
+        ASTexpression* arguments;
+        double random;
+        ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
+                    const yy::location& nameLoc, const yy::location& argsLoc);
+        virtual ~ASTfunction() {delete arguments;};
+        virtual int evaluate(double* r, int size, Renderer* rti = 0) const;
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    private:
+        ASTfunction() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASTselect : public ASTexpression {
+    public:
+        ASTexpression*   selector;  // weak pointer
+        ASTexpArray      choices;   // weak pointer array
+        int              tupleSize;
+        ASTselect*       weakPointer;
+        mutable unsigned indexCache;
+        std::string      ent;
+        ASTexpression*   arguments;
+        
+        ASTselect(exp_ptr args, const yy::location& loc);
+        virtual ~ASTselect();
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, std::string* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* r = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    private:
+        ASTselect(const yy::location& loc)
+        : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
+        indexCache(0) {}
+        unsigned getIndex(Renderer* rti = 0) const;
+    };
+    class ASTruleSpecifier : public ASTexpression {
+    public:
+        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs };
+        int shapeType;
+        int argSize;
+        std::string entropyVal;
+        ArgSource argSource;
+        ASTexpression* arguments;
+        const StackType* simpleRule;
+        int mStackIndex;
+        const ASTparameters* typeSignature;
+        
+        static ASTruleSpecifier Zero;
+        
+        ASTruleSpecifier(int t, const std::string& name, exp_ptr args, const yy::location& loc, 
+                         const ASTparameters* types, const ASTparameters* parent);
+        ASTruleSpecifier(const std::string& name, const yy::location& loc, 
+                         int stackIndex);
+        ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name, 
+                         const yy::location& loc);
+        ASTruleSpecifier(ASTruleSpecifier& r);
+        ASTruleSpecifier() : ASTexpression(CfdgError::Default), shapeType(-1),
+        argSize(0), argSource(NoArgs), arguments(0),
+        simpleRule(0), mStackIndex(0) {};
+        virtual ~ASTruleSpecifier();
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual const StackType* evalArgs(Renderer* = 0, const StackType* parent = 0) const;
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    private:
+        ASTruleSpecifier(const ASTruleSpecifier& r);
+        ASTruleSpecifier& operator=(const ASTruleSpecifier&);
+    };
+    class ASTcons : public ASTexpression {
+    public:
+        ASTexpression* left;
+        ASTexpression* right;
+        ASTcons(ASTexpression* l, ASTexpression* r)
+        : ASTexpression(l->where + r->where, l->isConstant && r->isConstant, 
+                        l->isNatural && r->isNatural, 
+                        (expType)(l->mType | r->mType)),
+        left(l), right(r) { isLocal = l->isLocal && r->isLocal; };
+        virtual ~ASTcons() { delete left; delete right; }
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, std::string* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* r = 0) const;
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+        
+        virtual ASTexpression* current() { return left; }
+        virtual ASTexpression* next() { return right; }
+        virtual const ASTexpression* current() const { return left; }
+        virtual const ASTexpression* next() const { return right; }
+        
+        static ASTexpression* Cons(ASTexpression* l, ASTexpression* r);
+    private:
+        ASTcons() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASTreal : public ASTexpression {
+    public:
+        double value;
+        std::string text;
+        ASTreal(const std::string& t, const yy::location& loc, bool negative = false) 
+        : ASTexpression(loc, true, false, NumericType), text(t) 
+        { 
+            if (negative) text.insert(0, 1, '-');
+            value = CFatof(text.c_str()); 
+            isNatural = floor(value) == value && value >= 0.0 && value < 9007199254740992.;
+        };
+        ASTreal(double v, const yy::location& loc) 
+        : ASTexpression(loc, true, 
+                        floor(v) == v && v >= 0.0 && v < 9007199254740992.,
+                        NumericType), value(v) {};
+        virtual ~ASTreal() {};
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void entropy(std::string& e) const;
+    private:
+        ASTreal() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASTvariable : public ASTexpression {
+    public:
+        int stringIndex;
+        std::string text;
+        int stackIndex;
+        int count;
+        bool isParameter;
+        
+        ASTvariable(int stringNum, const std::string& str, const yy::location& loc); 
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, std::string* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* r = 0) const;
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string& e) const;
+    private:
+        ASTvariable() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASToperator : public ASTexpression {
+    public:
+        char op;
+        ASTexpression* left;
+        ASTexpression* right;
+        ASToperator(char o, ASTexpression* l, ASTexpression* r);
+        virtual ~ASToperator() { delete left; delete right; }
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+        static ASTexpression* MakeCanonical(ASTexpArray& temp);
+        static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
+    private:
+        ASToperator() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASTparen : public ASTexpression {
+    public:
+        ASTexpression* e;
+        ASTparen(ASTexpression* e1) : ASTexpression(e1->where, e1->isConstant, 
+                                                    e1->isNatural,
+                                                    e1->mType), e(e1)
+        { isLocal = e1->isLocal; };
+        virtual ~ASTparen() { delete e; }
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    private:
+        ASTparen() : ASTexpression(CfdgError::Default) {};
+    };
+
+    class ASTmodTerm : public ASTexpression {
+    public:
+        enum modTypeEnum {  unknownType, x, y, z, transform, 
+            size, rot, skew, flip, 
+            zsize, Entropy, hue, sat, bright, alpha, 
+            hueTarg, satTarg, brightTarg, alphaTarg, 
+            targHue, targSat, targBright, targAlpha,
+            time, timescale, 
+            stroke, param, x1, y1, x2, y2, xrad, yrad, modification, lastModType };
+        
+        modTypeEnum modType;
+        ASTexpression* args;
+        std::string entString;
+        
+        static const char* Entropies[lastModType];
+        
+        static void Eval(ASTexpression* mod, Modification& m, std::string* p = 0, 
+                         double* width = 0, Renderer* r = 0);
+        
+        ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc);
+        ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc)
+        : ASTexpression(loc, true, false, ModType), modType(t), args(0), entString(ent) {};
+        ASTmodTerm(modTypeEnum t, const yy::location& loc)
+        : ASTexpression(loc, true, false, ModType), modType(t), args(0) {};
+        virtual ~ASTmodTerm() { delete args; }
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, std::string* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* = 0) const;
+        virtual int flatten(ASTexpArray& dest);
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    };
+    class ASTmodification : public ASTexpression {
+    public:
+        enum modClassEnum {
+            NotAClass = 0, GeomClass = 1, ZClass = 2, TimeClass = 4,
+            HueClass = 8, SatClass = 16, BrightClass = 32, AlphaClass = 64,
+            HueTargetClass = 128, SatTargetClass = 256, BrightTargetClass = 512, AlphaTargetClass = 1024,
+            StrokeClass = 2048, ParamClass = 4096, PathOpClass = 8192
+        };
+        Modification    modData;
+        ASTexpArray     modExp;
+        int             modClass;
+        
+        static int ModClass[ASTmodTerm::lastModType];
+        
+        ASTmodification(const yy::location& loc)
+        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass) {};
+        ASTmodification(const ASTmodification& m, const yy::location& loc);
+        ASTmodification(exp_ptr mods, const yy::location& loc)
+        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass)
+        { init(mods); };
+        ASTmodification(exp_ptr mods, const std::string& name, const yy::location& loc)
+        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass)
+        { init(mods, name); };
+        virtual ~ASTmodification();
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, std::string* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* = 0) const;
+        void setVal(Modification& m, std::string* p, double* width, 
+                    bool justCheck, int& seedIndex, 
+                    Renderer* = 0) const;
+        void init(exp_ptr mods,
+                  std::string* p = 0, double* width = 0) throw (CfdgError);
+        void init(exp_ptr mods, const std::string& name,
+                  std::string* p = 0, double* width = 0) throw (CfdgError);
+    private:
+        void evalConst(exp_ptr mod, std::string* p = 0, double* width = 0) 
+        throw(CfdgError);
+    };
+    
+    class ASTdefine;
+
+    class ASTparameter {
+    public:
+        ASTexpression::expType mType;
+        bool        isParameter;
+        bool        isLoopIndex;
+        bool        isNatural;
+        bool        isLocal;
+        int			mName;
+        yy::location mLocation;
+        ASTdefine*  mDefinition;
+        int         mStackIndex;
+        int         mTuplesize;
+        
+        static bool Impure;
+        
+        ASTparameter() :    mType(ASTexpression::NoType), isParameter(false), 
+        isLoopIndex(false), mName(-1), mStackIndex(-1), mTuplesize(1) {};
+        void init(const std::string& typeName, int nameIndex);
+        void init(int nameIndex, ASTdefine*  def);
+        void check(const yy::location& typeLoc, const yy::location& nameLoc);
+        bool operator!=(const ASTparameter& p) const;
+        bool operator!=(const ASTexpression& e) const;
+        
+        static int CheckType(const ASTparameters* types, const ASTparameters* parent, 
+                             const ASTexpression* args, const yy::location& where);
+    };
+}
+
+#endif //INCLUDE_ASTEXPRESSION_H

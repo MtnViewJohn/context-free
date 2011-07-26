@@ -1,0 +1,115 @@
+startshape polygontest
+
+rule polygontest {
+	polygonRightTriangle {}
+	CIRCLE {x 2}
+	SQUARE {size 1.0 0.1 x 4 rotate 45}
+	TRIANGLE {x 6}
+	SQUARE {x 8}
+	polygon5sided {x 0 y 2}
+	polygon6sided {x 2 y 2}
+	polygon7sided {x 4 y 2}
+	polygon8sided {x 6 y 2}
+	polygon9sided {x 8 y 2}
+	polygon10sided {x 0 y 4}
+	polygon11sided {x 2 y 4}
+	polygon12sided {x 4 y 4}
+	polygon13sided {x 6 y 4}
+	polygon14sided {x 8 y 4}
+	polygon15sided {x 0 y 6}
+	polygon16sided {x 2 y 6}
+	polygon17sided {x 4 y 6}
+	polygon18sided {x 6 y 6}
+	polygon19sided {x 8 y 6}
+	polygon20sided {x 0 y 8}
+	polygon21sided {x 2 y 8}
+	polygon22sided {x 4 y 8}
+	polygon23sided {x 6 y 8}
+	polygon24sided {x 8 y 8}
+}
+
+// This is a unit right triangle
+rule polygonRightTriangle {
+	TRIANGLE [ size 1 1.155 x 0.165 y -0.144 skew 30 0 ]
+}
+
+
+rule polygon5sided {
+	5* {r 72} SQUARE [rotate 0 size 0.404509 0.587785 x 0.5]
+}
+
+rule polygon6sided {
+	3* {r 60} SQUARE [rotate 0 size 0.866025 0.5]
+}
+
+rule polygon7sided {
+	7* {r 51.4286} SQUARE [rotate 0 size 0.450484 0.433884 x 0.5]
+}
+
+rule polygon8sided {
+	4* {r 45} SQUARE [rotate 0 size 0.92388 0.382683]
+}
+
+rule polygon9sided {
+	9* {r 40} SQUARE [rotate 0 size 0.469846 0.34202 x 0.5]
+}
+
+rule polygon10sided {
+	5* {r 36} SQUARE [rotate 0 size 0.951057 0.309017]
+}
+
+rule polygon11sided {
+	11* {r 32.7273} SQUARE [rotate 0 size 0.479746 0.281733 x 0.5]
+}
+
+rule polygon12sided {
+	6* {r 30} SQUARE [rotate 0 size 0.965926 0.258819]
+}
+
+rule polygon13sided {
+	13* {r 27.6923} SQUARE [rotate 0 size 0.485471 0.239316 x 0.5]
+}
+
+rule polygon14sided {
+	7* {r 25.7143} SQUARE [rotate 0 size 0.974928 0.222521]
+}
+
+rule polygon15sided {
+	15* {r 24} SQUARE [rotate 0 size 0.489074 0.207912 x 0.5]
+}
+
+rule polygon16sided {
+	8* {r 22.5} SQUARE [rotate 0 size 0.980785 0.19509]
+}
+
+rule polygon17sided {
+	17* {r 21.1765} SQUARE [rotate 0 size 0.491487 0.18375 x 0.5]
+}
+
+rule polygon18sided {
+	9* {r 20} SQUARE [rotate 0 size 0.984808 0.173648]
+}
+
+rule polygon19sided {
+	19* {r 18.9474} SQUARE [rotate 0 size 0.493181 0.164595 x 0.5]
+}
+
+rule polygon20sided {
+	10* {r 18} SQUARE [rotate 0 size 0.987688 0.156434]
+}
+
+rule polygon21sided {
+	21* {r 17.1429} SQUARE [rotate 0 size 0.494415 0.149042 x 0.5]
+}
+
+rule polygon22sided {
+	11* {r 16.3636} SQUARE [rotate 0 size 0.989821 0.142315]
+}
+
+rule polygon23sided {
+	23* {r 15.6522} SQUARE [rotate 0 size 0.495343 0.136167 x 0.5]
+}
+
+rule polygon24sided {
+	12* {r 15} SQUARE [rotate 0 size 0.991445 0.130526]
+}
