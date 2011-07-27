@@ -33,6 +33,8 @@ syntax: regexp
 # Xcode user files
 \.mode1$
 \.pbxuser$
+\.mode1v3$
+\.mode2v3$
 # Silly thing
 ^cfdg-orig/help_src/gen$
 # Editor backups
