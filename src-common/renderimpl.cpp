@@ -96,7 +96,8 @@ RendererImpl::init()
     mFinishedFileCount = 0;
     mUnfinishedFileCount = 0;
     
-    mFixedBorder = mShapeBorder = 1.0;
+    mFixedBorderX = mFixedBorderY = 0.0;
+    mShapeBorder = 1.0;
     mTotalArea = 0.0;
     
     m_minArea = 0.3; 
@@ -106,13 +107,13 @@ RendererImpl::init()
     minSize = (minSize <= 0.0) ? 0.3 : minSize;
     m_minArea = minSize * minSize;
 
-    mFixedBorder = FIXED_BORDER * ((m_border <= 1.0) ? m_border : 1.0);
+    mFixedBorderX = FIXED_BORDER * ((m_border <= 1.0) ? m_border : 1.0);
     mShapeBorder = SHAPE_BORDER * ((m_border <= 1.0) ? 1.0 : m_border);
     
-    m_cfdg->hasParameter("CF::BorderFixed", mFixedBorder, this);
+    m_cfdg->hasParameter("CF::BorderFixed", mFixedBorderX, this);
     m_cfdg->hasParameter("CF::BorderDynamic", mShapeBorder, this);
-    if (2 * (int)fabs(mFixedBorder) >= min(m_width, m_height))
-        mFixedBorder = 0.0;
+    if (2 * (int)fabs(mFixedBorderX) >= min(m_width, m_height))
+        mFixedBorderX = 0.0;
     if (mShapeBorder <= 0.0)
         mShapeBorder = 1.0;
     
@@ -131,19 +132,28 @@ RendererImpl::initBounds()
 {
     double tile_x, tile_y;
     m_tiled = m_cfdg->isTiled(0, &tile_x, &tile_y);
+    m_frieze = m_cfdg->isFrieze(0, &tile_x, &tile_y);
     m_sized = m_cfdg->isSized(&tile_x, &tile_y);
     m_timed = m_cfdg->isTimed(&mTimeBounds);
     
     if (m_tiled || m_sized) {
-        mFixedBorder = mShapeBorder = 0.0;
+        mFixedBorderX = mShapeBorder = 0.0;
         mBounds.mMin_X = -(mBounds.mMax_X = tile_x / 2.0);
         mBounds.mMin_Y = -(mBounds.mMax_Y = tile_y / 2.0);
         mBounds.mValid = true;
         rescaleOutput(m_width, m_height, true);
         mScaleArea = m_currScale * m_currScale;
     }
+    if (m_frieze == CFDG::frieze_x)
+        m_frieze_size = tile_x / 2.0;
+    if (m_frieze == CFDG::frieze_y)
+        m_frieze_size = tile_y / 2.0;
+    if (m_frieze != CFDG::frieze_y)
+        mFixedBorderY = mFixedBorderX;
+    if (m_frieze == CFDG::frieze_x)
+        mFixedBorderX = 0.0;
 }
-
+    
 static void releaser(const Shape& s)
 {
     s.releaseParams();
@@ -194,11 +204,12 @@ RendererImpl::outputPrep(Canvas* canvas)
 	if (canvas) {
 		m_width = canvas->mWidth;
 		m_height = canvas->mHeight;
-        if (m_tiled) {
+        if (m_tiled || m_frieze) {
             agg::trans_affine tr;
             m_cfdg->isTiled(&tr);
+            m_cfdg->isFrieze(&tr);
             delete m_tiledCanvas;
-            m_tiledCanvas = new tiledCanvas(canvas, tr);
+            m_tiledCanvas = new tiledCanvas(canvas, tr, m_frieze);
             m_tiledCanvas->scale(m_currScale);
             m_canvas = m_tiledCanvas;
         }
@@ -272,7 +283,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         }
         
         if (requestUpdate || (m_stats.shapeCount > reportAt)) {
-            if (partialDraw)
+            if (partialDraw && false)
               outputPartial();
             outputStats();
             reportAt = 2 * m_stats.shapeCount;
@@ -303,8 +314,8 @@ class OutputBounds : public ShapeOp
 {
 public:
     OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
-                 double shapeBorder, int width, int height, double fixedBorder,
-                 RendererImpl& renderer);
+                 double shapeBorder, int width, int height, double fixedBorderX,
+                 double fixedBorderY, RendererImpl& renderer);
     void apply(const FinishedShape&);
 	
 	const Bounds& frameBounds(int frame) { return mFrameBounds[frame]; }
@@ -327,16 +338,17 @@ private:
     int             mWidth;
     int             mHeight;
     int             mFrames;
-    double          mFixedBorder;
+    double          mFixedBorderX;
+    double          mFixedBorderY;
     RendererImpl&   mRenderer;
 };
 
 OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
-                           double shapeBorder, int width, int height, double fixedBorder,
-                           RendererImpl& renderer)
+                           double shapeBorder, int width, int height, double fixedBorderX,
+                           double fixedBorderY, RendererImpl& renderer)
 	: mTimeBounds(timeBounds), mShapeBorder(shapeBorder), mScale(0.0),
-      mWidth(width), mHeight(height), mFrames(frames), mFixedBorder(fixedBorder),
-      mRenderer(renderer)
+      mWidth(width), mHeight(height), mFrames(frames), mFixedBorderX(fixedBorderX),
+      mFixedBorderY(fixedBorderY), mRenderer(renderer)
 {
     mFrameScale = (double)frames / (timeBounds.tend - timeBounds.tbegin);
 	mFrameBounds.resize(frames);
@@ -455,7 +467,8 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     double frameInc = (mTimeBounds.tend - mTimeBounds.tbegin) / frames;
     
 	OutputBounds outputBounds(frames, mTimeBounds, mShapeBorder, 
-                              curr_width, curr_height, mFixedBorder, *this);
+                              curr_width, curr_height, mFixedBorderX, mFixedBorderY, 
+                              *this);
 	if (zoom) {
         system()->message("Computing zoom");
 
@@ -574,7 +587,12 @@ RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
         mTotalArea += mCurrentArea;
         if (!m_tiled && !m_sized) {
             mBounds.merge(mPathBounds.dilate(mCurrentCentroid, mShapeBorder));
-            mScale = mBounds.computeScale(m_width, m_height, mFixedBorder, false);
+            if (m_frieze == CFDG::frieze_x)
+                mBounds.mMin_X = -(mBounds.mMax_X = m_frieze_size);
+            if (m_frieze == CFDG::frieze_y)
+                mBounds.mMin_Y = -(mBounds.mMax_Y = m_frieze_size);
+            mScale = mBounds.computeScale(m_width, m_height, 
+                                          mFixedBorderX, mFixedBorderY, false);
             mScaleArea = mScale * mScale;
         }
     }
@@ -726,7 +744,8 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
     double scale;
 	
 	scale = mBounds.computeScale(curr_width, curr_height,
-		mFixedBorder , true, &trans, m_tiled || m_sized);
+                                 mFixedBorderX, mFixedBorderY, true, 
+                                 &trans, m_tiled || m_sized || m_frieze);
 
     if (final                       // if final output
     || m_currScale == 0.0           // if first time, use this scale
@@ -934,9 +953,9 @@ RendererImpl::processPathCommand(const Shape& s, const AST::CommandInfo* attr)
             mPathBounds.update(s.mWorldState.m_transform, m_pathIter, mScale, *attr, 
                                &cent, &area);
             mCurrentCentroid.x = (mCurrentCentroid.x * mCurrentArea + cent.x * area) /
-            (mCurrentArea + area);
+                                  (mCurrentArea + area);
             mCurrentCentroid.y = (mCurrentCentroid.x * mCurrentArea + cent.y * area) /
-            (mCurrentArea + area);
+                                  (mCurrentArea + area);
             mCurrentArea = mCurrentArea + area;
         }
     }

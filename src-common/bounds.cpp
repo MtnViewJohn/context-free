@@ -118,14 +118,14 @@ Bounds::gather(const Bounds& other, double weight)
 }
 
 double
-Bounds::computeScale(int& width, int& height, double border,
+Bounds::computeScale(int& width, int& height, double borderX, double borderY,
 			bool modify, agg::trans_affine* trans, bool exact)
 {
     double scale;
     double virtual_width = mMax_X - mMin_X;
     double virtual_height = mMax_Y - mMin_Y;
-    double target_width = width - 2.0 * border;
-    double target_height = height - 2.0 * border;
+    double target_width = width - 2.0 * borderX;
+    double target_height = height - 2.0 * borderY;
     	
     if (!mValid) virtual_width = virtual_height = 1.0;
     
@@ -136,7 +136,7 @@ Bounds::computeScale(int& width, int& height, double border,
         virtual_height / target_height)
 	{
         scale = target_width / virtual_width;
-		newHeight = (int)floor(scale * virtual_height + 2.0 * border + 0.5);
+		newHeight = (int)floor(scale * virtual_height + 2.0 * borderY + 0.5);
 		if (!exact)
             newHeight = newHeight + ((newHeight ^ height) & 0x1);
 
@@ -146,7 +146,7 @@ Bounds::computeScale(int& width, int& height, double border,
     }
     else {
         scale = target_height / virtual_height;
-		newWidth = (int)floor(scale * virtual_width + 2.0 * border + 0.5);
+		newWidth = (int)floor(scale * virtual_width + 2.0 * borderX + 0.5);
 		if (!exact)
             newWidth = newWidth + ((newWidth ^ width) & 0x1);
 		

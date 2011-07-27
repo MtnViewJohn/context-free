@@ -46,7 +46,7 @@ public:
     void fill(RGBA8 c);
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
 	
-	tiledCanvas(Canvas* tile, const agg::trans_affine& tr); 
+	tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
     ~tiledCanvas() {};
     
     void scale(double scaleFactor);
@@ -58,6 +58,7 @@ public:
 private:
 	Canvas* mTile;
     const agg::trans_affine mTileTransform;
+    CFDG::frieze_t mFrieze;
 	agg::trans_affine mOffset;
     agg::trans_affine mInvert;
     std::vector<agg::point_d> mTileList;

@@ -29,9 +29,11 @@
 #include <cstdlib>
 #include <stdlib.h>
 
-void tiledCanvas::start(bool clear, const agg::rgba& bk, int , int )
+void tiledCanvas::start(bool clear, const agg::rgba& bk, int w, int h)
 {
-	mTile->start(clear, bk, mTile->mWidth, mTile->mHeight);
+    mWidth = w;
+    mHeight = h;
+	mTile->start(clear, bk, w, h);
 }
 
 void tiledCanvas::end() 
@@ -105,6 +107,26 @@ tiledCanvas::tileTransform(const Bounds& b)
     mOffset.transform(&(mTileList.back().x), &(mTileList.back().y));
     agg::rect_d canvas(0, 0, (double)(mWidth - 1), (double)(mHeight - 1));
     
+    if (mFrieze) {
+        centx += centy;
+        for (int offset = 1; ; ++offset) {
+            bool hit = false;
+            for (int side = -1; side <= 1; side += 2) {
+                double dx = offset * side - centx;
+                double dy = dx;
+                mOffset.transform(&dx, &dy);
+                
+                // If the tile might touch the canvas then record it
+                agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
+                if (shape.overlaps(canvas)) {
+                    hit = true;
+                    mTileList.push_back(agg::point_d(dx, dy));
+                }
+            }
+            if (!hit) return;
+        }
+    }
+                
     for (int ring = 1; ; ring++) {
         bool hit = false;
         for (int y = -ring; y <= ring; y++) {
@@ -131,10 +153,11 @@ tiledCanvas::tileTransform(const Bounds& b)
     }
 }
 
-tiledCanvas::tiledCanvas(Canvas* tile, const agg::trans_affine& tr) 
+tiledCanvas::tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f) 
 :   Canvas(tile->mWidth, tile->mHeight), 
     mTile(tile), 
-    mTileTransform(tr)
+    mTileTransform(tr),
+    mFrieze(f)
 {
 }
 
@@ -147,7 +170,13 @@ void tiledCanvas::scale(double scaleFactor)
     
     // The mInvert transform can transform coordinates from the pixel unit tiling
     // to the unit square tiling.
-    mInvert = ~mOffset;
+    if (mFrieze) {
+        mInvert.reset();
+        mInvert.sx = mOffset.sx == 0.0 ? 0.0 : 1/mOffset.sx;
+        mInvert.sy = mOffset.sy == 0.0 ? 0.0 : 1/mOffset.sy;
+    } else {
+        mInvert = ~mOffset;
+    }
 }
 
 tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
@@ -156,9 +185,34 @@ tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
     agg::trans_affine tess(mWidth, floor(mOffset.shy + 0.5), floor(mOffset.shx + 0.5),
         flipY ? -mHeight : mHeight, x, y);
     agg::rect_i screen(0, 0, w - 1, h - 1);
+    if (mFrieze == CFDG::frieze_x)
+        tess.sy = 0.0;
+    if (mFrieze == CFDG::frieze_y)
+        tess.sx = 0.0;
     
     tileList tessPoints;
     tessPoints.push_back(agg::point_i(x, y));   // always include the center tile
+    
+    if (mFrieze) {
+        for (int offset = 1; ; ++offset) {
+            bool hit = false;
+            for (int side = -1; side <= 1; side += 2) {
+                double dx = offset * side;
+                double dy = dx;
+                tess.transform(&dx, &dy);
+                int px = (int)floor(dx + 0.5);
+                int py = (int)floor(dy + 0.5);
+                
+                // If the tile is visible then record it
+                agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
+                if (tile.overlaps(screen)) {
+                    hit = true;
+                    tessPoints.push_back(agg::point_i(px, py));
+                }
+            }
+            if (!hit) return tessPoints;
+        }
+    }
     
     // examine rings of tile units around the center unit until you encounter a
     // ring that doesn't have any tile units that intersect the screen. Then stop.
@@ -194,6 +248,7 @@ tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
 
 bool tiledCanvas::isRectangular(int* x_factor, int* y_factor)
 {
+    if (mFrieze) return false;
     int shx = (int)floor(mOffset.shx + 0.5);
     int shy = (int)floor(mOffset.shy + 0.5);
     

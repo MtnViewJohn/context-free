@@ -110,6 +110,8 @@ class RendererImpl : public Renderer {
         bool m_tiled;
         bool m_sized;
         bool m_timed;
+        CFDG::frieze_t m_frieze;
+        double m_frieze_size;
         bool m_drawingMode;
 
         std::multiset<FinishedShape> mFinishedShapes;
@@ -125,7 +127,8 @@ class RendererImpl : public Renderer {
         
         double mScaleArea;
         double mScale;
-        double mFixedBorder;
+        double mFixedBorderX;
+        double mFixedBorderY;
         double mShapeBorder;
         double mTotalArea;
     

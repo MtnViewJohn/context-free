@@ -217,6 +217,7 @@ CFDGImpl::isTiled(agg::trans_affine* tr, double* x, double* y) const
 {
     yy::location loc;
     if (!hasParameter("CF::Tile", ASTexpression::ModType, loc)) return false;
+    if (mTileMod.m_transform.sx == 0.0 || mTileMod.m_transform.sy == 0.0) return false;
     if (tr) {
         *tr = mTileMod.m_transform;
         tr->tx = tr->ty = 0.0;
@@ -242,6 +243,40 @@ CFDGImpl::isTiled(agg::trans_affine* tr, double* x, double* y) const
         *y = v_y - o_y;
     }
     return true;
+}
+
+CFDG::frieze_t
+CFDGImpl::isFrieze(agg::trans_affine* tr, double* x, double* y) const
+{
+    yy::location loc;
+    if (!hasParameter("CF::Tile", ASTexpression::ModType, loc)) return no_frieze;
+    if (mTileMod.m_transform.sx != 0.0 && mTileMod.m_transform.sy != 0.0) return no_frieze;
+    if (mTileMod.m_transform.sx == 0.0 && mTileMod.m_transform.sy == 0.0) return no_frieze;
+    if (tr) {
+        *tr = mTileMod.m_transform;
+        tr->tx = tr->ty = 0.0;
+    }
+    if (x && y) {
+        double o_x = 0.0;
+        double o_y = 0.0;
+        double u_x = 1.0;
+        double u_y = 0.0;
+        double v_x = 0.0;
+        double v_y = 1.0;
+        
+        mTileMod.m_transform.transform(&o_x, &o_y);
+        mTileMod.m_transform.transform(&u_x, &u_y);
+        mTileMod.m_transform.transform(&v_x, &v_y);
+        
+        if (fabs(u_y - o_y) >= 0.0001 || fabs(v_x - o_x) >= 0.0001) 
+            CfdgError::Error(loc, "Frieze must be aligned with the X and Y axis.");
+        if ((u_x - o_x) < 0.0 || (v_y - o_y) < 0.0)
+            CfdgError::Error(loc, "Frieze must be in the positive X/Y quadrant.");
+        
+        *x = u_x - o_x;
+        *y = v_y - o_y;
+    }
+    return mTileMod.m_transform.sx == 0.0 ? frieze_y : frieze_x;
 }
 
 bool
