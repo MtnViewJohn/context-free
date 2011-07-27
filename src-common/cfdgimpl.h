@@ -43,7 +43,7 @@
 class CFDGImpl : public CFDG {
     public:
         enum {newShape = 0, ruleType = 1, pathType = 2};
-    private:
+private:
         Shape m_initialShape;
         AST::rep_ptr mInitShape;
         unsigned mInitShapeDepth;
@@ -97,6 +97,7 @@ class CFDGImpl : public CFDG {
                 int variation, double border = 2.0);
         
         bool isTiled(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const;
+        frieze_t isFrieze(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const;
         bool isSized(double* x = 0, double* y = 0) const;
         bool isTimed(agg::trans_affine_time* t = 0) const;
         const agg::rgba& getBackgroundColor(Renderer* r);

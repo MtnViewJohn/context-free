@@ -103,7 +103,7 @@ class Bounds {
 			// toward the other center, yet incorporates all of the current
 			// bounds
 			
-		double computeScale(int& width, int& height, double border,
+		double computeScale(int& width, int& height, double borderX, double borderY,
 					bool modify = false, agg::trans_affine* trans = 0,
                     bool exact = false);
 			// Computes the scale factor of fitting this bounds into a canvas

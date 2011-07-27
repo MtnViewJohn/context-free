@@ -40,7 +40,6 @@
 #include "agg_path_storage.h"
 #include "location.hh"
 #include "CmdInfo.h"
-#include "shape.h"
 #include "stacktype.h"
 #include "Rand64.h"
 
@@ -129,6 +128,7 @@ class Renderer;
 
 class CFDG {
     public:
+        enum frieze_t { no_frieze = 0, frieze_x, frieze_y };
         static CFDG* ParseFile(const char* fname, AbstractSystem*, int variation);
         virtual ~CFDG();
 
@@ -144,6 +144,7 @@ class CFDG {
         bool usesTime;
         bool usesFrameTime;
         virtual bool isTiled(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const = 0;
+        virtual frieze_t isFrieze(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const = 0;
         virtual bool isSized(double* x = 0, double* y = 0) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = 0) const = 0;
         virtual const agg::rgba& getBackgroundColor(Renderer* r) = 0;
