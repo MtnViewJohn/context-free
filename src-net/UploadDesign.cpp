@@ -203,7 +203,7 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         wizard1->CancelEnabled = false;
 
 #ifdef DEBUG
-        uploadBrowser->Navigate("http://ciliasun.local/gallery/upload.php", 
+        uploadBrowser->Navigate("http://aluminium.local/~john/cfa2/gallery/upload.php", 
             String::Empty, postData, header);
 #else
         uploadBrowser->Navigate("http://www.contextfreeart.org/gallery/upload.php", 

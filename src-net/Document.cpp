@@ -481,7 +481,7 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG,
     iParams->Param[0] = gcnew Imaging::EncoderParameter(Imaging::Encoder::Quality, qual);
 
     try {
-        Bitmap^ bm = MakeBitmap(Form1::prefs->ImageCrop, mCanvas);
+        Bitmap^ bm = MakeBitmap(mTiled || Form1::prefs->ImageCrop, mCanvas);
 
         if (rect) {
             Imaging::PixelFormat fmt = bm->PixelFormat;
@@ -946,7 +946,7 @@ void Document::DoRender()
     renderParams->width = mRenderer->m_width;
     renderParams->height = mRenderer->m_height;
 
-    mTiled = mEngine->isTiled();
+    mTiled = mEngine->isTiled() || mEngine->isFrieze();
 
     delete mCanvas;
     mCanvas = 0;
@@ -1143,7 +1143,8 @@ void Document::updateRenderBox()
     }
 
     System::Drawing::Size destSize = displayImage->Size;
-    System::Drawing::Size srcSize = System::Drawing::Size(mCanvas->mWidth, mCanvas->mHeight);
+    System::Drawing::Size srcSize = mTiled ? System::Drawing::Size(mCanvas->cropWidth(), mCanvas->cropHeight())
+                                           : System::Drawing::Size(mCanvas->mWidth, mCanvas->mHeight);
 
     double scale = 1.0;
     SolidBrush^ grayBrush = gcnew SolidBrush(Color::LightGray);
@@ -1191,7 +1192,7 @@ void Document::updateRenderBox()
         return;
     }
 
-    Bitmap^ newBitmap = MakeBitmap(false, mCanvas);
+    Bitmap^ newBitmap = MakeBitmap(mTiled, mCanvas);
 
     g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
