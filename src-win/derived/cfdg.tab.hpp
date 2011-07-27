@@ -1,23 +1,21 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+/* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
-
-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+      Copyright (C) 2002-2010 Free Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,7 +26,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -37,27 +35,24 @@
 #ifndef PARSER_HEADER_H
 # define PARSER_HEADER_H
 
+
+
 #include <string>
 #include <iostream>
 #include "stack.hh"
 
-namespace yy
-{
+
+namespace yy {
+
+/* Line 34 of lalr1.cc  */
+#line 49 "cfdg.tab.hpp"
   class position;
   class location;
-}
 
-/* First part of user declarations.  */
-#line 40 "../../src-common/cfdg.ypp"
+} // yy
 
-    #include "builder.h"
-    #include "ast.h"
-    
-    using namespace AST;
-
-
-/* Line 303 of lalr1.cc.  */
-#line 61 "cfdg.tab.hpp"
+/* Line 34 of lalr1.cc  */
+#line 56 "cfdg.tab.hpp"
 
 #include "location.hh"
 
@@ -98,8 +93,11 @@ do {							\
 } while (false)
 #endif
 
-namespace yy
-{
+
+namespace yy {
+
+/* Line 34 of lalr1.cc  */
+#line 101 "cfdg.tab.hpp"
 
   /// A Bison parser.
   class CfdgParser
@@ -108,18 +106,28 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 48 "../../src-common/cfdg.ypp"
-{
+    {
+
+/* Line 34 of lalr1.cc  */
+#line 62 "../../src-common/cfdg.ypp"
+
+    int modToken;
     std::string*  string;
-    ASTexpression* expression;
-    ASTmod* mod;
-    ASTpath* path;
-    int bodyCount;
-    unsigned index;
-}
-/* Line 303 of lalr1.cc.  */
-#line 122 "cfdg.tab.hpp"
-	;
+    AST::ASTexpression* expression;
+    AST::ASTmodTerm* mod;
+    AST::ASTreplacement* component;
+    AST::ASTshape* shapeObj;
+    AST::ASTloop* loopObj;
+    AST::ASTif* ifObj;
+    AST::ASTswitch* switchObj;
+    AST::ASTruleSpecifier* ruleSpec;
+    AST::ASTrule* ruleObj;
+
+
+
+/* Line 34 of lalr1.cc  */
+#line 130 "cfdg.tab.hpp"
+    };
 #else
     typedef YYSTYPE semantic_type;
 #endif
@@ -131,47 +139,47 @@ namespace yy
       /* Tokens.  */
    enum yytokentype {
      STARTSHAPE = 258,
-     SHAPE = 259,
-     RULE = 260,
-     PATH = 261,
-     DEFINE = 262,
-     BECOMES = 263,
-     ROTATE = 264,
-     FLIP = 265,
-     TRANSFORM = 266,
-     XSHIFT = 267,
-     YSHIFT = 268,
-     XCTRL1 = 269,
-     YCTRL1 = 270,
-     XCTRL2 = 271,
-     YCTRL2 = 272,
-     XRADIUS = 273,
-     YRADIUS = 274,
-     ZSHIFT = 275,
-     SIZE = 276,
-     SKEW = 277,
-     COLOR = 278,
-     HUE = 279,
-     SATURATION = 280,
-     BRIGHTNESS = 281,
-     ALPHA = 282,
-     TARGETCOLOR = 283,
-     TARGETHUE = 284,
-     TARGETSATURATION = 285,
-     TARGETBRIGHTNESS = 286,
-     TARGETALPHA = 287,
-     BACKGROUND = 288,
-     BADEOF = 289,
-     USER_STRING = 290,
-     USER_INTEGER = 291,
-     USER_RATIONAL = 292,
-     USER_FILENAME = 293,
-     USER_QSTRING = 294,
-     INCLUDE = 295,
-     TILE = 296,
-     PARAMETERS = 297,
-     USER_PATHOP = 298,
-     STROKEWIDTH = 299,
+     CFDG2 = 259,
+     CFDG3 = 260,
+     SHAPE = 261,
+     RULE = 262,
+     PATH = 263,
+     DEFINE = 264,
+     BECOMES = 265,
+     LOOP = 266,
+     FINALLY = 267,
+     IF = 268,
+     ELSE = 269,
+     SWITCH = 270,
+     CASE = 271,
+     MODTYPE = 272,
+     PARAM = 273,
+     BACKGROUND = 274,
+     BADEOF = 275,
+     GOODEOF = 276,
+     RANGEOP = 277,
+     PLUSMINUSOP = 278,
+     USER_STRING = 279,
+     USER_INTEGER = 280,
+     USER_RATIONAL = 281,
+     USER_FILENAME = 282,
+     USER_QSTRING = 283,
+     INCLUDE = 284,
+     IMPORT = 285,
+     TILE = 286,
+     PARAMETERS = 287,
+     USER_PATHOP = 288,
+     STROKEWIDTH = 289,
+     LE = 290,
+     LT = 291,
+     GE = 292,
+     GT = 293,
+     EQ = 294,
+     NEQ = 295,
+     NOT = 296,
+     AND = 297,
+     OR = 298,
+     XOR = 299,
      POS = 300,
      NEG = 301
    };
@@ -188,6 +196,7 @@ namespace yy
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
 
+#if YYDEBUG
     /// The current debugging stream.
     std::ostream& debug_stream () const;
     /// Set the current debugging stream.
@@ -199,6 +208,7 @@ namespace yy
     debug_level_type debug_level () const;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
+#endif
 
   private:
     /// Report a syntax error.
@@ -208,7 +218,7 @@ namespace yy
 
     /// Generate an error message.
     /// \param state   the state where the error occurred.
-    /// \param tok     the look-ahead token.
+    /// \param tok     the lookahead token.
     virtual std::string yysyntax_error_ (int yystate);
 
 #if YYDEBUG
@@ -226,7 +236,7 @@ namespace yy
     virtual void yy_symbol_print_ (int yytype,
 				   const semantic_type* yyvaluep,
 				   const location_type* yylocationp);
-#endif /* ! YYDEBUG */
+#endif
 
 
     /// State numbers.
@@ -265,7 +275,7 @@ namespace yy
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const short int yytable_[];
+    static const unsigned short int yytable_[];
     static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
@@ -290,7 +300,7 @@ namespace yy
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
-    typedef signed char rhs_number_type;
+    typedef short int rhs_number_type;
     /// A `-1'-separated list of the rules' RHS.
     static const rhs_number_type yyrhs_[];
     /// For each rule, the index of the first RHS symbol in \a yyrhs_.
@@ -303,6 +313,10 @@ namespace yy
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
     virtual void yystack_print_ ();
+
+    /* Debugging.  */
+    int yydebug_;
+    std::ostream* yycdebug_;
 #endif
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -334,15 +348,15 @@ namespace yy
     static const unsigned int yyuser_token_number_max_;
     static const token_number_type yyundef_token_;
 
-    /* Debugging.  */
-    int yydebug_;
-    std::ostream* yycdebug_;
-
-
     /* User arguments.  */
     class Builder& driver;
   };
-}
+
+} // yy
+
+/* Line 34 of lalr1.cc  */
+#line 359 "cfdg.tab.hpp"
+
 
 
 #endif /* ! defined PARSER_HEADER_H */
