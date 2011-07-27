@@ -283,7 +283,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         }
         
         if (requestUpdate || (m_stats.shapeCount > reportAt)) {
-            if (partialDraw && false)
+            if (partialDraw)
               outputPartial();
             outputStats();
             reportAt = 2 * m_stats.shapeCount;
