@@ -109,10 +109,12 @@ namespace {
     upload.mccLicenseName   = asString(mDefccName);
     upload.mccLicenseImage  = asString(mDefccImage);
     
+    BOOL crop = upload.mTiled || 
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"];
+    
 	NSData* textData	= [mDocument getContent];
-	NSData* imageData	= [mView pngImageDataCropped: 
-        [[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
-                                     rectangular: upload.mTiled && upload.mRect];
+	NSData* imageData	= [mView pngImageDataCropped: crop
+                                         rectangular: upload.mTiled && upload.mRect];
 	
 	upload.mText		= (const char*)[textData bytes];
 	upload.mTextLen		= [textData length];
@@ -363,7 +365,7 @@ decisionListener:(id)listener
 	NSMutableURLRequest* request =
 		[NSMutableURLRequest requestWithURL:
 				[NSURL URLWithString: @"http://www.contextfreeart.org/gallery/upload.php"]
-                //[NSURL URLWithString: @"http://ciliasun.local/gallery/upload.php"]
+                //[NSURL URLWithString: @"http://aluminium.local/~john/cfa2/gallery/upload.php"]
 			cachePolicy: NSURLRequestReloadIgnoringCacheData
 			timeoutInterval: 120.0
 			];
