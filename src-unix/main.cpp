@@ -358,7 +358,19 @@ int main (int argc, char* argv[]) {
   myRenderer->setMaxShapes(opts.maxShapes);
   opts.width = myRenderer->m_width;
   opts.height = myRenderer->m_height;
-  myRenderer->run(0, false);
+  opts.crop = opts.crop || myDesign->isTiled() || myDesign->isFrieze();
+
+  if (opts.format == options::PNGfile) {
+      png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
+                          pixfmt, opts.crop, opts.animationFrames, opts.variation);
+      myCanvas = (Canvas*)png;
+  } else {
+      string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
+      svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
+      myCanvas = (Canvas*)svg;
+  }
+    
+  myRenderer->run(myCanvas, false);
   
   if (system.error(false)) {
       delete myRenderer;
@@ -373,22 +385,10 @@ int main (int argc, char* argv[]) {
       fromTime = toTime;
   }
   
-  if (opts.format == options::PNGfile) {
-      png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
-                          pixfmt, opts.crop, opts.animationFrames, opts.variation);
-	  myCanvas = (Canvas*)png;
-  } else {
-      string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
-	  svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
-	  myCanvas = (Canvas*)svg;
-  }
-  
   if (!opts.quiet) setupTimer(myRenderer);
 
   if (opts.animationFrames) {
     myRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
-  } else {
-    myRenderer->draw(myCanvas);
   }
   *myCout << endl;
 
