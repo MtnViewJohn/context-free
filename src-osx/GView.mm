@@ -288,6 +288,12 @@ namespace {
 	if (mEngine && mRenderer)
         backgroundColor = mEngine->getBackgroundColor(mRenderer);
     
+    [[NSColor colorWithDeviceRed: backgroundColor.r
+                           green: backgroundColor.g
+                            blue: backgroundColor.b
+                           alpha: backgroundColor.a ] set];
+    [NSBezierPath fillRect: rect];
+    
 	if (backgroundColor.opacity() < 1.0) {
 		[self drawCheckerboardRect: rect];
 	}
@@ -306,7 +312,6 @@ namespace {
     
 	NSSize fSize = [self frame].size;
 	NSSize rSize = mRenderedRect.size;
-	NSSize iSize = mRenderSize;
 	
 	float scale;
 	if (rSize.width <= fSize.width  &&  rSize.height <= fSize.height) {
@@ -322,8 +327,8 @@ namespace {
 	NSRect dRect;
 
 	// center scaled image rectangle
-	dRect.size.width = iSize.width * scale;
-	dRect.size.height = iSize.height * scale;
+	dRect.size.width = rSize.width * scale;
+	dRect.size.height = rSize.height * scale;
 	float ox = dRect.origin.x = floorf((fSize.width - dRect.size.width) / 2.0f);
 	float oy = dRect.origin.y = floorf((fSize.height - dRect.size.height) / 2.0f);
 
@@ -350,12 +355,6 @@ namespace {
         [[NSColor colorWithDeviceWhite: 1.0 alpha: 0.75 ] set];
         [NSBezierPath strokeRect: boxRect];
     } else {
-        [[NSColor colorWithDeviceRed: backgroundColor.r
-                               green: backgroundColor.g
-                                blue: backgroundColor.b
-                               alpha: backgroundColor.a ] set];
-        [NSBezierPath fillRect: rect];
-        
         if (backgroundColor.opacity() < 1.0) {
             [NSBezierPath clipRect: dRect];
             [self drawCheckerboardRect: NSIntersectionRect(dRect, rect)];
@@ -552,7 +551,7 @@ namespace {
         if (rect) mRenderer->m_tiledCanvas->isRectangular(&factor.x, &factor.y);
         
         NSRect iRect = NSMakeRect(0.0, 0.0, 0.0, 0.0);
-        iRect.size = mRenderSize;
+        iRect.size = mRenderedRect.size;
         
         NSRect fRect = iRect;
         fRect.size.width *= factor.x;
@@ -988,7 +987,7 @@ namespace {
 
     mCanvas = new ImageCanvas(self, mRenderBitmap, baf.mFormat);
 
-    mTiled = mEngine->isTiled();
+    mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 
     mRenderer->draw(mCanvas);
 }
@@ -1006,11 +1005,11 @@ namespace {
 {
     if (mDrawingImage || !mRenderBitmap) return;
     
-	mDrawingImage = [[NSImage alloc] initWithSize: mRenderSize];
+	mDrawingImage = [[NSImage alloc] initWithSize: mRenderedRect.size];
     [mDrawingImage setScalesWhenResized: TRUE];
     [mDrawingImage setDataRetained: TRUE];
     
-    NSBitmapImageRep* bitmap = [mRenderBitmap getImageRep];
+    NSBitmapImageRep* bitmap = [mRenderBitmap getImageRepCropped: mRenderedRect];
     
     if (bitmap)
         [mDrawingImage addRepresentation: bitmap];
@@ -1116,7 +1115,7 @@ namespace {
     if (!save) return;
     
 	NSData *pngData =
-		[self pngImageDataCropped: NO rectangular: 
+		[self pngImageDataCropped: YES rectangular: 
             [mSaveTileOptions selectedTag] == 1];
     
     [pngData writeToFile: filename atomically: YES];
@@ -1159,10 +1158,12 @@ namespace {
     
     parameters.animateFrameCount = movieLength * movieFrameRate * 0.01;
     
+    NSSize* sz = mTiled ? &mRenderedRect.size : &mRenderSize;
+    
     BitmapImageHolder* bits = [BitmapImageHolder alloc];
     [bits initWithBitmapDataPlanes: NULL
-                        pixelsWide: mRenderer->m_width
-                        pixelsHigh: mRenderer->m_height
+                        pixelsWide: (NSInteger)sz->width
+                        pixelsHigh: (NSInteger)sz->height
                      bitsPerSample: 8
                    samplesPerPixel: 4
                           hasAlpha: YES isPlanar: NO
