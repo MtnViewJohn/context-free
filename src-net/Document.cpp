@@ -1220,11 +1220,13 @@ void Document::updateRenderBox()
 
 void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, int x, int y)
 {
-    tileList points = 
-        mRenderer->m_tiledCanvas->getTesselation(dest->Width, dest->Height,
+    tileList points;
+    mRenderer->m_tiledCanvas->getTesselation(points, dest->Width, dest->Height,
             x, y, true);
 
-    for each (agg::point_i pt in points) {
-        g->DrawImageUnscaled(src, pt.x, pt.y);
+    for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
+        pt != ept; ++pt)
+    {
+        g->DrawImageUnscaled(src, pt->x, pt->y);
     }
 }
