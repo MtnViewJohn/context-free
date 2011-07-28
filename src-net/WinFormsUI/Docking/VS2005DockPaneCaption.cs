@@ -40,10 +40,13 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             protected override void OnRefreshChanges()
             {
-                if (DockPaneCaption.TextColor != ForeColor)
+                if (DockPaneCaption.DockPane.DockPanel != null)
                 {
-                    ForeColor = DockPaneCaption.TextColor;
-                    Invalidate();
+                    if (DockPaneCaption.TextColor != ForeColor)
+                    {
+                        ForeColor = DockPaneCaption.TextColor;
+                        Invalidate();
+                    }
                 }
             }
         }
@@ -188,9 +191,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 			get	{	return _TextGapTop;	}
 		}
 
-        private static Font TextFont
+        public Font TextFont
         {
-            get { return SystemInformation.MenuFont; }
+            get { return DockPane.DockPanel.Skin.DockPaneStripSkin.TextFont; }
         }
 
 		private static int TextGapBottom
@@ -439,7 +442,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // If the close button is not visible draw the auto hide button overtop.
             // Otherwise it is drawn to the left of the close button.
-            if (ButtonClose.Visible)
+            if (CloseButtonVisible)
 			    point.Offset(-(buttonWidth + ButtonGapBetween), 0);
             
             ButtonAutoHide.Bounds = DrawHelper.RtlTransform(this, new Rectangle(point, buttonSize));
@@ -457,8 +460,10 @@ namespace WeifenLuo.WinFormsUI.Docking
 		{
 			DockPane.DockState = DockHelper.ToggleAutoHideState(DockPane.DockState);
             if (DockHelper.IsDockStateAutoHide(DockPane.DockState))
+            {
                 DockPane.DockPanel.ActiveAutoHideContent = null;
-
+                DockPane.NestedDockingStatus.NestedPanes.SwitchPaneWithFirstChild(DockPane);
+            }
 		}
 
         private void Options_Click(object sender, EventArgs e)
