@@ -179,7 +179,8 @@ void tiledCanvas::scale(double scaleFactor)
     }
 }
 
-tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
+void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h, 
+                                 int x, int y, bool flipY)
 {
     // Produce an integer version of mOffset that is centered in the w x h screen
     agg::trans_affine tess(mWidth, floor(mOffset.shy + 0.5), floor(mOffset.shx + 0.5),
@@ -190,7 +191,6 @@ tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
     if (mFrieze == CFDG::frieze_y)
         tess.sx = 0.0;
     
-    tileList tessPoints;
     tessPoints.push_back(agg::point_i(x, y));   // always include the center tile
     
     if (mFrieze) {
@@ -210,7 +210,7 @@ tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
                     tessPoints.push_back(agg::point_i(px, py));
                 }
             }
-            if (!hit) return tessPoints;
+            if (!hit) return;
         }
     }
     
@@ -242,8 +242,6 @@ tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
         
         if (!hit) break;
     }
-    
-    return tessPoints;
 }
 
 bool tiledCanvas::isRectangular(int* x_factor, int* y_factor)
