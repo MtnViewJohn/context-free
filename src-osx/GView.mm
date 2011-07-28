@@ -333,11 +333,11 @@ namespace {
 	float oy = dRect.origin.y = floorf((fSize.height - dRect.size.height) / 2.0f);
 
     if (mTiled && scale == 1.0f) {
-        tileList points = 
-            mRenderer->m_tiledCanvas->getTesselation(fSize.width, fSize.height, ox, oy);
+        tileList points;
+        mRenderer->m_tiledCanvas->getTesselation(points, fSize.width, fSize.height, ox, oy);
         
-        for (tileList::iterator pt = points.begin(); 
-             pt != points.end(); ++pt) {
+        for (tileList::reverse_iterator pt = points.rbegin(); 
+             pt != points.rend(); ++pt) {
             NSPoint dPoint;
             dPoint.x = (float)pt->x;
             dPoint.y = (float)pt->y;
@@ -557,9 +557,9 @@ namespace {
         fRect.size.width *= factor.x;
         fRect.size.height *= factor.y;
         
-        tileList points = 
-            mRenderer->m_tiledCanvas->getTesselation(fRect.size.width,
-                                                     fRect.size.height, 0, 0);
+        tileList points;
+        mRenderer->m_tiledCanvas->getTesselation(points, fRect.size.width,
+                                                 fRect.size.height, 0, 0);
         
         NSImage* tileImage = [[NSImage alloc] initWithSize: fRect.size];
 
