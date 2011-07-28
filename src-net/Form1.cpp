@@ -281,12 +281,12 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     dockPanel->ActiveAutoHideContent = nullptr;
 
     // Change the color of the autohide strip to match the color of the menu bar
-    WeifenLuo::WinFormsUI::Docking::DockPanelGradient^ autohideDockStripGradient = 
-        gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient();
-    autohideDockStripGradient->StartColor = SystemColors::Menu;
-    autohideDockStripGradient->EndColor = SystemColors::Menu;
+    dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
+    dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
 
-    dockPanel->Skin->AutoHideStripSkin->DockStripGradient = autohideDockStripGradient;
+    EventHandler^ activeHandler = gcnew EventHandler(this, &Form1::Form_Active_Change);
+    Activated += activeHandler;
+    Deactivate += activeHandler;
 
     if (StartArgs != nullptr && StartArgs->Length > 1) {
         processArgs(StartArgs);
@@ -301,6 +301,20 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
             menuFNew_Click(nullptr, nullptr);
             break;
     }
+}
+
+Void Form1::Form_Active_Change(System::Object^  sender, System::EventArgs^  e)
+{
+    if (Form::ActiveForm == nullptr) {
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientInactiveCaption;
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientInactiveCaption;
+        menuStrip1->BackColor = SystemColors::GradientInactiveCaption;
+    } else {
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
+        menuStrip1->BackColor = SystemColors::GradientActiveCaption;
+    }
+    dockPanel->AutoHideStripControl->Invalidate();
 }
 
 Void Form1::processArgs(array<System::String^>^ args)

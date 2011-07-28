@@ -99,7 +99,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         }
 
 		private AutoHideStripBase m_autoHideStripControl = null;
-		internal AutoHideStripBase AutoHideStripControl
+		public AutoHideStripBase AutoHideStripControl
 		{
 			get
 			{	
