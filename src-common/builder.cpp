@@ -73,6 +73,14 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
         FlagNames.insert(std::pair<std::string, int>("CF::EvenOdd", AST::CF_EVEN_ODD));
         FlagNames.insert(std::pair<std::string, int>("CF::IsoWidth", AST::CF_ISO_WIDTH));
         FlagNames.insert(std::pair<std::string, int>("~~CF_FILL~~", AST::CF_FILL));
+        FlagNames.insert(std::pair<std::string, int>("CF::Cyclic", AST::CF_NONE));
+        FlagNames.insert(std::pair<std::string, int>("CF::Dihedral", AST::CF_DIHEDRAL));
+        FlagNames.insert(std::pair<std::string, int>("CF::p11g", AST::CF_P11G));
+        FlagNames.insert(std::pair<std::string, int>("CF::p11m", AST::CF_P11M));
+        FlagNames.insert(std::pair<std::string, int>("CF::p1m1", AST::CF_P1M1));
+        FlagNames.insert(std::pair<std::string, int>("CF::p2", AST::CF_P2));
+        FlagNames.insert(std::pair<std::string, int>("CF::p2mg", AST::CF_P2MG));
+        FlagNames.insert(std::pair<std::string, int>("CF::p2mm", AST::CF_P2MM));
     }
     assert(Builder::CurrentBuilder == NULL);    // ensure singleton
     Builder::CurrentBuilder = this;

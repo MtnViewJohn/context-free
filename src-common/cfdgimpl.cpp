@@ -302,6 +302,274 @@ CFDGImpl::isTimed(agg::trans_affine_time* t) const
     return true;
 }
 
+// Analyze the symmetry spec accumulated in the data vector and add the 
+// appropriate affine transforms to the SymmList. Avoid adding the identity
+// transform if it is already present in the SymmList.
+static void
+processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
+                std::vector<double>& data, const yy::location& where)
+{
+    if (data.empty()) return;
+    AST::FlagTypes t = (AST::FlagTypes)((int)data[0]);
+    bool frieze = (tile.sx != 0.0 || tile.sy != 0.0) && (tile.sx * tile.sy == 0.0);
+    if (t >= AST::CF_P11G && t <= AST::CF_P2MM && !frieze)
+        CfdgError::Error(where, "Frieze symmetry on works in frieze designs");
+    switch (t) {
+        case AST::CF_NONE: {
+            double order, x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 4:
+                    x = data[2];
+                    y = data[3];
+                case 2:
+                    order = data[1];
+                    break;
+                default:
+                    CfdgError::Error(where, "Wrong number of arguments");
+                    break;  // never gets here
+            }
+            if (order < 1.0)
+                CfdgError::Error(where, "Cyclic symmetry order must be one or larger");
+            int num = (int)order;
+            order = 2.0 * M_PI / order;
+            for (int i = 0; i < num; ++i) {
+                if (i == 0 & ident) continue;
+                agg::trans_affine tr;
+                tr.translate(-x, -y);
+                tr.rotate(i * order);
+                tr.translate(x, y);
+                syms.push_back(tr);
+            }
+            break;
+        }
+        case AST::CF_DIHEDRAL: {
+            double order, angle = 0.0, x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 5:
+                    x = data[3];
+                    y = data[4];
+                case 3:
+                    order = data[1];
+                    angle = data[2] * M_PI / 180.0;
+                    break;
+                case 4:
+                    x = data[2];
+                    y = data[3];
+                case 2:
+                    order = data[1];
+                    break;
+                default:
+                    CfdgError::Error(where, "Wrong number of arguments");
+                    break;  // never gets here
+            }
+            if (order < 1.0)
+                CfdgError::Error(where, "Dihedral symmetry order must be one or larger");
+            agg::trans_affine reg;
+            agg::trans_affine_reflection mirror(angle);
+            reg.translate(-x, -y);
+            int num = (int)order;
+            order = 2.0 * M_PI / order;
+            for (int i = 0; i < num; ++i) {
+                agg::trans_affine tr(reg);
+                tr.rotate(i * order);
+                agg::trans_affine tr2(tr);
+                tr2 *= mirror;
+                tr.translate(x, y);
+                tr2.translate(x, y);
+                if (i || !ident)
+                    syms.push_back(tr);
+                syms.push_back(tr2);
+            }
+            break;
+        }
+        case AST::CF_P11G: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 2) {
+                if (tile.sx != 0.0)
+                    mirrory = data[1];
+                else
+                    mirrorx = data[1];
+            } else if (data.size() > 2) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr;
+            if (!ident)
+                syms.push_back(tr);
+            tr.translate(-mirrorx, -mirrory);
+            if (tile.sx != 0.0)
+                tr.flip_y();
+            else
+                tr.flip_x();
+            tr.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
+            syms.push_back(tr);
+            break;
+        }
+        case AST::CF_P11M: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 2) {
+                if (tile.sx != 0.0)
+                    mirrory = data[1];
+                else
+                    mirrorx = data[1];
+            } else if (data.size() > 2) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr;
+            if (!ident)
+                syms.push_back(tr);
+            tr.translate(-mirrorx, -mirrory);
+            if (tile.sx != 0.0)
+                tr.flip_y();
+            else
+                tr.flip_x();
+            tr.translate(mirrorx, mirrory);
+            syms.push_back(tr);
+            break;
+        }
+        case AST::CF_P1M1: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 2) {
+                if (tile.sx != 0.0)
+                    mirrorx = data[1];
+                else
+                    mirrory = data[1];
+            } else if (data.size() > 2) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr;
+            if (!ident)
+                syms.push_back(tr);
+            tr.translate(-mirrorx, -mirrory);
+            if (tile.sx != 0.0)
+                tr.flip_x();
+            else
+                tr.flip_y();
+            tr.translate(mirrorx, mirrory);
+            syms.push_back(tr);
+            break;
+        }
+        case AST::CF_P2: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 3) {
+                mirrorx = data[1];
+                mirrory = data[2];
+            } else if (data.size() != 1) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr;
+            if (!ident)
+                syms.push_back(tr);
+            tr.translate(-mirrorx, -mirrory);
+            tr.flip_x();
+            tr.flip_y();
+            tr.translate(mirrorx, mirrory);
+            syms.push_back(tr);
+            break;
+        }
+        case AST::CF_P2MG: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 3) {
+                mirrorx = data[1];
+                mirrory = data[2];
+            } else if (data.size() != 1) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr1;
+            agg::trans_affine_translation tr2(-mirrorx, -mirrory);
+            agg::trans_affine_translation tr3(-mirrorx, -mirrory);
+            agg::trans_affine_translation tr4(-mirrorx, -mirrory);
+            tr2.flip_x();
+            tr3.flip_x();
+            tr3.flip_y();
+            tr4.flip_y();
+            tr2.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
+            tr3.translate(mirrorx, mirrory);
+            tr4.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
+            if (!ident)
+                syms.push_back(tr1);
+            syms.push_back(tr2);
+            syms.push_back(tr3);
+            syms.push_back(tr4);
+            break;
+        }
+        case AST::CF_P2MM: {
+            double mirrorx = 0.0, mirrory = 0.0;
+            if (data.size() == 3) {
+                mirrorx = data[1];
+                mirrory = data[2];
+            } else if (data.size() != 1) {
+                CfdgError::Error(where, "Wrong number of arguments");
+            }
+            agg::trans_affine tr1;
+            agg::trans_affine_translation tr2(-mirrorx, -mirrory);
+            agg::trans_affine_translation tr3(-mirrorx, -mirrory);
+            agg::trans_affine_translation tr4(-mirrorx, -mirrory);
+            tr2.flip_x();
+            tr3.flip_x();
+            tr3.flip_y();
+            tr4.flip_y();
+            tr2.translate(mirrorx, mirrory);
+            tr3.translate(mirrorx, mirrory);
+            tr4.translate(mirrorx, mirrory);
+            if (!ident)
+                syms.push_back(tr1);
+            syms.push_back(tr2);
+            syms.push_back(tr3);
+            syms.push_back(tr4);
+            break;
+        }
+        default:
+            CfdgError::Error(where, "Unknown symmetry type");
+            break;  // never gets here
+    }
+    data.clear();
+    ident = true;
+}
+
+void
+CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
+{
+    syms.clear();
+    const ASTexpression* e = hasParameter("CF::Symmetry");
+    if (e == NULL) return;
+
+    std::vector<double> symmSpec;
+    yy::location where;
+    bool hasIdentity = false;
+    static const agg::trans_affine identity;
+    for (ASTexpression::const_iterator cit = e->begin(), eit = e->end(); 
+         cit != eit; ++cit)
+    {
+        switch (cit->mType) {
+            case ASTexpression::FlagType:
+                processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+                where = cit->where;
+            case ASTexpression::NumericType:
+                if (symmSpec.empty() && cit->mType != ASTexpression::FlagType)
+                    CfdgError::Error(cit->where, "Symmetry flag expected here");
+                symmSpec.push_back(0.0);
+                where = where + cit->where;
+                if (cit->evaluate(&symmSpec.back(), 1, r) != 1)
+                    CfdgError::Error(cit->where, "Could not evaluate this");
+                break;
+            case ASTexpression::ModType: {
+                processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+                Modification mod;
+                int dummy;
+                cit->evaluate(mod, 0, 0, false, dummy, r);
+                syms.push_back(mod.m_transform);
+                if (mod.m_transform == identity)
+                    hasIdentity = true;
+                break;
+            }
+            default:
+                CfdgError::Error(cit->where, "Wrong type");
+                break;
+        }
+    }
+    processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+}
+
 bool
 CFDGImpl::hasParameter(const char* name, double& value, Renderer* r) const
 {
@@ -349,14 +617,15 @@ CFDGImpl::hasParameter(const char* name, ASTexpression::expType t, yy::location&
     return true;
 }
 
-static ASTexpression*
-getExp(exp_ptr e)
+const ASTexpression*
+CFDGImpl::hasParameter(const char* name) const
 {
-    yy::location loc = e->where;
-    if (e->mType == ASTexpression::ModType)
-        return new ASTmodification(e, loc);
-    else
-        return e.release()->simplify();
+    string n = name;
+    int varNum = tryEncodeShapeName(n);
+    if (varNum < 0) return NULL;
+    std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
+    if (elem == m_ConfigParameters.end()) return NULL;
+    return elem->second->second;
 }
 
 static bool
@@ -379,20 +648,21 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         "CF::Impure",
         "CF::MinimumSize",
         "CF::Size",
+        "CF::Symmetry",
         "CF::Tile",
         "CF::Time"
     };
     
-    if (!std::binary_search(KnownParams, KnownParams + 13, name.c_str(), stringcompare))
+    if (!std::binary_search(KnownParams, KnownParams + 14, name.c_str(), stringcompare))
         return false;
     int varNum = encodeShapeName(name);
     std::map<int, ConfigParam*>::iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end()) {
-        m_ConfigParameters.insert(pair<int, ConfigParam*>(varNum, new ConfigParam(depth, getExp(e))));
+        m_ConfigParameters.insert(make_pair(varNum, new ConfigParam(depth, e.release()->simplify())));
     } else {
         if (depth < elem->second->first) {
             elem->second->first = depth;
-            elem->second->second = getExp(e);
+            elem->second->second = e.release()->simplify();
         } else {
             return true;
         }
@@ -601,8 +871,9 @@ CFDGImpl::renderer(int width, int height, double minSize,
         m_system->error();
         return 0;
     }
-    RendererImpl* r = new RendererImpl(this, width, height, minSize, variation, border);
+    RendererImpl* r = NULL;
     try {
+        r = new RendererImpl(this, width, height, minSize, variation, border);
         Modification tiled;
         Modification sized;
         Modification timed;

@@ -86,13 +86,14 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     m_maxShapes = 500000000;
     m_currScale = 0.0;
     mScaleArea = mScale = 0.0;
-    
-    init();
 }
 
 void
 RendererImpl::init()
 {
+    mCurrentSeed.seed((unsigned long long)mVariation);
+    mCurrentSeed.bump();
+    
     mFinishedFileCount = 0;
     mUnfinishedFileCount = 0;
     
@@ -123,13 +124,13 @@ RendererImpl::init()
     
     mCurrentPath = new AST::ASTcompiledPath();
     
-    mCurrentSeed.seed((unsigned long long)mVariation);
-    mCurrentSeed.bump();
+    m_cfdg->getSymmetry(mSymmetryOps, this);
 }
 
 void
 RendererImpl::initBounds()
 {
+    init();
     double tile_x, tile_y;
     m_tiled = m_cfdg->isTiled(0, &tile_x, &tile_y);
     m_frieze = m_cfdg->isFrieze(0, &tile_x, &tile_y);
@@ -565,6 +566,21 @@ RendererImpl::processShape(const Shape& s)
 
 void
 RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
+{
+    int num = (int)mSymmetryOps.size();
+    if (num == 0) {
+        processPrimShapeSiblings(s, path);
+    } else {
+        for (int i = 0; i < num; ++i) {
+            Shape sym(s);
+            sym.mWorldState.m_transform.multiply(mSymmetryOps[i]);
+            processPrimShapeSiblings(sym, path);
+        }
+    }
+}
+
+void
+RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
 {
     m_stats.shapeCount++;
     if (mScale == 0.0) {

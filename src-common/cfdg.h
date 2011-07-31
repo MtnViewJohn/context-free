@@ -128,6 +128,7 @@ class Renderer;
 
 class CFDG {
     public:
+        typedef std::vector<agg::trans_affine> SymmList;
         enum frieze_t { no_frieze = 0, frieze_x, frieze_y };
         static CFDG* ParseFile(const char* fname, AbstractSystem*, int variation);
         virtual ~CFDG();
@@ -148,6 +149,7 @@ class CFDG {
         virtual bool isSized(double* x = 0, double* y = 0) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = 0) const = 0;
         virtual const agg::rgba& getBackgroundColor(Renderer* r) = 0;
+        virtual void getSymmetry(SymmList& syms, Renderer* r) = 0;
 
     protected:
         CFDG()
