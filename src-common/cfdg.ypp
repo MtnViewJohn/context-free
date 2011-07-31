@@ -1066,7 +1066,7 @@ exp2:
         | 
         '(' exp2 ')'         { $$ = new ASTparen($2); }
         | 
-        modification         { $$ = $1; }
+        modification         { $$ = new ASTmodification(exp_ptr($1), @1); }
         ;
 
 expfunc:

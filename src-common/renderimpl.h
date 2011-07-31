@@ -81,6 +81,7 @@ class RendererImpl : public Renderer {
         void outputPrep(Canvas*);
         void rescaleOutput(int& curr_width, int& curr_height, bool final);
 		void forEachShape(bool final, ShapeOp& op);
+        void processPrimShapeSiblings(const Shape& s, const AST::ASTrule* attr);
 
         void output(bool final);
         void outputPartial() { output(false); }
@@ -145,6 +146,8 @@ class RendererImpl : public Renderer {
         agg::trans_affine m_currTrans;
         unsigned int m_outputSoFar;
         std::multiset<FinishedShape>::iterator m_outputPosition;
+    
+        std::vector<agg::trans_affine> mSymmetryOps;
 
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;

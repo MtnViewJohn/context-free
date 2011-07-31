@@ -676,6 +676,13 @@ namespace AST {
     ASTmodification::init(exp_ptr mods, std::string* p, double* width) throw (CfdgError)
     {
         static const std::string defaultEntropy("it doesn't matter");
+        ASTmodification* m = dynamic_cast<ASTmodification*> (mods.get());
+        if (m) {
+            modData = m->modData;
+            modExp.swap(m->modExp);
+            modClass = m->modClass;
+            return;
+        }
         init(mods, defaultEntropy, p, width);
     }
     
@@ -1265,12 +1272,12 @@ namespace AST {
         int argcount = 0;
         
         if (args) {
-            if (args->mType == ASTexpression::NumericType) {
+            if (modType != modification && args->mType == NumericType) {
                 if (justCheck)
                     argcount = args->evaluate(0, 0);
                 else 
                     argcount = args->evaluate(modArgs, 6, rti);
-            } else {
+            } else if (modType == modification && args->mType != ModType){
                 CfdgError::Error(where, "Adjustments require numeric arguments");
                 return;
             }

@@ -107,7 +107,14 @@ namespace AST {
         CF_ALIGN = 1 << 11,
         CF_EVEN_ODD = 1 << 12,
         CF_ISO_WIDTH = 1 << 13,
-        CF_FILL = 1 << 14
+        CF_FILL = 1 << 14,
+        CF_DIHEDRAL = 1 << 15,
+        CF_P11G = 2 << 15,
+        CF_P11M = 3 << 15,
+        CF_P1M1 = 4 << 15,
+        CF_P2 = 5 << 15,
+        CF_P2MG = 6 << 15,
+        CF_P2MM = 7 << 15
     };
     
     double CFatof(const char* s);
