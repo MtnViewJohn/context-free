@@ -27,6 +27,7 @@
 //
 
 
+#define _USE_MATH_DEFINES 1
 #include "cfdgimpl.h"
 #include "builder.h"
 #include "renderimpl.h"
@@ -45,9 +46,8 @@
 #ifdef _WIN32
 #include <float.h>
 #define isfinite _finite
-#else
-#include <math.h>
 #endif
+#include <math.h>
 
 using namespace std;
 using namespace AST;
@@ -328,7 +328,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             int num = (int)order;
             order = 2.0 * M_PI / order;
             for (int i = 0; i < num; ++i) {
-                if (i == 0 & ident) continue;
+                if (i == 0 && ident) continue;
                 agg::trans_affine tr;
                 tr.translate(-x, -y);
                 tr.rotate(i * order);
