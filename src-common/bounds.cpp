@@ -75,6 +75,19 @@ Bounds::dilate(agg::point_d& cent, double dilation) const
 }
 
 Bounds
+Bounds::dilate(double dilation) const
+{
+    Bounds b;
+    agg::point_d cent((mMin_X + mMax_X) * 0.5, (mMin_Y + mMax_Y) * 0.5);
+    b.mMin_X = dilation * (mMin_X - cent.x) + cent.x;
+    b.mMax_X = dilation * (mMax_X - cent.x) + cent.x;
+    b.mMin_Y = dilation * (mMin_Y - cent.y) + cent.y;
+    b.mMax_Y = dilation * (mMax_Y - cent.y) + cent.y;
+    b.mValid = mValid;
+    return b;
+}
+
+Bounds
 Bounds::slewCenter(const Bounds& other, double alpha) const
 {
 	Bounds r;

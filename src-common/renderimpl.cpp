@@ -602,7 +602,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         }
         mTotalArea += mCurrentArea;
         if (!m_tiled && !m_sized) {
-            mBounds.merge(mPathBounds.dilate(mCurrentCentroid, mShapeBorder));
+            mBounds.merge(mPathBounds.dilate(mShapeBorder));
             if (m_frieze == CFDG::frieze_x)
                 mBounds.mMin_X = -(mBounds.mMax_X = m_frieze_size);
             if (m_frieze == CFDG::frieze_y)
