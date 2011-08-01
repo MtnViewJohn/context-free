@@ -73,8 +73,6 @@ public:
 	int				mCurrentShape;
     Rand64          mSeed;
     
-    bool            mUsesAlpha;
-    
     bool            mWant2ndPass;
     int             mCompilePhase;
     
