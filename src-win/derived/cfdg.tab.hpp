@@ -109,12 +109,13 @@ namespace yy {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 62 "../../src-common/cfdg.ypp"
+#line 63 "../../src-common/cfdg.ypp"
 
     int modToken;
     std::string*  string;
     AST::ASTexpression* expression;
-    AST::ASTmodTerm* mod;
+    AST::ASTmodTerm* term;
+    AST::ASTmodification* mod;
     AST::ASTreplacement* component;
     AST::ASTshape* shapeObj;
     AST::ASTloop* loopObj;
@@ -126,7 +127,7 @@ namespace yy {
 
 
 /* Line 34 of lalr1.cc  */
-#line 130 "cfdg.tab.hpp"
+#line 131 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -355,7 +356,7 @@ namespace yy {
 } // yy
 
 /* Line 34 of lalr1.cc  */
-#line 359 "cfdg.tab.hpp"
+#line 360 "cfdg.tab.hpp"
 
 
 
