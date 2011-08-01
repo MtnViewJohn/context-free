@@ -81,14 +81,15 @@ namespace AST {
         to.mStackCount = mStackCount;
     }
     
-    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, exp_ptr mods,
+    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
-      mChildChange(mods, name, loc), mLocation(loc)
+      mChildChange(mods, loc), mLocation(loc)
     {
+        mChildChange.addEntropy(name);
     }
     
-    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, exp_ptr mods, 
+    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
       mChildChange(mods, loc), mLocation(loc)
@@ -97,13 +98,13 @@ namespace AST {
     
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                      exp_ptr args, const yy::location& argsLoc,  
-                     exp_ptr mods)
-    : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), nameLoc + argsLoc, empty),
+                     mod_ptr mods)
+    : ASTreplacement(ASTruleSpecifier::Zero, mods, nameLoc + argsLoc, empty),
       mLoopArgs(NULL)
     {
         std::string ent(name);
         args->entropy(ent);
-        mChildChange.init(mods, ent);
+        mChildChange.addEntropy(ent);
         bool bodyNatural = false;
         bool finallyNatural = false;
         bool local = args->isLocal;
@@ -157,13 +158,13 @@ namespace AST {
         loopDef.mExpression = 0;
     }
     
-    ASTtransform::ASTtransform(exp_ptr mods, const yy::location& loc)
+    ASTtransform::ASTtransform(mod_ptr mods, const yy::location& loc)
     : ASTreplacement(ASTruleSpecifier::Zero, mods, loc, empty)
     {
     }
     
     ASTdefine::ASTdefine(const std::string& name, exp_ptr e) 
-    : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), e->where, empty),
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), e->where, empty),
       mType(e->mType), isConstant(e->isConstant)
     {
         mTuplesize = e->mType == ASTexpression::NumericType ? e->evaluate(0, 0) : 1;
@@ -174,7 +175,7 @@ namespace AST {
         mChildChange.modData.mRand64Seed.xorString(name.c_str(), i);
     }
     
-    ASTdefine::ASTdefine(const std::string& name, exp_ptr e, int) 
+    ASTdefine::ASTdefine(const std::string& name, mod_ptr e) 
     : ASTreplacement(ASTruleSpecifier::Zero, e, e->where, empty), mExpression(0), 
       mTuplesize(ModificationSize), mType(ASTexpression::ModType), 
       isConstant(mChildChange.modExp.empty())
@@ -208,13 +209,13 @@ namespace AST {
     }
     
     ASTif::ASTif(exp_ptr ifCond, const yy::location& condLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), condLoc, empty), 
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), condLoc, empty), 
       mCondition(ifCond.release()->simplify())
     {
     }
 
     ASTswitch::ASTswitch(exp_ptr switchExp, const yy::location& expLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), expLoc, empty), 
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), expLoc, empty), 
       mSwitchExp(switchExp.release()->simplify())
     {
     }
@@ -245,7 +246,7 @@ namespace AST {
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, bool positional,
                          const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), loc, op), mFlags(0)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mFlags(0)
     {
         mArguments[0] = mArguments[1] = mArguments[2] = 
         mArguments[3] = mArguments[4] = mArguments[5] = 0;
@@ -269,47 +270,33 @@ namespace AST {
         pathDataConst(temp);
     }
     
-    ASTpathCommand::ASTpathCommand(const std::string& s, exp_ptr mods, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), loc, command), 
-        mFlags(CF_MITER_JOIN + CF_BUTT_CAP), mMiterLimit(4.0), mStrokeWidth(0.1)
+    ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, const yy::location& loc)
+    :   ASTreplacement(ASTruleSpecifier::Zero, mods, loc, command), 
+        mMiterLimit(4.0)
     {
-        std::string param;
-        mChildChange.init(mods, s, &param, &mStrokeWidth);
+        mChildChange.addEntropy(s);
         
         if (!(s.compare("FILL"))) {
-            mFlags |= CF_FILL;
-        } else if (s.compare("STROKE")) {
+            mChildChange.flags |= CF_FILL;
+        } else if (!s.compare("STROKE")) {
+            mChildChange.flags &= ~CF_FILL;
+        } else {
             CfdgError::Error(loc, "Unknown path command/operation");
-        }
-        
-        if (!param.empty()) {
-            if (param.find("evenodd") != std::string::npos)
-                mFlags |= CF_EVEN_ODD;
-            if (param.find("iso") != std::string::npos && !(mFlags & CF_FILL))
-                mFlags |= CF_ISO_WIDTH;
-            if (param.find("miterjoin") != std::string::npos)
-                mFlags |= CF_MITER_JOIN;
-            if (param.find("roundjoin") != std::string::npos)
-                mFlags |= CF_ROUND_JOIN;
-            if (param.find("beveljoin") != std::string::npos)
-                mFlags |= CF_BEVEL_JOIN;
-            if (param.find("buttcap") != std::string::npos)
-                mFlags |= CF_BUTT_CAP;
-            if (param.find("squarecap") != std::string::npos)
-                mFlags |= CF_SQUARE_CAP;
-            if (param.find("roundcap") != std::string::npos)
-                mFlags |= CF_ROUND_CAP;
         }
     }
     
-    ASTpathCommand::ASTpathCommand(const std::string& s, exp_ptr mods, 
+    ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), loc, command), 
-        mFlags(CF_MITER_JOIN + CF_BUTT_CAP), mMiterLimit(4.0), mStrokeWidth(0.1)
+    :   ASTreplacement(ASTruleSpecifier::Zero, mods, loc, command), 
+        mMiterLimit(4.0)
     {
+        mChildChange.addEntropy(s);
+        
         if (!(s.compare("FILL"))) {
-            mFlags |= CF_FILL;
-        } else if (s.compare("STROKE")) {
+            mChildChange.flags |= CF_FILL;
+        } else if (!s.compare("STROKE")) {
+            mChildChange.flags &= ~CF_FILL;
+        } else {
             CfdgError::Error(loc, "Unknown path command/operation");
         }
         
@@ -318,19 +305,27 @@ namespace AST {
         if (params.get()) params.release()->simplify()->flatten(temp);
         if (!(temp.empty())) {
             if (temp.front()->mType == ASTexpression::NumericType) {
-                ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, temp.front(), loc);
-                mods.reset(ASTcons::Cons(w, mods.release()));
+                if (!temp.front()->isConstant && 
+                    temp.front()->evaluate(&(mods->strokeWidth), 1) != 1)
+                {
+                    ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, temp.front(), loc);
+                    mods->modExp.push_back(w);
+                }
             }
             if (temp.back()->mType == ASTexpression::FlagType) {
                 ASTreal* r = dynamic_cast<ASTreal*> (temp.back());
-                if (r)      // FIXME:: need to evaluate() if flag parameters are allowed
-                    mFlags |= (int)(r->value);
-                else
+                if (r) {
+                    int f = (int)(r->value);
+                    if (f & CF_JOIN_MASK)
+                        mChildChange.flags &= ~CF_JOIN_MASK;
+                    if (f & CF_CAP_MASK)
+                        mChildChange.flags &= ~CF_CAP_MASK;
+                    mChildChange.flags |= f;
+                } else {
                     CfdgError::Error(temp.back()->where, "Flag expressions must be constant");
+                }
             }
         }
-        
-        mChildChange.init(mods, s, 0, &mStrokeWidth);
     }
     
     ASTreplacement::~ASTreplacement()
@@ -566,7 +561,7 @@ namespace AST {
     ASTpathCommand::traverse(const Shape& s, bool tr, Renderer* r) const
     {
         Shape child = s;
-        double width = mStrokeWidth;
+        double width = mChildChange.strokeWidth;
         replace(child, r, &width);
         
         CommandInfo* info = NULL;

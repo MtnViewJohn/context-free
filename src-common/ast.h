@@ -92,15 +92,18 @@ namespace AST {
     typedef std::auto_ptr<ASTif>            if_ptr;
     typedef std::auto_ptr<ASTswitch>        switch_ptr;
     typedef std::auto_ptr<ASTmodTerm>       term_ptr;
+    typedef std::auto_ptr<ASTmodification>  mod_ptr;
     
     enum FlagTypes {
         CF_NONE = 0,
         CF_MITER_JOIN = agg::miter_join,
         CF_ROUND_JOIN = agg::round_join,
         CF_BEVEL_JOIN = agg::bevel_join,
+        CF_JOIN_MASK = 0xf,
         CF_BUTT_CAP = agg::butt_cap << 4,
         CF_ROUND_CAP = agg::round_cap << 4,
         CF_SQUARE_CAP = agg::square_cap << 4,
+        CF_CAP_MASK = 0xf << 4,
         CF_ARC_CW = 1 << 8,
         CF_ARC_LARGE = 1 << 9,
         CF_CONTINUOUS = 1 << 10,

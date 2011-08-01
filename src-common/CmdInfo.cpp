@@ -71,7 +71,7 @@ namespace AST {
     {
         if (mPathUID != path->mPathUID || mIndex != i) {
             if (c) {
-                mFlags = c->mFlags;
+                mFlags = c->mChildChange.flags;
                 mMiterLimit = c->mMiterLimit;
             } else {
                 mFlags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;

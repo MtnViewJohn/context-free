@@ -104,7 +104,7 @@ namespace AST {
         virtual ~ASTexpression() {};
         virtual int evaluate(double* , int, Renderer* = 0) const 
         { return 0; }
-        virtual void evaluate(Modification& , std::string* , double* , 
+        virtual void evaluate(Modification& , int* , double* , 
                               bool , int& , 
                               Renderer* = 0) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
@@ -161,7 +161,7 @@ namespace AST {
         ASTselect(exp_ptr args, const yy::location& loc);
         virtual ~ASTselect();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual void evaluate(Modification& m, std::string* p, double* width, 
+        virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
         virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
@@ -218,7 +218,7 @@ namespace AST {
         left(l), right(r) { isLocal = l->isLocal && r->isLocal; };
         virtual ~ASTcons() { delete left; delete right; }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual void evaluate(Modification& m, std::string* p, double* width, 
+        virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
         virtual int flatten(ASTexpArray& dest);
@@ -265,7 +265,7 @@ namespace AST {
         
         ASTvariable(int stringNum, const std::string& str, const yy::location& loc); 
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual void evaluate(Modification& m, std::string* p, double* width, 
+        virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
         virtual int flatten(ASTexpArray& dest);
@@ -330,7 +330,7 @@ namespace AST {
         : ASTexpression(loc, true, false, ModType), modType(t), args(0) {};
         virtual ~ASTmodTerm() { delete args; }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual void evaluate(Modification& m, std::string* p, double* width, 
+        virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* = 0) const;
         virtual int flatten(ASTexpArray& dest);
@@ -348,33 +348,30 @@ namespace AST {
         Modification    modData;
         ASTexpArray     modExp;
         int             modClass;
+        double          strokeWidth;
+        int             flags;
+        int             entropyIndex;
         
         static int ModClass[ASTmodTerm::lastModType];
         
         ASTmodification(const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass) {};
+        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass),
+          strokeWidth(0.1), flags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), 
+          entropyIndex(0) {}
         ASTmodification(const ASTmodification& m, const yy::location& loc);
-        ASTmodification(exp_ptr mods, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass)
-        { init(mods); };
-        ASTmodification(exp_ptr mods, const std::string& name, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass)
-        { init(mods, name); };
+        ASTmodification(mod_ptr m, const yy::location& loc);
+        ASTmodification(exp_ptr mods, const yy::location& loc);
         virtual ~ASTmodification();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual void evaluate(Modification& m, std::string* p, double* width, 
+        virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* = 0) const;
-        void setVal(Modification& m, std::string* p, double* width, 
+        void setVal(Modification& m, int* p, double* width, 
                     bool justCheck, int& seedIndex, 
                     Renderer* = 0) const;
-        void init(exp_ptr mods,
-                  std::string* p = 0, double* width = 0) throw (CfdgError);
-        void init(exp_ptr mods, const std::string& name,
-                  std::string* p = 0, double* width = 0) throw (CfdgError);
+        void addEntropy(const std::string& name);
     private:
-        void evalConst(exp_ptr mod, std::string* p = 0, double* width = 0) 
-        throw(CfdgError);
+        void evalConst(exp_ptr mod);
     };
     
     class ASTdefine;
