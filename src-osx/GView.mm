@@ -286,18 +286,18 @@ namespace {
     
 	agg::rgba backgroundColor(1.0, 1.0, 1.0, 1.0);
 	if (mEngine && mRenderer)
-        backgroundColor = mEngine->getBackgroundColor(mRenderer);
-    
-    [[NSColor colorWithDeviceRed: backgroundColor.r
-                           green: backgroundColor.g
-                            blue: backgroundColor.b
-                           alpha: backgroundColor.a ] set];
-    [NSBezierPath fillRect: rect];
+        backgroundColor = mEngine->getBackgroundColor(0);
     
 	if (backgroundColor.opacity() < 1.0) {
 		[self drawCheckerboardRect: rect];
 	}
-
+    
+    [[NSColor colorWithCalibratedRed: backgroundColor.r
+                               green: backgroundColor.g
+                                blue: backgroundColor.b
+                               alpha: backgroundColor.a ] set];
+    [NSBezierPath fillRect: rect];
+    
 	NSGraphicsContext* ctx = [NSGraphicsContext currentContext];
 	NSImageInterpolation oldInterp = [ctx imageInterpolation];
 	[ctx setImageInterpolation:
@@ -342,6 +342,13 @@ namespace {
             dPoint.x = (float)pt->x;
             dPoint.y = (float)pt->y;
 
+            if (backgroundColor.opacity() < 1.0) {
+                NSRect cRect = dRect;
+                cRect.origin = dPoint;
+                // redraw checkerboard to erase global fill
+                [self drawCheckerboardRect: NSIntersectionRect(cRect, rect)];
+            }
+            
             [mDrawingImage drawAtPoint: dPoint fromRect: NSZeroRect
                              operation: NSCompositeSourceAtop
                               fraction: 1.0];
@@ -356,7 +363,7 @@ namespace {
         [NSBezierPath strokeRect: boxRect];
     } else {
         if (backgroundColor.opacity() < 1.0) {
-            [NSBezierPath clipRect: dRect];
+            // redraw checkerboard to erase global fill
             [self drawCheckerboardRect: NSIntersectionRect(dRect, rect)];
         }
         
@@ -940,7 +947,7 @@ namespace {
 			box.origin.x < NSMaxX(rect);
 			box.origin.x += 2*box.size.width)
 		{
-			[NSBezierPath fillRect: box];
+			[NSBezierPath fillRect: NSIntersectionRect(box, rect)];
 		}
 	}
 }
