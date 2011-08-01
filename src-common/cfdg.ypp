@@ -317,13 +317,12 @@ initialization_v2:
         ;
 
 background:
-        BACKGROUND {
+        BACKGROUND modification_v2 {
             driver.SetShape(NULL);
-        } modification_v2 {
-            exp_ptr mod($3);
+            exp_ptr mod($2);
             static const std::string backVar("CF::Background");
             driver.lexer->maybeVersion = token::CFDG2;
-            driver.NextParameter(backVar, mod, @1, @3);
+            driver.NextParameter(backVar, mod, @1, @2);
             $$ = 0;
         }
         ;

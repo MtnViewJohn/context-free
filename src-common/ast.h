@@ -117,7 +117,8 @@ namespace AST {
         CF_P1M1 = 4 << 15,
         CF_P2 = 5 << 15,
         CF_P2MG = 6 << 15,
-        CF_P2MM = 7 << 15
+        CF_P2MM = 7 << 15,
+        CF_USES_ALPHA = 1 << 18
     };
     
     double CFatof(const char* s);

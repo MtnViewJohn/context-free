@@ -138,7 +138,7 @@ CFDGImpl::getBackgroundColor(Renderer* r)
 {
     Modification white;
     white.m_Color = HSBColor(0.0, 0.0, 1.0, 1.0);
-    if (r &&hasParameter("CF::Background", white, r)) {
+    if (r && hasParameter("CF::Background", white, r)) {
         white.m_Color.getRGBA(m_backgroundColor);
         if (!usesAlpha)
             m_backgroundColor.a = 1.0;
@@ -190,7 +190,6 @@ CFDGImpl::addParameter(Parameter p)
 {
     m_Parameters |= p;
     usesColor = m_Parameters & Color;
-    usesAlpha = m_Parameters & Alpha;
     usesTime = m_Parameters & Time;
     usesFrameTime = m_Parameters & FrameTime;
 }
@@ -651,6 +650,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
     
     if (!std::binary_search(KnownParams, KnownParams + 14, name.c_str(), stringcompare))
         return false;
+    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     int varNum = encodeShapeName(name);
     std::map<int, ConfigParam*>::iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end()) {
@@ -664,8 +664,8 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         }
 
     }
-    if (name == "CF::Background")
-        usesAlpha = Builder::CurrentBuilder->mUsesAlpha;
+    if (name == "CF::Background" && m)
+        usesAlpha = m->flags & CF_USES_ALPHA;
     return true;
 }
 

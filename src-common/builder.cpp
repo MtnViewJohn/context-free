@@ -52,7 +52,7 @@ Builder* Builder::CurrentBuilder = 0;
 
 Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
-  mInPathContainer(false), mCurrentShape(-1), mUsesAlpha(false),
+  mInPathContainer(false), mCurrentShape(-1),
   mWant2ndPass(false), mCompilePhase(1),
   mLocalStackDepth(0), mIncludeDepth(0), lexer(0), mErrorOccured(false)
 { 
@@ -252,7 +252,6 @@ Builder::SetShape(AST::ASTshape* s)
 {
     if (s == NULL) {
         mCurrentShape = -1;
-        mUsesAlpha = false;
         return;
     }
 	mCurrentShape = s->mNameIndex;
@@ -447,8 +446,6 @@ Builder::MakeModTerm(int t, exp_ptr a, const yy::location& loc)
         timeWise();
     if (t == ASTmodTerm::sat || t == ASTmodTerm::satTarg)
         inColor();
-    if (t == ASTmodTerm::alpha || t == ASTmodTerm::alphaTarg)
-        mUsesAlpha = true;
     
     if (mCurrentShape != -1 && t >= ASTmodTerm::hueTarg && t <= ASTmodTerm::targAlpha)
         CfdgError::Error(loc, "Color target feature unavailable in shapes");

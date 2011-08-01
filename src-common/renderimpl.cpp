@@ -125,6 +125,7 @@ RendererImpl::init()
     mCurrentPath = new AST::ASTcompiledPath();
     
     m_cfdg->getSymmetry(mSymmetryOps, this);
+    m_cfdg->getBackgroundColor(this);
 }
 
 void
@@ -461,7 +462,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     int curr_height = m_height;
     rescaleOutput(curr_width, curr_height, true);
     
-    m_canvas->start(true, m_cfdg->getBackgroundColor(this),
+    m_canvas->start(true, m_cfdg->getBackgroundColor(0),
         curr_width, curr_height);
     m_canvas->end();
 	
@@ -929,7 +930,7 @@ void RendererImpl::output(bool final)
     
     m_stats.outputDone = m_outputSoFar;
     
-    m_canvas->start(m_outputSoFar == 0, m_cfdg->getBackgroundColor(this),
+    m_canvas->start(m_outputSoFar == 0, m_cfdg->getBackgroundColor(0),
         curr_width, curr_height);
 
     m_drawingMode = true;

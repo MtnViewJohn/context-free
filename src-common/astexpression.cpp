@@ -1460,6 +1460,8 @@ namespace AST {
             }
             case ASTmodTerm::alpha: {
                 maxCount = 2;
+                if (p)
+                    *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if (argcount == 1) {
                     if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::AlphaTarget || 
@@ -1507,6 +1509,8 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alphaTarg: {
+                if (p)
+                    *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::AlphaTarget || 
                                  m.m_Color.a != 0.0))
