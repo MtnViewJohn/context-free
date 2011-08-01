@@ -50,7 +50,7 @@ namespace agg
 
         unsigned vertex(double* x, double* y)
         {
-            unsigned cmd = m_source->vertex(x, y);
+            unsigned cmd = m_source->vertex(x, y) & path_cmd_mask;
             if (is_vertex(cmd)) {
                 m_average.x += *x; m_average.y += *y;
                 ++m_count;
