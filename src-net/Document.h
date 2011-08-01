@@ -810,7 +810,10 @@ public: bool saveToPNGorJPEG(System::String^ path, System::IO::Stream^ str,
              bool JPEG, bool rect);
 private: void saveToSVG(System::String^ path);
 private: void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
-             System::Drawing::Graphics^ g, int x, int y);
+             System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ gray, 
+             int x, int y);
+private: void drawCheckerBoard(System::Drawing::Graphics^ g, 
+             System::Drawing::SolidBrush^ grayBrush, System::Drawing::Rectangle destRect);
 
 private: System::Void renderBox_Click(System::Object^  sender, System::EventArgs^  e) {
              cfdgText->Focus();

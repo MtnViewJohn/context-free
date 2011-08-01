@@ -492,7 +492,7 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG,
                 mRectangularSize.Height, fmt);
             Graphics^ g = Graphics::FromImage(newBM);
             g->Clear(Color::White);
-            drawTiled(bm, newBM, g, 0, 0);
+            drawTiled(bm, newBM, g, nullptr, 0, 0);
 
             delete g;
             delete bm;
@@ -1127,7 +1127,7 @@ void Document::setupCanvas(Renderer* r)
 
     if (!mCanvas) {
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine), 
-            renderParams->width, renderParams->height, mEngine->getBackgroundColor(r));
+            renderParams->width, renderParams->height, mEngine->getBackgroundColor(0));
     }
 }
 
@@ -1150,6 +1150,9 @@ void Document::updateRenderBox()
     SolidBrush^ grayBrush = gcnew SolidBrush(Color::LightGray);
     agg::rgba8 bk(mCanvas->mBackground);
     Color back = Color::FromArgb(bk.a, bk.r, bk.g, bk.b);
+    SolidBrush^ backBrush = nullptr;
+    if (mCanvas->mBackground.a < 1.0)
+        backBrush = gcnew SolidBrush(back);
 
     // check if the bitmap is too big and shrink it to fit
     if (srcSize.Width > destSize.Width || srcSize.Height > destSize.Height) {
@@ -1168,20 +1171,10 @@ void Document::updateRenderBox()
 
     // Draw the bitmap scaled
     System::Drawing::Rectangle destRect(originX, originY, scaledWidth, scaledHeight);
-    if (mCanvas->mBackground.a < 1.0) {
-        g->Clear(Color::White);
-        for (int y = 0; y <= (destSize.Height >> 3); y++)
-            for (int x = 0; x <= (destSize.Width >> 3); x++)
-                if ((x + y) & 1)
-                    g->FillRectangle(grayBrush, x * 8, y * 8, 8, 8);
-
-        if (!(mTiled && scale == 1.0) || renderParams->suppressDisplay) {
-            SolidBrush^ b = gcnew SolidBrush(back);
-            if (!(renderParams->suppressDisplay))
-                g->SetClip(destRect, System::Drawing::Drawing2D::CombineMode::Exclude);
-            g->FillRectangle(b, 0, 0, destSize.Width, destSize.Height);
-            g->ResetClip();
-        }
+    if (grayBrush) {
+        Rectangle fullRect(0, 0, destSize.Width, destSize.Height);
+        drawCheckerBoard(g, grayBrush, fullRect);
+        g->FillRectangle(backBrush, fullRect);
     } else {
         g->Clear(back);
     }
@@ -1197,13 +1190,17 @@ void Document::updateRenderBox()
     g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
     if (mTiled && scale == 1.0) {
-        drawTiled(newBitmap, displayImage, g, originX, originY);
-    } else if (scale == 1.0) {
-        g->DrawImageUnscaled(newBitmap, originX, originY);
+        drawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
     } else {
-        g->DrawImage(newBitmap, destRect, 
-            0, 0, srcSize.Width, srcSize.Height, 
-            System::Drawing::GraphicsUnit::Pixel);
+        if (mCanvas->mBackground.a < 1.0)
+            drawCheckerBoard(g, grayBrush, destRect);
+        if (scale == 1.0) {
+            g->DrawImageUnscaled(newBitmap, originX, originY);
+        } else {
+            g->DrawImage(newBitmap, destRect, 
+                0, 0, srcSize.Width, srcSize.Height, 
+                System::Drawing::GraphicsUnit::Pixel);
+        }
     }
 
     System::Drawing::Pen^ p2 = gcnew System::Drawing::Pen(Color::Black, 1.0);
@@ -1218,7 +1215,20 @@ void Document::updateRenderBox()
     renderBox->Invalidate();
 }
 
-void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, int x, int y)
+void Document::drawCheckerBoard(Graphics^ g, SolidBrush^ grayBrush, Rectangle destRect)
+{
+    g->SetClip(destRect, System::Drawing::Drawing2D::CombineMode::Replace);
+    g->Clear(Color::White);
+    for (int y = destRect.Y & ~7; y <= destRect.Y + destRect.Height; y += 8)
+        for (int x = destRect.X & ~7; x <= destRect.X + destRect.Width; x += 8)
+            if ((x ^ y) & 8) {
+                g->FillRectangle(grayBrush, x, y, 8, 8);
+            }
+    g->ResetClip();
+}
+
+void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, 
+                         SolidBrush^ grayBrush, int x, int y)
 {
     tileList points;
     mRenderer->m_tiledCanvas->getTesselation(points, dest->Width, dest->Height,
@@ -1227,6 +1237,10 @@ void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, int x, int y)
     for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
         pt != ept; ++pt)
     {
+        if (grayBrush) {
+            Rectangle tileRect(pt->x, pt->y, src->Width, src->Height);
+            drawCheckerBoard(g, grayBrush, tileRect);
+        }
         g->DrawImageUnscaled(src, pt->x, pt->y);
     }
 }
