@@ -320,8 +320,14 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     } 
  
     int nameIndex = StringToShape(name, nameLoc, false);
-    ASTdefine* def = e->mType == ASTexpression::ModType ? new ASTdefine(name, e, 1) :
-                                                          new ASTdefine(name, e);
+    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
+    ASTdefine* def = 0;
+    if (m) {
+        mod_ptr mod(m); e.release();
+        def = new ASTdefine(name, mod);
+    } else {
+        def = new ASTdefine(name, e);
+    }
     ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
  
     if (!b.mDefinition) { 
@@ -481,7 +487,7 @@ Builder::MakeModTerm(int t, exp_ptr a, const yy::location& loc)
 }
 
 rep_ptr
-Builder::MakeElement(const std::string& s, exp_ptr mods, exp_ptr params, 
+Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params, 
                      const yy::location& loc, bool subPath)
 {
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
@@ -541,8 +547,8 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
                        args.release());
 }
 
-AST::ASTexpression*
-Builder::CheckModification(exp_ptr modExp, const yy::location& loc)
+AST::ASTmodification*
+Builder::MakeModification(exp_ptr modExp, const yy::location& loc)
 {
     if (!mCanonicalMods.empty()) {
         for (ASTexpArray::iterator it = mCanonicalMods.begin(); it != mCanonicalMods.end(); ++it) {
@@ -551,13 +557,14 @@ Builder::CheckModification(exp_ptr modExp, const yy::location& loc)
         }
         mCanonicalMods.clear();
     }
-    if (modExp.get()) {
-        if (modExp->mType != ASTexpression::ModType)
-            error(loc, "Illegal mix of non-adjustment expressions in an adjustment context");
-        return modExp.release();
-    } else {
-        return new ASTmodTerm(ASTmodTerm::Entropy, "empty mod", loc);
-    }
+    
+    if (modExp.get() == NULL)
+        modExp.reset(new ASTmodTerm(ASTmodTerm::Entropy, "empty mod", loc));
+    
+    if (modExp->mType != ASTexpression::ModType)
+        error(loc, "Illegal mix of non-adjustment expressions in an adjustment context");
+    
+    return new ASTmodification(modExp, loc);
 }
 
 void

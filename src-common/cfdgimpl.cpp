@@ -138,14 +138,10 @@ CFDGImpl::getBackgroundColor(Renderer* r)
 {
     Modification white;
     white.m_Color = HSBColor(0.0, 0.0, 1.0, 1.0);
-    if (r) r->mRandUsed = false;
-    if (hasParameter("CF::Background", white, r)) {
-        if (r && r->mRandUsed) {
-            CfdgError e(CfdgError::Default, "Random functions are forbidden in background color");
-            hasParameter("CF::Background", ASTexpression::ModType, e.where);
-            throw e;
-        }
+    if (r &&hasParameter("CF::Background", white, r)) {
         white.m_Color.getRGBA(m_backgroundColor);
+        if (!usesAlpha)
+            m_backgroundColor.a = 1.0;
     }
     return m_backgroundColor;
 }

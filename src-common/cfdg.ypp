@@ -44,6 +44,7 @@
 namespace AST {
     class ASTexpression;
     class ASTmodTerm;
+    class ASTmodification;
     class ASTpath;
     class ASTreplacement;
     class ASTbodyContainer;
@@ -63,7 +64,8 @@ namespace AST {
     int modToken;
     std::string*  string;
     AST::ASTexpression* expression;
-    AST::ASTmodTerm* mod;
+    AST::ASTmodTerm* term;
+    AST::ASTmodification* mod;
     AST::ASTreplacement* component;
     AST::ASTshape* shapeObj;
     AST::ASTloop* loopObj;
@@ -109,9 +111,9 @@ namespace AST {
 %token INCLUDE
 %token IMPORT
 %token TILE
-%token <mod> PARAMETERS
+%token <term> PARAMETERS
 %token <string> USER_PATHOP
-%token <mod> STROKEWIDTH
+%token <term> STROKEWIDTH
 %token LE
 %token LT
 %token GE
@@ -134,8 +136,8 @@ namespace AST {
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
 %type <expression> exp exp2 expfunc exp2func explist parameter_spec loopexp
-%type <expression> modification modification_v2 adjustment
-%type <expression> buncha_pathop_adjustments buncha_adjustments
+%type <mod> modification modification_v2
+%type <expression> buncha_pathop_adjustments buncha_adjustments adjustment
 %type <component> element element_simple
 %type <component> pathOp_v2 pathOp_simple_v2 replacement_v2 replacement_simple_v2
 /* %type <definitions> buncha_definitions buncha_parameters parameter_list buncha_global_definitions */
@@ -150,7 +152,8 @@ namespace AST {
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
-%destructor { delete $$; } modification buncha_pathop_adjustments buncha_adjustments modification_v2 adjustment
+%destructor { delete $$; } buncha_pathop_adjustments buncha_adjustments adjustment
+%destructor { delete $$; } modification modification_v2
 %destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2 element_loop loopHeader
 %destructor { delete $$; } statement statement_v2 initialization initialization_v2 background tile size rule path element element_simple shape_singleton
 %destructor { driver.pop_repContainer(NULL); delete $$; } shape_singleton_header transHeader
@@ -283,7 +286,7 @@ initialization:
         STARTSHAPE USER_STRING parameter_spec modification {
             str_ptr name($2);
             exp_ptr p($3);
-            exp_ptr mod($4);
+            mod_ptr mod($4);
             driver.SetShape(NULL);
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
             rep_ptr start(new ASTreplacement(*r, *name, mod, @$));
@@ -296,7 +299,7 @@ initialization:
             exp_ptr p($3);
             driver.SetShape(NULL);
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
-            rep_ptr start(new ASTreplacement(*r, *name, exp_ptr(), @$));
+            rep_ptr start(new ASTreplacement(*r, *name, mod_ptr(), @$));
             driver.Initialize(start);
             $$ = 0;
         }
@@ -307,7 +310,7 @@ initialization_v2:
             str_ptr name($2);
             driver.SetShape(NULL);
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, exp_ptr(), @2));
-            rep_ptr start(new ASTreplacement(*r, *name, exp_ptr(), @$));
+            rep_ptr start(new ASTreplacement(*r, *name, mod_ptr(), @$));
             driver.Initialize(start);
             $$ = 0;
         }
@@ -570,7 +573,7 @@ pathOp_simple_v2:
         |
         USER_STRING modification_v2 {
             str_ptr cmd($1);
-            exp_ptr mod($2);
+            mod_ptr mod($2);
             driver.lexer->maybeVersion = token::CFDG2;
             rep_ptr item(new ASTpathCommand(*cmd, mod, @$));
             $$ = item.release();
@@ -593,7 +596,7 @@ element_simple:
         USER_STRING parameter_spec modification {
             str_ptr cmd($1);
             exp_ptr p($2);
-            exp_ptr mod($3);
+            mod_ptr mod($3);
             rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, false);
             $$ = item.release();
         }
@@ -601,7 +604,7 @@ element_simple:
         PATH USER_STRING parameter_spec modification {
             str_ptr cmd($2);
             exp_ptr p($3);
-            exp_ptr mod($4);
+            mod_ptr mod($4);
             rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, true);
             $$ = item.release();
         }
@@ -763,7 +766,7 @@ one_or_more_replacements_v2:
 replacement_simple_v2:
         USER_STRING modification_v2 {
             str_ptr name($1);
-            exp_ptr mod($2);
+            mod_ptr mod($2);
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, exp_ptr(), @1));
             $$ = new ASTreplacement(*r, r->entropyVal, mod, @$);
         }
@@ -786,7 +789,7 @@ loopHeader_v2:
         USER_RATIONAL '*' { ++driver.mLocalStackDepth; } modification_v2 {
             str_ptr cstr($1);
             exp_ptr count(new ASTreal(*cstr, @1));
-            exp_ptr mod($4);
+            mod_ptr mod($4);
             static const std::string dummyvar("~~inaccessiblevar~~");
             --driver.mLocalStackDepth;
             driver.lexer->maybeVersion = token::CFDG2;
@@ -801,7 +804,7 @@ loopHeader:
         LOOP USER_STRING BECOMES loopexp modification {
             str_ptr var($2);
             exp_ptr index($4);
-            exp_ptr mod($5);
+            mod_ptr mod($5);
             --driver.mLocalStackDepth;
             loop_ptr loop(new ASTloop(driver.StringToShape(*var, @2, false), 
                                       *var, @2, index, @4, mod));
@@ -811,7 +814,7 @@ loopHeader:
         |
         LOOP loopexp modification {
             exp_ptr count($2);
-            exp_ptr mod($3);
+            mod_ptr mod($3);
             static const std::string dummyvar("~~inaccessiblevar~~");
             --driver.mLocalStackDepth;
             loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
@@ -854,7 +857,7 @@ transHeader:
         MODTYPE modification {
             if ($1 != ASTmodTerm::transform)
                 error(@1, "Syntax error");
-            exp_ptr mod($2);
+            mod_ptr mod($2);
             ASTtransform* trans = new ASTtransform(mod, @$);
             driver.push_repContainer(trans->mBody);
             $$ = trans;
@@ -910,24 +913,24 @@ caseHeader:
 modification_v2:
         '{' buncha_canonical_adjustments '}' {
             exp_ptr mod(ASToperator::MakeCanonical(driver.mCanonicalMods));
-            $$ = driver.CheckModification(mod, @$);
+            $$ = driver.MakeModification(mod, @$);
         }
         |
         '[' buncha_adjustments ']' {
             exp_ptr mod($2);
-            $$ = driver.CheckModification(mod, @$);
+            $$ = driver.MakeModification(mod, @$);
         }
         ;
 
 modification:
         '[' buncha_canonical_adjustments ']' {
             exp_ptr mod(ASToperator::MakeCanonical(driver.mCanonicalMods));
-            $$ = driver.CheckModification(mod, @$);
+            $$ = driver.MakeModification(mod, @$);
         }
         |
         '[' '[' buncha_adjustments ']' ']' {
             exp_ptr mod($3);
-            $$ = driver.CheckModification(mod, @$);
+            $$ = driver.MakeModification(mod, @$);
         }
         ;
 
@@ -940,7 +943,7 @@ buncha_pathop_adjustments:
 
 buncha_adjustments:
         buncha_adjustments adjustment {
-            $$ = ASToperator::Op('+', $1, $2);
+            $$ = ASTcons::Cons($1, $2);
         }
         | { $$ = 0; }
         ;
@@ -1066,7 +1069,7 @@ exp2:
         | 
         '(' exp2 ')'         { $$ = new ASTparen($2); }
         | 
-        modification         { $$ = new ASTmodification(exp_ptr($1), @1); }
+        modification         { $$ = $1; }
         ;
 
 expfunc:

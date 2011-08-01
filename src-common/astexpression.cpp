@@ -567,11 +567,40 @@ namespace AST {
     }
     
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
-    : ASTexpression(loc, true, false, ModType), modData(m.modData), modExp(0), 
-      modClass(m.modClass)
+    : ASTexpression(loc, true, false, ModType), modData(m.modData), 
+      modClass(m.modClass), strokeWidth(m.strokeWidth), flags(m.flags), 
+      entropyIndex(m.entropyIndex)
     {
         assert(m.modExp.empty());
-    };
+    }
+    
+    ASTmodification::ASTmodification(mod_ptr m, const yy::location& loc)
+    : ASTexpression(loc, true, false, ModType)
+    {
+        if (m.get()) {
+            modData = m->modData;
+            modExp.swap(m->modExp);
+            modClass = m->modClass;
+            strokeWidth = m->strokeWidth;
+            flags = m->flags;
+            entropyIndex = m->entropyIndex;
+            isConstant = modExp.empty();
+        } else {
+            modClass = 0;
+            strokeWidth = 0.1;
+            flags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
+            entropyIndex = 0;
+        }
+    }
+    
+    ASTmodification::ASTmodification(exp_ptr mods, const yy::location& loc)
+    : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass),
+      strokeWidth(0.1), flags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), 
+      entropyIndex(0)
+    {
+        evalConst(mods);
+        isConstant = modExp.empty();
+    }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc)
     : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
@@ -654,43 +683,11 @@ namespace AST {
         modExp.clear();
     }
     
-    void
-    ASTmodification::init(exp_ptr mods, const std::string& name,
-                          std::string* p, double* width) throw (CfdgError)
-    {
-        std::string entString;
-        if (mods.get())
-            mods->entropy(entString);
-        entString.append(name);
-        ASTexpression* ent = new ASTmodTerm(ASTmodTerm::Entropy, entString, where);
-
-        if (mods.get()) {
-            mods.reset(new ASTcons(mods.release()->simplify(), ent));
-        } else {
-            mods.reset(ent);
-        }
-        evalConst(mods, p, width);
-    }
-    
-    void
-    ASTmodification::init(exp_ptr mods, std::string* p, double* width) throw (CfdgError)
-    {
-        static const std::string defaultEntropy("it doesn't matter");
-        ASTmodification* m = dynamic_cast<ASTmodification*> (mods.get());
-        if (m) {
-            modData = m->modData;
-            modExp.swap(m->modExp);
-            modClass = m->modClass;
-            return;
-        }
-        init(mods, defaultEntropy, p, width);
-    }
-    
     static void Addmod(exp_ptr& var, ASTexpression* mod)
     {
         if (mod == NULL) return;
         if (var.get()) {
-            ASToperator* e = new ASToperator('+', var.release(), mod);
+            ASTcons* e = new ASTcons(var.release(), mod);
             var.reset(e);
         } else {
             var.reset(mod);
@@ -1202,7 +1199,7 @@ namespace AST {
     }
     
     void
-    ASTselect::evaluate(Modification& m, std::string* p, double* width, 
+    ASTselect::evaluate(Modification& m, int* p, double* width, 
                         bool justCheck, int& seedIndex, 
                         Renderer* rti) const
     {
@@ -1215,7 +1212,7 @@ namespace AST {
     }
     
     void
-    ASTvariable::evaluate(Modification& m, std::string*, double*, 
+    ASTvariable::evaluate(Modification& m, int*, double*, 
                           bool justCheck, int&, 
                           Renderer* rti) const
     {
@@ -1231,7 +1228,7 @@ namespace AST {
     }
     
     void
-    ASTcons::evaluate(Modification& m, std::string* p, double* width, 
+    ASTcons::evaluate(Modification& m, int* p, double* width, 
                       bool justCheck, int& seedIndex, 
                       Renderer* rti) const
     {
@@ -1240,7 +1237,7 @@ namespace AST {
     }
     
     void
-    ASTmodification::evaluate(Modification& m, std::string* p, double* width, 
+    ASTmodification::evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* rti) const
     {
@@ -1254,7 +1251,7 @@ namespace AST {
     }
     
     void
-    ASTmodification::setVal(Modification& m, std::string* p, double* width, 
+    ASTmodification::setVal(Modification& m, int* p, double* width, 
                             bool justCheck, int& seedIndex, 
                             Renderer* rti) const
     {
@@ -1264,7 +1261,7 @@ namespace AST {
     }
     
     void
-    ASTmodTerm::evaluate(Modification& m, std::string* p, double* width, 
+    ASTmodTerm::evaluate(Modification& m, int* p, double* width, 
                         bool justCheck, int& seedIndex, 
                         Renderer* rti) const
     {
@@ -1551,7 +1548,28 @@ namespace AST {
                     break;
                 }
                 if (justCheck) break;
-                p->assign(entString);
+                if (!entString.empty()) {
+                    if (entString.find("evenodd") != std::string::npos)
+                        *p |= CF_EVEN_ODD;
+                    if (entString.find("iso") != std::string::npos && !(*p & CF_FILL))
+                        *p |= CF_ISO_WIDTH;
+                    if (entString.find("join") != std::string::npos)
+                        *p &= ~CF_JOIN_MASK;
+                    if (entString.find("miterjoin") != std::string::npos)
+                        *p |= CF_MITER_JOIN;
+                    if (entString.find("roundjoin") != std::string::npos)
+                        *p |= CF_ROUND_JOIN;
+                    if (entString.find("beveljoin") != std::string::npos)
+                        *p |= CF_BEVEL_JOIN;
+                    if (entString.find("cap") != std::string::npos)
+                        *p &= ~CF_CAP_MASK;
+                    if (entString.find("buttcap") != std::string::npos)
+                        *p |= CF_BUTT_CAP;
+                    if (entString.find("squarecap") != std::string::npos)
+                        *p |= CF_SQUARE_CAP;
+                    if (entString.find("roundcap") != std::string::npos)
+                        *p |= CF_ROUND_CAP;
+                }
                 break;
             }
             case ASTmodTerm::stroke: {
@@ -1949,11 +1967,9 @@ namespace AST {
     }
 
     void
-    ASTmodification::evalConst(exp_ptr mod, std::string* p, double* width) 
-        throw(CfdgError)
+    ASTmodification::evalConst(exp_ptr mod) 
     {
         int nonConstant = 0;
-        int seedIndex = 0;
         
         ASTexpArray temp;
         mod.release()->flatten(temp);
@@ -1976,7 +1992,7 @@ namespace AST {
             bool justCheck = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, p, width, justCheck, seedIndex);
+                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex);
             } catch (CfdgError) {
                 for (; it != temp.end(); ++it) {
                     delete *it;
@@ -1995,6 +2011,12 @@ namespace AST {
                 delete *it;
             }
         }
+    }
+    
+    void
+    ASTmodification::addEntropy(const std::string& s)
+    {
+        modData.mRand64Seed.xorString(s.c_str(), entropyIndex);
     }
     
     unsigned

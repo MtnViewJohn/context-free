@@ -54,10 +54,10 @@ namespace AST {
         void replace(Shape& s, Renderer* r, double* width = NULL) const;
         void replaceShape(Shape& s, Renderer* r) const;
         
-        ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, exp_ptr mods, 
+        ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods, 
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
-        ASTreplacement(ASTruleSpecifier& shapeSpec, exp_ptr mods, 
+        ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
         virtual ~ASTreplacement();
@@ -108,7 +108,7 @@ namespace AST {
         
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                 exp_ptr args, const yy::location& argsLoc,
-                exp_ptr mods);
+                mod_ptr mods);
         virtual ~ASTloop();
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     };
@@ -116,7 +116,7 @@ namespace AST {
     public:
         ASTrepContainer mBody;
         
-        ASTtransform(exp_ptr mods, const yy::location& loc);
+        ASTtransform(mod_ptr mods, const yy::location& loc);
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     };
     class ASTif: public ASTreplacement {
@@ -151,7 +151,7 @@ namespace AST {
         bool isConstant;
         
         ASTdefine(const std::string& name, exp_ptr e);
-        ASTdefine(const std::string& name, exp_ptr e, int);
+        ASTdefine(const std::string& name, mod_ptr m);
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
         virtual ~ASTdefine() { delete mExpression; }
 	private:
@@ -170,11 +170,11 @@ namespace AST {
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), loc, rule), mCachedPath(NULL),
+        : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, rule), mCachedPath(NULL),
         mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
         weightType(percent ? PercentWeight : ExplicitWeight) { };
         ASTrule(int ruleIndex, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, exp_ptr(), loc, rule), mCachedPath(NULL),
+        : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, rule), mCachedPath(NULL),
         mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         virtual ~ASTrule();
         void traversePath(const Shape& parent, Renderer* r) const;
@@ -187,7 +187,7 @@ namespace AST {
         int mNameIndex;
         
         ASTshape(ASTruleSpecifier& r, bool path, const yy::location& loc) 
-        : ASTreplacement(r, exp_ptr(), loc, empty), isPath(path), mNameIndex(r.shapeType)
+        : ASTreplacement(r, mod_ptr(), loc, empty), isPath(path), mNameIndex(r.shapeType)
         { mRules.isGlobal = true; }
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     };
@@ -213,21 +213,17 @@ namespace AST {
     };
     class ASTpathCommand : public ASTreplacement {
     public:
-        int                 mFlags;
         double              mMiterLimit;
-        double              mStrokeWidth;
         
         // Empty constructor
         ASTpathCommand() :
-        ASTreplacement(ASTruleSpecifier::Zero, exp_ptr()),
-        mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL),
-        mMiterLimit(4.0),
-        mStrokeWidth(0.1)
+        ASTreplacement(ASTruleSpecifier::Zero, mod_ptr()),
+        mMiterLimit(4.0)
         {
         }
         
-        ASTpathCommand(const std::string& s, exp_ptr mods, const yy::location& loc);
-        ASTpathCommand(const std::string& s, exp_ptr mods, exp_ptr params, 
+        ASTpathCommand(const std::string& s, mod_ptr mods, const yy::location& loc);
+        ASTpathCommand(const std::string& s, mod_ptr mods, exp_ptr params, 
                        const yy::location& loc);
         
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
