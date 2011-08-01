@@ -51,6 +51,7 @@ class Bounds {
 		bool valid() { return mValid; }
     
         Bounds dilate(agg::point_d& cent, double dilation) const;
+        Bounds dilate(double dilation) const;
 		
 		void merge(const Bounds& b)
 			// merge the other bounds into this bounds
