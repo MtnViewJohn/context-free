@@ -61,10 +61,11 @@ private:
             int    shapeType;
             AST::ASTparameters parameters;
             int     argSize;
+            bool    shouldHaveNoParams;
             
             ShapeType(const std::string& s) 
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
-              parameters(0), argSize(0) { }
+              parameters(0), argSize(0), shouldHaveNoParams(false) { }
         };
         
         std::vector<ShapeType> m_shapeTypes;
@@ -129,6 +130,8 @@ private:
         int     getShapeType(int shapetype);
         bool    shapeHasRules(int shapetype);
         const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size);
+        void    setShapeHasNoParams(int shapetype, const AST::ASTexpression* args);
+        bool    getShapeHasNoParams(int shapetype);
         const AST::ASTparameters* getShapeParams(int shapetype);
         int getShapeParamSize(int shapetype);
         int reportStackDepth(int size = 0); 

@@ -255,6 +255,8 @@ Builder::SetShape(AST::ASTshape* s)
         return;
     }
 	mCurrentShape = s->mNameIndex;
+    if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
+        mWant2ndPass = true;
     const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize);
     if (err)
         CfdgError::Error(s->mLocation, err);
@@ -417,10 +419,12 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == 0 || bound->mType != ASTexpression::RuleType)
+    if (bound == 0 || bound->mType != ASTexpression::RuleType) {
+        m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         return new ASTruleSpecifier(nameIndex, name, args, loc, 
                                     m_CFDG->getShapeParams(nameIndex),
                                     m_CFDG->getShapeParams(mCurrentShape));
+    }
     
     if (args.get() != NULL)
         CfdgError::Error(loc, "Cannot bind parameters twice");

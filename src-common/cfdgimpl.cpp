@@ -803,6 +803,21 @@ CFDGImpl::shapeHasRules(int shapetype)
         return false;
 }
 
+void
+CFDGImpl::setShapeHasNoParams(int shapetype, const ASTexpression* args)
+{
+    if (shapetype < int(m_shapeTypes.size()) && args == NULL)
+        m_shapeTypes[shapetype].shouldHaveNoParams = true;
+}
+
+bool
+CFDGImpl::getShapeHasNoParams(int shapetype)
+{
+    if (shapetype < int(m_shapeTypes.size()))
+        return m_shapeTypes[shapetype].shouldHaveNoParams;
+    return false;
+}
+
 const char* 
 CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize)
 {
