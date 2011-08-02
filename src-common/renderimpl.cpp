@@ -759,6 +759,8 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
 {
 	agg::trans_affine trans;
     double scale;
+    
+    if (!mBounds.mValid) return;
 	
 	scale = mBounds.computeScale(curr_width, curr_height,
                                  mFixedBorderX, mFixedBorderY, true, 
