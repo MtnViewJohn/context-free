@@ -1173,7 +1173,7 @@ void Document::updateRenderBox()
 
     // Draw the bitmap scaled
     System::Drawing::Rectangle destRect(originX, originY, scaledWidth, scaledHeight);
-    if (grayBrush) {
+    if (backBrush) {
         Rectangle fullRect(0, 0, destSize.Width, destSize.Height);
         drawCheckerBoard(g, grayBrush, fullRect);
         g->FillRectangle(backBrush, fullRect);
