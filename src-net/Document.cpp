@@ -781,7 +781,9 @@ void Document::WndProc( Message% m )
 
                     if (stat->inOutput) {
                         if (mProgressDelay > 2) {
-							int bar = (int)((100.0 * (double)stat->outputDone) / stat->outputCount);
+							int bar = 0;
+                            if (stat->outputCount)
+                                bar = (int)((100.0 * (double)stat->outputDone) / stat->outputCount);
 							if (bar >= 0 && bar <= 100)
 	                            toolStripProgressBar->Value = bar;
                         } else {
