@@ -1,0 +1,28 @@
+startshape SEED1
+
+rule SEED1 {
+ SQUARE{}
+ SEED1 {y 1.0 size 0.99 rotate 1.5 brightness 0.02}
+}
+
+rule SEED1 0.05 {SEED2 {}}
+
+rule SEED2 {
+ SQUARE{}
+ SEED2 {y 1.0 size 0.99 rotate -1.5}
+}
+
+rule SEED1 0.05 {
+ SQUARE{}
+ SEED2 {y 1.0 size 0.99 rotate 1.5}
+ SEED1 {y 1.0 size 0.6 rotate -60}
+ SEED2 {y 1.0 size 0.5 rotate 60}
+}
+
+rule SEED2 0.05 {
+ SQUARE{}
+ SEED1 {y 1.0 size 0.99 rotate 1.5}
+ SEED2 {y 1.0 size 0.6 rotate -60}
+ SEED1 {y 1.0 size 0.5 rotate 60}
+}
+

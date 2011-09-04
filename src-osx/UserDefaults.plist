@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CheckUpdatesWeekly</key>
+	<true/>
+	<key>HiresHeight</key>
+	<integer>3000</integer>
+	<key>HiresWidth</key>
+	<integer>2000</integer>
+	<key>HiresMinimumSize</key>
+	<real>0.3</real>
+	<key>LaunchAction</key>
+	<integer>2</integer>
+	<key>ProgressiveUpdate</key>
+	<true/>
+	<key>RenderOnDocumentOpen</key>
+	<true/>
+	<key>SaveCropped</key>
+	<true/>
+	<key>SaveWithVariationCode</key>
+	<false/>
+	<key>MovieLength</key>
+	<real>10.0</real>
+	<key>MoveLengthType</key>
+	<integer>2</integer>
+	<key>MovieZoom</key>
+	<true/>
+	<key>BorderSize</key>
+	<real>2.0</real>
+</dict>
+</plist>

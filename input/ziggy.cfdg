@@ -1,0 +1,39 @@
+startshape Trident 
+
+rule Trident {
+	ZigL { x 0 b 0.02 }
+	Zig { }
+	ZagL { x 0 b 0.02 flip 90}
+	CIRCLE { x 10 y 10 s 6 b 0.75 }
+	CIRCLE { x -10 y 10 s 6 b 0.75 }
+//	CIRCLE { x 17 y 15 s 4 b 0.75 }
+//	CIRCLE { x -17 y 15 s 4 b 0.75 }
+}
+
+rule Zig {
+	Seg { x -0.5 r -45 }
+	Zag { y 1 s 0.97 }
+}
+rule Zag {
+	Seg { x 0.5 r 45 }
+	Zig { y 1 s 0.97 }
+}
+
+rule ZigL {
+	Seg { x -0.5 r -45 }
+	ZagL { y 1 s 0.97 r 2 }
+}
+rule ZagL {
+	Seg { x 0.5 r 45 }
+	ZigL { y 1 s 0.97 r 2 }
+}
+
+rule ZigL 0.1 { Trident { } }
+
+rule Seg {
+	SQUARE { y 0.6925 s 0.5 1.885 }
+	//SQUARE { y 0 s 0.5 }
+	//SQUARE { y 0.49 s 0.5 }
+	//SQUARE { y 0.92 s 0.5 }
+	//SQUARE { y 1.385 s 0.5 }
+}
