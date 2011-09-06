@@ -149,6 +149,9 @@ namespace AST {
         int mTuplesize;
         ASTexpression::expType mType;
         bool isConstant;
+        ASTparameters mParameters;
+        unsigned mStackCount;
+        std::string mName;
         
         ASTdefine(const std::string& name, exp_ptr e);
         ASTdefine(const std::string& name, mod_ptr m);

@@ -165,7 +165,7 @@ namespace AST {
     
     ASTdefine::ASTdefine(const std::string& name, exp_ptr e) 
     : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), e->where, empty),
-      mType(e->mType), isConstant(e->isConstant)
+      mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name)
     {
         mTuplesize = e->mType == ASTexpression::NumericType ? e->evaluate(0, 0) : 1;
         mExpression = e.release()->simplify();
@@ -178,7 +178,7 @@ namespace AST {
     ASTdefine::ASTdefine(const std::string& name, mod_ptr e) 
     : ASTreplacement(ASTruleSpecifier::Zero, e, e->where, empty), mExpression(0), 
       mTuplesize(ModificationSize), mType(ASTexpression::ModType), 
-      isConstant(mChildChange.modExp.empty())
+      isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name)
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -499,6 +499,7 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool tr, Renderer* r) const
     {
+        if (mStackCount) return;    // user function definition, do nothing
         static const StackType zero = {0.0};
         int s = (int)r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize, zero);

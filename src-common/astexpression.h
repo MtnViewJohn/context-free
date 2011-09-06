@@ -34,6 +34,8 @@
 #include "Rand64.h"
 
 namespace AST {
+    
+    class ASTdefine;
 
     class ASTexpression {
     public:
@@ -195,9 +197,9 @@ namespace AST {
         ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name, 
                          const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier& r);
-        ASTruleSpecifier() : ASTexpression(CfdgError::Default), shapeType(-1),
-        argSize(0), argSource(NoArgs), arguments(0),
-        simpleRule(0), mStackIndex(0) {};
+        explicit ASTruleSpecifier() : ASTexpression(CfdgError::Default), shapeType(-1),
+            argSize(0), argSource(NoArgs), arguments(0),
+            simpleRule(0), mStackIndex(0), typeSignature(0) {};
         virtual ~ASTruleSpecifier();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual const StackType* evalArgs(Renderer* = 0, const StackType* parent = 0) const;
@@ -272,6 +274,21 @@ namespace AST {
         virtual void entropy(std::string& e) const;
     private:
         ASTvariable() : ASTexpression(CfdgError::Default) {};
+    };
+    class ASTuserFunction : public ASTexpression {
+    public:
+        ASTdefine* definition;
+        ASTexpression* arguments;
+        
+        ASTuserFunction(ASTexpression* args, ASTdefine* func, yy::location nameLoc);
+        virtual ~ASTuserFunction() { delete arguments; }
+        virtual int evaluate(double* , int, Renderer* = 0) const;
+        virtual void evaluate(Modification& , int* , double* , 
+                              bool , int& , 
+                              Renderer* = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
+        virtual void entropy(std::string&) const;
+        virtual ASTexpression* simplify();
     };
     class ASToperator : public ASTexpression {
     public:
@@ -392,7 +409,8 @@ namespace AST {
         static bool Impure;
         
         ASTparameter() :    mType(ASTexpression::NoType), isParameter(false), 
-        isLoopIndex(false), mName(-1), mStackIndex(-1), mTuplesize(1) {};
+          isLoopIndex(false), mName(-1), mStackIndex(-1), 
+          mTuplesize(1) {};
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, ASTdefine*  def);
         void check(const yy::location& typeLoc, const yy::location& nameLoc);

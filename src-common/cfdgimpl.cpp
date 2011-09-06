@@ -321,6 +321,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                     break;
                 default:
                     CfdgError::Error(where, "Wrong number of arguments");
+                    order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
             if (order < 1.0)
@@ -355,6 +356,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                     break;
                 default:
                     CfdgError::Error(where, "Wrong number of arguments");
+                    order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
             if (order < 1.0)

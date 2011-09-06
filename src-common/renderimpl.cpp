@@ -240,7 +240,8 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
          endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
     {
-        const ASTdefine* def = dynamic_cast<const ASTdefine*> (*cit);
+        const ASTreplacement* rep = *cit;
+        const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep);
         if (def)
             def->traverse(dummy, false, this);
     }

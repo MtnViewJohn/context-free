@@ -147,10 +147,10 @@ namespace AST {
 %type <switchObj> switchHeader
 %type <ruleObj> rule_header path_header rule_header_v2 path_header_v2 shape_singleton_header
 %type <shapeObj> shape
-%type <string> fileString fileNameSpace
+%type <string> fileString fileNameSpace definition_header
 %type <modToken> caseHeader
 
-%destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace
+%destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
 %destructor { delete $$; } buncha_pathop_adjustments buncha_adjustments adjustment
 %destructor { delete $$; } modification modification_v2
@@ -232,6 +232,7 @@ statement_v2:
 
 v3clues:
         USER_STRING BECOMES { delete $1; }
+        | USER_STRING '(' { delete $1; }
         | IMPORT
         | SHAPE
         | PATH USER_STRING '(' { delete $2; }
@@ -355,20 +356,26 @@ size:
         ; 
 
 global_definition:
-        USER_STRING BECOMES {
+        definition {
             driver.SetShape(NULL);
-        } exp2 { 
-            str_ptr var($1);
-            exp_ptr exp($4);
-            driver.NextParameter(*var, exp, @1, @4);
+        }
+        ;
+
+definition_header:
+        USER_STRING parameter_list BECOMES {
+            if (!driver.mParamDecls.mParameters.empty() && 
+                !driver.mContainerStack.back()->isGlobal)
+                error(@2, "Functions allowed at global scope only");
+            driver.push_paramDecls();
+            $$ = $1;
         }
         ;
 
 definition:
-        USER_STRING BECOMES exp2 { 
+        definition_header exp2 { 
             str_ptr var($1);
-            exp_ptr exp($3);
-            driver.NextParameter(*var, exp, @1, @3);
+            exp_ptr exp($2);
+            driver.NextParameter(*var, exp, @1, @2);
         }
         ;
 
