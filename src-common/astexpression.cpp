@@ -138,6 +138,8 @@ namespace AST {
     
     ASTruleSpecifier ASTruleSpecifier::Zero;
     
+    static const StackType StackZero = {0};
+    
     bool ASTparameter::Impure = false;
     
     double CFatof(const char* s)
@@ -161,7 +163,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        mDefinition = def->isConstant ? def : 0;
+        mDefinition = def->isConstant || def->mStackCount ? def : 0;
     }
     
     void
@@ -528,6 +530,23 @@ namespace AST {
         return choices[getIndex(rti)]->evalArgs(rti, parent);
     }
     
+    const StackType*
+    ASTuserFunction::evalArgs(Renderer* rti, const StackType* parent) const
+    {
+        if (mType != RuleType) {
+            CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
+            return NULL;
+        }
+        assert(rti);
+        
+        size_t size = rti->mCFstack.size();
+        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+        const StackType* ret = definition->mExpression->evalArgs(rti, parent);
+        rti->mCFstack.resize(size, StackZero);
+        return ret;
+    }
+    
     ASTexpression*
     ASTcons::Cons(ASTexpression* l, ASTexpression* r)
     {
@@ -661,6 +680,20 @@ namespace AST {
             isConstant = choices[getIndex()]->isConstant;
             isLocal = choices[getIndex()]->isLocal;
         }
+    }
+    
+    ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
+                                     yy::location nameLoc)
+    : ASTexpression(nameLoc + args->where, 
+                    args->isConstant && func->mExpression->isConstant, 
+                    args->isNatural && func->mExpression->isNatural, 
+                    func->mType),
+      definition(func), arguments(args)
+    {
+        assert(args);
+        assert(func);
+        arguments->isLocal = args->isLocal;
+        ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
     }
     
     ASTruleSpecifier::~ASTruleSpecifier()
@@ -865,6 +898,27 @@ namespace AST {
         }
         
         return count;
+    }
+    
+    int
+    ASTuserFunction::evaluate(double* res, int length, Renderer* rti) const
+    {
+        if (mType != NumericType) {
+            CfdgError::Error(where, "Function does not evaluate to a number");
+            return -1;
+        }
+        if (res && length < definition->mTuplesize)
+            return -1;
+        if (!res)
+            return definition->mTuplesize;
+        assert(rti);
+        
+        size_t size = rti->mCFstack.size();
+        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+        definition->mExpression->evaluate(res, length, rti);
+        rti->mCFstack.resize(size, StackZero);
+        return definition->mTuplesize;
     }
     
     int
@@ -1225,6 +1279,25 @@ namespace AST {
             &(rti->mCFstack[stackIndex]);
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
         m *= *smod;
+    }
+    
+    void
+    ASTuserFunction::evaluate(Modification& m, int*, double*, 
+                          bool justCheck, int&, 
+                          Renderer* rti) const
+    {
+        if (mType != ModType) {
+            CfdgError::Error(where, "Function does not evaluate to an adjustment");
+            return;
+        }
+        assert(rti);
+        
+        size_t size = rti->mCFstack.size();
+        int dummy;
+        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+        definition->mChildChange.evaluate(m, 0, 0, justCheck, dummy, rti);
+        rti->mCFstack.resize(size, StackZero);
     }
     
     void
@@ -1791,6 +1864,13 @@ namespace AST {
     }
     
     void
+    ASTuserFunction::entropy(std::string& ent) const
+    {
+        arguments->entropy(ent);
+        ent.append(definition->mName);
+    }
+    
+    void
     ASToperator::entropy(std::string& ent) const
     {
         left->entropy(ent);
@@ -1921,6 +2001,56 @@ namespace AST {
         left = left->simplify();
         if (right) right = right->simplify();
         return this;
+    }
+    
+    ASTexpression*
+    ASTuserFunction::simplify()
+    {
+        arguments = arguments->simplify();
+        try {
+            ASTexpression* ret = NULL;
+            switch (mType) {
+                case NumericType: {
+                    double result;
+                    if (evaluate(&result, 1) == 1)
+                        ret = new ASTreal(result, where);
+                    break;
+                }
+                case ModType: {
+                    ASTmodification* r = new ASTmodification(where);
+                    int dummy = 0;
+                    evaluate(r->modData, &(r->flags), &(r->strokeWidth), false, dummy, 0);
+                    ret = r;
+                    break;
+                }
+                case RuleType: {
+                    static const std::string nada = "";
+                    const StackType* args = evalArgs();
+                    assert(args);
+                    const ASTparameters* p = args->ruleHeader.mParamCount ? args[1].typeInfo : NULL;
+                    ASTruleSpecifier* r = new ASTruleSpecifier();
+                    
+                    r->where = where;
+                    r->isConstant = true;
+                    r->mType = RuleType;
+                    r->shapeType = args->ruleHeader.mRuleName;
+                    r->argSize = args->ruleHeader.mParamCount;
+                    if (p)
+                        r->argSource = ASTruleSpecifier::SimpleArgs;
+                    r->simpleRule = args;
+                    r->entropyVal = definition->mName;
+                    r->typeSignature = p;
+                    ret = r;
+                    break;
+                }
+                default:
+                    break;
+            }
+            delete this;
+            return ret;
+        } catch (DeferUntilRuntime) {
+            return this;
+        }
     }
     
     ASTexpression*

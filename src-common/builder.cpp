@@ -302,7 +302,12 @@ void
 Builder::NextParameter(const std::string& name, exp_ptr e,
                        const yy::location& nameLoc, const yy::location& expLoc) 
 {
+    bool isFunction = !mParamDecls.mParameters.empty();
+    if (isFunction)
+        pop_repContainer(NULL);         // pop mParamDecls
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
+        if (isFunction)
+            CfdgError::Error(nameLoc, "Configuration parameters cannot be functions");
         if (!mContainerStack.back()->isGlobal)
             CfdgError::Error(nameLoc, "Configuration parameters must be at global scope");
         if (name == "CF::Impure") {
@@ -329,6 +334,11 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     } else {
         def = new ASTdefine(name, e);
     }
+    if (isFunction) {
+        def->mParameters.swap(mParamDecls.mParameters);
+        def->mStackCount = mParamDecls.mStackCount;
+        mParamDecls.mStackCount = 0;
+    }
     ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
  
     if (!b.mDefinition) { 
@@ -336,7 +346,9 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         mContainerStack.back()->mStackCount += b.mTuplesize;
         mLocalStackDepth += b.mTuplesize;
         push_rep(def);
-    } 
+    } else if (isFunction) {
+        push_rep(def);
+    }
 } 
 
 ASTexpression*
@@ -522,6 +534,12 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     const ASTparameter* bound = findExpression(nameIndex, dummy);
     
     if (bound) {
+        if (bound->mDefinition && bound->mDefinition->mStackCount) {
+            if (args.get())
+                return new ASTuserFunction(args.release(), bound->mDefinition, nameLoc);
+            error(nameLoc, "This function requires arguments");
+            return 0;
+        }
         if (!consAllowed)
             error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
         return new ASTcons(MakeVariable(*name, nameLoc), args.release());
@@ -576,6 +594,19 @@ Builder::push_repContainer(ASTrepContainer& c)
 }
 
 void
+Builder::push_paramDecls()
+{
+    if (!mParamDecls.mParameters.empty()) {
+        for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
+             eit = mParamDecls.mParameters.end(); it != eit; ++it)
+        {
+            it->isLocal = it->isNatural = true;
+        }
+        push_repContainer(mParamDecls);
+    }
+}
+
+void
 Builder::process_repContainer(ASTrepContainer& c)
 {
     for (ASTparameters::iterator it = c.mParameters.begin(),
@@ -603,8 +634,11 @@ Builder::pop_repContainer(ASTreplacement* r)
     for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
          eit = lastContainer->mParameters.end(); it != eit; ++it)
     {
-        delete it->mDefinition;
-        it->mDefinition = 0;
+        // delete the constant definitions, but not functions
+        if (it->mDefinition && it->mDefinition->mStackCount == 0) {
+            delete it->mDefinition;
+            it->mDefinition = 0;
+        }
     }
     mContainerStack.pop_back();
 }
