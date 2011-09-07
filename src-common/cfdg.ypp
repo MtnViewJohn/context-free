@@ -232,6 +232,7 @@ statement_v2:
 
 v3clues:
         USER_STRING BECOMES { delete $1; }
+        | MODTYPE BECOMES {}
         | USER_STRING '(' { delete $1; }
         | IMPORT
         | SHAPE
@@ -369,13 +370,18 @@ definition_header:
             driver.push_paramDecls();
             $$ = $1;
         }
+        | MODTYPE parameter_list BECOMES {
+            error(@1, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
         ;
 
 definition:
         definition_header exp2 { 
             str_ptr var($1);
             exp_ptr exp($2);
-            driver.NextParameter(*var, exp, @1, @2);
+            if (var.get())
+                driver.NextParameter(*var, exp, @1, @2);
         }
         ;
 
@@ -535,6 +541,15 @@ parameter:
             static std::string shapeStr("shape");
             str_ptr var($2);
             driver.NextParameterDecl(shapeStr, *var, @1, @2);
+        }
+        |
+        USER_STRING MODTYPE {
+            delete $1;
+            error(@2, "Reserved keyword: adjustment");
+        }
+        |
+        SHAPE MODTYPE {
+            error(@2, "Reserved keyword: adjustment");
         }
 		;
 
@@ -743,6 +758,7 @@ pathOp_v3clues:
         | PATH
         | LOOP
         | USER_STRING BECOMES { delete $1; }
+        | MODTYPE BECOMES
         | IF
         | MODTYPE
         | SWITCH
@@ -816,6 +832,18 @@ loopHeader:
                                       *var, @2, index, @4, mod));
             driver.push_repContainer(loop->mLoopBody);
             $$ = loop.release();
+        }
+        |
+        LOOP MODTYPE BECOMES loopexp modification {
+            exp_ptr index($4);
+            mod_ptr mod($5);
+            static const std::string dummyvar("~~inaccessiblevar~~");
+            --driver.mLocalStackDepth;
+            loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
+                                      dummyvar, @2, index, @4, mod));
+            driver.push_repContainer(loop->mLoopBody);
+            $$ = loop.release();
+            error(@2, "Reserved keyword: adjustment");
         }
         |
         LOOP loopexp modification {
