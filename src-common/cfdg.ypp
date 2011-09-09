@@ -320,7 +320,6 @@ initialization_v2:
 
 background:
         BACKGROUND modification_v2 {
-            driver.SetShape(NULL);
             exp_ptr mod($2);
             static const std::string backVar("CF::Background");
             driver.lexer->maybeVersion = token::CFDG2;
@@ -334,7 +333,6 @@ tile:
             exp_ptr mod($2);
             static const std::string tileVar("CF::Tile");
             driver.lexer->maybeVersion = token::CFDG2;
-            driver.SetShape(NULL);
             driver.NextParameter(tileVar, mod, @1, @2);
             $$ = 0;
         }
@@ -344,7 +342,6 @@ size:
         MODTYPE modification_v2 {
             exp_ptr mod($2);
             driver.lexer->maybeVersion = token::CFDG2;
-            driver.SetShape(NULL);
             if ($1 != ASTmodTerm::size && $1 != ASTmodTerm::time) {
                 error(@1, "Syntax error");
             } else {
@@ -357,10 +354,7 @@ size:
         ; 
 
 global_definition:
-        definition {
-            driver.SetShape(NULL);
-        }
-        ;
+        definition;
 
 definition_header:
         USER_STRING parameter_list BECOMES {
