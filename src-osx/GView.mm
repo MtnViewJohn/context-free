@@ -57,6 +57,9 @@ enum {
     NSWindowFullScreenButton = 7
 };
 
+enum {
+    NSFullScreenWindowMask = 1 << 14
+};
 #endif  // MAC_OS_X_VERSION_10_7
 
 //#define PROGRESS_ANIMATE_DIRECTLY
@@ -224,6 +227,8 @@ namespace {
 		mAnimationCanvas = 0;
 		
 		mTiled = false;
+        
+        mFullScreenMenu = nil;
     }
     return self;
 }
@@ -246,6 +251,33 @@ namespace {
             [window standardWindowButton:NSWindowFullScreenButton];
         [fullscreenButton setAction:@selector(enterFullscreen:)];
         [fullscreenButton setTarget:self];
+        [window setDelegate: self];
+        
+        NSMenuItem* winMenu = [[NSApp mainMenu] itemWithTitle: @"Window"];
+        mFullScreenMenu = [[winMenu submenu] itemWithTag: (NSInteger)420];
+    }
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+    [self updateFullScreenMenu];
+}
+- (void)windowDidEnterFullScreen:(NSNotification *)notification
+{
+    [self updateFullScreenMenu];
+}
+- (void)windowDidExitFullScreen:(NSNotification *)notification
+{
+    [self updateFullScreenMenu];
+}
+
+- (void)updateFullScreenMenu
+{
+    NSUInteger masks = [[self window] styleMask];
+    if (masks & NSFullScreenWindowMask) {
+        [mFullScreenMenu setTitle: @"Exit Full Screen"];
+    } else {
+        [mFullScreenMenu setTitle: @"Enter Full Screen"];
     }
 }
 
@@ -432,6 +464,9 @@ namespace {
     
     if (action == @selector(startRender:))
         return !mRestartRenderer;
+    
+    if (action == @selector(enterFullscreen:))
+        return YES;
         
     if (action == @selector(showHiresRenderSheet:)
     ||  action == @selector(repeatRender:))

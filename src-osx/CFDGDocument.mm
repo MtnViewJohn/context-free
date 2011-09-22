@@ -440,7 +440,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
                           contextInfo: (void*)0];
 }
 
-
+- (IBAction) enterFullscreen:(id)sender { [mGView enterFullscreen: sender]; }
 - (IBAction) startRender:(id)sender { [mGView startRender: sender]; }
 - (IBAction) repeatRender:(id)sender{ [mGView repeatRender: sender]; }
 - (IBAction) finishRender:(id)sender{ [mGView finishRender: sender]; }
@@ -453,6 +453,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
     SEL action = [anItem action];
+    
+    if (action == @selector(enterFullscreen:))
+        return YES;
    
     if (action == @selector(startRender:)
     ||  action == @selector(repeatRender:)

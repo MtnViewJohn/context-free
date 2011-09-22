@@ -38,7 +38,7 @@ class Canvas;
 class Renderer;
 class qtCanvas;
 
-@interface GView : NSView {
+@interface GView : NSView<NSWindowDelegate> {
     CFDG*       mEngine;
     Renderer*   mRenderer;
     Canvas*     mCanvas;
@@ -83,6 +83,8 @@ class qtCanvas;
     IBOutlet NSMatrix*                  mSaveTileOptions;
 	IBOutlet NSView*				mSaveAnimationAccessory;
     
+    NSMenuItem*    mFullScreenMenu;
+    
 	qtCanvas*	mAnimationCanvas;
 	
 	bool	mTiled;
@@ -98,6 +100,7 @@ class qtCanvas;
 - (IBAction)saveAsMovie:(id)sender;
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 - (IBAction)enterFullscreen:(id)sender;
+- (void)updateFullScreenMenu;
 
 - (IBAction) showHiresRenderSheet:(id)sender;
 

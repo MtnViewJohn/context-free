@@ -30,6 +30,7 @@
     
     IBOutlet NSMenu*        mExampleMenu;
     IBOutlet NSMenu*        mHelpMenu;
+    IBOutlet NSMenuItem*    mFullScreenMenu;
     
     IBOutlet NSTextField*   mFontDisplay;
 }
