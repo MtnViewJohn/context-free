@@ -81,5 +81,6 @@ class AbstractSystem;
 - (void)readFromExample:(NSString*)path;
 
 + (NSString*)documentType;
++ (BOOL)autosavesInPlace;
 
 @end

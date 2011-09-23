@@ -241,6 +241,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return CFDGDocumentType;
 }
 
++ (BOOL)autosavesInPlace
+{
+    return YES;
+}
+
 - (id)init
 {
     self = [super init];
