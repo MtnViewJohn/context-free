@@ -77,4 +77,4 @@ syntax: regexp
 ^objs/
 \.suo$
 \.user$
-
+xcuserdatad/

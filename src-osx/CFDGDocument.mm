@@ -539,8 +539,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)readFromExample:(NSString*)path
 {
-    [self loadDataRepresentation: [NSData dataWithContentsOfFile: path]
-        ofType:CFDGDocumentType];
+    [self readFromData: [NSData dataWithContentsOfFile: path]
+                ofType: CFDGDocumentType error: nil];
 
     [mDisplayName release];
     mDisplayName = [[[path lastPathComponent]
