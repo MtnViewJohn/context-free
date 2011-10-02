@@ -1020,7 +1020,7 @@ namespace AST {
                     *res = (l || r) ? 1.0 : 0.0;
                     break;
                 case 'X':
-                    *res = (l && !r || !l && r) ? 1.0 : 0.0;
+                    *res = ((l && !r) || (!l && r)) ? 1.0 : 0.0;
                     break;
                 case '^':
                     *res = pow(l, r);
