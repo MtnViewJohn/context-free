@@ -328,11 +328,12 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     int nameIndex = StringToShape(name, nameLoc, false);
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     ASTdefine* def = 0;
+    yy::location defLoc = nameLoc + expLoc;
     if (m) {
         mod_ptr mod(m); e.release();
-        def = new ASTdefine(name, mod);
+        def = new ASTdefine(name, mod, defLoc);
     } else {
-        def = new ASTdefine(name, e);
+        def = new ASTdefine(name, e, defLoc);
     }
     if (isFunction) {
         def->mParameters.swap(mParamDecls.mParameters);
