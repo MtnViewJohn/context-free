@@ -339,6 +339,11 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         def->mParameters.swap(mParamDecls.mParameters);
         def->mStackCount = mParamDecls.mStackCount;
         mParamDecls.mStackCount = 0;
+        if (def->mType != ASTexpression::NumericType) {
+            CfdgError::Error(expLoc, "User functions must have numeric type only");
+        } else if (def->mTuplesize != 1) {
+            CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
+        }
     }
     ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
  
