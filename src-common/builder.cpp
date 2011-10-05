@@ -606,7 +606,7 @@ Builder::push_paramDecls()
         for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
              eit = mParamDecls.mParameters.end(); it != eit; ++it)
         {
-            it->isLocal = it->isNatural = true;
+            it->isLocal = true;
         }
         push_repContainer(mParamDecls);
     }
