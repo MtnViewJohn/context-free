@@ -380,8 +380,8 @@ decisionListener:(id)listener
 	
 	mResponseBody = [[NSMutableData data] retain];
 
-	mConnection =
-		[[NSURLConnection alloc] initWithRequest: request delegate: self];
+	mConnection = [NSURLConnection alloc];
+	[mConnection initWithRequest: request delegate: self];
 	if (!mConnection) {
 		[self cancel: sender];
 	}

@@ -553,11 +553,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return [super displayName];
 }
 
-- (void)setFileName:(NSString*)path
+- (void)setFileURL:(NSURL *)absoluteURL
 {
     [mDisplayName release];
     mDisplayName = nil;
-    [super setFileName: path];
+    [super setFileURL: absoluteURL];
 }
 
 
