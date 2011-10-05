@@ -147,10 +147,10 @@ namespace AST {
 %type <switchObj> switchHeader
 %type <ruleObj> rule_header path_header rule_header_v2 path_header_v2 shape_singleton_header
 %type <shapeObj> shape
-%type <string> fileString fileNameSpace definition_header
+%type <string> fileString fileNameSpace definition_header global_definition_header
 %type <modToken> caseHeader
 
-%destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header
+%destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header global_definition_header
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
 %destructor { delete $$; } buncha_pathop_adjustments buncha_adjustments adjustment
 %destructor { delete $$; } modification modification_v2
@@ -354,17 +354,31 @@ size:
         ; 
 
 global_definition:
-        definition;
+        global_definition_header exp2 { 
+            str_ptr var($1);
+            exp_ptr exp($2);
+            if (var.get())
+            driver.NextParameter(*var, exp, @1, @2);
+        }
+        ;
 
-definition_header:
-        USER_STRING parameter_list BECOMES {
-            if (!driver.mParamDecls.mParameters.empty() && 
-                !driver.mContainerStack.back()->isGlobal)
-                error(@2, "Functions allowed at global scope only");
+global_definition_header:
+        USER_STRING function_parameter_list BECOMES {
             driver.push_paramDecls();
             $$ = $1;
         }
-        | MODTYPE parameter_list BECOMES {
+        | MODTYPE function_parameter_list BECOMES {
+            error(@1, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
+        ;
+
+definition_header:
+        USER_STRING BECOMES {
+            driver.push_paramDecls();
+            $$ = $1;
+        }
+        | MODTYPE BECOMES {
             error(@1, "Reserved keyword: adjustment");
             $$ = 0;
         }
@@ -556,6 +570,28 @@ parameter_list:
         '(' buncha_parameters ')'
         |
 		;
+
+function_parameter:
+        USER_STRING {
+            static const std::string numtype("number");
+            str_ptr var($1);
+            driver.NextParameterDecl(numtype, *var, @1, @1);
+        }
+        |
+        MODTYPE {
+            error(@1, "Reserved keyword: adjustment");
+        }
+        ;
+
+buncha_function_parameters:
+        buncha_function_parameters ',' function_parameter
+        | function_parameter
+        ;
+
+function_parameter_list:
+        '(' buncha_function_parameters ')'
+        |
+        ;
 
 parameter_spec:
         '(' exp2 ')' { $$ = $2;}
