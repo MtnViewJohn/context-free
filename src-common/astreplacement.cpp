@@ -144,7 +144,7 @@ namespace AST {
         }
         
         ASTexpression loopVar(nameLoc, false, bodyNatural, ASTexpression::NumericType);
-        ASTdefine loopDef(name, exp_ptr(&loopVar));
+        ASTdefine loopDef(name, exp_ptr(&loopVar), nameLoc);
         ASTparameter& bodyParam = mLoopBody.addParameter(nameIndex, &loopDef, 
                                                          nameLoc, nameLoc);
         bodyParam.isLoopIndex = true;
@@ -163,8 +163,8 @@ namespace AST {
     {
     }
     
-    ASTdefine::ASTdefine(const std::string& name, exp_ptr e) 
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), e->where, empty),
+    ASTdefine::ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc) 
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty),
       mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name)
     {
         mTuplesize = e->mType == ASTexpression::NumericType ? e->evaluate(0, 0) : 1;
@@ -175,8 +175,8 @@ namespace AST {
         mChildChange.modData.mRand64Seed.xorString(name.c_str(), i);
     }
     
-    ASTdefine::ASTdefine(const std::string& name, mod_ptr e) 
-    : ASTreplacement(ASTruleSpecifier::Zero, e, e->where, empty), mExpression(0), 
+    ASTdefine::ASTdefine(const std::string& name, mod_ptr e, const yy::location& loc) 
+    : ASTreplacement(ASTruleSpecifier::Zero, e, loc, empty), mExpression(0), 
       mTuplesize(ModificationSize), mType(ASTexpression::ModType), 
       isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name)
     {
