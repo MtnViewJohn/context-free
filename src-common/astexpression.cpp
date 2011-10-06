@@ -530,23 +530,6 @@ namespace AST {
         return choices[getIndex(rti)]->evalArgs(rti, parent);
     }
     
-    const StackType*
-    ASTuserFunction::evalArgs(Renderer* rti, const StackType* parent) const
-    {
-        if (mType != RuleType) {
-            CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
-            return NULL;
-        }
-        assert(rti);
-        
-        size_t size = rti->mCFstack.size();
-        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
-        const StackType* ret = definition->mExpression->evalArgs(rti, parent);
-        rti->mCFstack.resize(size, StackZero);
-        return ret;
-    }
-    
     ASTexpression*
     ASTcons::Cons(ASTexpression* l, ASTexpression* r)
     {
@@ -1286,25 +1269,6 @@ namespace AST {
     }
     
     void
-    ASTuserFunction::evaluate(Modification& m, int*, double*, 
-                          bool justCheck, int&, 
-                          Renderer* rti) const
-    {
-        if (mType != ModType) {
-            CfdgError::Error(where, "Function does not evaluate to an adjustment");
-            return;
-        }
-        assert(rti);
-        
-        size_t size = rti->mCFstack.size();
-        int dummy;
-        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
-        definition->mChildChange.evaluate(m, 0, 0, justCheck, dummy, rti);
-        rti->mCFstack.resize(size, StackZero);
-    }
-    
-    void
     ASTcons::evaluate(Modification& m, int* p, double* width, 
                       bool justCheck, int& seedIndex, 
                       Renderer* rti) const
@@ -1870,7 +1834,8 @@ namespace AST {
     void
     ASTuserFunction::entropy(std::string& ent) const
     {
-        arguments->entropy(ent);
+        if (arguments)
+            arguments->entropy(ent);
         ent.append(definition->mName);
     }
     
@@ -2010,9 +1975,10 @@ namespace AST {
     ASTexpression*
     ASTuserFunction::simplify()
     {
-        arguments = arguments->simplify();
+        if (arguments)
+            arguments = arguments->simplify();
         try {
-            ASTexpression* ret = NULL;
+            ASTexpression* ret = this;
             switch (mType) {
                 case NumericType: {
                     double result;
@@ -2020,37 +1986,11 @@ namespace AST {
                         ret = new ASTreal(result, where);
                     break;
                 }
-                case ModType: {
-                    ASTmodification* r = new ASTmodification(where);
-                    int dummy = 0;
-                    evaluate(r->modData, &(r->flags), &(r->strokeWidth), false, dummy, 0);
-                    ret = r;
-                    break;
-                }
-                case RuleType: {
-                    static const std::string nada = "";
-                    const StackType* args = evalArgs();
-                    assert(args);
-                    const ASTparameters* p = args->ruleHeader.mParamCount ? args[1].typeInfo : NULL;
-                    ASTruleSpecifier* r = new ASTruleSpecifier();
-                    
-                    r->where = where;
-                    r->isConstant = true;
-                    r->mType = RuleType;
-                    r->shapeType = args->ruleHeader.mRuleName;
-                    r->argSize = args->ruleHeader.mParamCount;
-                    if (p)
-                        r->argSource = ASTruleSpecifier::SimpleArgs;
-                    r->simpleRule = args;
-                    r->entropyVal = definition->mName;
-                    r->typeSignature = p;
-                    ret = r;
-                    break;
-                }
                 default:
                     break;
             }
-            delete this;
+            if (ret != this)
+                delete this;
             return ret;
         } catch (DeferUntilRuntime) {
             return this;
