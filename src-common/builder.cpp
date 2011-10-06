@@ -302,7 +302,6 @@ void
 Builder::NextParameter(const std::string& name, exp_ptr e,
                        const yy::location& nameLoc, const yy::location& expLoc) 
 {
-    bool isFunction = !mParamDecls.mParameters.empty();
     if (isFunction)
         pop_repContainer(NULL);         // pop mParamDecls
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
@@ -338,6 +337,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     if (isFunction) {
         def->mParameters.swap(mParamDecls.mParameters);
         def->mStackCount = mParamDecls.mStackCount;
+        def->isFunction = true;
         mParamDecls.mStackCount = 0;
         if (def->mType != ASTexpression::NumericType) {
             CfdgError::Error(expLoc, "User functions must have numeric type only");
@@ -345,7 +345,8 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
         }
     }
-    ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
+    ASTrepContainer* top = mContainerStack.back();
+    ASTparameter& b = top->addParameter(nameIndex, def, nameLoc, expLoc);
  
     if (!b.mDefinition) { 
         b.mStackIndex = mLocalStackDepth;
@@ -540,11 +541,10 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     const ASTparameter* bound = findExpression(nameIndex, dummy);
     
     if (bound) {
-        if (bound->mDefinition && bound->mDefinition->mStackCount) {
-            if (args.get())
-                return new ASTuserFunction(args.release(), bound->mDefinition, nameLoc);
-            error(nameLoc, "This function requires arguments");
-            return 0;
+        if (bound->mDefinition && bound->mDefinition->isFunction) {
+            if (!args.get() && bound->mDefinition->mStackCount)
+                error(nameLoc, "This function requires arguments");
+            return new ASTuserFunction(args.release(), bound->mDefinition, nameLoc);
         }
         if (!consAllowed)
             error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
@@ -602,7 +602,7 @@ Builder::push_repContainer(ASTrepContainer& c)
 void
 Builder::push_paramDecls()
 {
-    if (!mParamDecls.mParameters.empty()) {
+    if (isFunction) {
         for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
              eit = mParamDecls.mParameters.end(); it != eit; ++it)
         {
@@ -641,7 +641,7 @@ Builder::pop_repContainer(ASTreplacement* r)
          eit = lastContainer->mParameters.end(); it != eit; ++it)
     {
         // delete the constant definitions, but not functions
-        if (it->mDefinition && it->mDefinition->mStackCount == 0) {
+        if (it->mDefinition && !it->mDefinition->isFunction) {
             delete it->mDefinition;
             it->mDefinition = 0;
         }
