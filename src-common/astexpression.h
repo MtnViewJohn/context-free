@@ -283,10 +283,6 @@ namespace AST {
         ASTuserFunction(ASTexpression* args, ASTdefine* func, yy::location nameLoc);
         virtual ~ASTuserFunction() { delete arguments; }
         virtual int evaluate(double* , int, Renderer* = 0) const;
-        virtual void evaluate(Modification& , int* , double* , 
-                              bool , int& , 
-                              Renderer* = 0) const;
-        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
     };
