@@ -358,7 +358,7 @@ global_definition:
             str_ptr var($1);
             exp_ptr exp($2);
             if (var.get())
-            driver.NextParameter(*var, exp, @1, @2);
+                driver.NextParameter(*var, exp, @1, @2);
         }
         ;
 
@@ -368,6 +368,7 @@ global_definition_header:
             $$ = $1;
         }
         | MODTYPE function_parameter_list BECOMES {
+            driver.isFunction = false;
             error(@1, "Reserved keyword: adjustment");
             $$ = 0;
         }
@@ -375,10 +376,11 @@ global_definition_header:
 
 definition_header:
         USER_STRING BECOMES {
-            driver.push_paramDecls();
+            driver.isFunction = false;
             $$ = $1;
         }
         | MODTYPE BECOMES {
+            driver.isFunction = false;
             error(@1, "Reserved keyword: adjustment");
             $$ = 0;
         }
@@ -589,8 +591,9 @@ buncha_function_parameters:
         ;
 
 function_parameter_list:
-        '(' buncha_function_parameters ')'
-        |
+        '(' buncha_function_parameters ')' { driver.isFunction = true; }
+        | '(' ')' { driver.isFunction = true; }
+        | { driver.isFunction = false; }
         ;
 
 parameter_spec:

@@ -152,6 +152,7 @@ namespace AST {
         ASTparameters mParameters;
         unsigned mStackCount;
         std::string mName;
+        bool isFunction;
         
         ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc);
         ASTdefine(const std::string& name, mod_ptr m, const yy::location& loc);

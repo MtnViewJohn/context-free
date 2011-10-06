@@ -163,7 +163,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        mDefinition = def->isConstant || def->mStackCount ? def : 0;
+        mDefinition = (def->isConstant || def->isFunction) ? def : 0;
     }
     
     void
@@ -684,16 +684,16 @@ namespace AST {
     
     ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
                                      yy::location nameLoc)
-    : ASTexpression(nameLoc + args->where, 
-                    args->isConstant && func->mExpression->isConstant, 
-                    args->isNatural && func->mExpression->isNatural, 
+    : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
+                    (!args || args->isConstant) && func->mExpression->isConstant, 
+                    (!args || args->isNatural) && func->mExpression->isNatural, 
                     func->mType),
       definition(func), arguments(args)
     {
-        assert(args);
         assert(func);
-        arguments->isLocal = args->isLocal;
-        ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
+        assert((args && func->mStackCount) || (!args && !func->mStackCount));
+        if (args)
+            ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
     }
     
     ASTruleSpecifier::~ASTruleSpecifier()
@@ -913,11 +913,15 @@ namespace AST {
             return definition->mTuplesize;
         assert(rti);
         
-        size_t size = rti->mCFstack.size();
-        rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-        rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
-        definition->mExpression->evaluate(res, length, rti);
-        rti->mCFstack.resize(size, StackZero);
+        if (definition->mStackCount) {
+            size_t size = rti->mCFstack.size();
+            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            definition->mExpression->evaluate(res, length, rti);
+            rti->mCFstack.resize(size, StackZero);
+        } else {
+            definition->mExpression->evaluate(res, length, rti);
+        }
         return definition->mTuplesize;
     }
     
