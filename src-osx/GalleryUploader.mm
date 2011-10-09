@@ -269,9 +269,13 @@ namespace {
     }
     
     bool isSeeded = [mDefccURI length] > 0;
+    NSError* err = nil;
     NSString* htmlPath = [[NSBundle mainBundle] pathForResource: @"widgetform" 
                                                          ofType: @"html"];
-    NSString* theHtml = [NSString stringWithContentsOfFile: htmlPath];
+    //NSString* theHtml = [NSString stringWithContentsOfFile: htmlPath];
+    NSString* theHtml = [NSString stringWithContentsOfFile: htmlPath 
+                                                  encoding: NSUTF8StringEncoding 
+                                                     error: &err];
     NSString* seededHtml = [NSString stringWithFormat: theHtml, 
                             mDefccURI,
                             isSeeded ? @"" : @"&want_a_license=no_license_by_default"];
@@ -376,8 +380,8 @@ decisionListener:(id)listener
 	
 	mResponseBody = [[NSMutableData data] retain];
 
-	mConnection =
-		[[NSURLConnection alloc] initWithRequest: request delegate: self];
+	mConnection = [NSURLConnection alloc];
+	[mConnection initWithRequest: request delegate: self];
 	if (!mConnection) {
 		[self cancel: sender];
 	}

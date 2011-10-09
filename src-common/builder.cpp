@@ -255,6 +255,8 @@ Builder::SetShape(AST::ASTshape* s)
         return;
     }
 	mCurrentShape = s->mNameIndex;
+    if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
+        mWant2ndPass = true;
     const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize);
     if (err)
         CfdgError::Error(s->mLocation, err);
@@ -300,7 +302,11 @@ void
 Builder::NextParameter(const std::string& name, exp_ptr e,
                        const yy::location& nameLoc, const yy::location& expLoc) 
 {
+    if (isFunction)
+        pop_repContainer(NULL);         // pop mParamDecls
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
+        if (isFunction)
+            CfdgError::Error(nameLoc, "Configuration parameters cannot be functions");
         if (!mContainerStack.back()->isGlobal)
             CfdgError::Error(nameLoc, "Configuration parameters must be at global scope");
         if (name == "CF::Impure") {
@@ -321,20 +327,35 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     int nameIndex = StringToShape(name, nameLoc, false);
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     ASTdefine* def = 0;
+    yy::location defLoc = nameLoc + expLoc;
     if (m) {
         mod_ptr mod(m); e.release();
-        def = new ASTdefine(name, mod);
+        def = new ASTdefine(name, mod, defLoc);
     } else {
-        def = new ASTdefine(name, e);
+        def = new ASTdefine(name, e, defLoc);
     }
-    ASTparameter& b = mContainerStack.back()->addParameter(nameIndex, def, nameLoc, expLoc);
+    if (isFunction) {
+        def->mParameters.swap(mParamDecls.mParameters);
+        def->mStackCount = mParamDecls.mStackCount;
+        def->isFunction = true;
+        mParamDecls.mStackCount = 0;
+        if (def->mType != ASTexpression::NumericType) {
+            CfdgError::Error(expLoc, "User functions must have numeric type only");
+        } else if (def->mTuplesize != 1) {
+            CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
+        }
+    }
+    ASTrepContainer* top = mContainerStack.back();
+    ASTparameter& b = top->addParameter(nameIndex, def, nameLoc, expLoc);
  
     if (!b.mDefinition) { 
         b.mStackIndex = mLocalStackDepth;
         mContainerStack.back()->mStackCount += b.mTuplesize;
         mLocalStackDepth += b.mTuplesize;
         push_rep(def);
-    } 
+    } else if (isFunction) {
+        push_rep(def);
+    }
 } 
 
 ASTexpression*
@@ -417,10 +438,12 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == 0 || bound->mType != ASTexpression::RuleType)
+    if (bound == 0 || bound->mType != ASTexpression::RuleType) {
+        m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         return new ASTruleSpecifier(nameIndex, name, args, loc, 
                                     m_CFDG->getShapeParams(nameIndex),
                                     m_CFDG->getShapeParams(mCurrentShape));
+    }
     
     if (args.get() != NULL)
         CfdgError::Error(loc, "Cannot bind parameters twice");
@@ -518,6 +541,11 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     const ASTparameter* bound = findExpression(nameIndex, dummy);
     
     if (bound) {
+        if (bound->mDefinition && bound->mDefinition->isFunction) {
+            if (!args.get() && bound->mDefinition->mStackCount)
+                error(nameLoc, "This function requires arguments");
+            return new ASTuserFunction(args.release(), bound->mDefinition, nameLoc);
+        }
         if (!consAllowed)
             error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
         return new ASTcons(MakeVariable(*name, nameLoc), args.release());
@@ -572,6 +600,19 @@ Builder::push_repContainer(ASTrepContainer& c)
 }
 
 void
+Builder::push_paramDecls()
+{
+    if (isFunction) {
+        for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
+             eit = mParamDecls.mParameters.end(); it != eit; ++it)
+        {
+            it->isLocal = true;
+        }
+        push_repContainer(mParamDecls);
+    }
+}
+
+void
 Builder::process_repContainer(ASTrepContainer& c)
 {
     for (ASTparameters::iterator it = c.mParameters.begin(),
@@ -599,8 +640,11 @@ Builder::pop_repContainer(ASTreplacement* r)
     for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
          eit = lastContainer->mParameters.end(); it != eit; ++it)
     {
-        delete it->mDefinition;
-        it->mDefinition = 0;
+        // delete the constant definitions, but not functions
+        if (it->mDefinition && !it->mDefinition->isFunction) {
+            delete it->mDefinition;
+            it->mDefinition = 0;
+        }
     }
     mContainerStack.pop_back();
 }

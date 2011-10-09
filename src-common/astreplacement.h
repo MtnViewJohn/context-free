@@ -149,9 +149,13 @@ namespace AST {
         int mTuplesize;
         ASTexpression::expType mType;
         bool isConstant;
+        ASTparameters mParameters;
+        unsigned mStackCount;
+        std::string mName;
+        bool isFunction;
         
-        ASTdefine(const std::string& name, exp_ptr e);
-        ASTdefine(const std::string& name, mod_ptr m);
+        ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc);
+        ASTdefine(const std::string& name, mod_ptr m, const yy::location& loc);
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
         virtual ~ASTdefine() { delete mExpression; }
 	private:

@@ -55,6 +55,7 @@ union StackType {
 
     static StackType*  alloc(int name, int size, const std::list<AST::ASTparameter>* ti);
     void        release() const;
+    void        release(const std::list<AST::ASTparameter>* p) const;
     void        retain(Renderer* r) const;
 
     void        read(std::istream& is);
@@ -64,7 +65,8 @@ union StackType {
     
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
                          const StackType* parent);
-
+    void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
+                         const std::list<AST::ASTparameter>* p);
 };
 
 #endif // INCLUDE_STACKTYPE_H

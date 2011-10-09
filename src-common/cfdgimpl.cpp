@@ -321,6 +321,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                     break;
                 default:
                     CfdgError::Error(where, "Wrong number of arguments");
+                    order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
             if (order < 1.0)
@@ -355,6 +356,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                     break;
                 default:
                     CfdgError::Error(where, "Wrong number of arguments");
+                    order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
             if (order < 1.0)
@@ -801,6 +803,21 @@ CFDGImpl::shapeHasRules(int shapetype)
         return m_shapeTypes[shapetype].hasRules;
     else
         return false;
+}
+
+void
+CFDGImpl::setShapeHasNoParams(int shapetype, const ASTexpression* args)
+{
+    if (shapetype < int(m_shapeTypes.size()) && args == NULL)
+        m_shapeTypes[shapetype].shouldHaveNoParams = true;
+}
+
+bool
+CFDGImpl::getShapeHasNoParams(int shapetype)
+{
+    if (shapetype < int(m_shapeTypes.size()))
+        return m_shapeTypes[shapetype].shouldHaveNoParams;
+    return false;
 }
 
 const char* 

@@ -67,6 +67,7 @@ class AbstractSystem;
 - (IBAction) startHiresRender:(id)sender;
 - (IBAction) cancelHiresRender:(id)sender;
 - (IBAction) closeAll:(id)sender;
+- (IBAction) enterFullscreen:(id)sender;
 
 - (CFDG*)buildEngine;
 
@@ -80,5 +81,6 @@ class AbstractSystem;
 - (void)readFromExample:(NSString*)path;
 
 + (NSString*)documentType;
++ (BOOL)autosavesInPlace;
 
 @end

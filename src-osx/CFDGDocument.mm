@@ -241,6 +241,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return CFDGDocumentType;
 }
 
++ (BOOL)autosavesInPlace
+{
+    return YES;
+}
+
 - (id)init
 {
     self = [super init];
@@ -440,7 +445,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
                           contextInfo: (void*)0];
 }
 
-
+- (IBAction) enterFullscreen:(id)sender { [mGView enterFullscreen: sender]; }
 - (IBAction) startRender:(id)sender { [mGView startRender: sender]; }
 - (IBAction) repeatRender:(id)sender{ [mGView repeatRender: sender]; }
 - (IBAction) finishRender:(id)sender{ [mGView finishRender: sender]; }
@@ -453,6 +458,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
     SEL action = [anItem action];
+    
+    if (action == @selector(enterFullscreen:))
+        return YES;
    
     if (action == @selector(startRender:)
     ||  action == @selector(repeatRender:)
@@ -531,8 +539,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)readFromExample:(NSString*)path
 {
-    [self loadDataRepresentation: [NSData dataWithContentsOfFile: path]
-        ofType:CFDGDocumentType];
+    [self readFromData: [NSData dataWithContentsOfFile: path]
+                ofType: CFDGDocumentType error: nil];
 
     [mDisplayName release];
     mDisplayName = [[[path lastPathComponent]
@@ -545,11 +553,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return [super displayName];
 }
 
-- (void)setFileName:(NSString*)path
+- (void)setFileURL:(NSURL *)absoluteURL
 {
     [mDisplayName release];
     mDisplayName = nil;
-    [super setFileName: path];
+    [super setFileURL: absoluteURL];
 }
 
 
