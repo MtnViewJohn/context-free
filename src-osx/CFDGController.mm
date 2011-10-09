@@ -49,6 +49,17 @@
 - (void)gotUpdateInfo:(id)arg;
 @end
 
+// Provide the forward-declarations of new 10.7 SDK symbols so they can be
+// called when building with the 10.5 SDK.
+#if !defined(MAC_OS_X_VERSION_10_7) || \
+MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
+
+enum {
+    NSApplicationPresentationFullScreen = 1 << 10
+};
+
+#endif  // MAC_OS_X_VERSION_10_7
+
 namespace {
     NSArray* urls = 0;
     NSArray* examples = 0;
@@ -134,6 +145,18 @@ namespace {
     [self buildExamplesMenu];
     [self buildHelpMenu];
     [self updateFontDisplay: [mFontDisplay font]];
+    SInt32 vers;
+    if (Gestalt(gestaltSystemVersionMinor, &vers) != noErr || vers < 7) {
+        [mFullScreenMenu setHidden: YES];
+        [mFullScreenMenu setEnabled: NO];
+    } else {
+        [mFullScreenMenu setHidden: NO];
+        [mFullScreenMenu setEnabled: YES];
+        NSApplicationPresentationOptions opts = [NSApp presentationOptions];
+        if (opts & NSApplicationPresentationFullScreen) {
+            [mFullScreenMenu setTitle: @"Exit Full Screen"];
+        }
+    }
 }
 
 - (IBAction)gotoURL:(id)sender

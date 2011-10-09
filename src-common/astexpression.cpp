@@ -138,6 +138,8 @@ namespace AST {
     
     ASTruleSpecifier ASTruleSpecifier::Zero;
     
+    static const StackType StackZero = {0};
+    
     bool ASTparameter::Impure = false;
     
     double CFatof(const char* s)
@@ -161,7 +163,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        mDefinition = def->isConstant ? def : 0;
+        mDefinition = (def->isConstant || def->isFunction) ? def : 0;
     }
     
     void
@@ -663,6 +665,20 @@ namespace AST {
         }
     }
     
+    ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
+                                     yy::location nameLoc)
+    : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
+                    (!args || args->isConstant) && func->mExpression->isConstant, 
+                    (!args || args->isNatural) && func->mExpression->isNatural, 
+                    func->mType),
+      definition(func), arguments(args)
+    {
+        assert(func);
+        assert((args && func->mStackCount) || (!args && !func->mStackCount));
+        if (args)
+            ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
+    }
+    
     ASTruleSpecifier::~ASTruleSpecifier()
     {
         delete[] simpleRule;
@@ -868,6 +884,31 @@ namespace AST {
     }
     
     int
+    ASTuserFunction::evaluate(double* res, int length, Renderer* rti) const
+    {
+        if (mType != NumericType) {
+            CfdgError::Error(where, "Function does not evaluate to a number");
+            return -1;
+        }
+        if (res && length < definition->mTuplesize)
+            return -1;
+        if (!res)
+            return definition->mTuplesize;
+        assert(rti);
+        
+        if (definition->mStackCount) {
+            size_t size = rti->mCFstack.size();
+            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            definition->mExpression->evaluate(res, length, rti);
+            rti->mCFstack.resize(size, StackZero);
+        } else {
+            definition->mExpression->evaluate(res, length, rti);
+        }
+        return definition->mTuplesize;
+    }
+    
+    int
     ASToperator::evaluate(double* res, int length, Renderer* rti) const
     {
         double l = 0.0;
@@ -966,7 +1007,7 @@ namespace AST {
                     *res = (l || r) ? 1.0 : 0.0;
                     break;
                 case 'X':
-                    *res = (l && !r || !l && r) ? 1.0 : 0.0;
+                    *res = ((l && !r) || (!l && r)) ? 1.0 : 0.0;
                     break;
                 case '^':
                     *res = pow(l, r);
@@ -1791,6 +1832,14 @@ namespace AST {
     }
     
     void
+    ASTuserFunction::entropy(std::string& ent) const
+    {
+        if (arguments)
+            arguments->entropy(ent);
+        ent.append(definition->mName);
+    }
+    
+    void
     ASToperator::entropy(std::string& ent) const
     {
         left->entropy(ent);
@@ -1921,6 +1970,31 @@ namespace AST {
         left = left->simplify();
         if (right) right = right->simplify();
         return this;
+    }
+    
+    ASTexpression*
+    ASTuserFunction::simplify()
+    {
+        if (arguments)
+            arguments = arguments->simplify();
+        try {
+            ASTexpression* ret = this;
+            switch (mType) {
+                case NumericType: {
+                    double result;
+                    if (evaluate(&result, 1) == 1)
+                        ret = new ASTreal(result, where);
+                    break;
+                }
+                default:
+                    break;
+            }
+            if (ret != this)
+                delete this;
+            return ret;
+        } catch (DeferUntilRuntime) {
+            return this;
+        }
     }
     
     ASTexpression*

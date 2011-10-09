@@ -79,6 +79,7 @@ public:
     AST::ASTexpArray     mCanonicalMods;
     
     AST::ASTrepContainer mParamDecls;
+    bool            isFunction;
     
     static std::map<std::string, int> FlagNames;
     
@@ -90,6 +91,7 @@ public:
     ContainerStack_t    mContainerStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);
+    void                push_paramDecls();
     void                push_rep(AST::ASTreplacement* r, bool global = false);
     const char*         push_param();
     AST::ASTparameter*  findExpression(int nameIndex, bool& isGlobal);

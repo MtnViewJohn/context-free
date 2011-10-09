@@ -80,7 +80,15 @@ public:
             _Ptr = 0;
         }
     }
-
+    const_iterator(const StackType* s, const std::list<AST::ASTparameter>* p)
+    : _Ptr(s)
+    {
+        if (_Ptr) {
+            _Iter = p->begin();
+            _End = p->end();
+        }
+    }
+    
     const StackType& operator*() const { return *_Ptr; }
     const StackType* operator->() const { return _Ptr; }
     const StackType& operator++()
@@ -108,6 +116,11 @@ public:
         return const_iterator(s);
     }
 
+    static const_iterator begin(const StackType* s, const std::list<AST::ASTparameter>* p)
+    {
+        return const_iterator(s, p);
+    }
+    
     static const_iterator end()
     {
         return const_iterator();
@@ -133,7 +146,15 @@ public:
             _Ptr = 0;
         }
     }
-
+    iterator(StackType* s, const std::list<AST::ASTparameter>* p)
+    : _Ptr(s)
+    {
+        if (_Ptr) {
+            _Iter = p->begin();
+            _End = p->end();
+        }
+    }
+    
     StackType& operator*() { return *_Ptr; }
     StackType* operator->() { return _Ptr; }
     StackType& operator++()
@@ -162,6 +183,11 @@ public:
         return iterator(s);
     }
 
+    static iterator begin(StackType* s, const std::list<AST::ASTparameter>* p)
+    {
+        return iterator(s, p);
+    }
+    
     static iterator end()
     {
         return iterator();
@@ -188,6 +214,7 @@ StackType::alloc(int name, int size, const std::list<AST::ASTparameter>* ti)
     return newrule;
 }
 
+// Release arguments on the heap
 void
 StackType::release() const
 {
@@ -201,6 +228,15 @@ StackType::release() const
     
     if (ruleHeader.mRefCount < StackRule::MaxRefCount)
         --(ruleHeader.mRefCount);
+}
+
+// Release arguments on the stack
+void
+StackType::release(const std::list<AST::ASTparameter>* p) const
+{
+    for (const_iterator it = const_iterator::begin(this, p), e = const_iterator::end(); it != e; ++it)
+        if (it.type().mType == AST::ASTexpression::RuleType)
+            it->rule->release();
 }
 
 void
@@ -306,14 +342,11 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
     }
 }
 
-void
-StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
-                    const StackType* parent)
+static void
+EvalArgs(Renderer* rti, const StackType* parent, 
+         iterator& dest, AST::ASTexpression::const_iterator& arg,
+         AST::ASTexpression::const_iterator& arg_end)
 {
-    iterator dest = iterator::begin(this);
-    AST::ASTexpression::const_iterator arg = arguments->begin(),
-                                       arg_end = arguments->end();
-    
     while (arg != arg_end) {
         switch (arg->mType) {
             case AST::ASTexpression::NumericType: {
@@ -340,3 +373,26 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
         ++dest;
     }
 }
+
+// Evaluate arguments on the heap
+void
+StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
+                    const StackType* parent)
+{
+    iterator dest = iterator::begin(this);
+    AST::ASTexpression::const_iterator arg = arguments->begin(),
+    arg_end = arguments->end();
+    EvalArgs(rti, parent, dest, arg, arg_end);
+}
+
+// Evaluate arguments on the stack
+void
+StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
+                    const std::list<AST::ASTparameter>* p)
+{
+    iterator dest = iterator::begin(this, p);
+    AST::ASTexpression::const_iterator arg = arguments->begin(),
+    arg_end = arguments->end();
+    EvalArgs(rti, NULL, dest, arg, arg_end);
+}
+

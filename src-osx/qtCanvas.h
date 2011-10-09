@@ -33,8 +33,8 @@
 #include "aggCanvas.h"
 #import "BitmapImageHolder.h"
 
-class NSString;
-class NSError;
+@class NSString;
+@class NSError;
 
 class qtCanvas : public aggCanvas {
     public:

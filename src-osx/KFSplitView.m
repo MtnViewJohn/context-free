@@ -187,10 +187,13 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // If no good cursors can be found, an error is printed and the arrow cursor is used.
 - (void)kfSetupResizeCursors
 {
-    NSImage *isVerticalImage, *isNotVerticalImage;
+    NSImage *isVerticalImage = [NSImage imageNamed:@"NSTruthHorizontalResizeCursor"];
+         // standard Jaguar NSSplitView resize cursor
+    NSImage *isNotVerticalImage = [NSImage imageNamed:@"NSTruthVerticalResizeCursor"];
+         // standard Jaguar NSSplitView resize cursor
 
-    if ((isVerticalImage = [NSImage imageNamed:@"NSTruthHorizontalResizeCursor"])); // standard Jaguar NSSplitView resize cursor
-    else if  ((isVerticalImage = [NSImage imageNamed:@"NSTruthHResizeCursor"]));
+    if (!isVerticalImage)
+        isVerticalImage = [NSImage imageNamed:@"NSTruthHResizeCursor"];
 
     if (isVerticalImage)
     {
@@ -198,8 +201,8 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
                                                            hotSpot:NSMakePoint(8,8)];
     }
 
-    if ((isNotVerticalImage = [NSImage imageNamed:@"NSTruthVerticalResizeCursor"])); // standard Jaguar NSSplitView resize cursor
-    else if  ((isNotVerticalImage = [NSImage imageNamed:@"NSTruthVResizeCursor"]));
+    if (!isNotVerticalImage)
+        isNotVerticalImage = [NSImage imageNamed:@"NSTruthVResizeCursor"];
 
     if (isNotVerticalImage)
     {

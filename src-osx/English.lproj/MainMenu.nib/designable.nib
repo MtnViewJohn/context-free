@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
   <data>
     <int key="IBDocument.SystemTarget">1050</int>
-    <string key="IBDocument.SystemVersion">11A511</string>
+    <string key="IBDocument.SystemVersion">11B26</string>
     <string key="IBDocument.InterfaceBuilderVersion">851</string>
     <string key="IBDocument.AppKitVersion">1138</string>
     <string key="IBDocument.HIToolboxVersion">566.00</string>
@@ -699,6 +699,16 @@
                   <int key="NSMnemonicLoc">2147483647</int>
                   <reference key="NSOnImage" ref="394397760"/>
                   <reference key="NSMixedImage" ref="758365266"/>
+                </object>
+                <object class="NSMenuItem" id="466021394">
+                  <reference key="NSMenu" ref="941824549"/>
+                  <string key="NSTitle">Enter Full Screen</string>
+                  <string key="NSKeyEquiv">f</string>
+                  <int key="NSKeyEquivModMask">1310720</int>
+                  <int key="NSMnemonicLoc">2147483647</int>
+                  <reference key="NSOnImage" ref="394397760"/>
+                  <reference key="NSMixedImage" ref="758365266"/>
+                  <int key="NSTag">420</int>
                 </object>
               </object>
               <string key="NSName">_NSWindowsMenu</string>
@@ -2861,6 +2871,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
           </object>
           <int key="connectionID">602</int>
         </object>
+        <object class="IBConnectionRecord">
+          <object class="IBOutletConnection" key="connection">
+            <string key="label">mFullScreenMenu</string>
+            <reference key="source" ref="1000474816"/>
+            <reference key="destination" ref="466021394"/>
+          </object>
+          <int key="connectionID">604</int>
+        </object>
+        <object class="IBConnectionRecord">
+          <object class="IBActionConnection" key="connection">
+            <string key="label">enterFullscreen:</string>
+            <reference key="source" ref="880525677"/>
+            <reference key="destination" ref="466021394"/>
+          </object>
+          <int key="connectionID">607</int>
+        </object>
       </object>
       <object class="IBMutableOrderedSet" key="objectRecords">
         <object class="NSArray" key="orderedObjects">
@@ -2926,6 +2952,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <reference ref="324354439"/>
               <reference ref="349618274"/>
               <reference ref="830443674"/>
+              <reference ref="466021394"/>
             </object>
             <reference key="parent" ref="102409342"/>
           </object>
@@ -4107,6 +4134,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
             <reference key="object" ref="830443674"/>
             <reference key="parent" ref="941824549"/>
           </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">603</int>
+            <reference key="object" ref="466021394"/>
+            <reference key="parent" ref="941824549"/>
+          </object>
         </object>
       </object>
       <object class="NSMutableDictionary" key="flattenedProperties">
@@ -4376,6 +4408,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
           <string>58.IBPluginDependency</string>
           <string>58.ImportedFromIB2</string>
           <string>600.IBPluginDependency</string>
+          <string>603.IBPluginDependency</string>
           <string>72.IBPluginDependency</string>
           <string>72.ImportedFromIB2</string>
           <string>73.IBPluginDependency</string>
@@ -4509,7 +4542,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
-          <string>{{349, 841}, {216, 123}}</string>
+          <string>{{349, 821}, {216, 143}}</string>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
           <string>{{65, 609}, {489, 386}}</string>
@@ -4676,6 +4709,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+          <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
@@ -4712,7 +4746,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
         </object>
       </object>
       <nil key="sourceID"/>
-      <int key="maxID">602</int>
+      <int key="maxID">607</int>
     </object>
     <object class="IBClassDescriber" key="IBDocument.Classes">
       <object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4726,7 +4760,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>changeFont:</string>
               <string>checkForUpdateNow:</string>
-              <string>closeAll:</string>
               <string>gotoURL:</string>
               <string>openExample:</string>
               <string>openLesson:</string>
@@ -4734,7 +4767,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
             </object>
             <object class="NSMutableArray" key="dict.values">
               <bool key="EncodedWithXMLCoder">YES</bool>
-              <string>id</string>
               <string>id</string>
               <string>id</string>
               <string>id</string>
@@ -4749,7 +4781,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>changeFont:</string>
               <string>checkForUpdateNow:</string>
-              <string>closeAll:</string>
               <string>gotoURL:</string>
               <string>openExample:</string>
               <string>openLesson:</string>
@@ -4763,10 +4794,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               </object>
               <object class="IBActionInfo">
                 <string key="name">checkForUpdateNow:</string>
-                <string key="candidateClassName">id</string>
-              </object>
-              <object class="IBActionInfo">
-                <string key="name">closeAll:</string>
                 <string key="candidateClassName">id</string>
               </object>
               <object class="IBActionInfo">
@@ -4793,12 +4820,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>mExampleMenu</string>
               <string>mFontDisplay</string>
+              <string>mFullScreenMenu</string>
               <string>mHelpMenu</string>
             </object>
             <object class="NSMutableArray" key="dict.values">
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>NSMenu</string>
               <string>NSTextField</string>
+              <string>NSMenuItem</string>
               <string>NSMenu</string>
             </object>
           </object>
@@ -4808,6 +4837,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>mExampleMenu</string>
               <string>mFontDisplay</string>
+              <string>mFullScreenMenu</string>
               <string>mHelpMenu</string>
             </object>
             <object class="NSMutableArray" key="dict.values">
@@ -4819,6 +4849,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <object class="IBToOneOutletInfo">
                 <string key="name">mFontDisplay</string>
                 <string key="candidateClassName">NSTextField</string>
+              </object>
+              <object class="IBToOneOutletInfo">
+                <string key="name">mFullScreenMenu</string>
+                <string key="candidateClassName">NSMenuItem</string>
               </object>
               <object class="IBToOneOutletInfo">
                 <string key="name">mHelpMenu</string>
@@ -4847,6 +4881,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
             <object class="NSArray" key="dict.sortedKeys">
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>cancelHiresRender:</string>
+              <string>closeAll:</string>
+              <string>enterFullscreen:</string>
               <string>finishRender:</string>
               <string>repeatRender:</string>
               <string>saveAsMovie:</string>
@@ -4860,6 +4896,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
             </object>
             <object class="NSMutableArray" key="dict.values">
               <bool key="EncodedWithXMLCoder">YES</bool>
+              <string>id</string>
+              <string>id</string>
               <string>id</string>
               <string>id</string>
               <string>id</string>
@@ -4878,6 +4916,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
             <object class="NSArray" key="dict.sortedKeys">
               <bool key="EncodedWithXMLCoder">YES</bool>
               <string>cancelHiresRender:</string>
+              <string>closeAll:</string>
+              <string>enterFullscreen:</string>
               <string>finishRender:</string>
               <string>repeatRender:</string>
               <string>saveAsMovie:</string>
@@ -4893,6 +4933,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
               <bool key="EncodedWithXMLCoder">YES</bool>
               <object class="IBActionInfo">
                 <string key="name">cancelHiresRender:</string>
+                <string key="candidateClassName">id</string>
+              </object>
+              <object class="IBActionInfo">
+                <string key="name">closeAll:</string>
+                <string key="candidateClassName">id</string>
+              </object>
+              <object class="IBActionInfo">
+                <string key="name">enterFullscreen:</string>
                 <string key="candidateClassName">id</string>
               </object>
               <object class="IBActionInfo">
