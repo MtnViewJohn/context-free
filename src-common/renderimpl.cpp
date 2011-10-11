@@ -79,7 +79,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
 {
     m_width = width;
     m_height = height;
-    mCFstack.reserve(m_cfdg->reportStackDepth() * 2 + 1);
+    mCFstack.reserve(8000);
     mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);
 
     m_canvas = 0;

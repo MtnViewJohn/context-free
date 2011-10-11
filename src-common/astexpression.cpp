@@ -899,10 +899,15 @@ namespace AST {
         
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();
+            if (size + definition->mStackCount > rti->mCFstack.capacity())
+                CfdgError::Error(where, "Maximum stack size exceeded");
+            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
             rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(res, length, rti);
             rti->mCFstack.resize(size, StackZero);
+            rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
             definition->mExpression->evaluate(res, length, rti);
         }
