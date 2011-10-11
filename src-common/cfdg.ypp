@@ -364,7 +364,7 @@ global_definition:
 
 global_definition_header:
         USER_STRING function_parameter_list BECOMES {
-            driver.push_paramDecls();
+            driver.push_paramDecls(*$1, @$);
             $$ = $1;
         }
         | MODTYPE function_parameter_list BECOMES {

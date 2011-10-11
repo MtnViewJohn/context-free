@@ -53,6 +53,8 @@ private:
         int mStackSize;
 
         std::vector<AST::ASTrule*> mRules;
+        std::map<int, AST::ASTdefine*> mFunctions;
+        static void deleteFunction(std::pair<const int, AST::ASTdefine*>& p);
         
         struct ShapeType {
             std::string  name;
@@ -77,6 +79,7 @@ private:
         int m_Parameters;
         typedef std::pair<unsigned, AST::ASTexpression*> ConfigParam;
         std::map<int, ConfigParam*> m_ConfigParameters;
+        static void deleteConfigParam(std::pair<const int, ConfigParam*>& p);
 
         double m_minSize;
         double m_minArea;
@@ -135,6 +138,9 @@ private:
         const AST::ASTparameters* getShapeParams(int shapetype);
         int getShapeParamSize(int shapetype);
         int reportStackDepth(int size = 0); 
+
+        AST::ASTdefine* declareFunction(int nameIndex, AST::ASTdefine* def);
+        AST::ASTdefine* findFunction(int nameIndex);
 
         enum Parameter {Color = 1, Alpha = 2, Time = 4, FrameTime = 8};
         void addParameter(Parameter);
