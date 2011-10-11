@@ -80,6 +80,7 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     
     mCFDGcontents.isGlobal = true;
 }
+
 CFDGImpl::CFDGImpl(CFDGImpl* c)
 : mInitShape(0), mInitShapeDepth(std::numeric_limits<unsigned>::max()), 
   m_backgroundColor(1, 1, 1, 1),
@@ -92,16 +93,24 @@ CFDGImpl::CFDGImpl(CFDGImpl* c)
         it->shapeType = newShape;
     mCFDGcontents.isGlobal = true;
 }
+
+void
+CFDGImpl::deleteConfigParam(pair<const int, ConfigParam*>& p)
+{
+    delete p.second->second;
+    delete p.second;
+}
+
+void
+CFDGImpl::deleteFunction(pair<const int, ASTdefine*>& p)
+{
+    delete p.second;
+}
+
 CFDGImpl::~CFDGImpl()
 {
-    for (std::map<int, ConfigParam*>::iterator it = m_ConfigParameters.begin(),
-         end_it = m_ConfigParameters.end(); it != end_it; ++it)
-    {
-        delete it->second->second;
-        delete it->second;
-    }
-    //for (i = 0; i < mParamList.size(); ++i)
-    //    delete mParamList[i];
+    for_each(m_ConfigParameters.begin(), m_ConfigParameters.end(), deleteConfigParam);
+    for_each(mFunctions.begin(), mFunctions.end(), deleteFunction);
 }
 
 void
@@ -865,6 +874,29 @@ CFDGImpl::reportStackDepth(int size)
     if (size > mStackSize)
         mStackSize = size;
     return mStackSize;
+}
+
+AST::ASTdefine*
+CFDGImpl::declareFunction(int nameIndex, AST::ASTdefine* def)
+{
+    AST::ASTdefine* prev = findFunction(nameIndex);
+    if (prev)
+        return prev;
+
+    mFunctions[nameIndex] = def;
+    return def;
+    // I could write 
+    // return findFunction(nameIndex) || (mFunctions[nameIndex] = def);
+    // But I'm not gonna
+}
+
+AST::ASTdefine*
+CFDGImpl::findFunction(int nameIndex)
+{
+    map<int,AST::ASTdefine*>::iterator fi = mFunctions.find(nameIndex);
+    if (fi != mFunctions.end())
+        return fi->second;
+    return 0;
 }
 
 Renderer*

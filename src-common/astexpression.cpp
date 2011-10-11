@@ -846,7 +846,7 @@ namespace AST {
         if (res) 
             res += leftnum;
         
-        int rightnum = right ? (right->evaluate(res, length - leftnum, rti)) : 0;
+        int rightnum = right ? (right->evaluate(res, length ? length - leftnum : 0, rti)) : 0;
         if (rightnum <= 0) 
             return -1;
         
@@ -894,7 +894,8 @@ namespace AST {
             return -1;
         if (!res)
             return definition->mTuplesize;
-        assert(rti);
+        if (!rti)
+            throw DeferUntilRuntime();
         
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();
@@ -1977,24 +1978,7 @@ namespace AST {
     {
         if (arguments)
             arguments = arguments->simplify();
-        try {
-            ASTexpression* ret = this;
-            switch (mType) {
-                case NumericType: {
-                    double result;
-                    if (evaluate(&result, 1) == 1)
-                        ret = new ASTreal(result, where);
-                    break;
-                }
-                default:
-                    break;
-            }
-            if (ret != this)
-                delete this;
-            return ret;
-        } catch (DeferUntilRuntime) {
-            return this;
-        }
+        return this;
     }
     
     ASTexpression*

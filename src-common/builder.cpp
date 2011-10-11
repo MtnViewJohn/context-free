@@ -302,8 +302,11 @@ void
 Builder::NextParameter(const std::string& name, exp_ptr e,
                        const yy::location& nameLoc, const yy::location& expLoc) 
 {
-    if (isFunction)
+    if (isFunction) {
         pop_repContainer(NULL);         // pop mParamDecls
+        mParamDecls.mParameters.clear();
+        mParamDecls.mStackCount = 0;
+    }
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
         if (isFunction)
             CfdgError::Error(nameLoc, "Configuration parameters cannot be functions");
@@ -325,25 +328,33 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     } 
  
     int nameIndex = StringToShape(name, nameLoc, false);
-    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
-    ASTdefine* def = 0;
+    ASTdefine* def = m_CFDG->findFunction(nameIndex);
     yy::location defLoc = nameLoc + expLoc;
+    if (isFunction) {
+        assert(def);
+        delete def->mExpression;                        // Replace placeholder with actual expression
+        def->mExpression = e.release()->simplify();
+        def->isConstant = def->mExpression->isConstant;
+        def->mLocation = defLoc;
+
+        if (def->mExpression->mType != ASTexpression::NumericType) {
+            CfdgError::Error(expLoc, "User functions must have numeric type only");
+        } else if (def->mExpression->evaluate(0, 0) != 1) {
+            CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
+        }
+        return;
+    } else if (def) {
+        CfdgError::Error(nameLoc, "Definition with same name as user function");
+        CfdgError::Error(def->mLocation, "    user function definition is here.");
+        def = 0;
+    }
+
+    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     if (m) {
         mod_ptr mod(m); e.release();
         def = new ASTdefine(name, mod, defLoc);
     } else {
         def = new ASTdefine(name, e, defLoc);
-    }
-    if (isFunction) {
-        def->mParameters.swap(mParamDecls.mParameters);
-        def->mStackCount = mParamDecls.mStackCount;
-        def->isFunction = true;
-        mParamDecls.mStackCount = 0;
-        if (def->mType != ASTexpression::NumericType) {
-            CfdgError::Error(expLoc, "User functions must have numeric type only");
-        } else if (def->mTuplesize != 1) {
-            CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
-        }
     }
     ASTrepContainer* top = mContainerStack.back();
     ASTparameter& b = top->addParameter(nameIndex, def, nameLoc, expLoc);
@@ -352,8 +363,6 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         b.mStackIndex = mLocalStackDepth;
         mContainerStack.back()->mStackCount += b.mTuplesize;
         mLocalStackDepth += b.mTuplesize;
-        push_rep(def);
-    } else if (isFunction) {
         push_rep(def);
     }
 } 
@@ -537,15 +546,17 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
                       const yy::location& argsLoc, bool consAllowed)
 {
     int nameIndex = StringToShape(*name, nameLoc, true);
+    AST::ASTdefine* func = m_CFDG->findFunction(nameIndex);
+    if (func) {
+        if (!args.get() && func->mStackCount)
+            error(nameLoc, "This function requires arguments");
+        return new ASTuserFunction(args.release(), func, nameLoc);
+    }
+
     bool dummy;
     const ASTparameter* bound = findExpression(nameIndex, dummy);
     
     if (bound) {
-        if (bound->mDefinition && bound->mDefinition->isFunction) {
-            if (!args.get() && bound->mDefinition->mStackCount)
-                error(nameLoc, "This function requires arguments");
-            return new ASTuserFunction(args.release(), bound->mDefinition, nameLoc);
-        }
         if (!consAllowed)
             error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
         return new ASTcons(MakeVariable(*name, nameLoc), args.release());
@@ -600,7 +611,7 @@ Builder::push_repContainer(ASTrepContainer& c)
 }
 
 void
-Builder::push_paramDecls()
+Builder::push_paramDecls(const std::string& name, const yy::location& defLoc)
 {
     if (isFunction) {
         for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
@@ -609,6 +620,23 @@ Builder::push_paramDecls()
             it->isLocal = true;
         }
         push_repContainer(mParamDecls);
+
+        // Create the ASTdefine before the expression is known so that the
+        // expression can use recursion. Create a placeholder expression
+        // that will be deleted when the real expression is parsed.
+        int nameIndex = StringToShape(name, defLoc, false);
+        exp_ptr r(new ASTreal(1.5, defLoc));
+        r->isConstant = false;
+        ASTdefine* def = new ASTdefine(name, r, defLoc);
+        def->mParameters = mParamDecls.mParameters;
+        def->mStackCount = mParamDecls.mStackCount;
+        def->isFunction = true;
+        AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
+        if (prev != def) {
+            CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
+            CfdgError::Error(prev->mLocation, "Previous user function definition is here");
+            delete def;
+        }
     }
 }
 

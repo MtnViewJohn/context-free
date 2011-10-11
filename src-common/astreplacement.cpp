@@ -501,7 +501,6 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool tr, Renderer* r) const
     {
-        if (isFunction) return;    // user function definition, do nothing
         static const StackType zero = {0.0};
         int s = (int)r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize, zero);
