@@ -381,7 +381,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 {
     iterator dest = iterator::begin(this);
     AST::ASTexpression::const_iterator arg = arguments->begin(),
-    arg_end = arguments->end();
+                                       arg_end = arguments->end();
     EvalArgs(rti, parent, dest, arg, arg_end);
 }
 
@@ -392,7 +392,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 {
     iterator dest = iterator::begin(this, p);
     AST::ASTexpression::const_iterator arg = arguments->begin(),
-    arg_end = arguments->end();
+                                       arg_end = arguments->end();
     EvalArgs(rti, NULL, dest, arg, arg_end);
 }
 
