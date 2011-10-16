@@ -45,6 +45,7 @@
 INTEGER     [0-9]+%?
 RATIONAL    ([0-9]+\.[0-9]*%?)|(\.[0-9]+%?)
 RATIONAL2   [0-9]+%?\.\.
+FLOAT       ([0-9]+\.[0-9]*[eE][+-]?[0-9]+%?)|(\.[0-9]+[eE][+-]?[0-9]+%?)|[0-9]+[eE][+-]?[0-9]+%?
 PATHOP      MOVETO|LINETO|ARCTO|CURVETO|MOVEREL|LINEREL|ARCREL|CURVEREL|CLOSEPOLY
 FILENAME   [a-zA-Z\200-\377][a-zA-Z\200-\377_\-0-9\.]*\.cfdg
 STRING     [a-zA-Z\200-\301\303-\377_]([a-zA-Z:_0-9\200-\301\303-\377]|\302[\200-\260\262-\377])*
@@ -205,6 +206,7 @@ STRING     [a-zA-Z\200-\301\303-\377_]([a-zA-Z:_0-9\200-\301\303-\377]|\302[\200
 {PATHOP}    {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
 {STRING}    {yylval->string = new std::string(yytext); return token::USER_STRING;}
 {RATIONAL}  {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
+{FLOAT}     {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 {RATIONAL2}  {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
