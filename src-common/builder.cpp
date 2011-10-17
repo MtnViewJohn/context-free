@@ -53,7 +53,7 @@ Builder* Builder::CurrentBuilder = 0;
 Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
   mInPathContainer(false), mCurrentShape(-1),
-  mWant2ndPass(false), mCompilePhase(1),
+  mWant2ndPass(false), mCompilePhase(1), isFunction(false),
   mLocalStackDepth(0), mIncludeDepth(0), lexer(0), mErrorOccured(false)
 { 
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
@@ -342,6 +342,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         } else if (def->mExpression->evaluate(0, 0) != 1) {
             CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
         }
+        isFunction = false;
         return;
     } else if (def) {
         CfdgError::Error(nameLoc, "Definition with same name as user function");
