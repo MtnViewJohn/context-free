@@ -26,7 +26,6 @@
 #ifndef INCLUDE_AST_H
 #define INCLUDE_AST_H
 
-#include <list>
 #include <memory>
 #include <vector>
 #include <string>
@@ -64,9 +63,8 @@ namespace AST {
 #endif
 
     class ASTpath;
-    typedef std::list<ASTpath*> ASTpathList;
     class ASTreplacement;
-    typedef std::list<const ASTreplacement*> ASTbody;
+    typedef std::vector<const ASTreplacement*> ASTbody;
     class ASTparameterList;
     class ASTparameter;
     class ASTrule;
@@ -81,7 +79,7 @@ namespace AST {
     class ASTswitch;
     class ASTmodTerm;
     typedef std::vector<ASTexpression*> ASTexpArray;
-    typedef std::list<ASTparameter> ASTparameters;
+    typedef std::vector<ASTparameter> ASTparameters;
 
     typedef std::auto_ptr<std::string>      str_ptr;
     typedef std::auto_ptr<ASTexpression>    exp_ptr;

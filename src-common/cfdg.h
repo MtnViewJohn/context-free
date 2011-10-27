@@ -33,7 +33,6 @@
 #include <iosfwd>
 #include <string>
 #include <time.h>
-#include <list>
 #include <vector>
 #include "agg_trans_affine.h"
 #include "agg_color_rgba.h"
@@ -185,7 +184,7 @@ class Renderer {
         std::vector<StackType>  mCFstack;
         const StackType*  mLogicalStackTop;
         void initStack(const StackType* p);
-        void unwindStack(size_t oldsize, const std::list<AST::ASTparameter>& params);
+        void unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params);
         
         Rand64      mCurrentSeed;
         bool        mRandUsed;

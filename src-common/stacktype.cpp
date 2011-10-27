@@ -64,8 +64,8 @@
 class const_iterator {
 public:
     const StackType* _Ptr;
-    std::list<AST::ASTparameter>::const_iterator _Iter;
-    std::list<AST::ASTparameter>::const_iterator _End;
+    std::vector<AST::ASTparameter>::const_iterator _Iter;
+    std::vector<AST::ASTparameter>::const_iterator _End;
 
     const_iterator() : _Ptr(0) {}
     const_iterator(const StackType* s)
@@ -80,7 +80,7 @@ public:
             _Ptr = 0;
         }
     }
-    const_iterator(const StackType* s, const std::list<AST::ASTparameter>* p)
+    const_iterator(const StackType* s, const std::vector<AST::ASTparameter>* p)
     : _Ptr(s)
     {
         if (_Ptr) {
@@ -116,7 +116,7 @@ public:
         return const_iterator(s);
     }
 
-    static const_iterator begin(const StackType* s, const std::list<AST::ASTparameter>* p)
+    static const_iterator begin(const StackType* s, const std::vector<AST::ASTparameter>* p)
     {
         return const_iterator(s, p);
     }
@@ -146,7 +146,7 @@ public:
             _Ptr = 0;
         }
     }
-    iterator(StackType* s, const std::list<AST::ASTparameter>* p)
+    iterator(StackType* s, const std::vector<AST::ASTparameter>* p)
     : _Ptr(s)
     {
         if (_Ptr) {
@@ -183,7 +183,7 @@ public:
         return iterator(s);
     }
 
-    static iterator begin(StackType* s, const std::list<AST::ASTparameter>* p)
+    static iterator begin(StackType* s, const std::vector<AST::ASTparameter>* p)
     {
         return iterator(s, p);
     }
@@ -201,7 +201,7 @@ enum { assert_static__ = 1/((int)(e)) }; \
 } while (0)
 
 StackType*
-StackType::alloc(int name, int size, const std::list<AST::ASTparameter>* ti)
+StackType::alloc(int name, int size, const std::vector<AST::ASTparameter>* ti)
 {
     assert_static(sizeof(StackType) == sizeof(double));
     StackType* newrule = new StackType[size ? size + 2 : 1];
@@ -232,7 +232,7 @@ StackType::release() const
 
 // Release arguments on the stack
 void
-StackType::release(const std::list<AST::ASTparameter>* p) const
+StackType::release(const std::vector<AST::ASTparameter>* p) const
 {
     for (const_iterator it = const_iterator::begin(this, p), e = const_iterator::end(); it != e; ++it)
         if (it.type().mType == AST::ASTexpression::RuleType)
@@ -388,7 +388,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 // Evaluate arguments on the stack
 void
 StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                    const std::list<AST::ASTparameter>* p)
+                    const std::vector<AST::ASTparameter>* p)
 {
     iterator dest = iterator::begin(this, p);
     AST::ASTexpression::const_iterator arg = arguments->begin(),
