@@ -186,6 +186,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgMessage->DocumentCompleted += 
         gcnew WebBrowserDocumentCompletedEventHandler(this, &Document::messageWindowReady);
+    setMessageText(nullptr);
 }
 
 System::Void Document::menuFSave_Click(System::Object^ sender, System::EventArgs^ e)
