@@ -188,13 +188,13 @@ Renderer::initStack(const StackType* p)
 }
 
 void
-Renderer::unwindStack(size_t oldsize, const std::list<AST::ASTparameter>& params)
+Renderer::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params)
 {
     if (oldsize == mCFstack.size())
         return;
 
     StackType* pos = &(mCFstack[oldsize]);
-    for (std::list<AST::ASTparameter>::const_iterator it = params.begin(), p_end = params.end();
+    for (std::vector<AST::ASTparameter>::const_iterator it = params.begin(), p_end = params.end();
          it != p_end; ++it)
     {
         if (it->isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()

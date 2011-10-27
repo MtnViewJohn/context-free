@@ -29,7 +29,7 @@
 #define __STDC_LIMIT_MACROS
 #endif
 #include <stdint.h>		// Use the C99 official header
-#include <list>
+#include <vector>
 #include <iosfwd>
 
 namespace AST { class ASTparameter; class ASTexpression; }
@@ -51,11 +51,11 @@ union StackType {
     double      number;
     const StackType*  rule;
     StackRule   ruleHeader;
-    const std::list<AST::ASTparameter>* typeInfo;
+    const std::vector<AST::ASTparameter>* typeInfo;
 
-    static StackType*  alloc(int name, int size, const std::list<AST::ASTparameter>* ti);
+    static StackType*  alloc(int name, int size, const std::vector<AST::ASTparameter>* ti);
     void        release() const;
-    void        release(const std::list<AST::ASTparameter>* p) const;
+    void        release(const std::vector<AST::ASTparameter>* p) const;
     void        retain(Renderer* r) const;
 
     void        read(std::istream& is);
@@ -66,7 +66,7 @@ union StackType {
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
                          const StackType* parent);
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                         const std::list<AST::ASTparameter>* p);
+                         const std::vector<AST::ASTparameter>* p);
 };
 
 #endif // INCLUDE_STACKTYPE_H
