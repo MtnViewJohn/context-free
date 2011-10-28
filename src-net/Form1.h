@@ -126,7 +126,15 @@ namespace ContextFreeNet {
                 }
             }
 
-
+    private: bool isModal;
+    public: property bool IsModal {
+                bool get() { return isModal; }
+                void set(bool m)
+                {
+                    isModal = m;
+                    Form_Active_Change(this, nullptr);
+                }
+            }
 
     private: System::Windows::Forms::ToolStripMenuItem^  menuFPrefs;
     private: System::Windows::Forms::ToolStripMenuItem^  menuFRecent;

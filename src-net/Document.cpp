@@ -210,6 +210,7 @@ System::Void Document::menuFSaveAs_Click(System::Object^ sender, System::EventAr
     ((Form1^)MdiParent)->saveFileDialog1->Title = "Select a CFDG File";
     ((Form1^)MdiParent)->saveFileDialog1->FileName = Text;
 
+    ((Form1^)MdiParent)->IsModal = true;
     if (((Form1^)MdiParent)->saveFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK) {
         String^ oldName = Name;
         Name = ((Form1^)MdiParent)->saveFileDialog1->FileName;
@@ -220,6 +221,7 @@ System::Void Document::menuFSaveAs_Click(System::Object^ sender, System::EventAr
         Form1::changeDocumentFile(oldName, Name, this);
         menuFSave_Click(sender, e);
     }
+    ((Form1^)MdiParent)->IsModal = false;
 }
 
 System::Void Document::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
@@ -387,12 +389,16 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
 
     RenderSizeDialog^ rs = gcnew RenderSizeDialog(renderParams);
 
+    ((Form1^)MdiParent)->IsModal = true;
     if (sender != menuRRenderSize || rs->ShowDialog() == Windows::Forms::DialogResult::OK) {
+        ((Form1^)MdiParent)->IsModal = false;
         if (sender != menuRRenderSize) 
             renderParams->saveToPrefs();
         renderParams->action = RenderParameters::RenderActions::Render;
         lastRenderWasSized = true;
         DoRender();
+    } else {
+        ((Form1^)MdiParent)->IsModal = false;
     }
 
     delete rs;
@@ -438,7 +444,9 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
         Path::GetFileNameWithoutExtension(Text) + ".png",
         ((Form1^)MdiParent)->saveDirectory);
 
+    ((Form1^)MdiParent)->IsModal = true;
     if (saveImageDlg->ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
+        ((Form1^)MdiParent)->IsModal = false;
         ((Form1^)MdiParent)->saveDirectory = 
             Path::GetDirectoryName(saveImageDlg->FileDlgFileName);
         bool rect = mTiled && mRectangular && saveImageDlg->checkRectangular->Checked;
@@ -455,6 +463,8 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
             default:
                 break;
         }
+    } else {
+        ((Form1^)MdiParent)->IsModal = false;
     }
     delete saveImageDlg;
 }
@@ -568,7 +578,9 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
 											  ((Form1^)MdiParent)->saveDirectory);
     saveMovieDlg->checkZoom->Enabled = !mTiled;
 
+    ((Form1^)MdiParent)->IsModal = true;
     if (saveMovieDlg->ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
+        ((Form1^)MdiParent)->IsModal = false;
         ((Form1^)MdiParent)->saveDirectory = 
             Path::GetDirectoryName(saveMovieDlg->FileDlgFileName);
 
@@ -603,6 +615,8 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
             statusTimer->Start();
             updateRenderButton();
         }
+    } else {
+        ((Form1^)MdiParent)->IsModal = false;
     }
 }
 
@@ -626,7 +640,9 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     UploadDesign^ uploadWiz = gcnew UploadDesign(this, 
         Path::GetFileNameWithoutExtension(Text), &u);
 
+    ((Form1^)MdiParent)->IsModal = true;
     uploadWiz->ShowDialog(this);
+    ((Form1^)MdiParent)->IsModal = false;
     delete uploadWiz;
     Marshal::FreeHGlobal(hText);
 }
