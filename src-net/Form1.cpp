@@ -98,6 +98,7 @@ void Form1::StaticInitialization()
 
 void Form1::MoreInitialization()
 {
+    isModal = false;
     findForm = gcnew FindReplaceForm();
     mruManager = gcnew OzoneUtil::MRUManager();
     mruManager->Initialize(this, gcnew System::EventHandler(this, &Form1::MRU_Click), 
@@ -209,14 +210,17 @@ System::Void Form1::menuFOpen_Click(System::Object^  sender, System::EventArgs^ 
     openFileDialog1->Title = "Select a CFDG File";
     openFileDialog1->CheckFileExists = true;
 
+    IsModal = true;
     if (openFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK) {
         mruManager->Add(openFileDialog1->FileName);
         if (fileAlreadyOpen(openFileDialog1->FileName)) {
+            IsModal = false;
             return;
         }
 
         OpenDoc(openFileDialog1->FileName);
     }
+    IsModal = false;
 }
 
 System::Void Form1::MRU_Click(System::Object^ sender, System::EventArgs^ e)
@@ -305,7 +309,7 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
 
 Void Form1::Form_Active_Change(System::Object^  sender, System::EventArgs^  e)
 {
-    if (Form::ActiveForm == nullptr) {
+    if (Form::ActiveForm == nullptr || isModal) {
         dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientInactiveCaption;
         dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientInactiveCaption;
         menuStrip1->BackColor = SystemColors::GradientInactiveCaption;
@@ -342,7 +346,9 @@ System::Void Form1::menuFPrefs_Click(System::Object^  sender, System::EventArgs^
         updateFontDisplay();
     }
 
+    IsModal = true;
     prefsDialog->ShowDialog(this);
+    IsModal = false;
 }
 
 void Form1::updateFontDisplay()
@@ -460,7 +466,9 @@ System::Void Form1::urlMenuItem_Click(System::Object^  sender, System::EventArgs
 System::Void Form1::aboutContextFreeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e)
 {
     AboutBox^ about = gcnew AboutBox();
+    IsModal = true;
     about->ShowDialog();
+    IsModal = false;
 }
 
 System::Void Form1::menuRColor_Click(System::Object^  sender, System::EventArgs^  e)
