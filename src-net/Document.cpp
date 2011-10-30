@@ -296,16 +296,13 @@ void Document::reload(bool justClear)
     }
 
     try {
-        StreamReader^ sr = gcnew StreamReader(Name);
-        try {
-            cfdgText->Text = sr->ReadToEnd();
-            cfdgText->Modified = false;
-        } finally {
-            if ( sr )
-                delete (IDisposable^)sr;
-        }
+        StreamReader sr(Name);
+        cfdgText->Text = sr.ReadToEnd();
+        cfdgText->Modified = false;
     } catch (Exception^) {
         ((Form1^)MdiParent)->mruManager->Remove(Name);
+        cfdgText->Text = String::Empty;
+        cfdgText->Modified = false;
         setMessageText("The file could not be read." );
     }
 }
@@ -387,10 +384,10 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
         return;
     }
 
-    RenderSizeDialog^ rs = gcnew RenderSizeDialog(renderParams);
+    RenderSizeDialog rs(renderParams);
 
     ((Form1^)MdiParent)->IsModal = true;
-    if (sender != menuRRenderSize || rs->ShowDialog() == Windows::Forms::DialogResult::OK) {
+    if (sender != menuRRenderSize || rs.ShowDialog() == Windows::Forms::DialogResult::OK) {
         ((Form1^)MdiParent)->IsModal = false;
         if (sender != menuRRenderSize) 
             renderParams->saveToPrefs();
@@ -400,8 +397,6 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
     } else {
         ((Form1^)MdiParent)->IsModal = false;
     }
-
-    delete rs;
 }
 
 System::Void Document::menuRRenderAgain_Click(System::Object^ sender, System::EventArgs^ e)
@@ -440,25 +435,25 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
         return;
     }
 
-    SaveImage^ saveImageDlg = gcnew SaveImage(mTiled, mRectangular,
+    SaveImage saveImageDlg(mTiled, mRectangular,
         Path::GetFileNameWithoutExtension(Text) + ".png",
         ((Form1^)MdiParent)->saveDirectory);
 
     ((Form1^)MdiParent)->IsModal = true;
-    if (saveImageDlg->ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
+    if (saveImageDlg.ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
         ((Form1^)MdiParent)->IsModal = false;
         ((Form1^)MdiParent)->saveDirectory = 
-            Path::GetDirectoryName(saveImageDlg->FileDlgFileName);
-        bool rect = mTiled && mRectangular && saveImageDlg->checkRectangular->Checked;
-        switch (saveImageDlg->FileDlgFilterIndex) {
+            Path::GetDirectoryName(saveImageDlg.FileDlgFileName);
+        bool rect = mTiled && mRectangular && saveImageDlg.checkRectangular->Checked;
+        switch (saveImageDlg.FileDlgFilterIndex) {
             case 1: // PNG
-                saveToPNGorJPEG(saveImageDlg->FileDlgFileName, nullptr, false, rect);
+                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, false, rect);
                 break;
             case 2: // JPEG
-                saveToPNGorJPEG(saveImageDlg->FileDlgFileName, nullptr, true, rect);
+                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, true, rect);
                 break;
             case 3: // SVG
-                saveToSVG(saveImageDlg->FileDlgFileName);
+                saveToSVG(saveImageDlg.FileDlgFileName);
                 break;
             default:
                 break;
@@ -466,7 +461,6 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
     } else {
         ((Form1^)MdiParent)->IsModal = false;
     }
-    delete saveImageDlg;
 }
 
 bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG, bool rect)
@@ -574,17 +568,17 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
         return;
     }
 
-    SaveMovie^ saveMovieDlg = gcnew SaveMovie(Path::GetFileNameWithoutExtension(Text) + ".mov",
-											  ((Form1^)MdiParent)->saveDirectory);
-    saveMovieDlg->checkZoom->Enabled = !mTiled;
+    SaveMovie saveMovieDlg(Path::GetFileNameWithoutExtension(Text) + ".mov",
+							((Form1^)MdiParent)->saveDirectory);
+    saveMovieDlg.checkZoom->Enabled = !mTiled;
 
     ((Form1^)MdiParent)->IsModal = true;
-    if (saveMovieDlg->ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
+    if (saveMovieDlg.ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
         ((Form1^)MdiParent)->IsModal = false;
         ((Form1^)MdiParent)->saveDirectory = 
-            Path::GetDirectoryName(saveMovieDlg->FileDlgFileName);
+            Path::GetDirectoryName(saveMovieDlg.FileDlgFileName);
 
-        String^ fileName = saveMovieDlg->FileDlgFileName;
+        String^ fileName = saveMovieDlg.FileDlgFileName;
         if (Form1::prefs->ImageAppendVariation) {
             fileName = Path::GetDirectoryName(fileName) + "\\" +
                 Path::GetFileNameWithoutExtension(fileName) +
@@ -637,13 +631,13 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     u.mText = (const char*)(hText.ToPointer());
     u.mTextLen = strlen(u.mText);
 
-    UploadDesign^ uploadWiz = gcnew UploadDesign(this, 
-        Path::GetFileNameWithoutExtension(Text), &u);
+    UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u);
 
     ((Form1^)MdiParent)->IsModal = true;
-    uploadWiz->ShowDialog(this);
+    uploadWiz.ShowDialog(this);
     ((Form1^)MdiParent)->IsModal = false;
-    delete uploadWiz;
+    u.mText = 0;
+    u.mTextLen = 0;
     Marshal::FreeHGlobal(hText);
 }
 
