@@ -493,17 +493,16 @@ void Form1::AddMessage(System::String^ sender, System::String^ msg)
 
 System::Void Form1::Font_Click(System::Object^  sender, System::EventArgs^  e)
 {
-    FontDialog^ fd = gcnew FontDialog();
-    fd->AllowVerticalFonts = false;
-    fd->FontMustExist = true;
-    fd->ShowApply = false;
-    fd->ShowColor = false;
-    fd->ShowEffects = false;
-    fd->ShowHelp = false;
-    fd->Font = TextFont;
-    if (fd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-        TextFont = fd->Font;
+    FontDialog fd;
+    fd.AllowVerticalFonts = false;
+    fd.FontMustExist = true;
+    fd.ShowApply = false;
+    fd.ShowColor = false;
+    fd.ShowEffects = false;
+    fd.ShowHelp = false;
+    fd.Font = TextFont;
+    if (fd.ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+        TextFont = fd.Font;
         updateFontDisplay();
     }
-    delete fd;
 }
