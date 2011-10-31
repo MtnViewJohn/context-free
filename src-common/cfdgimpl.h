@@ -61,7 +61,7 @@ private:
             bool    hasRules;
             bool    isShape;
             int    shapeType;
-            AST::ASTparameters parameters;
+            AST::ASTparameters* parameters;
             int     argSize;
             bool    shouldHaveNoParams;
             
@@ -69,6 +69,7 @@ private:
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
               parameters(0), argSize(0), shouldHaveNoParams(false) { }
         };
+        static void deleteShapeParams(ShapeType& s);
         
         std::vector<ShapeType> m_shapeTypes;
         
