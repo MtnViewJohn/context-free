@@ -107,10 +107,17 @@ CFDGImpl::deleteFunction(pair<const int, ASTdefine*>& p)
     delete p.second;
 }
 
+void
+CFDGImpl::deleteShapeParams(ShapeType& s)
+{
+    delete s.parameters;
+}
+
 CFDGImpl::~CFDGImpl()
 {
     for_each(m_ConfigParameters.begin(), m_ConfigParameters.end(), deleteConfigParam);
     for_each(mFunctions.begin(), mFunctions.end(), deleteFunction);
+    for_each(m_shapeTypes.begin(), m_shapeTypes.end(), deleteShapeParams);
 }
 
 void
@@ -188,8 +195,8 @@ CFDGImpl::addRule(ASTrule* r)
     ShapeType& shapeItem = m_shapeTypes[r->mNameIndex];
     if (shapeItem.shapeType == newShape)
         shapeItem.shapeType = (r->isPath) ? pathType : ruleType; 
-    if (!shapeItem.parameters.empty())
-        r->mRuleBody.mParameters = shapeItem.parameters;
+    if (shapeItem.parameters && !shapeItem.parameters->empty())
+        r->mRuleBody.mParameters = *(shapeItem.parameters);
     shapeItem.hasRules = true;
     return shapeItem.isShape;
 }
@@ -845,7 +852,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize)
     if (m_shapeTypes[shapetype].shapeType != newShape)
         return "Shape name already in use by another rule or path";
     
-    m_shapeTypes[shapetype].parameters = p.mParameters;
+    m_shapeTypes[shapetype].parameters = new AST::ASTparameters(p.mParameters);
     m_shapeTypes[shapetype].isShape = true;
     m_shapeTypes[shapetype].argSize = argSize;
     return 0;
@@ -857,7 +864,7 @@ CFDGImpl::getShapeParams(int shapetype)
     if (shapetype < 0 || shapetype >= int(m_shapeTypes.size()) ||
         !m_shapeTypes[shapetype].isShape)
         return 0;
-    return &(m_shapeTypes[shapetype].parameters);
+    return m_shapeTypes[shapetype].parameters;
 }
 
 int 
