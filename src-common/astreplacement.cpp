@@ -378,7 +378,10 @@ namespace AST {
             s.mParameters = NULL;
         } else {
             s.mParameters = mShapeSpec.evalArgs(r, s.mParameters);
-            s.mShapeType = s.mParameters->ruleHeader.mRuleName;
+            if (mShapeSpec.argSource == ASTruleSpecifier::ParentArgs)
+                s.mShapeType = mShapeSpec.shapeType;
+            else
+                s.mShapeType = s.mParameters->ruleHeader.mRuleName;
             if (s.mParameters->ruleHeader.mParamCount == 0)
                 s.mParameters = NULL;
         }
