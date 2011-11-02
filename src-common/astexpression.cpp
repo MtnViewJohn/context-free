@@ -506,6 +506,19 @@ namespace AST {
         case ParentArgs:
             assert(parent);
             assert(rti);
+            if (shapeType != parent->ruleHeader.mRuleName) {
+                // Child shape is different from parent, even though parameters are reused,
+                // and we can't finesse it in ASTreplacement::traverse(). Just
+                // copy the parameters with the correct shape type.
+                StackType* ret = StackType::alloc(shapeType, argSize, typeSignature);
+                if (argSize)
+                    for (int i = 1; i < argSize + 2; ++i)
+                        ret[i] = parent[i];
+                return ret;
+            }
+        case SimpleParentArgs:
+            assert(parent);
+            assert(rti);
             parent->retain(rti);
             return parent;
         case DynamicArgs: {
