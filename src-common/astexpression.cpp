@@ -477,7 +477,7 @@ namespace AST {
                     simp[i] = r->simpleRule[i];
             return;
         }
-        assert(r->argSource == NoArgs);   // only duplicate constant rule specs
+        assert(r->argSource == NoArgs || Builder::CurrentBuilder->mWant2ndPass);   // only duplicate constant rule specs
     }
     
     ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier& r)
