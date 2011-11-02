@@ -749,7 +749,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = FDB0D3D3085CEE00002FBEED /* Build configuration list for PBXProject "Context Free" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1057,6 +1057,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				PRODUCT_NAME = "Context Free";
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.6.sdk;
 				SDKROOT_ppc = /Developer/SDKs/MacOSX10.6.sdk;
