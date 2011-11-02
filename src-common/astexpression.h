@@ -178,7 +178,7 @@ namespace AST {
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
-        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs };
+        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs, SimpleParentArgs };
         int shapeType;
         int argSize;
         std::string entropyVal;

@@ -525,6 +525,8 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     
     ruleSpec_ptr r(MakeRuleSpec(s, params, loc));
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
+    if (r->argSource == ASTruleSpecifier::ParentArgs)
+        r->argSource = ASTruleSpecifier::SimpleParentArgs;
     if (mInPathContainer) {
         if (!subPath) {
             error(loc, "Replacements are not allowed in paths");
