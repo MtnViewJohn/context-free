@@ -618,9 +618,9 @@ namespace AST {
         isConstant = modExp.empty();
     }
     
-    ASTselect::ASTselect(exp_ptr args, const yy::location& loc)
+    ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
     : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
-      indexCache(0), arguments(NULL)
+      indexCache(0), arguments(NULL), ifSelect(asIf)
     {
         isNatural = args->mType == NumericType;
         isLocal = args->isLocal;
@@ -631,7 +631,7 @@ namespace AST {
         ASTexpression::iterator arg = arguments->begin(), arg_end = arguments->end();
         
         if (arg == arg_end) {
-            CfdgError::Error(loc, "select() function requires at least two arguments");
+            CfdgError::Error(loc, "select()/if() function requires arguments");
             return;
         }
         
@@ -660,16 +660,18 @@ namespace AST {
                     CfdgError::Error(arg->where, "Error determining tuple size");
             } else {
                 if (mType != arg->mType)
-                    CfdgError::Error(arg->where, "select() choices must be of same type");
+                    CfdgError::Error(arg->where, "select()/if() choices must be of same type");
                 else if (mType == NumericType && tupleSize != -1 && 
                          arg->evaluate(0, 0) != tupleSize)
-                    CfdgError::Error(arg->where, "select() choices must be of same length");
+                    CfdgError::Error(arg->where, "select()/if() choices must be of same length");
             }
             isNatural = isNatural && arg->isNatural;
             ++arg;
         }
-        
-        if (firstOne) {
+
+        if (ifSelect && choices.size() != 2) {
+            CfdgError::Error(loc, "if() function requires two arguments");
+        } else if (firstOne) {
             CfdgError::Error(loc, "select() function requires at least two arguments");
         }
         
@@ -2106,7 +2108,9 @@ namespace AST {
         if (selector) {
             double select = 0.0;
             selector->evaluate(&select, 1, rti);
-            if (select < 0.0)
+            if (ifSelect)
+                indexCache = select ? 0 : 1;
+            else if (select < 0.0)
                 indexCache = 0;
             else if ((size_t)select >= choices.size())
                 indexCache = (unsigned)choices.size() - 1;

@@ -159,8 +159,9 @@ namespace AST {
         mutable unsigned indexCache;
         std::string      ent;
         ASTexpression*   arguments;
+        bool             ifSelect;
         
-        ASTselect(exp_ptr args, const yy::location& loc);
+        ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
         virtual ~ASTselect();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
