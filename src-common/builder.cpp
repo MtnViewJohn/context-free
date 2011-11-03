@@ -566,7 +566,9 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     }
     
     if (*name == "select")
-        return new ASTselect(args, nameLoc + argsLoc);
+        return new ASTselect(args, nameLoc + argsLoc, false);
+    if (*name == "if")
+        return new ASTselect(args, nameLoc + argsLoc, true);
     
     ASTfunction::FuncType t = ASTfunction::GetFuncType(*name);
     if (t == ASTfunction::Ftime || t == ASTfunction::Frame)

@@ -1151,6 +1151,12 @@ expfunc:
             $$ = driver.MakeFunction(func, args, @1, @3, true);
         }
         |
+        IF '(' exp2 ')'   { 
+            str_ptr func(new std::string("if"));
+            exp_ptr args($3);
+            $$ = driver.MakeFunction(func, args, @1, @3, false);
+        }
+        |
         USER_STRING { 
             str_ptr var($1);
             $$ = driver.MakeVariable(*var, @1);
@@ -1165,6 +1171,12 @@ exp2func:
         | 
         USER_STRING '(' exp2 ')'   { 
             str_ptr func($1);
+            exp_ptr args($3);
+            $$ = driver.MakeFunction(func, args, @1, @3, false);
+        }
+        | 
+        IF '(' exp2 ')'   { 
+            str_ptr func(new std::string("if"));
             exp_ptr args($3);
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
