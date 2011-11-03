@@ -470,6 +470,7 @@ namespace AST {
     {
         if (r->argSource == SimpleArgs) {
             StackType* simp = StackType::alloc(shapeType, argSize, 0);
+            simp[0].ruleHeader.mRefCount = StackRule::MaxRefCount;
             argSource = SimpleArgs;
             simpleRule = simp;
             if (argSize)
