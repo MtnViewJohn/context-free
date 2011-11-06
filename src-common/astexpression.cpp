@@ -269,6 +269,12 @@ namespace AST {
                 const ASTvariable* v = dynamic_cast<const ASTvariable*> (&*arg);
                 if (v && v->isParameter)
                     break;
+                const ASTfunction* f = dynamic_cast<const ASTfunction*>(&*arg);
+                if (f && (f->functype >= ASTfunction::Rand && f->functype <= ASTfunction::RandInt) &&
+                    f->arguments && f->arguments->isConstant) 
+                {
+                    break;
+                }
                 CfdgError::Error(arg->where, "this expression does not satisfy the number parameter requirement");
                 return -1;
             }
