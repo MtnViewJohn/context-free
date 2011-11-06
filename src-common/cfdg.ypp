@@ -949,16 +949,17 @@ caseHeader:
                 if (valExp->evaluate(&val, 1) != 1) {
                     driver.error(@2, "Case expression is not a single, numeric expression");
                 } else {
-                    ASTrepContainer* caseBody = new ASTrepContainer();
-                    std::pair<ASTswitch::switchMap::iterator, bool> ret = 
-                        driver.switchStack.top()->mCaseStatements.
-                        insert(std::pair<int, ASTrepContainer*>((int)val, caseBody));
+                    int intval = (int)val;
+                    ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
                     
-                    if (!ret.second) {
+                    if (caseMap.count(intval)) {
                         driver.error(@2, "Case value already in use");
-                        delete caseBody;
+                        driver.push_repContainer(*(caseMap[intval]));
+                    } else {
+                        ASTrepContainer* caseBody = new ASTrepContainer();
+                        caseMap[intval] = caseBody;
+                        driver.push_repContainer(*caseBody);
                     }
-                    driver.push_repContainer(*caseBody);
                 }
             }
             catch (DeferUntilRuntime) {
