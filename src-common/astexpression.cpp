@@ -1624,7 +1624,7 @@ namespace AST {
                 if (!entString.empty()) {
                     if (entString.find("evenodd") != std::string::npos)
                         *p |= CF_EVEN_ODD;
-                    if (entString.find("iso") != std::string::npos && !(*p & CF_FILL))
+                    if (entString.find("iso") != std::string::npos)
                         *p |= CF_ISO_WIDTH;
                     if (entString.find("join") != std::string::npos)
                         *p &= ~CF_JOIN_MASK;
