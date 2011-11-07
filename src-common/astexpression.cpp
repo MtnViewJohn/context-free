@@ -570,7 +570,7 @@ namespace AST {
         isConstant = r ? r->isConstant && l->isConstant : l->isConstant;
         isLocal = r ? r->isLocal && l->isLocal : l->isLocal;
         mType = r ? (expType)(l->mType | r->mType) : l->mType;
-        if (strchr("+_*<>LG=n&|X^", o))
+        if (strchr("+_*<>LG=n&|X^!", o))
             isNatural = r ? (l->isNatural && r->isNatural) : l->isNatural;
     }
     
