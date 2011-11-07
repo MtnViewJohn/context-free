@@ -307,8 +307,8 @@ namespace AST {
         if (params.get()) params.release()->simplify()->flatten(temp);
         if (!(temp.empty())) {
             if (temp.front()->mType == ASTexpression::NumericType) {
-                if (!temp.front()->isConstant && 
-                    temp.front()->evaluate(&(mods->strokeWidth), 1) != 1)
+                if (!temp.front()->isConstant || 
+                    temp.front()->evaluate(&(mChildChange.strokeWidth), 1) != 1)
                 {
                     ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, temp.front(), loc);
                     mods->modExp.push_back(w);
