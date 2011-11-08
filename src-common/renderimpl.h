@@ -75,7 +75,7 @@ class RendererImpl : public Renderer {
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr);
         virtual void processShape(const Shape& s);
         virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = 0);
-        virtual void processSubpath(const Shape& s, bool tr);
+        virtual void processSubpath(const Shape& s, bool tr, int);
         
     private:
         void outputPrep(Canvas*);

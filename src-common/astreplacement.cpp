@@ -415,7 +415,7 @@ namespace AST {
             case mixed:
             case command:
                 replace(child, r);
-                r->processSubpath(child, tr || (mRepType == op));
+                r->processSubpath(child, tr || (mRepType == op), mRepType);
                 break;
             default:
                 throw CfdgError("Subpaths must be all path operation or all path command");
