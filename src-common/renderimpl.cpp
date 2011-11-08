@@ -657,9 +657,11 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
 }
 
 void
-RendererImpl::processSubpath(const Shape& s, bool tr)
+RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
 {
     const ASTrule* rule = m_cfdg->findRule(s.mShapeType, 0.0);
+    if ((int)(rule->mRuleBody.mRepType) != expectedType)
+        throw CfdgError(rule->mLocation, "Subpath is not of the expected type (path ops/commands)");
     rule->mRuleBody.traverse(s, tr, this, true);
 }
 

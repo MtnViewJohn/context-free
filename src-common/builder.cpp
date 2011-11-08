@@ -530,6 +530,9 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     if (mInPathContainer) {
         if (!subPath) {
             error(loc, "Replacements are not allowed in paths");
+        } else if (r->argSource == ASTruleSpecifier::StackArgs) {
+            // Parameter subpaths must be all ops, but we must check at runtime
+            t = ASTreplacement::op;
         } else if (m_CFDG->getShapeType(r->shapeType) != CFDGImpl::pathType) {
             error(loc, "Subpath references must be to previously declared paths");
         } else {

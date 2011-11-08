@@ -207,7 +207,7 @@ class Renderer {
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
         virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = 0) = 0;
-        virtual void processSubpath(const Shape& s, bool tr) = 0;
+        virtual void processSubpath(const Shape& s, bool tr, int) = 0;
     
     protected:
         Renderer() 
