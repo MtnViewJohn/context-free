@@ -179,10 +179,11 @@ RendererImpl::cleanup()
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
     mLongLivedParams.clear();
-    mCFstack.clear();
+    mCFstack.clear();   // TODO:: release parameters first
     m_finishedFiles.clear();
     m_unfinishedFiles.clear();
     delete mCurrentPath; mCurrentPath = 0;
+    m_cfdg->resetCachedPaths();
 }
 
 void

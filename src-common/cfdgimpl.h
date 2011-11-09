@@ -139,6 +139,7 @@ private:
         const AST::ASTparameters* getShapeParams(int shapetype);
         int getShapeParamSize(int shapetype);
         int reportStackDepth(int size = 0); 
+        void resetCachedPaths();
 
         AST::ASTdefine* declareFunction(int nameIndex, AST::ASTdefine* def);
         AST::ASTdefine* findFunction(int nameIndex);

@@ -883,6 +883,17 @@ CFDGImpl::reportStackDepth(int size)
     return mStackSize;
 }
 
+void
+CFDGImpl::resetCachedPaths()
+{
+    for (vector<AST::ASTrule*>::iterator it = mRules.begin(), eit = mRules.end();
+         it != eit; ++it)
+    {
+        delete (*it)->mCachedPath;
+        (*it)->mCachedPath = 0;
+    }
+}
+
 AST::ASTdefine*
 CFDGImpl::declareFunction(int nameIndex, AST::ASTdefine* def)
 {
