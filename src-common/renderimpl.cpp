@@ -179,7 +179,21 @@ RendererImpl::cleanup()
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
     mLongLivedParams.clear();
-    mCFstack.clear();   // TODO:: release parameters first
+    
+    unsigned i = 0;
+    for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
+         endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
+    {
+        const ASTreplacement* rep = *cit;
+        const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep);
+        if (def) {
+            if (def->mType == ASTexpression::RuleType)
+                mCFstack[i].rule->release();
+            i += def->mTuplesize;
+        }
+    }
+    mCFstack.clear();
+    
     m_finishedFiles.clear();
     m_unfinishedFiles.clear();
     delete mCurrentPath; mCurrentPath = 0;
