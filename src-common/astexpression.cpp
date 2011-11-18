@@ -966,6 +966,18 @@ namespace AST {
             return -1;
         }
         
+        // short-circuit evaluate && and ||
+        if (res && (op == '&' || op == '|')) {
+            if (l != 0.0 && op == '|') {
+                *res = l;
+                return 1;
+            }
+            if (l == 0.0 && op == '&') {
+                *res = 0.0;
+                return 1;
+            }
+        }
+        
         int rightnum = right ? right->evaluate(res ? &r : 0, 1, rti) : 0; 
         
         if (rightnum == 0 && (op == 'N' || op == 'P' || op == '!')) {
@@ -1029,10 +1041,8 @@ namespace AST {
                     *res = (l != r) ? 1.0 : 0.0;
                     break;
                 case '&':
-                    *res = (l && r) ? 1.0 : 0.0;
-                    break;
                 case '|':
-                    *res = (l || r) ? 1.0 : 0.0;
+                    *res = r;
                     break;
                 case 'X':
                     *res = ((l && !r) || (!l && r)) ? 1.0 : 0.0;
