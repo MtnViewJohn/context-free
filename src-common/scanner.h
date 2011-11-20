@@ -49,6 +49,8 @@
 
 #include "cfdg.tab.hpp"
 #include "builder.h"
+#include <cassert>
+#include <map>
 
 namespace yy {
 
@@ -61,6 +63,7 @@ class Scanner : public CfdgFlexLexer
 {
 public:
     enum LocAction_t { normalAction, pushLoc, popLoc };
+    typedef std::map<CfdgParser::token_type, const char*> tokenMap;
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */
@@ -83,6 +86,7 @@ public:
     LocAction_t nextLocAction;
     int         startToken;
     int         maybeVersion;
+    tokenMap    utf8chars;
     
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
