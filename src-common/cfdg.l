@@ -148,6 +148,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 \xe2\x80\xa6    {return token::RANGEOP;}
 \xc2\xb1        {return token::PLUSMINUSOP;}
 "+/-"           {return token::PLUSMINUSOP;}
+\xe2\x88\x9e    {return token::CF_INFINITY;}
 
 "time"          {yylval->modToken = AST::ASTmodTerm::time;          return token::MODTYPE;}
 "timescale"     {yylval->modToken = AST::ASTmodTerm::timescale;     return token::MODTYPE;}
@@ -292,6 +293,7 @@ Scanner::Scanner(std::istream* in,
     utf8chars[token::LE] = "\xe2\x89\xa4";
     utf8chars[token::GE] = "\xe2\x89\xa5";
     utf8chars[token::NEQ] = "\xe2\x89\xa0";
+    utf8chars[token::CF_INFINITY] = "\xe2\x88\x9e";
 }
 
 Scanner::~Scanner()

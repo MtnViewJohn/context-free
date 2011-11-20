@@ -124,6 +124,7 @@ namespace AST {
 %token AND
 %token OR
 %token XOR
+%token CF_INFINITY
 %right ','
 %left XOR
 %left OR
@@ -1063,6 +1064,8 @@ explist:
 exp:
         USER_RATIONAL       { $$ = new ASTreal(*$1, @$); delete $1; }
         |
+        CF_INFINITY         { $$ = new ASTreal(Renderer::Infinity, @$); }
+        |
         '(' exp2 ')'        { $$ = new ASTparen($2); }
         | 
         expfunc             { $$ = $1; }
@@ -1084,6 +1087,8 @@ exp:
 
 exp2: 
         USER_RATIONAL        { $$ = new ASTreal(*$1, @$); delete $1; }
+        |
+        CF_INFINITY          { $$ = new ASTreal(Renderer::Infinity, @$); }
         |
         exp2func             { $$ = $1; }
         |
