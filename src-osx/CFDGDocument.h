@@ -60,6 +60,7 @@ class AbstractSystem;
 - (IBAction) saveAsSVG:(id)sender;
 - (IBAction) saveAsMovie:(id)sender;
 - (IBAction) uploadToGallery:(id)sender;
+- (IBAction) insertUnicode:(id)sender;
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 
