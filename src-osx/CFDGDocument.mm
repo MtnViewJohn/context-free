@@ -454,6 +454,16 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (IBAction) saveAsSVG:(id)sender   { [mGView saveAsSVG: sender]; }
 - (IBAction) saveAsMovie:(id)sender { [mGView saveAsMovie: sender]; }
 
+- (IBAction) insertUnicode:(id)sender
+{
+    NSMenuItem* menu = (NSMenuItem*)sender;
+    unichar codePoint = (unichar)([menu tag]);
+    if (codePoint) {
+        NSString* unistring = [NSString stringWithCharacters:&codePoint length:1];
+        [mEditor insertText: unistring];
+    }
+}
+
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
 {
