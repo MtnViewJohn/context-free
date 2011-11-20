@@ -48,7 +48,7 @@ RATIONAL2   [0-9]+%?\.\.
 FLOAT       ([0-9]+\.[0-9]*[eE][+-]?[0-9]+%?)|(\.[0-9]+[eE][+-]?[0-9]+%?)|[0-9]+[eE][+-]?[0-9]+%?
 PATHOP      MOVETO|LINETO|ARCTO|CURVETO|MOVEREL|LINEREL|ARCREL|CURVEREL|CLOSEPOLY
 FILENAME   [a-zA-Z\200-\377][a-zA-Z\200-\377_\-0-9\.]*\.cfdg
-STRING     [a-zA-Z\200-\301\303-\377_]([a-zA-Z:_0-9\200-\301\303-\377]|\302[\200-\260\262-\377])*
+STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 
 /* calling this externally    */
 /* don't want yywrap to exist.*/
@@ -145,6 +145,7 @@ STRING     [a-zA-Z\200-\301\303-\377_]([a-zA-Z:_0-9\200-\301\303-\377]|\302[\200
 "switch"        {return token::SWITCH;}
 "case"          {return token::CASE;}
 ".."            {return token::RANGEOP;}
+\xe2\x80\xa6    {return token::RANGEOP;}
 \xc2\xb1        {return token::PLUSMINUSOP;}
 "+/-"           {return token::PLUSMINUSOP;}
 
@@ -204,7 +205,42 @@ STRING     [a-zA-Z\200-\301\303-\377_]([a-zA-Z:_0-9\200-\301\303-\377]|\302[\200
 "--"            { return '_'; }
 
 {PATHOP}    {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
-{STRING}    {yylval->string = new std::string(yytext); return token::USER_STRING;}
+{STRING}    {
+    // This greedy string regex gobbles up Unicode operators. Find the first one
+    // and chop the string there.
+    yylval->string = new std::string(yytext);
+    size_t pos = std::string::npos;
+    token_type tok = token::USER_STRING;
+    for (tokenMap::iterator it = utf8chars.begin(), eit = utf8chars.end(); 
+         it != eit; ++it)
+    {
+        size_t spos = yylval->string->find(it->second);
+        if (spos != std::string::npos && (spos < pos || pos == std::string::npos)) {
+            pos = spos;
+            tok = it->first;
+        }
+    }
+    
+    if (pos == 0) {
+        // Unicode operator found at 1st char, Unread all but the operator and
+        // return the token for the operator.
+        delete yylval->string;
+        yylval->string = 0;
+        size_t len = strlen(utf8chars[tok]);
+        (yylloc->end) += len - yyleng;
+        yyless(len);
+        return tok;
+    }
+    
+    if (pos != std::string::npos) {
+        // Unicode operator found after 1st char. Unread everything from operator to
+        // end of string and truncate string before operator.
+        yylval->string->resize(pos);
+        (yylloc->end) += pos - yyleng;
+        yyless(pos);
+    }
+    return token::USER_STRING;
+}
 {RATIONAL}  {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 {FLOAT}     {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 {RATIONAL2}  {
@@ -251,6 +287,11 @@ Scanner::Scanner(std::istream* in,
     : yyFlexLexer(in, out), nextLocAction(normalAction), 
       startToken(token::CFDG2), maybeVersion(0)
 {
+    utf8chars[token::RANGEOP] = "\xe2\x80\xa6";
+    utf8chars[token::PLUSMINUSOP] = "\xc2\xb1";
+    utf8chars[token::LE] = "\xe2\x89\xa4";
+    utf8chars[token::GE] = "\xe2\x89\xa5";
+    utf8chars[token::NEQ] = "\xe2\x89\xa0";
 }
 
 Scanner::~Scanner()
