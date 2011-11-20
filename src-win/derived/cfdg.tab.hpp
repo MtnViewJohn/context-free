@@ -181,8 +181,9 @@ namespace yy {
      AND = 297,
      OR = 298,
      XOR = 299,
-     POS = 300,
-     NEG = 301
+     CF_INFINITY = 300,
+     POS = 301,
+     NEG = 302
    };
 
     };
@@ -356,7 +357,7 @@ namespace yy {
 } // yy
 
 /* Line 34 of lalr1.cc  */
-#line 360 "cfdg.tab.hpp"
+#line 361 "cfdg.tab.hpp"
 
 
 
