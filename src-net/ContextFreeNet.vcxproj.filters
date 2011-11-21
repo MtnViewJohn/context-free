@@ -447,6 +447,8 @@
     <None Include="..\input\welcome.cfdg" />
     <None Include="..\src-win\res\widgetform.html" />
     <None Include="..\input\ziggy.cfdg" />
+    <None Include="..\src-common\cfdg.l" />
+    <None Include="..\src-common\cfdg.ypp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">

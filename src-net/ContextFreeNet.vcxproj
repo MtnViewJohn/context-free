@@ -1407,6 +1407,8 @@
     <ClInclude Include="..\src-win\WinSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\src-common\cfdg.l" />
+    <None Include="..\src-common\cfdg.ypp" />
     <None Include="app.ico" />
     <None Include="..\src-win\res\busy_f01.ico" />
     <None Include="..\src-win\res\ContextFree.ico" />
