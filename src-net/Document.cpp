@@ -677,6 +677,13 @@ System::Void Document::menuEDelete_Click(System::Object^  sender, System::EventA
         cfdgText->SelectedText = String::Empty;
 }
 
+System::Void Document::toolStripMenuUnicode_Click(System::Object^  sender, System::EventArgs^  e)
+{
+    ToolStripMenuItem^ i = dynamic_cast<ToolStripMenuItem^>(sender);
+    if (i != nullptr)
+        cfdgText->SelectedText = i->Text;
+}
+
 System::Void Document::textFontHandler(System::Object^ sender, System::EventArgs^ e)
 {
     bool mod = cfdgText->Modified;
