@@ -980,12 +980,16 @@ void Document::DoRender()
 
 bool Document::SyncToSystem()
 {
-    IntPtr hName = Marshal::StringToHGlobalAnsi(this->Name);
-    IntPtr hText = Marshal::StringToHGlobalAnsi(cfdgText->Text);
-    bool ret = mSystem->updateInfo((const char*)(hName.ToPointer()), (const char*)(hText.ToPointer()));
-    Marshal::FreeHGlobal(hName);
-    Marshal::FreeHGlobal(hText);
-    return ret;
+    // Encode the text as UTF8
+    array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdgText->Text);
+    array<Byte>^ encodedName = System::Text::Encoding::UTF8->GetBytes(this->Name);
+
+    // prevent GC moving the bytes around while this variable is on the stack
+    pin_ptr<Byte> pinnedCfdg = &encodedCfdg[0];
+    pin_ptr<Byte> pinnedName = &encodedName[0];
+
+    return mSystem->updateInfo(reinterpret_cast<const char*>(pinnedName), 
+                               reinterpret_cast<const char*>(pinnedCfdg));
 }
 
 void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
