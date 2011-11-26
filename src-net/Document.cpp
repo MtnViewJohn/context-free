@@ -544,10 +544,11 @@ void Document::saveToSVG(String^ path)
 
     renderParams->action = RenderParameters::RenderActions::SaveSVG;
 
-    IntPtr hPath = Marshal::StringToHGlobalAnsi(path);
-    mSVGCanvas = new SVGCanvas((const char*)(hPath.ToPointer()), 
+    array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(path);
+    pin_ptr<Byte> pathutf8pin = &pathutf8[0];
+
+    mSVGCanvas = new SVGCanvas(reinterpret_cast<const char*>(pathutf8pin), 
         renderParams->width, renderParams->height, Form1::prefs->ImageCrop);
-    Marshal::FreeHGlobal(hPath);
 
     postAction = PostRenderAction::DoNothing;
     renderThread->RunWorkerAsync();
@@ -592,13 +593,13 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
         renderParams->animateZoom = Form1::prefs->AnimateZoom;
         renderParams->action = RenderParameters::RenderActions::Animate;
 
-        IntPtr hPath = Marshal::StringToHGlobalAnsi(fileName);
-        char* path = (char*)(hPath.ToPointer());
+        array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(fileName);
+        pin_ptr<Byte> pathutf8pin = &pathutf8[0];
+        const char* path = reinterpret_cast<const char*>(pathutf8pin);
 
 		mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine),
                                         renderParams->width, renderParams->height,
                                         Form1::prefs->AnimateFrameRate);
-        Marshal::FreeHGlobal(hPath);
 
         if (mAnimationCanvas->mError) {
             delete mAnimationCanvas;
@@ -627,8 +628,10 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     u.mRect = mTiled && mRectangular;
     u.mVariation = currentVariation;
 
-    IntPtr hText = Marshal::StringToHGlobalAnsi(cfdgText->Text);
-    u.mText = (const char*)(hText.ToPointer());
+    array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdgText->Text);
+    pin_ptr<Byte> pinnedCfdg = &encodedCfdg[0];
+
+    u.mText = reinterpret_cast<const char*>(pinnedCfdg);
     u.mTextLen = strlen(u.mText);
 
     UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u);
@@ -638,7 +641,6 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     ((Form1^)MdiParent)->IsModal = false;
     u.mText = 0;
     u.mTextLen = 0;
-    Marshal::FreeHGlobal(hText);
 }
 
 System::Void Document::menuEUndo_Click(System::Object^ sender, System::EventArgs^ e)
@@ -898,9 +900,9 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
     }
 
     mUserChangedVariation = true;
-    IntPtr newText = Marshal::StringToHGlobalAnsi(variationEdit->Text);
-    currentVariation = Variation::fromString((char*)(newText.ToPointer()));
-    Marshal::FreeHGlobal(newText);
+    array<Byte>^ encodedVar = System::Text::Encoding::UTF8->GetBytes(variationEdit->Text);
+    pin_ptr<Byte> pinnedVar = &encodedVar[0];
+    currentVariation = Variation::fromString(reinterpret_cast<const char*>(pinnedVar));
 }
 
 void Document::updateRenderButton()

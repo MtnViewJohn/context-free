@@ -136,54 +136,86 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
     if (e->NewIndex == 3) {
         wizard1->CancelText = "OK";
 
-        IntPtr h = Marshal::StringToHGlobalAnsi(usernameBox->Text);
-        mUpload->mUserName = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
 
-        h = Marshal::StringToHGlobalAnsi(passwordBox->Text);
-        mUpload->mPassword = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (usernameBox->Text->Length == 0) {
+			statusLabelUpload->Text = "You must provide a username.";
+            uploadBrowser->Navigate("about:NavigationFailure");
+			return;
+        }
+        array<Byte>^ utf8array = encodeutf8->GetBytes(usernameBox->Text);
+        pin_ptr<Byte> utf8arraypin = &utf8array[0];
+        mUpload->mUserName = reinterpret_cast<const char*>(utf8arraypin);
 
-        h = Marshal::StringToHGlobalAnsi(titleBox->Text);
-        mUpload->mTitle = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (passwordBox->Text->Length == 0) {
+			statusLabelUpload->Text = "You must provide a password.";
+            uploadBrowser->Navigate("about:NavigationFailure");
+			return;
+        }
+        utf8array = encodeutf8->GetBytes(passwordBox->Text);
+        utf8arraypin = &utf8array[0];
+        mUpload->mPassword = reinterpret_cast<const char*>(utf8arraypin);
 
-        h = Marshal::StringToHGlobalAnsi(notesBox->Text);
-        mUpload->mNotes = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (titleBox->Text->Length == 0) {
+			statusLabelUpload->Text = "You must provide a title.";
+            uploadBrowser->Navigate("about:NavigationFailure");
+			return;
+        }
+        utf8array = encodeutf8->GetBytes(titleBox->Text);
+        utf8arraypin = &utf8array[0];
+        mUpload->mTitle = reinterpret_cast<const char*>(utf8arraypin);
 
-        h = Marshal::StringToHGlobalAnsi(fileNameBox->Text + ".cfdg");
-        mUpload->mFileName = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (notesBox->Text->Length > 0) {
+            utf8array = encodeutf8->GetBytes(notesBox->Text);
+            utf8arraypin = &utf8array[0];
+            mUpload->mNotes = reinterpret_cast<const char*>(utf8arraypin);
+        }
+
+        if (fileNameBox->Text->Length == 0) {
+			statusLabelUpload->Text = "You must provide a file name.";
+            uploadBrowser->Navigate("about:NavigationFailure");
+			return;
+        }
+        utf8array = encodeutf8->GetBytes(fileNameBox->Text + ".cfdg");
+        utf8arraypin = &utf8array[0];
+        mUpload->mFileName = reinterpret_cast<const char*>(utf8arraypin);
 
         mUpload->mCompression = radioJPEG->Checked ? 
             Upload::CompressJPEG : Upload::CompressPNG8;
 
         mUpload->mTiled = checkTiled->Checked;
 
-        h = Marshal::StringToHGlobalAnsi(Form1::prefs->ccLicense);
-        mUpload->mccLicenseURI = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (Form1::prefs->ccLicense->Length > 0) {
+            utf8array = encodeutf8->GetBytes(Form1::prefs->ccLicense);
+            utf8arraypin = &utf8array[0];
+            mUpload->mccLicenseURI = reinterpret_cast<const char*>(utf8arraypin);
+        }
 
-        h = Marshal::StringToHGlobalAnsi(Form1::prefs->ccName);
-        mUpload->mccLicenseName = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (Form1::prefs->ccName->Length > 0) {
+            utf8array = encodeutf8->GetBytes(Form1::prefs->ccName);
+            utf8arraypin = &utf8array[0];
+            mUpload->mccLicenseName = reinterpret_cast<const char*>(utf8arraypin);
+        }
 
-        h = Marshal::StringToHGlobalAnsi(Form1::prefs->ccImage);
-        mUpload->mccLicenseImage = (char*)(h.ToPointer());
-        Marshal::FreeHGlobal(h);
+        if (Form1::prefs->ccImage->Length > 0) {
+            utf8array = encodeutf8->GetBytes(Form1::prefs->ccImage);
+            utf8arraypin = &utf8array[0];
+            mUpload->mccLicenseImage = reinterpret_cast<const char*>(utf8arraypin);
+        }
+
+        utf8arraypin = nullptr;
 
         MemoryStream^ bitmapStream = gcnew MemoryStream();
         if (!mDoc->saveToPNGorJPEG(nullptr, bitmapStream, false, 
-            mUpload->mRect && mUpload->mTiled))
+            mUpload->mRect && mUpload->mTiled) || bitmapStream->Length == 0)
 		{
 			statusLabelUpload->Text = "Upload failed because of image problems.";
             uploadBrowser->Navigate("about:NavigationFailure");
 			return;
 		}
-        cli::array<Byte>^ imageDataArray = bitmapStream->GetBuffer();
-        cli::pin_ptr<const System::Byte> imageData = &imageDataArray[0];
-        mUpload->mImage = (const char*)imageData;
+        array<Byte>^ imageDataArray = bitmapStream->GetBuffer();
+        pin_ptr<Byte> imageData = &imageDataArray[0];
+        mUpload->mImage = reinterpret_cast<const char*>(imageData);
         mUpload->mImageLen = imageDataArray->Length;
 
         std::ostringstream payload;
@@ -191,24 +223,20 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         std::string hdr = mUpload->generateHeader();
         String^ header = gcnew String(hdr.c_str());
         int payloadLength = (int)payload.str().length();
-        std::string sPayload = payload.str();
-        const char* cPayload = sPayload.c_str();
-        void* vPayload = (void*)cPayload;
-        IntPtr iPayload = IntPtr(vPayload);
         array<Byte>^ postData = gcnew array<Byte>(payloadLength);
-        Marshal::Copy(iPayload, postData, 0, payloadLength);
+        pin_ptr<Byte> postDataPin = &postData[0];
+        char* postBuf = reinterpret_cast<char*>(postDataPin);
+        const std::string payloadstr = payload.str();
+        const char* payloadbuf = payloadstr.c_str();
+        memcpy(postBuf, payloadbuf, payloadLength);
+        postDataPin = nullptr;
 
         uploadPoll->Enabled = true;
         statusLabelUpload->Text = "Upload in progress.";
         wizard1->CancelEnabled = false;
 
-#ifdef DEBUG
-        uploadBrowser->Navigate("http://aluminium.local/~john/cfa2/gallery/upload.php", 
-            String::Empty, postData, header);
-#else
         uploadBrowser->Navigate("http://www.contextfreeart.org/gallery/upload.php", 
             String::Empty, postData, header);
-#endif
     }
 }
 
