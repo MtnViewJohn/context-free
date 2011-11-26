@@ -228,7 +228,6 @@ namespace ContextFreeNet {
             this->statusStripUpload->TabIndex = 1;
             this->statusStripUpload->Text = L"statusStrip1";
             this->statusStripUpload->Visible = false;
-            this->statusStripUpload->ItemClicked += gcnew System::Windows::Forms::ToolStripItemClickedEventHandler(this, &UploadDesign::statusStripUpload_ItemClicked);
             // 
             // statusIconUpload
             // 
@@ -566,7 +565,5 @@ namespace ContextFreeNet {
                  CristiPotlog::Controls::Wizard::BeforeSwitchPagesEventArgs^ e);
              System::Void wizardPage_afterChange(System::Object^ sender, 
                  CristiPotlog::Controls::Wizard::AfterSwitchPagesEventArgs^ e);
-private: System::Void statusStripUpload_ItemClicked(System::Object^  sender, System::Windows::Forms::ToolStripItemClickedEventArgs^  e) {
-         }
 };
 }

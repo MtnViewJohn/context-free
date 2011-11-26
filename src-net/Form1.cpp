@@ -75,12 +75,13 @@ void Form1::StaticInitialization()
             array<Byte>^ cfdgBytes = (array<Byte>^)(resItems->Value);
             String^ cfdgText = encoding->GetString(cfdgBytes);
             String^ cfdgName = resName + ".cfdg";
-            IntPtr textHandle = Runtime::InteropServices::Marshal::StringToHGlobalAnsi(cfdgText);
-            IntPtr nameHandle = Runtime::InteropServices::Marshal::StringToHGlobalAnsi(cfdgName);
-            WinSystem::AddExample((const char*)(nameHandle.ToPointer()), 
-                (const char*)(textHandle.ToPointer()));
-            Runtime::InteropServices::Marshal::FreeHGlobal(textHandle);
-            Runtime::InteropServices::Marshal::FreeHGlobal(nameHandle);
+            array<Byte>^ encodedName = encoding->GetBytes(cfdgName);
+
+            pin_ptr<Byte> pinnedCfdg = &cfdgBytes[0];
+            pin_ptr<Byte> pinnedName = &encodedName[0];
+
+            WinSystem::AddExample(reinterpret_cast<const char*>(pinnedName), 
+                reinterpret_cast<const char*>(pinnedCfdg));
 
             exampleSet->Add(cfdgName, cfdgText);
         }
