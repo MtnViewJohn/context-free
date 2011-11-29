@@ -170,6 +170,8 @@ CFDGImpl::findRule(int shapetype, double r)
     
     vector<ASTrule*>::iterator first = lower_bound(mRules.begin(), mRules.end(), 
                                                    &needle, ASTrule::compareLT);
+    if (first == mRules.end() || (*first)->mNameIndex != shapetype)
+        throw CfdgError("Cannot find a rule for a shape (very helpful I know).");
     return *first;
 }
 
