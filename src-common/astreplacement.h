@@ -31,6 +31,7 @@
 #include "location.hh"
 #include "cfdg.h"
 #include "shape.h"
+#include "primShape.h"
 #include <string>
 #include <map>
 #include "CmdInfo.h"
@@ -171,6 +172,7 @@ namespace AST {
         int mNameIndex;
         WeightTypes weightType;
         
+        static const ASTrule* PrimitivePaths[primShape::numTypes];
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)

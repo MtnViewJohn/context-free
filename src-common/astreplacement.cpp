@@ -47,6 +47,9 @@ namespace AST {
     
     static const ASTparameter zeroParam;
     
+    const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { 0 };
+
+    
     void
     ASTrepContainer::addParameter(const std::string& type, int index,
                                   const yy::location& typeLoc, const yy::location& nameLoc) 
