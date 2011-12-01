@@ -34,11 +34,7 @@
 
 namespace AST {
 
-    CommandInfo  CommandInfo::shapeMap[3] = {
-        CommandInfo(0, &primShape::circle),
-        CommandInfo(0, &primShape::square),
-        CommandInfo(0, &primShape::triangle)
-    };
+    const CommandInfo CommandInfo::Default(0, 0);
     
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
     {

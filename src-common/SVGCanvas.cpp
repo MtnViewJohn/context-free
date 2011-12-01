@@ -150,21 +150,21 @@ void SVGCanvas::circle(RGBA8 c, agg::trans_affine tr)
 {
     tr *= mOffset;
     mOutput << mEndline << "<circle r=\"0.5\"";
-    complete(c, tr, 8, AST::CommandInfo::shapeMap[primShape::circleType]);
+    complete(c, tr, 8, AST::CommandInfo::Default);
 }
 
 void SVGCanvas::square(RGBA8 c, agg::trans_affine tr)
 {
     tr *= mOffset;
     mOutput << mEndline << "<rect x=\"-0.5\" y=\"-0.5\" width=\"1\" height=\"1\" " ;
-    complete(c, tr, 6, AST::CommandInfo::shapeMap[primShape::squareType]);
+    complete(c, tr, 6, AST::CommandInfo::Default);
 }
 
 void SVGCanvas::triangle(RGBA8 c, agg::trans_affine tr)
 {
     tr *= mOffset;
     mOutput << mEndline << "<use xlink:href=\"#TRIANGLE\"";
-    complete(c, tr, 5, AST::CommandInfo::shapeMap[primShape::triangleType]);
+    complete(c, tr, 5, AST::CommandInfo::Default);
 }
 
 void SVGCanvas::fill(RGBA8)

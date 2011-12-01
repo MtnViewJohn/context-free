@@ -75,7 +75,10 @@ const double FIXED_BORDER = 8.0; // fixed extra border, in pixels
 RendererImpl::RendererImpl(CFDGImpl* cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
-    : m_cfdg(cfdg), mVariation(variation), m_border(border), m_minSize(minSize)
+    : m_cfdg(cfdg), mVariation(variation), m_border(border), m_minSize(minSize),
+      shape0(*primShape::shapeMap[0]), 
+      shape1(*primShape::shapeMap[1]),
+      shape2(*primShape::shapeMap[2])
 {
     m_width = width;
     m_height = height;
@@ -86,6 +89,12 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     m_maxShapes = 500000000;
     m_currScale = 0.0;
     mScaleArea = mScale = 0.0;
+    shapeMap[0].mFlags = shapeMap[1].mFlags = shapeMap[2].mFlags = 
+        CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
+    shapeMap[0].mPathUID = shapeMap[1].mPathUID = shapeMap[2].mPathUID = 0;
+    shapeMap[0].mPath = &shape0;
+    shapeMap[1].mPath = &shape1;
+    shapeMap[2].mPath = &shape2;
 }
 
 void
@@ -614,7 +623,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
             path->traversePath(s, this);
         } else {
             CommandInfo* attr = 0;
-            if (s.mShapeType < 3) attr = &(CommandInfo::shapeMap[s.mShapeType]);
+            if (s.mShapeType < 3) attr = &(shapeMap[s.mShapeType]);
             processPathCommand(s, attr);
         }
         mTotalArea += mCurrentArea;

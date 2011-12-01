@@ -137,8 +137,10 @@ class aggCanvas::impl {
         agg::fast_ellipse   unitEllipse;
         
         agg::trans_affine   unitTrans;
+        primShape           unitSquare;
         TransSquare         shapeSquare;
         TransEllipse        shapeEllipse;
+        primShape           unitTriangle;
         TransTriangle       shapeTriangle;
     
         pathIterator pathSource;
@@ -155,10 +157,10 @@ class aggCanvas::impl {
         std::set<agg::int64u> pixelSet;
         
         impl(aggCanvas* canvas)
-            : buffer(), mCanvas(canvas), 
-              shapeSquare(primShape::square, unitTrans), 
-              shapeEllipse(unitEllipse, unitTrans),
-              shapeTriangle(primShape::triangle, unitTrans), 
+            : buffer(), mCanvas(canvas), unitSquare(primShape::square),
+              shapeSquare(unitSquare, unitTrans), 
+              shapeEllipse(unitEllipse, unitTrans), unitTriangle(primShape::triangle),
+              shapeTriangle(unitTriangle, unitTrans), 
               cropWidth(0), cropHeight(0)
         {
 //            rasterizer.gamma(agg::gamma_power(1.0));
