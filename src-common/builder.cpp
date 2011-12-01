@@ -86,6 +86,52 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     Builder::CurrentBuilder = this;
     ASTparameter::Impure = false;
     mContainerStack.push_back(&(cfdg->mCFDGcontents));
+    
+    if (ASTrule::PrimitivePaths[primShape::circleType] == 0) {
+        for (unsigned i = 0; i < primShape::numTypes; ++i) {
+            if (primShape::shapeMap[i]) {
+                ASTrule* r = new ASTrule(i, CfdgError::Default);
+                ASTrule::PrimitivePaths[i] = r;
+                static const std::string  move("MOVETO");
+                static const std::string  line("LINETO");
+                static const std::string   arc("ARCTO");
+                static const std::string close("CLOSEPOLY");
+                if (i != primShape::circleType) {
+                    primShape::shapeMap[i]->rewind(0);
+                    double x = 0, y = 0;
+                    unsigned cmd;
+                    while (!agg::is_stop(cmd = primShape::shapeMap[i]->vertex(&x, &y))) {
+                        if (agg::is_vertex(cmd)) {
+                            exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default), 
+                                                  new ASTreal(y, CfdgError::Default)));
+                            ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move : line,
+                                                          a, true, CfdgError::Default);
+                            r->mRuleBody.mBody.push_back(op);
+                        }
+                    }
+                } else {
+                    exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
+                                          new ASTreal(0.0, CfdgError::Default)));
+                    ASTpathOp* op = new ASTpathOp(move, a, true, CfdgError::Default);
+                    r->mRuleBody.mBody.push_back(op);
+                    a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
+                                        new ASTcons(new ASTreal(0.0, CfdgError::Default), 
+                                                    new ASTreal(0.5, CfdgError::Default))));
+                    op = new ASTpathOp(arc, a, true, CfdgError::Default);
+                    r->mRuleBody.mBody.push_back(op);
+                    a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
+                                        new ASTcons(new ASTreal(0.0, CfdgError::Default), 
+                                                    new ASTreal(0.5, CfdgError::Default))));
+                    op = new ASTpathOp(arc, a, true, CfdgError::Default);
+                    r->mRuleBody.mBody.push_back(op);
+                }
+                r->mRuleBody.mBody.push_back(new ASTpathOp(close, exp_ptr(), true,
+                                                           CfdgError::Default));
+                r->mRuleBody.mRepType = ASTreplacement::op;
+                r->mRuleBody.mPathOp = AST::MOVETO;
+            }
+        }
+    }
 }
 
 Builder::~Builder()
@@ -533,15 +579,17 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
         } else if (r->argSource == ASTruleSpecifier::StackArgs) {
             // Parameter subpaths must be all ops, but we must check at runtime
             t = ASTreplacement::op;
-        } else if (m_CFDG->getShapeType(r->shapeType) != CFDGImpl::pathType) {
-            error(loc, "Subpath references must be to previously declared paths");
-        } else {
+        } else if (m_CFDG->getShapeType(r->shapeType) == CFDGImpl::pathType) {
             const ASTrule* rule = m_CFDG->findRule(r->shapeType);
             if (rule) {
                 t = (ASTreplacement::repElemListEnum)rule->mRuleBody.mRepType;
             } else {
                 error(loc, "Subpath references must be to previously declared paths");
             }
+        } else if (primShape::isPrimShape(r->shapeType)){
+            t = ASTreplacement::op;
+        } else {
+            error(loc, "Subpath references must be to previously declared paths");
         }
     }
     return rep_ptr(new ASTreplacement(*r, r->entropyVal, mods, loc, t));
