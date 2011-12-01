@@ -40,15 +40,12 @@ class primShape : public agg::path_storage
         }
         primShape() {}
     
-		static primShape circle;
-		static primShape square;
-		static primShape triangle;
-        static primShape* shapeMap[numTypes];
+		static const primShape circle;
+		static const primShape square;
+		static const primShape triangle;
+        static const primShape* shapeMap[numTypes];
         static bool isPrimShape(unsigned v) { return v < numTypes; }
         static bool isPrimShape(agg::path_storage* p);
-		
-	private:
-        primShape& operator=(primShape& s);
 };
 	
 #endif // INCLUDE_PRIMSHAPE_H

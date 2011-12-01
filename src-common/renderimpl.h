@@ -153,6 +153,11 @@ class RendererImpl : public Renderer {
         int m_unfinishedInFilesCount;
     
         std::deque<const StackType*> mLongLivedParams;
+    
+        AST::CommandInfo shapeMap[3];
+        primShape        shape0;
+        primShape        shape1;
+        primShape        shape2;
 };
 
 

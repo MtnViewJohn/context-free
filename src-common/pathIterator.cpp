@@ -28,8 +28,10 @@
 #include "CmdInfo.h"
 #include "primShape.h"
 
+static primShape dummy;
+
 pathIterator::pathIterator() 
-: curved(primShape::square), 
+: curved(dummy), 
   curvedStroked(curved), curvedStrokedTrans(curvedStroked, unitTrans),
   curvedTrans(curved, unitTrans), curvedTransStroked(curvedTrans),
   curvedTransCentroid(curvedTrans), 

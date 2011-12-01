@@ -52,7 +52,8 @@ namespace AST {
         agg::path_storage*  mPath;
         UIDtype             mPathUID;
         
-        static CommandInfo shapeMap[3]; 
+        static const CommandInfo
+                            Default;
         
         CommandInfo() 
         : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(NULL), 

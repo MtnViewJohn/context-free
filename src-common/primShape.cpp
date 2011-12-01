@@ -39,7 +39,7 @@ static const point_d squareV[4] = {
     point_d( 0.5, -0.5)
 };
 
-primShape primShape::square(squareV, 4);
+const primShape primShape::square(squareV, 4);
 
 static const double h = 0.5 / cos(M_PI/6.0);
 static const double hp = h;
@@ -51,7 +51,7 @@ static const point_d triV[3] = {
     point_d( 0.5, hn)
 };
 
-primShape primShape::triangle(triV, 3);
+const primShape primShape::triangle(triV, 3);
 
 static const double t = sqrt(2.0) / 4.0;
 
@@ -65,9 +65,9 @@ static const point_d circleV[8] = {
     point_d( 0.0, -0.5),
     point_d(   t,   -t)
 };
-primShape primShape::circle(circleV, 8);
+const primShape primShape::circle(circleV, 8);
 
-primShape* primShape::shapeMap[numTypes] = { 
+const primShape* primShape::shapeMap[numTypes] = { 
     &primShape::circle, 
     &primShape::square, 
     &primShape::triangle,

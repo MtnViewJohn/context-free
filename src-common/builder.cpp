@@ -89,7 +89,11 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     
     if (ASTrule::PrimitivePaths[primShape::circleType] == 0) {
         for (unsigned i = 0; i < primShape::numTypes; ++i) {
-            if (primShape::shapeMap[i]) {
+            // primShape statics are const because of thread safety issues.
+            // But Builder is a singleton and preceeds any thread's access
+            // to primShape statics. So this const_cast is ok.
+            primShape* map = const_cast<primShape*>(primShape::shapeMap[i]);
+            if (map) {
                 ASTrule* r = new ASTrule(i, CfdgError::Default);
                 ASTrule::PrimitivePaths[i] = r;
                 static const std::string  move("MOVETO");
@@ -97,10 +101,10 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
                 static const std::string   arc("ARCTO");
                 static const std::string close("CLOSEPOLY");
                 if (i != primShape::circleType) {
-                    primShape::shapeMap[i]->rewind(0);
+                    map->rewind(0);
                     double x = 0, y = 0;
                     unsigned cmd;
-                    while (!agg::is_stop(cmd = primShape::shapeMap[i]->vertex(&x, &y))) {
+                    while (!agg::is_stop(cmd = map->vertex(&x, &y))) {
                         if (agg::is_vertex(cmd)) {
                             exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default), 
                                                   new ASTreal(y, CfdgError::Default)));
