@@ -315,11 +315,21 @@ CFDGImpl::isTimed(agg::trans_affine_time* t) const
     return true;
 }
 
+static void
+addUnique(CFDG::SymmList& syms, agg::trans_affine& tr)
+{
+    for (CFDG::SymmList::iterator it = syms.begin(), eit = syms.end(); it != eit; ++it) {
+        if (*it == tr)
+            return;
+    }
+    syms.push_back(tr);
+}
+
 // Analyze the symmetry spec accumulated in the data vector and add the 
 // appropriate affine transforms to the SymmList. Avoid adding the identity
 // transform if it is already present in the SymmList.
 static void
-processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
+processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 std::vector<double>& data, const yy::location& where)
 {
     if (data.empty()) return;
@@ -347,12 +357,13 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             int num = (int)order;
             order = 2.0 * M_PI / order;
             for (int i = 0; i < num; ++i) {
-                if (i == 0 && ident) continue;
                 agg::trans_affine tr;
-                tr.translate(-x, -y);
-                tr.rotate(i * order);
-                tr.translate(x, y);
-                syms.push_back(tr);
+                if (i) {
+                    tr.translate(-x, -y);
+                    tr.rotate(i * order);
+                    tr.translate(x, y);
+                }
+                addUnique(syms, tr);
             }
             break;
         }
@@ -386,14 +397,13 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             order = 2.0 * M_PI / order;
             for (int i = 0; i < num; ++i) {
                 agg::trans_affine tr(reg);
-                tr.rotate(i * order);
+                if (i) tr.rotate(i * order);
                 agg::trans_affine tr2(tr);
                 tr2 *= mirror;
                 tr.translate(x, y);
                 tr2.translate(x, y);
-                if (i || !ident)
-                    syms.push_back(tr);
-                syms.push_back(tr2);
+                addUnique(syms, tr);
+                addUnique(syms, tr2);
             }
             break;
         }
@@ -408,15 +418,14 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                 CfdgError::Error(where, "Wrong number of arguments");
             }
             agg::trans_affine tr;
-            if (!ident)
-                syms.push_back(tr);
+            addUnique(syms, tr);
             tr.translate(-mirrorx, -mirrory);
             if (tile.sx != 0.0)
                 tr.flip_y();
             else
                 tr.flip_x();
             tr.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
-            syms.push_back(tr);
+            addUnique(syms, tr);
             break;
         }
         case AST::CF_P11M: {
@@ -430,15 +439,14 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                 CfdgError::Error(where, "Wrong number of arguments");
             }
             agg::trans_affine tr;
-            if (!ident)
-                syms.push_back(tr);
+            addUnique(syms, tr);
             tr.translate(-mirrorx, -mirrory);
             if (tile.sx != 0.0)
                 tr.flip_y();
             else
                 tr.flip_x();
             tr.translate(mirrorx, mirrory);
-            syms.push_back(tr);
+            addUnique(syms, tr);
             break;
         }
         case AST::CF_P1M1: {
@@ -452,15 +460,14 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                 CfdgError::Error(where, "Wrong number of arguments");
             }
             agg::trans_affine tr;
-            if (!ident)
-                syms.push_back(tr);
+            addUnique(syms, tr);
             tr.translate(-mirrorx, -mirrory);
             if (tile.sx != 0.0)
                 tr.flip_x();
             else
                 tr.flip_y();
             tr.translate(mirrorx, mirrory);
-            syms.push_back(tr);
+            addUnique(syms, tr);
             break;
         }
         case AST::CF_P2: {
@@ -472,13 +479,12 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
                 CfdgError::Error(where, "Wrong number of arguments");
             }
             agg::trans_affine tr;
-            if (!ident)
-                syms.push_back(tr);
+            addUnique(syms, tr);
             tr.translate(-mirrorx, -mirrory);
             tr.flip_x();
             tr.flip_y();
             tr.translate(mirrorx, mirrory);
-            syms.push_back(tr);
+            addUnique(syms, tr);
             break;
         }
         case AST::CF_P2MG: {
@@ -500,11 +506,10 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             tr2.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
             tr3.translate(mirrorx, mirrory);
             tr4.translate(tile.sx * 0.5 + mirrorx, tile.sy * 0.5 + mirrory);
-            if (!ident)
-                syms.push_back(tr1);
-            syms.push_back(tr2);
-            syms.push_back(tr3);
-            syms.push_back(tr4);
+            addUnique(syms, tr1);
+            addUnique(syms, tr2);
+            addUnique(syms, tr3);
+            addUnique(syms, tr4);
             break;
         }
         case AST::CF_P2MM: {
@@ -526,11 +531,10 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             tr2.translate(mirrorx, mirrory);
             tr3.translate(mirrorx, mirrory);
             tr4.translate(mirrorx, mirrory);
-            if (!ident)
-                syms.push_back(tr1);
-            syms.push_back(tr2);
-            syms.push_back(tr3);
-            syms.push_back(tr4);
+            addUnique(syms, tr1);
+            addUnique(syms, tr2);
+            addUnique(syms, tr3);
+            addUnique(syms, tr4);
             break;
         }
         default:
@@ -538,7 +542,6 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool& ident,
             break;  // never gets here
     }
     data.clear();
-    ident = true;
 }
 
 void
@@ -550,14 +553,12 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
 
     std::vector<double> symmSpec;
     yy::location where;
-    bool hasIdentity = false;
-    static const agg::trans_affine identity;
     for (ASTexpression::const_iterator cit = e->begin(), eit = e->end(); 
          cit != eit; ++cit)
     {
         switch (cit->mType) {
             case ASTexpression::FlagType:
-                processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+                processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
                 where = cit->where;
             case ASTexpression::NumericType:
                 if (symmSpec.empty() && cit->mType != ASTexpression::FlagType)
@@ -568,13 +569,11 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
                     CfdgError::Error(cit->where, "Could not evaluate this");
                 break;
             case ASTexpression::ModType: {
-                processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+                processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
                 Modification mod;
                 int dummy;
                 cit->evaluate(mod, 0, 0, false, dummy, r);
-                syms.push_back(mod.m_transform);
-                if (mod.m_transform == identity)
-                    hasIdentity = true;
+                addUnique(syms, mod.m_transform);
                 break;
             }
             default:
@@ -582,7 +581,7 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
                 break;
         }
     }
-    processSymmSpec(syms, mTileMod.m_transform, hasIdentity, symmSpec, where);
+    processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
 }
 
 bool
