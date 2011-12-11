@@ -362,7 +362,8 @@ namespace AST {
             
             switch (argcount) {
                 case 0:
-                    args.reset(new ASTcons(new ASTreal(0.0, argsLoc), new ASTreal(1.0, argsLoc)));
+                    args.reset(new ASTcons(new ASTreal(0.0, argsLoc), 
+                                           new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc)));
                     break;
                 case 1:
                     args.reset(new ASTcons(new ASTreal(0.0, argsLoc), args.release()));
