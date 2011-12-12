@@ -1,0 +1,109 @@
+startshape Menorah
+
+rule Menorah {
+	Base { }
+	Star { y 1 b 0.65 }
+	Candles { y 10.25 }
+}
+
+rule Base {
+	Trunk { }
+	ArmL1 { y 3 r 90 }
+	ArmR1 { y 3 r -90 }
+	ArmL2 { y 4 r 85 }
+	ArmR2 { y 4 r -85 }
+	ArmL3 { y 5.5 r 80 }
+	ArmR3 { y 5.5 r -80 }
+	ArmL4 { y 7.5 r 75 }
+	ArmR4 { y 7.5 r -75 }
+}
+rule Trunk {
+	SQUARE { }
+	Trunk { y 0.4 s 0.97 }
+}
+rule ArmL1 {
+	CIRCLE { }
+	ArmL1 { r -1 y 0.4 s 0.975 }
+}
+rule ArmR1 {
+	CIRCLE { }
+	ArmR1 { r 1 y 0.4 s 0.975 }
+}
+rule ArmL2 {
+	CIRCLE { }
+	ArmL2 { r -1 y 0.3 s 0.975 }
+}
+rule ArmR2 {
+	CIRCLE { }
+	ArmR2 { r 1 y 0.3 s 0.975 }
+}
+rule ArmL3 {
+	CIRCLE { }
+	ArmL3 { r -1 y 0.2 s 0.975 }
+}
+rule ArmR3 {
+	CIRCLE { }
+	ArmR3 { r 1 y 0.2 s 0.975 }
+}
+rule ArmL4 {
+	CIRCLE { }
+	ArmL4 { r -1 y 0.1 s 0.975 }
+}
+rule ArmR4 {
+	CIRCLE { }
+	ArmR4 { r 1 y 0.1 s 0.975 }
+}
+
+rule Candles {
+	Candle { x -11.4 s 0.5 }
+	Candle { x 11.4 s 0.5 }
+	Candle { x -8.0 s 0.5 }
+	Candle { x 8.0 s 0.5 }
+	Candle { x -5.0 s 0.5 }
+	Candle { x 5.0 s 0.5 }
+	Candle { x -2.2 s 0.5 }
+	Candle { x 2.2 s 0.5 }
+	Candle { y 2 s 0.5 }
+}
+rule Candle {
+	Flat { x -2 y -0.45 s 0.2 }
+	SQUARE { y 0 }
+	SQUARE { y 0.7 }
+	SQUARE { y 1.4 }
+	SQUARE { y 2.1 }
+	SQUARE { y 2.8 }
+	SQUARE { y 3.5 }
+	SQUARE { y 4 }
+	Flame { y 5.1 b 0.3 }
+	Ray { y 5.6 s 0.5 b 0.5 }
+}
+rule Flat {
+	SQUARE { }
+	Flat { x 0.8 s 0.965 }
+}
+rule Flame {
+	CIRCLE { }
+	Flame { y 0.15 s 0.9 b 0.1 r 2 }
+}
+
+rule Star {
+	Arm { r 0 }
+	Arm { r 60 }
+	Arm { r 120 }
+	Arm { r -60 }
+	Arm { r -120 }
+	Arm { r 180 }
+}
+rule Arm {
+	CIRCLE { }
+	Arm { y 0.1 s 0.9 }
+}
+rule Ray {
+	Line { y 8 s 0.2 }
+	Ray { r -36 s 0.97 }
+}
+rule Line {
+	SQUARE { }
+	Line { y 0.8 s 0.9 }
+}
+
