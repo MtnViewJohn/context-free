@@ -545,6 +545,10 @@ void Document::saveToSVG(String^ path)
     renderParams->action = RenderParameters::RenderActions::SaveSVG;
 
     array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(path);
+    if (pathutf8->Length == 0) {
+        setMessageText("Bad file name");
+        return;
+    }
     pin_ptr<Byte> pathutf8pin = &pathutf8[0];
 
     mSVGCanvas = new SVGCanvas(reinterpret_cast<const char*>(pathutf8pin), 
@@ -594,6 +598,10 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
         renderParams->action = RenderParameters::RenderActions::Animate;
 
         array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(fileName);
+        if (pathutf8->Length == 0) {
+            setMessageText("Bad file name");
+            return;
+        }
         pin_ptr<Byte> pathutf8pin = &pathutf8[0];
         const char* path = reinterpret_cast<const char*>(pathutf8pin);
 
@@ -901,6 +909,10 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
 
     mUserChangedVariation = true;
     array<Byte>^ encodedVar = System::Text::Encoding::UTF8->GetBytes(variationEdit->Text);
+    if (encodedVar->Length == 0) {
+        currentVariation = 0;
+        return;
+    }
     pin_ptr<Byte> pinnedVar = &encodedVar[0];
     currentVariation = Variation::fromString(reinterpret_cast<const char*>(pinnedVar));
 }
@@ -992,6 +1004,9 @@ bool Document::SyncToSystem()
     // Encode the text as UTF8
     array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdgText->Text);
     array<Byte>^ encodedName = System::Text::Encoding::UTF8->GetBytes(this->Name);
+    array<Byte>^ zero = { '\0' };
+    if (encodedCfdg->Length == 0) encodedCfdg = zero;
+    if (encodedName->Length == 0) encodedName = zero;
 
     // prevent GC moving the bytes around while this variable is on the stack
     pin_ptr<Byte> pinnedCfdg = &encodedCfdg[0];
