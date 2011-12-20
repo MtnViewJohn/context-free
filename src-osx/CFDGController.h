@@ -39,7 +39,6 @@
 
 - (IBAction) gotoURL:(id)sender;
 - (IBAction) openExample:(id)sender;
-- (IBAction) openLesson:(id)sender;
 
 - (IBAction) setEditorFont:(id)sender;
 - (void)changeFont:(id)sender;

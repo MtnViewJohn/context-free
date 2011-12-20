@@ -135,7 +135,6 @@ namespace {
 {
     [CFDGController setupURLs];
     [CFDGController setupExamples];
-    [CFDGController setupLessons];
     [CFDGController setupDefaults];
 }
 
@@ -176,11 +175,6 @@ namespace {
 - (IBAction)openExample:(id)sender
 {
     openFileMenuItem(examples, sender, self);
-}
-
-- (IBAction)openLesson:(id)sender
-{
-    openFileMenuItem(lessons, sender, self);
 }
 
 - (IBAction)checkForUpdateNow:(id)sender
@@ -275,12 +269,6 @@ namespace {
         inDirectory: @"Examples"] retain];
 }
 
-+ (void)setupLessons
-{
-    lessons = [[[NSBundle mainBundle] pathsForResourcesOfType: @"cfdg"
-        inDirectory: @"Lessons"] retain];
-}
-
 + (void)setupDefaults
 {
     NSString* userDefaultsValuesPath
@@ -312,9 +300,6 @@ namespace {
         
         if ([title length] == 0) {
             [mHelpMenu addItem: [NSMenuItem separatorItem]];
-        }
-        else if ([title isEqualToString: @"lessons"]) {
-            addFileMenuItems(lessons, mHelpMenu, self, @selector(openLesson:));
         }
         else {
             NSMenuItem* item = [mHelpMenu addItemWithTitle: title
