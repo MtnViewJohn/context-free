@@ -204,7 +204,7 @@
 		FDF15B260880C3AD0041D85B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = Lessons;
+			dstPath = Examples;
 			dstSubfolderSpec = 7;
 			files = (
 				FD570D2A08281415003F064D /* lesson.cfdg in CopyFiles */,
