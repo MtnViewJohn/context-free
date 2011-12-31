@@ -33,7 +33,7 @@
 %defines
 %define "parser_class_name" "CfdgParser"
 %locations
-%expect 1
+%expect 3
 //%debug
 %parse-param {class Builder& driver}
 %lex-param {class Builder& driver}
@@ -668,7 +668,7 @@ element_simple:
 one_or_more_elements:
         '{' buncha_elements '}' { }
         |
-        element_simple {
+        element {
             driver.push_rep($1);
         }
         ;
