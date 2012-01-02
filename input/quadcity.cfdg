@@ -10,7 +10,7 @@ shape WHOLE
 
 shape QUAD
 rule {
-	FILL [ ]
+	FILLIT [ ]
 }
 rule 5 {
 	WHOLE [ size 0.45 r 2 ]
@@ -19,7 +19,7 @@ rule 0.5 {
 	// nothing
 }
 
-shape FILL
+shape FILLIT
 {
 	SQUARE [
 		size 0.8
