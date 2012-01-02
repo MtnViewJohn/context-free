@@ -21,7 +21,7 @@
 ;
 
 !define VER_MAJOR 3
-!define VER_MINOR 0alpha
+!define VER_MINOR 0beta
 
 SetCompressor lzma
 
