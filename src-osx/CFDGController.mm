@@ -29,7 +29,6 @@
 @interface CFDGController (setup)
 + (void)setupURLs;
 + (void)setupExamples;
-+ (void)setupLessons;
 + (void)setupDefaults;
 
 - (void)buildExamplesMenu;
@@ -63,7 +62,6 @@ enum {
 namespace {
     NSArray* urls = 0;
     NSArray* examples = 0;
-    NSArray* lessons = 0;
     
     NSString* PrefKeyLaunchAction = @"LaunchAction";
     enum LaunchAction {
