@@ -1,16 +1,15 @@
-startshape SNOWFLAKE
+startshape SPIKE
 
-rule SNOWFLAKE {
-	6* {r 60} SPIKE {}
-}
+CF::Symmetry = CF::Dihedral, 6
 
-rule SPIKE {
-	SQUARE {}
-	SPIKE { y 0.95 s 0.97 }
+shape SPIKE
+rule {
+	SQUARE []
+	SPIKE [y 0.95 s 0.97]
 }
-rule SPIKE 0.03 {
-	SQUARE {}
-	SPIKE { r 60 }
-	SPIKE { r -60 }
-	SPIKE { y 0.95 s 0.97  }
+rule 0.03 {
+	SQUARE []
+	SPIKE [r 60]
+	SPIKE [r -60]
+	SPIKE [y 0.95 s 0.97]
 }

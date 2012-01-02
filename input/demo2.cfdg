@@ -5,18 +5,20 @@
 #
 
 startshape thingy
-include i_pix.cfdg
+import i_pix.cfdg
 
-rule thingy{
- point {y -1 rotate 180}
- point {}
+shape thingy
+{
+ point [y -1 rotate 180]
+ point []
 }
 
-rule point {
-  C_5by5 {}
-  F_5by5 {x 1.2}
-  D_5by5 {y -1.2}
-  G_5by5 {y -1.2 x 1.2}
-  point {y 2.0 x -2.5 rotate 20 size 0.6}
-  point {y 2.0 x 2.5 rotate -20 size 0.6}
+shape point
+{
+  C_5by5 []
+  F_5by5 [x 1.2]
+  D_5by5 [y -1.2]
+  G_5by5 [y -1.2 x 1.2]
+  point [y 2.0 x -2.5 rotate 20 size 0.6]
+  point [y 2.0 x 2.5 rotate -20 size 0.6]
 }
