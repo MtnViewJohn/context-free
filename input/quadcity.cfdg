@@ -1,24 +1,27 @@
 startshape WHOLE
 
-rule WHOLE {
-	QUAD { x -0.5 y -0.5 }
-	QUAD { x  0.5 y -0.5 }
-	QUAD { x  0.5 y  0.5 }
-	QUAD { x -0.5 y  0.5 }
+shape WHOLE
+{
+	QUAD [ x -0.5 y -0.5 ]
+	QUAD [ x  0.5 y -0.5 ]
+	QUAD [ x  0.5 y  0.5 ]
+	QUAD [ x -0.5 y  0.5 ]
 }
 
-rule QUAD {
-	FILL { }
+shape QUAD
+rule {
+	FILL [ ]
 }
-rule QUAD 5 {
-	WHOLE { size 0.45 r 2 }
+rule 5 {
+	WHOLE [ size 0.45 r 2 ]
 }
-rule QUAD 0.5 {
+rule 0.5 {
 	// nothing
 }
 
-rule FILL {
-	SQUARE {
+shape FILL
+{
+	SQUARE [
 		size 0.8
-	}
+	]
 }
