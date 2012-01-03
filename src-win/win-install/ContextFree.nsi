@@ -31,7 +31,6 @@ SetCompressor lzma
 !include "MUI.nsh"
 !include WordFunc.nsh
 !include "x64.nsh"
-!insertmacro VersionCompare
 
 ;--------------------------------
 ;Variables
@@ -196,22 +195,11 @@ Function .onInit
     StrCpy $INSTDIR "$PROGRAMFILES\OzoneSoft\${PRODUCT}"
   ${EndIf}
   
-  Call GetDotNETVersion
-  Pop $0
-  ${If} $0 == "not found"
-    MessageBox MB_YESNO|MB_ICONSTOP \
-      ".NET runtime library is not installed. Please run Windows Update to install .Net runtime (version 2 or later). Install anyway?" \
-      IDYES okgo
-    Abort
-  ${EndIf}
- 
-  StrCpy $0 $0 "" 1 # skip "v"
- 
-  ${VersionCompare} $0 "2.0" $1
-  ${If} $1 == 2
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client" "Version"
+  ${If} $0 == ""
     MessageBox \
       MB_YESNO|MB_ICONSTOP \
-      ".NET runtime library v2.0 or newer is required. You have $0.  Please run Windows Update to install v2.0 (or later). Install anyway?" \
+      ".Net framework v4.0 is required. Install Context Free anyway?" \
       IDYES okgo
     Abort
   ${EndIf}
@@ -226,18 +214,6 @@ okgo:
          ; '0' if everything closed normal, and '-1' if some error occured.
 
   Delete $TEMP\spltmp.bmp
-FunctionEnd
-
-Function GetDotNETVersion
-  Push $0
-  Push $1
- 
-  System::Call "mscoree::GetCORVersion(w .r0, i ${NSIS_MAX_STRLEN}, *i) i .r1 ?u"
-  StrCmp $1 "error" 0 +2
-    StrCpy $0 "not found"
- 
-  Pop $1
-  Exch $0
 FunctionEnd
 
 ;--------------------------------
