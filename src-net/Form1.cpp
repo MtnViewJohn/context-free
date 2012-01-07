@@ -122,6 +122,13 @@ void Form1::MoreInitialization()
         if (name == "welcome") menuWelcome = example;
     }
 
+    if (SystemColors::MenuBar.GetBrightness() - SystemColors::GradientActiveCaption.GetBrightness() > 0.2) {
+        this->menuStrip1->BackColor = System::Drawing::SystemColors::MenuBar;
+        overrideMenuColor = false;
+    } else {
+        overrideMenuColor = true;
+    }
+
     Load += gcnew EventHandler(this, &Form1::Form_Loaded);
 
     idleHandler = gcnew EventHandler(this, &Form1::appIsIdle);
@@ -286,12 +293,17 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     dockPanel->ActiveAutoHideContent = nullptr;
 
     // Change the color of the autohide strip to match the color of the menu bar
-    dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
-    dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
+    if (overrideMenuColor) {
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
 
-    EventHandler^ activeHandler = gcnew EventHandler(this, &Form1::Form_Active_Change);
-    Activated += activeHandler;
-    Deactivate += activeHandler;
+        EventHandler^ activeHandler = gcnew EventHandler(this, &Form1::Form_Active_Change);
+        Activated += activeHandler;
+        Deactivate += activeHandler;
+    } else {
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::MenuBar;
+        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::MenuBar;
+    }
 
     if (StartArgs != nullptr && StartArgs->Length > 1) {
         processArgs(StartArgs);
