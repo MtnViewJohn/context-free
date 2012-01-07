@@ -651,6 +651,7 @@ bool
 CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
 {
     static const char* const KnownParams[] = {
+        "CF::AllowOverlap",
         "CF::Alpha",
         "CF::Background",
         "CF::BorderDynamic",

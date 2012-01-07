@@ -87,6 +87,8 @@ public:
     
     unsigned    mIncludeDepth;
     
+    bool        mAllowOverlap;
+    
     typedef std::deque<AST::ASTrepContainer*> ContainerStack_t;
     ContainerStack_t    mContainerStack;
     void                push_repContainer(AST::ASTrepContainer& c);
@@ -113,6 +115,7 @@ public:
     void            PushNameSpace(AST::str_ptr n, const yy::location& loc);
     void            CheckName(const std::string& name, const yy::location& loc,
                               bool colonsAllowed);
+    void            CheckVariableName(int index, const yy::location& loc);
     void            PopNameSpace();
     void            IncludeFile(const std::string& fname);
     bool            EndInclude();

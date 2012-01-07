@@ -862,8 +862,9 @@ loopHeader:
             exp_ptr index($4);
             mod_ptr mod($5);
             --driver.mLocalStackDepth;
-            loop_ptr loop(new ASTloop(driver.StringToShape(*var, @2, false), 
-                                      *var, @2, index, @4, mod));
+            int nameIndex = driver.StringToShape(*var, @2, false);
+            driver.CheckVariableName(nameIndex, @2);
+            loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod));
             driver.push_repContainer(loop->mLoopBody);
             $$ = loop.release();
         }
