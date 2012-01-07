@@ -74,6 +74,7 @@ namespace ContextFreeNet {
 		}
 
     public: OzoneUtil::MRUManager^ mruManager;
+            bool overrideMenuColor;
     public: FindReplaceForm^ findForm;
     public: System::String^ saveDirectory;
     public: static CFPrefs^ prefs;
@@ -132,7 +133,8 @@ namespace ContextFreeNet {
                 void set(bool m)
                 {
                     isModal = m;
-                    Form_Active_Change(this, nullptr);
+                    if (overrideMenuColor)
+                        Form_Active_Change(this, nullptr);
                 }
             }
 
@@ -172,21 +174,21 @@ namespace ContextFreeNet {
 		void InitializeComponent(void)
 		{
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
-            WeifenLuo::WinFormsUI::Docking::DockPanelSkin^  dockPanelSkin2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelSkin());
-            WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin^  autoHideStripSkin2 = (gcnew WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient4 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient8 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin^  dockPaneStripSkin2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient^  dockPaneStripGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient9 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient5 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient10 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient^  dockPaneStripToolWindowGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient11 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient12 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient6 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient13 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient14 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::DockPanelSkin^  dockPanelSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelSkin());
+            WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin^  autoHideStripSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin());
+            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin^  dockPaneStripSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin());
+            WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient^  dockPaneStripGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient3 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient^  dockPaneStripToolWindowGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient4 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient5 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient3 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient6 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
+            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient7 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
             this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
             this->menuFile = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuFNew = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -393,52 +395,52 @@ namespace ContextFreeNet {
             this->dockPanel->Location = System::Drawing::Point(0, 24);
             this->dockPanel->Name = L"dockPanel";
             this->dockPanel->Size = System::Drawing::Size(1100, 691);
-            dockPanelGradient4->EndColor = System::Drawing::SystemColors::ControlLight;
-            dockPanelGradient4->StartColor = System::Drawing::SystemColors::ControlLight;
-            autoHideStripSkin2->DockStripGradient = dockPanelGradient4;
-            tabGradient8->EndColor = System::Drawing::SystemColors::Control;
-            tabGradient8->StartColor = System::Drawing::SystemColors::Control;
-            tabGradient8->TextColor = System::Drawing::SystemColors::ControlDarkDark;
-            autoHideStripSkin2->TabGradient = tabGradient8;
-            autoHideStripSkin2->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-            dockPanelSkin2->AutoHideStripSkin = autoHideStripSkin2;
-            tabGradient9->EndColor = System::Drawing::SystemColors::ControlLightLight;
-            tabGradient9->StartColor = System::Drawing::SystemColors::ControlLightLight;
-            tabGradient9->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripGradient2->ActiveTabGradient = tabGradient9;
-            dockPanelGradient5->EndColor = System::Drawing::SystemColors::Control;
-            dockPanelGradient5->StartColor = System::Drawing::SystemColors::Control;
-            dockPaneStripGradient2->DockStripGradient = dockPanelGradient5;
-            tabGradient10->EndColor = System::Drawing::SystemColors::ControlLight;
-            tabGradient10->StartColor = System::Drawing::SystemColors::ControlLight;
-            tabGradient10->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripGradient2->InactiveTabGradient = tabGradient10;
-            dockPaneStripSkin2->DocumentGradient = dockPaneStripGradient2;
-            dockPaneStripSkin2->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-            tabGradient11->EndColor = System::Drawing::SystemColors::ActiveCaption;
-            tabGradient11->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
-            tabGradient11->StartColor = System::Drawing::SystemColors::GradientActiveCaption;
-            tabGradient11->TextColor = System::Drawing::SystemColors::ActiveCaptionText;
-            dockPaneStripToolWindowGradient2->ActiveCaptionGradient = tabGradient11;
-            tabGradient12->EndColor = System::Drawing::SystemColors::Control;
-            tabGradient12->StartColor = System::Drawing::SystemColors::Control;
-            tabGradient12->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripToolWindowGradient2->ActiveTabGradient = tabGradient12;
-            dockPanelGradient6->EndColor = System::Drawing::SystemColors::ControlLight;
-            dockPanelGradient6->StartColor = System::Drawing::SystemColors::ControlLight;
-            dockPaneStripToolWindowGradient2->DockStripGradient = dockPanelGradient6;
-            tabGradient13->EndColor = System::Drawing::SystemColors::GradientInactiveCaption;
-            tabGradient13->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
-            tabGradient13->StartColor = System::Drawing::SystemColors::GradientInactiveCaption;
-            tabGradient13->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripToolWindowGradient2->InactiveCaptionGradient = tabGradient13;
-            tabGradient14->EndColor = System::Drawing::Color::Transparent;
-            tabGradient14->StartColor = System::Drawing::Color::Transparent;
-            tabGradient14->TextColor = System::Drawing::SystemColors::ControlDarkDark;
-            dockPaneStripToolWindowGradient2->InactiveTabGradient = tabGradient14;
-            dockPaneStripSkin2->ToolWindowGradient = dockPaneStripToolWindowGradient2;
-            dockPanelSkin2->DockPaneStripSkin = dockPaneStripSkin2;
-            this->dockPanel->Skin = dockPanelSkin2;
+            dockPanelGradient1->EndColor = System::Drawing::SystemColors::ControlLight;
+            dockPanelGradient1->StartColor = System::Drawing::SystemColors::ControlLight;
+            autoHideStripSkin1->DockStripGradient = dockPanelGradient1;
+            tabGradient1->EndColor = System::Drawing::SystemColors::Control;
+            tabGradient1->StartColor = System::Drawing::SystemColors::Control;
+            tabGradient1->TextColor = System::Drawing::SystemColors::ControlDarkDark;
+            autoHideStripSkin1->TabGradient = tabGradient1;
+            autoHideStripSkin1->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
+            dockPanelSkin1->AutoHideStripSkin = autoHideStripSkin1;
+            tabGradient2->EndColor = System::Drawing::SystemColors::ControlLightLight;
+            tabGradient2->StartColor = System::Drawing::SystemColors::ControlLightLight;
+            tabGradient2->TextColor = System::Drawing::SystemColors::ControlText;
+            dockPaneStripGradient1->ActiveTabGradient = tabGradient2;
+            dockPanelGradient2->EndColor = System::Drawing::SystemColors::Control;
+            dockPanelGradient2->StartColor = System::Drawing::SystemColors::Control;
+            dockPaneStripGradient1->DockStripGradient = dockPanelGradient2;
+            tabGradient3->EndColor = System::Drawing::SystemColors::ControlLight;
+            tabGradient3->StartColor = System::Drawing::SystemColors::ControlLight;
+            tabGradient3->TextColor = System::Drawing::SystemColors::ControlText;
+            dockPaneStripGradient1->InactiveTabGradient = tabGradient3;
+            dockPaneStripSkin1->DocumentGradient = dockPaneStripGradient1;
+            dockPaneStripSkin1->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
+            tabGradient4->EndColor = System::Drawing::SystemColors::ActiveCaption;
+            tabGradient4->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
+            tabGradient4->StartColor = System::Drawing::SystemColors::GradientActiveCaption;
+            tabGradient4->TextColor = System::Drawing::SystemColors::ActiveCaptionText;
+            dockPaneStripToolWindowGradient1->ActiveCaptionGradient = tabGradient4;
+            tabGradient5->EndColor = System::Drawing::SystemColors::Control;
+            tabGradient5->StartColor = System::Drawing::SystemColors::Control;
+            tabGradient5->TextColor = System::Drawing::SystemColors::ControlText;
+            dockPaneStripToolWindowGradient1->ActiveTabGradient = tabGradient5;
+            dockPanelGradient3->EndColor = System::Drawing::SystemColors::ControlLight;
+            dockPanelGradient3->StartColor = System::Drawing::SystemColors::ControlLight;
+            dockPaneStripToolWindowGradient1->DockStripGradient = dockPanelGradient3;
+            tabGradient6->EndColor = System::Drawing::SystemColors::GradientInactiveCaption;
+            tabGradient6->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
+            tabGradient6->StartColor = System::Drawing::SystemColors::GradientInactiveCaption;
+            tabGradient6->TextColor = System::Drawing::SystemColors::ControlText;
+            dockPaneStripToolWindowGradient1->InactiveCaptionGradient = tabGradient6;
+            tabGradient7->EndColor = System::Drawing::Color::Transparent;
+            tabGradient7->StartColor = System::Drawing::Color::Transparent;
+            tabGradient7->TextColor = System::Drawing::SystemColors::ControlDarkDark;
+            dockPaneStripToolWindowGradient1->InactiveTabGradient = tabGradient7;
+            dockPaneStripSkin1->ToolWindowGradient = dockPaneStripToolWindowGradient1;
+            dockPanelSkin1->DockPaneStripSkin = dockPaneStripSkin1;
+            this->dockPanel->Skin = dockPanelSkin1;
             this->dockPanel->TabIndex = 3;
             // 
             // Form1
