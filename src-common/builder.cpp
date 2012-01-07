@@ -54,7 +54,8 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
   mInPathContainer(false), mCurrentShape(-1),
   mWant2ndPass(false), mCompilePhase(1), isFunction(false),
-  mLocalStackDepth(0), mIncludeDepth(0), lexer(0), mErrorOccured(false)
+  mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(0), 
+  mErrorOccured(false)
 { 
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
     mSeed.seed((unsigned long long)variation); 
@@ -346,6 +347,7 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
 {
     int nameIndex = StringToShape(name, nameLoc, false);
     mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
+    CheckVariableName(nameIndex, nameLoc);
 }
 
 void
@@ -368,6 +370,15 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
                 CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
             } else {
                 ASTparameter::Impure = v != 0.0;
+            }
+            return;
+        }
+        if (name == "CF::AllowOverlap") {
+            double v = 0.0;
+            if (!e->isConstant || e->evaluate(&v, 1) != 1) {
+                CfdgError::Error(expLoc, "CF::AllowOverlap requires a constant numeric expression");
+            } else {
+                mAllowOverlap = v != 0.0;
             }
             return;
         }
@@ -400,6 +411,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         def = 0;
     }
 
+    CheckVariableName(nameIndex, nameLoc);
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     if (m) {
         mod_ptr mod(m); e.release();
@@ -803,6 +815,18 @@ Builder::PopNameSpace()
         mCurrentNameSpace.clear();
     } else {
         mCurrentNameSpace.resize(end + 1);
+    }
+}
+
+void
+Builder::CheckVariableName(int index, const yy::location& loc)
+{
+    if (mAllowOverlap) return;
+    bool dummy;
+    ASTparameter* p = findExpression(index, dummy);
+    if (p) {
+        warning(loc, "Scope of name overlaps variable/parameter with same name");
+        warning(p->mLocation, "previous variable/parameter declared here");
     }
 }
 
