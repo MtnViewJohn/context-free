@@ -45,10 +45,12 @@ DialogResult SaveMovie::ShowTheDialog(IWin32Window^ owner)
         res = ShowDialog(owner);
         if (res == DialogResult::OK) {
             Form1::prefs->AnimateZoom = checkZoom->Checked;
-			Form1::prefs->AnimateFrameRate = Int32::Parse(frameRate->SelectedText);
+			Form1::prefs->AnimateFrameRate = Int32::Parse(frameRate->Text);
             Form1::prefs->AnimateLength = Int32::Parse(lengthBox->Text);
         }
-    } catch (Exception^) {}
+    } catch (Exception^) {
+        res = DialogResult::Cancel;
+    }
 
     return res;
 }
