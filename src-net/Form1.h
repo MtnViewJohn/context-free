@@ -127,16 +127,6 @@ namespace ContextFreeNet {
                 }
             }
 
-    private: bool isModal;
-    public: property bool IsModal {
-                bool get() { return isModal; }
-                void set(bool m)
-                {
-                    isModal = m;
-                    if (overrideMenuColor)
-                        Form_Active_Change(this, nullptr);
-                }
-            }
 
     private: System::Windows::Forms::ToolStripMenuItem^  menuFPrefs;
     private: System::Windows::Forms::ToolStripMenuItem^  menuFRecent;
@@ -159,6 +149,7 @@ namespace ContextFreeNet {
 
 
     protected: 
+    virtual void WndProc(System::Windows::Forms::Message% m) override;
 
 	private:
 		/// <summary>
@@ -501,6 +492,5 @@ private: void updateFontDisplay();
 private: System::Void saveFileDialog1_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
          }
 public:  System::Void FindReplace_Click(System::Object^  sender, System::EventArgs^  e);
-private: System::Void Form_Active_Change(System::Object^  sender, System::EventArgs^  e);
 };
 }
