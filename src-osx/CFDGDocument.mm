@@ -403,6 +403,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     [mEditor setSelectedRange: lineRange];
     [mEditor scrollRangeToVisible: lineRange];
+    [[mGView window] makeFirstResponder: mEditor];
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)type {
