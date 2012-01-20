@@ -138,6 +138,7 @@ class RendererImpl : public Renderer {
         Bounds mPathBounds;
 
         double m_currScale;
+        double m_currArea;
         double m_minArea;
         double m_minSize;
         Bounds mBounds;
