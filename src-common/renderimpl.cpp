@@ -87,7 +87,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
 
     m_canvas = 0;
     m_maxShapes = 500000000;
-    m_currScale = 0.0;
+    m_currScale = m_currArea = 0.0;
     mScaleArea = mScale = 0.0;
     shapeMap[0].mFlags = shapeMap[1].mFlags = shapeMap[2].mFlags = 
         CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
@@ -153,7 +153,7 @@ RendererImpl::initBounds()
         mBounds.mMin_Y = -(mBounds.mMax_Y = tile_y / 2.0);
         mBounds.mValid = true;
         rescaleOutput(m_width, m_height, true);
-        mScaleArea = m_currScale * m_currScale;
+        mScaleArea = m_currArea;
     }
     if (m_frieze == CFDG::frieze_x)
         m_frieze_size = tile_x / 2.0;
@@ -637,6 +637,8 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
                                           mFixedBorderX, mFixedBorderY, false);
             mScaleArea = mScale * mScale;
         }
+    } else {
+        mCurrentArea = Renderer::Infinity;
     }
     if (oldArea == mTotalArea)
 #ifdef _WIN32
@@ -645,6 +647,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         mTotalArea = nextafter(mTotalArea, DBL_MAX);
 #endif
     FinishedShape fs(s, mTotalArea, mPathBounds);
+    fs.mWorldState.m_ColorTarget.a = mCurrentArea;
     if (!m_cfdg->usesTime) {
         fs.mWorldState.m_time.tbegin = mTotalArea;
         fs.mWorldState.m_time.tend = Renderer::Infinity;
@@ -805,6 +808,7 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
     || (m_currScale * 0.90) > scale)// if grew by more than 10%
     {
         m_currScale = scale;
+        m_currArea = scale * scale;
         if (m_tiledCanvas)
             m_tiledCanvas->scale(scale);
         m_currTrans = trans;
@@ -907,8 +911,9 @@ OutputDraw::apply(const FinishedShape& s)
 
     agg::trans_affine tr = s.mWorldState.m_transform;
     tr *= mRenderer.m_currTrans;
-    double a = fabs(tr.determinant()); 
-    if (!isfinite(a) || a < mRenderer.m_minArea) return;
+    double a = s.mWorldState.m_ColorTarget.a * mRenderer.m_currArea; //fabs(tr.determinant()); 
+    if ((!isfinite(a) && s.mShapeType != primShape::fillType) || 
+        a < mRenderer.m_minArea) return;
     
     if (tiler) {
         Bounds b = s.mBounds;
