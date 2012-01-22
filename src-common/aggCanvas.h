@@ -42,6 +42,7 @@ class aggCanvas : public Canvas {
             RGB8_Blend = 2,
             FF_Blend = 3,
             FF24_Blend = 4,
+            QT_Blend = 5,
             Has_16bit_Color = 8,
             Gray16_Blend = Gray8_Blend | Has_16bit_Color, 
             RGBA16_Blend = RGBA8_Blend | Has_16bit_Color, 

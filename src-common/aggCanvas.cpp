@@ -60,6 +60,7 @@ typedef agg::pixfmt_rgb24_pre   color24_pixel_fmt;
 
 typedef agg::pixfmt_argb32_pre  ff_pixel_fmt;
 typedef agg::pixfmt_rgb24_pre   ff24_pixel_fmt;
+typedef agg::pixfmt_rgba32_pre  qt_pixel_fmt;
 
 typedef agg::pixfmt_gray8_pre  gray_pixel_fmt;
 typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
@@ -75,7 +76,7 @@ typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
 #define ADJ_SQUARE_SIZE     0.80
 #define ADJ_TRIANGLE_SIZE   0.90
 
-int aggCanvas::BytesPerPixel[12] = {1, 4, 3, 4, 3, 0, 0, 0, 2, 8, 6, 0};
+int aggCanvas::BytesPerPixel[12] = {1, 4, 3, 4, 3, 4, 0, 0, 2, 8, 6, 0};
 
 namespace {
     inline double
@@ -305,6 +306,7 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
 
         case aggCanvas::FF_Blend:
         case aggCanvas::FF24_Blend:
+        case aggCanvas::QT_Blend:
             assert(false);
             break;
             
@@ -325,6 +327,7 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case RGB16_Blend:  m = new aggPixelPainter<color48_pixel_fmt>(this); break;
         case FF_Blend:    m = new aggPixelPainter<ff_pixel_fmt>(this); break;
         case FF24_Blend:  m = new aggPixelPainter<ff24_pixel_fmt>(this); break;
+        case QT_Blend:    m = new aggPixelPainter<qt_pixel_fmt>(this); break;
         default: m = 0; break;
     }
 }
