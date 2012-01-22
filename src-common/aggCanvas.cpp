@@ -44,6 +44,7 @@
 #include "ast.h"
 #include "pathIterator.h"
 #include <set>
+#include <cassert>
 
 #ifdef _WIN32
 typedef agg::pixfmt_bgra64_pre  color64_pixel_fmt;
@@ -56,14 +57,13 @@ typedef agg::pixfmt_rgb48_pre   color48_pixel_fmt;
 typedef agg::pixfmt_rgba32_pre  color32_pixel_fmt;
 typedef agg::pixfmt_rgb24_pre   color24_pixel_fmt;
 #endif
-typedef agg::pixfmt_rgba32_pre  qt_pixel_fmt;
-#ifdef __ppc__
-typedef agg::pixfmt_bgra32_pre  ff_pixel_fmt;
-#else
+
 typedef agg::pixfmt_argb32_pre  ff_pixel_fmt;
-#endif
+typedef agg::pixfmt_rgb24_pre   ff24_pixel_fmt;
+
 typedef agg::pixfmt_gray8_pre  gray_pixel_fmt;
 typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
+
 #ifndef M_PI
 #define M_PI        3.14159265358979323846
 #endif
@@ -75,7 +75,7 @@ typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
 #define ADJ_SQUARE_SIZE     0.80
 #define ADJ_TRIANGLE_SIZE   0.90
 
-int aggCanvas::BytesPerPixel[12] = {1, 4, 4, 3, 4, 0, 0, 0, 2, 8, 8, 6};
+int aggCanvas::BytesPerPixel[12] = {1, 4, 3, 4, 3, 0, 0, 0, 2, 8, 6, 0};
 
 namespace {
     inline double
@@ -302,12 +302,12 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
 			agg::copy_rect(srcPixFmt, pixFmt);
 			break;
 		}
+
+        case aggCanvas::FF_Blend:
+        case aggCanvas::FF24_Blend:
+            assert(false);
+            break;
             
-		case aggCanvas::QT_Blend: {
-			qt_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
         default:
             break;
 	}
@@ -323,8 +323,8 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case Gray16_Blend: m = new aggPixelPainter<gray16_pixel_fmt>(this); break;
         case RGBA16_Blend: m = new aggPixelPainter<color64_pixel_fmt>(this); break;
         case RGB16_Blend:  m = new aggPixelPainter<color48_pixel_fmt>(this); break;
-        case QT_Blend:    m = new aggPixelPainter<qt_pixel_fmt>(this); break;
         case FF_Blend:    m = new aggPixelPainter<ff_pixel_fmt>(this); break;
+        case FF24_Blend:  m = new aggPixelPainter<ff24_pixel_fmt>(this); break;
         default: m = 0; break;
     }
 }
