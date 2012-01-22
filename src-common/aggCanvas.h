@@ -39,9 +39,9 @@ class aggCanvas : public Canvas {
         enum PixelFormat {
             Gray8_Blend = 0, 
             RGBA8_Blend = 1, 
-            QT_Blend = 2, 
-            RGB8_Blend = 3,
-            FF_Blend = 4,
+            RGB8_Blend = 2,
+            FF_Blend = 3,
+            FF24_Blend = 4,
             Has_16bit_Color = 8,
             Gray16_Blend = Gray8_Blend | Has_16bit_Color, 
             RGBA16_Blend = RGBA8_Blend | Has_16bit_Color, 

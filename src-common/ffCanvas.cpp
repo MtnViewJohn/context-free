@@ -106,7 +106,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         case aggCanvas::Gray8_Blend:
             codecCtx->pix_fmt = PIX_FMT_GRAY8;
             break;
-        case aggCanvas::RGB8_Blend:
+        case aggCanvas::FF24_Blend:
             codecCtx->pix_fmt = PIX_FMT_RGB24;
             break;
         case aggCanvas::FF_Blend:
@@ -217,7 +217,7 @@ mapPixFmt(aggCanvas::PixelFormat in)
             return aggCanvas::Gray8_Blend;
         case aggCanvas::RGB8_Blend:
         case aggCanvas::RGB16_Blend:
-            return aggCanvas::RGB8_Blend;
+            return aggCanvas::FF24_Blend;
         default:
             return aggCanvas::FF_Blend;
     }
