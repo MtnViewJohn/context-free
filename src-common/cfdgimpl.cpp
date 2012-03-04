@@ -325,6 +325,29 @@ addUnique(CFDG::SymmList& syms, agg::trans_affine& tr)
     syms.push_back(tr);
 }
 
+static void
+processDihedral(CFDG::SymmList& syms, double order, double x, double y,
+                bool dihedral, double angle, const yy::location& where)
+{
+    if (order < 1.0)
+        CfdgError::Error(where, "Rotational symmetry order must be one or larger");
+    agg::trans_affine reg;
+    agg::trans_affine_reflection mirror(angle);
+    reg.translate(-x, -y);
+    int num = (int)order;
+    order = 2.0 * M_PI / order;
+    for (int i = 0; i < num; ++i) {
+        agg::trans_affine tr(reg);
+        if (i) tr.rotate(i * order);
+        agg::trans_affine tr2(tr);
+        tr2 *= mirror;
+        tr.translate(x, y);
+        tr2.translate(x, y);
+        addUnique(syms, tr);
+        if (dihedral) addUnique(syms, tr2);
+    }
+}
+
 // Analyze the symmetry spec accumulated in the data vector and add the 
 // appropriate affine transforms to the SymmList. Avoid adding the identity
 // transform if it is already present in the SymmList.
@@ -335,10 +358,28 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
     if (data.empty()) return;
     AST::FlagTypes t = (AST::FlagTypes)((int)data[0]);
     bool frieze = (tile.sx != 0.0 || tile.sy != 0.0) && (tile.sx * tile.sy == 0.0);
+    bool tiled = (tile.sx != 0.0) && (tile.sy != 0.0);
+    bool rhombic = tiled && ((fabs(tile.shy) <= 0.0000001 && fabs(tile.shx/tile.sx - 0.5) < 0.0000001) ||
+                             (fabs(tile.shx) <= 0.0000001 && fabs(tile.shy/tile.sy - 0.5) < 0.0000001));
+    bool hexagonal = false;
+    if (rhombic) {
+        double x1 = 1.0, y1 = 0.0;
+        tile.transform(&x1, &y1);
+        double dist10 = sqrt(x1 * x1 + y1 * y1);
+        double x2 = 0.0, y2 = 1.0;
+        tile.transform(&x2, &y2);
+        double dist01 = sqrt(x2 * x2 + y2 * y2);
+        hexagonal = fabs(dist10/dist01 - 1.0) < 0.0000001;
+    }
+    
     if (t >= AST::CF_P11G && t <= AST::CF_P2MM && !frieze)
-        CfdgError::Error(where, "Frieze symmetry on works in frieze designs");
+        CfdgError::Error(where, "Frieze symmetry only works in frieze designs");
+    if (t >= AST::CF_PM && t <= AST::CF_P6M && !tiled)
+        CfdgError::Error(where, "Wallpaper symmetry only works in tiled designs");
+    if (t == AST::CF_P2 && !frieze && !tiled)
+        CfdgError::Error(where, "p2 symmetry only works in frieze or tiled designs");
     switch (t) {
-        case AST::CF_NONE: {
+        case AST::CF_CYCLIC: {
             double order, x = 0.0, y = 0.0;
             switch (data.size()) {
                 case 4:
@@ -352,19 +393,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
-            if (order < 1.0)
-                CfdgError::Error(where, "Cyclic symmetry order must be one or larger");
-            int num = (int)order;
-            order = 2.0 * M_PI / order;
-            for (int i = 0; i < num; ++i) {
-                agg::trans_affine tr;
-                if (i) {
-                    tr.translate(-x, -y);
-                    tr.rotate(i * order);
-                    tr.translate(x, y);
-                }
-                addUnique(syms, tr);
-            }
+            processDihedral(syms, order, x, y, false, 0.0, where);
             break;
         }
         case AST::CF_DIHEDRAL: {
@@ -388,23 +417,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
-            if (order < 1.0)
-                CfdgError::Error(where, "Dihedral symmetry order must be one or larger");
-            agg::trans_affine reg;
-            agg::trans_affine_reflection mirror(angle);
-            reg.translate(-x, -y);
-            int num = (int)order;
-            order = 2.0 * M_PI / order;
-            for (int i = 0; i < num; ++i) {
-                agg::trans_affine tr(reg);
-                if (i) tr.rotate(i * order);
-                agg::trans_affine tr2(tr);
-                tr2 *= mirror;
-                tr.translate(x, y);
-                tr2.translate(x, y);
-                addUnique(syms, tr);
-                addUnique(syms, tr2);
-            }
+            processDihedral(syms, order, x, y, true, angle, where);
             break;
         }
         case AST::CF_P11G: {
@@ -535,6 +548,304 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
             addUnique(syms, tr2);
             addUnique(syms, tr3);
             addUnique(syms, tr4);
+            break;
+        }
+        case AST::CF_PM: {
+            if (tile.shx != 0.0 || tile.shy != 0.0) {
+                CfdgError::Error(where, "pm symmetry requires rectangular tiling");
+            }
+            if (data.size() != 2) {
+                CfdgError::Error(where, "Mirror axis must be provided for pm symmetry");
+            }
+            agg::trans_affine tr;
+            addUnique(syms, tr);
+            if (data[1]) {  // mirror on y axis
+                tr.flip_x();
+            } else {        // mirror on x axis
+                tr.flip_y();
+            }
+            addUnique(syms, tr);
+            break;
+        }
+        case AST::CF_PG: {
+            if (tile.shx != 0.0 || tile.shy != 0.0) {
+                CfdgError::Error(where, "pg symmetry requires rectangular tiling");
+            }
+            double offset = 0.0;
+            switch (data.size()) {
+                case 2:
+                    break;
+                case 3:
+                    offset = data[1];
+                    break;
+                default:
+                    CfdgError::Error(where, "Glide axis and optional offset must be provided for pg symmetry");
+            }
+            agg::trans_affine tr;
+            addUnique(syms, tr);
+            if (data[1]) {  // glide on y axis
+                tr.translate(-offset, 0);
+                tr.flip_x();
+                tr.translate(offset, tile.sy * 0.5);
+            } else {        // glide on x axis
+                tr.translate(0, -offset);
+                tr.flip_y();
+                tr.translate(tile.sx * 0.5, offset);
+            }
+            addUnique(syms, tr);
+            break;
+        }
+        case AST::CF_CM: {
+            if (!rhombic) {
+                CfdgError::Error(where, "cm symmetry requires diamond tiling");
+            }
+            double offset = 0.0;
+            switch (data.size()) {
+                case 2:
+                    break;
+                case 3:
+                    offset = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "Mirror axis and optional offset must be provided for cm symmetry");
+            }
+            agg::trans_affine tr;
+            addUnique(syms, tr);
+            if (data[1]) {  // mirror on y axis
+                tr.translate(-offset, 0);
+                tr.flip_x();
+                tr.translate(offset, 0.0);
+            } else {        // mirror on x axis
+                tr.translate(0, -offset);
+                tr.flip_y();
+                tr.translate(0.0, offset);
+            }
+            addUnique(syms, tr);
+            break;
+        }
+        case AST::CF_PMM: {
+            if (!tiled || tile.shx != 0.0 || tile.shy != 0.0) {
+                CfdgError::Error(where, "pmm symmetry requires rectangular tiling");
+            }
+            double centerx = 0.0, centery = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    centerx = data[1];
+                    centery = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "pmm symmetry takes no arguments or a center of reflection");
+            }
+            processDihedral(syms, 2.0, centerx, centery, true, 0.0, where);
+            break;
+        }
+        case AST::CF_PMG: {
+            if (!tiled || tile.shx != 0.0 || tile.shy != 0.0) {
+                CfdgError::Error(where, "pmg symmetry requires rectangular tiling");
+            }
+            double centerx = 0.0, centery = 0.0;
+            switch (data.size()) {
+                case 2:
+                    break;
+                case 4:
+                    centerx = data[2];
+                    centery = data[3];
+                    break;
+                default:
+                    CfdgError::Error(where, "pmg symmetry takes a mirror axis argument and an optional center of reflection");
+            }
+            agg::trans_affine tr, tr2;
+            addUnique(syms, tr);
+            tr.translate(-centerx, -centery);
+            if (data[1]) {  // mirror on y axis
+                tr2 = tr;
+                tr2.flip_x();
+                tr2.translate(centerx, centery);
+                addUnique(syms, tr2);
+                tr2 = tr;
+                tr2.translate(tile.sx * 0.5, 0.0);
+                tr2.flip_y();
+                tr = tr2;
+                tr.translate(centerx, centery);
+                addUnique(syms, tr);
+                tr2.flip_x();
+                tr2.translate(centerx, centery);
+                addUnique(syms, tr2);
+            } else {        // mirror on x axis
+                tr2 = tr;
+                tr2.flip_y();
+                tr2.translate(centerx, centery);
+                addUnique(syms, tr2);
+                tr2 = tr;
+                tr2.translate(0.0, tile.sy * 0.5);
+                tr2.flip_x();
+                tr = tr2;
+                tr.translate(centerx, centery);
+                addUnique(syms, tr);
+                tr2.flip_y();
+                tr2.translate(centerx, centery);
+                addUnique(syms, tr2);
+            }
+            break;
+        }
+        case AST::CF_PGG: {
+            if (!tiled || tile.shx != 0.0 || tile.shy != 0.0) {
+                CfdgError::Error(where, "pgg symmetry requires rectangular tiling");
+            }
+            double centerx = 0.0, centery = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    centerx = data[1];
+                    centery = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "pgg symmetry takes no arguments or a center of rotation");
+            }
+            agg::trans_affine tr, tr2;
+            addUnique(syms, tr);
+            tr.translate(-centerx, -centery);
+            tr2 = tr;
+            tr2.scale(-1.0);
+            tr2.translate(centerx, centery);
+            addUnique(syms, tr2);
+            tr.translate(0.0, -tile.sy * 0.25);
+            tr.flip_y();
+            tr.translate(tile.sx * 0.5, tile.sy * 0.25);
+            tr2 = tr;
+            tr2.scale(-1.0);
+            tr2.translate(centerx, centery);
+            addUnique(syms, tr2);
+            tr.translate(centerx, centery);
+            addUnique(syms, tr);
+            break;
+        }
+        case AST::CF_CMM: {
+            if (!rhombic) {
+                CfdgError::Error(where, "cmm symmetry requires diamond tiling");
+            }
+            double centerx = 0.0, centery = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    centerx = data[1];
+                    centery = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "cmm symmetry takes no arguments or a center of reflection");
+            }
+            processDihedral(syms, 2.0, centerx, centery, true, 0.0, where);
+            break;
+        }
+        case AST::CF_P4:
+        case AST::CF_P4M: {
+            if (!tiled || tile.shx != 0.0 || tile.shy != 0.0 || tile.sx != tile.sy) {
+                CfdgError::Error(where, "p4 & p4m symmetry requires square tiling");
+            }
+            double x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    x = data[1];
+                    y = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "p4 & p4m symmetry takes no arguments or a center of rotation");
+            }
+            processDihedral(syms, 4.0, x, y, t == AST::CF_P4M, M_PI * 0.25, where);
+            break;
+        }
+        case AST::CF_P4G: {
+            if (!tiled || tile.shx != 0.0 || tile.shy != 0.0 || tile.sx != tile.sy) {
+                CfdgError::Error(where, "p4g symmetry requires square tiling");
+            }
+            double centerx = 0.0, centery = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    centerx = data[1];
+                    centery = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "p4g symmetry takes no arguments or a center of rotation");
+            }
+            agg::trans_affine reg;
+            reg.translate(-centerx, -centery);
+            for (int i = 0; i < 4; ++i) {
+                agg::trans_affine tr(reg);
+                if (i) tr.rotate(i * M_PI * 0.5);
+                tr.translate(centerx, centery);
+                addUnique(syms, tr);
+                agg::trans_affine tr2(reg);
+                agg::trans_affine_reflection mirror(i * M_PI * 0.25);
+                tr2 *= mirror;
+                tr2.translate(tile.sx * 0.5 + centerx, tile.sy * 0.5 + centery);
+                addUnique(syms, tr2);
+            }
+            break;
+        }
+        case AST::CF_P3: {
+            if (!hexagonal) {
+                CfdgError::Error(where, "p3 symmetry requires hexagonal tiling");
+            }
+            double x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    x = data[1];
+                    y = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "p3 symmetry takes no arguments or a center of rotation");
+            }
+            processDihedral(syms, 3.0, x, y, false, 0.0, where);
+            break;
+        }
+        case AST::CF_P3M1:
+        case AST::CF_P31M: {
+            if (!hexagonal) {
+                CfdgError::Error(where, "p3m1 & p31m symmetry requires hexagonal tiling");
+            }
+            double x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    x = data[1];
+                    y = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "p3m1 & p31m symmetry takes no arguments or a center of rotation");
+            }
+            bool deg30 = (fabs(tile.shx) <= 0.000001) != (t == AST::CF_P3M1);
+            double angle = M_PI / (deg30 ? 6.0 : 3.0);
+            processDihedral(syms, 3.0, x, y, true, angle, where);
+            break;
+        }
+        case AST::CF_P6:
+        case AST::CF_P6M: {
+            if (!hexagonal) {
+                CfdgError::Error(where, "p6 & p6m symmetry requires hexagonal tiling");
+            }
+            double x = 0.0, y = 0.0;
+            switch (data.size()) {
+                case 1:
+                    break;
+                case 3:
+                    x = data[1];
+                    y = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "p6 & p6m symmetry takes no arguments or a center of rotation");
+            }
+            processDihedral(syms, 6.0, x, y, t == AST::CF_P6M, 0.0, where);
             break;
         }
         default:

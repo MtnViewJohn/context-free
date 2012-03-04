@@ -109,14 +109,30 @@ namespace AST {
         CF_EVEN_ODD = 1 << 12,
         CF_ISO_WIDTH = 1 << 13,
         CF_FILL = 1 << 14,
+        CF_CYCLIC = 31 << 15,
         CF_DIHEDRAL = 1 << 15,
         CF_P11G = 2 << 15,
         CF_P11M = 3 << 15,
         CF_P1M1 = 4 << 15,
-        CF_P2 = 5 << 15,
+        CF_P2 = 30 << 15,
         CF_P2MG = 6 << 15,
         CF_P2MM = 7 << 15,
-        CF_USES_ALPHA = 1 << 18
+        CF_PM = 8 << 15,
+        CF_PG = 9 << 15,
+        CF_CM = 10 << 15,
+        CF_PMM = 11 << 15,
+        CF_PMG = 12 << 15,
+        CF_PGG = 13 << 15,
+        CF_CMM = 14 << 15,
+        CF_P4 = 15 << 15,
+        CF_P4M = 16 << 15,
+        CF_P4G = 17 << 15,
+        CF_P3 = 18 << 15,
+        CF_P3M1 = 19 << 15,
+        CF_P31M = 20 << 15,
+        CF_P6 = 21 << 15,
+        CF_P6M = 22 << 15,
+        CF_USES_ALPHA = 1 << 20
     };
     
     double CFatof(const char* s);
