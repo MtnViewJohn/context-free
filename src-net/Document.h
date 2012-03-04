@@ -130,6 +130,62 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem5;
     private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem6;
     private: System::Windows::Forms::ToolStripMenuItem^  infToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  insertSymmetryToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFCyclicToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFDihedralToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator4;
+    private: System::Windows::Forms::ToolStripMenuItem^  insertVariableToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  insertFlagToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp11gToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp11mToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cfp1m1ToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp2ToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp2mgToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp2mmToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp2ToolStripMenuItem1;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFpmToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFpgToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFcmToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFpmmToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFpmgToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFpggToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFcmmToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cfp4ToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp4mToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp4gToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  friezeToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp3m1ToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp31mToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp6ToolStripMenuItem;
+    private: System::Windows::Forms::ToolStripMenuItem^  cFp6mToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFAllowOverlapToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFAlphaToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFBackgroundToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFBorderDynamicToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFBorderFixedToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFColorToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFColorDepthToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFFrameToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFFrametimeToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFImpureToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFMinimumSizeToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFSizeToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFSymmetryToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFTileToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFTimeToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFMiterJoinToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFRoundJoinToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFBevelJoinToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFButtCapToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFRoundCapToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFSquareCapToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFArcCWToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFArcLargeToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFContinuousToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFAlignToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFEvenOddToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem;
     public: 
 
 
@@ -270,6 +326,42 @@ namespace ContextFreeNet {
             this->menuEPaste = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuEDelete = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStripSeparator6 = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->insertCharacterToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem2 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem3 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem4 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem5 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem6 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->infToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->insertSymmetryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFCyclicToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFDihedralToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripSeparator4 = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->cFp11gToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp11mToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cfp1m1ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp2ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp2mgToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp2mmToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->cFp2ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFpmToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFpgToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFcmToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFpmmToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFpmgToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFpggToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFcmmToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cfp4ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp4mToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp4gToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->friezeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp3m1ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp31mToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp6ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFp6mToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->insertVariableToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->insertFlagToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuEFind = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRender = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRRender = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -280,13 +372,33 @@ namespace ContextFreeNet {
             this->menuRImage = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRMovie = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRUpload = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->insertCharacterToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->toolStripMenuItem2 = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->toolStripMenuItem3 = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->toolStripMenuItem4 = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->toolStripMenuItem5 = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->toolStripMenuItem6 = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->infToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFAllowOverlapToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFAlphaToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFBackgroundToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFBorderDynamicToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFBorderFixedToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFColorToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFColorDepthToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFFrameToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFFrametimeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFImpureToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFMinimumSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFSymmetryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFTileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFTimeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFMiterJoinToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFRoundJoinToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFBevelJoinToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFButtCapToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFRoundCapToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFSquareCapToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFArcCWToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFArcLargeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFContinuousToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFAlignToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFEvenOddToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFIsoWidthToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStrip1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->documentSplitter))->BeginInit();
             this->documentSplitter->Panel1->SuspendLayout();
@@ -306,7 +418,7 @@ namespace ContextFreeNet {
             this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(9) {this->toolStripRenderButton, 
                 this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar, 
                 this->toolStripNextVar, this->toolStripSeparator2, this->toolStripStatus});
-            this->toolStrip1->Location = System::Drawing::Point(0, 24);
+            this->toolStrip1->Location = System::Drawing::Point(0, 0);
             this->toolStrip1->Name = L"toolStrip1";
             this->toolStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::System;
             this->toolStrip1->Size = System::Drawing::Size(820, 25);
@@ -395,7 +507,7 @@ namespace ContextFreeNet {
             // documentSplitter
             // 
             this->documentSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
-            this->documentSplitter->Location = System::Drawing::Point(0, 49);
+            this->documentSplitter->Location = System::Drawing::Point(0, 25);
             this->documentSplitter->Name = L"documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -406,7 +518,7 @@ namespace ContextFreeNet {
             // 
             this->documentSplitter->Panel2->BackColor = System::Drawing::SystemColors::Window;
             this->documentSplitter->Panel2->Controls->Add(this->renderBox);
-            this->documentSplitter->Size = System::Drawing::Size(820, 355);
+            this->documentSplitter->Size = System::Drawing::Size(820, 379);
             this->documentSplitter->SplitterDistance = 273;
             this->documentSplitter->TabIndex = 1;
             // 
@@ -424,8 +536,8 @@ namespace ContextFreeNet {
             // editorSplitter.Panel2
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
-            this->editorSplitter->Size = System::Drawing::Size(273, 355);
-            this->editorSplitter->SplitterDistance = 280;
+            this->editorSplitter->Size = System::Drawing::Size(273, 379);
+            this->editorSplitter->SplitterDistance = 298;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -435,7 +547,7 @@ namespace ContextFreeNet {
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(273, 280);
+            this->cfdgText->Size = System::Drawing::Size(273, 298);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -448,7 +560,7 @@ namespace ContextFreeNet {
             this->cfdgMessage->Location = System::Drawing::Point(0, 0);
             this->cfdgMessage->MinimumSize = System::Drawing::Size(20, 20);
             this->cfdgMessage->Name = L"cfdgMessage";
-            this->cfdgMessage->Size = System::Drawing::Size(273, 71);
+            this->cfdgMessage->Size = System::Drawing::Size(273, 77);
             this->cfdgMessage->TabIndex = 0;
             // 
             // renderBox
@@ -457,7 +569,7 @@ namespace ContextFreeNet {
             this->renderBox->InitialImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"renderBox.InitialImage")));
             this->renderBox->Location = System::Drawing::Point(0, 0);
             this->renderBox->Name = L"renderBox";
-            this->renderBox->Size = System::Drawing::Size(543, 355);
+            this->renderBox->Size = System::Drawing::Size(543, 379);
             this->renderBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
             this->renderBox->TabIndex = 0;
             this->renderBox->TabStop = false;
@@ -492,7 +604,7 @@ namespace ContextFreeNet {
             this->menuFSave->Name = L"menuFSave";
             this->menuFSave->ShortcutKeyDisplayString = L"Ctrl-S";
             this->menuFSave->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-            this->menuFSave->Size = System::Drawing::Size(152, 22);
+            this->menuFSave->Size = System::Drawing::Size(135, 22);
             this->menuFSave->Text = L"&Save";
             this->menuFSave->Click += gcnew System::EventHandler(this, &Document::menuFSave_Click);
             // 
@@ -502,7 +614,7 @@ namespace ContextFreeNet {
             this->menuFSaveAs->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFSaveAs->MergeIndex = 3;
             this->menuFSaveAs->Name = L"menuFSaveAs";
-            this->menuFSaveAs->Size = System::Drawing::Size(152, 22);
+            this->menuFSaveAs->Size = System::Drawing::Size(135, 22);
             this->menuFSaveAs->Text = L"Save &As";
             this->menuFSaveAs->Click += gcnew System::EventHandler(this, &Document::menuFSaveAs_Click);
             // 
@@ -511,7 +623,7 @@ namespace ContextFreeNet {
             this->menuFClose->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFClose->MergeIndex = 4;
             this->menuFClose->Name = L"menuFClose";
-            this->menuFClose->Size = System::Drawing::Size(152, 22);
+            this->menuFClose->Size = System::Drawing::Size(135, 22);
             this->menuFClose->Text = L"&Close";
             this->menuFClose->Click += gcnew System::EventHandler(this, &Document::menuFClose_Click);
             // 
@@ -520,15 +632,16 @@ namespace ContextFreeNet {
             this->menuFRevert->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFRevert->MergeIndex = 5;
             this->menuFRevert->Name = L"menuFRevert";
-            this->menuFRevert->Size = System::Drawing::Size(152, 22);
+            this->menuFRevert->Size = System::Drawing::Size(135, 22);
             this->menuFRevert->Text = L"Re&vert";
             this->menuFRevert->Click += gcnew System::EventHandler(this, &Document::menuFRevert_Click);
             // 
             // menuEdit
             // 
-            this->menuEdit->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->menuEUndo, 
+            this->menuEdit->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(13) {this->menuEUndo, 
                 this->menuERedo, this->toolStripSeparator5, this->menuECut, this->menuECopy, this->menuEPaste, this->menuEDelete, this->toolStripSeparator6, 
-                this->insertCharacterToolStripMenuItem, this->menuEFind});
+                this->insertCharacterToolStripMenuItem, this->insertSymmetryToolStripMenuItem, this->insertVariableToolStripMenuItem, this->insertFlagToolStripMenuItem, 
+                this->menuEFind});
             this->menuEdit->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuEdit->MergeIndex = 1;
             this->menuEdit->Name = L"menuEdit";
@@ -598,6 +711,273 @@ namespace ContextFreeNet {
             // 
             this->toolStripSeparator6->Name = L"toolStripSeparator6";
             this->toolStripSeparator6->Size = System::Drawing::Size(186, 6);
+            // 
+            // insertCharacterToolStripMenuItem
+            // 
+            this->insertCharacterToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->toolStripMenuItem2, 
+                this->toolStripMenuItem3, this->toolStripMenuItem4, this->toolStripMenuItem5, this->toolStripMenuItem6, this->infToolStripMenuItem});
+            this->insertCharacterToolStripMenuItem->Name = L"insertCharacterToolStripMenuItem";
+            this->insertCharacterToolStripMenuItem->Size = System::Drawing::Size(189, 22);
+            this->insertCharacterToolStripMenuItem->Text = L"Insert Character";
+            // 
+            // toolStripMenuItem2
+            // 
+            this->toolStripMenuItem2->Name = L"toolStripMenuItem2";
+            this->toolStripMenuItem2->Size = System::Drawing::Size(84, 22);
+            this->toolStripMenuItem2->Tag = L"8804";
+            this->toolStripMenuItem2->Text = L"≤";
+            this->toolStripMenuItem2->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this->toolStripMenuItem3->Name = L"toolStripMenuItem3";
+            this->toolStripMenuItem3->Size = System::Drawing::Size(84, 22);
+            this->toolStripMenuItem3->Tag = L"8805";
+            this->toolStripMenuItem3->Text = L"≥";
+            this->toolStripMenuItem3->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this->toolStripMenuItem4->Name = L"toolStripMenuItem4";
+            this->toolStripMenuItem4->Size = System::Drawing::Size(84, 22);
+            this->toolStripMenuItem4->Tag = L"8800";
+            this->toolStripMenuItem4->Text = L"≠";
+            this->toolStripMenuItem4->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this->toolStripMenuItem5->Name = L"toolStripMenuItem5";
+            this->toolStripMenuItem5->Size = System::Drawing::Size(84, 22);
+            this->toolStripMenuItem5->Tag = L"8230";
+            this->toolStripMenuItem5->Text = L"…";
+            this->toolStripMenuItem5->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripMenuItem6
+            // 
+            this->toolStripMenuItem6->Name = L"toolStripMenuItem6";
+            this->toolStripMenuItem6->Size = System::Drawing::Size(84, 22);
+            this->toolStripMenuItem6->Tag = L"177";
+            this->toolStripMenuItem6->Text = L"±";
+            this->toolStripMenuItem6->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // infToolStripMenuItem
+            // 
+            this->infToolStripMenuItem->Name = L"infToolStripMenuItem";
+            this->infToolStripMenuItem->Size = System::Drawing::Size(84, 22);
+            this->infToolStripMenuItem->Tag = L"8734";
+            this->infToolStripMenuItem->Text = L"∞";
+            this->infToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // insertSymmetryToolStripMenuItem
+            // 
+            this->insertSymmetryToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(26) {this->cFCyclicToolStripMenuItem, 
+                this->cFDihedralToolStripMenuItem, this->toolStripSeparator4, this->cFp11gToolStripMenuItem, this->cFp11mToolStripMenuItem, this->cfp1m1ToolStripMenuItem, 
+                this->cFp2ToolStripMenuItem, this->cFp2mgToolStripMenuItem, this->cFp2mmToolStripMenuItem, this->toolStripSeparator7, this->cFp2ToolStripMenuItem1, 
+                this->cFpmToolStripMenuItem, this->cFpgToolStripMenuItem, this->cFcmToolStripMenuItem, this->cFpmmToolStripMenuItem, this->cFpmgToolStripMenuItem, 
+                this->cFpggToolStripMenuItem, this->cFcmmToolStripMenuItem, this->cfp4ToolStripMenuItem, this->cFp4mToolStripMenuItem, this->cFp4gToolStripMenuItem, 
+                this->friezeToolStripMenuItem, this->cFp3m1ToolStripMenuItem, this->cFp31mToolStripMenuItem, this->cFp6ToolStripMenuItem, this->cFp6mToolStripMenuItem});
+            this->insertSymmetryToolStripMenuItem->Name = L"insertSymmetryToolStripMenuItem";
+            this->insertSymmetryToolStripMenuItem->Size = System::Drawing::Size(189, 22);
+            this->insertSymmetryToolStripMenuItem->Text = L"Insert Symmetry";
+            // 
+            // cFCyclicToolStripMenuItem
+            // 
+            this->cFCyclicToolStripMenuItem->Name = L"cFCyclicToolStripMenuItem";
+            this->cFCyclicToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFCyclicToolStripMenuItem->Text = L"CF::Cyclic";
+            this->cFCyclicToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFDihedralToolStripMenuItem
+            // 
+            this->cFDihedralToolStripMenuItem->Name = L"cFDihedralToolStripMenuItem";
+            this->cFDihedralToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFDihedralToolStripMenuItem->Text = L"CF::Dihedral";
+            this->cFDihedralToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this->toolStripSeparator4->Name = L"toolStripSeparator4";
+            this->toolStripSeparator4->Size = System::Drawing::Size(135, 6);
+            // 
+            // cFp11gToolStripMenuItem
+            // 
+            this->cFp11gToolStripMenuItem->Name = L"cFp11gToolStripMenuItem";
+            this->cFp11gToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp11gToolStripMenuItem->Text = L"CF::p11g";
+            this->cFp11gToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp11mToolStripMenuItem
+            // 
+            this->cFp11mToolStripMenuItem->Name = L"cFp11mToolStripMenuItem";
+            this->cFp11mToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp11mToolStripMenuItem->Text = L"CF::p11m";
+            this->cFp11mToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cfp1m1ToolStripMenuItem
+            // 
+            this->cfp1m1ToolStripMenuItem->Name = L"cfp1m1ToolStripMenuItem";
+            this->cfp1m1ToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cfp1m1ToolStripMenuItem->Text = L"CF::p1m1";
+            this->cfp1m1ToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp2ToolStripMenuItem
+            // 
+            this->cFp2ToolStripMenuItem->Name = L"cFp2ToolStripMenuItem";
+            this->cFp2ToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp2ToolStripMenuItem->Text = L"CF::p2";
+            this->cFp2ToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp2mgToolStripMenuItem
+            // 
+            this->cFp2mgToolStripMenuItem->Name = L"cFp2mgToolStripMenuItem";
+            this->cFp2mgToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp2mgToolStripMenuItem->Text = L"CF::p2mg";
+            this->cFp2mgToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp2mmToolStripMenuItem
+            // 
+            this->cFp2mmToolStripMenuItem->Name = L"cFp2mmToolStripMenuItem";
+            this->cFp2mmToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp2mmToolStripMenuItem->Text = L"CF::p2mm";
+            this->cFp2mmToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this->toolStripSeparator7->Name = L"toolStripSeparator7";
+            this->toolStripSeparator7->Size = System::Drawing::Size(135, 6);
+            // 
+            // cFp2ToolStripMenuItem1
+            // 
+            this->cFp2ToolStripMenuItem1->Name = L"cFp2ToolStripMenuItem1";
+            this->cFp2ToolStripMenuItem1->Size = System::Drawing::Size(138, 22);
+            this->cFp2ToolStripMenuItem1->Text = L"CF::p2";
+            this->cFp2ToolStripMenuItem1->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFpmToolStripMenuItem
+            // 
+            this->cFpmToolStripMenuItem->Name = L"cFpmToolStripMenuItem";
+            this->cFpmToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFpmToolStripMenuItem->Text = L"CF::pm";
+            this->cFpmToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFpgToolStripMenuItem
+            // 
+            this->cFpgToolStripMenuItem->Name = L"cFpgToolStripMenuItem";
+            this->cFpgToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFpgToolStripMenuItem->Text = L"CF::pg";
+            this->cFpgToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFcmToolStripMenuItem
+            // 
+            this->cFcmToolStripMenuItem->Name = L"cFcmToolStripMenuItem";
+            this->cFcmToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFcmToolStripMenuItem->Text = L"CF::cm";
+            this->cFcmToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFpmmToolStripMenuItem
+            // 
+            this->cFpmmToolStripMenuItem->Name = L"cFpmmToolStripMenuItem";
+            this->cFpmmToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFpmmToolStripMenuItem->Text = L"CF::pmm";
+            this->cFpmmToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFpmgToolStripMenuItem
+            // 
+            this->cFpmgToolStripMenuItem->Name = L"cFpmgToolStripMenuItem";
+            this->cFpmgToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFpmgToolStripMenuItem->Text = L"CF::pmg";
+            this->cFpmgToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFpggToolStripMenuItem
+            // 
+            this->cFpggToolStripMenuItem->Name = L"cFpggToolStripMenuItem";
+            this->cFpggToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFpggToolStripMenuItem->Text = L"CF::pgg";
+            this->cFpggToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFcmmToolStripMenuItem
+            // 
+            this->cFcmmToolStripMenuItem->Name = L"cFcmmToolStripMenuItem";
+            this->cFcmmToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFcmmToolStripMenuItem->Text = L"CF::cmm";
+            this->cFcmmToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cfp4ToolStripMenuItem
+            // 
+            this->cfp4ToolStripMenuItem->Name = L"cfp4ToolStripMenuItem";
+            this->cfp4ToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cfp4ToolStripMenuItem->Text = L"CF::p4";
+            this->cfp4ToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp4mToolStripMenuItem
+            // 
+            this->cFp4mToolStripMenuItem->Name = L"cFp4mToolStripMenuItem";
+            this->cFp4mToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp4mToolStripMenuItem->Text = L"CF::p4m";
+            this->cFp4mToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp4gToolStripMenuItem
+            // 
+            this->cFp4gToolStripMenuItem->Name = L"cFp4gToolStripMenuItem";
+            this->cFp4gToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp4gToolStripMenuItem->Text = L"CF::p4g";
+            this->cFp4gToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // friezeToolStripMenuItem
+            // 
+            this->friezeToolStripMenuItem->Name = L"friezeToolStripMenuItem";
+            this->friezeToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->friezeToolStripMenuItem->Text = L"CF::p3";
+            this->friezeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp3m1ToolStripMenuItem
+            // 
+            this->cFp3m1ToolStripMenuItem->Name = L"cFp3m1ToolStripMenuItem";
+            this->cFp3m1ToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp3m1ToolStripMenuItem->Text = L"CF::p3m1";
+            this->cFp3m1ToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp31mToolStripMenuItem
+            // 
+            this->cFp31mToolStripMenuItem->Name = L"cFp31mToolStripMenuItem";
+            this->cFp31mToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp31mToolStripMenuItem->Text = L"CF::p31m";
+            this->cFp31mToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp6ToolStripMenuItem
+            // 
+            this->cFp6ToolStripMenuItem->Name = L"cFp6ToolStripMenuItem";
+            this->cFp6ToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp6ToolStripMenuItem->Text = L"CF::p6";
+            this->cFp6ToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFp6mToolStripMenuItem
+            // 
+            this->cFp6mToolStripMenuItem->Name = L"cFp6mToolStripMenuItem";
+            this->cFp6mToolStripMenuItem->Size = System::Drawing::Size(138, 22);
+            this->cFp6mToolStripMenuItem->Text = L"CF::p6m";
+            this->cFp6mToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // insertVariableToolStripMenuItem
+            // 
+            this->insertVariableToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(15) {this->cFAllowOverlapToolStripMenuItem, 
+                this->cFAlphaToolStripMenuItem, this->cFBackgroundToolStripMenuItem, this->cFBorderDynamicToolStripMenuItem, this->cFBorderFixedToolStripMenuItem, 
+                this->cFColorToolStripMenuItem, this->cFColorDepthToolStripMenuItem, this->cFFrameToolStripMenuItem, this->cFFrametimeToolStripMenuItem, 
+                this->cFImpureToolStripMenuItem, this->cFMinimumSizeToolStripMenuItem, this->cFSizeToolStripMenuItem, this->cFSymmetryToolStripMenuItem, 
+                this->cFTileToolStripMenuItem, this->cFTimeToolStripMenuItem});
+            this->insertVariableToolStripMenuItem->Name = L"insertVariableToolStripMenuItem";
+            this->insertVariableToolStripMenuItem->Size = System::Drawing::Size(189, 22);
+            this->insertVariableToolStripMenuItem->Text = L"Insert Variable";
+            // 
+            // insertFlagToolStripMenuItem
+            // 
+            this->insertFlagToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(12) {this->cFMiterJoinToolStripMenuItem, 
+                this->cFRoundJoinToolStripMenuItem, this->cFBevelJoinToolStripMenuItem, this->cFButtCapToolStripMenuItem, this->cFRoundCapToolStripMenuItem, 
+                this->cFSquareCapToolStripMenuItem, this->cFArcCWToolStripMenuItem, this->cFArcLargeToolStripMenuItem, this->cFContinuousToolStripMenuItem, 
+                this->cFAlignToolStripMenuItem, this->cFEvenOddToolStripMenuItem, this->cFIsoWidthToolStripMenuItem});
+            this->insertFlagToolStripMenuItem->Name = L"insertFlagToolStripMenuItem";
+            this->insertFlagToolStripMenuItem->Size = System::Drawing::Size(189, 22);
+            this->insertFlagToolStripMenuItem->Text = L"Insert Flag";
             // 
             // menuEFind
             // 
@@ -694,61 +1074,194 @@ namespace ContextFreeNet {
             this->menuRUpload->Text = L"&Upload to gallery...";
             this->menuRUpload->Click += gcnew System::EventHandler(this, &Document::menuRUpload_Click);
             // 
-            // insertCharacterToolStripMenuItem
+            // cFAllowOverlapToolStripMenuItem
             // 
-            this->insertCharacterToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->toolStripMenuItem2, 
-                this->toolStripMenuItem3, this->toolStripMenuItem4, this->toolStripMenuItem5, this->toolStripMenuItem6, this->infToolStripMenuItem});
-            this->insertCharacterToolStripMenuItem->Name = L"insertCharacterToolStripMenuItem";
-            this->insertCharacterToolStripMenuItem->Size = System::Drawing::Size(189, 22);
-            this->insertCharacterToolStripMenuItem->Text = L"Insert Character";
+            this->cFAllowOverlapToolStripMenuItem->Name = L"cFAllowOverlapToolStripMenuItem";
+            this->cFAllowOverlapToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFAllowOverlapToolStripMenuItem->Text = L"CF::AllowOverlap";
+            this->cFAllowOverlapToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // toolStripMenuItem2
+            // cFAlphaToolStripMenuItem
             // 
-            this->toolStripMenuItem2->Name = L"toolStripMenuItem2";
-            this->toolStripMenuItem2->Size = System::Drawing::Size(152, 22);
-            this->toolStripMenuItem2->Tag = L"8804";
-            this->toolStripMenuItem2->Text = L"≤";
-            this->toolStripMenuItem2->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFAlphaToolStripMenuItem->Name = L"cFAlphaToolStripMenuItem";
+            this->cFAlphaToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFAlphaToolStripMenuItem->Text = L"CF::Alpha";
+            this->cFAlphaToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // toolStripMenuItem3
+            // cFBackgroundToolStripMenuItem
             // 
-            this->toolStripMenuItem3->Name = L"toolStripMenuItem3";
-            this->toolStripMenuItem3->Size = System::Drawing::Size(152, 22);
-            this->toolStripMenuItem3->Tag = L"8805";
-            this->toolStripMenuItem3->Text = L"≥";
-            this->toolStripMenuItem3->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFBackgroundToolStripMenuItem->Name = L"cFBackgroundToolStripMenuItem";
+            this->cFBackgroundToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFBackgroundToolStripMenuItem->Text = L"CF::Background";
+            this->cFBackgroundToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // toolStripMenuItem4
+            // cFBorderDynamicToolStripMenuItem
             // 
-            this->toolStripMenuItem4->Name = L"toolStripMenuItem4";
-            this->toolStripMenuItem4->Size = System::Drawing::Size(152, 22);
-            this->toolStripMenuItem4->Tag = L"8800";
-            this->toolStripMenuItem4->Text = L"≠";
-            this->toolStripMenuItem4->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFBorderDynamicToolStripMenuItem->Name = L"cFBorderDynamicToolStripMenuItem";
+            this->cFBorderDynamicToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFBorderDynamicToolStripMenuItem->Text = L"CF::BorderDynamic";
+            this->cFBorderDynamicToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // toolStripMenuItem5
+            // cFBorderFixedToolStripMenuItem
             // 
-            this->toolStripMenuItem5->Name = L"toolStripMenuItem5";
-            this->toolStripMenuItem5->Size = System::Drawing::Size(152, 22);
-            this->toolStripMenuItem5->Tag = L"8230";
-            this->toolStripMenuItem5->Text = L"…";
-            this->toolStripMenuItem5->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFBorderFixedToolStripMenuItem->Name = L"cFBorderFixedToolStripMenuItem";
+            this->cFBorderFixedToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFBorderFixedToolStripMenuItem->Text = L"CF::BorderFixed";
+            this->cFBorderFixedToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // toolStripMenuItem6
+            // cFColorToolStripMenuItem
             // 
-            this->toolStripMenuItem6->Name = L"toolStripMenuItem6";
-            this->toolStripMenuItem6->Size = System::Drawing::Size(152, 22);
-            this->toolStripMenuItem6->Tag = L"177";
-            this->toolStripMenuItem6->Text = L"±";
-            this->toolStripMenuItem6->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFColorToolStripMenuItem->Name = L"cFColorToolStripMenuItem";
+            this->cFColorToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFColorToolStripMenuItem->Text = L"CF::Color";
+            this->cFColorToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // infToolStripMenuItem
+            // cFColorDepthToolStripMenuItem
             // 
-            this->infToolStripMenuItem->Name = L"infToolStripMenuItem";
-            this->infToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-            this->infToolStripMenuItem->Tag = L"8734";
-            this->infToolStripMenuItem->Text = L"∞";
-            this->infToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFColorDepthToolStripMenuItem->Name = L"cFColorDepthToolStripMenuItem";
+            this->cFColorDepthToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFColorDepthToolStripMenuItem->Text = L"CF::ColorDepth";
+            this->cFColorDepthToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFFrameToolStripMenuItem
+            // 
+            this->cFFrameToolStripMenuItem->Name = L"cFFrameToolStripMenuItem";
+            this->cFFrameToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFFrameToolStripMenuItem->Text = L"CF::Frame";
+            this->cFFrameToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFFrametimeToolStripMenuItem
+            // 
+            this->cFFrametimeToolStripMenuItem->Name = L"cFFrametimeToolStripMenuItem";
+            this->cFFrametimeToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFFrametimeToolStripMenuItem->Text = L"CF::FrameTime";
+            this->cFFrametimeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFImpureToolStripMenuItem
+            // 
+            this->cFImpureToolStripMenuItem->Name = L"cFImpureToolStripMenuItem";
+            this->cFImpureToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFImpureToolStripMenuItem->Text = L"CF::Impure";
+            this->cFImpureToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFMinimumSizeToolStripMenuItem
+            // 
+            this->cFMinimumSizeToolStripMenuItem->Name = L"cFMinimumSizeToolStripMenuItem";
+            this->cFMinimumSizeToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFMinimumSizeToolStripMenuItem->Text = L"CF::MinimumSize";
+            this->cFMinimumSizeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFSizeToolStripMenuItem
+            // 
+            this->cFSizeToolStripMenuItem->Name = L"cFSizeToolStripMenuItem";
+            this->cFSizeToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFSizeToolStripMenuItem->Text = L"CF::Size";
+            this->cFSizeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFSymmetryToolStripMenuItem
+            // 
+            this->cFSymmetryToolStripMenuItem->Name = L"cFSymmetryToolStripMenuItem";
+            this->cFSymmetryToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFSymmetryToolStripMenuItem->Text = L"CF::Symmetry";
+            this->cFSymmetryToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFTileToolStripMenuItem
+            // 
+            this->cFTileToolStripMenuItem->Name = L"cFTileToolStripMenuItem";
+            this->cFTileToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFTileToolStripMenuItem->Text = L"CF::Tile";
+            this->cFTileToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFTimeToolStripMenuItem
+            // 
+            this->cFTimeToolStripMenuItem->Name = L"cFTimeToolStripMenuItem";
+            this->cFTimeToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFTimeToolStripMenuItem->Text = L"CF::Time";
+            this->cFTimeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFMiterJoinToolStripMenuItem
+            // 
+            this->cFMiterJoinToolStripMenuItem->Name = L"cFMiterJoinToolStripMenuItem";
+            this->cFMiterJoinToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFMiterJoinToolStripMenuItem->Text = L"CF::MiterJoin";
+            this->cFMiterJoinToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFRoundJoinToolStripMenuItem
+            // 
+            this->cFRoundJoinToolStripMenuItem->Name = L"cFRoundJoinToolStripMenuItem";
+            this->cFRoundJoinToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFRoundJoinToolStripMenuItem->Text = L"CF::RoundJoin";
+            this->cFRoundJoinToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFBevelJoinToolStripMenuItem
+            // 
+            this->cFBevelJoinToolStripMenuItem->Name = L"cFBevelJoinToolStripMenuItem";
+            this->cFBevelJoinToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFBevelJoinToolStripMenuItem->Text = L"CF::BevelJoin";
+            this->cFBevelJoinToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFButtCapToolStripMenuItem
+            // 
+            this->cFButtCapToolStripMenuItem->Name = L"cFButtCapToolStripMenuItem";
+            this->cFButtCapToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFButtCapToolStripMenuItem->Text = L"CF::ButtCap";
+            this->cFButtCapToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFRoundCapToolStripMenuItem
+            // 
+            this->cFRoundCapToolStripMenuItem->Name = L"cFRoundCapToolStripMenuItem";
+            this->cFRoundCapToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFRoundCapToolStripMenuItem->Text = L"CF::RoundCap";
+            this->cFRoundCapToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFSquareCapToolStripMenuItem
+            // 
+            this->cFSquareCapToolStripMenuItem->Name = L"cFSquareCapToolStripMenuItem";
+            this->cFSquareCapToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFSquareCapToolStripMenuItem->Text = L"CF::SquareCap";
+            this->cFSquareCapToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFArcCWToolStripMenuItem
+            // 
+            this->cFArcCWToolStripMenuItem->Name = L"cFArcCWToolStripMenuItem";
+            this->cFArcCWToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFArcCWToolStripMenuItem->Text = L"CF::ArcCW";
+            this->cFArcCWToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFArcLargeToolStripMenuItem
+            // 
+            this->cFArcLargeToolStripMenuItem->Name = L"cFArcLargeToolStripMenuItem";
+            this->cFArcLargeToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFArcLargeToolStripMenuItem->Text = L"CF::ArcLarge";
+            this->cFArcLargeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFContinuousToolStripMenuItem
+            // 
+            this->cFContinuousToolStripMenuItem->Name = L"cFContinuousToolStripMenuItem";
+            this->cFContinuousToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFContinuousToolStripMenuItem->Text = L"CF::Continuous";
+            this->cFContinuousToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFAlignToolStripMenuItem
+            // 
+            this->cFAlignToolStripMenuItem->Name = L"cFAlignToolStripMenuItem";
+            this->cFAlignToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFAlignToolStripMenuItem->Text = L"CF::Align";
+            this->cFAlignToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFEvenOddToolStripMenuItem
+            // 
+            this->cFEvenOddToolStripMenuItem->Name = L"cFEvenOddToolStripMenuItem";
+            this->cFEvenOddToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFEvenOddToolStripMenuItem->Text = L"CF::EvenOdd";
+            this->cFEvenOddToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // cFIsoWidthToolStripMenuItem
+            // 
+            this->cFIsoWidthToolStripMenuItem->Name = L"cFIsoWidthToolStripMenuItem";
+            this->cFIsoWidthToolStripMenuItem->Size = System::Drawing::Size(156, 22);
+            this->cFIsoWidthToolStripMenuItem->Text = L"CF::IsoWidth";
+            this->cFIsoWidthToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
             // Document
             // 
