@@ -462,6 +462,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (codePoint) {
         NSString* unistring = [NSString stringWithCharacters:&codePoint length:1];
         [mEditor insertText: unistring];
+    } else {
+        [mEditor insertText: [menu title]];
     }
 }
 
