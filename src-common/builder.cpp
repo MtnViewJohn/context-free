@@ -74,7 +74,7 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
         FlagNames.insert(std::pair<std::string, int>("CF::EvenOdd", AST::CF_EVEN_ODD));
         FlagNames.insert(std::pair<std::string, int>("CF::IsoWidth", AST::CF_ISO_WIDTH));
         FlagNames.insert(std::pair<std::string, int>("~~CF_FILL~~", AST::CF_FILL));
-        FlagNames.insert(std::pair<std::string, int>("CF::Cyclic", AST::CF_NONE));
+        FlagNames.insert(std::pair<std::string, int>("CF::Cyclic", AST::CF_CYCLIC));
         FlagNames.insert(std::pair<std::string, int>("CF::Dihedral", AST::CF_DIHEDRAL));
         FlagNames.insert(std::pair<std::string, int>("CF::p11g", AST::CF_P11G));
         FlagNames.insert(std::pair<std::string, int>("CF::p11m", AST::CF_P11M));
@@ -82,6 +82,21 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
         FlagNames.insert(std::pair<std::string, int>("CF::p2", AST::CF_P2));
         FlagNames.insert(std::pair<std::string, int>("CF::p2mg", AST::CF_P2MG));
         FlagNames.insert(std::pair<std::string, int>("CF::p2mm", AST::CF_P2MM));
+        FlagNames.insert(std::pair<std::string, int>("CF::pm", AST::CF_PM));
+        FlagNames.insert(std::pair<std::string, int>("CF::pg", AST::CF_PG));
+        FlagNames.insert(std::pair<std::string, int>("CF::cm", AST::CF_CM));
+        FlagNames.insert(std::pair<std::string, int>("CF::pmm", AST::CF_PMM));
+        FlagNames.insert(std::pair<std::string, int>("CF::pmg", AST::CF_PMG));
+        FlagNames.insert(std::pair<std::string, int>("CF::pgg", AST::CF_PGG));
+        FlagNames.insert(std::pair<std::string, int>("CF::cmm", AST::CF_CMM));
+        FlagNames.insert(std::pair<std::string, int>("CF::p4", AST::CF_P4));
+        FlagNames.insert(std::pair<std::string, int>("CF::p4m", AST::CF_P4M));
+        FlagNames.insert(std::pair<std::string, int>("CF::p4g", AST::CF_P4G));
+        FlagNames.insert(std::pair<std::string, int>("CF::p3", AST::CF_P3));
+        FlagNames.insert(std::pair<std::string, int>("CF::p3m1", AST::CF_P3M1));
+        FlagNames.insert(std::pair<std::string, int>("CF::p31m", AST::CF_P31M));
+        FlagNames.insert(std::pair<std::string, int>("CF::p6", AST::CF_P6));
+        FlagNames.insert(std::pair<std::string, int>("CF::p6m", AST::CF_P6M));
     }
     assert(Builder::CurrentBuilder == NULL);    // ensure singleton
     Builder::CurrentBuilder = this;
