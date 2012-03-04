@@ -993,6 +993,7 @@ namespace {
     mRenderer = 0;
     delete mEngine;
     mEngine = [mDocument buildEngine];
+    mTiled = false;
 }
 
 - (void)buildRendererSize:(NSSize)size minimum:(double)minSize
