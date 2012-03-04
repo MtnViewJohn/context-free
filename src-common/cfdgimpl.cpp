@@ -979,7 +979,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         "CF::Time"
     };
     
-    if (!std::binary_search(KnownParams, KnownParams + 14, name.c_str(), stringcompare))
+    if (!std::binary_search(KnownParams, KnownParams + sizeof(KnownParams)/sizeof(KnownParams[0]), name.c_str(), stringcompare))
         return false;
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     int varNum = encodeShapeName(name);
