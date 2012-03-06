@@ -43,6 +43,7 @@ namespace AST {
         "acosh", "asinh", "atanh", 
         "log", "log10", "sqrt", "exp", "abs", "floor", "infinity", 
         "factorial", "sg",
+        "bitnot", "bitor", "bitand", "bitxor", "bitleft", "bitright",
         "atan2", "mod", "divides", "div", "min", "max", "ftime", "frame",
         "rand_static", "rand", "rand+/-", "randint"
     };
@@ -122,6 +123,12 @@ namespace AST {
         "\x2C\x28\x50\xCC\xDE\x44",     // Infinity
         "\x19\xD7\x83\x29\x47\x99",     // Factorial
         "\xB7\x05\x28\xBA\xCD\x2E",     // Sg
+        "\x79\x19\x1A\x9F\x4D\xA0",     // BitNot
+        "\xF2\x77\xAB\x5C\x33\x43",     // BitOr
+        "\xC3\x56\x9E\x75\xE0\x44",     // BitAnd
+        "\xBB\xFA\x2B\xD2\x91\x55",     // BitXOR
+        "\x91\x47\xE5\xE5\x0D\xAA",     // BitLeft
+        "\xF1\xAB\x17\x00\xFA\xA5",     // BitRight
         "\x99\x1B\xC9\xE0\x3F\xA4",     // Atan2
         "\x78\x8E\xC8\x2C\x1C\x96",     // Divides
         "\x64\xEC\x5B\x4B\xEE\x2B",     // Div
@@ -389,7 +396,7 @@ namespace AST {
             if (argcount < 1 || argcount > 2) {
                 CfdgError::Error(argsLoc, "function takes one or two arguments");
             }
-        } else if (functype < Atan2) {
+        } else if (functype < BitOr) {
             if (argcount != 1) {
                 CfdgError::Error(argsLoc, functype == ASTfunction::Infinity ? 
                                "function takes zero or one arguments" : 
@@ -405,8 +412,11 @@ namespace AST {
             }
         }
         arguments = args.release();
-        if (functype == Mod || functype == Abs || functype == Min || functype == Max)
+        if (functype == Mod || functype == Abs || functype == Min || 
+            functype == Max || (functype >= BitNot && functype <= BitRight))
+        {
             isNatural = arguments->isNatural;
+        }
         if (functype == Factorial || functype == Sg || functype == Div || functype == Divides) {
             if (!arguments->isNatural)
                 CfdgError(arguments->where, "function is defined over natural numbers only");
@@ -1181,6 +1191,24 @@ namespace AST {
                 break;
             case Sg:
                 *res = a[0] == 0.0 ? 0.0 : 1.0;
+                break;
+            case BitNot:
+                *res = (double)(~(uint64_t)a[0] & 0xfffffffffffffull);
+                break;
+            case BitOr:
+                *res = (double)(((uint64_t)a[0] | (uint64_t)a[1]) & 0xfffffffffffffull);
+                break;
+            case BitAnd:
+                *res = (double)(((uint64_t)a[0] & (uint64_t)a[1]) & 0xfffffffffffffull);
+                break;
+            case BitXOR:
+                *res = (double)(((uint64_t)a[0] ^ (uint64_t)a[1]) & 0xfffffffffffffull);
+                break;
+            case BitLeft:
+                *res = (double)(((uint64_t)a[0] << (uint64_t)a[1]) & 0xfffffffffffffull);
+                break;
+            case BitRight:
+                *res = (double)(((uint64_t)a[0] >> (uint64_t)a[1]) & 0xfffffffffffffull);
                 break;
             case Atan2: 
                 *res = atan2(a[0], a[1]) * 57.29577951308;
