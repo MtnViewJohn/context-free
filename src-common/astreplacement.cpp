@@ -314,7 +314,7 @@ namespace AST {
                     temp.front()->evaluate(&(mChildChange.strokeWidth), 1) != 1)
                 {
                     ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, temp.front(), loc);
-                    mods->modExp.push_back(w);
+                    mChildChange.modExp.push_back(w);
                 }
             }
             if (temp.back()->mType == ASTexpression::FlagType) {
