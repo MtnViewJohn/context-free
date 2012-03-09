@@ -88,6 +88,8 @@ CFDGImpl::CFDGImpl(CFDGImpl* c)
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 {
     m_shapeTypes.swap(c->m_shapeTypes);
+    mFunctions.swap(c->mFunctions);
+    fileNames.swap(c->fileNames);
     for (std::vector<ShapeType>::iterator it = m_shapeTypes.begin(), eit = m_shapeTypes.end(); 
          it != eit; ++it)
         it->shapeType = newShape;
