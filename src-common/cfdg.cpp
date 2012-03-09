@@ -109,6 +109,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         lexer.startToken = version == 2 ? yy::CfdgParser::token::CFDG2 : 
                                           yy::CfdgParser::token::CFDG3;
         b.mCompilePhase = version < 4 ? 1 : 2;
+        b.mWant2ndPass = version == 3;
         
         yy::CfdgParser parser(b);
         istream* input = system->openFileForRead(fname);

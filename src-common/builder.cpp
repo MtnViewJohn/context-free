@@ -186,6 +186,7 @@ getUniqueFile(const std::string* base, const std::string* file)
 void
 Builder::error(const yy::location& l, const std::string& msg)
 {
+    if (mWant2ndPass) return;
     mErrorOccured = true;
     warning(l, msg);
 }
@@ -320,6 +321,8 @@ Builder::SetShape(AST::ASTshape* s)
         mCurrentShape = -1;
         return;
     }
+    if (m_CFDG->findFunction(s->mNameIndex))
+        CfdgError::Warning(s->mLocation, "There is a function with the same name as this shape");
 	mCurrentShape = s->mNameIndex;
     if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
         mWant2ndPass = true;
@@ -659,15 +662,30 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
         return new ASTfunction(*name, args, mSeed, nameLoc, argsLoc);
     
     const ASTparameters* p = m_CFDG->getShapeParams(nameIndex);
-    if (p ? !(p->empty()) : mCompilePhase == 1)
-        return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
-                                    m_CFDG->getShapeParams(mCurrentShape));
+    if (p) {
+        if (!(p->empty()))
+            return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+                                        m_CFDG->getShapeParams(mCurrentShape));
+        
+        if (consAllowed)
+            return new ASTcons(new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
+                                                    p, m_CFDG->getShapeParams(mCurrentShape)), 
+                               args.release());
+        error(nameLoc + argsLoc, "Shape takes no arguments");
+    }
     
-    if (!consAllowed)
-        error(nameLoc + argsLoc, "Cannot bind arguments to unknown shape");
-    return new ASTcons(new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
-                                            p, m_CFDG->getShapeParams(mCurrentShape)), 
-                       args.release());
+    // At this point we don't know if this is a typo or a to-be-defined shape or 
+    // user function
+    
+    if (mCompilePhase == 1) {
+        mWant2ndPass = true;
+    } else {
+        error(nameLoc + argsLoc, "Doesn't match a known shape or user function");
+    }
+
+    // Just return this, it will get dropped eventually
+    return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+                                m_CFDG->getShapeParams(mCurrentShape));
 }
 
 AST::ASTmodification*
@@ -720,10 +738,14 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc)
         def->isFunction = true;
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         if (prev != def) {
-            CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
-            CfdgError::Error(prev->mLocation, "Previous user function definition is here");
+            if (mCompilePhase == 1) {
+                CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
+                CfdgError::Error(prev->mLocation, "Previous user function definition is here");
+            }
             delete def;
         }
+        if (m_CFDG->getShapeParams(nameIndex))
+            CfdgError::Warning(defLoc, "User function name matches a shape name");
     }
 }
 

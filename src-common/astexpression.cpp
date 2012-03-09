@@ -449,7 +449,10 @@ namespace AST {
         if (parent && parent->empty())
             parent = NULL;
         argSize = ASTparameter::CheckType(types, parent, arguments, loc);
-        if (argSize < 0) return;
+        if (argSize < 0) {
+            argSource = NoArgs;
+            return;
+        }
             
         if (arguments && arguments->mType != ASTexpression::NoType) {
             arguments->entropy(entropyVal);
@@ -659,10 +662,6 @@ namespace AST {
         
         selector = &*arg;
         ++arg;
-        if (selector->isConstant) {
-            indexCache = getIndex();
-            selector = NULL;
-        }
         
         bool firstOne = true;
         while (arg != arg_end) {
@@ -693,6 +692,8 @@ namespace AST {
         }
         
         if (selector->isConstant) {
+            indexCache = getIndex();
+            selector = NULL;
             isConstant = choices[getIndex()]->isConstant;
             isLocal = choices[getIndex()]->isLocal;
         }

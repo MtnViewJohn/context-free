@@ -168,6 +168,7 @@ namespace AST {
 #include "scanner.h"
 #include "math.h"
 #include "builder.h"
+#include <cassert>
 	
 #undef yylex
 #define yylex driver.lexer->lex
@@ -291,9 +292,11 @@ initialization:
             exp_ptr p($3);
             mod_ptr mod($4);
             driver.SetShape(NULL);
-            ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
-            rep_ptr start(new ASTreplacement(*r, *name, mod, @$));
-            driver.Initialize(start);
+            if (driver.mCompilePhase == 2) {
+                ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
+                rep_ptr start(new ASTreplacement(*r, *name, mod, @$));
+                driver.Initialize(start);
+            }
             $$ = 0;
         }
         |
@@ -301,9 +304,11 @@ initialization:
             str_ptr name($2);
             exp_ptr p($3);
             driver.SetShape(NULL);
-            ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
-            rep_ptr start(new ASTreplacement(*r, *name, mod_ptr(), @$));
-            driver.Initialize(start);
+            if (driver.mCompilePhase == 2) {
+                ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
+                rep_ptr start(new ASTreplacement(*r, *name, mod_ptr(), @$));
+                driver.Initialize(start);
+            }
             $$ = 0;
         }
         ;
@@ -391,7 +396,7 @@ definition:
         definition_header exp2 { 
             str_ptr var($1);
             exp_ptr exp($2);
-            if (var.get())
+            if (var.get() && driver.mCompilePhase == 2)
                 driver.NextParameter(*var, exp, @1, @2);
         }
         ;
@@ -415,17 +420,22 @@ shape:
 shape_singleton_header:
         shape '{' {
             driver.push_rep($1, true);
-            driver.mInPathContainer = false;
-            rule_ptr rule(new ASTrule(-1, @1));
-            driver.AddRule(rule.get());
-            driver.push_repContainer(rule->mRuleBody);
-            $$ = rule.release();
+            if (driver.mCompilePhase == 2) {
+                driver.mInPathContainer = false;
+                rule_ptr rule(new ASTrule(-1, @1));
+                driver.AddRule(rule.get());
+                driver.push_repContainer(rule->mRuleBody);
+                $$ = rule.release();
+            } else {
+                $$ = 0;
+            }
         }
 
 shape_singleton:
         shape_singleton_header buncha_elements '}' {
             $$ = $1;
-            driver.pop_repContainer($1);
+            if (driver.mCompilePhase == 2)
+                driver.pop_repContainer($1);
             driver.mInPathContainer = false;
         }
         ;
@@ -465,21 +475,29 @@ rule_v2:
 rule_header:
         RULE {
             driver.mInPathContainer = false;
-            rule_ptr rule(new ASTrule(-1, @1));
-            driver.AddRule(rule.get());
-            driver.push_repContainer(rule->mRuleBody);
-            $$ = rule.release();
+            if (driver.mCompilePhase == 2) {
+                rule_ptr rule(new ASTrule(-1, @1));
+                driver.AddRule(rule.get());
+                driver.push_repContainer(rule->mRuleBody);
+                $$ = rule.release();
+            } else {
+                $$ = 0;
+            }
 		}
 		|
         RULE USER_RATIONAL {
             driver.mInPathContainer = false;
             str_ptr weight($2);
-            rule_ptr rule(new ASTrule(-1, CFatof(weight->c_str()), 
-                                      weight->find_first_of('%')  != std::string::npos,
-                                      @$));
-            driver.AddRule(rule.get());
-            driver.push_repContainer(rule->mRuleBody);
-            $$ = rule.release();
+            if (driver.mCompilePhase == 2) {
+                rule_ptr rule(new ASTrule(-1, CFatof(weight->c_str()), 
+                                          weight->find_first_of('%')  != std::string::npos,
+                                          @$));
+                driver.AddRule(rule.get());
+                driver.push_repContainer(rule->mRuleBody);
+                $$ = rule.release();
+            } else {
+                $$ = 0;
+            }
 		}
         ;
 
@@ -496,18 +514,23 @@ path_header:
 			driver.SetShape(s);
             s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : NULL;
             driver.mInPathContainer = true;
-            rule_ptr newPath(new ASTrule(-1, @$));
-            newPath->isPath = true;
-            driver.AddRule(newPath.get());
-            driver.push_repContainer(newPath->mRuleBody);
-            $$ = newPath.release();
+            if (driver.mCompilePhase == 2) {
+                rule_ptr newPath(new ASTrule(-1, @$));
+                newPath->isPath = true;
+                driver.AddRule(newPath.get());
+                driver.push_repContainer(newPath->mRuleBody);
+                $$ = newPath.release();
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
 rule:
         rule_header '{' buncha_elements '}' {
             $$ = $1;
-            driver.pop_repContainer($1);
+            if (driver.mCompilePhase == 2)
+                driver.pop_repContainer($1);
             driver.mInPathContainer = false;
         }
         ;
@@ -515,7 +538,8 @@ rule:
 path:
         path_header '{' buncha_elements '}' {
             $$ = $1;
-            driver.pop_repContainer($1);
+            if (driver.mCompilePhase == 2)
+                driver.pop_repContainer($1);
             driver.mInPathContainer = false;
             driver.SetShape(NULL);
         }
@@ -606,6 +630,8 @@ parameter_spec:
 
 buncha_elements: 
         buncha_elements element {
+            if (driver.mCompilePhase == 1)
+                assert ($2 == 0);
             driver.push_rep($2);
         }
         |
@@ -639,29 +665,43 @@ element_simple:
         USER_PATHOP '(' exp2 ')' {
             str_ptr pop($1);
             exp_ptr mod($3);
-            $$ = new ASTpathOp(*pop, mod, true, @$);
+            if (driver.mCompilePhase == 2)
+                $$ = new ASTpathOp(*pop, mod, true, @$);
+            else
+                $$ = 0;
         }
         |
         USER_PATHOP '(' ')' {
             str_ptr pop($1);
             exp_ptr mod;
-            $$ = new ASTpathOp(*pop, mod, true, @$);
+            if (driver.mCompilePhase == 2)
+                $$ = new ASTpathOp(*pop, mod, true, @$);
+            else
+                $$ = 0;
         }
         |
         USER_STRING parameter_spec modification {
             str_ptr cmd($1);
             exp_ptr p($2);
             mod_ptr mod($3);
-            rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, false);
-            $$ = item.release();
+            if (driver.mCompilePhase == 2) {
+                rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, false);
+                $$ = item.release();
+            } else {
+                $$ = 0;
+            }
         }
         |
         PATH USER_STRING parameter_spec modification {
             str_ptr cmd($2);
             exp_ptr p($3);
             mod_ptr mod($4);
-            rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, true);
-            $$ = item.release();
+            if (driver.mCompilePhase == 2) {
+                rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, true);
+                $$ = item.release();
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
@@ -669,6 +709,8 @@ one_or_more_elements:
         '{' buncha_elements '}' { }
         |
         element {
+            if (driver.mCompilePhase == 1)
+                assert($1 == 0);
             driver.push_rep($1);
         }
         ;
@@ -683,7 +725,8 @@ one_or_more_pathOp_v2:
 
 caseBody:
         caseBody caseBody_element {
-            driver.pop_repContainer(driver.switchStack.top());
+            if (driver.mCompilePhase == 2)
+                driver.pop_repContainer(driver.switchStack.top());
         }
         |
         ;
@@ -693,63 +736,83 @@ caseBody_element:
         ;
 
 element:
-        element_simple { $$ = $1; }
+        element_simple { 
+            $$ = $1; 
+        }
         |
-        definition { $$ = 0; }
+        definition { 
+            $$ = 0; 
+        }
         |
         element_loop { 
             $$ = $1; 
-            driver.pop_repContainer($1);
-            if ($1->mRepType == 0) {
-                delete $1;
-                $$ = 0;
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                if ($1->mRepType == 0) {
+                    delete $1;
+                    $$ = 0;
+                }
             }
         }
         |
         element_loop FINALLY {
-            driver.pop_repContainer($1);
-            driver.push_repContainer($1->mFinallyBody);
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                driver.push_repContainer($1->mFinallyBody);
+            }
         } one_or_more_elements {
-            driver.pop_repContainer($1);
-            $$ = $1;
-            if ($1->mRepType == 0) {
-                delete $1;
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                $$ = $1;
+                if ($1->mRepType == 0) {
+                    delete $1;
+                    $$ = 0;
+                }
+            } else {
                 $$ = 0;
             }
         }
         |
         ifHeader one_or_more_elements {
             $$ = $1;
-            driver.pop_repContainer($1);
-            if ($1->mRepType == 0) {
-                delete $1;
-                $$ = 0;
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                if ($1->mRepType == 0) {
+                    delete $1;
+                    $$ = 0;
+                }
             }
         }
         |
         ifElseHeader one_or_more_elements {
             $$ = $1;
-            driver.pop_repContainer($1);
-            if ($1->mRepType == 0) {
-                delete $1;
-                $$ = 0;
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                if ($1->mRepType == 0) {
+                    delete $1;
+                    $$ = 0;
+                }
             }
         }
         |
         transHeader one_or_more_elements {
             $$ = $1;
-            driver.pop_repContainer($1);
-            if ($1->mRepType == 0) {
-                delete $1;
-                $$ = 0;
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                if ($1->mRepType == 0) {
+                    delete $1;
+                    $$ = 0;
+                }
             }
         }
         |
         switchHeader '{' caseBody '}'
         {
-            $1->unify();
             $$ = $1;
-            driver.switchStack.pop();
+            if (driver.mCompilePhase == 2) {
+                $1->unify();
+                driver.switchStack.pop();
+            }
         }
         |
         element_v2clue {
@@ -861,35 +924,47 @@ loopHeader:
             str_ptr var($2);
             exp_ptr index($4);
             mod_ptr mod($5);
-            --driver.mLocalStackDepth;
-            int nameIndex = driver.StringToShape(*var, @2, false);
-            driver.CheckVariableName(nameIndex, @2);
-            loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod));
-            driver.push_repContainer(loop->mLoopBody);
-            $$ = loop.release();
+            if (driver.mCompilePhase == 2) {
+                --driver.mLocalStackDepth;
+                int nameIndex = driver.StringToShape(*var, @2, false);
+                driver.CheckVariableName(nameIndex, @2);
+                loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod));
+                driver.push_repContainer(loop->mLoopBody);
+                $$ = loop.release();
+            } else {
+                $$ = 0;
+            }
         }
         |
         LOOP MODTYPE BECOMES loopexp modification {
             exp_ptr index($4);
             mod_ptr mod($5);
-            static const std::string dummyvar("~~inaccessiblevar~~");
-            --driver.mLocalStackDepth;
-            loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
-                                      dummyvar, @2, index, @4, mod));
-            driver.push_repContainer(loop->mLoopBody);
-            $$ = loop.release();
+            if (driver.mCompilePhase == 2) {
+                static const std::string dummyvar("~~inaccessiblevar~~");
+                --driver.mLocalStackDepth;
+                loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
+                                          dummyvar, @2, index, @4, mod));
+                driver.push_repContainer(loop->mLoopBody);
+                $$ = loop.release();
+            } else {
+                $$ = 0;
+            }
             error(@2, "Reserved keyword: adjustment");
         }
         |
         LOOP loopexp modification {
             exp_ptr count($2);
             mod_ptr mod($3);
-            static const std::string dummyvar("~~inaccessiblevar~~");
-            --driver.mLocalStackDepth;
-            loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
-                                      dummyvar, @1, count, @2, mod));
-            driver.push_repContainer(loop->mLoopBody);
-            $$ = loop.release();
+            if (driver.mCompilePhase == 2) {
+                static const std::string dummyvar("~~inaccessiblevar~~");
+                --driver.mLocalStackDepth;
+                loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
+                                          dummyvar, @1, count, @2, mod));
+                driver.push_repContainer(loop->mLoopBody);
+                $$ = loop.release();
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
@@ -908,16 +983,22 @@ loopexp:
 ifHeader:
         IF '(' exp2 ')' {
             exp_ptr cond($3);
-            if_ptr ifHeader(new ASTif(cond, @3));
-            driver.push_repContainer(ifHeader->mThenBody);
-            $$ = ifHeader.release();
+            if (driver.mCompilePhase == 2) {
+                if_ptr ifHeader(new ASTif(cond, @3));
+                driver.push_repContainer(ifHeader->mThenBody);
+                $$ = ifHeader.release();
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
 ifElseHeader:
         ifHeader one_or_more_elements ELSE {
-            driver.pop_repContainer($1);
-            driver.push_repContainer($1->mElseBody);
+            if (driver.mCompilePhase == 2) {
+                driver.pop_repContainer($1);
+                driver.push_repContainer($1->mElseBody);
+            }
             $$ = $1;
         }
         ;
@@ -927,18 +1008,26 @@ transHeader:
             if ($1 != ASTmodTerm::transform)
                 error(@1, "Syntax error");
             mod_ptr mod($2);
-            ASTtransform* trans = new ASTtransform(mod, @$);
-            driver.push_repContainer(trans->mBody);
-            $$ = trans;
+            if (driver.mCompilePhase == 2) {
+                ASTtransform* trans = new ASTtransform(mod, @$);
+                driver.push_repContainer(trans->mBody);
+                $$ = trans;
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
 switchHeader:
         SWITCH '(' exp2 ')' {
             exp_ptr caseVal($3);
-            switch_ptr switchHeader(new ASTswitch(caseVal, @3));
-            driver.switchStack.push(switchHeader.get());
-            $$ = switchHeader.release();
+            if (driver.mCompilePhase == 2) {
+                switch_ptr switchHeader(new ASTswitch(caseVal, @3));
+                driver.switchStack.push(switchHeader.get());
+                $$ = switchHeader.release();
+            } else {
+                $$ = 0;
+            }
         }
         ;
 
@@ -946,35 +1035,39 @@ caseHeader:
         CASE exp2 ':' {
             exp_ptr valExp($2);
             
-            double val = 0.0;
-            try {
-                if (valExp->evaluate(&val, 1) != 1) {
-                    driver.error(@2, "Case expression is not a single, numeric expression");
-                } else {
-                    int intval = (int)floor(val);
-                    ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
-                    
-                    if (caseMap.count(intval)) {
-                        driver.error(@2, "Case value already in use");
-                        driver.push_repContainer(*(caseMap[intval]));
+            if (driver.mCompilePhase == 2) {
+                double val = 0.0;
+                try {
+                    if (valExp->evaluate(&val, 1) != 1) {
+                        driver.error(@2, "Case expression is not a single, numeric expression");
                     } else {
-                        ASTrepContainer* caseBody = new ASTrepContainer();
-                        caseMap[intval] = caseBody;
-                        driver.push_repContainer(*caseBody);
+                        int intval = (int)floor(val);
+                        ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
+                        
+                        if (caseMap.count(intval)) {
+                            driver.error(@2, "Case value already in use");
+                            driver.push_repContainer(*(caseMap[intval]));
+                        } else {
+                            ASTrepContainer* caseBody = new ASTrepContainer();
+                            caseMap[intval] = caseBody;
+                            driver.push_repContainer(*caseBody);
+                        }
                     }
                 }
-            }
-            catch (DeferUntilRuntime) {
-                driver.error(@2, "Case expression is not constant");
+                catch (DeferUntilRuntime) {
+                    driver.error(@2, "Case expression is not constant");
+                }
             }
             $$ = 0;
         }
         |
         ELSE ':' {
-            if (!driver.switchStack.top()->mElseBody.mBody.empty()) {
-                driver.error(@$, "There can only be one 'else:' clause");
-            } else {
-                driver.push_repContainer(driver.switchStack.top()->mElseBody);
+            if (driver.mCompilePhase == 2) {
+                if (!driver.switchStack.top()->mElseBody.mBody.empty()) {
+                    driver.error(@$, "There can only be one 'else:' clause");
+                } else {
+                    driver.push_repContainer(driver.switchStack.top()->mElseBody);
+                }
             }
             $$ = 0;
         }
@@ -1149,7 +1242,7 @@ exp2:
 expfunc:
         USER_STRING '(' ')'   { 
             str_ptr func($1);
-            $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, true);
+            $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, false);
         }
         | 
         USER_STRING '(' exp2 ')'   { 
@@ -1204,5 +1297,6 @@ exp2func:
 
 void yy::CfdgParser::error(const CfdgParser::location_type& l, const std::string& m)
 {
+    driver.mWant2ndPass = false;
     driver.error(l, m);
 }
