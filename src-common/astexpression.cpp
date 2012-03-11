@@ -2011,16 +2011,7 @@ namespace AST {
     ASTexpression*
     ASTselect::simplify()
     {
-        // NB: ASTselect::flatten() depends on ASTselect::simplify() never
-        // deleting the first select() in a flattened list.
-        if (selector == NULL && weakPointer == NULL)
-        {
-            unsigned s = getIndex();
-            ASTexpression* ret = choices[s]->simplify();
-            choices[s] = NULL;
-            delete this;
-            return ret;
-        }
+        // There is no safe way to simplify a select()
         return this;
     }
     
