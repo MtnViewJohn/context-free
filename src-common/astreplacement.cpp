@@ -127,22 +127,38 @@ namespace AST {
             if (c < 1 || c > 3) {
                 CfdgError::Error(argsLoc, "A loop must have one to three index parameters.");
             }
-            ASTexpArray loop123; loop123.reserve(3);
-            args.release()->simplify()->flatten(loop123);
-            bodyNatural = loop123[0]->isNatural;
-            if (loop123.size() > 1)
-                bodyNatural = bodyNatural && loop123[1]->isNatural;
-            finallyNatural = bodyNatural;
-            if (loop123.size() == 3) {
-                double v = 0.0;
-                if (loop123[2]->isConstant)
-                    loop123[2]->evaluate(&v, 1);
-                if (!loop123[2]->isNatural && v != -1.0)
-                    finallyNatural = false;
-            }
-            while (!loop123.empty()) {
-                mLoopArgs = ASTcons::Cons(loop123.back(), mLoopArgs);
-                loop123.pop_back();
+            
+            mLoopArgs = args.release()->simplify();
+            
+            ASTexpression::iterator argi = mLoopArgs->begin();
+            for (int i = 0; argi != mLoopArgs->end(); ++i, ++argi) {
+                if (argi->evaluate(0, 0) != 1) {
+                    bodyNatural = finallyNatural = false;
+                    break;
+                }
+                
+                switch (i) {
+                    case 0:
+                        if (argi->isNatural) {
+                            bodyNatural = finallyNatural = true;
+                        }
+                        break;
+                    case 2: {
+                        // Special case: if 1st & 2nd args are natural and 3rd
+                        // is -1 then that is ok
+                        double step;
+                        if (argi->isConstant && argi->evaluate(&step, 1) == 1 &&
+                            step == -1)
+                        {
+                            break;
+                        }
+                    }   // else fall through
+                    default:
+                        if (!(argi->isNatural)) {
+                            bodyNatural = finallyNatural = false;
+                        }
+                        break;
+                }
             }
         }
         
