@@ -155,15 +155,17 @@ namespace AST {
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
 %destructor { delete $$; } adjustment
 %destructor { delete $$; } modification modification_v2 buncha_adjustments
-%destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2 element_loop loopHeader
+%destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2
+%destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); delete $$; } element_loop loopHeader
 %destructor { delete $$; } statement statement_v2 initialization initialization_v2 background tile size rule path element element_simple shape_singleton
-%destructor { driver.pop_repContainer(NULL); delete $$; } shape_singleton_header transHeader
+%destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); delete $$; } shape_singleton_header transHeader
 %destructor { delete $$; } pathOp_v2 pathOp_simple_v2 replacement_v2 replacement_simple_v2
-%destructor { driver.pop_repContainer(NULL); delete $$; } rule_header path_header rule_header_v2 path_header_v2
-%destructor { driver.pop_repContainer(NULL); delete $$; } ifHeader ifElseHeader
+%destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); delete $$; } rule_header path_header
+%destructor { driver.pop_repContainer(NULL); delete $$; } rule_header_v2 path_header_v2
+%destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); delete $$; } ifHeader ifElseHeader
 %destructor { delete $$; } switchHeader
 %destructor { delete $$; } shape
-%destructor { driver.pop_repContainer(NULL); } caseHeader
+%destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); } caseHeader
 %{
 #include "scanner.h"
 #include "math.h"
