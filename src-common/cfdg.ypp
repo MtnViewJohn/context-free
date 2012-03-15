@@ -137,8 +137,8 @@ namespace AST {
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
 %type <expression> exp exp2 expfunc exp2func explist parameter_spec loopexp
-%type <mod> modification modification_v2
-%type <expression> buncha_pathop_adjustments buncha_adjustments adjustment
+%type <mod> modification modification_v2 buncha_adjustments
+%type <term> adjustment
 %type <component> element element_simple
 %type <component> pathOp_v2 pathOp_simple_v2 replacement_v2 replacement_simple_v2
 /* %type <definitions> buncha_definitions buncha_parameters parameter_list buncha_global_definitions */
@@ -153,8 +153,8 @@ namespace AST {
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header global_definition_header
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
-%destructor { delete $$; } buncha_pathop_adjustments buncha_adjustments adjustment
-%destructor { delete $$; } modification modification_v2
+%destructor { delete $$; } adjustment
+%destructor { delete $$; } modification modification_v2 buncha_adjustments
 %destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2 element_loop loopHeader
 %destructor { delete $$; } statement statement_v2 initialization initialization_v2 background tile size rule path element element_simple shape_singleton
 %destructor { driver.pop_repContainer(NULL); delete $$; } shape_singleton_header transHeader
@@ -645,11 +645,11 @@ buncha_pathOps_v2:
         ;
 
 pathOp_simple_v2:
-        USER_PATHOP '{' buncha_pathop_adjustments '}' {
+        USER_PATHOP '{' buncha_adjustments '}' {
             str_ptr pop($1);
-            exp_ptr mod($3);
+            mod_ptr mod($3);
             driver.lexer->maybeVersion = token::CFDG2;
-            $$ = new ASTpathOp(*pop, mod, false, @$);
+            $$ = new ASTpathOp(*pop, mod, @$);
         }
         |
         USER_STRING modification_v2 {
@@ -666,7 +666,7 @@ element_simple:
             str_ptr pop($1);
             exp_ptr mod($3);
             if (driver.mCompilePhase == 2)
-                $$ = new ASTpathOp(*pop, mod, true, @$);
+                $$ = new ASTpathOp(*pop, mod, @$);
             else
                 $$ = 0;
         }
@@ -675,7 +675,7 @@ element_simple:
             str_ptr pop($1);
             exp_ptr mod;
             if (driver.mCompilePhase == 2)
-                $$ = new ASTpathOp(*pop, mod, true, @$);
+                $$ = new ASTpathOp(*pop, mod, @$);
             else
                 $$ = 0;
         }
@@ -1074,54 +1074,46 @@ caseHeader:
         ;
 
 modification_v2:
-        '{' buncha_canonical_adjustments '}' {
-            exp_ptr mod(ASToperator::MakeCanonical(driver.mCanonicalMods));
-            $$ = driver.MakeModification(mod, @$);
+        '{' buncha_adjustments '}' {
+            mod_ptr mod($2);
+            $$ = driver.MakeModification(mod, @$, true);
         }
         |
         '[' buncha_adjustments ']' {
-            exp_ptr mod($2);
-            $$ = driver.MakeModification(mod, @$);
+            mod_ptr mod($2);
+            $$ = driver.MakeModification(mod, @$, false);
         }
         ;
 
 modification:
-        '[' buncha_canonical_adjustments ']' {
-            exp_ptr mod(ASToperator::MakeCanonical(driver.mCanonicalMods));
-            $$ = driver.MakeModification(mod, @$);
+        '[' buncha_adjustments ']' {
+            mod_ptr mod($2);
+            $$ = driver.MakeModification(mod, @$, true);
         }
         |
         '[' '[' buncha_adjustments ']' ']' {
-            exp_ptr mod($3);
-            $$ = driver.MakeModification(mod, @$);
+            mod_ptr mod($3);
+            $$ = driver.MakeModification(mod, @$, false);
         }
-        ;
-
-buncha_pathop_adjustments:
-        buncha_pathop_adjustments adjustment {
-            $$ = ASTcons::Cons($1, $2);
-        }
-        | { $$ = 0; }
         ;
 
 buncha_adjustments:
         buncha_adjustments adjustment {
-            $$ = ASTcons::Cons($1, $2);
+            term_ptr mod($2);
+            driver.MakeModTerm($1->modExp, mod);
         }
-        | { $$ = 0; }
-        ;
-
-buncha_canonical_adjustments:
-        buncha_canonical_adjustments adjustment {
-            ($2)->flatten(driver.mCanonicalMods);
+        | {
+            static const yy::location def;
+            ASTmodification* m = new ASTmodification(def);
+            m->flags = 0;
+            $$ = m;
         }
-        | { driver.mCanonicalMods.clear(); }
         ;
 
 adjustment:
         MODTYPE explist {
             exp_ptr mod($2);
-            $$ = driver.MakeModTerm($1, mod, @$);
+            $$ = new ASTmodTerm((ASTmodTerm::modTypeEnum)($1), mod.release(), @$);
         }
         |
         MODTYPE exp '|' {
@@ -1130,7 +1122,7 @@ adjustment:
                 error(@$, "The target operator can only be applied to color adjustments");
                 $$ = 0;
             } else {
-                $$ = driver.MakeModTerm($1 + 4, mod, @$);
+                $$ = new ASTmodTerm((ASTmodTerm::modTypeEnum)($1 + 4), mod.release(), @$);
             }
         }
         |

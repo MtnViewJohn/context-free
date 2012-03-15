@@ -199,23 +199,21 @@ namespace AST {
     };
     class ASTpathOp : public ASTreplacement {
     public:
-        ASTexpression* mArguments[6];
+        ASTexpression* mArguments;
         int mFlags;
         int mArgCount;
         
         static const char*  PathOpNames[9];
         
-        ASTpathOp(const std::string& s, exp_ptr a, bool positional, 
-                  const yy::location& loc);
+        ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
+        ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
         ~ASTpathOp();
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     private:
         void pathData(double* data, Renderer* rti) const;
-        void pathDataConst(ASTexpArray& result);
-        void parseXY(ASTexpArray& result, ASTmodTerm* ax, ASTmodTerm* ay, 
-                     double def, unsigned total);
-        void makePositional(ASTexpArray& result, exp_ptr a);
-        void checkArguments(ASTexpArray& result, exp_ptr a);
+        void pathDataConst();
+        void makePositional(mod_ptr a);
+        void checkArguments(exp_ptr a);
     };
     class ASTpathCommand : public ASTreplacement {
     public:

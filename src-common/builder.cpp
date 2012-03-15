@@ -125,27 +125,27 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
                             exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default), 
                                                   new ASTreal(y, CfdgError::Default)));
                             ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move : line,
-                                                          a, true, CfdgError::Default);
+                                                          a, CfdgError::Default);
                             r->mRuleBody.mBody.push_back(op);
                         }
                     }
                 } else {
                     exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                           new ASTreal(0.0, CfdgError::Default)));
-                    ASTpathOp* op = new ASTpathOp(move, a, true, CfdgError::Default);
+                    ASTpathOp* op = new ASTpathOp(move, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
                                         new ASTcons(new ASTreal(0.0, CfdgError::Default), 
                                                     new ASTreal(0.5, CfdgError::Default))));
-                    op = new ASTpathOp(arc, a, true, CfdgError::Default);
+                    op = new ASTpathOp(arc, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                         new ASTcons(new ASTreal(0.0, CfdgError::Default), 
                                                     new ASTreal(0.5, CfdgError::Default))));
-                    op = new ASTpathOp(arc, a, true, CfdgError::Default);
+                    op = new ASTpathOp(arc, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                 }
-                r->mRuleBody.mBody.push_back(new ASTpathOp(close, exp_ptr(), true,
+                r->mRuleBody.mBody.push_back(new ASTpathOp(close, exp_ptr(),
                                                            CfdgError::Default));
                 r->mRuleBody.mRepType = ASTreplacement::op;
                 r->mRuleBody.mPathOp = AST::MOVETO;
@@ -156,9 +156,6 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 
 Builder::~Builder()
 {
-    for (ASTexpArray::iterator it = mCanonicalMods.begin(); it != mCanonicalMods.end(); ++it) 
-        delete (*it);
-    mCanonicalMods.clear();
     pop_repContainer(NULL);
     delete m_CFDG;
     Builder::CurrentBuilder = 0;
@@ -552,48 +549,73 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
                                 (isGlobal ? 0 : mLocalStackDepth));
 }
 
-ASTexpression*
-Builder::MakeModTerm(int t, exp_ptr a, const yy::location& loc)
+void
+Builder::MakeModTerm(ASTexpArray& dest, term_ptr t)
 {
-    if (t == ASTmodTerm::time)
+    if (t.get() == NULL) return;
+    
+    if (t->modType == ASTmodTerm::time)
         timeWise();
-    if (t == ASTmodTerm::sat || t == ASTmodTerm::satTarg)
+    if (t->modType == ASTmodTerm::sat || t->modType == ASTmodTerm::satTarg)
         inColor();
     
-    if (mCurrentShape != -1 && t >= ASTmodTerm::hueTarg && t <= ASTmodTerm::targAlpha)
-        CfdgError::Error(loc, "Color target feature unavailable in shapes");
+    if (mCompilePhase == 2 && t->modType >= ASTmodTerm::hueTarg && t->modType <= ASTmodTerm::targAlpha)
+        CfdgError::Error(t->where, "Color target feature unavailable in v3 syntax");
     
     int argcount = 0;
-    if (a.get() && a->mType == ASTexpression::NumericType)
-        argcount = a->evaluate(0, 0);
-    if (argcount != 3 || (t != ASTmodTerm::size && t != ASTmodTerm::x))
-        return new ASTmodTerm((ASTmodTerm::modTypeEnum)t, a.release(), loc);
-    
-    ASTexpArray arglist;
-    
-    a.release()->flatten(arglist);
-    
-    // If there is a three component x or size then flag it as such. 
-    ASTexpression* xyargs = new ASTcons(arglist[0], arglist[1]);
-    ASTmodTerm* xymod = new ASTmodTerm((ASTmodTerm::modTypeEnum)t, xyargs, loc);
-    ASTmodTerm* zmod = new ASTmodTerm(t == ASTmodTerm::size ? ASTmodTerm::zsize : 
-                                                              ASTmodTerm::z, 
-                                      arglist[2], loc);
-    
-    // Convert size 1 1 foo to zsize foo.
-    if (t == ASTmodTerm::size) {
-        if (arglist[0]->isConstant && arglist[1]->isConstant) {
-            double x, y;
-            if (arglist[0]->evaluate(&x, 0) == 1 && x == 1.0 &&
-                arglist[1]->evaluate(&y, 0) == 1 && y == 1.0) 
-            {
-                delete xymod;
-                return zmod;
-            }
-        }
+    if (t->args && t->args->mType == ASTexpression::NumericType)
+        argcount = t->args->evaluate(0, 0);
+    if (argcount != 3 || (t->modType != ASTmodTerm::size && t->modType != ASTmodTerm::x)) {
+        dest.push_back(t.release());
+        return;
     }
     
-    return new ASTcons(xymod, zmod);
+    double d[3];
+    if (t->args->isConstant && t->args->evaluate(d, 3) == 3) {
+        delete t->args;
+        t->args = new ASTcons(new ASTreal(d[0], t->where), new ASTreal(d[1], t->where));
+
+        ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
+                                                                         ASTmodTerm::z;
+        ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], t->where), t->where);
+        
+        // Check if xy part is the identity transform and only save it if it is not
+        if (d[0] != 1.0 || d[1] != 1.0)
+            dest.push_back(t.release());
+        dest.push_back(zmod);
+        return;
+    }
+    
+    ASTexpression* xyargs = t->args->current();
+    ASTexpression* zargs = t->args->next();
+    if (xyargs && xyargs->evaluate(0, 0) == 2 && 
+        zargs  && zargs->evaluate(0, 0) == 1)
+    {
+        ASTcons* c = dynamic_cast<ASTcons*>(t->args);
+        assert(c);
+        t->args = xyargs;
+        
+        ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
+                                                                         ASTmodTerm::z;
+        ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, t->where);
+        
+        double d[2];
+        if (t->modType != ASTmodTerm::size || !xyargs->isConstant || 
+            xyargs->evaluate(d, 2) != 2 || 
+            d[0] != 1.0 || d[1] != 1.0)
+        {
+            // Check if xy part is the identity transform and only save it if it is not
+            dest.push_back(t.release());
+        }
+        dest.push_back(zmod);
+        c->left = c->right = NULL;
+        delete c;
+        return;
+    }
+    
+    t->modType = t->modType == ASTmodTerm::size ? ASTmodTerm::sizexyz :
+                                                  ASTmodTerm::xyz;
+    dest.push_back(t.release());
 }
 
 rep_ptr
@@ -689,23 +711,22 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 }
 
 AST::ASTmodification*
-Builder::MakeModification(exp_ptr modExp, const yy::location& loc)
+Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
-    if (!mCanonicalMods.empty()) {
-        for (ASTexpArray::iterator it = mCanonicalMods.begin(); it != mCanonicalMods.end(); ++it) {
-            warning((*it)->where, "Duplicate adjustment is dropped");
-            delete (*it);
-        }
-        mCanonicalMods.clear();
+    for (ASTexpArray::iterator it = mod->modExp.begin(), eit = mod->modExp.end(); 
+         it != eit; ++it)
+    {
+        std::string ent;
+        (*it)->entropy(ent);
+        mod->addEntropy(ent);
     }
+    if (canonical)
+        mod->makeCanonical();
+    mod->evalConst();
+    mod->isConstant = mod->modExp.empty();
+    mod->where = loc;
     
-    if (modExp.get() == NULL)
-        modExp.reset(new ASTmodTerm(ASTmodTerm::Entropy, "empty mod", loc));
-    
-    if (modExp->mType != ASTexpression::ModType)
-        error(loc, "Illegal mix of non-adjustment expressions in an adjustment context");
-    
-    return new ASTmodification(modExp, loc);
+    return mod.release();
 }
 
 void
@@ -767,6 +788,7 @@ void
 Builder::pop_repContainer(ASTreplacement* r)
 {
     if (m_CFDG) m_CFDG->reportStackDepth(mLocalStackDepth);
+    assert(!mContainerStack.empty());
     ASTrepContainer* lastContainer = mContainerStack.back();
     mLocalStackDepth -= lastContainer->mStackCount;
     if (r) {

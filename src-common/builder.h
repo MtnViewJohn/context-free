@@ -76,8 +76,6 @@ public:
     bool            mWant2ndPass;
     int             mCompilePhase;
     
-    AST::ASTexpArray     mCanonicalMods;
-    
     AST::ASTrepContainer mParamDecls;
     bool            isFunction;
     
@@ -130,8 +128,7 @@ public:
                     MakeVariable(const std::string& name, const yy::location& loc);
     AST::ASTruleSpecifier*  
                     MakeRuleSpec(const std::string& name, AST::exp_ptr a, const yy::location& loc);
-    AST::ASTexpression*
-                    MakeModTerm(int t, AST::exp_ptr a, const yy::location& loc);
+    void            MakeModTerm(AST::ASTexpArray& dest, AST::term_ptr t);
     AST::rep_ptr    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params, 
                                 const yy::location& loc, bool subPath);
     AST::ASTexpression*
@@ -139,7 +136,8 @@ public:
                                  const yy::location& argsLoc, bool consAllowed);
     
     AST::ASTmodification*
-                    MakeModification(AST::exp_ptr modExp, const yy::location& loc);
+                    MakeModification(AST::mod_ptr modExp, const yy::location& loc,
+                                     bool canonical);
     void            inColor();
     void            timeWise();
 };
