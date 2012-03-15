@@ -299,7 +299,6 @@ namespace AST {
         virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        static ASTexpression* MakeCanonical(ASTexpArray& temp);
         static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
     private:
         ASToperator() : ASTexpression(CfdgError::Default) {};
@@ -321,8 +320,8 @@ namespace AST {
 
     class ASTmodTerm : public ASTexpression {
     public:
-        enum modTypeEnum {  unknownType, x, y, z, transform, 
-            size, rot, skew, flip, 
+        enum modTypeEnum {  unknownType, x, y, z, xyz, transform, 
+            size, sizexyz, rot, skew, flip, 
             zsize, Entropy, hue, sat, bright, alpha, 
             hueTarg, satTarg, brightTarg, alphaTarg, 
             targHue, targSat, targBright, targAlpha,
@@ -375,7 +374,6 @@ namespace AST {
           entropyIndex(0) {}
         ASTmodification(const ASTmodification& m, const yy::location& loc);
         ASTmodification(mod_ptr m, const yy::location& loc);
-        ASTmodification(exp_ptr mods, const yy::location& loc);
         virtual ~ASTmodification();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
@@ -385,8 +383,8 @@ namespace AST {
                     bool justCheck, int& seedIndex, 
                     Renderer* = 0) const;
         void addEntropy(const std::string& name);
-    private:
-        void evalConst(exp_ptr mod);
+        void evalConst();
+        void makeCanonical();
     };
     
     class ASTdefine;

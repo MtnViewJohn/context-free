@@ -249,12 +249,10 @@ namespace AST {
         mPathUID = NextPathUID();
     }
     
-    ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, bool positional,
-                         const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mFlags(0)
+    ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mArguments(0), 
+      mFlags(0), mArgCount(0)
     {
-        mArguments[0] = mArguments[1] = mArguments[2] = 
-        mArguments[3] = mArguments[4] = mArguments[5] = 0;
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
                 mPathOp = (pathOpEnum)i;
@@ -265,14 +263,26 @@ namespace AST {
             CfdgError::Error(loc, "Unknown path operation type");
         }
         
-        ASTexpArray temp;
-        temp.reserve(7);
-        if (positional) {
-            checkArguments(temp, a);
-        } else {
-            makePositional(temp, a);
+        checkArguments(a);
+        pathDataConst();
+    }
+    
+    ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mArguments(0),
+      mFlags(0), mArgCount(0)
+    {
+        for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
+            if (!(s.compare(PathOpNames[i]))) {
+                mPathOp = (pathOpEnum)i;
+                break;
+            }
         }
-        pathDataConst(temp);
+        if (mPathOp == unknownPathop) {
+            CfdgError::Error(loc, "Unknown path operation type");
+        }
+        
+        makePositional(a);
+        pathDataConst();
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, const yy::location& loc)
@@ -365,12 +375,7 @@ namespace AST {
     
     ASTpathOp::~ASTpathOp()
     {
-        delete mArguments[0];
-        delete mArguments[1];
-        delete mArguments[2];
-        delete mArguments[3];
-        delete mArguments[4];
-        delete mArguments[5];
+        delete mArguments;
     }
     
     void 
@@ -851,88 +856,55 @@ namespace AST {
     void
     ASTpathOp::pathData(double* data, Renderer* rti) const
     {
-        const double* cdata = reinterpret_cast<const double*> (&mChildChange);
-        for (int i = 0; i < mArgCount; ++i) {
-            if (mArguments[i]) {
-                if (mArguments[i]->evaluate(data + i, 1, rti) != 1)
-                    CfdgError::Error(mArguments[i]->where, "Cannot evaluate this argument");
-            } else {
+        if (mArguments) {
+            if (mArguments->evaluate(data, 7, rti) < 0)
+                CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
+        } else {
+            const double* cdata = reinterpret_cast<const double*> (&mChildChange);
+            for (int i = 0; i < mArgCount; ++i)
                 data[i] = cdata[i];
-            }
         }
     }
     
     void
-    ASTpathOp::pathDataConst(ASTexpArray& temp)
+    ASTpathOp::pathDataConst()
     {
-        double* data = reinterpret_cast<double*> (&mChildChange);
-        for (int i = 0; i < mArgCount; ++i) {
-            try {
-                if (temp[i]->evaluate(data + i, 1) != 1)
-                    CfdgError::Error(temp[i]->where, "Cannot evaluate this argument");
-                delete temp[i];
-                temp[i] = 0;
-            } catch (DeferUntilRuntime) {
-                mArguments[i] = temp[i]->simplify();
-                temp[i] = 0;
-            } catch (CfdgError) {
-                for (i = 0; i < mArgCount; ++i) {
-                    delete temp[i];
-                    delete mArguments[i];
-                    temp[i] = 0;
-                    mArguments[i] = 0;
-                }
-                throw;
-            }
+        if (mArguments && mArguments->isConstant) {
+            double* data = reinterpret_cast<double*> (&mChildChange);
+            if (mArguments->evaluate(data, 7) < 0)
+                CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
+            delete mArguments;
+            mArguments = NULL;
         }
     }
 
     void
-    ASTpathOp::parseXY(ASTexpArray& result, ASTmodTerm* ax, ASTmodTerm* ay, double def, unsigned total)
+    ASTpathOp::checkArguments(exp_ptr a)
     {
-        if (ax) {
-            ax->args->flatten(result);
-            ax->args = 0;
-        } else {
-            result.push_back(new ASTreal(def, mLocation));
+        if (a.get()) {
+            mArguments = a.release()->simplify();
+            mArgCount = mArguments->evaluate(0, 0);
         }
-        if (ay) {
-            ay->args->flatten(result);
-            ay->args = 0;
-        }
-        if (result.size() + 1 == total)
-            result.push_back(new ASTreal(def, mLocation));
-        if (result.size() != total)
-            CfdgError::Error(ax ? ax->where : ay->where, "Error parsing path operation arguments");
-    }
-    
-    void
-    ASTpathOp::checkArguments(ASTexpArray& result, exp_ptr a)
-    {
-        if (a.get()) a.release()->simplify()->flatten(result);
-        if (result.empty()) {
-            if (mPathOp != CLOSEPOLY)
-                CfdgError::Error(mLocation, "No path operation arguments provided");
-            mArgCount = 0;
-            return;
-        }
-        
-        if (result.back()->mType == ASTexpression::FlagType) {
-            ASTreal* rf = dynamic_cast<ASTreal*> (result.back());
-            if (rf)
-                mFlags = (int)(rf->value);
-            else
-                CfdgError::Error(result.back()->where, "Flag expressions must be constant");
-            delete result.back();
-            result.pop_back();
-        }
-        
-        for (ASTexpArray::iterator it = result.begin(); it != result.end(); ++it) {
-            if ((*it)->mType != ASTexpression::NumericType)
-                CfdgError::Error(mLocation, "Path operation arguments must be numeric expressions or flags");
-        }
-        
-        mArgCount = (int)result.size();
+
+        for (ASTexpression* temp = mArguments; temp; temp = temp->next())
+            switch (temp->current()->mType) {
+                case ASTexpression::FlagType: {
+                    if (temp->next())
+                        CfdgError::Error(temp->current()->where, "Flags must be the last argument");
+                    ASTreal* rf = dynamic_cast<ASTreal*> (temp->current());
+                    if (rf)
+                        mFlags = (int)(rf->value);
+                    else
+                        CfdgError::Error(temp->current()->where, "Flag expressions must be constant");
+                    --mArgCount;
+                    break;
+                }
+                case ASTexpression::NumericType:
+                    break;
+                default:
+                    CfdgError::Error(temp->current()->where, "Path operation arguments must be numeric expressions or flags");
+                    break;
+            }
         
         switch (mPathOp) {
             case LINETO:
@@ -966,73 +938,107 @@ namespace AST {
         }
     }
     
-    void
-    ASTpathOp::makePositional(ASTexpArray& result, exp_ptr a)
+    static ASTexpression*
+    parseXY(exp_ptr ax, exp_ptr ay, double def, const yy::location& loc)
     {
-        ASTexpArray temp;
-        temp.reserve(10);
-        if (a.get()) a.release()->simplify()->flatten(temp);
+        if (!ax.get())
+            ax.reset(new ASTreal(def, loc));
+        int sz = ax->evaluate(0, 0);
         
-        std::auto_ptr<ASTmodTerm> ax;
-        std::auto_ptr<ASTmodTerm> ay;
-        std::auto_ptr<ASTmodTerm> ax1;
-        std::auto_ptr<ASTmodTerm> ay1;
-        std::auto_ptr<ASTmodTerm> ax2;
-        std::auto_ptr<ASTmodTerm> ay2;
-        std::auto_ptr<ASTmodTerm> arx;
-        std::auto_ptr<ASTmodTerm> ary;
-        std::auto_ptr<ASTmodTerm> ar;
-        ASTmodTerm* bad = 0;
+        if (sz == 1 && !ay.get())
+            ay.reset(new ASTreal(def, loc));
         
-        for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) {
+        if (ay.get())
+            sz += ay->evaluate(0, 0);
+        
+        if (sz != 2)
+            CfdgError::Error(loc, "Error parsing path operation arguments");
+        
+        if (ay.get())
+            return new ASTcons(ax.release(), ay.release());
+        return ax.release();
+    }
+    
+    static void
+    rejectTerm(exp_ptr term)
+    {
+        if (term.get())
+            CfdgError::Error(term->where, "Illegal argument");
+        // and delete it
+    }
+    
+    void
+    ASTpathOp::makePositional(mod_ptr a)
+    {
+        exp_ptr ax;
+        exp_ptr ay;
+        exp_ptr ax1;
+        exp_ptr ay1;
+        exp_ptr ax2;
+        exp_ptr ay2;
+        exp_ptr arx;
+        exp_ptr ary;
+        exp_ptr ar;
+        
+        for (ASTexpArray::iterator it = a->modExp.begin(); it != a->modExp.end(); ++it) {
             ASTmodTerm* mod = dynamic_cast<ASTmodTerm*> (*it);
             
-            switch (mod->modType) {
+            switch (mod ? mod->modType : ASTmodTerm::unknownType) {
                 case ASTmodTerm::x:
-                    ax.reset(mod);
+                    ax.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::y:
-                    ay.reset(mod);
+                    ay.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::x1:
-                    ax1.reset(mod);
+                    ax1.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::y1:
-                    ay1.reset(mod);
+                    ay1.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::x2:
-                    ax2.reset(mod);
+                    ax2.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::y2:
-                    ay2.reset(mod);
+                    ay2.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::xrad:
-                    arx.reset(mod);
+                    arx.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::yrad:
-                    ary.reset(mod);
+                    ary.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::rot:
-                    ar.reset(mod);
+                    ar.reset(mod->args->simplify());
+                    mod->args = NULL;
                     break;
                 case ASTmodTerm::param:
                     if (mod->entString.find("large") != std::string::npos)  mFlags |= CF_ARC_LARGE;
                     if (mod->entString.find("cw") != std::string::npos)     mFlags |= CF_ARC_CW;
                     if (mod->entString.find("align") != std::string::npos)  mFlags |= CF_ALIGN;
-                    delete mod;
                     break;
                 case ASTmodTerm::Entropy:
-                    delete mod;
+                    break;
+                case ASTmodTerm::unknownType:
+                    CfdgError::Error((*it)->where, "Unrecognized element in a path operation");
                     break;
                 default:
                     CfdgError::Error(mod->where, "Unrecognized element in a path operation");
-                    delete mod;
                     break;
             }
         }
         
+        ASTexpression* xy = 0;
         if (mPathOp != CLOSEPOLY) {
-            parseXY(result, ax.get(), ay.get(), 0.0, 2);
+            xy = parseXY(ax, ay, 0.0, mLocation);
         } 
         
         switch (mPathOp) {
@@ -1040,84 +1046,81 @@ namespace AST {
             case LINEREL:
             case MOVETO:
             case MOVEREL:
-                if (ar.get())  bad = ar.get();
-                if (ary.get()) bad = ary.get();
-                if (arx.get()) bad = arx.get();
-                if (ay2.get()) bad = ay2.get();
-                if (ax2.get()) bad = ax2.get();
-                if (ay1.get()) bad = ay1.get();
-                if (ax1.get()) bad = ax1.get();
-                if (bad)
-                    CfdgError::Error(bad->where, "Illegal argument");
+                rejectTerm(ar);
+                rejectTerm(arx);
+                rejectTerm(ary);
+                rejectTerm(ax1);
+                rejectTerm(ay1);
+                rejectTerm(ax2);
+                rejectTerm(ay2);
+                
+                mArguments = xy;
                 break;
             case ARCTO:
             case ARCREL:
-                if (ay2.get()) bad = ay2.get();
-                if (ax2.get()) bad = ax2.get();
-                if (ay1.get()) bad = ay1.get();
-                if (ax1.get()) bad = ax1.get();
-                if (bad)
-                    CfdgError::Error(bad->where, "Illegal argument");
+                rejectTerm(ax1);
+                rejectTerm(ay1);
+                rejectTerm(ax2);
+                rejectTerm(ay2);
                 
                 if (arx.get() || ary.get()) {
-                    parseXY(result, arx.get(), ary.get(), 1.0, 4);
-                    unsigned pre = (unsigned)result.size();
-                    if (ar.get()) {
-                        ar->args->flatten(result);
-                        ar->args = 0;
-                    } else { 
-                        result.push_back(new ASTreal(0.0, mLocation));
-                    } 
-                    if (pre == 4 && result.size() != 5)
-                        CfdgError::Error(ar.get() ? ar->where : mLocation, 
-                                       "Error parsing path operation arguments");
+                    ASTexpression* rxy = parseXY(arx, ary, 1, mLocation);
+                    ASTexpression* angle = ar.release();
+                    if (!angle)
+                        angle = new ASTreal(0.0, mLocation);
+                    
+                    if (angle->evaluate(0, 0) != 1)
+                        CfdgError(angle->where, "Arc angle must be a scalar value");
+                    
+                    mArguments = new ASTcons(xy, new ASTcons(rxy, angle));
                 } else {
-                    if (ar.get()) {
-                        ar->args->flatten(result);
-                        ar->args = 0;
-                    } else { 
-                        result.push_back(new ASTreal(1.0, mLocation));
-                    } 
-                    if (result.size() != 3)
-                        CfdgError::Error(mLocation, "Error parsing path operation arguments");
+                    ASTexpression* radius = ar.release();
+                    if (!radius)
+                        radius = new ASTreal(1.0, mLocation);
+                    
+                    if (radius->evaluate(0, 0) != 1)
+                        CfdgError::Error(radius->where, "Arc radius must be a scalar value");
+                    
+                    mArguments = new ASTcons(xy, radius);
                 } 
                 break;
             case CURVETO:
-            case CURVEREL:
-                if (ar.get())  bad = ar.get();
-                if (ary.get()) bad = ary.get();
-                if (arx.get()) bad = arx.get();
-                if (bad)
-                    CfdgError::Error(bad->where, "Illegal argument");
+            case CURVEREL: {
+                rejectTerm(ar);
+                rejectTerm(arx);
+                rejectTerm(ary);
                 
+                ASTexpression *xy1 = 0, *xy2 = 0;
                 if (ax1.get() || ay1.get()) {
-                    parseXY(result, ax1.get(), ay1.get(), 0.0, 4);
+                    xy1 = parseXY(ax1, ay1, 0.0, mLocation);
                 } else {
                     mFlags |= CF_CONTINUOUS;
                 }
                 if (ax2.get() || ay2.get()) {
-                    parseXY(result, ax2.get(), ay2.get(), 0.0, 
-                            (mFlags & CF_CONTINUOUS) ? 4 : 6);
+                    xy2 = parseXY(ax2, ay2, 0.0, mLocation);
                 }
+                
+                if (xy1 || xy2)
+                    xy1 = ASTcons::Cons(xy1, xy2);
+                mArguments = ASTcons::Cons(xy, xy1);
                 break;
+            }
             case CLOSEPOLY:
-                if (ar.get())  bad = ar.get();
-                if (ary.get()) bad = ary.get();
-                if (arx.get()) bad = arx.get();
-                if (ay2.get()) bad = ay2.get();
-                if (ax2.get()) bad = ax2.get();
-                if (ay1.get()) bad = ay1.get();
-                if (ax1.get()) bad = ax1.get();
-                if (ay.get())  bad = ay.get();
-                if (ax.get())  bad = ax.get();
-                if (bad)
-                    CfdgError::Error(bad->where, "Illegal argument");
+                rejectTerm(ax);
+                rejectTerm(ay);
+                rejectTerm(ar);
+                rejectTerm(arx);
+                rejectTerm(ary);
+                rejectTerm(ax1);
+                rejectTerm(ay1);
+                rejectTerm(ax2);
+                rejectTerm(ay2);
                 break;
             default:
                 break;
         } 
         
-        mArgCount = (int)result.size();
+        mArgCount = mArguments ? mArguments->evaluate(0, 0) : 0;
     }
     
     

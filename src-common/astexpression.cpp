@@ -53,8 +53,10 @@ namespace AST {
         ASTmodification::GeomClass | ASTmodification::PathOpClass,  // x
         ASTmodification::GeomClass | ASTmodification::PathOpClass,  // y
         ASTmodification::ZClass,                                    // z
+        ASTmodification::GeomClass | ASTmodification::ZClass,       // xyz
         ASTmodification::GeomClass,                                 // transform
         ASTmodification::GeomClass,                                 // size
+        ASTmodification::GeomClass | ASTmodification::ZClass,       // sizexyz
         ASTmodification::GeomClass | ASTmodification::PathOpClass,  // rot
         ASTmodification::GeomClass,                                 // skew
         ASTmodification::GeomClass, ASTmodification::ZClass,        // flip, zsize
@@ -79,8 +81,10 @@ namespace AST {
         "\x95\xE7\x48\x5E\xCC\x06",                             // x
         "\x84\x2B\xF3\xBB\x93\x59",                             // y
         "\xC8\x3A\x12\x32\x36\x71",                             // z
+        "\x6C\x31\xCA\xBF\x8D\x89",                             // xyz
         "\x88\x90\x54\xC5\xD3\x20",                             // transform
         "\x64\xEC\x5B\x4B\xEE\x2B",                             // size
+        "\xB0\x31\xD5\x1E\x7A\x5A",                             // sizexyz
         "\x84\xB0\x92\x26\x59\xE2",                             // rot
         "\xFF\x2D\x84\x01\xA0\x0A",                             // skew
         "\x43\x5A\x17\xEA\x12\x05", "\x64\xEC\x5B\x4B\xEE\x2B", // flip, zsize
@@ -629,15 +633,6 @@ namespace AST {
         }
     }
     
-    ASTmodification::ASTmodification(exp_ptr mods, const yy::location& loc)
-    : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass),
-      strokeWidth(0.1), flags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), 
-      entropyIndex(0)
-    {
-        evalConst(mods);
-        isConstant = modExp.empty();
-    }
-    
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
     : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
       indexCache(0), arguments(NULL), ifSelect(asIf)
@@ -733,35 +728,31 @@ namespace AST {
         modExp.clear();
     }
     
-    static void Addmod(exp_ptr& var, ASTexpression* mod)
+    static void
+    Setmod(term_ptr& mod, ASTmodTerm* newmod)
     {
-        if (mod == NULL) return;
-        if (var.get()) {
-            ASTcons* e = new ASTcons(var.release(), mod);
-            var.reset(e);
-        } else {
-            var.reset(mod);
-        }
-    }
-    
-    static void Setmod(term_ptr& mod, ASTmodTerm* newmod, ASTexpArray& dropped)
-    {
-        if (mod.get()) dropped.push_back(mod.release());
+        if (mod.get())
+            CfdgError::Warning(mod->where, "Warning: this term is being dropped");
         mod.reset(newmod);
     }
     
-    ASTexpression*
-    ASToperator::MakeCanonical(ASTexpArray& temp)
-    // Receive a vector of modification terms and return an ASTexpression with
-    // those terms rearranged into TRSSF canonical order. Duplicate terms are left
-    // in the input vector.
+    static void
+    AddMod(ASTexpArray& arr, term_ptr mod)
     {
-        ASTexpArray dropped;
+        if (mod.get())
+            arr.push_back(mod.release());
+    }
+    
+    void
+    ASTmodification::makeCanonical()
+    // Receive a vector of modification terms and return an ASTexpression with
+    // those terms rearranged into TRSSF canonical order. Duplicate terms are
+    // deleted with a warning.
+    {
+        ASTexpArray temp;
+        temp.swap(modExp);
         
         try {
-            exp_ptr var;
-            exp_ptr result;
-            
             term_ptr x;
             term_ptr y;
             term_ptr z;
@@ -795,44 +786,43 @@ namespace AST {
                 
                 switch (mod->modType) {
                     case ASTmodTerm::x:
-                        Setmod(x, mod, dropped);
+                        Setmod(x, mod);
                         if (argcount > 1) {
                             y.reset();
                         }
                         break;
                     case ASTmodTerm::y:
-                        Setmod(y, mod, dropped);
+                        Setmod(y, mod);
                         break;
                     case ASTmodTerm::z:
-                        Setmod(z, mod, dropped);
+                        Setmod(z, mod);
                         break;
                     case ASTmodTerm::modification:
                     case ASTmodTerm::transform:
-                        Setmod(transform, mod, dropped);
+                        Setmod(transform, mod);
                         break;
                     case ASTmodTerm::rot:
-                        Setmod(rot, mod, dropped);
+                        Setmod(rot, mod);
                         break;
                     case ASTmodTerm::size:
-                        Setmod(size, mod, dropped);
+                        Setmod(size, mod);
                         break;
                     case ASTmodTerm::zsize:
-                        Setmod(zsize, mod, dropped);
+                        Setmod(zsize, mod);
                         break;
                     case ASTmodTerm::skew:
-                        Setmod(skew, mod, dropped);
+                        Setmod(skew, mod);
                         break;
                     case ASTmodTerm::flip:
-                        Setmod(flip, mod, dropped);
+                        Setmod(flip, mod);
                         break;
                     default:
-                        Addmod(var, mod);
+                        modExp.push_back(mod);
                         break;
                 }
             }
             
             temp.clear();
-            temp.swap(dropped);
             
             // If x and y are provided then merge them into a single (x,y) modification
             if (x.get() && y.get() && x->args->evaluate(0, 0) == 1 && y->args->evaluate(0, 0) == 1) {
@@ -841,25 +831,19 @@ namespace AST {
                 y.reset();
             }
             
-            Addmod(result, x.release());
-            Addmod(result, y.release());
-            Addmod(result, z.release());
-            Addmod(result, rot.release());
-            Addmod(result, size.release());
-            Addmod(result, zsize.release());
-            Addmod(result, skew.release());
-            Addmod(result, flip.release());
-            Addmod(result, transform.release());
-            Addmod(result, var.release());
-            
-            return result.release();
+            AddMod(modExp, x);
+            AddMod(modExp, y);
+            AddMod(modExp, z);
+            AddMod(modExp, rot);
+            AddMod(modExp, size);
+            AddMod(modExp, zsize);
+            AddMod(modExp, skew);
+            AddMod(modExp, flip);
+            AddMod(modExp, transform);
         } catch (...) {
             for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) 
                 delete (*it);
-            for (ASTexpArray::iterator it = dropped.begin(); it != dropped.end(); ++it) 
-                delete (*it);
             temp.clear();
-            dropped.clear();
             throw;
         }
     }
@@ -869,7 +853,7 @@ namespace AST {
     int
     ASTcons::evaluate(double* res, int length, Renderer* rti) const
     {
-        if (mType != NumericType) {
+        if (((int)mType & (NumericType | FlagType)) == 0 || ((int)mType & (ModType | RuleType))) {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
             return -1;
         }
@@ -1417,6 +1401,15 @@ namespace AST {
                 m.m_Z.premultiply(tr);
                 break;
             }
+            case ASTmodTerm::xyz: {
+                minCount = maxCount = 3;
+                if (justCheck) break;
+                agg::trans_affine_translation trx(modArgs[0], modArgs[1]);
+                m.m_transform.premultiply(trx);
+                agg::trans_affine_1D_translation trz(modArgs[2]);
+                m.m_Z.premultiply(trz);
+                break;
+            }
             case ASTmodTerm::time: {
                 minCount = maxCount = 2;
                 if (justCheck) break;
@@ -1472,6 +1465,15 @@ namespace AST {
                     modArgs[1] = modArgs[0];
                 agg::trans_affine_scaling sc(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(sc);
+                break;
+            }
+            case ASTmodTerm::sizexyz: {
+                minCount = maxCount = 3;
+                if (justCheck) break;
+                agg::trans_affine_scaling sc(modArgs[0], modArgs[1]);
+                m.m_transform.premultiply(sc);
+                agg::trans_affine_1D_scaling scz(modArgs[2]);
+                m.m_Z.premultiply(scz);
                 break;
             }
             case ASTmodTerm::zsize: {
@@ -2087,12 +2089,12 @@ namespace AST {
     }
 
     void
-    ASTmodification::evalConst(exp_ptr mod) 
+    ASTmodification::evalConst() 
     {
         int nonConstant = 0;
         
         ASTexpArray temp;
-        mod.release()->flatten(temp);
+        temp.swap(modExp);
         
         for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) {
             bool keepThisOne = false;
@@ -2126,7 +2128,7 @@ namespace AST {
             }
             
             if (justCheck || keepThisOne) {
-                modExp.push_back(*it);
+                modExp.push_back(mod->simplify());
             } else {
                 delete *it;
             }
