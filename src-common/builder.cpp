@@ -565,6 +565,17 @@ Builder::MakeModTerm(ASTexpArray& dest, term_ptr t)
     int argcount = 0;
     if (t->args && t->args->mType == ASTexpression::NumericType)
         argcount = t->args->evaluate(0, 0);
+
+    // Try to merge consecutive x and y adjustments
+    if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
+        ASTmodTerm* last = dynamic_cast<ASTmodTerm*>(dest.back());
+        if (last && last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
+            last->args = new ASTcons(last->args, t->args);
+            t->args = NULL;
+            return;     // delete ASTmodTerm t
+        }
+    }
+    
     if (argcount != 3 || (t->modType != ASTmodTerm::size && t->modType != ASTmodTerm::x)) {
         dest.push_back(t.release());
         return;
