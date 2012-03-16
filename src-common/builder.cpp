@@ -61,12 +61,12 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     mSeed.seed((unsigned long long)variation); 
     if (FlagNames.empty()) {
         FlagNames.insert(std::pair<std::string, int>("CF::None", AST::CF_NONE));
-        FlagNames.insert(std::pair<std::string, int>("CF::MiterJoin", AST::CF_MITER_JOIN));
-        FlagNames.insert(std::pair<std::string, int>("CF::RoundJoin", AST::CF_ROUND_JOIN));
-        FlagNames.insert(std::pair<std::string, int>("CF::BevelJoin", AST::CF_BEVEL_JOIN));
-        FlagNames.insert(std::pair<std::string, int>("CF::ButtCap", AST::CF_BUTT_CAP));
-        FlagNames.insert(std::pair<std::string, int>("CF::RoundCap", AST::CF_ROUND_CAP));
-        FlagNames.insert(std::pair<std::string, int>("CF::SquareCap", AST::CF_SQUARE_CAP));
+        FlagNames.insert(std::pair<std::string, int>("CF::MiterJoin", AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT));
+        FlagNames.insert(std::pair<std::string, int>("CF::RoundJoin", AST::CF_ROUND_JOIN | AST::CF_JOIN_PRESENT));
+        FlagNames.insert(std::pair<std::string, int>("CF::BevelJoin", AST::CF_BEVEL_JOIN | AST::CF_JOIN_PRESENT));
+        FlagNames.insert(std::pair<std::string, int>("CF::ButtCap", AST::CF_BUTT_CAP | AST::CF_CAP_PRESENT));
+        FlagNames.insert(std::pair<std::string, int>("CF::RoundCap", AST::CF_ROUND_CAP | AST::CF_CAP_PRESENT));
+        FlagNames.insert(std::pair<std::string, int>("CF::SquareCap", AST::CF_SQUARE_CAP | AST::CF_CAP_PRESENT));
         FlagNames.insert(std::pair<std::string, int>("CF::ArcCW", AST::CF_ARC_CW));
         FlagNames.insert(std::pair<std::string, int>("CF::ArcLarge", AST::CF_ARC_LARGE));
         FlagNames.insert(std::pair<std::string, int>("CF::Continuous", AST::CF_CONTINUOUS));

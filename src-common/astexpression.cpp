@@ -1671,19 +1671,19 @@ namespace AST {
                     if (entString.find("join") != std::string::npos)
                         *p &= ~CF_JOIN_MASK;
                     if (entString.find("miterjoin") != std::string::npos)
-                        *p |= CF_MITER_JOIN;
+                        *p |= CF_MITER_JOIN | CF_JOIN_PRESENT;
                     if (entString.find("roundjoin") != std::string::npos)
-                        *p |= CF_ROUND_JOIN;
+                        *p |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
                     if (entString.find("beveljoin") != std::string::npos)
-                        *p |= CF_BEVEL_JOIN;
+                        *p |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
                     if (entString.find("cap") != std::string::npos)
                         *p &= ~CF_CAP_MASK;
                     if (entString.find("buttcap") != std::string::npos)
-                        *p |= CF_BUTT_CAP;
+                        *p |= CF_BUTT_CAP | CF_CAP_PRESENT;
                     if (entString.find("squarecap") != std::string::npos)
-                        *p |= CF_SQUARE_CAP;
+                        *p |= CF_SQUARE_CAP | CF_CAP_PRESENT;
                     if (entString.find("roundcap") != std::string::npos)
-                        *p |= CF_ROUND_CAP;
+                        *p |= CF_ROUND_CAP | CF_CAP_PRESENT;
                 }
                 break;
             }

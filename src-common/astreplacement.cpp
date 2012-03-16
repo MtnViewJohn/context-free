@@ -364,12 +364,12 @@ namespace AST {
             ASTreal* r = dynamic_cast<ASTreal*> (params.get());
             if (r) {
                 int f = (int)(r->value);
-                if (f & CF_JOIN_MASK)
+                if (f & CF_JOIN_PRESENT)
                     mChildChange.flags &= ~CF_JOIN_MASK;
-                if (f & CF_CAP_MASK)
+                if (f & CF_CAP_PRESENT)
                     mChildChange.flags &= ~CF_CAP_MASK;
                 mChildChange.flags |= f;
-                if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_MASK | CF_CAP_MASK)))
+                if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
                     CfdgError::Warning(params->where, "Stroke flags only useful for STROKE commands");
             } else {
                 CfdgError::Error(params->where, "Flag expressions must be constant");
