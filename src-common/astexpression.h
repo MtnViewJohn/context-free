@@ -112,7 +112,6 @@ namespace AST {
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
         virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return NULL; }
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
         
@@ -169,7 +168,6 @@ namespace AST {
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
         virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
@@ -225,7 +223,6 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         
@@ -272,7 +269,6 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* r = 0) const;
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
     private:
         ASTvariable() : ASTexpression(CfdgError::Default) {};
@@ -296,7 +292,6 @@ namespace AST {
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
         virtual ~ASToperator() { delete left; delete right; }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
@@ -347,7 +342,6 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
                               Renderer* = 0) const;
-        virtual int flatten(ASTexpArray& dest);
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     };
