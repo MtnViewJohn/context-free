@@ -331,31 +331,51 @@ namespace AST {
             CfdgError::Error(loc, "Unknown path command/operation");
         }
         
-        ASTexpArray temp;
-        temp.reserve(2);
-        if (params.get()) params.release()->simplify()->flatten(temp);
-        if (!(temp.empty())) {
-            if (temp.front()->mType == ASTexpression::NumericType) {
-                if (!temp.front()->isConstant || 
-                    temp.front()->evaluate(&(mChildChange.strokeWidth), 1) != 1)
-                {
-                    ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, temp.front(), loc);
-                    mChildChange.modExp.push_back(w);
-                }
-            }
-            if (temp.back()->mType == ASTexpression::FlagType) {
-                ASTreal* r = dynamic_cast<ASTreal*> (temp.back());
-                if (r) {
-                    int f = (int)(r->value);
-                    if (f & CF_JOIN_MASK)
-                        mChildChange.flags &= ~CF_JOIN_MASK;
-                    if (f & CF_CAP_MASK)
-                        mChildChange.flags &= ~CF_CAP_MASK;
-                    mChildChange.flags |= f;
+        if (params.get() == NULL)
+            return;
+        
+        ASTcons* c = dynamic_cast<ASTcons*>(params.get());
+        
+        if (params->current()->mType == ASTexpression::NumericType) {
+            if (mChildChange.flags & CF_FILL)
+                CfdgError::Warning(params->current()->where, "Stroke width only useful for STROKE commands");
+            if (!params->current()->isConstant ||
+                params->current()->evaluate(&(mChildChange.strokeWidth), 1) != 1)
+            {
+                ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, params->current()->simplify(), loc);
+                mChildChange.modExp.push_back(w);
+                if (c) {
+                    c->left = NULL;
                 } else {
-                    CfdgError::Error(temp.back()->where, "Flag expressions must be constant");
+                    params.release();
+                    return;
                 }
             }
+        }
+        
+        if (c) {
+            params.release();
+            params.reset(c->right);
+            c->right = NULL;
+            delete c; c = NULL;
+        }
+        
+        if (params->mType == ASTexpression::FlagType) {
+            ASTreal* r = dynamic_cast<ASTreal*> (params.get());
+            if (r) {
+                int f = (int)(r->value);
+                if (f & CF_JOIN_MASK)
+                    mChildChange.flags &= ~CF_JOIN_MASK;
+                if (f & CF_CAP_MASK)
+                    mChildChange.flags &= ~CF_CAP_MASK;
+                mChildChange.flags |= f;
+                if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_MASK | CF_CAP_MASK)))
+                    CfdgError::Warning(params->where, "Stroke flags only useful for STROKE commands");
+            } else {
+                CfdgError::Error(params->where, "Flag expressions must be constant");
+            }
+        } else {
+            CfdgError::Error(params->where, "Unexpected argument in path command");
         }
     }
     
