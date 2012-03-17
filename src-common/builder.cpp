@@ -415,8 +415,8 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
 
         if (def->mExpression->mType != ASTexpression::NumericType) {
             CfdgError::Error(expLoc, "User functions must have numeric type only");
-        } else if (def->mExpression->evaluate(0, 0) != 1) {
-            CfdgError::Error(expLoc, "User functions cannot return vectors, only scalars");
+        } else {
+            def->mTuplesize = def->mExpression->evaluate(0, 0);
         }
         isFunction = false;
         return;
