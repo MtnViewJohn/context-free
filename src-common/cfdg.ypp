@@ -1103,6 +1103,7 @@ buncha_adjustments:
         buncha_adjustments adjustment {
             term_ptr mod($2);
             driver.MakeModTerm($1->modExp, mod);
+            $$ = $1;
         }
         | {
             static const yy::location def;
