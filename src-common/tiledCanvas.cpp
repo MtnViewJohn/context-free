@@ -99,12 +99,13 @@ tiledCanvas::tileTransform(const Bounds& b)
     double centx = (b.mMin_X + b.mMax_X) * 0.5;
     double centy = (b.mMin_Y + b.mMax_Y) * 0.5;
     mInvert.transform(&centx, &centy);          // transform to unit square tesselation
-    centx = floor(centx);
-    centy = floor(centy);
+    centx = floor(centx + 0.5);                 // round to nearest integer
+    centy = floor(centy + 0.5);                 // round to nearest integer
 	
     mTileList.clear();
-    mTileList.push_back(agg::point_d(-centx, -centy));
-    mOffset.transform(&(mTileList.back().x), &(mTileList.back().y));
+    double dx = -centx, dy = -centy;
+    mOffset.transform(&dx, &dy);
+    mTileList.push_back(agg::point_d(dx, dy));
     agg::rect_d canvas(0, 0, (double)(mWidth - 1), (double)(mHeight - 1));
     
     if (mFrieze) {
@@ -112,8 +113,8 @@ tiledCanvas::tileTransform(const Bounds& b)
         for (int offset = 1; ; ++offset) {
             bool hit = false;
             for (int side = -1; side <= 1; side += 2) {
-                double dx = offset * side - centx;
-                double dy = dx;
+                dx = offset * side - centx;
+                dy = dx;
                 mOffset.transform(&dx, &dy);
                 
                 // If the tile might touch the canvas then record it
@@ -136,8 +137,8 @@ tiledCanvas::tileTransform(const Bounds& b)
                 if (abs(x) < ring && abs(y) < ring) continue;
                 
                 // Find where this tile is on the canvas
-                double dx = x - centx;
-                double dy = y - centy;
+                dx = x - centx;
+                dy = y - centy;
                 mOffset.transform(&dx, &dy);
                 
                 // If the tile might touch the canvas then record it
