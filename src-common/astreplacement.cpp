@@ -635,10 +635,8 @@ namespace AST {
             {
                 r->mCurrentPath->mCommandInfo.push_back(mInfoCache);
             } else {
-                r->mCurrentPath->mCommandInfo.push_back(CommandInfo(r->mIndex, 
-                                                                    r->mCurrentPath,
-                                                                    width,
-                                                                    this));
+                CommandInfo newCmd(r->mIndex, r->mCurrentPath, width, this);
+                r->mCurrentPath->mCommandInfo.push_back(newCmd);
             }
             info = &(r->mCurrentPath->mCommandInfo.back());
         }

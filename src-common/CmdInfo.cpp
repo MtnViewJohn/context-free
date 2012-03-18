@@ -37,6 +37,7 @@ namespace AST {
     const CommandInfo CommandInfo::Default(0, 0);
     
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
+    : mIndex(0), mPathUID(std::numeric_limits<UIDtype>::max())
     {
         init(i, path, w, c);
     }
