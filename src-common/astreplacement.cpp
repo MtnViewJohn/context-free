@@ -350,6 +350,9 @@ namespace AST {
                     params.release();
                     return;
                 }
+            } else {
+                if (!c)
+                    return;     // deleting params
             }
         }
         
