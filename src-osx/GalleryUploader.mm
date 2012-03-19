@@ -228,8 +228,7 @@ namespace {
 	if ([[mFileField stringValue] length] == 0) {
 		NSString* file = [[mDocument fileURL] path];
 		if (file) {
-			file = [[[file stringByDeletingPathExtension] lastPathComponent]
-						retain];
+			file = [[file stringByDeletingPathExtension] lastPathComponent];
 		}
 		else {
 			file = [mDocument displayName];

@@ -417,7 +417,7 @@ namespace {
 {
     if (!mUpdateInfo) {
         if (arg) { // Hack: non-nil arg means checking in the foreground
-            NSAlert* alert = [[NSAlert alloc] init];
+            NSAlert* alert = [[[NSAlert alloc] init] autorelease];
             [alert setMessageText:
                 NSLocalizedString(@"Could not check for an update.", @"")];
             [alert setInformativeText:
@@ -446,7 +446,7 @@ namespace {
 
     if (thisVersion >= updateVersion) {
         if (arg) { // Hack: non-nil arg means checking in the foreground
-            NSAlert* alert = [[NSAlert alloc] init];
+            NSAlert* alert = [[[NSAlert alloc] init] autorelease];
             [alert setMessageText:
                 NSLocalizedString(@"Your version of Context Free is up to date.", @"")];
             [alert setInformativeText:
@@ -461,7 +461,7 @@ namespace {
         return;
     }
 
-    NSAlert* alert = [[NSAlert alloc] init];
+    NSAlert* alert = [[[NSAlert alloc] init] autorelease];
     [alert setMessageText:
         NSLocalizedString(@"There is a new version of Context Free available.", @"")];
     [alert setInformativeText:

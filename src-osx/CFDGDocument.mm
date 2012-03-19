@@ -333,7 +333,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)noteError:(CfdgErrorWrapper*)e
 {
-    NSMutableAttributedString* msg = [[NSMutableAttributedString alloc] initWithString: @"Parse error - "];
+    NSMutableAttributedString* msg = [[[NSMutableAttributedString alloc] 
+                                       initWithString: @"Parse error - "] 
+                                      autorelease];
     NSUInteger start = [msg length];
     [[msg mutableString] appendString: [e message]];
     
@@ -358,7 +360,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         [[msg mutableString] appendString: @"\n"];
         [msg endEditing];
         
-        [[mStatusText textStorage] appendAttributedString: [msg autorelease]];
+        [[mStatusText textStorage] appendAttributedString: msg];
         // scroll to the end
         NSRange range = NSMakeRange ([[mStatusText string] length], 0);
         [mStatusText scrollRangeToVisible: range];
