@@ -66,7 +66,7 @@ PosixSystem::syntaxError(const CfdgError& err)
     // the syntax error information
     error();
     message("Error in %s at line %d - %s", 
-            err.where.begin.filename.c_str(), err.where.begin.line, err.what);
+            err.where.begin.filename->c_str(), err.where.begin.line, err.what);
 }
 
 bool
