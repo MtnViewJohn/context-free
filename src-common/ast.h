@@ -70,7 +70,6 @@ namespace AST {
     class ASTrule;
     class ASTcompiledPath;
     class ASTpathOp;
-    class ASTmod;
     class ASTexpression;
     class ASTmodification;
     class ASTruleSpecifier;

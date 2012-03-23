@@ -41,6 +41,7 @@
 %{
 #include "builder.h"
 #include <string>
+#include <list>
 namespace AST {
     class ASTexpression;
     class ASTmodTerm;
@@ -73,6 +74,7 @@ namespace AST {
     AST::ASTswitch* switchObj;
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
+    std::list<AST::ASTmodification*>* modList;
 };
 
 %{
@@ -150,6 +152,7 @@ namespace AST {
 %type <shapeObj> shape
 %type <string> fileString fileNameSpace definition_header global_definition_header
 %type <modToken> caseHeader
+%type <modList> buncha_mods
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header global_definition_header
 %destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
@@ -166,6 +169,7 @@ namespace AST {
 %destructor { delete $$; } switchHeader
 %destructor { delete $$; } shape
 %destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); } caseHeader
+%destructor { ASTtransform::ClearMods(*$$); delete $$; } buncha_mods
 %{
 #include "scanner.h"
 #include "math.h"
@@ -1006,17 +1010,23 @@ ifElseHeader:
         ;
 
 transHeader:
-        MODTYPE modification {
+        MODTYPE buncha_mods {
             if ($1 != ASTmodTerm::transform)
                 error(@1, "Syntax error");
-            mod_ptr mod($2);
             if (driver.mCompilePhase == 2) {
-                ASTtransform* trans = new ASTtransform(mod, @$);
+                ASTtransform* trans = new ASTtransform(@$);
+                if ($2->empty()) {
+                    trans->mModifications.push_back(new ASTmodification(@$));
+                } else {
+                    trans->mModifications.swap(*$2);
+                }
                 driver.push_repContainer(trans->mBody);
                 $$ = trans;
             } else {
                 $$ = 0;
             }
+            ASTtransform::ClearMods(*$2);   // should be empty, unless error or pass 1
+            delete $2;
         }
         ;
 
@@ -1098,6 +1108,15 @@ modification:
             $$ = driver.MakeModification(mod, @$, false);
         }
         ;
+        
+buncha_mods:
+        buncha_mods modification {
+            $1->push_back($2);
+            $$ = $1;
+        }
+        | {
+            $$ = new ASTtransform::ModList();
+        }
 
 buncha_adjustments:
         buncha_adjustments adjustment {
