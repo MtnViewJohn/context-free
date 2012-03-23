@@ -177,8 +177,8 @@ namespace AST {
         loopDef.mExpression = 0;
     }
     
-    ASTtransform::ASTtransform(mod_ptr mods, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mods, loc, empty)
+    ASTtransform::ASTtransform(const yy::location& loc)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty)
     {
     }
     
@@ -412,6 +412,11 @@ namespace AST {
         delete mCachedPath; mCachedPath = 0;
     }
     
+    ASTtransform::~ASTtransform()
+    {
+        ClearMods(mModifications);
+    }
+    
     ASTpathOp::~ASTpathOp()
     {
         delete mArguments;
@@ -518,8 +523,13 @@ namespace AST {
             transChild.mWorldState.m_transform.reset();
         
         int dummy;
-        mChildChange.evaluate(transChild.mWorldState, 0, 0, false, dummy, r);
-        mBody.traverse(transChild, opsOnly || tr, r);
+        ModList::const_iterator it  = mModifications.begin(), 
+                                eit = mModifications.end();
+        for(; it != eit; ++it) {
+            Shape child = transChild;
+            (*it)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+            mBody.traverse(child, opsOnly || tr, r);            
+        }
     }
     
     void
@@ -1160,5 +1170,13 @@ namespace AST {
         mArgCount = mArguments ? mArguments->evaluate(0, 0) : 0;
     }
     
+    void
+    ASTtransform::ClearMods(ModList &m)
+    {
+        ModList::iterator it = m.begin(), eit = m.end();
+        for (; it != eit; ++it)
+            delete *it;
+        m.clear();
+    }
     
 }

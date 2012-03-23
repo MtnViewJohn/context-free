@@ -34,6 +34,7 @@
 #include "primShape.h"
 #include <string>
 #include <map>
+#include <list>
 #include "CmdInfo.h"
 #include "agg_path_storage.h"
 
@@ -115,10 +116,14 @@ namespace AST {
     };
     class ASTtransform: public ASTreplacement {
     public:
+        typedef std::list<ASTmodification*> ModList;
         ASTrepContainer mBody;
+        ModList mModifications;
         
-        ASTtransform(mod_ptr mods, const yy::location& loc);
+        ASTtransform(const yy::location& loc);
+        virtual ~ASTtransform();
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        static void ClearMods(ModList& m);
     };
     class ASTif: public ASTreplacement {
     public:
