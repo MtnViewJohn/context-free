@@ -354,7 +354,7 @@ namespace AST {
             StrokeClass = 2048, ParamClass = 4096, PathOpClass = 8192
         };
         Modification    modData;
-        ASTexpArray     modExp;
+        ASTtermArray    modExp;
         int             modClass;
         double          strokeWidth;
         int             flags;

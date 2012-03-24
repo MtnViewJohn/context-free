@@ -128,7 +128,7 @@ public:
                     MakeVariable(const std::string& name, const yy::location& loc);
     AST::ASTruleSpecifier*  
                     MakeRuleSpec(const std::string& name, AST::exp_ptr a, const yy::location& loc);
-    void            MakeModTerm(AST::ASTexpArray& dest, AST::term_ptr t);
+    void            MakeModTerm(AST::ASTtermArray& dest, AST::term_ptr t);
     AST::rep_ptr    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params, 
                                 const yy::location& loc, bool subPath);
     AST::ASTexpression*

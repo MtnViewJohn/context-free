@@ -78,6 +78,7 @@ namespace AST {
     class ASTswitch;
     class ASTmodTerm;
     typedef std::vector<ASTexpression*> ASTexpArray;
+    typedef std::vector<ASTmodTerm*> ASTtermArray;
     typedef std::vector<ASTparameter> ASTparameters;
 
     typedef std::auto_ptr<std::string>      str_ptr;

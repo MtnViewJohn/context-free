@@ -723,7 +723,7 @@ namespace AST {
     
     ASTmodification::~ASTmodification()
     {
-        for (ASTexpArray::iterator it = modExp.begin(); it != modExp.end(); ++it)
+        for (ASTtermArray::iterator it = modExp.begin(); it != modExp.end(); ++it)
             delete (*it);
         modExp.clear();
     }
@@ -737,7 +737,7 @@ namespace AST {
     }
     
     static void
-    AddMod(ASTexpArray& arr, term_ptr mod)
+    AddMod(ASTtermArray& arr, term_ptr mod)
     {
         if (mod.get())
             arr.push_back(mod.release());
@@ -749,7 +749,7 @@ namespace AST {
     // those terms rearranged into TRSSF canonical order. Duplicate terms are
     // deleted with a warning.
     {
-        ASTexpArray temp;
+        ASTtermArray temp;
         temp.swap(modExp);
         
         try {
@@ -763,15 +763,8 @@ namespace AST {
             term_ptr flip;
             term_ptr transform;
             
-            for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) {
-                if ((*it)->mType != ModType) {
-                    CfdgError::Error((*it)->where, "Non-adjustment in shape adjustment context");
-                    delete (*it);
-                    *it = 0;
-                    continue;
-                }
-                
-                ASTmodTerm* mod = dynamic_cast<ASTmodTerm*> (*it);
+            for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
+                ASTmodTerm* mod = *it;
                 if (mod == 0) {
                     CfdgError::Error((*it)->where, "Unknown term in shape adjustment");
                     delete (*it);
@@ -841,7 +834,7 @@ namespace AST {
             AddMod(modExp, flip);
             AddMod(modExp, transform);
         } catch (...) {
-            for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) 
+            for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) 
                 delete (*it);
             temp.clear();
             throw;
@@ -1349,7 +1342,7 @@ namespace AST {
                             Renderer* rti) const
     {
         m = modData;
-        for (ASTexpArray::const_iterator it = modExp.begin(); it != modExp.end(); ++it)
+        for (ASTtermArray::const_iterator it = modExp.begin(); it != modExp.end(); ++it)
             (*it)->evaluate(m, p, width, justCheck, seedIndex, rti);
     }
     
@@ -1944,12 +1937,12 @@ namespace AST {
     {
         int nonConstant = 0;
         
-        ASTexpArray temp;
+        ASTtermArray temp;
         temp.swap(modExp);
         
-        for (ASTexpArray::iterator it = temp.begin(); it != temp.end(); ++it) {
+        for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
             bool keepThisOne = false;
-            ASTmodTerm* mod = dynamic_cast<ASTmodTerm*> (*it);
+            ASTmodTerm* mod = *it;
             if (mod == 0) {
                 CfdgError::Error((*it)->where, "Unknown term in shape adjustment");
                 delete *it;
@@ -1979,7 +1972,9 @@ namespace AST {
             }
             
             if (justCheck || keepThisOne) {
-                modExp.push_back(mod->simplify());
+                if (mod->args)
+                    mod->args = mod->args->simplify();
+                modExp.push_back(mod);
             } else {
                 delete *it;
             }

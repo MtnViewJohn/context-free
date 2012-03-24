@@ -1035,8 +1035,8 @@ namespace AST {
         exp_ptr ary;
         exp_ptr ar;
         
-        for (ASTexpArray::iterator it = a->modExp.begin(); it != a->modExp.end(); ++it) {
-            ASTmodTerm* mod = dynamic_cast<ASTmodTerm*> (*it);
+        for (ASTtermArray::iterator it = a->modExp.begin(); it != a->modExp.end(); ++it) {
+            ASTmodTerm* mod = *it;
             
             switch (mod ? mod->modType : ASTmodTerm::unknownType) {
                 case ASTmodTerm::x:
@@ -1194,11 +1194,10 @@ namespace AST {
             CfdgError::Warning(mLocation, "Z changes are not supported within paths");
             return;
         }
-        for (ASTexpArray::const_iterator it = mChildChange.modExp.begin(), 
+        for (ASTtermArray::const_iterator it = mChildChange.modExp.begin(), 
              eit = mChildChange.modExp.end(); it != eit; ++it)
         {
-            ASTmodTerm* m = dynamic_cast<ASTmodTerm*>(*it);
-            if (m && m->modType == ASTmodTerm::z) {
+            if ((*it)->modType == ASTmodTerm::z) {
                 CfdgError::Warning((*it)->where, "Z changes are not supported within paths");
                 return;
             }
