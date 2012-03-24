@@ -572,6 +572,8 @@ RendererImpl::processShape(const Shape& s)
         if (!mBounds.valid() || (area * mScaleArea >= m_minArea)) {
             m_stats.toDoCount++;
             mUnfinishedShapes.push_back(s);
+            if (mCloneShape)
+                mUnfinishedShapes.back().mWorldState.mRand64Seed = mCloneShape->mWorldState.mRand64Seed;
             push_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
         } else {
             s.releaseParams();

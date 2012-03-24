@@ -178,7 +178,7 @@ namespace AST {
     }
     
     ASTtransform::ASTtransform(const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty), mClone(false)
     {
     }
     
@@ -517,6 +517,9 @@ namespace AST {
     void
     ASTtransform::traverse(const Shape& parent, bool tr, Renderer* r) const
     {
+        const Shape* saveClone = r->mCloneShape;
+        if (mClone)
+            r->mCloneShape = &parent;
         Shape transChild = parent;
         bool opsOnly = mBody.mRepType == op;
         if (opsOnly && !tr)
@@ -530,6 +533,7 @@ namespace AST {
             (*it)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
             mBody.traverse(child, opsOnly || tr, r);            
         }
+        r->mCloneShape = saveClone;
     }
     
     void

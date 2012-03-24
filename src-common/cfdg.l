@@ -138,6 +138,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "path"          {return token::PATH;}
 "shape"			{return token::SHAPE;}
 "loop"          {return token::LOOP;}
+"clone"         {return token::CLONE;}
 "="             {return token::BECOMES;}
 "finally"       {return token::FINALLY;}
 "if"            {return token::IF;}
