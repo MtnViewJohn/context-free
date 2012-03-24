@@ -239,6 +239,7 @@ namespace AST {
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     private:
         mutable CommandInfo mInfoCache;
+        void    check4z() const;
     };
     class ASTcompiledPath {
     public:

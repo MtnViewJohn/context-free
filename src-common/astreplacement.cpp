@@ -314,6 +314,8 @@ namespace AST {
         } else {
             CfdgError::Error(loc, "Unknown path command/operation");
         }
+        
+        check4z();
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
@@ -330,6 +332,8 @@ namespace AST {
         } else {
             CfdgError::Error(loc, "Unknown path command/operation");
         }
+        
+        check4z();
         
         if (params.get() == NULL)
             return;
@@ -1183,4 +1187,21 @@ namespace AST {
         m.clear();
     }
     
+    void
+    ASTpathCommand::check4z() const
+    {
+        if (mChildChange.modData.m_Z.tz != 0.0) {
+            CfdgError::Warning(mLocation, "Z changes are not supported within paths");
+            return;
+        }
+        for (ASTexpArray::const_iterator it = mChildChange.modExp.begin(), 
+             eit = mChildChange.modExp.end(); it != eit; ++it)
+        {
+            ASTmodTerm* m = dynamic_cast<ASTmodTerm*>(*it);
+            if (m && m->modType == ASTmodTerm::z) {
+                CfdgError::Warning((*it)->where, "Z changes are not supported within paths");
+                return;
+            }
+        }
+    }
 }
