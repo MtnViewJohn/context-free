@@ -521,23 +521,30 @@ namespace AST {
     void
     ASTtransform::traverse(const Shape& parent, bool tr, Renderer* r) const
     {
-        const Shape* saveClone = r->mCloneShape;
-        if (mClone)
-            r->mCloneShape = &parent;
+        Rand64 cloneSeed = r->mCurrentSeed;
         Shape transChild = parent;
         bool opsOnly = mBody.mRepType == op;
         if (opsOnly && !tr)
             transChild.mWorldState.m_transform.reset();
         
         int dummy;
-        ModList::const_iterator it  = mModifications.begin(), 
-                                eit = mModifications.end();
-        for(; it != eit; ++it) {
+        ModList::const_iterator mit  = mModifications.begin(), 
+                                emit = mModifications.end();
+        for(; mit != emit; ++mit) {
             Shape child = transChild;
-            (*it)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
-            mBody.traverse(child, opsOnly || tr, r);            
+            (*mit)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+
+            // Specialized mBody.traverse() with cloning behavior
+            size_t s = r->mCFstack.size();
+            for (AST::ASTbody::const_iterator bit = mBody.mBody.begin(), 
+                 ebit = mBody.mBody.end(); bit != ebit; ++bit)
+            {
+                if (mClone)
+                    r->mCurrentSeed = cloneSeed;
+                (*bit)->traverse(child, opsOnly || tr, r);
+            }
+            r->unwindStack(s, mBody.mParameters);
         }
-        r->mCloneShape = saveClone;
     }
     
     void
