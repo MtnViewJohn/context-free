@@ -550,7 +550,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
 }
 
 void
-Builder::MakeModTerm(ASTexpArray& dest, term_ptr t)
+Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
 {
     if (t.get() == NULL) return;
     
@@ -568,8 +568,8 @@ Builder::MakeModTerm(ASTexpArray& dest, term_ptr t)
 
     // Try to merge consecutive x and y adjustments
     if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
-        ASTmodTerm* last = dynamic_cast<ASTmodTerm*>(dest.back());
-        if (last && last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
+        ASTmodTerm* last = dest.back();
+        if (last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
             last->args = new ASTcons(last->args, t->args);
             t->args = NULL;
             return;     // delete ASTmodTerm t
@@ -724,7 +724,7 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 AST::ASTmodification*
 Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
-    for (ASTexpArray::iterator it = mod->modExp.begin(), eit = mod->modExp.end(); 
+    for (ASTtermArray::iterator it = mod->modExp.begin(), eit = mod->modExp.end(); 
          it != eit; ++it)
     {
         std::string ent;
