@@ -119,6 +119,7 @@ namespace AST {
         typedef std::list<ASTmodification*> ModList;
         ASTrepContainer mBody;
         ModList mModifications;
+        bool mClone;
         
         ASTtransform(const yy::location& loc);
         virtual ~ASTtransform();

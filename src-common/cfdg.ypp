@@ -98,6 +98,7 @@ namespace AST {
 %token ELSE
 %token SWITCH
 %token CASE
+%token CLONE
 %token <modToken> MODTYPE
 %token <modToken> PARAM
 %token BACKGROUND
@@ -1015,6 +1016,25 @@ transHeader:
                 error(@1, "Syntax error");
             if (driver.mCompilePhase == 2) {
                 ASTtransform* trans = new ASTtransform(@$);
+                if ($2->empty()) {
+                    trans->mModifications.push_back(new ASTmodification(@$));
+                } else {
+                    trans->mModifications.swap(*$2);
+                }
+                driver.push_repContainer(trans->mBody);
+                $$ = trans;
+            } else {
+                $$ = 0;
+            }
+            ASTtransform::ClearMods(*$2);   // should be empty, unless error or pass 1
+            delete $2;
+        }
+        | CLONE buncha_mods {
+            if (!ASTparameter::Impure)
+                error(@1, "shape cloning only permitted in impure mode");
+            if (driver.mCompilePhase == 2) {
+                ASTtransform* trans = new ASTtransform(@$);
+                trans->mClone = true;
                 if ($2->empty()) {
                     trans->mModifications.push_back(new ASTmodification(@$));
                 } else {

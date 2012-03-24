@@ -188,6 +188,7 @@ class Renderer {
         
         Rand64      mCurrentSeed;
         bool        mRandUsed;
+        const Shape* mCloneShape;
     
         double      mCurrentTime;
         double      mCurrentFrame;
@@ -215,6 +216,7 @@ class Renderer {
           requestFinishUp(false),
           requestUpdate(false),
           m_tiledCanvas(0),
+          mCloneShape(0),
           mCurrentTime(0.0),
           mCurrentPath(0)
      { }
