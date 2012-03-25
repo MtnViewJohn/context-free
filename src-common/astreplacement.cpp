@@ -531,6 +531,8 @@ namespace AST {
         ModList::const_iterator mit  = mModifications.begin(), 
                                 emit = mModifications.end();
         for(; mit != emit; ++mit) {
+            r->mCurrentSeed ^= (*mit)->modData.mRand64Seed;
+            r->mCurrentSeed.bump();
             Shape child = transChild;
             (*mit)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
 
