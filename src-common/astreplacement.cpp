@@ -487,8 +487,8 @@ namespace AST {
             loopChild.mWorldState.m_transform.reset();
         double start, end, step;
         
+        r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         if (mLoopArgs) {
-            r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
             setupLoop(start, end, step, mLoopArgs, mLocation, r);
         } else {
             start = mLoopData[0];

@@ -618,19 +618,27 @@ namespace AST {
     : ASTexpression(loc, true, false, ModType)
     {
         if (m.get()) {
-            modData = m->modData;
-            modExp.swap(m->modExp);
-            modClass = m->modClass;
-            strokeWidth = m->strokeWidth;
-            flags = m->flags;
-            entropyIndex = m->entropyIndex;
-            isConstant = modExp.empty();
+            grab(m.get());
         } else {
             modClass = 0;
             strokeWidth = 0.1;
             flags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
             entropyIndex = 0;
         }
+    }
+    
+    void
+    ASTmodification::grab(AST::ASTmodification* m)
+    {
+        Rand64 oldEntropy = modData.mRand64Seed;
+        modData = m->modData;
+        modData.mRand64Seed ^= oldEntropy;
+        modExp.swap(m->modExp);
+        modClass = m->modClass;
+        strokeWidth = m->strokeWidth;
+        flags = m->flags;
+        entropyIndex = (entropyIndex + m->entropyIndex) & 7;
+        isConstant = modExp.empty();
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
