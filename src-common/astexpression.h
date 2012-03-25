@@ -379,6 +379,7 @@ namespace AST {
         void addEntropy(const std::string& name);
         void evalConst();
         void makeCanonical();
+        void grab(ASTmodification* m);
     };
     
     class ASTdefine;

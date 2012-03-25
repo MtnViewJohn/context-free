@@ -139,7 +139,7 @@ namespace AST {
 %left '*' '/'
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
-%type <expression> exp exp2 expfunc exp2func explist parameter_spec loopexp
+%type <expression> exp exp2 expfunc exp2func explist parameter_spec
 %type <mod> modification modification_v2 buncha_adjustments
 %type <term> adjustment
 %type <component> element element_simple
@@ -156,7 +156,7 @@ namespace AST {
 %type <modList> buncha_mods
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP fileString fileNameSpace definition_header global_definition_header
-%destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec loopexp
+%destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec
 %destructor { delete $$; } adjustment
 %destructor { delete $$; } modification modification_v2 buncha_adjustments
 %destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2
@@ -869,8 +869,13 @@ pathOp_v3clues:
         ;
 
 element_loop:
-        loopHeader one_or_more_elements {
+        loopHeader modification one_or_more_elements {
+            // parse loop mod and loop body with loop index in scope
+            mod_ptr loopmod($2);
+            if (driver.mCompilePhase == 2)
+                $1->mChildChange.grab(loopmod.get());
             $$ = $1;
+            // loopmod gets deleted
         }
         ;
 
@@ -927,15 +932,13 @@ loopHeader_v2:
         ;
 
 loopHeader:
-        LOOP USER_STRING BECOMES loopexp modification {
+        LOOP USER_STRING BECOMES exp2 {
             str_ptr var($2);
             exp_ptr index($4);
-            mod_ptr mod($5);
             if (driver.mCompilePhase == 2) {
-                --driver.mLocalStackDepth;
                 int nameIndex = driver.StringToShape(*var, @2, false);
                 driver.CheckVariableName(nameIndex, @2);
-                loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod));
+                loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod_ptr()));
                 driver.push_repContainer(loop->mLoopBody);
                 $$ = loop.release();
             } else {
@@ -943,14 +946,12 @@ loopHeader:
             }
         }
         |
-        LOOP MODTYPE BECOMES loopexp modification {
+        LOOP MODTYPE BECOMES exp2 {
             exp_ptr index($4);
-            mod_ptr mod($5);
             if (driver.mCompilePhase == 2) {
                 static const std::string dummyvar("~~inaccessiblevar~~");
-                --driver.mLocalStackDepth;
                 loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
-                                          dummyvar, @2, index, @4, mod));
+                                          dummyvar, @2, index, @4, mod_ptr()));
                 driver.push_repContainer(loop->mLoopBody);
                 $$ = loop.release();
             } else {
@@ -959,31 +960,17 @@ loopHeader:
             error(@2, "Reserved keyword: adjustment");
         }
         |
-        LOOP loopexp modification {
+        LOOP exp2 {
             exp_ptr count($2);
-            mod_ptr mod($3);
             if (driver.mCompilePhase == 2) {
                 static const std::string dummyvar("~~inaccessiblevar~~");
-                --driver.mLocalStackDepth;
                 loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
-                                          dummyvar, @1, count, @2, mod));
+                                          dummyvar, @1, count, @2, mod_ptr()));
                 driver.push_repContainer(loop->mLoopBody);
                 $$ = loop.release();
             } else {
                 $$ = 0;
             }
-        }
-        ;
-
-loopexp:
-        exp2 {
-            // The loop modification is evaluated after the loop index is pushed
-            // on the stack. Never the less, the scope of the loop index is the
-            // body of the loop, not the modification. So we adjust the stack size
-            // here and reverse it just before declaring the scope of the loop
-            // index variable.
-            ++driver.mLocalStackDepth;
-            $$ = $1;
         }
         ;
 
