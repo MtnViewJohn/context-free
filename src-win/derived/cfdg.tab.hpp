@@ -109,7 +109,7 @@ namespace yy {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 63 "../../src-common/cfdg.ypp"
+#line 64 "../../src-common/cfdg.ypp"
 
     int modToken;
     std::string*  string;
@@ -123,11 +123,12 @@ namespace yy {
     AST::ASTswitch* switchObj;
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
+    std::list<AST::ASTmodification*>* modList;
 
 
 
 /* Line 34 of lalr1.cc  */
-#line 131 "cfdg.tab.hpp"
+#line 132 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -153,37 +154,38 @@ namespace yy {
      ELSE = 269,
      SWITCH = 270,
      CASE = 271,
-     MODTYPE = 272,
-     PARAM = 273,
-     BACKGROUND = 274,
-     BADEOF = 275,
-     GOODEOF = 276,
-     RANGEOP = 277,
-     PLUSMINUSOP = 278,
-     USER_STRING = 279,
-     USER_INTEGER = 280,
-     USER_RATIONAL = 281,
-     USER_FILENAME = 282,
-     USER_QSTRING = 283,
-     INCLUDE = 284,
-     IMPORT = 285,
-     TILE = 286,
-     PARAMETERS = 287,
-     USER_PATHOP = 288,
-     STROKEWIDTH = 289,
-     LE = 290,
-     LT = 291,
-     GE = 292,
-     GT = 293,
-     EQ = 294,
-     NEQ = 295,
-     NOT = 296,
-     AND = 297,
-     OR = 298,
-     XOR = 299,
-     CF_INFINITY = 300,
-     POS = 301,
-     NEG = 302
+     CLONE = 272,
+     MODTYPE = 273,
+     PARAM = 274,
+     BACKGROUND = 275,
+     BADEOF = 276,
+     GOODEOF = 277,
+     RANGEOP = 278,
+     PLUSMINUSOP = 279,
+     USER_STRING = 280,
+     USER_INTEGER = 281,
+     USER_RATIONAL = 282,
+     USER_FILENAME = 283,
+     USER_QSTRING = 284,
+     INCLUDE = 285,
+     IMPORT = 286,
+     TILE = 287,
+     PARAMETERS = 288,
+     USER_PATHOP = 289,
+     STROKEWIDTH = 290,
+     LE = 291,
+     LT = 292,
+     GE = 293,
+     GT = 294,
+     EQ = 295,
+     NEQ = 296,
+     NOT = 297,
+     AND = 298,
+     OR = 299,
+     XOR = 300,
+     CF_INFINITY = 301,
+     POS = 302,
+     NEG = 303
    };
 
     };
@@ -357,7 +359,7 @@ namespace yy {
 } // yy
 
 /* Line 34 of lalr1.cc  */
-#line 361 "cfdg.tab.hpp"
+#line 363 "cfdg.tab.hpp"
 
 
 
