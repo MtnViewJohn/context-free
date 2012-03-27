@@ -556,15 +556,26 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
             if (tile.shx != 0.0 || tile.shy != 0.0) {
                 CfdgError::Error(where, "pm symmetry requires rectangular tiling");
             }
-            if (data.size() != 2) {
-                CfdgError::Error(where, "Mirror axis must be provided for pm symmetry");
+            double offset = 0.0;
+            switch (data.size()) {
+                case 2:
+                    break;
+                case 3:
+                    offset = data[2];
+                    break;
+                default:
+                    CfdgError::Error(where, "Mirror axis and optional offset must be provided for pm symmetry");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
             if (data[1]) {  // mirror on y axis
+                tr.translate(-offset, 0);
                 tr.flip_x();
+                tr.translate(offset, 0);
             } else {        // mirror on x axis
+                tr.translate(0, -offset);
                 tr.flip_y();
+                tr.translate(0, offset);
             }
             addUnique(syms, tr);
             break;
@@ -578,7 +589,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 case 2:
                     break;
                 case 3:
-                    offset = data[1];
+                    offset = data[2];
                     break;
                 default:
                     CfdgError::Error(where, "Glide axis and optional offset must be provided for pg symmetry");
