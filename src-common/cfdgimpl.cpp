@@ -564,7 +564,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Mirror axis and optional offset must be provided for pm symmetry");
+                    CfdgError::Error(where, "Mirror axis and optional axis position must be provided for pm symmetry");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -592,7 +592,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Glide axis and optional offset must be provided for pg symmetry");
+                    CfdgError::Error(where, "Glide axis and optional axis position must be provided for pg symmetry");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -620,7 +620,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Mirror axis and optional offset must be provided for cm symmetry");
+                    CfdgError::Error(where, "Mirror axis and optional axis position must be provided for cm symmetry");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
