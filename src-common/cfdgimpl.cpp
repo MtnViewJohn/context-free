@@ -493,13 +493,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
             } else if (data.size() != 1) {
                 CfdgError::Error(where, "p2 symmetry takes no arguments or a center of rotation");
             }
-            agg::trans_affine tr;
-            addUnique(syms, tr);
-            tr.translate(-mirrorx, -mirrory);
-            tr.flip_x();
-            tr.flip_y();
-            tr.translate(mirrorx, mirrory);
-            addUnique(syms, tr);
+            processDihedral(syms, 2.0, mirrorx, mirrory, false, 0.0, where);
             break;
         }
         case AST::CF_P2MG: {
@@ -535,21 +529,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
             } else if (data.size() != 1) {
                 CfdgError::Error(where, "p2mm symmetry takes no arguments or a center of relection");
             }
-            agg::trans_affine tr1;
-            agg::trans_affine_translation tr2(-mirrorx, -mirrory);
-            agg::trans_affine_translation tr3(-mirrorx, -mirrory);
-            agg::trans_affine_translation tr4(-mirrorx, -mirrory);
-            tr2.flip_x();
-            tr3.flip_x();
-            tr3.flip_y();
-            tr4.flip_y();
-            tr2.translate(mirrorx, mirrory);
-            tr3.translate(mirrorx, mirrory);
-            tr4.translate(mirrorx, mirrory);
-            addUnique(syms, tr1);
-            addUnique(syms, tr2);
-            addUnique(syms, tr3);
-            addUnique(syms, tr4);
+            processDihedral(syms, 2.0, mirrorx, mirrory, true, 0.0, where);
             break;
         }
         case AST::CF_PM: {
