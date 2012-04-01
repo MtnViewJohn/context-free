@@ -391,7 +391,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     order = data[1];
                     break;
                 default:
-                    CfdgError::Error(where, "Wrong number of arguments");
+                    CfdgError::Error(where, "Cyclic symmetry requires an order argument and an optional center of rotation");
                     order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
@@ -415,7 +415,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     order = data[1];
                     break;
                 default:
-                    CfdgError::Error(where, "Wrong number of arguments");
+                    CfdgError::Error(where, "Dihedral symmetry requires an order argument, an optional mirror angle, and an optional center of rotation");
                     order = 1.0;    // suppress warning, never executed
                     break;  // never gets here
             }
@@ -430,7 +430,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 else
                     mirrorx = data[1];
             } else if (data.size() > 2) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p11g symmetry takes no arguments or an optional glide axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -451,7 +451,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 else
                     mirrorx = data[1];
             } else if (data.size() > 2) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p11m symmetry takes no arguments or an optional mirror axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -472,7 +472,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 else
                     mirrory = data[1];
             } else if (data.size() > 2) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p1m1 symmetry takes no arguments or an optional mirror axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -491,7 +491,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 mirrorx = data[1];
                 mirrory = data[2];
             } else if (data.size() != 1) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p2 symmetry takes no arguments or a center of rotation");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -508,7 +508,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 mirrorx = data[1];
                 mirrory = data[2];
             } else if (data.size() != 1) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p2mg symmetry takes no arguments or a center of rotation");
             }
             agg::trans_affine tr1;
             agg::trans_affine_translation tr2(-mirrorx, -mirrory);
@@ -533,7 +533,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                 mirrorx = data[1];
                 mirrory = data[2];
             } else if (data.size() != 1) {
-                CfdgError::Error(where, "Wrong number of arguments");
+                CfdgError::Error(where, "p2mm symmetry takes no arguments or a center of relection");
             }
             agg::trans_affine tr1;
             agg::trans_affine_translation tr2(-mirrorx, -mirrory);
@@ -564,7 +564,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Mirror axis and optional axis position must be provided for pm symmetry");
+                    CfdgError::Error(where, "pm symmetry takes a mirror axis argument and an optional axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -592,7 +592,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Glide axis and optional axis position must be provided for pg symmetry");
+                    CfdgError::Error(where, "pg symmetry takes a glide axis argument and an optional axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
@@ -620,7 +620,7 @@ processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
                     offset = data[2];
                     break;
                 default:
-                    CfdgError::Error(where, "Mirror axis and optional axis position must be provided for cm symmetry");
+                    CfdgError::Error(where, "cm symmetry takes a mirror axis argument and an optional axis position argument");
             }
             agg::trans_affine tr;
             addUnique(syms, tr);
