@@ -241,6 +241,17 @@ namespace {
     [mDocument retain];
     [self initializeVariation];
     
+    NSNumber* one = [NSNumber numberWithInt: 1];
+    NSNumber* hundred = [NSNumber numberWithInt: 100];
+    NSNumberFormatter* fmt = [mSaveTileWidth formatter];
+    [fmt setMinimum: one];
+    [fmt setMaximum: hundred];
+    fmt = [mSaveTileHeight formatter];
+    [fmt setMinimum: one];
+    [fmt setMaximum: hundred];
+    [mSaveTileWidth setFloatValue: 1.0];
+    [mSaveTileHeight setFloatValue: 1.0];
+    
     NSWindow* window = [self window];
     if ([window respondsToSelector:@selector(toggleFullScreen:)]) {
         NSWindowCollectionBehavior behavior = [window collectionBehavior];
@@ -433,9 +444,24 @@ namespace {
 
 - (IBAction)saveTileImage:(id)sender
 {
-    BOOL tilable = [self isRect];
-    [mSaveTileOptions selectCellWithTag:0];
-    [[mSaveTileOptions cellWithTag:1] setEnabled: tilable];
+    CFDG::frieze_t frz = mEngine->isFrieze();
+    switch (frz) {
+        case CFDG::no_frieze:
+            [mSaveTileWidth setEnabled: YES];
+            [mSaveTileHeight setEnabled: YES];
+            break;
+        case CFDG::frieze_x:
+            [mSaveTileHeight setFloatValue: 1.0];
+            [mSaveTileWidth setEnabled: YES];
+            [mSaveTileHeight setEnabled: NO];
+            break;
+        case CFDG::frieze_y:
+            [mSaveTileWidth setFloatValue: 1.0];
+            [mSaveTileWidth setEnabled: NO];
+            [mSaveTileHeight setEnabled: YES];
+            break;
+    }
+    
     [self showSavePanelTitle: NSLocalizedString(@"Save Image", @"")
                     fileType: @"png"
                accessoryView: mSaveTileAccessory
@@ -521,9 +547,7 @@ namespace {
                 (int)mRenderedRect.size.width,
                 (int)mRenderedRect.size.height]];
         if (mTiled) {
-            message = [message stringByAppendingString:
-                [self isRect] ? 
-                         @", tiled rectangular" : @", tiled"];
+            message = [message stringByAppendingString: @", tiled"];
         }
     }
     
@@ -577,27 +601,17 @@ namespace {
 	return mTiled;
 }
 
--(bool)isRect
-{
-    int x, y;
-	return mTiled && mRenderer->m_tiledCanvas->isRectangular(&x, &y) && 
-        (x > 1 || y > 1);
-}
-
-- (NSData*) pngImageDataCropped:(BOOL)cropped rectangular:(BOOL) rect;
+- (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 {
     NSBitmapImageRep* bits;
     
-    if (mTiled) {
-        agg::point_i factor(1, 1);                      // unit tile by default
-        if (rect) mRenderer->m_tiledCanvas->isRectangular(&factor.x, &factor.y);
-        
+    if (mult) {
         NSRect iRect = NSMakeRect(0.0, 0.0, 0.0, 0.0);
         iRect.size = mRenderedRect.size;
         
         NSRect fRect = iRect;
-        fRect.size.width *= factor.x;
-        fRect.size.height *= factor.y;
+        fRect.size.width *= mult->width;
+        fRect.size.height *= mult->height;
         
         tileList points;
         mRenderer->m_tiledCanvas->getTesselation(points, fRect.size.width,
@@ -1148,7 +1162,7 @@ namespace {
 	NSData *pngData =
 		[self pngImageDataCropped:
 			[[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
-                      rectangular: NO];
+                       multiplier: nil];
 
     [pngData writeToFile: filename atomically: YES];
 }
@@ -1157,9 +1171,10 @@ namespace {
 {
     if (!save) return;
     
+    NSSize mult = NSMakeSize([mSaveTileWidth floatValue], [mSaveTileHeight floatValue]);
+    
 	NSData *pngData =
-		[self pngImageDataCropped: YES rectangular: 
-            [mSaveTileOptions selectedTag] == 1];
+        [self pngImageDataCropped: YES multiplier: &mult];
     
     [pngData writeToFile: filename atomically: YES];
 }

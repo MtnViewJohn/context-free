@@ -80,7 +80,8 @@ class qtCanvas;
     
     IBOutlet NSView*                mSaveImageAccessory;
     IBOutlet NSView*                mSaveTileAccessory;
-    IBOutlet NSMatrix*                  mSaveTileOptions;
+    IBOutlet NSTextField*           mSaveTileWidth;
+    IBOutlet NSTextField*           mSaveTileHeight;
 	IBOutlet NSView*				mSaveAnimationAccessory;
     
     NSMenuItem*    mFullScreenMenu;
@@ -109,8 +110,7 @@ class qtCanvas;
 - (int) variation;
 - (bool) canvasColor256;
 - (bool) isTiled;
-- (bool) isRect;
-- (NSData*) pngImageDataCropped:(BOOL)cropped rectangular:(BOOL) rect;
+- (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 
 @end
 

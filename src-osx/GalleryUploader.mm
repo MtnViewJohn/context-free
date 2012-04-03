@@ -102,7 +102,7 @@ namespace {
 	upload.mFileName	= asString([mFileField stringValue]) + ".cfdg";
 	upload.mVariation	= [mView variation];
     upload.mTiled       = [mTiled state] == NSOnState;
-    upload.mRect        = [mView isRect];
+    upload.mRect        = false;
 	upload.mCompression	= (Upload::Compression)
 							[[mCompressionMatrix selectedCell] tag];
     upload.mccLicenseURI    = asString(mDefccURI);
@@ -114,7 +114,7 @@ namespace {
     
 	NSData* textData	= [mDocument getContent];
 	NSData* imageData	= [mView pngImageDataCropped: crop
-                                         rectangular: upload.mTiled && upload.mRect];
+                                          multiplier: nil];
 	
 	upload.mText		= (const char*)[textData bytes];
 	upload.mTextLen		= [textData length];
