@@ -97,6 +97,10 @@ System::Void UploadDesign::wizardPage_beforeChange(System::Object^ sender,
             }
             labelDesignError->Visible = false;
             Form1::prefs->ImageCrop = checkCrop->Checked;
+            if (outputMultiplier) {
+                outputMultiplier[0] = System::Double::Parse(saveWidth->Text);
+                outputMultiplier[1] = System::Double::Parse(saveHeight->Text);
+            }
             break;
         case 2:
             {

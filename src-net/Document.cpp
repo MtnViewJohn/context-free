@@ -632,7 +632,8 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     u.mText = reinterpret_cast<const char*>(pinnedCfdg);
     u.mTextLen = strlen(u.mText);
 
-    UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u);
+    UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u,
+                           mEngine->isFrieze(), mTiled ? mOutputMultiplier : nullptr);
 
     uploadWiz.ShowDialog(this);
     u.mText = 0;

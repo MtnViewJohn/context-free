@@ -25,6 +25,7 @@
 #pragma once
 
 #include "CFPrefs.h"
+#include "cfdg.h"
 #include "Document.h"
 #include "upload.h"
 #include "Variation.h"
@@ -45,7 +46,8 @@ namespace ContextFreeNet {
 	public ref class UploadDesign : public System::Windows::Forms::Form
 	{
 	public:
-        UploadDesign(Document^ doc, System::String^ name, Upload* u) 
+        UploadDesign(Document^ doc, System::String^ name, Upload* u,
+                     CFDG::frieze_t fr, array<double>^ mult) 
             : mDoc(doc), mUpload(u)
 		{
 			InitializeComponent();
@@ -63,6 +65,23 @@ namespace ContextFreeNet {
             } else {
                 radioPNG8->Checked = true;
             }
+            if (mult) {
+                if (fr == CFDG::frieze_x)
+                    mult[0] = 1.0;
+                if (fr == CFDG::frieze_y)
+                    mult[1] = 1.0;
+                checkCrop->Visible = false;
+                saveWidth->Text = mult[0].ToString();
+                saveHeight->Text = mult[1].ToString();
+                saveWidth->Enabled = fr != CFDG::frieze_y;
+                saveHeight->Enabled = fr != CFDG::frieze_x;
+            } else {
+                saveWidth->Visible = false;
+                saveHeight->Visible = false;
+                widthLabel->Visible = false;
+                heightLabel->Visible = false;
+            }
+            outputMultiplier = mult;
             checkTiled->Checked = u->mTiled;
             titleBox->Text = name;
             fileNameBox->Text = name;
@@ -132,6 +151,11 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::StatusStrip^  statusStripUpload;
     private: System::Windows::Forms::ToolStripStatusLabel^  statusIconUpload;
     private: System::Windows::Forms::ToolStripStatusLabel^  statusLabelUpload;
+private: System::Windows::Forms::TextBox^  saveHeight;
+
+private: System::Windows::Forms::Label^  heightLabel;
+private: System::Windows::Forms::Label^  widthLabel;
+private: System::Windows::Forms::TextBox^  saveWidth;
 
 
 
@@ -152,13 +176,6 @@ namespace ContextFreeNet {
 		{
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(UploadDesign::typeid));
             this->wizard1 = (gcnew CristiPotlog::Controls::Wizard());
-            this->uploadPage = (gcnew CristiPotlog::Controls::WizardPage());
-            this->statusStripUpload = (gcnew System::Windows::Forms::StatusStrip());
-            this->statusIconUpload = (gcnew System::Windows::Forms::ToolStripStatusLabel());
-            this->statusLabelUpload = (gcnew System::Windows::Forms::ToolStripStatusLabel());
-            this->uploadBrowser = (gcnew System::Windows::Forms::WebBrowser());
-            this->licensePage = (gcnew CristiPotlog::Controls::WizardPage());
-            this->ccLicenseBrowser = (gcnew System::Windows::Forms::WebBrowser());
             this->designPage = (gcnew CristiPotlog::Controls::WizardPage());
             this->checkTiled = (gcnew System::Windows::Forms::CheckBox());
             this->labelDesignError = (gcnew System::Windows::Forms::Label());
@@ -175,6 +192,13 @@ namespace ContextFreeNet {
             this->fileNameBox = (gcnew System::Windows::Forms::TextBox());
             this->notesBox = (gcnew System::Windows::Forms::TextBox());
             this->titleBox = (gcnew System::Windows::Forms::TextBox());
+            this->licensePage = (gcnew CristiPotlog::Controls::WizardPage());
+            this->ccLicenseBrowser = (gcnew System::Windows::Forms::WebBrowser());
+            this->uploadPage = (gcnew CristiPotlog::Controls::WizardPage());
+            this->statusStripUpload = (gcnew System::Windows::Forms::StatusStrip());
+            this->statusIconUpload = (gcnew System::Windows::Forms::ToolStripStatusLabel());
+            this->statusLabelUpload = (gcnew System::Windows::Forms::ToolStripStatusLabel());
+            this->uploadBrowser = (gcnew System::Windows::Forms::WebBrowser());
             this->accountPage = (gcnew CristiPotlog::Controls::WizardPage());
             this->labelAcctError = (gcnew System::Windows::Forms::Label());
             this->accountButton = (gcnew System::Windows::Forms::Button());
@@ -184,20 +208,24 @@ namespace ContextFreeNet {
             this->usernameBox = (gcnew System::Windows::Forms::TextBox());
             this->label2 = (gcnew System::Windows::Forms::Label());
             this->label1 = (gcnew System::Windows::Forms::Label());
+            this->widthLabel = (gcnew System::Windows::Forms::Label());
+            this->heightLabel = (gcnew System::Windows::Forms::Label());
+            this->saveHeight = (gcnew System::Windows::Forms::TextBox());
+            this->saveWidth = (gcnew System::Windows::Forms::TextBox());
             this->wizard1->SuspendLayout();
+            this->designPage->SuspendLayout();
+            this->licensePage->SuspendLayout();
             this->uploadPage->SuspendLayout();
             this->statusStripUpload->SuspendLayout();
-            this->licensePage->SuspendLayout();
-            this->designPage->SuspendLayout();
             this->accountPage->SuspendLayout();
             this->SuspendLayout();
             // 
             // wizard1
             // 
+            this->wizard1->Controls->Add(this->designPage);
             this->wizard1->Controls->Add(this->accountPage);
             this->wizard1->Controls->Add(this->uploadPage);
             this->wizard1->Controls->Add(this->licensePage);
-            this->wizard1->Controls->Add(this->designPage);
             this->wizard1->HeaderImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"wizard1.HeaderImage")));
             this->wizard1->HeaderTitleFont = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, 
                 static_cast<System::Byte>(0)));
@@ -208,71 +236,12 @@ namespace ContextFreeNet {
             this->wizard1->Size = System::Drawing::Size(440, 377);
             this->wizard1->TabIndex = 0;
             // 
-            // uploadPage
-            // 
-            this->uploadPage->Controls->Add(this->statusStripUpload);
-            this->uploadPage->Controls->Add(this->uploadBrowser);
-            this->uploadPage->Location = System::Drawing::Point(0, 0);
-            this->uploadPage->Name = L"uploadPage";
-            this->uploadPage->Size = System::Drawing::Size(440, 329);
-            this->uploadPage->TabIndex = 13;
-            this->uploadPage->Title = L"Upload Design";
-            // 
-            // statusStripUpload
-            // 
-            this->statusStripUpload->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->statusIconUpload, 
-                this->statusLabelUpload});
-            this->statusStripUpload->Location = System::Drawing::Point(0, 307);
-            this->statusStripUpload->Name = L"statusStripUpload";
-            this->statusStripUpload->Size = System::Drawing::Size(440, 22);
-            this->statusStripUpload->TabIndex = 1;
-            this->statusStripUpload->Text = L"statusStrip1";
-            this->statusStripUpload->Visible = false;
-            // 
-            // statusIconUpload
-            // 
-            this->statusIconUpload->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-            this->statusIconUpload->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"statusIconUpload.Image")));
-            this->statusIconUpload->Name = L"statusIconUpload";
-            this->statusIconUpload->Size = System::Drawing::Size(16, 17);
-            // 
-            // statusLabelUpload
-            // 
-            this->statusLabelUpload->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-            this->statusLabelUpload->Name = L"statusLabelUpload";
-            this->statusLabelUpload->Size = System::Drawing::Size(378, 17);
-            this->statusLabelUpload->Spring = true;
-            this->statusLabelUpload->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-            // 
-            // uploadBrowser
-            // 
-            this->uploadBrowser->AllowWebBrowserDrop = false;
-            this->uploadBrowser->Location = System::Drawing::Point(0, 64);
-            this->uploadBrowser->MinimumSize = System::Drawing::Size(20, 20);
-            this->uploadBrowser->Name = L"uploadBrowser";
-            this->uploadBrowser->Size = System::Drawing::Size(440, 240);
-            this->uploadBrowser->TabIndex = 0;
-            // 
-            // licensePage
-            // 
-            this->licensePage->Controls->Add(this->ccLicenseBrowser);
-            this->licensePage->Location = System::Drawing::Point(0, 0);
-            this->licensePage->Name = L"licensePage";
-            this->licensePage->Size = System::Drawing::Size(428, 208);
-            this->licensePage->TabIndex = 12;
-            this->licensePage->Title = L"Creative Commons License";
-            // 
-            // ccLicenseBrowser
-            // 
-            this->ccLicenseBrowser->AllowWebBrowserDrop = false;
-            this->ccLicenseBrowser->Location = System::Drawing::Point(0, 64);
-            this->ccLicenseBrowser->MinimumSize = System::Drawing::Size(20, 20);
-            this->ccLicenseBrowser->Name = L"ccLicenseBrowser";
-            this->ccLicenseBrowser->Size = System::Drawing::Size(440, 265);
-            this->ccLicenseBrowser->TabIndex = 0;
-            // 
             // designPage
             // 
+            this->designPage->Controls->Add(this->saveWidth);
+            this->designPage->Controls->Add(this->saveHeight);
+            this->designPage->Controls->Add(this->heightLabel);
+            this->designPage->Controls->Add(this->widthLabel);
             this->designPage->Controls->Add(this->checkTiled);
             this->designPage->Controls->Add(this->labelDesignError);
             this->designPage->Controls->Add(this->label10);
@@ -290,14 +259,14 @@ namespace ContextFreeNet {
             this->designPage->Controls->Add(this->titleBox);
             this->designPage->Location = System::Drawing::Point(0, 0);
             this->designPage->Name = L"designPage";
-            this->designPage->Size = System::Drawing::Size(428, 208);
+            this->designPage->Size = System::Drawing::Size(440, 329);
             this->designPage->TabIndex = 11;
             this->designPage->Title = L"Design Information";
             // 
             // checkTiled
             // 
             this->checkTiled->AutoSize = true;
-            this->checkTiled->Location = System::Drawing::Point(201, 252);
+            this->checkTiled->Location = System::Drawing::Point(115, 252);
             this->checkTiled->Name = L"checkTiled";
             this->checkTiled->Size = System::Drawing::Size(91, 17);
             this->checkTiled->TabIndex = 14;
@@ -310,9 +279,9 @@ namespace ContextFreeNet {
                 static_cast<System::Byte>(0)));
             this->labelDesignError->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), 
                 static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
-            this->labelDesignError->Location = System::Drawing::Point(284, 277);
+            this->labelDesignError->Location = System::Drawing::Point(303, 154);
             this->labelDesignError->Name = L"labelDesignError";
-            this->labelDesignError->Size = System::Drawing::Size(153, 36);
+            this->labelDesignError->Size = System::Drawing::Size(121, 54);
             this->labelDesignError->TabIndex = 13;
             this->labelDesignError->Text = L"You must provide a title and a file name.";
             this->labelDesignError->Visible = false;
@@ -387,7 +356,7 @@ namespace ContextFreeNet {
             // checkCrop
             // 
             this->checkCrop->AutoSize = true;
-            this->checkCrop->Location = System::Drawing::Point(115, 252);
+            this->checkCrop->Location = System::Drawing::Point(209, 252);
             this->checkCrop->Name = L"checkCrop";
             this->checkCrop->Size = System::Drawing::Size(79, 17);
             this->checkCrop->TabIndex = 5;
@@ -435,6 +404,69 @@ namespace ContextFreeNet {
             this->titleBox->Name = L"titleBox";
             this->titleBox->Size = System::Drawing::Size(176, 20);
             this->titleBox->TabIndex = 0;
+            // 
+            // licensePage
+            // 
+            this->licensePage->Controls->Add(this->ccLicenseBrowser);
+            this->licensePage->Location = System::Drawing::Point(0, 0);
+            this->licensePage->Name = L"licensePage";
+            this->licensePage->Size = System::Drawing::Size(428, 208);
+            this->licensePage->TabIndex = 12;
+            this->licensePage->Title = L"Creative Commons License";
+            // 
+            // ccLicenseBrowser
+            // 
+            this->ccLicenseBrowser->AllowWebBrowserDrop = false;
+            this->ccLicenseBrowser->Location = System::Drawing::Point(0, 64);
+            this->ccLicenseBrowser->MinimumSize = System::Drawing::Size(20, 20);
+            this->ccLicenseBrowser->Name = L"ccLicenseBrowser";
+            this->ccLicenseBrowser->Size = System::Drawing::Size(440, 265);
+            this->ccLicenseBrowser->TabIndex = 0;
+            // 
+            // uploadPage
+            // 
+            this->uploadPage->Controls->Add(this->statusStripUpload);
+            this->uploadPage->Controls->Add(this->uploadBrowser);
+            this->uploadPage->Location = System::Drawing::Point(0, 0);
+            this->uploadPage->Name = L"uploadPage";
+            this->uploadPage->Size = System::Drawing::Size(440, 329);
+            this->uploadPage->TabIndex = 13;
+            this->uploadPage->Title = L"Upload Design";
+            // 
+            // statusStripUpload
+            // 
+            this->statusStripUpload->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->statusIconUpload, 
+                this->statusLabelUpload});
+            this->statusStripUpload->Location = System::Drawing::Point(0, 307);
+            this->statusStripUpload->Name = L"statusStripUpload";
+            this->statusStripUpload->Size = System::Drawing::Size(440, 22);
+            this->statusStripUpload->TabIndex = 1;
+            this->statusStripUpload->Text = L"statusStrip1";
+            this->statusStripUpload->Visible = false;
+            // 
+            // statusIconUpload
+            // 
+            this->statusIconUpload->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+            this->statusIconUpload->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"statusIconUpload.Image")));
+            this->statusIconUpload->Name = L"statusIconUpload";
+            this->statusIconUpload->Size = System::Drawing::Size(16, 17);
+            // 
+            // statusLabelUpload
+            // 
+            this->statusLabelUpload->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+            this->statusLabelUpload->Name = L"statusLabelUpload";
+            this->statusLabelUpload->Size = System::Drawing::Size(409, 17);
+            this->statusLabelUpload->Spring = true;
+            this->statusLabelUpload->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+            // 
+            // uploadBrowser
+            // 
+            this->uploadBrowser->AllowWebBrowserDrop = false;
+            this->uploadBrowser->Location = System::Drawing::Point(0, 64);
+            this->uploadBrowser->MinimumSize = System::Drawing::Size(20, 20);
+            this->uploadBrowser->Name = L"uploadBrowser";
+            this->uploadBrowser->Size = System::Drawing::Size(440, 240);
+            this->uploadBrowser->TabIndex = 0;
             // 
             // accountPage
             // 
@@ -529,6 +561,38 @@ namespace ContextFreeNet {
             this->label1->TabIndex = 0;
             this->label1->Text = L"Username:";
             // 
+            // widthLabel
+            // 
+            this->widthLabel->AutoSize = true;
+            this->widthLabel->Location = System::Drawing::Point(217, 253);
+            this->widthLabel->Name = L"widthLabel";
+            this->widthLabel->Size = System::Drawing::Size(82, 13);
+            this->widthLabel->TabIndex = 15;
+            this->widthLabel->Text = L"Width Multiplier:";
+            // 
+            // heightLabel
+            // 
+            this->heightLabel->AutoSize = true;
+            this->heightLabel->Location = System::Drawing::Point(217, 276);
+            this->heightLabel->Name = L"heightLabel";
+            this->heightLabel->Size = System::Drawing::Size(85, 13);
+            this->heightLabel->TabIndex = 16;
+            this->heightLabel->Text = L"Height Multiplier:";
+            // 
+            // saveHeight
+            // 
+            this->saveHeight->Location = System::Drawing::Point(311, 273);
+            this->saveHeight->Name = L"saveHeight";
+            this->saveHeight->Size = System::Drawing::Size(67, 20);
+            this->saveHeight->TabIndex = 18;
+            // 
+            // saveWidth
+            // 
+            this->saveWidth->Location = System::Drawing::Point(311, 247);
+            this->saveWidth->Name = L"saveWidth";
+            this->saveWidth->Size = System::Drawing::Size(67, 20);
+            this->saveWidth->TabIndex = 17;
+            // 
             // UploadDesign
             // 
             this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -541,13 +605,13 @@ namespace ContextFreeNet {
             this->ShowInTaskbar = false;
             this->Text = L"Upload to Context Free Gallery";
             this->wizard1->ResumeLayout(false);
+            this->designPage->ResumeLayout(false);
+            this->designPage->PerformLayout();
+            this->licensePage->ResumeLayout(false);
             this->uploadPage->ResumeLayout(false);
             this->uploadPage->PerformLayout();
             this->statusStripUpload->ResumeLayout(false);
             this->statusStripUpload->PerformLayout();
-            this->licensePage->ResumeLayout(false);
-            this->designPage->ResumeLayout(false);
-            this->designPage->PerformLayout();
             this->accountPage->ResumeLayout(false);
             this->accountPage->PerformLayout();
             this->ResumeLayout(false);
@@ -560,6 +624,7 @@ namespace ContextFreeNet {
     private: System::Void bounceNavigation(System::Object^ sender, 
                           System::Windows::Forms::WebBrowserNavigatingEventArgs^ e);
     private: System::Windows::Forms::WebBrowserNavigatingEventHandler^ bouncer;
+             array<double>^ outputMultiplier;
 
              System::Void wizardPage_beforeChange(System::Object^ sender, 
                  CristiPotlog::Controls::Wizard::BeforeSwitchPagesEventArgs^ e);
