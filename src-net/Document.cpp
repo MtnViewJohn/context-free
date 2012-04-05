@@ -109,6 +109,10 @@ void Document::InitializeStuff()
 
     deferredHtml = gcnew System::Text::StringBuilder();
     messageWindowUnready = false;
+
+    mOutputMultiplier = gcnew array<double>(2);
+    mOutputMultiplier[0] = 1.0;
+    mOutputMultiplier[1] = 1.0;
 }
 
 void Document::DestroyStuff()
@@ -429,20 +433,19 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
         return;
     }
 
-    SaveImage saveImageDlg(mTiled, mRectangular,
+    SaveImage saveImageDlg(mEngine->isFrieze(), mTiled ? mOutputMultiplier : nullptr,
         Path::GetFileNameWithoutExtension(Text) + ".png",
         ((Form1^)MdiParent)->saveDirectory);
 
     if (saveImageDlg.ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
         ((Form1^)MdiParent)->saveDirectory = 
             Path::GetDirectoryName(saveImageDlg.FileDlgFileName);
-        bool rect = mTiled && mRectangular && saveImageDlg.checkRectangular->Checked;
         switch (saveImageDlg.FileDlgFilterIndex) {
             case 1: // PNG
-                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, false, rect);
+                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, false);
                 break;
             case 2: // JPEG
-                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, true, rect);
+                saveToPNGorJPEG(saveImageDlg.FileDlgFileName, nullptr, true);
                 break;
             case 3: // SVG
                 saveToSVG(saveImageDlg.FileDlgFileName);
@@ -453,7 +456,7 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
     }
 }
 
-bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG, bool rect)
+bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
 {
     bool success = true;
 
@@ -478,13 +481,15 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG,
     try {
         Bitmap^ bm = MakeBitmap(mTiled || Form1::prefs->ImageCrop, mCanvas);
 
-        if (rect) {
+        if (mTiled && (mOutputMultiplier[0] != 1.0 || mOutputMultiplier[1] != 1.0)) {
             Imaging::PixelFormat fmt = bm->PixelFormat;
             if (fmt == Imaging::PixelFormat::Format8bppIndexed)
                 fmt = Imaging::PixelFormat::Format24bppRgb;
 
-            Bitmap^ newBM = gcnew Bitmap(mRectangularSize.Width, 
-                mRectangularSize.Height, fmt);
+            int w = (int)(bm->Width  * mOutputMultiplier[0] + 0.5);
+            int h = (int)(bm->Height * mOutputMultiplier[1] + 0.5);
+
+            Bitmap^ newBM = gcnew Bitmap(w, h, fmt);
             Graphics^ g = Graphics::FromImage(newBM);
             g->Clear(Color::White);
             drawTiled(bm, newBM, g, nullptr, 0, 0);
@@ -619,7 +624,6 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     Upload u;
     u.mCompression = mCanvas->colorCount256() ? Upload::CompressPNG8 : Upload::CompressJPEG;
     u.mTiled = mTiled;
-    u.mRect = mTiled && mRectangular;
     u.mVariation = currentVariation;
 
     array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdgText->Text);
@@ -1024,15 +1028,6 @@ void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
                 if (!mCanvas) {
                     setupCanvas(mRenderer);
                     mRenderer->draw(mCanvas);
-                }
-
-                int x, y;
-                mRectangular = mTiled && mRenderer->m_tiledCanvas->isRectangular(&x, &y);
-                if (mRectangular) {
-                    if (x == 1 && y == 1) 
-                        mRectangular = false;
-                    mRectangularSize.Width = x * renderParams->width;
-                    mRectangularSize.Height = y * renderParams->height;
                 }
             }
             break;

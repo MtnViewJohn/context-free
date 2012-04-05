@@ -44,6 +44,10 @@ DialogResult SaveImage::ShowTheDialog(IWin32Window^ owner)
         if (res == DialogResult::OK) {
             Form1::prefs->ImageCrop = checkCropImage->Checked;
             Form1::prefs->JPEGQuality = System::Int32::Parse(JPEGQuality->Text);
+            if (multiplier) {
+                multiplier[0] = System::Double::Parse(saveWidth->Text);
+                multiplier[1] = System::Double::Parse(saveHeight->Text);
+            }
         }
     } catch (Exception^) {}
 

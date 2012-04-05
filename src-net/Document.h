@@ -1367,8 +1367,7 @@ protected:
     SVGCanvas* mSVGCanvas;
     ffCanvas* mAnimationCanvas;
     bool mTiled;
-    bool mRectangular;
-    System::Drawing::Size mRectangularSize;
+    array<double>^ mOutputMultiplier;
     System::Drawing::Bitmap^ displayImage;
     System::Windows::Forms::Timer^ statusTimer;
     System::Void statusTick(System::Object^ sender, System::EventArgs^ e);
@@ -1393,8 +1392,7 @@ private: System::Void menuEdit_Popup(System::Object^  sender, System::EventArgs^
 
 private: System::Void menuEDelete_Click(System::Object^  sender, System::EventArgs^  e);
 
-public: bool saveToPNGorJPEG(System::String^ path, System::IO::Stream^ str, 
-             bool JPEG, bool rect);
+public: bool saveToPNGorJPEG(System::String^ path, System::IO::Stream^ str, bool JPEG);
 private: void saveToSVG(System::String^ path);
 private: void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
              System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ gray, 
