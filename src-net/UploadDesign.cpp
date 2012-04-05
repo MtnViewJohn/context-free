@@ -206,8 +206,7 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         utf8arraypin = nullptr;
 
         MemoryStream^ bitmapStream = gcnew MemoryStream();
-        if (!mDoc->saveToPNGorJPEG(nullptr, bitmapStream, false, 
-            mUpload->mRect && mUpload->mTiled) || bitmapStream->Length == 0)
+        if (!mDoc->saveToPNGorJPEG(nullptr, bitmapStream, false) || bitmapStream->Length == 0)
 		{
 			statusLabelUpload->Text = "Upload failed because of image problems.";
             uploadBrowser->Navigate("about:NavigationFailure");
