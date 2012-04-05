@@ -50,7 +50,6 @@ class Upload {
 		int				mVariation;
 		Compression		mCompression;
         bool            mTiled;
-        bool            mRect;
     
         std::string     mccLicenseURI;
         std::string     mccLicenseName;

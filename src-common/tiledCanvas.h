@@ -53,7 +53,6 @@ public:
     
     void getTesselation(tileList& tl, int width, int height, int x, int y, bool flipY = false);
 	void tileTransform(const Bounds& b);
-    bool isRectangular(int* x_factor = 0, int* y_factor = 0);
     
 private:
 	Canvas* mTile;
