@@ -110,6 +110,7 @@ class qtCanvas;
 - (int) variation;
 - (bool) canvasColor256;
 - (bool) isTiled;
+- (int) isFrieze;
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 
 @end

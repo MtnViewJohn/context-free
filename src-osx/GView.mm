@@ -601,6 +601,11 @@ namespace {
 	return mTiled;
 }
 
+-(int)isFrieze
+{
+    return (mTiled && mEngine) ? mEngine->isFrieze() : 0;
+}
+
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 {
     NSBitmapImageRep* bits;
