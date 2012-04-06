@@ -49,7 +49,7 @@ class Upload {
 		std::string		mFileName;	// include .cfdg ending here
 		int				mVariation;
 		Compression		mCompression;
-        bool            mTiled;
+        int             mTiled;
     
         std::string     mccLicenseURI;
         std::string     mccLicenseName;
