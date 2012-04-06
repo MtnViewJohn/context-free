@@ -101,7 +101,12 @@ namespace {
 	upload.mNotes		= asString([mNotesView string]);
 	upload.mFileName	= asString([mFileField stringValue]) + ".cfdg";
 	upload.mVariation	= [mView variation];
-    upload.mTiled       = [mTiled state] == NSOnState;
+    upload.mTiled       = 0;
+    if ([mTiled state] == NSOnState) {
+        upload.mTiled = [mView isFrieze];
+        if ([mView isTiled] && !upload.mTiled)
+            upload.mTiled = 3;
+    }
 	upload.mCompression	= (Upload::Compression)
 							[[mCompressionMatrix selectedCell] tag];
     upload.mccLicenseURI    = asString(mDefccURI);
