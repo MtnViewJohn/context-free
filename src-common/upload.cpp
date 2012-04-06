@@ -136,8 +136,8 @@ Upload::generatePayload(std::ostream& out)
     generateTextField(out, "cc_js_result_img", mccLicenseImage);
     if (mccLicenseURI.length())
     	generateTextField(out, "cc_js_want_cc_license", "sure");
-    //if (mTiled)
-    //	generateTextField(out, "tiled", "on");
+    if (mTiled)
+    	generateTextField(out, "tiled", "on");
     generateTextField(out, "tiledtype", (char)(mTiled + '0'));
 	generateTextField(out, "variation", variationName(mVariation));
 	generateTextField(out, "notes", mNotes);
