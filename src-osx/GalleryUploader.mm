@@ -102,7 +102,6 @@ namespace {
 	upload.mFileName	= asString([mFileField stringValue]) + ".cfdg";
 	upload.mVariation	= [mView variation];
     upload.mTiled       = [mTiled state] == NSOnState;
-    upload.mRect        = false;
 	upload.mCompression	= (Upload::Compression)
 							[[mCompressionMatrix selectedCell] tag];
     upload.mccLicenseURI    = asString(mDefccURI);
@@ -112,9 +111,11 @@ namespace {
     BOOL crop = upload.mTiled || 
             [[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"];
     
+    NSSize mult = NSMakeSize([mSaveTileWidth floatValue], [mSaveTileHeight floatValue]);
+    
 	NSData* textData	= [mDocument getContent];
 	NSData* imageData	= [mView pngImageDataCropped: crop
-                                          multiplier: nil];
+                                          multiplier: [mView isTiled] ? &mult : nil];
 	
 	upload.mText		= (const char*)[textData bytes];
 	upload.mTextLen		= [textData length];
@@ -242,8 +243,32 @@ namespace {
         Upload::CompressPNG8 : Upload::CompressJPEG;
 	[mCompressionMatrix selectCellWithTag: bestCompression];
 
-    [mTiled setEnabled: [mView isTiled]]; 
-    [mTiled setState: ([mView isTiled] ? NSOnState : NSOffState)];
+    bool tiled = [mView isTiled];
+    [mTiled setEnabled: tiled];
+    [mCropCheck setEnabled: !tiled];
+    [mSaveTileWidth setHidden: !tiled];
+    [mSaveTileHeight setHidden: !tiled];
+    [mWidthLabel setHidden: !tiled];
+    [mHeightLabel setHidden: !tiled];
+    [mMultLabel setHidden: !tiled];
+    [mTiled setState: (tiled ? NSOnState : NSOffState)];
+    
+    if (tiled) {
+        CFDG::frieze_t frz = (CFDG::frieze_t)[mView isFrieze];
+        [mSaveTileWidth setEnabled: frz != CFDG::frieze_y];
+        [mSaveTileHeight setEnabled: frz != CFDG::frieze_x];
+
+        NSNumber* one = [NSNumber numberWithInt: 1];
+        NSNumber* hundred = [NSNumber numberWithInt: 100];
+        NSNumberFormatter* fmt = [mSaveTileWidth formatter];
+        [fmt setMinimum: one];
+        [fmt setMaximum: hundred];
+        fmt = [mSaveTileHeight formatter];
+        [fmt setMinimum: one];
+        [fmt setMaximum: hundred];
+        [mSaveTileWidth setFloatValue: 1.0];
+        [mSaveTileHeight setFloatValue: 1.0];
+    }
     
     [self updateCCInfo];
     

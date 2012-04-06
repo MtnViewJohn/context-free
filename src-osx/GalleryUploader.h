@@ -53,6 +53,12 @@
         IBOutlet NSButton*      mTiled;
         IBOutlet NSTextField*   mLicenseName;
         IBOutlet NSButton*      mLicenseImage;
+        IBOutlet NSTextField*   mSaveTileWidth;
+        IBOutlet NSTextField*   mSaveTileHeight;
+        IBOutlet NSButton*      mCropCheck;
+        IBOutlet NSTextField*   mWidthLabel;
+        IBOutlet NSTextField*   mHeightLabel;
+        IBOutlet NSTextField*   mMultLabel;
 	
 	IBOutlet NSView*	mProgressView;
 		IBOutlet NSProgressIndicator*	mProgressBar;
