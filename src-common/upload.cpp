@@ -61,6 +61,20 @@ namespace {
 		out << value; 
 	}
 	
+	void generateTextField(std::ostream& out, const char* field,
+                           char value)
+	{
+		generateMimeBoundary(out);
+		
+		out << "Content-Disposition: form-data"
+        << "; name=" << field	// shouldn't need quotes
+        << mime_endl
+        << "Content-Type: text/plain; charset=UTF-8" << mime_endl
+        << mime_endl;
+		
+		out << value; 
+	}
+	
 	void generateFileField(std::ostream& out, const char* field,
 		const char* data, size_t length, const std::string& fileName)
 	{
@@ -122,8 +136,9 @@ Upload::generatePayload(std::ostream& out)
     generateTextField(out, "cc_js_result_img", mccLicenseImage);
     if (mccLicenseURI.length())
     	generateTextField(out, "cc_js_want_cc_license", "sure");
-    if (mTiled)
-    	generateTextField(out, "tiled", "on");
+    //if (mTiled)
+    //	generateTextField(out, "tiled", "on");
+    generateTextField(out, "tiledtype", (char)(mTiled + '0'));
 	generateTextField(out, "variation", variationName(mVariation));
 	generateTextField(out, "notes", mNotes);
 
