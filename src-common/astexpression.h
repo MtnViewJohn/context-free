@@ -381,6 +381,25 @@ namespace AST {
         void makeCanonical();
         void grab(ASTmodification* m);
     };
+    class ASTarray : public ASTexpression {
+    public:
+        double  mData[9];
+        bool    mConstData;
+        ASTexpression* mArgs;
+        int     mLength;
+        int     mStride;
+        int     mStackIndex;
+        int     mCount;
+        bool    isParameter;
+        std::string entString;
+        
+        ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
+                 const yy::location& loc, const std::string& name);
+        virtual ~ASTarray();
+        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void entropy(std::string& e) const;
+        virtual ASTexpression* simplify();
+    };
     
     class ASTdefine;
 

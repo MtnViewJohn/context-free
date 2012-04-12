@@ -134,6 +134,9 @@ public:
     AST::ASTexpression*
                     MakeFunction(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
                                  const yy::location& argsLoc, bool consAllowed);
+    AST::ASTexpression*
+                    MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
+                                const yy::location& argsLoc);
     
     AST::ASTmodification*
                     MakeModification(AST::mod_ptr modExp, const yy::location& loc,

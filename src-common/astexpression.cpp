@@ -169,8 +169,8 @@ namespace AST {
         if (mType == ASTexpression::NumericType) {
             isNatural = def->mExpression->isNatural && mTuplesize == 1;
             if (mTuplesize == 0) mTuplesize = 1;    // loop index
-            if (mTuplesize < 1 || mTuplesize > 8)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >8)");
+            if (mTuplesize < 1 || mTuplesize > 9)
+                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
         }
         
         mName = nameIndex;
@@ -198,8 +198,8 @@ namespace AST {
         {
             mType = ASTexpression::NumericType;
             mTuplesize = typeName[6] - '0';
-            if (mTuplesize < 1 || mTuplesize > 8)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >8)");
+            if (mTuplesize < 1 || mTuplesize > 9)
+                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
         } else mType = ASTexpression::NoType;
         
         mName = nameIndex;
@@ -716,6 +716,70 @@ namespace AST {
             ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
     }
     
+    ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
+                       const yy::location& loc, const std::string& name)
+    : AST::ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
+      mConstData(bound->mStackIndex == -1), mArgs(0), mLength(1), mStride(1), 
+      mStackIndex(bound->mStackIndex - stackOffset), 
+      mCount(bound->mType == NumericType ? bound->mTuplesize : 1),
+      isParameter(bound->isParameter), entString(name)
+    {
+        if (args.get() == 0 || args->mType != ASTexpression::NumericType) {
+            CfdgError::Error(loc, "Array arguments must be numeric");
+            mArgs = new ASTreal(0.0, loc);
+            return;     // deleting args
+        }
+
+        isLocal = bound->isLocal;
+        args->entropy(entString);
+        if (mConstData) {
+            bound->mDefinition->mExpression->evaluate(mData, 9);
+        }
+        ASTcons* c = dynamic_cast<ASTcons*>(args.get());
+        if (c) {
+            mArgs = c->left->simplify(); c->left = 0;
+            if (c->right->isConstant) {
+                double data[2];
+                switch (c->right->evaluate(data, 2)) {
+                    case 2:
+                        mStride = data[1];
+                        // fall through
+                    case 1:
+                        mLength = data[0];
+                        break;
+                        
+                    default:
+                        CfdgError::Error(c->right->where, "Error evaluating array arguments");
+                        break;
+                }
+            } else {
+                CfdgError::Error(c->right->where, "Array arguments must be constant");
+            }
+        } else if (args->isConstant) {
+            double data[3];
+            switch (args->evaluate(data, 3)) {
+                case 3:
+                    mStride = data[2];
+                    // fall through
+                case 2:
+                    mLength = data[1];
+                    // fall through
+                case 1:
+                    mArgs = new ASTreal(data[0], args->where);
+                    mArgs->isLocal = args->isLocal;
+                    break;
+                    
+                default:
+                    CfdgError::Error(c->right->where, "Error evaluating array arguments");
+                    break;
+            }
+        } else {
+            mArgs = args.release()->simplify();
+        }
+        isConstant = isConstant && mArgs->isConstant;
+        isLocal = isLocal && mArgs->isLocal;
+    }
+
     ASTruleSpecifier::~ASTruleSpecifier()
     {
         delete[] simpleRule;
@@ -734,6 +798,11 @@ namespace AST {
         for (ASTtermArray::iterator it = modExp.begin(); it != modExp.end(); ++it)
             delete (*it);
         modExp.clear();
+    }
+    
+    ASTarray::~ASTarray()
+    {
+        delete mArgs;
     }
     
     static void
@@ -1292,6 +1361,42 @@ namespace AST {
         return -1;
     }
     
+    int
+    ASTarray::evaluate(double* res, int length, Renderer* rti) const
+    {
+        if (mType != NumericType) {
+            CfdgError::Error(where, "Non-numeric/flag expression in a numeric/flag context");
+            return -1;
+        }
+        if (res && (length < mLength))
+            return -1;
+        
+        if (res) {
+            if (rti == NULL && !isConstant) throw DeferUntilRuntime();
+            
+            double i;
+            if (mArgs->evaluate(&i, 1, rti) != 1) {
+                CfdgError::Error(mArgs->where, "Cannot evaluate array index");
+                return -1;
+            }
+            int index = (int)i;
+            if ((mLength - 1) * mStride + index >= mCount || index < 0) {
+                CfdgError::Error(where, "array index exceeds bounds");
+                return -1;
+            }
+            
+            const double* source = &mData[0];
+            if (!mConstData)
+                source = (mStackIndex < 0) ? &(rti->mLogicalStackTop[mStackIndex].number) :
+                                             &(rti->mCFstack[mStackIndex].number);
+            
+            for (int i = 0; i < mLength; ++i)
+                res[i] = source[i * mStride + index];
+        }
+        
+        return mLength;
+    }
+    
     void
     ASTselect::evaluate(Modification& m, int* p, double* width, 
                         bool justCheck, int& seedIndex, 
@@ -1840,6 +1945,12 @@ namespace AST {
         ent.append(ASTmodTerm::Entropies[modType]);
     }
     
+    void
+    ASTarray::entropy(std::string& e) const
+    {
+        e.append(entString);
+    }
+    
     ASTexpression*
     ASTfunction::simplify()
     {
@@ -1938,6 +2049,34 @@ namespace AST {
             args = args->simplify();
         }
         return this;
+    }
+    
+    ASTexpression*
+    ASTarray::simplify()
+    {
+        if (!isConstant) return this;
+        
+        double i;
+        if (mArgs->evaluate(&i, 1) != 1) {
+            CfdgError::Error(mArgs->where, "Cannot evaluate array index");
+            return this;
+        }
+        int index = (int)i;
+        if ((mLength - 1) * mStride + index >= mCount || index < 0) {
+            CfdgError::Error(where, "Array index exceeds bounds");
+            return this;
+        }
+        
+        // Create a new cons-tree based on the evaluated variable's expression
+        ASTexpression* top = new ASTreal(mData[(mLength-1) * mStride + index], where);
+        static_cast<ASTreal*>(top)->text = entString;                // use variable name for entropy
+        for (int i = mLength - 2; i >= 0; --i) {
+            ASTreal* left = new ASTreal(mData[i * mStride + index], where);
+            top = new ASTcons(left, top);
+        }
+        top->isNatural = isNatural;
+        delete this;
+        return top;
     }
 
     void
