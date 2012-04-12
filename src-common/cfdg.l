@@ -85,7 +85,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
                                                                 
     int c;
     
-    while ((c = yyinput()) != 0) {
+    while ((c = yyinput()) != EOF) {
         if (c == '\n') break;
     }
 
@@ -98,7 +98,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
     bool lastCharWasAStar = false;
  
     // stop when we get to */ or end-of-file
-    while ((c = yyinput()) != 0) {
+    while ((c = yyinput()) != EOF) {
         if (c == '\n') 
             yylloc->lines(1);
         else 
@@ -110,8 +110,8 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
         lastCharWasAStar = c == '*';
     }
     
-    if (c == 0) {
-        LexerError("end-of-file in C-style comment");
+    if (c == EOF) {
+        LexerError("end-of-file in block comment");
         return token::BADEOF;
     }
     
@@ -240,8 +240,11 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
         yylval->string->resize(pos);
         (yylloc->end) += pos - yyleng;
         yyless(pos);
+        return token::USER_STRING;
     }
-    return token::USER_STRING;
+    int c = yyinput();
+    if (c != EOF) unput(c);
+    return c == '[' ? token::USER_ARRAYNAME : token::USER_STRING;
 }
 {RATIONAL}  {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 {FLOAT}     {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}

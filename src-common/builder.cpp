@@ -469,9 +469,9 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
         assert(bound->mDefinition);
         switch (bound->mType) {
             case ASTexpression::NumericType: {
-                double data[8];
+                double data[9];
                 bool natural = bound->isNatural;
-                int valCount = bound->mDefinition->mExpression->evaluate(data, 8);
+                int valCount = bound->mDefinition->mExpression->evaluate(data, 9);
                 if (valCount != bound->mTuplesize)
                     CfdgError::Error(loc, "Unexpected compile error.");                   // this also shouldn't happen
                 
@@ -517,6 +517,26 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
     }
     CfdgError::Error(loc, "Cannot determine what to do with this variable.");
     return new ASTexpression(loc);
+}
+
+ASTexpression*
+Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
+                   const yy::location& argsLoc)
+{
+    if (strncmp(name->c_str(), "CF::", 4) == 0)
+        CfdgError::Error(nameLoc, "Configuration parameter names are reserved");
+    int varNum = StringToShape(*name, nameLoc, true);
+    bool isGlobal = false;
+    const ASTparameter* bound = findExpression(varNum, isGlobal);
+    if (bound == 0) {
+        CfdgError::Error(nameLoc, "Cannot find variable or parameter with this name");
+        return args.release();
+    } else if (bound->mType != ASTexpression::NumericType) {
+        CfdgError::Error(nameLoc, "This is not a numeric vector");
+        return args.release();
+    }
+    return new ASTarray(bound, args, isGlobal ? 0 : mLocalStackDepth,
+                        nameLoc + argsLoc, *name);
 }
 
 ASTruleSpecifier*  
