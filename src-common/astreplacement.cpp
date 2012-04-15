@@ -130,35 +130,32 @@ namespace AST {
             
             mLoopArgs = args.release()->simplify();
             
-            ASTexpression::iterator argi = mLoopArgs->begin();
-            for (int i = 0; argi != mLoopArgs->end(); ++i, ++argi) {
-                if (argi->evaluate(0, 0) != 1) {
-                    bodyNatural = finallyNatural = false;
-                    break;
-                }
-                
-                switch (i) {
+            for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
+                int num = (*mLoopArgs)[i]->evaluate(0, 0);
+                switch (count) {
                     case 0:
-                        if (argi->isNatural) {
+                        if ((*mLoopArgs)[i]->isNatural)
                             bodyNatural = finallyNatural = true;
-                        }
                         break;
                     case 2: {
                         // Special case: if 1st & 2nd args are natural and 3rd
                         // is -1 then that is ok
                         double step;
-                        if (argi->isConstant && argi->evaluate(&step, 1) == 1 &&
-                            step == -1)
+                        if ((*mLoopArgs)[i]->isConstant && 
+                            (*mLoopArgs)[i]->evaluate(&step, 1) == 1 &&
+                            step == -1.0)
                         {
                             break;
                         }
                     }   // else fall through
-                    default:
-                        if (!(argi->isNatural)) {
+                    case 1:
+                        if (!((*mLoopArgs)[i]->isNatural))
                             bodyNatural = finallyNatural = false;
-                        }
+                        break;
+                    default:
                         break;
                 }
+                count += num;
             }
         }
         
@@ -337,38 +334,47 @@ namespace AST {
         
         if (params.get() == NULL)
             return;
-        
-        ASTcons* c = dynamic_cast<ASTcons*>(params.get());
-        
-        if (params->current()->mType == ASTexpression::NumericType) {
-            if (mChildChange.flags & CF_FILL)
-                CfdgError::Warning(params->current()->where, "Stroke width only useful for STROKE commands");
-            if (!params->current()->isConstant ||
-                params->current()->evaluate(&(mChildChange.strokeWidth), 1) != 1)
-            {
-                ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, params->current()->simplify(), loc);
-                mChildChange.modExp.push_back(w);
-                if (c) {
-                    c->left = NULL;
-                } else {
-                    params.release();
-                    return;
-                }
-            } else {
-                if (!c)
-                    return;     // deleting params
+
+        exp_ptr stroke, flags;
+        if (params->size() == 2) {
+            stroke.reset((*params)[0]);
+            flags.reset((*params)[1]);
+            if (!params->release()) {
+                CfdgError::Error(params->where, "Path commands can have zero, one, or two parameters");
+            }
+        } else {
+            switch (params->mType) {
+                case ASTexpression::NumericType:
+                    stroke = params;
+                    break;
+                case ASTexpression::FlagType:
+                    flags = params;
+                    break;
+                default:
+                    CfdgError::Error(params->where, "Bad expression type in path command parameters");
+                    break;
             }
         }
         
-        if (c) {
-            params.release();
-            params.reset(c->right);
-            c->right = NULL;
-            delete c; c = NULL;
+        if (stroke.get()) {
+            if (mChildChange.flags & CF_FILL)
+                CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
+            if (stroke->mType != ASTexpression::NumericType || stroke->evaluate(0, 0) != 1) {
+                CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
+            } else if (!stroke->isConstant ||
+                       stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
+            {
+                ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, stroke.release()->simplify(), loc);
+                mChildChange.modExp.push_back(w);
+            }
         }
         
-        if (params->mType == ASTexpression::FlagType) {
-            ASTreal* r = dynamic_cast<ASTreal*> (params.get());
+        if (flags.get()) {
+            if (flags->mType != ASTexpression::FlagType) {
+                CfdgError::Error(flags->where, "Unexpected argument in path command");
+                return;
+            }
+            ASTreal* r = dynamic_cast<ASTreal*> (flags.get());
             if (r) {
                 int f = (int)(r->value);
                 if (f & CF_JOIN_PRESENT)
@@ -377,12 +383,10 @@ namespace AST {
                     mChildChange.flags &= ~CF_CAP_MASK;
                 mChildChange.flags |= f;
                 if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
-                    CfdgError::Warning(params->where, "Stroke flags only useful for STROKE commands");
+                    CfdgError::Warning(flags->where, "Stroke flags only useful for STROKE commands");
             } else {
-                CfdgError::Error(params->where, "Flag expressions must be constant");
+                CfdgError::Error(flags->where, "Flag expressions must be constant");
             }
-        } else {
-            CfdgError::Error(params->where, "Unexpected argument in path command");
         }
     }
     
@@ -950,25 +954,27 @@ namespace AST {
             mArgCount = mArguments->evaluate(0, 0);
         }
 
-        for (ASTexpression* temp = mArguments; temp; temp = temp->next())
-            switch (temp->current()->mType) {
+        for (int i = 0; mArguments && i < mArguments->size(); ++i) {
+            ASTexpression* temp = (*mArguments)[i];
+            switch (temp->mType) {
                 case ASTexpression::FlagType: {
-                    if (temp->next())
-                        CfdgError::Error(temp->current()->where, "Flags must be the last argument");
-                    ASTreal* rf = dynamic_cast<ASTreal*> (temp->current());
+                    if (i != mArguments->size() - 1)
+                        CfdgError::Error(temp->where, "Flags must be the last argument");
+                    ASTreal* rf = dynamic_cast<ASTreal*> (temp);
                     if (rf)
                         mFlags = (int)(rf->value);
                     else
-                        CfdgError::Error(temp->current()->where, "Flag expressions must be constant");
+                        CfdgError::Error(temp->where, "Flag expressions must be constant");
                     --mArgCount;
                     break;
                 }
                 case ASTexpression::NumericType:
                     break;
                 default:
-                    CfdgError::Error(temp->current()->where, "Path operation arguments must be numeric expressions or flags");
+                    CfdgError::Error(temp->where, "Path operation arguments must be numeric expressions or flags");
                     break;
             }
+        }
         
         switch (mPathOp) {
             case LINETO:
@@ -1018,9 +1024,7 @@ namespace AST {
         if (sz != 2)
             CfdgError::Error(loc, "Error parsing path operation arguments");
         
-        if (ay.get())
-            return new ASTcons(ax.release(), ay.release());
-        return ax.release();
+        return ax.release()->append(ay.release());
     }
     
     static void
@@ -1136,7 +1140,7 @@ namespace AST {
                     if (angle->evaluate(0, 0) != 1)
                         CfdgError(angle->where, "Arc angle must be a scalar value");
                     
-                    mArguments = new ASTcons(xy, new ASTcons(rxy, angle));
+                    mArguments = xy->append(rxy)->append(angle);
                 } else {
                     ASTexpression* radius = ar.release();
                     if (!radius)
@@ -1145,7 +1149,7 @@ namespace AST {
                     if (radius->evaluate(0, 0) != 1)
                         CfdgError::Error(radius->where, "Arc radius must be a scalar value");
                     
-                    mArguments = new ASTcons(xy, radius);
+                    mArguments = xy->append(radius);
                 } 
                 break;
             case CURVETO:
@@ -1164,9 +1168,7 @@ namespace AST {
                     xy2 = parseXY(ax2, ay2, 0.0, mLocation);
                 }
                 
-                if (xy1 || xy2)
-                    xy1 = ASTcons::Cons(xy1, xy2);
-                mArguments = ASTcons::Cons(xy, xy1);
+                mArguments = xy->append(xy1)->append(xy2);
                 break;
             }
             case CLOSEPOLY:

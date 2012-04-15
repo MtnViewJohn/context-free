@@ -344,10 +344,10 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 
 static void
 EvalArgs(Renderer* rti, const StackType* parent, 
-         iterator& dest, AST::ASTexpression::const_iterator& arg,
-         AST::ASTexpression::const_iterator& arg_end)
+         iterator& dest, const AST::ASTexpression* arguments)
 {
-    while (arg != arg_end) {
+    for (int i = 0; i < arguments->size(); ++i, ++dest) {
+        const AST::ASTexpression* arg = (*arguments)[i];
         switch (arg->mType) {
             case AST::ASTexpression::NumericType: {
                 arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
@@ -368,9 +368,6 @@ EvalArgs(Renderer* rti, const StackType* parent,
             default:
                 break;
         }
-        
-        ++arg;
-        ++dest;
     }
 }
 
@@ -380,9 +377,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const StackType* parent)
 {
     iterator dest = iterator::begin(this);
-    AST::ASTexpression::const_iterator arg = arguments->begin(),
-                                       arg_end = arguments->end();
-    EvalArgs(rti, parent, dest, arg, arg_end);
+    EvalArgs(rti, parent, dest, arguments);
 }
 
 // Evaluate arguments on the stack
@@ -391,8 +386,6 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const std::vector<AST::ASTparameter>* p)
 {
     iterator dest = iterator::begin(this, p);
-    AST::ASTexpression::const_iterator arg = arguments->begin(),
-                                       arg_end = arguments->end();
-    EvalArgs(rti, NULL, dest, arg, arg_end);
+    EvalArgs(rti, NULL, dest, arguments);
 }
 
