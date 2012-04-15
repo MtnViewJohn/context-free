@@ -354,13 +354,12 @@ processDihedral(CFDG::SymmList& syms, double order, double x, double y,
 // appropriate affine transforms to the SymmList. Avoid adding the identity
 // transform if it is already present in the SymmList.
 static void
-processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile,
+processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool tiled,
                 std::vector<double>& data, const yy::location& where)
 {
     if (data.empty()) return;
     AST::FlagTypes t = (AST::FlagTypes)((int)data[0]);
     bool frieze = (tile.sx != 0.0 || tile.sy != 0.0) && (tile.sx * tile.sy == 0.0);
-    bool tiled = (tile.sx != 0.0) && (tile.sy != 0.0);
     bool rhombic = tiled && ((fabs(tile.shy) <= 0.0000001 && fabs(tile.shx/tile.sx - 0.5) < 0.0000001) ||
                              (fabs(tile.shx) <= 0.0000001 && fabs(tile.shy/tile.sy - 0.5) < 0.0000001));
     bool hexagonal = false;
@@ -851,12 +850,13 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
 
     std::vector<double> symmSpec;
     yy::location where;
-    for (size_t i = 0; i < e->size(); ++i)
+    bool tiled = isTiled();
+    for (int i = 0; i < e->size(); ++i)
     {
         const ASTexpression* cit = (*e)[i];
         switch (cit->mType) {
             case ASTexpression::FlagType:
-                processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
+                processSymmSpec(syms, mTileMod.m_transform, tiled, symmSpec, where);
                 where = cit->where;
             case ASTexpression::NumericType:
                 if (symmSpec.empty() && cit->mType != ASTexpression::FlagType)
@@ -867,7 +867,7 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
                     CfdgError::Error(cit->where, "Could not evaluate this");
                 break;
             case ASTexpression::ModType: {
-                processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
+                processSymmSpec(syms, mTileMod.m_transform, tiled, symmSpec, where);
                 Modification mod;
                 int dummy;
                 cit->evaluate(mod, 0, 0, false, dummy, r);
@@ -879,7 +879,7 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
                 break;
         }
     }
-    processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
+    processSymmSpec(syms, mTileMod.m_transform, tiled, symmSpec, where);
 }
 
 bool
