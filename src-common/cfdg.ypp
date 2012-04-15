@@ -1182,7 +1182,7 @@ adjustment:
         
 explist:
         explist exp {
-            $$ = ASTcons::Cons($1, $2);
+            $$ = ASTexpression::Append($1, $2);
         }
         | 
         exp { 
@@ -1204,12 +1204,12 @@ exp:
         '+' exp             { $$ = new ASToperator('P', $2, NULL);; }
         |
         exp RANGEOP exp {
-            exp_ptr pair(new ASTcons($1, $3));
+            exp_ptr pair($1->append($3));
             $$ = new ASTfunction("rand", pair, driver.mSeed, @2, @$);
         }
         |
         exp PLUSMINUSOP exp {
-            exp_ptr pair(new ASTcons($1, $3));
+            exp_ptr pair($1->append($3));
             $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @2, @$);
         }
         ;
@@ -1222,16 +1222,16 @@ exp2:
         exp2func             { $$ = $1; }
         |
         exp2 RANGEOP exp2 {
-            exp_ptr pair(new ASTcons($1, $3));
+            exp_ptr pair($1->append($3));
             $$ = new ASTfunction("rand", pair, driver.mSeed, @2, @$);
         }
         |
         exp2 PLUSMINUSOP exp2 {
-            exp_ptr pair(new ASTcons($1, $3));
+            exp_ptr pair($1->append($3));
             $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @2, @$);
         }
         | 
-        exp2 ',' exp2        { $$ = new ASTcons($1, $3);   }
+        exp2 ',' exp2        { $$ = $1->append($3);   }
         | 
         exp2 '+' exp2        { $$ = new ASToperator('+', $1, $3); }
         | 

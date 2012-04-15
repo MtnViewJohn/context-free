@@ -135,13 +135,13 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
                     ASTpathOp* op = new ASTpathOp(move, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
-                                        new ASTcons(new ASTreal(0.0, CfdgError::Default), 
-                                                    new ASTreal(0.5, CfdgError::Default))));
+                                        new ASTreal(0.0, CfdgError::Default)));
+                    a.get()->append(new ASTreal(0.5, CfdgError::Default));
                     op = new ASTpathOp(arc, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
-                                        new ASTcons(new ASTreal(0.0, CfdgError::Default), 
-                                                    new ASTreal(0.5, CfdgError::Default))));
+                                        new ASTreal(0.0, CfdgError::Default)));
+                    a.get()->append(new ASTreal(0.5, CfdgError::Default));
                     op = new ASTpathOp(arc, a, CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                 }
@@ -475,17 +475,17 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 if (valCount != bound->mTuplesize)
                     CfdgError::Error(loc, "Unexpected compile error.");                   // this also shouldn't happen
                 
-                // Create a new cons-tree based on the evaluated variable's expression
-                ASTexpression* top = new ASTreal(data[valCount - 1], 
-                                                 bound->mDefinition->mExpression->where);
-                static_cast<ASTreal*>(top)->text = name;                // use variable name for entropy
-                for (int i = valCount - 2; i >= 0; --i) {
-                    ASTreal* left = new ASTreal(data[i], 
+                // Create a new cons-list based on the evaluated variable's expression
+                ASTreal* top = new ASTreal(data[0], bound->mDefinition->mExpression->where);
+                top->text = name;                // use variable name for entropy
+                ASTexpression* list = top;
+                for (int i = 2; i < valCount; ++i) {
+                    ASTreal* next = new ASTreal(data[i], 
                                                 bound->mDefinition->mExpression->where);
-                    top = new ASTcons(left, top);
+                    list = list->append(next);
                 }
-                top->isNatural = natural;
-                return top;
+                list->isNatural = natural;
+                return list;
             }
             case ASTexpression::ModType:
                 return new ASTmodification(bound->mDefinition->mChildChange, loc);
@@ -590,7 +590,7 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
         ASTmodTerm* last = dest.back();
         if (last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
-            last->args = new ASTcons(last->args, t->args);
+            last->args = last->args->append(t->args);
             t->args = NULL;
             return;     // delete ASTmodTerm t
         }
@@ -601,6 +601,9 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         return;
     }
     
+    // Try to split the XYZ term into an XY term and a Z term. Drop the XY term
+    // if it is the identity. First try an all-constant route, then try to tease
+    // apart the arguments.
     double d[3];
     if (t->args->isConstant && t->args->evaluate(d, 3) == 3) {
         delete t->args;
@@ -617,31 +620,36 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         return;
     }
     
-    ASTexpression* xyargs = t->args->current();
-    ASTexpression* zargs = t->args->next();
-    if (xyargs && xyargs->evaluate(0, 0) == 2 && 
-        zargs  && zargs->evaluate(0, 0) == 1)
-    {
-        ASTcons* c = dynamic_cast<ASTcons*>(t->args);
-        assert(c);
-        t->args = xyargs;
-        
-        ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
-                                                                         ASTmodTerm::z;
-        ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, t->where);
-        
-        double d[2];
-        if (t->modType != ASTmodTerm::size || !xyargs->isConstant || 
-            xyargs->evaluate(d, 2) != 2 || 
-            d[0] != 1.0 || d[1] != 1.0)
-        {
-            // Check if xy part is the identity transform and only save it if it is not
-            dest.push_back(t.release());
+    if (t->args->size() > 1) {
+        ASTexpression* xyargs = 0;
+        int i = 0;
+        for (; i < t->args->size(); ++i) {
+            xyargs = ASTexpression::Append(xyargs, (*t->args)[i]);
+            if (xyargs->evaluate(0, 0) >= 2)
+                break;
         }
-        dest.push_back(zmod);
-        c->left = c->right = NULL;
-        delete c;
-        return;
+        if (xyargs && xyargs->evaluate(0, 0) == 2 && i == t->args->size() - 1) {
+            // We have successfully split the 3-tuple into a 2-tuple and a scalar
+            ASTexpression* zargs = (*t->args)[i];
+            t->args->release();
+            delete t->args;
+            
+            t->args = xyargs;
+            
+            ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
+                                                                             ASTmodTerm::z;
+            ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, t->where);
+            
+            double d[2];
+            if (t->modType != ASTmodTerm::size || !xyargs->isConstant || 
+                xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
+            {
+                // Check if xy part is the identity transform and only save it if it is not
+                dest.push_back(t.release());
+            }
+            dest.push_back(zmod);
+            return;
+        }
     }
     
     t->modType = t->modType == ASTmodTerm::size ? ASTmodTerm::sizexyz :
@@ -700,7 +708,7 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     if (bound) {
         if (!consAllowed)
             error(nameLoc + argsLoc, "Cannot bind expression to variable/parameter");
-        return new ASTcons(MakeVariable(*name, nameLoc), args.release());
+        return MakeVariable(*name, nameLoc)->append(args.release());
     }
     
     if (*name == "select")
@@ -720,10 +728,11 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
             return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
                                         m_CFDG->getShapeParams(mCurrentShape));
         
-        if (consAllowed)
-            return new ASTcons(new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
-                                                    p, m_CFDG->getShapeParams(mCurrentShape)), 
-                               args.release());
+        if (consAllowed) {
+            ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
+                                                       p, m_CFDG->getShapeParams(mCurrentShape));
+            return r->append(args.release());
+        }
         error(nameLoc + argsLoc, "Shape takes no arguments");
     }
     
@@ -750,6 +759,7 @@ Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
         std::string ent;
         (*it)->entropy(ent);
         mod->addEntropy(ent);
+        *it = static_cast<ASTmodTerm*>((*it)->simplify());
     }
     if (canonical)
         mod->makeCanonical();

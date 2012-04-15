@@ -252,35 +252,42 @@ namespace AST {
             CfdgError::Error(where, "Arguments are expected.");
             return -1;
         }
-        bool justCount = args == NULL || args->mType == ASTexpression::NoType;
+        bool justCount = args->mType == ASTexpression::NoType;
         
-        int count = 0;
-        ASTexpression::const_iterator arg = args->begin(), arg_end = args->end();
+        int count = 0, size = 0;
+        int expect = args->size();
         ASTparameters::const_iterator param_it = types->begin(), 
-        param_end = types->end();
+                                      param_end = types->end();
         
-        while (param_it != param_end) {
-            if (!justCount && arg == arg_end) {
-                CfdgError::Error(args->where, args ? "Not enough arguments" : "arguments expected");
+        for (; param_it != param_end; size += param_it->mTuplesize, 
+                                      ++count, ++param_it)
+        {
+            if (justCount) continue;
+            
+            if (count >= expect) {
+                CfdgError::Error(args->where, "Not enough arguments");
                 return -1;
             }
-            if (!justCount && param_it->mType != arg->mType) {
+            
+            const ASTexpression* arg = (*args)[count];
+            
+            if (param_it->mType != arg->mType) {
                 CfdgError::Error(arg->where, "Incorrect argument type.");
                 CfdgError::Error(param_it->mLocation, "This is the expected type.");
                 return -1;
             }
-            if (!justCount && param_it->isNatural && !arg->isNatural && !ASTparameter::Impure) {
+            if (param_it->isNatural && !arg->isNatural && !ASTparameter::Impure) {
                 CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement");
                 return -1;
             }
-            while (!justCount && param_it->mType == ASTexpression::NumericType &&
+            while (param_it->mType == ASTexpression::NumericType &&
                    !param_it->isNatural && !ASTparameter::Impure)
             {
                 if (arg->isLocal) break;
-                const ASTvariable* v = dynamic_cast<const ASTvariable*> (&*arg);
+                const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
                 if (v && v->isParameter)
                     break;
-                const ASTfunction* f = dynamic_cast<const ASTfunction*>(&*arg);
+                const ASTfunction* f = dynamic_cast<const ASTfunction*>(arg);
                 if (f && (f->functype >= ASTfunction::Rand && f->functype <= ASTfunction::RandInt) &&
                     f->arguments && f->arguments->isConstant) 
                 {
@@ -289,14 +296,10 @@ namespace AST {
                 CfdgError::Error(arg->where, "this expression does not satisfy the number parameter requirement");
                 return -1;
             }
-            count += param_it->mTuplesize;
-            
-            ++arg;
-            ++param_it;
         }
         
-        if (arg != arg_end) {
-            CfdgError::Error(arg._Ptr->where, "Too many arguments.");
+        if (count < expect) {
+            CfdgError::Error((*args)[count]->where, "Too many arguments.");
             return -1;
         }
         
@@ -317,7 +320,7 @@ namespace AST {
             }
         }
         
-        return count;
+        return size;
     }
     
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
@@ -565,16 +568,16 @@ namespace AST {
             return NULL;
         }
         
-        return choices[getIndex(rti)]->evalArgs(rti, parent);
+        return (*arguments)[getIndex(rti)]->evalArgs(rti, parent);
     }
     
-    ASTexpression*
-    ASTcons::Cons(ASTexpression* l, ASTexpression* r)
+    ASTcons::ASTcons(ASTexpression* l, ASTexpression* r)
+    : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
     {
-        if (l && r) return new ASTcons(l, r);
-        return l ? l : r;
-    }
-    
+        children.push_back(l);
+        append(r);
+    };
+
     ASTexpression*
     ASToperator::Op(char op, ASTexpression* l, ASTexpression* r)
     {
@@ -642,63 +645,55 @@ namespace AST {
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
-    : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
-      indexCache(0), arguments(NULL), ifSelect(asIf)
+    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(NULL), ifSelect(asIf)
     {
-        isNatural = args->mType == NumericType;
-        isLocal = args->isLocal;
+        isConstant = false;
         args->entropy(ent);
         ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
         
         arguments = args.release()->simplify();
-        ASTexpression::iterator arg = arguments->begin(), arg_end = arguments->end();
         
-        if (arg == arg_end) {
+        if (arguments->size() < 3) {
             CfdgError::Error(loc, "select()/if() function requires arguments");
             return;
         }
         
-        if (arg->mType != NumericType || arg->evaluate(0, 0) != 1) {
-            CfdgError::Error(arg->where, "select() selector must be a numeric 1-tuple");
+        if ((*arguments)[0]->mType != NumericType || 
+            (*arguments)[0]->evaluate(0, 0) != 1)
+        {
+            CfdgError::Error((*arguments)[0]->where, "is()/select() selector must be a numeric scalar");
             return;
         }
         
-        selector = &*arg;
-        ++arg;
+        mType = (*arguments)[1]->mType;
+        isLocal = (*arguments)[0]->isLocal && (*arguments)[1]->isLocal;
+        isNatural = (*arguments)[1]->isNatural;
+        tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(0, 0) : 1;
+        if (tupleSize > 1) isNatural = false;
+        if (tupleSize == -1)
+            CfdgError::Error((*arguments)[1]->where, "Error determining tuple size");
         
-        bool firstOne = true;
-        while (arg != arg_end) {
-            choices.push_back(&*arg);
-            
-            if (firstOne) {
-                mType = arg->mType;
-                tupleSize = (mType == NumericType) ? arg->evaluate(0, 0) : 1;
-                if (tupleSize > 1) isNatural = false;
-                firstOne = false;
-                if (tupleSize == -1)
-                    CfdgError::Error(arg->where, "Error determining tuple size");
-            } else {
-                if (mType != arg->mType)
-                    CfdgError::Error(arg->where, "select()/if() choices must be of same type");
-                else if (mType == NumericType && tupleSize != -1 && 
-                         arg->evaluate(0, 0) != tupleSize)
-                    CfdgError::Error(arg->where, "select()/if() choices must be of same length");
+        for (int i = 2; i < arguments->size(); ++i) {
+            if (mType != (*arguments)[i]->mType) {
+                CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same type");
+            } else if (mType == NumericType && tupleSize != -1 && 
+                     (*arguments)[i]->evaluate(0, 0) != tupleSize)
+            {
+                CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
             }
-            isNatural = isNatural && arg->isNatural;
-            ++arg;
+            isLocal = isLocal && (*arguments)[i]->isLocal;
+            isNatural = isLocal && (*arguments)[i]->isNatural;
         }
 
-        if (ifSelect && choices.size() != 2) {
+        if (ifSelect && arguments->size() != 3) {
             CfdgError::Error(loc, "if() function requires two arguments");
-        } else if (firstOne) {
-            CfdgError::Error(loc, "select() function requires at least two arguments");
         }
         
-        if (selector->isConstant) {
+        if ((*arguments)[0]->isConstant) {
             indexCache = getIndex();
-            selector = NULL;
-            isConstant = choices[getIndex()]->isConstant;
-            isLocal = choices[getIndex()]->isLocal;
+            isConstant = (*arguments)[indexCache]->isConstant;
+            isLocal = (*arguments)[indexCache]->isLocal;
+            isNatural = (*arguments)[indexCache]->isNatural;
         }
     }
     
@@ -733,27 +728,39 @@ namespace AST {
         isLocal = bound->isLocal;
         args->entropy(entString);
         if (mConstData) {
-            bound->mDefinition->mExpression->evaluate(mData, 9);
+            mConstData = bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
         }
-        ASTcons* c = dynamic_cast<ASTcons*>(args.get());
-        if (c) {
-            mArgs = c->left->simplify(); c->left = 0;
-            if (c->right->isConstant) {
-                double data[2];
-                switch (c->right->evaluate(data, 2)) {
-                    case 2:
-                        mStride = data[1];
-                        // fall through
-                    case 1:
-                        mLength = data[0];
-                        break;
-                        
-                    default:
-                        CfdgError::Error(c->right->where, "Error evaluating array arguments");
-                        break;
+        if ((*args)[0]->evaluate(0, 0) == 1) {
+            mArgs = (*args)[0]->simplify();
+            if (!args->release(0)) {
+                args.release();
+                args.reset(new ASTexpression(mArgs->where)); // replace with dummy
+            }
+            double data[2];
+            int count = 0;
+            for (int i = 1; i < args->size(); ++i) {
+                if (!(*args)[i]->isConstant) {
+                    CfdgError::Error((*args)[i]->where, "Array argument is not constant");
+                    break;
                 }
-            } else {
-                CfdgError::Error(c->right->where, "Array arguments must be constant");
+                int num = (*args)[i]->evaluate(data + count, 2 - count);
+                if (num <= 0) {
+                    CfdgError::Error((*args)[i]->where, "Error evaluating array arguments");
+                    break;
+                }
+                count += num;
+            }
+            switch (count) {
+                case 2:
+                    mStride = data[1];  // fall through
+                case 1:
+                    mLength = data[0];  // fall through
+                case 0:
+                    break;
+                    
+                default:
+                    CfdgError::Error(args->where, "Unexpected number of array arguments");
+                    break;
             }
         } else if (args->isConstant) {
             double data[3];
@@ -770,11 +777,13 @@ namespace AST {
                     break;
                     
                 default:
-                    CfdgError::Error(c->right->where, "Error evaluating array arguments");
+                    CfdgError::Error(args->where, "Error evaluating array arguments");
                     break;
             }
         } else {
             mArgs = args.release()->simplify();
+            if (mArgs->evaluate(0, 0) != 1)
+                CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
         }
         isConstant = isConstant && mArgs->isConstant;
         isLocal = isLocal && mArgs->isLocal;
@@ -786,10 +795,17 @@ namespace AST {
         delete arguments;
     };
     
+    ASTcons::~ASTcons()
+    {
+        ASTexpArray::iterator it = children.begin(), eit = children.end();
+        for (; it != eit; ++it) {
+            delete *it;
+        }
+        children.clear();
+    }
+    
     ASTselect::~ASTselect()
     {
-        selector = NULL;
-        choices.clear();
         delete arguments;
     }
     
@@ -896,7 +912,7 @@ namespace AST {
             
             // If x and y are provided then merge them into a single (x,y) modification
             if (x.get() && y.get() && x->args->evaluate(0, 0) == 1 && y->args->evaluate(0, 0) == 1) {
-                x->args = new ASTcons(x->args, y->args);
+                x->args = x->args->append(y->args);
                 y->args = 0;
                 y.reset();
             }
@@ -918,6 +934,87 @@ namespace AST {
         }
     }
     
+    ASTexpression*
+    ASTexpression::Append(ASTexpression* l, ASTexpression* r)
+    {
+        if (l && r) return l->append(r);
+        return l ? l : r;
+    }
+    
+    ASTexpression*
+    ASTexpression::append(AST::ASTexpression *sib)
+    {
+        return sib ? new ASTcons(this, sib) : this;
+    }
+    
+    ASTexpression*
+    ASTcons::append(AST::ASTexpression *sib)
+    {
+        if (!sib) return this;
+        where = where + sib->where;
+        isConstant = isConstant && sib->isConstant;
+        isNatural = isNatural && sib->isNatural;
+        isLocal = isLocal && sib->isLocal;
+        mType = (expType)(mType | sib->mType);
+        
+        // Cannot insert an ASTcons into children, it will be flattened away.
+        // You must wrap the ASTcons in an ASTparen in order to insert it whole.
+        for (int i = 0; i < sib->size(); ++i)
+            children.push_back((*sib)[i]);
+        if (sib->release())
+            delete sib;
+        return this;
+    }
+    
+    bool
+    ASTcons::release(size_t i)
+    {
+        if (i == SIZE_T_MAX) {
+            children.clear();
+        } else if (i < children.size()) {
+            children[i] = 0;
+        } else {
+            CfdgError::Error(where, "Expression list bounds exceeded");
+        }
+        return true;
+    }
+    
+    ASTexpression*
+    ASTexpression::operator[](size_t i)
+    {
+        if (i)
+            CfdgError::Error(where, "Expression list bounds exceeded");
+        return this;
+    }
+    
+    const ASTexpression*
+    ASTexpression::operator[](size_t i) const
+    {
+        if (i)
+            CfdgError::Error(where, "Expression list bounds exceeded");
+        return this;
+    }
+    
+    ASTexpression*
+    ASTcons::operator[](size_t i)
+    {
+        if (i >= children.size()) {
+            CfdgError::Error(where, "Expression list bounds exceeded");
+            return this;
+        }
+        return children[i];
+    }
+    
+    const ASTexpression*
+    ASTcons::operator[](size_t i) const
+    {
+        if (i >= children.size()) {
+            CfdgError::Error(where, "Expression list bounds exceeded");
+            return this;
+        }
+        return children[i];
+    }
+    
     // Evaluate a cons tree to see how many reals it has and optionally
     // copy them to an array
     int
@@ -927,18 +1024,20 @@ namespace AST {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
             return -1;
         }
-        int leftnum = left->evaluate(res, length, rti);
-        if (leftnum <= 0) 
-            return -1;
         
-        if (res) 
-            res += leftnum;
+        int count = 0;
+        for (size_t i = 0; i < children.size(); ++i) {
+            int num = children[i]->evaluate(res, length, rti);
+            if (num <= 0)
+                return -1;
+            count += num;
+            if (res) {
+                res += num;
+                length -= num;
+            }
+        }
         
-        int rightnum = right ? (right->evaluate(res, length ? length - leftnum : 0, rti)) : 0;
-        if (rightnum <= 0) 
-            return -1;
-        
-        return leftnum + rightnum;
+        return count;
     }
     
     int
@@ -1140,16 +1239,20 @@ namespace AST {
     
     static double MinMax(const ASTexpression* e, Renderer* rti, bool isMin)
     {
-        const ASTcons* c = dynamic_cast<const ASTcons*> (e);
-        if (c) {
-            double l = MinMax(c->left, rti, isMin);
-            double r = MinMax(c->right, rti, isMin);
-            bool leftMin = l < r;
-            return ((isMin && leftMin) || (!isMin && !leftMin)) ? l : r;
+        bool first = true;
+        double res = 0.0;
+        for (int i = 0; i < e->size(); ++i) {
+            double v;
+            if ((*e)[i]->evaluate(&v, 1, rti) != 1)
+                CfdgError::Error((*e)[i]->where, "Error computing min/max here.");
+            if (first) {
+                res = v;
+                continue;
+            }
+            bool leftMin = res < v;
+            res = ((isMin && leftMin) || (!isMin && !leftMin)) ? res : v;
         }
-        double v = 0.0;
-        e->evaluate(&v, 1, rti);
-        return v;
+        return res;
     }
     
     int 
@@ -1327,7 +1430,7 @@ namespace AST {
         if (res == NULL)
             return tupleSize;
         
-        return choices[getIndex(rti)]->evaluate(res, length, rti);
+        return (*arguments)[getIndex(rti)]->evaluate(res, length, rti);
     }
     
     int
@@ -1407,7 +1510,7 @@ namespace AST {
             return;
         }
         
-        choices[getIndex(rti)]->evaluate(m, p, width, justCheck, seedIndex, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, p, width, justCheck, seedIndex, rti);
     }
     
     void
@@ -1431,8 +1534,8 @@ namespace AST {
                       bool justCheck, int& seedIndex, 
                       Renderer* rti) const
     {
-        left->evaluate(m, p, width, justCheck, seedIndex, rti);
-        right->evaluate(m, p, width, justCheck, seedIndex, rti);
+        for (size_t i = 0; i < children.size(); ++i)
+            children[i]->evaluate(m, p, width, justCheck, seedIndex, rti);
     }
     
     void
@@ -1841,8 +1944,8 @@ namespace AST {
     void
     ASTcons::entropy(std::string& ent) const
     {
-        left->entropy(ent);
-        if (right) right->entropy(ent);
+        for (size_t i = 0; i < children.size(); ++i)
+            children[i]->entropy(ent);
         ent.append("\xC5\x60\xA5\xC5\xC8\x74");
     }
     
@@ -1976,8 +2079,17 @@ namespace AST {
     ASTexpression*
     ASTselect::simplify()
     {
-        // There is no safe way to simplify a select()
-        return this;
+        if (!indexCache) {
+            arguments = arguments->simplify();
+            return this;
+        }
+        
+        ASTexpression* chosenOne = (*arguments)[indexCache];
+        if (!arguments->release(indexCache))
+            return this;
+        
+        delete this;
+        return chosenOne->simplify();
     }
     
     ASTexpression*
@@ -1991,8 +2103,8 @@ namespace AST {
     ASTexpression*
     ASTcons::simplify()
     {
-        left = left->simplify();
-        if (right) right = right->simplify();
+        for (size_t i = 0; i < children.size(); ++i)
+            children[i] = children[i]->simplify();
         return this;
     }
     
@@ -2067,16 +2179,15 @@ namespace AST {
             return this;
         }
         
-        // Create a new cons-tree based on the evaluated variable's expression
-        ASTexpression* top = new ASTreal(mData[(mLength-1) * mStride + index], where);
-        static_cast<ASTreal*>(top)->text = entString;                // use variable name for entropy
-        for (int i = mLength - 2; i >= 0; --i) {
-            ASTreal* left = new ASTreal(mData[i * mStride + index], where);
-            top = new ASTcons(left, top);
-        }
-        top->isNatural = isNatural;
+        // Create a new cons-list based on the evaluated variable's expression
+        ASTreal* top = new ASTreal(mData[index], where);
+        top->text = entString;                // use variable name for entropy
+        ASTexpression* list = top;
+        for (int i = 1; i < mLength; ++i)
+            list = list->append(new ASTreal(mData[i * mStride + index], where));
+        list->isNatural = isNatural;
         delete this;
-        return top;
+        return list;
     }
 
     void
@@ -2137,24 +2248,22 @@ namespace AST {
     unsigned
     ASTselect::getIndex(Renderer* rti) const
     {
-        if (selector) {
-            double select = 0.0;
-            selector->evaluate(&select, 1, rti);
-            if (ifSelect)
-                indexCache = select ? 0 : 1;
-            else if (select < 0.0)
-                indexCache = 0;
-            else if ((size_t)select >= choices.size())
-                indexCache = (unsigned)choices.size() - 1;
-            else
-                indexCache = (unsigned)select;
-            
+        if (indexCache)
             return indexCache;
-        } else if (weakPointer) {
-            return weakPointer->indexCache;
-        } else {
-            return indexCache;
-        }
+
+        double select = 0.0;
+        (*arguments)[0]->evaluate(&select, 1, rti);
+
+        if (ifSelect)
+            return select ? 1 : 2;
+
+        int i = (int)select + 1;
+
+        if (i <= 0)
+            return 1;
+        if (i > arguments->size())
+            return arguments->size() - 1;
+        return i;
     }
 }
 

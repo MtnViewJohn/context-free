@@ -42,57 +42,7 @@ namespace AST {
         enum expType {
             NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
         };
-        class iterator {
-        public:
-            ASTexpression* _Ptr;
-            
-            iterator() : _Ptr(NULL) {}
-            iterator(ASTexpression* e) : _Ptr(e) {}
-            
-            ASTexpression& operator*() const { return *(_Ptr->current()); }
-            ASTexpression* operator->() const { return _Ptr->current(); }
-            ASTexpression& operator++()
-            {
-                if (_Ptr) {
-                    _Ptr = _Ptr->next();
-                }
-                return *_Ptr;
-            }
-            ASTexpression& operator++(int)
-            {
-                ASTexpression* tmp = _Ptr;
-                ++(*this);
-                return *tmp;
-            }
-            bool operator==(const iterator& o) const { return _Ptr == o._Ptr; }
-            bool operator!=(const iterator& o) const { return _Ptr != o._Ptr; }
-        };
-        class const_iterator {
-        public:
-            const ASTexpression* _Ptr;
-            
-            const_iterator() : _Ptr(NULL) {}
-            const_iterator(const ASTexpression* e) : _Ptr(e) {}
-            
-            const ASTexpression& operator*() const { return *(_Ptr->current()); }
-            const ASTexpression* operator->() const { return _Ptr->current(); }
-            const ASTexpression& operator++()
-            {
-                if (_Ptr) {
-                    _Ptr = _Ptr->next();
-                }
-                return *_Ptr;
-            }
-            const ASTexpression& operator++(int)
-            {
-                const ASTexpression* tmp = _Ptr;
-                ++(*this);
-                return *tmp;
-            }
-            bool operator==(const const_iterator& o) const { return _Ptr == o._Ptr; }
-            bool operator!=(const const_iterator& o) const { return _Ptr != o._Ptr; }
-        };
-        
+
         bool isConstant;
         bool isNatural;
         bool isLocal;
@@ -115,14 +65,12 @@ namespace AST {
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
         
-        virtual ASTexpression* current() { return this; }
-        virtual ASTexpression* next() { return NULL; }
-        virtual const ASTexpression* current() const { return this; }
-        virtual const ASTexpression* next() const { return NULL; }
-        iterator begin() { return iterator(this); }
-        iterator end() { return iterator(); }
-        const_iterator begin() const { return const_iterator(this); }
-        const_iterator end() const { return const_iterator(); }
+        virtual ASTexpression* operator[](size_t i);
+        virtual const ASTexpression* operator[](size_t i) const;
+        virtual int size() const { return 1; }
+        virtual ASTexpression* append(ASTexpression* sib);
+        virtual bool release(size_t i = SIZE_T_MAX) { return false; }
+        static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
     class ASTfunction : public ASTexpression {
     public:
@@ -152,11 +100,8 @@ namespace AST {
     };
     class ASTselect : public ASTexpression {
     public:
-        ASTexpression*   selector;  // weak pointer
-        ASTexpArray      choices;   // weak pointer array
         int              tupleSize;
-        ASTselect*       weakPointer;
-        mutable unsigned indexCache;
+        unsigned         indexCache;
         std::string      ent;
         ASTexpression*   arguments;
         bool             ifSelect;
@@ -172,8 +117,7 @@ namespace AST {
         virtual ASTexpression* simplify();
     private:
         ASTselect(const yy::location& loc)
-        : ASTexpression(loc), selector(NULL), tupleSize(-1), weakPointer(NULL),
-        indexCache(0) {}
+        : ASTexpression(loc), tupleSize(-1), indexCache(0) {}
         unsigned getIndex(Renderer* rti = 0) const;
     };
     class ASTruleSpecifier : public ASTexpression {
@@ -211,14 +155,9 @@ namespace AST {
     };
     class ASTcons : public ASTexpression {
     public:
-        ASTexpression* left;
-        ASTexpression* right;
-        ASTcons(ASTexpression* l, ASTexpression* r)
-        : ASTexpression(l->where + r->where, l->isConstant && r->isConstant, 
-                        l->isNatural && r->isNatural, 
-                        (expType)(l->mType | r->mType)),
-        left(l), right(r) { isLocal = l->isLocal && r->isLocal; };
-        virtual ~ASTcons() { delete left; delete right; }
+        ASTexpArray children;
+        ASTcons(ASTexpression* l, ASTexpression* r);
+        virtual ~ASTcons();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, 
@@ -226,12 +165,12 @@ namespace AST {
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         
-        virtual ASTexpression* current() { return left; }
-        virtual ASTexpression* next() { return right; }
-        virtual const ASTexpression* current() const { return left; }
-        virtual const ASTexpression* next() const { return right; }
+        virtual ASTexpression* operator[](size_t i);
+        virtual const ASTexpression* operator[](size_t i) const;
+        virtual int size() const { return (int)(children.size()); }
+        virtual ASTexpression* append(ASTexpression* sib);
+        virtual bool release(size_t i = SIZE_T_MAX);
         
-        static ASTexpression* Cons(ASTexpression* l, ASTexpression* r);
     private:
         ASTcons() : ASTexpression(CfdgError::Default) {};
     };

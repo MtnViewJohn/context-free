@@ -851,9 +851,9 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
 
     std::vector<double> symmSpec;
     yy::location where;
-    for (ASTexpression::const_iterator cit = e->begin(), eit = e->end(); 
-         cit != eit; ++cit)
+    for (size_t i = 0; i < e->size(); ++i)
     {
+        const ASTexpression* cit = (*e)[i];
         switch (cit->mType) {
             case ASTexpression::FlagType:
                 processSymmSpec(syms, mTileMod.m_transform, symmSpec, where);
