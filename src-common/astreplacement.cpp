@@ -184,6 +184,10 @@ namespace AST {
       mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name),
       isFunction(false)
     {
+        if (mType != ASTexpression::NumericType && 
+            mType != ASTexpression::ModType &&
+            mType != ASTexpression::RuleType)
+            CfdgError::Error(e->where, "Unsupported expression type");
         mTuplesize = e->mType == ASTexpression::NumericType ? e->evaluate(0, 0) : 1;
         mExpression = e.release()->simplify();
         // Set the Modification entropy to parameter name, not its own contents

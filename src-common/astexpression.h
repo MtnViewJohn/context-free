@@ -141,7 +141,8 @@ namespace AST {
         ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name, 
                          const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier& r);
-        explicit ASTruleSpecifier() : ASTexpression(CfdgError::Default), shapeType(-1),
+        explicit ASTruleSpecifier()
+        :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
             argSize(0), argSource(NoArgs), arguments(0),
             simpleRule(0), mStackIndex(0), typeSignature(0) {};
         virtual ~ASTruleSpecifier();
@@ -220,6 +221,10 @@ namespace AST {
         ASTuserFunction(ASTexpression* args, ASTdefine* func, yy::location nameLoc);
         virtual ~ASTuserFunction() { delete arguments; }
         virtual int evaluate(double* , int, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, int* p, double* width, 
+                              bool justCheck, int& seedIndex, 
+                              Renderer* r = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
     };

@@ -280,6 +280,16 @@ namespace AST {
                 CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement");
                 return -1;
             }
+            if (param_it->mType == ASTexpression::NumericType &&
+                param_it->mTuplesize != arg->evaluate(0, 0))
+            {
+                if (param_it->mTuplesize == 1)
+                    CfdgError::Error(arg->where, "This argument should be scalar");
+                else
+                    CfdgError::Error(arg->where, "This argument should be a vector");
+                CfdgError::Error(param_it->mLocation, "This is the expected type.");
+                return -1;
+            }
             while (param_it->mType == ASTexpression::NumericType &&
                    !param_it->isNatural && !ASTparameter::Impure)
             {
@@ -571,6 +581,36 @@ namespace AST {
         return (*arguments)[getIndex(rti)]->evalArgs(rti, parent);
     }
     
+    const StackType*
+    ASTuserFunction::evalArgs(Renderer* rti, const StackType* parent) const
+    {
+        if (mType != RuleType) {
+            CfdgError::Error(where, "Function does not evaluate to a shape");
+            return NULL;
+        }
+        
+        if (!rti)
+            throw DeferUntilRuntime();
+        
+        const StackType* ret = NULL;
+        
+        if (definition->mStackCount) {
+            size_t size = rti->mCFstack.size();
+            if (size + definition->mStackCount > rti->mCFstack.capacity())
+                CfdgError::Error(where, "Maximum stack size exceeded");
+            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
+            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
+            ret = definition->mExpression->evalArgs(rti, parent);
+            rti->mCFstack.resize(size, StackZero);
+            rti->mLogicalStackTop = oldLogicalStackTop;
+        } else {
+            ret = definition->mExpression->evalArgs(rti, parent);
+        }
+        return ret;
+    }
+    
     ASTcons::ASTcons(ASTexpression* l, ASTexpression* r)
     : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
     {
@@ -701,11 +741,10 @@ namespace AST {
                                      yy::location nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
                     (!args || args->isConstant) && func->mExpression->isConstant, 
-                    (!args || args->isNatural) && func->mExpression->isNatural, 
+                    func->mExpression->isNatural, 
                     func->mType),
       definition(func), arguments(args)
     {
-        assert(func);
         assert((args && func->mStackCount) || (!args && !func->mStackCount));
         if (args)
             ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
@@ -1536,6 +1575,35 @@ namespace AST {
     {
         for (size_t i = 0; i < children.size(); ++i)
             children[i]->evaluate(m, p, width, justCheck, seedIndex, rti);
+    }
+    
+    void
+    ASTuserFunction::evaluate(Modification &m, int *p, double *width, 
+                              bool justCheck, int &seedIndex,
+                              Renderer* rti) const
+    {
+        if (mType != ModType) {
+            CfdgError::Error(where, "Function does not evaluate to an adjustment");
+            return;
+        }
+        
+        if (!rti)
+            throw DeferUntilRuntime();
+        
+        if (definition->mStackCount) {
+            size_t size = rti->mCFstack.size();
+            if (size + definition->mStackCount > rti->mCFstack.capacity())
+                CfdgError::Error(where, "Maximum stack size exceeded");
+            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
+            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
+            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, rti);
+            rti->mCFstack.resize(size, StackZero);
+            rti->mLogicalStackTop = oldLogicalStackTop;
+        } else {
+            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, rti);
+        }
     }
     
     void

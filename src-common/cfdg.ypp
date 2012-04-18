@@ -390,13 +390,34 @@ global_definition:
         ;
 
 global_definition_header:
+        SHAPE USER_STRING mandatory_function_parameter_list BECOMES {
+            static const std::string numtype("shape");
+            driver.push_paramDecls(*$2, @$, numtype);
+            $$ = $2;
+        }
+        | 
         USER_STRING function_parameter_list BECOMES {
-            driver.push_paramDecls(*$1, @$);
+            static const std::string numtype("number");
+            driver.push_paramDecls(*$1, @$, numtype);
             $$ = $1;
         }
-        | MODTYPE function_parameter_list BECOMES {
+        | 
+        MODTYPE function_parameter_list BECOMES {
             driver.isFunction = false;
             error(@1, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
+        |
+        USER_STRING USER_STRING mandatory_function_parameter_list BECOMES {
+            str_ptr type($1);
+            driver.push_paramDecls(*$2, @$, *type);
+            $$ = $2;
+        }
+        |
+        USER_STRING MODTYPE function_parameter_list BECOMES {
+            str_ptr type($1);
+            driver.isFunction = false;
+            error(@2, "Reserved keyword: adjustment");
             $$ = 0;
         }
         ;
@@ -607,6 +628,16 @@ parameter:
         SHAPE MODTYPE {
             error(@2, "Reserved keyword: adjustment");
         }
+        |
+        USER_STRING {
+            static const std::string numtype("number");
+            str_ptr var($1);
+            driver.NextParameterDecl(numtype, *var, @1, @1);
+        }
+        |
+        MODTYPE {
+            error(@1, "Reserved keyword: adjustment");
+        }
 		;
 
 buncha_parameters:
@@ -619,27 +650,15 @@ parameter_list:
         |
 		;
 
-function_parameter:
-        USER_STRING {
-            static const std::string numtype("number");
-            str_ptr var($1);
-            driver.NextParameterDecl(numtype, *var, @1, @1);
-        }
-        |
-        MODTYPE {
-            error(@1, "Reserved keyword: adjustment");
-        }
-        ;
-
-buncha_function_parameters:
-        buncha_function_parameters ',' function_parameter
-        | function_parameter
-        ;
-
 function_parameter_list:
-        '(' buncha_function_parameters ')' { driver.isFunction = true; }
+        '(' buncha_parameters ')' { driver.isFunction = true; }
         | '(' ')' { driver.isFunction = true; }
         | { driver.isFunction = false; }
+        ;
+
+mandatory_function_parameter_list:
+        '(' buncha_parameters ')' { driver.isFunction = true; }
+        | '(' ')' { driver.isFunction = true; }
         ;
 
 parameter_spec:
