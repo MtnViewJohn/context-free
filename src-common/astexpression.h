@@ -122,7 +122,7 @@ namespace AST {
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
-        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs, SimpleParentArgs };
+        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs, SimpleParentArgs, ShapeArgs };
         int shapeType;
         int argSize;
         std::string entropyVal;
@@ -140,6 +140,7 @@ namespace AST {
                          int stackIndex);
         ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name, 
                          const yy::location& loc);
+        ASTruleSpecifier(exp_ptr args, const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier& r);
         explicit ASTruleSpecifier()
         :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
