@@ -554,6 +554,19 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
 {
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
+    
+    ASTdefine* def = m_CFDG->findFunction(nameIndex);
+    if (def) {
+        if (def->mType != ASTexpression::RuleType) {
+            CfdgError::Error(loc, "Function does not return a shape");
+        } else {
+            if (!args.get() && def->mStackCount)
+                error(loc, "This function requires arguments");
+            args.reset(new ASTuserFunction(args.release(), def, loc));
+        }
+        return new ASTruleSpecifier(args, loc);
+    }
+    
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
     if (bound == 0 || bound->mType != ASTexpression::RuleType) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());

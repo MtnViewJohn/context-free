@@ -528,6 +528,14 @@ namespace AST {
         r.simpleRule = NULL;
     }
     
+    ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
+    : ASTexpression(loc, false, false, RuleType), shapeType(-1),
+      argSize(0), argSource(ShapeArgs), arguments(args.release()),
+      simpleRule(0), mStackIndex(0), typeSignature(0)
+    {
+        assert(arguments);
+    }
+    
     const StackType*
     ASTruleSpecifier::evalArgs(Renderer* rti, const StackType* parent) const
     {
@@ -564,6 +572,8 @@ namespace AST {
             ret->evalArgs(rti, arguments, parent);
             return ret;
         }
+        case ShapeArgs:
+            return arguments->evalArgs(rti, parent);
         default:
             assert(false);
             return NULL;
