@@ -91,7 +91,9 @@ public:
     ContainerStack_t    mContainerStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);
-    void                push_paramDecls(const std::string& name, const yy::location& defLoc);
+    void                push_paramDecls(const std::string& name, 
+                                        const yy::location& defLoc,
+                                        const std::string & type);
     void                push_rep(AST::ASTreplacement* r, bool global = false);
     const char*         push_param();
     AST::ASTparameter*  findExpression(int nameIndex, bool& isGlobal);

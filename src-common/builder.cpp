@@ -408,16 +408,26 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     yy::location defLoc = nameLoc + expLoc;
     if (isFunction) {
         assert(def);
+        if (mCompilePhase == 1) return;
+        
+        if (def->mExpression->isNatural && !e->isNatural) {
+            CfdgError::Error(expLoc, "Mismatch between declared natural and defined not-natural type of user function");
+        }
         delete def->mExpression;                        // Replace placeholder with actual expression
         def->mExpression = e.release()->simplify();
         def->isConstant = def->mExpression->isConstant;
         def->mLocation = defLoc;
-
-        if (def->mExpression->mType != ASTexpression::NumericType) {
-            CfdgError::Error(expLoc, "User functions must have numeric type only");
+        
+        if (def->mExpression->mType != def->mType) {
+            CfdgError::Error(expLoc, "Mismatch between declared and defined type of user function");
         } else {
-            def->mTuplesize = def->mExpression->evaluate(0, 0);
+            if (def->mType == ASTexpression::NumericType &&
+                def->mTuplesize != def->mExpression->evaluate(0, 0))
+            {
+                CfdgError::Error(expLoc, "Mismatch between declared and defined vector length of user function");
+            }
         }
+
         isFunction = false;
         return;
     } else if (def) {
@@ -778,7 +788,8 @@ Builder::push_repContainer(ASTrepContainer& c)
 }
 
 void
-Builder::push_paramDecls(const std::string& name, const yy::location& defLoc)
+Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
+                         const std::string& type)
 {
     if (isFunction) {
         for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
@@ -787,23 +798,44 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc)
             it->isLocal = true;
         }
         push_repContainer(mParamDecls);
+        if (mCompilePhase != 1) return;
 
         // Create the ASTdefine before the expression is known so that the
         // expression can use recursion. Create a placeholder expression
         // that will be deleted when the real expression is parsed.
         int nameIndex = StringToShape(name, defLoc, false);
-        exp_ptr r(new ASTreal(1.5, defLoc));
-        r->isConstant = false;
+        ASTparameter p;
+        p.init(type, nameIndex);
+        exp_ptr r;
+        
+        switch (p.mType) {
+            case ASTexpression::NumericType:
+                r.reset(new ASTreal(p.isNatural ? 1.0 : 1.5, defLoc));
+                r->isConstant = false;
+                for (int i = 2; i < p.mTuplesize; ++i)
+                    r->append(new ASTreal(1.5, defLoc));
+                break;
+                
+            case ASTexpression::ModType:
+                r.reset(new ASTmodification(defLoc));
+                break;
+            case ASTexpression::NoType:
+            case ASTexpression::FlagType:
+                CfdgError::Warning(defLoc, "Unsupported function type");
+                // fall through
+            case ASTexpression::RuleType:
+                r.reset(new ASTruleSpecifier());
+                break;
+        }
+        
         ASTdefine* def = new ASTdefine(name, r, defLoc);
         def->mParameters = mParamDecls.mParameters;
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         if (prev != def) {
-            if (mCompilePhase == 1) {
-                CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
-                CfdgError::Error(prev->mLocation, "Previous user function definition is here");
-            }
+            CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
+            CfdgError::Error(prev->mLocation, "Previous user function definition is here");
             delete def;
         }
         if (m_CFDG->getShapeParams(nameIndex))
