@@ -755,8 +755,11 @@ namespace AST {
                     func->mType),
       definition(func), arguments(args)
     {
-        assert((args && func->mStackCount) || (!args && !func->mStackCount));
-        if (args)
+        if (args && !func->mStackCount)
+            CfdgError::Error(nameLoc + args->where, "Function does not take arguments");
+        if (!args && func->mStackCount)
+            CfdgError::Error(nameLoc, "Function takes arguments");
+        if (args && func->mStackCount)
             ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
     }
     

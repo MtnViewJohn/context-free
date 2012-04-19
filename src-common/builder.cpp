@@ -560,8 +560,6 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
         if (def->mType != ASTexpression::RuleType) {
             CfdgError::Error(loc, "Function does not return a shape");
         } else {
-            if (!args.get() && def->mStackCount)
-                error(loc, "This function requires arguments");
             args.reset(new ASTuserFunction(args.release(), def, loc));
         }
         return new ASTruleSpecifier(args, loc);
@@ -720,8 +718,6 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     int nameIndex = StringToShape(*name, nameLoc, true);
     AST::ASTdefine* func = m_CFDG->findFunction(nameIndex);
     if (func) {
-        if (!args.get() && func->mStackCount)
-            error(nameLoc, "This function requires arguments");
         return new ASTuserFunction(args.release(), func, nameLoc);
     }
 
