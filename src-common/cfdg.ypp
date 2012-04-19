@@ -244,6 +244,7 @@ v3clues:
         USER_STRING BECOMES { delete $1; }
         | MODTYPE BECOMES {}
         | USER_STRING '(' { delete $1; }
+        | USER_STRING USER_STRING '(' { delete $1; delete $2; }
         | IMPORT
         | SHAPE
         | PATH USER_STRING '(' { delete $2; }
