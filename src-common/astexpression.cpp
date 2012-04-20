@@ -765,7 +765,7 @@ namespace AST {
     
     ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
                        const yy::location& loc, const std::string& name)
-    : AST::ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
+    : ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
       mConstData(bound->mStackIndex == -1), mArgs(0), mLength(1), mStride(1), 
       mStackIndex(bound->mStackIndex - stackOffset), 
       mCount(bound->mType == NumericType ? bound->mTuplesize : 1),
