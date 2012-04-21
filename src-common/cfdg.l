@@ -63,7 +63,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 %{
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION  yylloc->columns(utf8length(yytext, yyleng));
 %}
 
 %%
@@ -229,7 +229,8 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
         delete yylval->string;
         yylval->string = 0;
         size_t len = strlen(utf8chars[tok]);
-        (yylloc->end) += len - yyleng;
+        (yylloc->end) = (yylloc->begin);
+        yylloc->columns(1);
         yyless(len);
         return tok;
     }
@@ -238,7 +239,8 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
         // Unicode operator found after 1st char. Unread everything from operator to
         // end of string and truncate string before operator.
         yylval->string->resize(pos);
-        (yylloc->end) += pos - yyleng;
+        (yylloc->end) = (yylloc->begin);
+        yylloc->columns(utf8length(yytext, pos));
         yyless(pos);
         return token::USER_STRING;
     }
@@ -328,6 +330,76 @@ void Scanner::setupLoc(CfdgParser::location_type* yylloc)
     }
     nextLocAction = normalAction;
     yylloc->begin.filename = yylloc->end.filename = driver->m_currentPath;
+}
+
+// Compute the number of Unicode characters in a block of UTF-8 encoded bytes
+unsigned int Scanner::utf8length(const char* txt, int len)
+{
+    unsigned int length = 0;
+    for (int i = 0; i < len; ++i, ++length) {
+        char c = txt[i];
+        if (c == '\0')
+            LexerError("Invalid UTF-8 encoding: ASCII null character");
+        if ((c & 0x80) == 0) continue;
+        int j = 0;
+        for (; c & 0x80; ++j)
+            c <<= 1;
+        
+        if (j == 1) {
+            LexerError("Invalid UTF-8 encoding: unexpected continuation byte");
+            continue;
+        }
+        
+        if (j > 4)      // 4 bytes max per RFC 3629
+            LexerError("Invalid UTF-8 encoding: code point out of range");
+        
+        if (j && i + j > len) {
+            LexerError("Invalid UTF-8 encoding: sequence extends past end of buffer");
+            return length;
+        }
+        
+        // Compute the Unicode code point
+        unsigned long code = c >> j;
+        int k = 1;
+        for (; k < j; ++k) {
+            if ((txt[i + k] & 0xc0) != 0x80) {
+                LexerError("Invalid UTF-8 encoding: expecting a continuation byte");
+                break;
+            }
+            code = (code << 6) | (txt[i + k] & 0x3f);
+        }
+        if (k < j) {
+            // malformed code is actually k bytes long, not j bytes long
+            i += k - 1;
+            continue;
+        }
+        
+        // Check for illegal code points
+        if (code >= 0xd800 && code <= 0xdfff)
+            LexerError("Invalid UTF-8 encoding: UTF-16 surrogate halves");
+        if (code == 0xfffe || code == 0xffff)
+            LexerError("Invalid UTF-8 encoding: illegal code point");
+        if (code == 0)
+            LexerError("Invalid UTF-8 encoding: encoded null character");
+        if (code > 0x10ffff)
+            LexerError("Invalid UTF-8 encoding: codepoint above U+10FFFF");
+        
+        // Check for encodings that are more bytes than they need to be
+        switch (j) {
+            case 2:
+                if (code > 0x7f) break;
+            case 3:
+                if (code > 0x7ff) break;
+            case 4:
+                if (code > 0xffff) break;
+                LexerError("Invalid UTF-8 encoding: overlong sequence");
+            default:
+                break;
+        }
+        if (j)
+            i += j - 1;
+    }
+    return length;
 }
     
 }
