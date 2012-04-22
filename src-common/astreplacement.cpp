@@ -234,12 +234,16 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), condLoc, empty), 
       mCondition(ifCond.release()->simplify())
     {
+        if (mCondition->mType != ASTexpression::NumericType || mCondition->evaluate(0, 0) != 1)
+            CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
     }
 
     ASTswitch::ASTswitch(exp_ptr switchExp, const yy::location& expLoc)
     : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), expLoc, empty), 
       mSwitchExp(switchExp.release()->simplify())
     {
+        if (mSwitchExp->mType != ASTexpression::NumericType || mSwitchExp->evaluate(0, 0) != 1)
+            CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
     }
     
     void
@@ -585,7 +589,7 @@ namespace AST {
     {
         double caseValue = 0.0;
         if (mSwitchExp->evaluate(&caseValue, 1, r) != 1) {
-            CfdgError::Error(mLocation, "Error evaluating if condition");
+            CfdgError::Error(mLocation, "Error evaluating switch selector");
             return;
         }
         
