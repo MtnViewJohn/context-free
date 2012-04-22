@@ -910,12 +910,7 @@ namespace AST {
             
             for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
                 ASTmodTerm* mod = *it;
-                if (mod == 0) {
-                    CfdgError::Error((*it)->where, "Unknown term in shape adjustment");
-                    delete (*it);
-                    *it = 0;
-                    continue;
-                }
+                assert(mod);
                 *it = 0;
                 
                 int argcount = 0;
