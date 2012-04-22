@@ -846,8 +846,9 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
         def->isFunction = true;
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         if (prev != def) {
-            CfdgError::Error(defLoc, "Redefinition of user functions is not allowed");
-            CfdgError::Error(prev->mLocation, "Previous user function definition is here");
+            mErrorOccured = true;
+            warning(defLoc, "Redefinition of user functions is not allowed");
+            warning(prev->mLocation, "Previous user function definition is here");
             delete def;
         }
         if (m_CFDG->getShapeParams(nameIndex))
