@@ -340,13 +340,18 @@ namespace AST {
             return;
 
         exp_ptr stroke, flags;
-        if (params->size() == 2) {
+        switch (params->size()) {
+        case 2:
             stroke.reset((*params)[0]);
             flags.reset((*params)[1]);
             if (!params->release()) {
                 CfdgError::Error(params->where, "Path commands can have zero, one, or two parameters");
+                stroke.release();
+                flags.release();
+                return;
             }
-        } else {
+            break;
+        case 1:
             switch (params->mType) {
                 case ASTexpression::NumericType:
                     stroke = params;
@@ -358,6 +363,12 @@ namespace AST {
                     CfdgError::Error(params->where, "Bad expression type in path command parameters");
                     break;
             }
+            break;
+        case 0:
+            return;
+        default:
+            CfdgError::Error(params->where, "Path commands can have zero, one, or two parameters");
+            return;
         }
         
         if (stroke.get()) {
