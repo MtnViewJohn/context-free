@@ -554,7 +554,7 @@ path_header:
                                &(driver.mParamDecls.mParameters));
             ASTshape* s = new ASTshape(r, false, @1 + @2);
             s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-			driver.SetShape(s);
+			driver.SetShape(s, true);
             s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : NULL;
             driver.mInPathContainer = true;
             if (driver.mCompilePhase == 2) {

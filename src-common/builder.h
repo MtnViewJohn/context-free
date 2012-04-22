@@ -120,7 +120,7 @@ public:
     void            IncludeFile(const std::string& fname);
     bool            EndInclude();
     void            Initialize(AST::rep_ptr init);
-    void            SetShape(AST::ASTshape* s);
+    void            SetShape(AST::ASTshape* s, bool isPath = false);
     void            AddRule(AST::ASTrule* rule);
 	void            NextParameterDecl(const std::string& type, const std::string& name,
                                       const yy::location& typeLoc, const yy::location& nameLoc);

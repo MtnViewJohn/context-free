@@ -312,7 +312,7 @@ Builder::Initialize(rep_ptr init)
 }
 
 void
-Builder::SetShape(AST::ASTshape* s)
+Builder::SetShape(AST::ASTshape* s, bool isPath)
 {
     if (s == NULL) {
         mCurrentShape = -1;
@@ -323,7 +323,7 @@ Builder::SetShape(AST::ASTshape* s)
 	mCurrentShape = s->mNameIndex;
     if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
         mWant2ndPass = true;
-    const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize);
+    const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize, isPath);
     if (err) {
         mErrorOccured = true;
         warning(s->mLocation, err);

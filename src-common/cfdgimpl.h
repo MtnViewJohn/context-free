@@ -133,7 +133,7 @@ private:
         int     getShapeType(const std::string& s);
         int     getShapeType(int shapetype);
         bool    shapeHasRules(int shapetype);
-        const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size);
+        const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size, bool isPath);
         void    setShapeHasNoParams(int shapetype, const AST::ASTexpression* args);
         bool    getShapeHasNoParams(int shapetype);
         const AST::ASTparameters* getShapeParams(int shapetype);
