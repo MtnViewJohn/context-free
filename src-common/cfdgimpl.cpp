@@ -1137,24 +1137,30 @@ CFDGImpl::getShapeHasNoParams(int shapetype)
 }
 
 const char* 
-CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize)
+CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bool isPath)
 {
     if (m_secondPass)
         return 0;
-    if (m_shapeTypes[shapetype].isShape) {
+    ShapeType& shape = m_shapeTypes[shapetype];
+    if (shape.isShape) {
         // There has been a forward declaration, so this shape declaration
         // just introduces the shape elements
         if (!(p.mParameters.empty()))
             return  "Shape has already been declared. "
                     "Parameter declaration must be on the first shape declaration only.";
+        if (shape.shapeType != newShape)
+            return "Shape name already in use by another rule or path";
+        if (isPath)
+            return "Path name already in use by another rule or path";
         return 0;
     }
-    if (m_shapeTypes[shapetype].shapeType != newShape)
+    if (shape.shapeType != newShape)
         return "Shape name already in use by another rule or path";
     
-    m_shapeTypes[shapetype].parameters = new AST::ASTparameters(p.mParameters);
-    m_shapeTypes[shapetype].isShape = true;
-    m_shapeTypes[shapetype].argSize = argSize;
+    shape.parameters = new AST::ASTparameters(p.mParameters);
+    shape.isShape = true;
+    shape.argSize = argSize;
+    shape.shapeType = isPath ? pathType : newShape;
     return 0;
 }
 
