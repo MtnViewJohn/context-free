@@ -1114,6 +1114,10 @@ namespace AST {
                     break;
                 case ASTmodTerm::Entropy:
                     break;
+                case ASTmodTerm::z:
+                case ASTmodTerm::zsize:
+                    CfdgError::Error((*it)->where, "Z changes are not permitted in paths");
+                    break;
                 case ASTmodTerm::unknownType:
                     CfdgError::Error((*it)->where, "Unrecognized element in a path operation");
                     break;
