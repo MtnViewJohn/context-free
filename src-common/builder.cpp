@@ -818,13 +818,14 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
         exp_ptr r;
         
         switch (p.mType) {
-            case ASTexpression::NumericType:
-                r.reset(new ASTreal(p.isNatural ? 1.0 : 1.5, defLoc));
-                r->isConstant = false;
-                for (int i = 2; i < p.mTuplesize; ++i)
-                    r->append(new ASTreal(1.5, defLoc));
+            case ASTexpression::NumericType: {
+                ASTexpression* num = new ASTreal(p.isNatural ? 1.0 : 1.5, defLoc);
+                num->isConstant = false;
+                for (int i = 1; i < p.mTuplesize; ++i)
+                    num = num->append(new ASTreal(1.5, defLoc));
+                r.reset(num);
                 break;
-                
+            }
             case ASTexpression::ModType:
                 r.reset(new ASTmodification(defLoc));
                 break;
