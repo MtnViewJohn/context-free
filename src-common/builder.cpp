@@ -324,8 +324,10 @@ Builder::SetShape(AST::ASTshape* s)
     if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
         mWant2ndPass = true;
     const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize);
-    if (err)
-        CfdgError::Error(s->mLocation, err);
+    if (err) {
+        mErrorOccured = true;
+        warning(s->mLocation, err);
+    }
 }
 
 void
