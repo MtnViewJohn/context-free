@@ -858,14 +858,21 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
             case ASTexpression::FlagType:
                 processSymmSpec(syms, mTileMod.m_transform, tiled, symmSpec, where);
                 where = cit->where;
-            case ASTexpression::NumericType:
+            case ASTexpression::NumericType: {
                 if (symmSpec.empty() && cit->mType != ASTexpression::FlagType)
                     CfdgError::Error(cit->where, "Symmetry flag expected here");
-                symmSpec.push_back(0.0);
-                where = where + cit->where;
-                if (cit->evaluate(&symmSpec.back(), 1, r) != 1)
+                int sz = cit->evaluate(0, 0);
+                if (sz < 1) {
                     CfdgError::Error(cit->where, "Could not evaluate this");
+                } else {
+                    size_t oldsize = symmSpec.size();
+                    symmSpec.resize(oldsize + sz);
+                    if (cit->evaluate(&(symmSpec[oldsize]), sz, r) != sz)
+                        CfdgError::Error(cit->where, "Could not evaluate this");
+                }
+                where = where + cit->where;
                 break;
+            }
             case ASTexpression::ModType: {
                 processSymmSpec(syms, mTileMod.m_transform, tiled, symmSpec, where);
                 Modification mod;
