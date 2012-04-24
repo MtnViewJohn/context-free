@@ -75,6 +75,7 @@ namespace AST {
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
     std::list<AST::ASTmodification*>* modList;
+    AST::ASTrepContainer* bodyObj;
 };
 
 %{
@@ -99,6 +100,7 @@ namespace AST {
 %token SWITCH
 %token CASE
 %token CLONE
+%token LET
 %token <modToken> MODTYPE
 %token <modToken> PARAM
 %token BACKGROUND
@@ -140,7 +142,7 @@ namespace AST {
 %left '*' '/'
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
-%type <expression> exp exp2 expfunc exp2func explist parameter_spec
+%type <expression> exp exp2 expfunc exp2func explist parameter_spec letBody
 %type <mod> modification modification_v2 buncha_adjustments
 %type <term> adjustment
 %type <component> element element_simple
@@ -155,9 +157,10 @@ namespace AST {
 %type <string> fileString fileNameSpace definition_header global_definition_header shapeName
 %type <modToken> caseHeader
 %type <modList> buncha_mods
+%type <bodyObj> letHeader
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP USER_ARRAYNAME fileString fileNameSpace definition_header global_definition_header shapeName
-%destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec
+%destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec letBody
 %destructor { delete $$; } adjustment
 %destructor { delete $$; } modification modification_v2 buncha_adjustments
 %destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2
@@ -172,6 +175,7 @@ namespace AST {
 %destructor { delete $$; } shape
 %destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); } caseHeader
 %destructor { ASTtransform::ClearMods(*$$); delete $$; } buncha_mods
+%destructor { driver.pop_repContainer(NULL); delete $$; } letHeader
 %{
 #include "scanner.h"
 #include "math.h"
@@ -1200,6 +1204,40 @@ adjustment:
         }
         ;
         
+letHeader:
+        LET {
+            ASTrepContainer* tempHolder = new ASTrepContainer();
+            driver.push_repContainer(*tempHolder);
+            driver.isFunction = false;
+            $$ = tempHolder;
+        }
+        ;
+        
+letBody:
+        '(' letVariables ';' exp2 ')' {
+            $$ = $4;
+        }
+        ;
+        
+letVariables:
+        letVariables ';' letVariable
+        |
+        letVariable
+        ;
+        
+letVariable:
+        USER_STRING BECOMES exp2 {
+            str_ptr var($1);
+            exp_ptr exp($3);
+            driver.NextParameter(*var, exp, @1, @3);
+        }
+        |
+        MODTYPE BECOMES exp2 {
+            exp_ptr exp($3);
+            error(@1, "Reserved keyword: adjustment");
+        }
+        ;
+        
 explist:
         explist exp {
             $$ = ASTexpression::Append($1, $2);
@@ -1318,6 +1356,12 @@ expfunc:
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
         |
+        letHeader letBody {
+            exp_ptr exp($2);
+            std::auto_ptr<ASTrepContainer> vars($1);
+            $$ = driver.MakeLet(@1, exp);
+        }
+        |
         USER_STRING { 
             str_ptr var($1);
             $$ = driver.MakeVariable(*var, @1);
@@ -1352,6 +1396,12 @@ exp2func:
             str_ptr func($1);
             exp_ptr args(new ASTexpression(@1 + @4));
             $$ = driver.MakeFunction(func, args, @1, @3, false);
+        }
+        |
+        letHeader letBody {
+            exp_ptr exp($2);
+            std::auto_ptr<ASTrepContainer> vars($1);
+            $$ = driver.MakeLet(@1, exp);
         }
         |
         USER_STRING { 

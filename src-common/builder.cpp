@@ -551,6 +551,39 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
                         nameLoc + argsLoc, *name);
 }
 
+ASTexpression*
+Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
+{
+    ASTexpression* args = NULL;
+    ASTrepContainer* lastContainer = mContainerStack.back();
+    for (ASTbody::iterator it = lastContainer->mBody.begin(), 
+                          eit = lastContainer->mBody.end(); it != eit; ++it)
+    {
+        const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(*it);
+        if (cdef) {
+            ASTdefine* def = const_cast<ASTdefine*>(cdef);
+            args = ASTexpression::Append(args, def->mExpression);
+            def->mExpression = 0;
+        }
+    }
+    
+    static const std::string name("let");
+    yy::location defLoc = exp->where;
+    ASTdefine* def = new ASTdefine(name, exp, defLoc);
+    
+    for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
+         eit = lastContainer->mParameters.end(); it != eit; ++it)
+    {
+        // copy the non-constant definitions
+        if (!(it->mDefinition))
+            def->mParameters.push_back(*it);
+    }
+    def->mStackCount = lastContainer->mStackCount;
+    def->isFunction = true;
+    pop_repContainer(NULL);
+    return new ASTlet(args, def, letLoc, defLoc);
+}
+
 ASTruleSpecifier*  
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
 {

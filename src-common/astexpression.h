@@ -219,7 +219,7 @@ namespace AST {
         ASTdefine* definition;
         ASTexpression* arguments;
         
-        ASTuserFunction(ASTexpression* args, ASTdefine* func, yy::location nameLoc);
+        ASTuserFunction(ASTexpression* args, ASTdefine* func, const yy::location& nameLoc);
         virtual ~ASTuserFunction() { delete arguments; }
         virtual int evaluate(double* , int, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
@@ -228,6 +228,12 @@ namespace AST {
         virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
+    };
+    class ASTlet : public ASTuserFunction {
+    public:
+        ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
+               const yy::location& defLoc);
+        virtual ~ASTlet();
     };
     class ASToperator : public ASTexpression {
     public:

@@ -748,19 +748,30 @@ namespace AST {
     }
     
     ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
-                                     yy::location nameLoc)
+                                     const yy::location& nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
-                    (!args || args->isConstant) && func->mExpression->isConstant, 
-                    func->mExpression->isNatural, 
-                    func->mType),
+                    !args || args->isConstant, false, func->mType),
       definition(func), arguments(args)
     {
+        if (definition->mExpression) {
+            isConstant = isConstant && definition->mExpression->isConstant;
+            isNatural = definition->mExpression->isNatural;
+        } else {
+            isConstant = isConstant && definition->mChildChange.modExp.empty();
+        }
         if (args && !func->mStackCount)
             CfdgError::Error(nameLoc + args->where, "Function does not take arguments");
         if (!args && func->mStackCount)
             CfdgError::Error(nameLoc, "Function takes arguments");
         if (args && func->mStackCount)
             ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
+    }
+    
+    ASTlet::ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
+                   const yy::location& defLoc)
+    : AST::ASTuserFunction(args, func, letLoc)
+    {
+        where = where + defLoc;
     }
     
     ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
@@ -873,6 +884,11 @@ namespace AST {
         delete mArgs;
     }
     
+    ASTlet::~ASTlet()
+    {
+        delete definition;
+    }
+
     static void
     Setmod(term_ptr& mod, ASTmodTerm* newmod)
     {
