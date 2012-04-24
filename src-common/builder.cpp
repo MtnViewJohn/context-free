@@ -587,6 +587,19 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
 ASTruleSpecifier*  
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
 {
+    if (name.compare("if") == 0) {
+        if (args->mType != ASTexpression::RuleType)
+            CfdgError::Error(loc, "If function does not return a shape");
+        return new ASTruleSpecifier(args, loc);
+    }
+    
+    if (name.compare("select") == 0) {
+        args.reset(new ASTselect(args, loc, false));
+        if (args->mType != ASTexpression::RuleType)
+            CfdgError::Error(loc, "Select function does not return a shape");
+        return new ASTruleSpecifier(args, loc);
+    }
+    
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
     

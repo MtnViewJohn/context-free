@@ -736,6 +736,20 @@ element_simple:
                 $$ = 0;
             }
         }
+        | 
+        IF '(' exp2 ')' modification  { 
+            exp_ptr args($3);
+            mod_ptr mod($5);
+            if (driver.mCompilePhase == 2) {
+                str_ptr func(new std::string("if"));
+                args.reset(driver.MakeFunction(func, args, @1, @3, false));
+                static const std::string ifstr("if");
+                rep_ptr item = driver.MakeElement(ifstr, mod, args, @$, false);
+                $$ = item.release();
+            } else {
+                $$ = 0;
+            }
+        }
         |
         PATH shapeName parameter_spec modification {
             str_ptr cmd($2);
