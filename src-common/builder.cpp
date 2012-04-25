@@ -589,14 +589,15 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
 {
     if (name.compare("if") == 0) {
         if (args->mType != ASTexpression::RuleType)
-            CfdgError::Error(loc, "If function does not return a shape");
+            CfdgError::Error(args->where, "If function does not return a shape");
         return new ASTruleSpecifier(args, loc);
     }
     
     if (name.compare("select") == 0) {
-        args.reset(new ASTselect(args, loc, false));
+        yy::location argsLoc = args->where;
+        args.reset(new ASTselect(args, argsLoc, false));
         if (args->mType != ASTexpression::RuleType)
-            CfdgError::Error(loc, "Select function does not return a shape");
+            CfdgError::Error(argsLoc, "Select function does not return a shape");
         return new ASTruleSpecifier(args, loc);
     }
     
@@ -606,7 +607,9 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     ASTdefine* def = m_CFDG->findFunction(nameIndex);
     if (def) {
         if (def->mType != ASTexpression::RuleType) {
-            CfdgError::Error(loc, "Function does not return a shape");
+            yy::location nameLoc = loc;
+            if (args.get()) nameLoc.end = args->where.begin;
+            CfdgError::Error(nameLoc, "Function does not return a shape");
         } else {
             args.reset(new ASTuserFunction(args.release(), def, loc));
         }
