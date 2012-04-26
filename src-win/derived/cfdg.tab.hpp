@@ -124,11 +124,12 @@ namespace yy {
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
     std::list<AST::ASTmodification*>* modList;
+    AST::ASTrepContainer* bodyObj;
 
 
 
 /* Line 34 of lalr1.cc  */
-#line 132 "cfdg.tab.hpp"
+#line 133 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -155,37 +156,39 @@ namespace yy {
      SWITCH = 270,
      CASE = 271,
      CLONE = 272,
-     MODTYPE = 273,
-     PARAM = 274,
-     BACKGROUND = 275,
-     BADEOF = 276,
-     GOODEOF = 277,
-     RANGEOP = 278,
-     PLUSMINUSOP = 279,
-     USER_STRING = 280,
-     USER_INTEGER = 281,
-     USER_RATIONAL = 282,
-     USER_FILENAME = 283,
-     USER_QSTRING = 284,
-     INCLUDE = 285,
-     IMPORT = 286,
-     TILE = 287,
-     PARAMETERS = 288,
-     USER_PATHOP = 289,
-     STROKEWIDTH = 290,
-     LE = 291,
-     LT = 292,
-     GE = 293,
-     GT = 294,
-     EQ = 295,
-     NEQ = 296,
-     NOT = 297,
-     AND = 298,
-     OR = 299,
-     XOR = 300,
-     CF_INFINITY = 301,
-     POS = 302,
-     NEG = 303
+     LET = 273,
+     MODTYPE = 274,
+     PARAM = 275,
+     BACKGROUND = 276,
+     BADEOF = 277,
+     GOODEOF = 278,
+     RANGEOP = 279,
+     PLUSMINUSOP = 280,
+     USER_STRING = 281,
+     USER_INTEGER = 282,
+     USER_RATIONAL = 283,
+     USER_FILENAME = 284,
+     USER_QSTRING = 285,
+     USER_ARRAYNAME = 286,
+     INCLUDE = 287,
+     IMPORT = 288,
+     TILE = 289,
+     PARAMETERS = 290,
+     USER_PATHOP = 291,
+     STROKEWIDTH = 292,
+     LE = 293,
+     LT = 294,
+     GE = 295,
+     GT = 296,
+     EQ = 297,
+     NEQ = 298,
+     NOT = 299,
+     AND = 300,
+     OR = 301,
+     XOR = 302,
+     CF_INFINITY = 303,
+     POS = 304,
+     NEG = 305
    };
 
     };
@@ -279,7 +282,7 @@ namespace yy {
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const unsigned short int yytable_[];
+    static const short int yytable_[];
     static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
@@ -359,7 +362,7 @@ namespace yy {
 } // yy
 
 /* Line 34 of lalr1.cc  */
-#line 363 "cfdg.tab.hpp"
+#line 366 "cfdg.tab.hpp"
 
 
 
