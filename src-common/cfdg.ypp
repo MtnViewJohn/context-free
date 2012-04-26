@@ -751,6 +751,20 @@ element_simple:
             }
         }
         |
+        letHeader letBody modification {
+            std::auto_ptr<ASTrepContainer> vars($1);
+            exp_ptr exp($2);
+            mod_ptr mod($3);
+            exp.reset(driver.MakeLet(@1, exp));     // must do unconditionally
+            if (driver.mCompilePhase == 2) {
+                static const std::string letstr("let");
+                rep_ptr item = driver.MakeElement(letstr, mod, exp, @$, false);
+                $$ = item.release();
+            } else {
+                $$ = 0;
+            }
+        }
+        |
         PATH shapeName parameter_spec modification {
             str_ptr cmd($2);
             exp_ptr p($3);
