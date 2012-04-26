@@ -593,6 +593,12 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
         return new ASTruleSpecifier(args, loc);
     }
     
+    if (name.compare("let") == 0) {
+        if (args->mType != ASTexpression::RuleType)
+            CfdgError::Error(args->where, "Let function does not return a shape");
+        return new ASTruleSpecifier(args, loc);
+    }
+    
     if (name.compare("select") == 0) {
         yy::location argsLoc = args->where;
         args.reset(new ASTselect(args, argsLoc, false));
