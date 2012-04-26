@@ -774,7 +774,7 @@ namespace AST {
         where = where + defLoc;
     }
     
-    ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
+    ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
                        const yy::location& loc, const std::string& name)
     : ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
       mConstData(bound->mStackIndex == -1), mArgs(0), mLength(1), mStride(1), 
@@ -815,9 +815,9 @@ namespace AST {
             }
             switch (count) {
                 case 2:
-                    mStride = data[1];  // fall through
+                    mStride = (int)data[1];  // fall through
                 case 1:
-                    mLength = data[0];  // fall through
+                    mLength = (int)data[0];  // fall through
                 case 0:
                     break;
                     
@@ -829,10 +829,10 @@ namespace AST {
             double data[3];
             switch (args->evaluate(data, 3)) {
                 case 3:
-                    mStride = data[2];
+                    mStride = (int)data[2];
                     // fall through
                 case 2:
-                    mLength = data[1];
+                    mLength = (int)data[1];
                     // fall through
                 case 1:
                     mArgs = new ASTreal(data[0], args->where);
@@ -848,6 +848,10 @@ namespace AST {
             if (mArgs->evaluate(0, 0) != 1)
                 CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
         }
+        if (mStride < 0 || mLength < 0)
+            CfdgError::Error(mArgs->where, "Array length & stride arguments must be positive");
+        if (mStride * (mLength - 1) >= mCount)
+            CfdgError::Error(mArgs->where, "Array length & stride arguments too large for source");
         isConstant = isConstant && mArgs->isConstant;
         isLocal = isLocal && mArgs->isLocal;
     }

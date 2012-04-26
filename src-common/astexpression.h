@@ -345,7 +345,7 @@ namespace AST {
         bool    isParameter;
         std::string entString;
         
-        ASTarray(const ASTparameter* bound, exp_ptr args, size_t stackOffset,
+        ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
                  const yy::location& loc, const std::string& name);
         virtual ~ASTarray();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
