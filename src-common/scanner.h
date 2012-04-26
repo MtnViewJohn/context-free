@@ -93,7 +93,7 @@ public:
     virtual void LexerError(const char* msg);
 private:
     void setupLoc(CfdgParser::location_type* yylloc);
-    unsigned int utf8length(const char* txt, int len);
+    unsigned int utf8length(const char* txt, size_t len);
     std::stack<CfdgParser::location_type> mLocationStack;
 };
 
