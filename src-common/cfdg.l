@@ -334,7 +334,7 @@ void Scanner::setupLoc(CfdgParser::location_type* yylloc)
 }
 
 // Compute the number of Unicode characters in a block of UTF-8 encoded bytes
-unsigned int Scanner::utf8length(const char* txt, int len)
+unsigned int Scanner::utf8length(const char* txt, size_t len)
 {
     unsigned int length = 0;
     for (int i = 0; i < len; ++i, ++length) {
