@@ -337,12 +337,12 @@ void Scanner::setupLoc(CfdgParser::location_type* yylloc)
 unsigned int Scanner::utf8length(const char* txt, size_t len)
 {
     unsigned int length = 0;
-    for (int i = 0; i < len; ++i, ++length) {
+    for (size_t i = 0; i < len; ++i, ++length) {
         char c = txt[i];
         if (c == '\0')
             LexerError("Invalid UTF-8 encoding: ASCII null character");
         if ((c & 0x80) == 0) continue;
-        int j = 0;
+        size_t j = 0;
         for (; c & 0x80; ++j)
             c <<= 1;
         
@@ -361,7 +361,7 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         
         // Compute the Unicode code point
         unsigned long code = c >> j;
-        int k = 1;
+        size_t k = 1;
         for (; k < j; ++k) {
             if ((txt[i + k] & 0xc0) != 0x80) {
                 LexerError("Invalid UTF-8 encoding: expecting a continuation byte");
