@@ -1032,7 +1032,7 @@ namespace AST {
     bool
     ASTcons::release(size_t i)
     {
-        if (i == SIZE_T_MAX) {
+        if (i == std::numeric_limits<size_t>::max()) {
             children.clear();
         } else if (i < children.size()) {
             children[i] = 0;
