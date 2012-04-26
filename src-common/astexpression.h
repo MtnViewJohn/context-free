@@ -31,6 +31,7 @@
 #include "cfdg.h"
 #include "shape.h"
 #include <string>
+#include <limits>
 #include "Rand64.h"
 
 namespace AST {
@@ -69,7 +70,7 @@ namespace AST {
         virtual const ASTexpression* operator[](size_t i) const;
         virtual int size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t i = SIZE_T_MAX) { return false; }
+        virtual bool release(size_t i = std::numeric_limits<size_t>::max()) { return false; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
     class ASTfunction : public ASTexpression {
@@ -171,7 +172,7 @@ namespace AST {
         virtual const ASTexpression* operator[](size_t i) const;
         virtual int size() const { return (int)(children.size()); }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t i = SIZE_T_MAX);
+        virtual bool release(size_t i = std::numeric_limits<size_t>::max());
         
     private:
         ASTcons() : ASTexpression(CfdgError::Default) {};
