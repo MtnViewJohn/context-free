@@ -78,6 +78,9 @@ usage(bool inError)
   out << "    " << APP_OPTCHAR() <<
          "s num    set both width and height in pixels/mm" << endl;
   out << "    " << APP_OPTCHAR() <<
+         "s WIDTHxHEIGHT" << endl;
+  out << "              set width to WIDTH and height to HEIGHT in pixels/mm" << endl;
+  out << "    " << APP_OPTCHAR() <<
          "m num    maximum number of shapes (default none)" << endl;
   out << "    " << APP_OPTCHAR() <<
          "x float  minimum size of shapes in pixels/mm (default 0.3)" << endl;
@@ -144,6 +147,37 @@ struct options {
   { }
 };
 
+void
+intArg2(char arg, const char* str, int& x, int& y)
+{
+    char* end;
+    long int v = -1;
+    
+    v = strtol(str, &end, 10);
+    if (end == str || v <= 0) {
+        if (arg == '-')
+            cerr << "Argument must be a positive integer or a pair of positive integers (e.g., 500x300)" << endl;
+        else
+            cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
+        usage(true);
+    }
+    x = (int)v;
+    if (*end == 'x') {
+        str = end + 1;
+        v = strtol(str, &end, 10);
+        if (end == str || v <= 0) {
+            if (arg == '-')
+                cerr << "Argument must be a positive integer or a pair of positive integers (e.g., 500x300)" << endl;
+            else
+                cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
+            usage(true);
+        }
+        y = (int)v;
+    } else {
+        y = x;
+    }
+}
+
 int
 intArg(char arg, const char* str)
 {
@@ -151,7 +185,7 @@ intArg(char arg, const char* str)
   long int v = -1;
 
   v = strtol(str, &end, 10);
-  if (end == str || v < 0) {
+  if (end == str || v <= 0) {
     if (arg == '-')
       cerr << "Argument must be a positive integer" << endl;
     else
@@ -195,7 +229,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.height = intArg(c, optarg);
         break;
       case 's':
-        opt.height = opt.width = intArg(c, optarg);
+        intArg2(c, optarg, opt.width, opt.height);
         break;
       case 'm':
         opt.maxShapes = intArg(c, optarg);
