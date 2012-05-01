@@ -56,6 +56,17 @@ abstractPngCanvas::start(bool clear, const agg::rgba &bk, int width, int height)
 	if (!mFrameCount && !mQuiet)
         cout << endl << "Rendering..." << endl;
     
+    if (mData) {
+        if (mCrop && (mWidth != width || mHeight != height)) {
+            cerr << endl << "Error: Frame size changed after the first frame." << endl;
+            delete [] mData;
+            mData = 0;
+        } else {
+            aggCanvas::start(clear, bk, mWidth, mHeight);
+            return;
+        }
+    }
+    
     if (mCrop) {
         mWidth = width;
         mHeight = height;

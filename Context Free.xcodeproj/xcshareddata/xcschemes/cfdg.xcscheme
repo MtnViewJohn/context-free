@@ -59,6 +59,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-s100 -T3x4 /Users/john/Documents/Context\ Free/gnomes.cfdg output/gnomes.png"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-s100 -a20 input/mtree.cfdg output/mtree.png"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
