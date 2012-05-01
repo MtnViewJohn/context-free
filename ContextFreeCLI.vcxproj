@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{86A42375-C631-493B-8785-DE489713E3A5}</ProjectGuid>
+    <RootNamespace>ContextFreeCLI</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src-agg\include\agg_array.h" />
+    <ClInclude Include="src-agg\include\agg_basics.h" />
+    <ClInclude Include="src-agg\include\agg_bounding_rect.h" />
+    <ClInclude Include="src-agg\include\agg_clip_liang_barsky.h" />
+    <ClInclude Include="src-agg\include\agg_color_gray.h" />
+    <ClInclude Include="src-agg\include\agg_color_rgba.h" />
+    <ClInclude Include="src-agg\include\agg_config.h" />
+    <ClInclude Include="src-agg\include\agg_conv_adaptor_vcgen.h" />
+    <ClInclude Include="src-agg\include\agg_conv_contour.h" />
+    <ClInclude Include="src-agg\include\agg_conv_curve.h" />
+    <ClInclude Include="src-agg\include\agg_conv_stroke.h" />
+    <ClInclude Include="src-agg\include\agg_conv_transform.h" />
+    <ClInclude Include="src-common\abstractPngCanvas.h" />
+    <ClInclude Include="src-common\agg-extras\agg_conv_centroid.h" />
+    <ClInclude Include="src-common\agg-extras\agg_copy_rect.h" />
+    <ClInclude Include="src-agg\include\agg_curves.h" />
+    <ClInclude Include="src-agg\include\agg_ellipse.h" />
+    <ClInclude Include="src-common\agg-extras\agg_fast_ellipse.h" />
+    <ClInclude Include="src-agg\include\agg_gamma_functions.h" />
+    <ClInclude Include="src-agg\include\agg_math.h" />
+    <ClInclude Include="src-agg\include\agg_math_stroke.h" />
+    <ClInclude Include="src-agg\include\agg_path_storage.h" />
+    <ClInclude Include="src-agg\include\agg_pixfmt_gray.h" />
+    <ClInclude Include="src-agg\include\agg_pixfmt_rgb.h" />
+    <ClInclude Include="src-agg\include\agg_pixfmt_rgba.h" />
+    <ClInclude Include="src-agg\include\agg_rasterizer_cells_aa.h" />
+    <ClInclude Include="src-agg\include\agg_rasterizer_scanline_aa.h" />
+    <ClInclude Include="src-agg\include\agg_rasterizer_sl_clip.h" />
+    <ClInclude Include="src-agg\include\agg_renderer_base.h" />
+    <ClInclude Include="src-agg\include\agg_renderer_scanline.h" />
+    <ClInclude Include="src-agg\include\agg_rendering_buffer.h" />
+    <ClInclude Include="src-agg\include\agg_scanline_p.h" />
+    <ClInclude Include="src-agg\include\agg_trans_affine.h" />
+    <ClInclude Include="src-agg\include\agg_vcgen_contour.h" />
+    <ClInclude Include="src-agg\include\agg_vcgen_stroke.h" />
+    <ClInclude Include="src-agg\include\agg_vertex_sequence.h" />
+    <ClInclude Include="src-common\aggCanvas.h" />
+    <ClInclude Include="src-common\ast.h" />
+    <ClInclude Include="src-common\astexpression.h" />
+    <ClInclude Include="src-common\astreplacement.h" />
+    <ClInclude Include="src-common\bounds.h" />
+    <ClInclude Include="src-common\builder.h" />
+    <ClInclude Include="src-common\cfdg.h" />
+    <ClInclude Include="src-common\CmdInfo.h" />
+    <ClInclude Include="src-common\pathIterator.h" />
+    <ClInclude Include="src-common\stacktype.h" />
+    <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
+    <ClInclude Include="src-common\cfdgimpl.h" />
+    <ClInclude Include="src-common\countable.h" />
+    <ClInclude Include="src-win\derived\FlexLexer.h" />
+    <ClInclude Include="src-win\getopt.h" />
+    <ClInclude Include="src-common\HSBColor.h" />
+    <ClInclude Include="src-common\makeCFfilename.h" />
+    <ClInclude Include="src-unix\posixSystem.h" />
+    <ClInclude Include="src-common\primShape.h" />
+    <ClInclude Include="src-common\qtCanvas.h" />
+    <ClInclude Include="src-common\Rand64.h" />
+    <ClInclude Include="src-common\renderimpl.h" />
+    <ClInclude Include="src-common\scanner.h" />
+    <ClInclude Include="src-common\shape.h" />
+    <ClInclude Include="src-common\shapeSTL.h" />
+    <ClInclude Include="src-common\SVGCanvas.h" />
+    <ClInclude Include="src-common\tempfile.h" />
+    <ClInclude Include="src-common\tiledCanvas.h" />
+    <ClInclude Include="src-common\upload.h" />
+    <ClInclude Include="src-common\variation.h" />
+    <ClInclude Include="src-common\version.h" />
+    <ClInclude Include="src-win\WinPngCanvas.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src-agg\src\agg_bezier_arc.cpp" />
+    <ClCompile Include="src-agg\src\agg_color_rgba.cpp" />
+    <ClCompile Include="src-agg\src\agg_curves.cpp" />
+    <ClCompile Include="src-agg\src\agg_trans_affine.cpp" />
+    <ClCompile Include="src-agg\src\agg_vcgen_contour.cpp" />
+    <ClCompile Include="src-agg\src\agg_vcgen_stroke.cpp" />
+    <ClCompile Include="src-common\abstractPngCanvas.cpp" />
+    <ClCompile Include="src-common\aggCanvas.cpp" />
+    <ClCompile Include="src-common\astexpression.cpp" />
+    <ClCompile Include="src-common\astreplacement.cpp" />
+    <ClCompile Include="src-common\bounds.cpp" />
+    <ClCompile Include="src-common\builder.cpp" />
+    <ClCompile Include="src-common\cfdg.cpp" />
+    <ClCompile Include="src-common\CmdInfo.cpp" />
+    <ClCompile Include="src-common\pathIterator.cpp" />
+    <ClCompile Include="src-common\stacktype.cpp" />
+    <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
+    <ClCompile Include="src-common\cfdgimpl.cpp" />
+    <ClCompile Include="src-common\countable.cpp" />
+    <ClCompile Include="src-win\getopt.c" />
+    <ClCompile Include="src-common\HSBColor.cpp" />
+    <ClCompile Include="src-win\derived\lex.yy.cpp" />
+    <ClCompile Include="src-unix\main.cpp" />
+    <ClCompile Include="src-common\makeCFfilename.cpp" />
+    <ClCompile Include="src-unix\posixSystem.cpp" />
+    <ClCompile Include="src-common\primShape.cpp" />
+    <ClCompile Include="src-common\Rand64.cpp" />
+    <ClCompile Include="src-common\renderimpl.cpp" />
+    <ClCompile Include="src-common\shape.cpp" />
+    <ClCompile Include="src-common\shapeSTL.cpp" />
+    <ClCompile Include="src-common\SVGCanvas.cpp" />
+    <ClCompile Include="src-common\tempfile.cpp" />
+    <ClCompile Include="src-common\tiledCanvas.cpp" />
+    <ClCompile Include="src-common\variation.cpp" />
+    <ClCompile Include="src-win\WinPngCanvas.cpp" />
+    <ClCompile Include="src-win\winTimer.cpp" />
+    <ClCompile Include="src-win\winVersion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="release\BuildLog.htm" />
+    <None Include="src-win\derived\location.hh" />
+    <None Include="src-win\derived\position.hh" />
+    <None Include="src-win\derived\stack.hh" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
