@@ -750,7 +750,7 @@ namespace AST {
     ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
                                      const yy::location& nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
-                    !args || args->isConstant, false, func->mType),
+                    false, false, func->mType),
       definition(func), arguments(args)
     {
         if (definition->mExpression) {
