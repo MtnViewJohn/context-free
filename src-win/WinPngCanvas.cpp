@@ -39,21 +39,12 @@ static GdiplusStartupOutput GdiPStartOutput;
 int pngCanvas::CanvasCount = 0;
 
 pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
-                     aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
+                     PixelFormat pixfmt, bool crop, int frameCount,
                      int variation)
-    : aggCanvas(pixfmt), mTiledCanvas(0), mData(0), 
-	  mOutputFileName(outfilename), mFrameCount(frameCount), 
-	  mCurrentFrame(0), mPixelFormat(pixfmt), mCrop(crop), mQuiet(quiet),
-      mVariation(variation)
+    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop, frameCount, variation)
 {
     if (CanvasCount++ == 0)
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
-
-	mWidth = width;
-	mHeight = height;
-	if (quiet) return;
-    cout << width << "w x " << height << "h pixel image." << endl;
-    cout << "Generating..." << endl;
 }
 
 pngCanvas::~pngCanvas()
@@ -63,40 +54,6 @@ pngCanvas::~pngCanvas()
         if (GrayPalette)
             free((void*)GrayPalette);
     }
-    delete[] mData;
-}
-
-void pngCanvas::start(bool clear, const agg::rgba& bk, int width, int height)
-{
-	if (!mFrameCount && !mQuiet)
-        cout << endl << "Rendering..." << endl;
-
-    if (mCrop) {
-        mWidth = width;
-        mHeight = height;
-    }
-
-    mStride = mWidth * aggCanvas::BytesPerPixel[mPixelFormat];
-    mStride += ((-mStride) & 3);
-    mData = new unsigned char[mStride * mHeight];
-    mBackground = bk;
-    attach(mData, mWidth, mHeight, mStride);
-
-    aggCanvas::start(clear, bk, width, height);
-}
-
-void pngCanvas::end()
-{
-	aggCanvas::end();
-	
-	string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
-	                             mVariation);
-	
-	if (mFrameCount) {
-		output(name.c_str(), mCurrentFrame++);
-	} else {
-		output(name.c_str());
-	}
 }
 
 int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
@@ -161,17 +118,27 @@ void pngCanvas::output(const char* outfilename, int frame)
 {
     // If the canvas is 16-bit then copy it to an 8-bit version
     // and output that. GDI+ doesn't really support 16-bit modes.
-    if (mPixelFormat & aggCanvas::Has_16bit_Color) {
-        pngCanvas* eight = new pngCanvas(outfilename, mQuiet, mWidth, mHeight,
-            (aggCanvas::PixelFormat)(mPixelFormat & (~ aggCanvas::Has_16bit_Color)),
-            mCrop, mFrameCount, mVariation);
-        if (mFrameCount) 
-            eight->mCurrentFrame = mCurrentFrame - 1;
-        eight->start(true, mBackground, mWidth, mHeight);
-        eight->copy(mData, mWidth, mHeight, mStride, mPixelFormat);
-        eight->end();
-        delete eight;
-        return;
+    unsigned char* data = mData;
+    int stride = mStride;
+    int bpp = BytesPerPixel[mPixelFormat];
+    unsigned char* data8 = 0;
+    PixelFormat pf = mPixelFormat;
+    if (pf & Has_16bit_Color) {
+        stride = stride >> 1;
+        stride += ((-stride) & 3);
+        data8 = new unsigned char[stride * mHeight * mHeightMult];
+        bpp = bpp >> 1;
+        unsigned char* row8 = data8;
+        unsigned char* srcrow = mData;
+        for (int y = 0; y < mHeight * mHeightMult; ++y) {
+            unsigned __int16* row16 = (unsigned __int16*)srcrow;
+            for (int x = 0; x < mWidth * mWidthMult; ++x)
+                row8[x] = row16[x] >> 8;
+            row8 += stride;
+            srcrow += mStride;
+        }
+        data = data8;
+        pf = (PixelFormat)(pf & (~Has_16bit_Color));
     }
 
     WCHAR wpath[MAX_PATH];
@@ -183,7 +150,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         return;
     } 
 
-	if (mPixelFormat == aggCanvas::Gray8_Blend && !GrayPalette) {
+	if (pf == aggCanvas::Gray8_Blend && !GrayPalette) {
         GrayPalette = (ColorPalette*)malloc(sizeof(ColorPalette) + 256*sizeof(ARGB));
         GrayPalette->Count = 256;
         GrayPalette->Flags = PaletteFlagsGrayScale;
@@ -191,74 +158,35 @@ void pngCanvas::output(const char* outfilename, int frame)
             GrayPalette->Entries[i] = Color::MakeARGB(255, (BYTE)i, (BYTE)i, (BYTE)i);
 	}
 
-    Bitmap* bm;
-    BYTE* data = (BYTE*)mData;
+    Bitmap* saveBM;
     int width = mWidth;
     int height = mHeight;
     if (mCrop) {
         width = cropWidth();
         height = cropHeight();
-        data += mStride * cropY() + 
-                aggCanvas::BytesPerPixel[mPixelFormat] * cropX();
+        data += stride * cropY() + bpp * cropX();
     }
 
-    switch (mPixelFormat) {
+    switch (pf) {
         case aggCanvas::Gray8_Blend:
-            bm = new Bitmap(width, height, mStride, PixelFormat8bppIndexed, data);
-            bm->SetPalette(GrayPalette);
+            saveBM = new Bitmap(width, height, mStride, PixelFormat8bppIndexed, data);
+            saveBM->SetPalette(GrayPalette);
             break;
         case aggCanvas::RGB8_Blend:
-            bm = new Bitmap(width, height, mStride, PixelFormat24bppRGB, data);
+            saveBM = new Bitmap(width, height, mStride, PixelFormat24bppRGB, data);
             break;
         case aggCanvas::RGBA8_Blend:
-            bm = new Bitmap(width, height, mStride, PixelFormat32bppPARGB, data);
+            saveBM = new Bitmap(width, height, mStride, PixelFormat32bppPARGB, data);
             break;
         default:
-            bm = 0;
+            saveBM = 0;
             break;
     }
-
-	Bitmap* saveBM = bm;
 
 	if (frame == -1 && !mQuiet) {
         cout << endl << "Writing "
              << width << "w x " << height << "h pixel image..." << endl;
 	}
-
-	if (mTiledCanvas) {
-	    agg::point_i factor;
-		if (mTiledCanvas->isRectangular(&factor.x, &factor.y)) {
-			int srcWidth = bm->GetWidth();
-			int srcHeight = bm->GetHeight();
-	#ifdef _DEBUG
-	#undef new
-	#endif
-			Gdiplus::PixelFormat fmt = (bm->GetPixelFormat() & PixelFormatAlpha) ? 
-				PixelFormat32bppPARGB : PixelFormat24bppRGB;
-
-			saveBM = new Bitmap(srcWidth * factor.x, srcHeight * factor.y, fmt);
-	#ifdef _DEBUG
-	#define new DEBUG_NEW
-	#endif
-			Graphics g(saveBM);
-
-			tileList points = 
-				mTiledCanvas->getTesselation(saveBM->GetWidth(), saveBM->GetHeight(),
-											 0, 0, true);
-	        
-			for (tileList::iterator pt = points.begin(); 
-				 pt != points.end(); pt++) {
-				Gdiplus::Rect destRect(pt->x, pt->y, srcWidth, srcHeight);
-
-				g.DrawImage(bm, destRect, 0, 0, srcWidth, srcHeight,
-					UnitPixel, NULL, NULL, NULL);
-			}
-
-			delete bm;
-		} else {
-			cerr << endl << "Cannot generate a rectangular tiled output." << endl;
-		}
-    }
 
     PropertyItem pi;
     pi.id = PropertyTagImageDescription;
@@ -293,6 +221,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     }
 
     delete saveBM;
+    delete[] data8;
 }
 
 
