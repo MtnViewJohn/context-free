@@ -116,6 +116,8 @@ static CLSID encClsid = CLSID_NULL;
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
+    int width = mWidth * mWidthMult;
+    int height = mHeight * mHeightMult;
     // If the canvas is 16-bit then copy it to an 8-bit version
     // and output that. GDI+ doesn't really support 16-bit modes.
     unsigned char* data = mData;
@@ -126,13 +128,13 @@ void pngCanvas::output(const char* outfilename, int frame)
     if (pf & Has_16bit_Color) {
         stride = stride >> 1;
         stride += ((-stride) & 3);
-        data8 = new unsigned char[stride * mHeight * mHeightMult];
+        data8 = new unsigned char[stride * height];
         bpp = bpp >> 1;
         unsigned char* row8 = data8;
         unsigned char* srcrow = mData;
-        for (int y = 0; y < mHeight * mHeightMult; ++y) {
+        for (int y = 0; y < height; ++y) {
             unsigned __int16* row16 = (unsigned __int16*)srcrow;
-            for (int x = 0; x < mWidth * mWidthMult; ++x)
+            for (int x = 0; x < width; ++x)
                 row8[x] = row16[x] >> 8;
             row8 += stride;
             srcrow += mStride;
@@ -159,13 +161,6 @@ void pngCanvas::output(const char* outfilename, int frame)
 	}
 
     Bitmap* saveBM;
-    int width = mWidth;
-    int height = mHeight;
-    if (mCrop) {
-        width = cropWidth();
-        height = cropHeight();
-        data += stride * cropY() + bpp * cropX();
-    }
 
     switch (pf) {
         case aggCanvas::Gray8_Blend:
@@ -193,9 +188,9 @@ void pngCanvas::output(const char* outfilename, int frame)
     pi.type = PropertyTagTypeASCII;
     pi.length = strlen("Context Free generated image") + 1;
     pi.value = (VOID*)"Context Free generated image";
-    saveBM->SetPropertyItem(&pi);
+    if (saveBM) saveBM->SetPropertyItem(&pi);
 
-    Status s = saveBM->Save(wpath, &encClsid, NULL);
+    Status s = saveBM ? saveBM->Save(wpath, &encClsid, NULL) : Gdiplus::UnknownImageFormat;
 
 	if (s != Ok){
 		cerr << endl << "A GDI+ error occured during PNG write: " << 
