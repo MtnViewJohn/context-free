@@ -599,7 +599,7 @@ namespace AST {
     }
     
     void
-    ASTdefine::traverse(const Shape& p, bool tr, Renderer* r) const
+    ASTdefine::traverse(const Shape& p, bool, Renderer* r) const
     {
         static const StackType zero = {0.0};
         int s = (int)r->mCFstack.size();
@@ -660,7 +660,7 @@ namespace AST {
     }
     
     void
-    ASTpathCommand::traverse(const Shape& s, bool tr, Renderer* r) const
+    ASTpathCommand::traverse(const Shape& s, bool, Renderer* r) const
     {
         Shape child = s;
         double width = mChildChange.strokeWidth;
