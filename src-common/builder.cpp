@@ -261,6 +261,7 @@ Builder::IncludeFile(const std::string& fname)
         delete input;
         input = 0;
         m_CFDG->system()->error();
+        mErrorOccured = true;
         m_CFDG->system()->message("Couldn't open rules file %s", path.c_str());
         return;
     }
