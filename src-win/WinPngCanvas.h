@@ -22,38 +22,19 @@
 //
 //
 
-#include "cfdg.h"
-#include "aggCanvas.h"
-#include "tiledCanvas.h"
+#include "abstractPngCanvas.h"
 
-class pngCanvas : public aggCanvas
+class pngCanvas : public abstractPngCanvas
 {
 public:
   pngCanvas(const char* outfilename, bool quiet, int width, int height, 
-            aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
-            int variation);
+            PixelFormat pixfmt, bool crop, int frameCount, int variation);
   ~pngCanvas();
 
-  void output(const char * outfilename, int frame = -1);
+protected:
+  virtual void output(const char * outfilename, int frame = -1);
 
-  void start(bool clear, const agg::rgba& bk, int width, int height);
-  void end();
-
-  tiledCanvas* mTiledCanvas;
 private:
-  unsigned char* mData;
   static int CanvasCount;
-
-  const char* mOutputFileName;
-  int mStride;
-  int mFrameCount;
-  int mCurrentFrame;
-
-  aggCanvas::PixelFormat mPixelFormat;
-  agg::rgba mBackground;
-
-  bool mCrop;
-  bool mQuiet;
-  int  mVariation;
 };
 
