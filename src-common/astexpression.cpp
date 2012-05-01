@@ -344,7 +344,7 @@ namespace AST {
         }
         
         isConstant = args.get() ? args->isConstant : true;
-        isLocal = args.get() && args->isLocal;
+        isLocal = args.get() ? args->isLocal : true;
         int argcount = args.get() ? args->evaluate(0, 0) : 0;
         
         functype = GetFuncType(func);
