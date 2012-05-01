@@ -47,6 +47,7 @@
 #include "version.h"
 #include "Rand64.h"
 #include "makeCFfilename.h"
+#include <cassert>
 
 using namespace std;
 
@@ -80,6 +81,11 @@ usage(bool inError)
   out << "    " << APP_OPTCHAR() <<
          "s WIDTHxHEIGHT" << endl;
   out << "              set width to WIDTH and height to HEIGHT in pixels/mm" << endl;
+  out << "    " << APP_OPTCHAR() <<
+         "T num    multiply tiled output size by num in width and height" << endl;
+  out << "    " << APP_OPTCHAR() <<
+         "T WIDTHxHEIGHT" << endl;
+  out << "              multiply tiled output size by WIDTH in width and HEIGHT in height" << endl;
   out << "    " << APP_OPTCHAR() <<
          "m num    maximum number of shapes (default none)" << endl;
   out << "    " << APP_OPTCHAR() <<
@@ -119,6 +125,8 @@ struct options {
   enum OutputFormat { PNGfile = 0, SVGfile = 1 };
   int   width;
   int   height;
+  int   widthMult;
+  int   heightMult;
   int   maxShapes;
   float minSize;
   float borderSize;
@@ -139,8 +147,8 @@ struct options {
   bool outputStdout;
   
   options()
-  : width(500), height(500), maxShapes(0), minSize(0.3F), borderSize(2.0F),
-    variation(-1), crop(false), check(false), 
+  : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
+    minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
     animationFrames(0), animationZoom(false), input(0), output(0), 
     output_fmt(0), format(PNGfile), quiet(false), outputTime(false),
     outputStdout(false)
@@ -219,7 +227,7 @@ processCommandLine(int argc, char* argv[], options& opt)
   invokeName = argv[0];
 
   int i;
-  while ((i = getopt(argc, argv, ":w:h:s:m:x:b:v:a:o:cCVzqt?")) != -1) {
+  while ((i = getopt(argc, argv, ":w:h:s:m:x:b:v:a:o:T:cCVzqt?")) != -1) {
     char c = (char)i;
     switch(c) {
       case 'w':
@@ -230,6 +238,9 @@ processCommandLine(int argc, char* argv[], options& opt)
         break;
       case 's':
         intArg2(c, optarg, opt.width, opt.height);
+        break;
+      case 'T':
+        intArg2(c, optarg, opt.widthMult, opt.heightMult);
         break;
       case 'm':
         opt.maxShapes = intArg(c, optarg);
@@ -337,6 +348,16 @@ int main (int argc, char* argv[]) {
   CFDG* myDesign = CFDG::ParseFile(opts.input, &system, opts.variation);
   if (!myDesign) return 1;
   if (opts.check) return 0;
+  if (opts.widthMult != 1 || opts.heightMult != 1) {
+    if (!myDesign->isTiled() && !myDesign->isFrieze()) {
+      cerr << "Tiled output multiplication only allowed for tiled or frieze designs." << endl;
+      return 6;
+    }
+    if (opts.format != options::PNGfile) {
+      cerr << "Tiled output multiplication only allowed for PNG output." << endl;
+      return 6;
+    }
+  }
 
   // If a static output file name is provided then generate an output
   // file name format string by escaping any '%' characters. If this is 
@@ -403,6 +424,12 @@ int main (int argc, char* argv[]) {
       svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
       myCanvas = (Canvas*)svg;
   }
+    
+    if (opts.widthMult != 1 || opts.heightMult != 1) {
+        assert(png);
+        png->setTiler(myRenderer, opts.widthMult, opts.heightMult);
+    }
+
     
   myRenderer->run(myCanvas, false);
   

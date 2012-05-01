@@ -42,7 +42,8 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.GDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
+      useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "/Users/john/Projects/CF3xc4"
       buildConfiguration = "Development"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
@@ -55,6 +56,16 @@
             ReferencedContainer = "container:Context Free.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-s100 -T3x4 /Users/john/Documents/Context\ Free/gnomes.cfdg output/gnomes.png"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-s50 -T10x1 /Users/john/Documents/Context\ Free/tests/friezesymmtest1.cfdg output/feet.png"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
          <AdditionalOption
             key = "MallocScribble"

@@ -30,60 +30,9 @@
 #include "png.h"
 #include <stdlib.h>
 #include <iostream>
-#include "makeCFfilename.h"
 #include <arpa/inet.h>
 
 using namespace std;
-
-pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
-                     aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
-                     int variation)
-    : aggCanvas(pixfmt), mData(0), mOutputFileName(outfilename),  
-      mFrameCount(frameCount), mCurrentFrame(0), 
-      mPixelFormat(pixfmt), mCrop(crop), mQuiet(quiet), mVariation(variation)
-{
-	mWidth = width;
-	mHeight = height;
-	if (quiet) return;
-    cout << width << "w x " << height << "h pixel image." << endl;
-    cout << "Generating..." << endl;
-}
-
-pngCanvas::~pngCanvas()
-{
-    delete[] mData;
-}
-
-void pngCanvas::start(bool clear, const agg::rgba& bk, int width, int height)
-{
-	if (!mFrameCount && !mQuiet)
-        cout << endl << "Rendering..." << endl;
-
-    if (mCrop) {
-        mWidth = width;
-        mHeight = height;
-    }
-
-    mStride = mWidth * aggCanvas::BytesPerPixel[mPixelFormat];
-    mData = new unsigned char[mStride * mHeight];
-    attach(mData, mWidth, mHeight, mStride);
-
-    aggCanvas::start(clear, bk, width, height);
-}
-
-void pngCanvas::end()
-{
-	aggCanvas::end();
-	
-	string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
-	                             mVariation);
-	
-	if (mFrameCount) {
-		output(name.c_str(), mCurrentFrame++);
-	} else {
-		output(name.c_str());
-	}
-}
 
 namespace {
     void
@@ -158,9 +107,19 @@ void pngCanvas::output(const char* outfilename, int frame)
             default:
                 throw "Unknown pixel format";
         }
+        
+        int width = mWidth;
+        int height = mHeight;
+        int srcx = mOriginX;
+        int srcy = mOriginY;
+        if (mRenderer && mRenderer->m_tiledCanvas) {
+            width *= mWidthMult;
+            height *= mHeightMult;
+            srcx = srcy = 0;
+        }
 
         png_set_IHDR(png_ptr, info_ptr,
-            mWidth, mHeight, (mPixelFormat & Has_16bit_Color) + 8, pngFormat,
+            width, height, (mPixelFormat & Has_16bit_Color) + 8, pngFormat,
             PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
             PNG_FILTER_TYPE_DEFAULT);
 
@@ -175,13 +134,13 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         png_write_info(png_ptr, info_ptr);
 
-        png_bytep rowPtr = mData;
-        for (int r = 0; r < mHeight; ++r) {
+        png_bytep rowPtr = mData + srcy * mStride + srcx * aggCanvas::BytesPerPixel[mPixelFormat];
+        for (int r = 0; r < height; ++r) {
             if (mPixelFormat == aggCanvas::RGBA8_Blend) {
                 // Convert each row to non-premultiplied alpha as per PNG spec
                 // This is done in a separate array instead of in-situ because
                 // for animations the main buffer might be drawn into again
-                for (int c = 0; c < mStride; c += 4) {
+                for (int c = 0; c < width * 4; c += 4) {
                     agg::rgba8 pix(rowPtr[c + 0], rowPtr[c + 1], rowPtr[c + 2], rowPtr[c + 3]);
                     pix.demultiply();
                     row[c + 0] = pix.r; 
@@ -193,7 +152,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             } else if (mPixelFormat == aggCanvas::RGBA16_Blend) {
                 // Ditto for rgba16
                 png_uint_16p rowPtr16 = (png_uint_16p)rowPtr;
-                for (int c = 0; c < mStride >> 1; c += 4) {
+                for (int c = 0; c < width * 4; c += 4) {
                     agg::rgba16 pix(rowPtr16[c + 0], rowPtr16[c + 1], rowPtr16[c + 2], rowPtr16[c + 3]);
                     pix.demultiply();
                     row16[c + 0] = htons(pix.r);    // Also convert to network byte order
@@ -205,7 +164,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             } else if (mPixelFormat & Has_16bit_Color) {
                 // Convert rgb16/gray16 to network byte order
                 png_uint_16p rowPtr16 = (png_uint_16p)rowPtr;
-                for (int c = 0; c < mStride >> 1; ++c) 
+                for (int c = 0; c < width * (BytesPerPixel[mPixelFormat] >> 1); ++c) 
                     row16[c] = htons(rowPtr16[c]);
                 png_write_row(png_ptr, (png_bytep)row16);
             } else {
