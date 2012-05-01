@@ -61,6 +61,7 @@ private:
 	agg::trans_affine mOffset;
     agg::trans_affine mInvert;
     std::vector<agg::point_d> mTileList;
+    tiledCanvas& operator=(const tiledCanvas&);
 };
 
 #endif  // INCLUDE_TILEDCANVAS_H

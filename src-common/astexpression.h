@@ -61,7 +61,7 @@ namespace AST {
                               bool , int& , 
                               Renderer* = 0) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
-        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const
+        virtual const StackType* evalArgs(Renderer* = 0, const StackType* = 0) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return NULL; }
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
@@ -70,7 +70,7 @@ namespace AST {
         virtual const ASTexpression* operator[](size_t i) const;
         virtual int size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t i = std::numeric_limits<size_t>::max()) { return false; }
+        virtual bool release(size_t = std::numeric_limits<size_t>::max()) { return false; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
     class ASTfunction : public ASTexpression {
