@@ -380,7 +380,8 @@ namespace AST {
         bool operator!=(const ASTexpression& e) const;
         
         static int CheckType(const ASTparameters* types, const ASTparameters* parent, 
-                             const ASTexpression* args, const yy::location& where);
+                             const ASTexpression* args, const yy::location& where,
+                             bool checkNumber);
     };
 }
 
