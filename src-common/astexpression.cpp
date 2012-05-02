@@ -235,7 +235,8 @@ namespace AST {
     
     int
     ASTparameter::CheckType(const ASTparameters* types, const ASTparameters* parent, 
-                            const ASTexpression* args, const yy::location& where)
+                            const ASTexpression* args, const yy::location& where,
+                            bool checkNumber)
     {
         // Walks down the right edge of an expression tree checking that the types
         // of the children match the specified argument types
@@ -290,21 +291,14 @@ namespace AST {
                 CfdgError::Error(param_it->mLocation, "This is the expected type.");
                 return -1;
             }
-            while (param_it->mType == ASTexpression::NumericType &&
-                   !param_it->isNatural && !ASTparameter::Impure)
+            if (!arg->isLocal && param_it->mType == ASTexpression::NumericType &&
+                !param_it->isNatural && !ASTparameter::Impure && checkNumber)
             {
-                if (arg->isLocal) break;
                 const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
-                if (v && v->isParameter)
-                    break;
-                const ASTfunction* f = dynamic_cast<const ASTfunction*>(arg);
-                if (f && (f->functype >= ASTfunction::Rand && f->functype <= ASTfunction::RandInt) &&
-                    f->arguments && f->arguments->isConstant) 
-                {
-                    break;
+                if (!v || !v->isParameter) {
+                    CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
+                    return -1;
                 }
-                CfdgError::Error(arg->where, "this expression does not satisfy the number parameter requirement");
-                return -1;
             }
         }
         
@@ -465,7 +459,7 @@ namespace AST {
         }
         if (parent && parent->empty())
             parent = NULL;
-        argSize = ASTparameter::CheckType(types, parent, arguments, loc);
+        argSize = ASTparameter::CheckType(types, parent, arguments, loc, true);
         if (argSize < 0) {
             argSource = NoArgs;
             return;
@@ -759,12 +753,13 @@ namespace AST {
         } else {
             isConstant = isConstant && definition->mChildChange.modExp.empty();
         }
+        isLocal = args ? args->isLocal : true;
         if (args && !func->mStackCount)
             CfdgError::Error(nameLoc + args->where, "Function does not take arguments");
         if (!args && func->mStackCount)
             CfdgError::Error(nameLoc, "Function takes arguments");
         if (args && func->mStackCount)
-            ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where);
+            ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where, false);
     }
     
     ASTlet::ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
