@@ -1,9 +1,9 @@
 *** Context Free
-*** version 2.2
+*** version 3.0
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
-    Context Free Copyright 2005-2008 Mark Lentczner and John Horigan
+    Context Free Copyright 2005-2012 Mark Lentczner and John Horigan
     CFDG Copyright 2005 Chris Coyne
 	Anti-Grain Geometry library Copyright 2002-2005 Maxim Shemanarev
 
@@ -48,8 +48,8 @@ FILE TREE
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 MACINTOSH BUILD NOTES
 
-Requires Xcode 1.5 & Mac OS X 10.3 (Panther).
-Developed with XCode 3.0 and Mac OS X 10.5 (Leopard), has not been tested with older versions of XCode or Mac OS X.
+Requires Xcode 4 & Mac OS X 10.5 (Leopard).
+Developed with XCode 4.2 and Mac OS X 10.7 (Lion), has not been tested with older versions of XCode or Mac OS X.
 
 The Xcode project file is in the top directory:
     ./Context Free.xcodeproj
@@ -58,17 +58,24 @@ The Xcode project file is in the top directory:
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS GUI BUILD NOTES
 
-Requires Visual Studio 2005 or later.
+Requires Visual Studio 2010 or later.
 
-The VS2005 solution file is at ./src-net/ContextFreeNet.sln
+The VS2010 solution file is at ./src-net/ContextFreeNet.sln
 
+If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
+in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
+system then cd to src-win/derived and type 'make'.
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS CLI (command line) BUILD NOTES
 
-Requires Visual Studio 2005 or Visual C++ 2005 Express edition,  or later.
+Requires Visual Studio 2010 or Visual C++ 2010 Express edition, or later.
 
 The CLI solution file is at ./ContextFreeCLI.sln
+
+If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
+in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
+system then cd to src-win/derived and type 'make'.
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
