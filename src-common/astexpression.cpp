@@ -1301,16 +1301,13 @@ namespace AST {
     
     static double MinMax(const ASTexpression* e, Renderer* rti, bool isMin)
     {
-        bool first = true;
         double res = 0.0;
-        for (int i = 0; i < e->size(); ++i) {
+        if ((*e)[0]->evaluate(&res, 1, rti) != 1)
+            CfdgError::Error((*e)[0]->where, "Error computing min/max here.");
+        for (int i = 1; i < e->size(); ++i) {
             double v;
             if ((*e)[i]->evaluate(&v, 1, rti) != 1)
                 CfdgError::Error((*e)[i]->where, "Error computing min/max here.");
-            if (first) {
-                res = v;
-                continue;
-            }
             bool leftMin = res < v;
             res = ((isMin && leftMin) || (!isMin && !leftMin)) ? res : v;
         }
