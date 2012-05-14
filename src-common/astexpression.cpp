@@ -153,12 +153,6 @@ namespace AST {
     
     bool ASTparameter::Impure = false;
     
-    double CFatof(const char* s)
-    {
-        double ret = atof(s);
-        return strchr(s, '%') ? ret / 100.0 : ret;
-    }
-    
     void
     ASTparameter::init(int nameIndex, ASTdefine* def)
     {

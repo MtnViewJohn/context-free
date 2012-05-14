@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 #include "agg_math_stroke.h"
+#include "cfdg.h"
 
 namespace AST {
 
@@ -144,6 +145,14 @@ namespace AST {
         ARCTO, ARCREL, CURVETO, CURVEREL, CLOSEPOLY
     };
     
+    void addUnique(CFDG::SymmList& syms, agg::trans_affine& tr);
+    void processDihedral(CFDG::SymmList& syms, double order, double x, double y,
+                         bool dihedral, double angle, const yy::location& where);
+    void processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool tiled,
+                         std::vector<double>& data, const yy::location& where);
+    const ASTexpression* 
+         getTransforms(const ASTexpression* e, CFDG::SymmList& syms, 
+                       Renderer* r, bool tiled, agg::trans_affine& tile);
 }
 
 #endif // INCLUDE_AST_H
