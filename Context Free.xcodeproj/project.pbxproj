@@ -63,6 +63,8 @@
 		527FE238135ABF2400F9B15F /* pathIterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 527FE237135ABF2400F9B15F /* pathIterator.cpp */; };
 		528D3E8F0CEAC3D20022E4F1 /* agg_bezier_arc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528D3E8E0CEAC3D20022E4F1 /* agg_bezier_arc.cpp */; };
 		529049A30F3E4CC900484FED /* cfdg.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 529049A10F3E4CC900484FED /* cfdg.ypp */; };
+		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
+		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
 		52E94E9913650A2E00BB2D96 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52E94E9813650A2E00BB2D96 /* QTKit.framework */; };
 		52E94EAE13650C5C00BB2D96 /* qtCanvas.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52E94EAD13650C5C00BB2D96 /* qtCanvas.mm */; };
@@ -280,7 +282,8 @@
 		529049A10F3E4CC900484FED /* cfdg.ypp */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = cfdg.ypp; sourceTree = "<group>"; };
 		529049A20F3E4CC900484FED /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
 		529A79530B7C373200D45C38 /* agg_scanline_p.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = agg_scanline_p.h; sourceTree = "<group>"; };
-		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; path = abstractPngCanvas.h; sourceTree = "<group>"; };
+		52BA888A155F30490026AF04 /* ast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cpp; sourceTree = "<group>"; };
+		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
 		52E94E9813650A2E00BB2D96 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		52E94EAD13650C5C00BB2D96 /* qtCanvas.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = qtCanvas.mm; sourceTree = "<group>"; };
@@ -498,6 +501,7 @@
 				526BCBBC10F5C12D003357E9 /* astexpression.cpp */,
 				524D1FAF13AD0D7C002732C2 /* astexpression.h */,
 				5270D471101ABBEA001A46A9 /* ast.h */,
+				52BA888A155F30490026AF04 /* ast.cpp */,
 				529049A10F3E4CC900484FED /* cfdg.ypp */,
 				529049A20F3E4CC900484FED /* scanner.h */,
 				FD879EE60B64191700FF6959 /* upload.cpp */,
@@ -840,6 +844,7 @@
 				524D22E713BA0200002732C2 /* posixVersion.cpp in Sources */,
 				524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */,
 				52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */,
+				52BA888C155F30490026AF04 /* ast.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -890,6 +895,7 @@
 				52E94EAE13650C5C00BB2D96 /* qtCanvas.mm in Sources */,
 				5276AA9913776AE1000FA1AB /* CmdInfo.cpp in Sources */,
 				5276ACE9137A513B000FA1AB /* stacktype.cpp in Sources */,
+				52BA888B155F30490026AF04 /* ast.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
