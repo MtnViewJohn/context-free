@@ -74,7 +74,6 @@ namespace AST {
     AST::ASTswitch* switchObj;
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
-    std::list<AST::ASTmodification*>* modList;
     AST::ASTrepContainer* bodyObj;
 };
 
@@ -156,7 +155,6 @@ namespace AST {
 %type <shapeObj> shape
 %type <string> fileString fileNameSpace definition_header global_definition_header shapeName
 %type <modToken> caseHeader
-%type <modList> buncha_mods
 %type <bodyObj> letHeader
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP USER_ARRAYNAME fileString fileNameSpace definition_header global_definition_header shapeName
@@ -174,7 +172,6 @@ namespace AST {
 %destructor { delete $$; } switchHeader
 %destructor { delete $$; } shape
 %destructor { if (driver.mCompilePhase == 2) driver.pop_repContainer(NULL); } caseHeader
-%destructor { ASTtransform::ClearMods(*$$); delete $$; } buncha_mods
 %destructor { driver.pop_repContainer(NULL); delete $$; } letHeader
 %{
 #include "scanner.h"
@@ -1064,42 +1061,30 @@ ifElseHeader:
         ;
 
 transHeader:
-        MODTYPE buncha_mods {
+        MODTYPE exp2 {
+            exp_ptr mods($2);
             if ($1 != ASTmodTerm::transform)
                 error(@1, "Syntax error");
             if (driver.mCompilePhase == 2) {
-                ASTtransform* trans = new ASTtransform(@$);
-                if ($2->empty()) {
-                    trans->mModifications.push_back(new ASTmodification(@$));
-                } else {
-                    trans->mModifications.swap(*$2);
-                }
+                ASTtransform* trans = new ASTtransform(@$, mods);
                 driver.push_repContainer(trans->mBody);
                 $$ = trans;
             } else {
                 $$ = 0;
             }
-            ASTtransform::ClearMods(*$2);   // should be empty, unless error or pass 1
-            delete $2;
         }
-        | CLONE buncha_mods {
+        | CLONE exp2 {
+            exp_ptr mods($2);
             if (!ASTparameter::Impure)
                 error(@1, "shape cloning only permitted in impure mode");
             if (driver.mCompilePhase == 2) {
-                ASTtransform* trans = new ASTtransform(@$);
+                ASTtransform* trans = new ASTtransform(@$, mods);
                 trans->mClone = true;
-                if ($2->empty()) {
-                    trans->mModifications.push_back(new ASTmodification(@$));
-                } else {
-                    trans->mModifications.swap(*$2);
-                }
                 driver.push_repContainer(trans->mBody);
                 $$ = trans;
             } else {
                 $$ = 0;
             }
-            ASTtransform::ClearMods(*$2);   // should be empty, unless error or pass 1
-            delete $2;
         }
         ;
 
@@ -1182,15 +1167,6 @@ modification:
         }
         ;
         
-buncha_mods:
-        buncha_mods modification {
-            $1->push_back($2);
-            $$ = $1;
-        }
-        | {
-            $$ = new ASTtransform::ModList();
-        }
-
 buncha_adjustments:
         buncha_adjustments adjustment {
             term_ptr mod($2);

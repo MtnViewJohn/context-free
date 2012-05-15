@@ -37,9 +37,9 @@ namespace AST {
     }
     
     void
-    addUnique(CFDG::SymmList& syms, agg::trans_affine& tr)
+    addUnique(SymmList& syms, agg::trans_affine& tr)
     {
-        for (CFDG::SymmList::iterator it = syms.begin(), eit = syms.end(); it != eit; ++it) {
+        for (SymmList::iterator it = syms.begin(), eit = syms.end(); it != eit; ++it) {
             if (*it == tr)
                 return;
         }
@@ -47,7 +47,7 @@ namespace AST {
     }
 
     void
-    processDihedral(CFDG::SymmList& syms, double order, double x, double y,
+    processDihedral(SymmList& syms, double order, double x, double y,
                     bool dihedral, double angle, const yy::location& where)
     {
         if (order < 1.0)
@@ -73,7 +73,7 @@ namespace AST {
     // appropriate affine transforms to the SymmList. Avoid adding the identity
     // transform if it is already present in the SymmList.
     void
-    processSymmSpec(CFDG::SymmList& syms, agg::trans_affine& tile, bool tiled,
+    processSymmSpec(SymmList& syms, agg::trans_affine& tile, bool tiled,
                     std::vector<double>& data, const yy::location& where)
     {
         if (data.empty()) return;
@@ -731,7 +731,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    getTransforms(const ASTexpression* e, CFDG::SymmList& syms, Renderer* r, 
+    getTransforms(const ASTexpression* e, SymmList& syms, Renderer* r, 
                   bool tiled, agg::trans_affine& tile)
     {
         syms.clear();
@@ -766,8 +766,8 @@ namespace AST {
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
                     const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit);
                     if ((!r && !cit->isConstant) || !m || 
-                        (m->modClass & (ASTmodification::GeomClass | ASTmodification::PathOpClass)) == 
-                         (ASTmodification::GeomClass | ASTmodification::PathOpClass))
+                        (m->modClass & (ASTmodification::GeomClass | ASTmodification::PathOpClass)) != 
+                         m->modClass)
                     {
                         // const_cast is a little sleazy, but we never never modify
                         // it and we return it as const

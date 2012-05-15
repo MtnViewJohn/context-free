@@ -116,15 +116,18 @@ namespace AST {
     };
     class ASTtransform: public ASTreplacement {
     public:
-        typedef std::list<ASTmodification*> ModList;
         ASTrepContainer mBody;
-        ModList mModifications;
+        SymmList       mTransforms;
+        const ASTexpression* mModifications;    // weak pointer
+        ASTexpression* mExpHolder;              // strong pointer
         bool mClone;
         
-        ASTtransform(const yy::location& loc);
+        ASTtransform(const yy::location& loc, exp_ptr mods);
         virtual ~ASTtransform();
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
-        static void ClearMods(ModList& m);
+    private:
+        static agg::trans_affine Dummy;
+        
     };
     class ASTif: public ASTreplacement {
     public:
