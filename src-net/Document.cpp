@@ -480,6 +480,8 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
 
     try {
         Bitmap^ bm = MakeBitmap(mTiled || Form1::prefs->ImageCrop, mCanvas);
+        if (bm == nullptr)
+            throw gcnew ArgumentNullException();
 
         if (mTiled && (mOutputMultiplier[0] != 1.0 || mOutputMultiplier[1] != 1.0)) {
             Imaging::PixelFormat fmt = bm->PixelFormat;
@@ -848,13 +850,20 @@ void Document::renderSizeChanged()
 {
     Bitmap^ oldImage = displayImage;
     System::Drawing::Size newSize = renderBox->Size;
-    displayImage = gcnew Bitmap(newSize.Width, newSize.Height, 
-        System::Drawing::Imaging::PixelFormat::Format32bppArgb);
-    Graphics^ g = Graphics::FromImage(displayImage);
-    g->Clear(Color::White);
-    renderBox->Image = displayImage;
-    updateRenderBox();
-    delete oldImage;
+    if (newSize.Width <= 0 || newSize.Height <= 0) return;
+    try {
+        if (renderBox->Image != nullptr && renderBox->Image->Size == newSize)
+            return;
+        displayImage = gcnew Bitmap(newSize.Width, newSize.Height, 
+            System::Drawing::Imaging::PixelFormat::Format32bppArgb);
+        Graphics^ g = Graphics::FromImage(displayImage);
+        g->Clear(Color::White);
+        renderBox->Image = displayImage;
+        updateRenderBox();
+        delete oldImage;
+    } catch (ArgumentException^) {
+        setMessageText("Error creating new screen bitmap." );
+    }
 }
 
 System::Void Document::splitterMoved(Object^ sender, SplitterEventArgs^ e)
@@ -1117,6 +1126,7 @@ Bitmap^ Document::MakeBitmap(bool cropped, WinCanvas *canvas)
 
     IntPtr pixelStore = IntPtr((void*)data);
 
+    try {
     switch (canvas->mPixelFormat) {
         case aggCanvas::Gray8_Blend: {
                 bm = gcnew Bitmap(width, height, canvas->mStride,Imaging::PixelFormat::Format8bppIndexed, pixelStore);
@@ -1136,6 +1146,9 @@ Bitmap^ Document::MakeBitmap(bool cropped, WinCanvas *canvas)
         default:
             bm = nullptr;
             break;
+    }
+    } catch (ArgumentException^) {
+        return nullptr;
     }
 
     return bm;
@@ -1207,6 +1220,12 @@ void Document::updateRenderBox()
     }
 
     Bitmap^ newBitmap = MakeBitmap(mTiled, mCanvas);
+    if (newBitmap == nullptr) {
+        delete g;
+        delete mTempCanvas;
+        mTempCanvas = 0;
+        return;
+    }
 
     g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
