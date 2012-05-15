@@ -165,6 +165,7 @@
     <ClCompile Include="src-agg\src\agg_vcgen_stroke.cpp" />
     <ClCompile Include="src-common\abstractPngCanvas.cpp" />
     <ClCompile Include="src-common\aggCanvas.cpp" />
+    <ClCompile Include="src-common\ast.cpp" />
     <ClCompile Include="src-common\astexpression.cpp" />
     <ClCompile Include="src-common\astreplacement.cpp" />
     <ClCompile Include="src-common\bounds.cpp" />
