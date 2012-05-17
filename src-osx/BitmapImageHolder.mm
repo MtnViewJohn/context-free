@@ -25,34 +25,45 @@
 #import "BitmapImageHolder.h"
 #import <Cocoa/Cocoa.h>
 
+@interface BitmapImageHolder (internal)
 
-@implementation BitmapImageHolder
+- (BOOL) setupWithBitmapDataPlanes: (unsigned char**)planes
+                        pixelsWide: (NSInteger)width
+                        pixelsHigh: (NSInteger)height
+                     bitsPerSample: (NSInteger)bps
+                   samplesPerPixel: (NSInteger)spp
+                          hasAlpha: (BOOL)alpha
+                          isPlanar: (BOOL)isPlanar
+                    colorSpaceName: (NSString*)colorSpaceName
+                       bytesPerRow: (NSInteger)rowBytes
+                      bitsPerPixel: (NSInteger)pixelBits;
 
-- (id) initWithBitmapDataPlanes: (unsigned char**)planes
-                     pixelsWide: (NSInteger)width
-                     pixelsHigh: (NSInteger)height
-                  bitsPerSample: (NSInteger)bps
-                samplesPerPixel: (NSInteger)spp
-                       hasAlpha: (BOOL)alpha
-                       isPlanar: (BOOL)isPlanar
-                 colorSpaceName: (NSString*)colorSpaceName
-                    bytesPerRow: (NSInteger)rowBytes
-                   bitsPerPixel: (NSInteger)pixelBits
+@end
+
+@implementation BitmapImageHolder (internal)
+
+- (BOOL) setupWithBitmapDataPlanes: (unsigned char**)planes
+                        pixelsWide: (NSInteger)width
+                        pixelsHigh: (NSInteger)height
+                     bitsPerSample: (NSInteger)bps
+                   samplesPerPixel: (NSInteger)spp
+                          hasAlpha: (BOOL)alpha
+                          isPlanar: (BOOL)isPlanar
+                    colorSpaceName: (NSString*)colorSpaceName
+                       bytesPerRow: (NSInteger)rowBytes
+                      bitsPerPixel: (NSInteger)pixelBits
 {
-    self = [super init];
-    if (!self) return self;
-    
     _isPlanar = isPlanar;
     _hasAlpha = alpha;
-    if (width < 1 || height < 1 || spp < 1 || spp > 5) return nil;
+    if (width < 1 || height < 1 || spp < 1 || spp > 5) return FALSE;
     _pixelsWide = width;
     _pixelsHigh = height;
     _samplesPerPixel = (unsigned int) spp;
     
-    if (bps != 8 && bps != 16) return nil;
+    if (bps != 8 && bps != 16) return FALSE;
     _bitsPerSample = bps;
     
-    if (colorSpaceName == nil) return nil;
+    if (colorSpaceName == nil) return FALSE;
     if (![colorSpaceName isEqual:NSCalibratedWhiteColorSpace] &&
         ![colorSpaceName isEqual:NSCalibratedBlackColorSpace] &&
         ![colorSpaceName isEqual:NSCalibratedRGBColorSpace] &&
@@ -62,19 +73,19 @@
         ![colorSpaceName isEqual:NSDeviceCMYKColorSpace] &&
         ![colorSpaceName isEqual:NSNamedColorSpace] &&
         ![colorSpaceName isEqual:NSPatternColorSpace] &&
-        ![colorSpaceName isEqual:NSCustomColorSpace]) return nil;
+        ![colorSpaceName isEqual:NSCustomColorSpace]) return FALSE;
     _colorSpace = [colorSpaceName retain];
     
     if (rowBytes == 0) {
         rowBytes = ((isPlanar ? 1 : spp) * bps * width) >> 3;
         rowBytes += ((-rowBytes) & 15);     // pad to 16-byte boundary
     }
-    if (rowBytes < 0) return nil;
+    if (rowBytes < 0) return FALSE;
     _bytesPerRow = (unsigned int)rowBytes;
     
     if (pixelBits == 0)
         pixelBits = isPlanar ? bps : (bps * spp);
-    if (pixelBits < 0) return nil;
+    if (pixelBits < 0) return FALSE;
     _bitsPerPixel = pixelBits;
     
     unsigned int planesExpected = isPlanar ? _samplesPerPixel : 1;
@@ -90,8 +101,8 @@
             if (_imagePlanes[i]) ++planesProvided;
         }
         
-        if (planesProvided == planesExpected) return self;
-        if (planesProvided > 0) return nil;
+        if (planesProvided == planesExpected) return TRUE;
+        if (planesProvided > 0) return FALSE;
     }
     
     NSUInteger planeSize = _bytesPerRow * height;
@@ -108,7 +119,68 @@
         }
     }
     
-    return self;
+    return TRUE;
+}
+
+@end
+
+@implementation BitmapImageHolder
+
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height
+{
+    self = [super init];
+    if (!self) return self;
+    
+    _aggPixFmt = fmt;
+    BOOL good = FALSE;
+    int bps = (_aggPixFmt & aggCanvas::Has_16bit_Color) + 8;
+    
+    switch (fmt) {
+        case aggCanvas::RGBA8_Blend:
+        case aggCanvas::RGBA16_Blend:
+            good = [self setupWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 4
+                                          hasAlpha: YES isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        case aggCanvas::RGB8_Blend:
+        case aggCanvas::RGB16_Blend:
+            good = [self setupWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 3
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        case aggCanvas::Gray8_Blend:
+        case aggCanvas::Gray16_Blend:
+            good = [self setupWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 1
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedWhiteColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        default:
+            good = FALSE;
+            break;
+    }
+    
+    if (good)
+        return self;
+    
+    [self release];
+    return nil;
 }
 
 - (void)dealloc
@@ -129,6 +201,7 @@
 - (BOOL) hasAlpha { return _hasAlpha; }
 - (int) pixelsHigh { return _pixelsHigh; }
 - (int) pixelsWide { return _pixelsWide; }
+- (aggCanvas::PixelFormat) aggPixelFormat { return _aggPixFmt; }
 
 //
 // Getting Image Data 
