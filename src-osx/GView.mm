@@ -652,11 +652,20 @@ namespace {
     else {
         bits = [mRenderBitmap getImageRep];
     }
-            
-    NSData *pngData =
-        [bits representationUsingType: NSPNGFileType properties: nil];
-	
-	return pngData;
+    
+    CGImageRef iref = [bits CGImage];
+    if (!iref) return nil;
+    
+    NSMutableData* mdata = [NSMutableData data];
+    CGImageDestinationRef destref = 
+        CGImageDestinationCreateWithData((CFMutableDataRef)mdata,
+                                         (CFStringRef)@"public.png", 1, nil);
+    if (!destref) return nil;
+    
+    CGImageDestinationAddImage(destref, iref, NULL);
+    CGImageDestinationFinalize(destref);
+    CFRelease(destref);
+    return mdata;
 }
 
 @end
@@ -1169,7 +1178,12 @@ namespace {
 			[[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
                        multiplier: nil];
 
-    [pngData writeToFile: filename atomically: YES];
+    if (pngData) {
+        [pngData writeToFile: filename atomically: YES];
+    } else {
+        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        NSBeep();
+    }
 }
 
 - (void)saveTileImage:(bool)save toFile:(NSString*)filename
@@ -1181,7 +1195,12 @@ namespace {
 	NSData *pngData =
         [self pngImageDataCropped: YES multiplier: &mult];
     
-    [pngData writeToFile: filename atomically: YES];
+    if (pngData) {
+        [pngData writeToFile: filename atomically: YES];
+    } else {
+        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        NSBeep();
+    }
 }
 
 - (void)saveSvg:(bool)save toFile:(NSString*)filename
