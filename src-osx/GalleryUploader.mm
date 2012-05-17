@@ -319,7 +319,7 @@ namespace {
     
     if (isSeeded) {
         NSURL* iconURL = [NSURL URLWithString: mDefccImage];
-        NSImage* icon = [[NSImage alloc] initWithContentsOfURL: iconURL];
+        NSImage* icon = [[[NSImage alloc] initWithContentsOfURL: iconURL] autorelease];
         [mLicenseImage setImage: icon];
         [mLicenseImage setEnabled: YES];
     } else {

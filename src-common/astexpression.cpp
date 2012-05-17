@@ -161,7 +161,7 @@ namespace AST {
         mTuplesize = def->mTuplesize;
         
         if (mType == ASTexpression::NumericType) {
-            isNatural = def->mExpression->isNatural && mTuplesize == 1;
+            isNatural = def->mExpression && def->mExpression->isNatural && mTuplesize == 1;
             if (mTuplesize == 0) mTuplesize = 1;    // loop index
             if (mTuplesize < 1 || mTuplesize > 9)
                 CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");

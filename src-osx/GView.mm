@@ -125,7 +125,18 @@ static BitmapAndFormat buildBitmap(int width, int height, CFDG* engine)
                          bytesPerRow: 0 bitsPerPixel: 0];
             break;
         default:
-            break;
+            [ret.mBitmap
+             initWithBitmapDataPlanes: NULL
+                           pixelsWide: 10
+                           pixelsHigh: 10
+                        bitsPerSample: 8 
+                      samplesPerPixel: 1
+                             hasAlpha: NO isPlanar: NO
+                       colorSpaceName: NSCalibratedWhiteColorSpace
+                          bytesPerRow: 0 bitsPerPixel: 0];
+            [ret.mBitmap release];
+            ret.mBitmap = nil;
+            return ret;
     }
     
     [ret.mBitmap autorelease];
@@ -1040,12 +1051,12 @@ namespace {
 {
     if (!mRenderer) return;
     
-    [self invalidateDrawingImage];
-    [mRenderBitmap release];
-    
     BitmapAndFormat baf = buildBitmap(mRenderer->m_width, mRenderer->m_height,
                                      mEngine);
+    if (!baf.mBitmap) return;
     
+    [self invalidateDrawingImage];
+    [mRenderBitmap release];
     mRenderBitmap = [baf.mBitmap retain];
 
     if (!mRenderBitmap) return;
