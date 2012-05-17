@@ -121,6 +121,8 @@ namespace {
 	NSData* textData	= [mDocument getContent];
 	NSData* imageData	= [mView pngImageDataCropped: crop
                                           multiplier: [mView isTiled] ? &mult : nil];
+    
+    if (!imageData) return nil;
 	
 	upload.mText		= (const char*)[textData bytes];
 	upload.mTextLen		= [textData length];
@@ -395,6 +397,13 @@ decisionListener:(id)listener
 
 - (IBAction)upload:(id)sender
 {
+    NSData* body = [self requestBody];
+    if (!body) {
+        [mMessage setString: @"Failed to generate PNG image to upload."];
+        [self setView: mDoneView];
+        return;
+    }
+    
 	NSMutableURLRequest* request =
 		[NSMutableURLRequest requestWithURL:
 				[NSURL URLWithString: @"http://www.contextfreeart.org/gallery/upload.php"]
@@ -405,7 +414,7 @@ decisionListener:(id)listener
 	[request setHTTPMethod: @"POST"];
 	[request setValue: asNSString(Upload::generateContentType())
 				forHTTPHeaderField: @"Content-Type"];
-	[request setHTTPBody: [self requestBody]];
+	[request setHTTPBody: body];
 	
 	mResponseBody = [[NSMutableData data] retain];
 
