@@ -29,10 +29,12 @@
 @class NSString;
 @class NSMutableData;
 @class NSBitmapImageRep;
+#include "aggCanvas.h"
 
 @interface BitmapImageHolder : NSObject
 {
     // Attributes
+    aggCanvas::PixelFormat _aggPixFmt;
     NSString*       _colorSpace;
     BOOL            _hasAlpha;
     int             _bitsPerSample;
@@ -49,16 +51,9 @@
 //
 // Allocating and Initializing a New BitmapImageHolder Object 
 //
-- (id) initWithBitmapDataPlanes: (unsigned char**)planes
-		     pixelsWide: (NSInteger)width
-		     pixelsHigh: (NSInteger)height
-		  bitsPerSample: (NSInteger)bps
-		samplesPerPixel: (NSInteger)spp
-		       hasAlpha: (BOOL)alpha
-		       isPlanar: (BOOL)isPlanar
-		 colorSpaceName: (NSString*)colorSpaceName
-		    bytesPerRow: (NSInteger)rowBytes
-		   bitsPerPixel: (NSInteger)pixelBits;
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height;
 
 //
 // Getting Information about the Image 
@@ -74,6 +69,7 @@
 - (BOOL) hasAlpha;
 - (int) pixelsHigh;
 - (int) pixelsWide;
+- (aggCanvas::PixelFormat) aggPixelFormat;
 
 //
 // Getting Image Data 
