@@ -70,6 +70,72 @@ enum {
 #define PROGRESS_DELAY      12
 
 
+@interface BitmapAndFormat : BitmapImageHolder {
+    aggCanvas::PixelFormat _aggPixFmt;    
+}
+
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height;
+- (aggCanvas::PixelFormat) aggPixelFormat;
+
+@end
+
+@implementation BitmapAndFormat
+
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height
+{
+    int bps = (fmt & aggCanvas::Has_16bit_Color) + 8;
+    
+    switch (fmt) {
+        case aggCanvas::RGBA8_Blend:
+        case aggCanvas::RGBA16_Blend:
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 4
+                                          hasAlpha: YES isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        case aggCanvas::RGB8_Blend:
+        case aggCanvas::RGB16_Blend:
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 3
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        case aggCanvas::Gray8_Blend:
+        case aggCanvas::Gray16_Blend:
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 1
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedWhiteColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
+            break;
+        default:
+            return nil;
+    }
+    if (!self) return self;
+
+    _aggPixFmt = fmt;
+
+    return self;
+}
+
+- (aggCanvas::PixelFormat) aggPixelFormat { return _aggPixFmt; }
+
+@end
 
 @interface GView (internal)
 
@@ -976,7 +1042,7 @@ namespace {
 {
     if (!mRenderer || !mEngine) return;
     
-    BitmapImageHolder* bm = [[BitmapImageHolder alloc] 
+    BitmapAndFormat* bm = [[BitmapAndFormat alloc] 
                              initWithAggPixFmt: aggCanvas::SuggestPixelFormat(mEngine)
                                     pixelsWide: mRenderer->m_width
                                     pixelsHigh: mRenderer->m_height];
@@ -1179,7 +1245,7 @@ namespace {
     
     NSSize* sz = mTiled ? &mRenderedRect.size : &mRenderSize;
     
-    BitmapImageHolder* bits = [BitmapImageHolder alloc];
+    BitmapAndFormat* bits = [BitmapAndFormat alloc];
     [bits initWithAggPixFmt: aggCanvas::RGBA8_Blend
                  pixelsWide: (NSInteger)sz->width
                  pixelsHigh: (NSInteger)sz->height];

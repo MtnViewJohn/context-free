@@ -126,61 +126,36 @@
 
 @implementation BitmapImageHolder
 
-- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
-              pixelsWide: (NSInteger)width
-              pixelsHigh: (NSInteger)height
+- (id) initWithBitmapDataPlanes: (unsigned char**)planes
+                     pixelsWide: (NSInteger)width
+                     pixelsHigh: (NSInteger)height
+                  bitsPerSample: (NSInteger)bps
+                samplesPerPixel: (NSInteger)spp
+                       hasAlpha: (BOOL)alpha
+                       isPlanar: (BOOL)isPlanar
+                 colorSpaceName: (NSString*)colorSpaceName
+                    bytesPerRow: (NSInteger)rowBytes
+                   bitsPerPixel: (NSInteger)pixelBits
 {
     self = [super init];
     if (!self) return self;
     
-    _aggPixFmt = fmt;
-    BOOL good = FALSE;
-    int bps = (_aggPixFmt & aggCanvas::Has_16bit_Color) + 8;
-    
-    switch (fmt) {
-        case aggCanvas::RGBA8_Blend:
-        case aggCanvas::RGBA16_Blend:
-            good = [self setupWithBitmapDataPlanes: NULL
-                                        pixelsWide: width
-                                        pixelsHigh: height
-                                     bitsPerSample: bps 
-                                   samplesPerPixel: 4
-                                          hasAlpha: YES isPlanar: NO
-                                    colorSpaceName: NSCalibratedRGBColorSpace
-                                       bytesPerRow: 0 bitsPerPixel: 0];
-            break;
-        case aggCanvas::RGB8_Blend:
-        case aggCanvas::RGB16_Blend:
-            good = [self setupWithBitmapDataPlanes: NULL
-                                        pixelsWide: width
-                                        pixelsHigh: height
-                                     bitsPerSample: bps 
-                                   samplesPerPixel: 3
-                                          hasAlpha: NO isPlanar: NO
-                                    colorSpaceName: NSCalibratedRGBColorSpace
-                                       bytesPerRow: 0 bitsPerPixel: 0];
-            break;
-        case aggCanvas::Gray8_Blend:
-        case aggCanvas::Gray16_Blend:
-            good = [self setupWithBitmapDataPlanes: NULL
-                                        pixelsWide: width
-                                        pixelsHigh: height
-                                     bitsPerSample: bps 
-                                   samplesPerPixel: 1
-                                          hasAlpha: NO isPlanar: NO
-                                    colorSpaceName: NSCalibratedWhiteColorSpace
-                                       bytesPerRow: 0 bitsPerPixel: 0];
-            break;
-        default:
-            good = FALSE;
-            break;
+    if (![self setupWithBitmapDataPlanes: planes 
+                              pixelsWide: width 
+                              pixelsHigh: height 
+                           bitsPerSample: bps 
+                         samplesPerPixel: spp 
+                                hasAlpha: alpha 
+                                isPlanar: isPlanar 
+                          colorSpaceName: colorSpaceName 
+                             bytesPerRow: rowBytes 
+                            bitsPerPixel: pixelBits]) 
+    {
+        [self release];
+        return nil;
     }
     
-    if (good)
-        return self;
-    
-    [self release];
-    return nil;
+    return self;
 }
 
 - (void)dealloc
@@ -201,7 +176,6 @@
 - (BOOL) hasAlpha { return _hasAlpha; }
 - (int) pixelsHigh { return _pixelsHigh; }
 - (int) pixelsWide { return _pixelsWide; }
-- (aggCanvas::PixelFormat) aggPixelFormat { return _aggPixFmt; }
 
 //
 // Getting Image Data 
