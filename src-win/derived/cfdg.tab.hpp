@@ -123,13 +123,12 @@ namespace yy {
     AST::ASTswitch* switchObj;
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
-    std::list<AST::ASTmodification*>* modList;
     AST::ASTrepContainer* bodyObj;
 
 
 
 /* Line 34 of lalr1.cc  */
-#line 133 "cfdg.tab.hpp"
+#line 132 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -362,7 +361,7 @@ namespace yy {
 } // yy
 
 /* Line 34 of lalr1.cc  */
-#line 366 "cfdg.tab.hpp"
+#line 365 "cfdg.tab.hpp"
 
 
 
