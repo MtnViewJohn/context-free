@@ -114,7 +114,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         yy::CfdgParser parser(b);
         istream* input = system->openFileForRead(fname);
         if (!input || !input->good()) {
-            if (input != &cin) delete input;
+            delete input;
 			input = 0;
             system->error();
             system->message("Couldn't open rules file %s", fname);
@@ -125,7 +125,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         b.m_currentPath = &(pCfdg->fileNames.back());
         b.m_basePath = b.m_currentPath;
         b.m_filesToLoad.push(b.m_currentPath);
-        b.m_streamsToLoad.push(input == &cin ? NULL : input);
+        b.m_streamsToLoad.push(input);
         b.m_includeNamespace.push(false);
         
         if (version == 2)
