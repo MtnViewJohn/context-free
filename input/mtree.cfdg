@@ -1,0 +1,29 @@
+startshape PLANT
+
+shape PLANT
+{
+	EITHER [x -2]
+	EITHER [x 2]
+}
+
+shape BOTH
+{
+	BL [rotate 30]
+	BL [rotate -30 flip 90]
+}
+
+shape EITHER
+rule {BL[]}
+rule {BL[flip 90]}
+
+shape BL
+{
+	CIRCLE []
+	WL [size 0.95 y 1.6]
+}
+
+shape WL
+rule 10 {BL [rotate randint(3, 8)]}
+rule {BOTH []}
+rule {BL [rotate -10 flip 90]}
+
