@@ -48,6 +48,8 @@ namespace AST {
     static const ASTparameter zeroParam;
     
     const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { 0 };
+    
+    agg::trans_affine ASTtransform::Dummy;
 
     
     void
@@ -174,8 +176,10 @@ namespace AST {
         loopDef.mExpression = 0;
     }
     
-    ASTtransform::ASTtransform(const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty), mClone(false)
+    ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
+    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty), mTransforms(), 
+      mModifications(getTransforms(mods.get(), mTransforms, NULL, false, Dummy)), 
+      mExpHolder(mods.release()), mClone(false)
     {
     }
     
@@ -441,7 +445,10 @@ namespace AST {
     
     ASTtransform::~ASTtransform()
     {
-        ClearMods(mModifications);
+        ASTexpression* m = const_cast<ASTexpression*>(mModifications);
+        if (m && m->release())
+            delete mModifications;
+        delete mExpHolder;
     }
     
     ASTpathOp::~ASTpathOp()
@@ -551,13 +558,20 @@ namespace AST {
             transChild.mWorldState.m_transform.reset();
         
         int dummy;
-        ModList::const_iterator mit  = mModifications.begin(), 
-                                emit = mModifications.end();
-        for(; mit != emit; ++mit) {
-            r->mCurrentSeed ^= (*mit)->modData.mRand64Seed;
-            r->mCurrentSeed.bump();
+        
+        int modsLength = mModifications ? mModifications->size() : 0;
+        int totalLength = modsLength + mTransforms.size();
+        for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
-            (*mit)->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+            if (i < modsLength) {
+                const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i]);
+                if (m == NULL) continue;
+                r->mCurrentSeed ^= m->modData.mRand64Seed;
+                m->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+            } else {
+                child.mWorldState.m_transform.premultiply(mTransforms[i - modsLength]);
+            }
+            r->mCurrentSeed.bump();
 
             // Specialized mBody.traverse() with cloning behavior
             size_t s = r->mCFstack.size();
@@ -1210,15 +1224,6 @@ namespace AST {
         } 
         
         mArgCount = mArguments ? mArguments->evaluate(0, 0) : 0;
-    }
-    
-    void
-    ASTtransform::ClearMods(ModList &m)
-    {
-        ModList::iterator it = m.begin(), eit = m.end();
-        for (; it != eit; ++it)
-            delete *it;
-        m.clear();
     }
     
     void

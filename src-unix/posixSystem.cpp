@@ -33,6 +33,7 @@
 
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
@@ -79,7 +80,13 @@ PosixSystem::error(bool errorOccurred)
 istream*
 PosixSystem::openFileForRead(const string& path)
 {
-    if (path == "-") return &cin;
+    if (path == "-") {
+        if (!mInputBuffer) {
+            mInputBuffer = new string(istreambuf_iterator<char>(cin), 
+                                      istreambuf_iterator<char>());
+        }
+        return new istringstream(*mInputBuffer, ios::binary);
+    }
 	return new ifstream(path.c_str(), ios::binary);
 }
 
@@ -87,6 +94,11 @@ istream*
 PosixSystem::tempFileForRead(const string& path)
 {
 	return new ifstream(path.c_str(), ios::binary);
+}
+
+PosixSystem::~PosixSystem()
+{
+    delete mInputBuffer;
 }
 
 ostream*

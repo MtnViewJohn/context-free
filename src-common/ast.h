@@ -30,8 +30,11 @@
 #include <vector>
 #include <string>
 #include "agg_math_stroke.h"
+#include "agg_trans_affine.h"
+#include "cfdg.h"
 
 namespace AST {
+    typedef std::vector<agg::trans_affine> SymmList;
 
 #ifdef _WIN32
     inline double acosh(double x) 
@@ -144,6 +147,14 @@ namespace AST {
         ARCTO, ARCREL, CURVETO, CURVEREL, CLOSEPOLY
     };
     
+    void addUnique(SymmList& syms, agg::trans_affine& tr);
+    void processDihedral(SymmList& syms, double order, double x, double y,
+                         bool dihedral, double angle, const yy::location& where);
+    void processSymmSpec(SymmList& syms, agg::trans_affine& tile, bool tiled,
+                         std::vector<double>& data, const yy::location& where);
+    const ASTexpression* 
+         getTransforms(const ASTexpression* e, SymmList& syms, 
+                       Renderer* r, bool tiled, agg::trans_affine& tile);
 }
 
 #endif // INCLUDE_AST_H

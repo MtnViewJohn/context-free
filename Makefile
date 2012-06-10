@@ -31,7 +31,7 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	aggCanvas.cpp HSBColor.cpp SVGCanvas.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
-	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp
+	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
 # COMMON_SRCS += ffCanvasDummy.cpp
 COMMON_SRCS += ffCanvas.cpp
 

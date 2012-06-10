@@ -50,15 +50,16 @@
 // Allocating and Initializing a New BitmapImageHolder Object 
 //
 - (id) initWithBitmapDataPlanes: (unsigned char**)planes
-		     pixelsWide: (NSInteger)width
-		     pixelsHigh: (NSInteger)height
-		  bitsPerSample: (NSInteger)bps
-		samplesPerPixel: (NSInteger)spp
-		       hasAlpha: (BOOL)alpha
-		       isPlanar: (BOOL)isPlanar
-		 colorSpaceName: (NSString*)colorSpaceName
-		    bytesPerRow: (NSInteger)rowBytes
-		   bitsPerPixel: (NSInteger)pixelBits;
+                     pixelsWide: (NSInteger)width
+                     pixelsHigh: (NSInteger)height
+                  bitsPerSample: (NSInteger)bps
+                samplesPerPixel: (NSInteger)spp
+                       hasAlpha: (BOOL)alpha
+                       isPlanar: (BOOL)isPlanar
+                 colorSpaceName: (NSString*)colorSpaceName
+                    bytesPerRow: (NSInteger)rowBytes
+                   bitsPerPixel: (NSInteger)pixelBits;
+
 
 //
 // Getting Information about the Image 

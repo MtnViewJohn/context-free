@@ -70,70 +70,72 @@ enum {
 #define PROGRESS_DELAY      12
 
 
-struct BitmapAndFormat
-{
-    BitmapImageHolder*     mBitmap;
-    aggCanvas::PixelFormat mFormat;
-};
+@interface BitmapAndFormat : BitmapImageHolder {
+    aggCanvas::PixelFormat _aggPixFmt;    
+}
 
-static BitmapAndFormat buildBitmap(int width, int height, CFDG* engine)
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height;
+- (aggCanvas::PixelFormat) aggPixelFormat;
+
+@end
+
+@implementation BitmapAndFormat
+
+- (id) initWithAggPixFmt: (aggCanvas::PixelFormat)fmt
+              pixelsWide: (NSInteger)width
+              pixelsHigh: (NSInteger)height
 {
-    BitmapAndFormat ret;
-    ret.mBitmap = 0;
-    ret.mFormat = aggCanvas::RGBA8_Blend;
+    int bps = (fmt & aggCanvas::Has_16bit_Color) + 8;
     
-    if (!engine) return ret;
-    
-    ret.mFormat = aggCanvas::SuggestPixelFormat(engine);
-	ret.mBitmap = [BitmapImageHolder alloc];
-    
-    switch(ret.mFormat) {
+    switch (fmt) {
         case aggCanvas::RGBA8_Blend:
         case aggCanvas::RGBA16_Blend:
-            [ret.mBitmap
-			initWithBitmapDataPlanes: NULL
-                          pixelsWide: width
-                          pixelsHigh: height
-                       bitsPerSample: (ret.mFormat & aggCanvas::Has_16bit_Color) + 8 
-                     samplesPerPixel: 4
-                            hasAlpha: YES isPlanar: NO
-                      colorSpaceName: NSCalibratedRGBColorSpace
-                         bytesPerRow: 0 bitsPerPixel: 0];
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 4
+                                          hasAlpha: YES isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
             break;
         case aggCanvas::RGB8_Blend:
         case aggCanvas::RGB16_Blend:
-            [ret.mBitmap
-			initWithBitmapDataPlanes: NULL
-                          pixelsWide: width
-                          pixelsHigh: height
-                       bitsPerSample: (ret.mFormat & aggCanvas::Has_16bit_Color) + 8 
-                     samplesPerPixel: 3
-                            hasAlpha: NO isPlanar: NO
-                      colorSpaceName: NSCalibratedRGBColorSpace
-                         bytesPerRow: 0 bitsPerPixel: 0];
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 3
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedRGBColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
             break;
         case aggCanvas::Gray8_Blend:
         case aggCanvas::Gray16_Blend:
-            [ret.mBitmap
-			initWithBitmapDataPlanes: NULL
-                          pixelsWide: width
-                          pixelsHigh: height
-                       bitsPerSample: (ret.mFormat & aggCanvas::Has_16bit_Color) + 8 
-                     samplesPerPixel: 1
-                            hasAlpha: NO isPlanar: NO
-                      colorSpaceName: NSCalibratedWhiteColorSpace
-                         bytesPerRow: 0 bitsPerPixel: 0];
+            self = [super initWithBitmapDataPlanes: NULL
+                                        pixelsWide: width
+                                        pixelsHigh: height
+                                     bitsPerSample: bps 
+                                   samplesPerPixel: 1
+                                          hasAlpha: NO isPlanar: NO
+                                    colorSpaceName: NSCalibratedWhiteColorSpace
+                                       bytesPerRow: 0 bitsPerPixel: 0];
             break;
         default:
-            break;
+            return nil;
     }
-    
-    [ret.mBitmap autorelease];
-    
-    return ret;
+    if (!self) return self;
+
+    _aggPixFmt = fmt;
+
+    return self;
 }
 
+- (aggCanvas::PixelFormat) aggPixelFormat { return _aggPixFmt; }
 
+@end
 
 @interface GView (internal)
 
@@ -652,11 +654,20 @@ namespace {
     else {
         bits = [mRenderBitmap getImageRep];
     }
-            
-    NSData *pngData =
-        [bits representationUsingType: NSPNGFileType properties: nil];
-	
-	return pngData;
+    
+    CGImageRef iref = [bits CGImage];
+    if (!iref) return nil;
+    
+    NSMutableData* mdata = [NSMutableData data];
+    CGImageDestinationRef destref = 
+        CGImageDestinationCreateWithData((CFMutableDataRef)mdata,
+                                         (CFStringRef)@"public.png", 1, nil);
+    if (!destref) return nil;
+    
+    CGImageDestinationAddImage(destref, iref, NULL);
+    CGImageDestinationFinalize(destref);
+    CFRelease(destref);
+    return mdata;
 }
 
 @end
@@ -1029,25 +1040,26 @@ namespace {
 
 - (void)buildImageCanvasSize
 {
-    if (!mRenderer) return;
+    if (!mRenderer || !mEngine) return;
+    
+    BitmapAndFormat* bm = [[BitmapAndFormat alloc] 
+                             initWithAggPixFmt: aggCanvas::SuggestPixelFormat(mEngine)
+                                    pixelsWide: mRenderer->m_width
+                                    pixelsHigh: mRenderer->m_height];
+    
+    if (!bm) return;
     
     [self invalidateDrawingImage];
     [mRenderBitmap release];
-    
-    BitmapAndFormat baf = buildBitmap(mRenderer->m_width, mRenderer->m_height,
-                                     mEngine);
-    
-    mRenderBitmap = [baf.mBitmap retain];
+    mRenderBitmap = bm;
 
-    if (!mRenderBitmap) return;
-    
     mRenderSize.width = (float)mRenderer->m_width;
     mRenderSize.height = (float)mRenderer->m_height;
     mRenderedRect.origin.x = 0.0;
     mRenderedRect.origin.y = 0.0;
     mRenderedRect.size = mRenderSize;
 
-    mCanvas = new ImageCanvas(self, mRenderBitmap, baf.mFormat);
+    mCanvas = new ImageCanvas(self, mRenderBitmap, [bm aggPixelFormat]);
 
     mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 
@@ -1169,7 +1181,12 @@ namespace {
 			[[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
                        multiplier: nil];
 
-    [pngData writeToFile: filename atomically: YES];
+    if (pngData) {
+        [pngData writeToFile: filename atomically: YES];
+    } else {
+        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        NSBeep();
+    }
 }
 
 - (void)saveTileImage:(bool)save toFile:(NSString*)filename
@@ -1181,7 +1198,12 @@ namespace {
 	NSData *pngData =
         [self pngImageDataCropped: YES multiplier: &mult];
     
-    [pngData writeToFile: filename atomically: YES];
+    if (pngData) {
+        [pngData writeToFile: filename atomically: YES];
+    } else {
+        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        NSBeep();
+    }
 }
 
 - (void)saveSvg:(bool)save toFile:(NSString*)filename
@@ -1223,16 +1245,15 @@ namespace {
     
     NSSize* sz = mTiled ? &mRenderedRect.size : &mRenderSize;
     
-    BitmapImageHolder* bits = [BitmapImageHolder alloc];
-    [bits initWithBitmapDataPlanes: NULL
-                        pixelsWide: (NSInteger)sz->width
-                        pixelsHigh: (NSInteger)sz->height
-                     bitsPerSample: 8
-                   samplesPerPixel: 4
-                          hasAlpha: YES isPlanar: NO
-                    colorSpaceName: NSCalibratedRGBColorSpace
-                       bytesPerRow: 0 bitsPerPixel: 0];
-    
+    BitmapAndFormat* bits = [BitmapAndFormat alloc];
+    [bits initWithAggPixFmt: aggCanvas::RGBA8_Blend
+                 pixelsWide: (NSInteger)sz->width
+                 pixelsHigh: (NSInteger)sz->height];
+    if (!bits) {
+        [mStatus setStringValue: @"An error occured while initializing the movie canvas."];
+        NSBeep();
+        return;
+    }
     
     mAnimationCanvas = new qtCanvas(filename, [bits autorelease],
                                     movieFrameRate, qual, mpeg4);
@@ -1247,6 +1268,7 @@ namespace {
         delete mAnimationCanvas;
         mAnimationCanvas = 0;
         [mStatus setStringValue: @"An error occured while initializing the movie file."];
+        NSBeep();
     }
 }
 
