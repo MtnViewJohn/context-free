@@ -182,7 +182,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\John\Downloads\ffmpeg-git-5501afa-win32-dev\ffmpeg-git-5501afa-win32-dev\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -236,7 +236,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\John\Downloads\ffmpeg-git-371888c-win64-dev\ffmpeg-git-371888c-win64-dev\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -257,7 +257,7 @@
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <AdditionalLibraryDirectories>C:\Users\John\Downloads\ffmpeg-git-371888c-win64-dev\ffmpeg-git-371888c-win64-dev\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\src-ffmpeg\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -312,7 +312,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\John\Downloads\ffmpeg-git-5501afa-win32-dev\ffmpeg-git-5501afa-win32-dev\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -337,7 +337,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\John\Downloads\ffmpeg-git-371888c-win64-dev\ffmpeg-git-371888c-win64-dev\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
