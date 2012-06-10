@@ -43,6 +43,7 @@
 #include "pngCanvas.h"
 #endif
 #include "SVGCanvas.h"
+#include "ffCanvas.h"
 #include "posixSystem.h"
 #include "version.h"
 #include "Rand64.h"
@@ -101,11 +102,16 @@ usage(bool inError)
     out << "              %v and %V expands to the variation code in lower or upper case," << endl;
     out << "              %% expands to %" << endl;
     out << "    " << APP_OPTCHAR()
-        << "a num    generate num animation frames (PNG only)" << endl;
+        << "a num    generate num animation frames at 15fps (PNG or Quicktime only)" << endl;
+    out << "    " << APP_OPTCHAR()
+        << "a TIMExFPS" << endl;
+    out << "              generate TIMExFPS animation frames at specified fps (PNG or Quicktime only)" << endl;
     out << "    " << APP_OPTCHAR()
         << "z        zoom out during animation" << endl;
     out << "    " << APP_OPTCHAR()
         << "V        generate SVG (vector) output" << endl;
+    out << "    " << APP_OPTCHAR()
+        << "Q        generate Quicktime movie output" << endl;
     out << "    " << APP_OPTCHAR()
         << "c        crop image output" << endl;
     out << "    " << APP_OPTCHAR()
@@ -122,7 +128,7 @@ usage(bool inError)
 }
 
 struct options {
-    enum OutputFormat { PNGfile = 0, SVGfile = 1 };
+    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2 };
     int   width;
     int   height;
     int   widthMult;
@@ -135,6 +141,8 @@ struct options {
     bool  crop;
     bool  check;
     int   animationFrames;
+	int   animationTime;
+	int   animationFPS;
     bool  animationZoom;
     
     const char* input;
@@ -149,13 +157,13 @@ struct options {
     options()
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
-      animationFrames(0), animationZoom(false), input(0), output(0), 
-      output_fmt(0), format(PNGfile), quiet(false), outputTime(false),
-      outputStdout(false)
+      animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
+	  input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
+	  outputTime(false), outputStdout(false)
     { }
 };
 
-void
+int
 intArg2(char arg, const char* str, int& x, int& y)
 {
     char* end;
@@ -183,7 +191,9 @@ intArg2(char arg, const char* str, int& x, int& y)
         y = (int)v;
     } else {
         y = x;
+		return 1;
     }
+	return 2;
 }
 
 int
@@ -227,7 +237,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     invokeName = argv[0];
     
     int i;
-    while ((i = getopt(argc, argv, ":w:h:s:m:x:b:v:a:o:T:cCVzqt?")) != -1) {
+    while ((i = getopt(argc, argv, ":w:h:s:m:x:b:v:a:o:T:cCVzqQt?")) != -1) {
         char c = (char)i;
         switch(c) {
             case 'w':
@@ -258,13 +268,25 @@ processCommandLine(int argc, char* argv[], options& opt)
             case 'o':
                 opt.output_fmt = optarg;
                 break;
-            case 'a':
+            case 'a': {
+				int fps = 15, time = 0;
                 if (opt.format == options::SVGfile) usage(true);
-                opt.animationFrames = intArg(c, optarg);
+				if (intArg2(c, optarg, time, fps) == 2) {
+					opt.animationTime = time;
+					opt.animationFPS = fps;
+					opt.animationFrames = time * fps;
+				} else {
+					opt.animationTime = time / opt.animationFPS;
+					opt.animationFrames = time;
+				}
                 break;
+			}
             case 'V':
                 if (opt.animationFrames) usage(true);
                 opt.format = options::SVGfile;
+                break;
+            case 'Q':
+                opt.format = options::MOVfile;
                 break;
             case 'c':
                 opt.crop = true;
@@ -377,7 +399,7 @@ int main (int argc, char* argv[]) {
             }
         }
         newOutput = escname.str();
-        if (opts.animationFrames) {
+        if (opts.animationFrames && opts.format != options::MOVfile) {
 #ifdef _WIN32
             const char dirchar = '\\';
 #else
@@ -397,16 +419,18 @@ int main (int argc, char* argv[]) {
     bool useRGBA = myDesign->usesColor;
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
     bool use16bit = pixfmt & aggCanvas::Has_16bit_Color;
+	const char* fmtnames[3] = { "PNG image", "SVG vector output", "Quicktime movie" };
     
     *myCout << "Generating " << (use16bit ? "16bit " : "8bit ") 
         << (useRGBA ? "color" : "gray-scale")
-        << ((opts.format == options::PNGfile) ? " PNG image" : " SVG vector output") 
+		<< ' ' << fmtnames[opts.format]
         << ", variation " 
         << code << "..." << endl;
     
     pngCanvas* png = 0;
     SVGCanvas* svg = 0;
-    Canvas* myCanvas;
+    ffCanvas*  mov = 0;
+    Canvas* myCanvas = 0;
     
     Renderer* myRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
                                               opts.variation, opts.borderSize);
@@ -415,14 +439,27 @@ int main (int argc, char* argv[]) {
     opts.height = myRenderer->m_height;
     opts.crop = opts.crop || myDesign->isTiled() || myDesign->isFrieze();
     
-    if (opts.format == options::PNGfile) {
-        png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
-                            pixfmt, opts.crop, opts.animationFrames, opts.variation);
-        myCanvas = (Canvas*)png;
-    } else {
-        string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
-        svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
-        myCanvas = (Canvas*)svg;
+    switch (opts.format) {
+        case options::PNGfile: {
+            png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
+                                pixfmt, opts.crop, opts.animationFrames, opts.variation);
+            myCanvas = (Canvas*)png;
+        }
+        case options::SVGfile: {
+            string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
+            svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
+            myCanvas = (Canvas*)svg;
+        }
+        case options::MOVfile: {
+            string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
+            mov = new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height, 
+					           opts.animationFPS);
+			if (mov->mError) {
+				cerr << "Failed to create movie file: " << mov->mError << endl;
+				exit(8);
+			}
+            myCanvas = (Canvas*)mov;
+        }
     }
     
     if (opts.widthMult != 1 || opts.heightMult != 1) {
@@ -470,6 +507,7 @@ int main (int argc, char* argv[]) {
     
     delete png;
     delete svg;
+    delete mov;
     delete myRenderer;
     delete myDesign;
     

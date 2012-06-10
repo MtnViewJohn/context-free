@@ -12,11 +12,14 @@ COMMON_DIR = src-common
 UNIX_DIR = src-unix
 DERIVED_DIR = $(OBJ_DIR)
 AGG_DIR = src-agg
+FFMPEG_DIR = src-ffmpeg
 
 SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
 
-INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_DIR)/agg-extras
+INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
+
+LIB_DIRS = $(FFMPEG_DIR)/lib /usr/local/lib
 
 #
 # Sources and Objects
@@ -29,6 +32,8 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp
+# COMMON_SRCS += ffCanvasDummy.cpp
+COMMON_SRCS += ffCanvas.cpp
 
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
@@ -41,6 +46,12 @@ AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
 SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS) $(AGG_SRCS)
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst %.o,%.d,$(OBJS))
+LIBS = stdc++ png z
+LIBS += avformat avcodec avutil
+
+LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
+LINKFLAGS += $(patsubst %,-l%,$(LIBS))
+LINKFLAGS += -fexceptions
 
 deps: $(OBJ_DIR) $(DEPS)
 include $(DEPS)
@@ -54,7 +65,7 @@ $(OBJS): $(OBJ_DIR)/Sentry
 # Under Cygwin replace strip $@ with strip $@.exe
 
 cfdg: $(OBJS)
-	$(LINK.o) $^ -L/usr/local/lib -lstdc++ -lpng -lz -fexceptions -o $@
+	$(LINK.o) $^ $(LINKFLAGS) -o $@
 	strip $@
 
 

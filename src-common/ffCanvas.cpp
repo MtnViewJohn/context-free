@@ -22,6 +22,8 @@
 //
 //
 
+#define __STDC_CONSTANT_MACROS 1
+
 #include "ffCanvas.h"
 #include <cassert>
 
@@ -69,8 +71,8 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     avcodec_register_all();
     av_register_all();
 
-    mOutputCtx = avformat_alloc_output_context("mov", NULL, name);
-    if (mOutputCtx == NULL) {
+    int res = avformat_alloc_output_context2(&mOutputCtx, NULL, "mov", name);
+    if (res < 0) {
         mError = "out of memory";
         return;
     }
@@ -101,6 +103,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     codecCtx->time_base.num = 1;
     codecCtx->time_base.den = fps;
     codecCtx->gop_size = 10; /* emit one intra frame every ten frames */
+	codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
     
     switch (fmt) {
         case aggCanvas::Gray8_Blend:
@@ -129,7 +132,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     }
     mFrame->data[0] = (uint8_t*)bits;
     mFrame->data[1] = codecCtx->pix_fmt == PIX_FMT_GRAY8 ? (uint8_t*)dummyPalette : NULL;
-    mFrame->data[2] = mFrame->data[2] = NULL;
+    mFrame->data[2] = mFrame->data[3] = NULL;
     mFrame->linesize[0] = stride;
     mFrame->linesize[1] = codecCtx->pix_fmt == PIX_FMT_GRAY8 ? 1024 : 0;
     mFrame->linesize[2] = mFrame->linesize[3] = 0;
@@ -142,12 +145,12 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
     
-    if (avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE) < 0) {
+    if (avio_open(&(mOutputCtx->pb), name, AVIO_WRONLY) < 0) {
         mError = "failed to write video file header";
         return;
     }
     
-    if (av_write_header(mOutputCtx) < 0) {
+    if (avformat_write_header(mOutputCtx, NULL) < 0) {
         avio_close(mOutputCtx->pb);
         mError = "failed to write video file header";
         return;
