@@ -25,6 +25,104 @@
 #import "BitmapImageHolder.h"
 #import <Cocoa/Cocoa.h>
 
+@interface BitmapImageHolder (internal)
+
+- (BOOL) setupWithBitmapDataPlanes: (unsigned char**)planes
+                        pixelsWide: (NSInteger)width
+                        pixelsHigh: (NSInteger)height
+                     bitsPerSample: (NSInteger)bps
+                   samplesPerPixel: (NSInteger)spp
+                          hasAlpha: (BOOL)alpha
+                          isPlanar: (BOOL)isPlanar
+                    colorSpaceName: (NSString*)colorSpaceName
+                       bytesPerRow: (NSInteger)rowBytes
+                      bitsPerPixel: (NSInteger)pixelBits;
+
+@end
+
+@implementation BitmapImageHolder (internal)
+
+- (BOOL) setupWithBitmapDataPlanes: (unsigned char**)planes
+                        pixelsWide: (NSInteger)width
+                        pixelsHigh: (NSInteger)height
+                     bitsPerSample: (NSInteger)bps
+                   samplesPerPixel: (NSInteger)spp
+                          hasAlpha: (BOOL)alpha
+                          isPlanar: (BOOL)isPlanar
+                    colorSpaceName: (NSString*)colorSpaceName
+                       bytesPerRow: (NSInteger)rowBytes
+                      bitsPerPixel: (NSInteger)pixelBits
+{
+    _isPlanar = isPlanar;
+    _hasAlpha = alpha;
+    if (width < 1 || height < 1 || spp < 1 || spp > 5) return FALSE;
+    _pixelsWide = width;
+    _pixelsHigh = height;
+    _samplesPerPixel = (unsigned int) spp;
+    
+    if (bps != 8 && bps != 16) return FALSE;
+    _bitsPerSample = bps;
+    
+    if (colorSpaceName == nil) return FALSE;
+    if (![colorSpaceName isEqual:NSCalibratedWhiteColorSpace] &&
+        ![colorSpaceName isEqual:NSCalibratedBlackColorSpace] &&
+        ![colorSpaceName isEqual:NSCalibratedRGBColorSpace] &&
+        ![colorSpaceName isEqual:NSDeviceWhiteColorSpace] &&
+        ![colorSpaceName isEqual:NSDeviceBlackColorSpace] &&
+        ![colorSpaceName isEqual:NSDeviceRGBColorSpace] &&
+        ![colorSpaceName isEqual:NSDeviceCMYKColorSpace] &&
+        ![colorSpaceName isEqual:NSNamedColorSpace] &&
+        ![colorSpaceName isEqual:NSPatternColorSpace] &&
+        ![colorSpaceName isEqual:NSCustomColorSpace]) return FALSE;
+    _colorSpace = [colorSpaceName retain];
+    
+    if (rowBytes == 0) {
+        rowBytes = ((isPlanar ? 1 : spp) * bps * width) >> 3;
+        rowBytes += ((-rowBytes) & 15);     // pad to 16-byte boundary
+    }
+    if (rowBytes < 0) return FALSE;
+    _bytesPerRow = (unsigned int)rowBytes;
+    
+    if (pixelBits == 0)
+        pixelBits = isPlanar ? bps : (bps * spp);
+    if (pixelBits < 0) return FALSE;
+    _bitsPerPixel = pixelBits;
+    
+    unsigned int planesExpected = isPlanar ? _samplesPerPixel : 1;
+    unsigned int planesProvided = 0;
+    
+    if (planes) {
+        for (unsigned int i = 0 ; i < 5; ++i) {
+            if (i < planesExpected)
+                _imagePlanes[i] = planes[i];
+            else 
+                _imagePlanes[i] = NULL;
+                
+            if (_imagePlanes[i]) ++planesProvided;
+        }
+        
+        if (planesProvided == planesExpected) return TRUE;
+        if (planesProvided > 0) return FALSE;
+    }
+    
+    NSUInteger planeSize = _bytesPerRow * height;
+    NSUInteger bitmapsize = (isPlanar ? _samplesPerPixel : 1) * planeSize + 16;
+    _imageData = [[NSMutableData dataWithLength:bitmapsize] retain];
+    unsigned char* bytes = (unsigned char*)([_imageData mutableBytes]);
+    bytes += ((-((long)bytes)) & 15);       // pad to 16-byte boundary
+    for (unsigned int i = 0; i < 5; ++i) {
+        if (i < planesExpected) {
+            _imagePlanes[i] = bytes;
+            bytes += planeSize;
+        } else {
+            _imagePlanes[i] = NULL;
+        }
+    }
+    
+    return TRUE;
+}
+
+@end
 
 @implementation BitmapImageHolder
 
@@ -42,70 +140,19 @@
     self = [super init];
     if (!self) return self;
     
-    _isPlanar = isPlanar;
-    _hasAlpha = alpha;
-    if (width < 1 || height < 1 || spp < 1 || spp > 5) return nil;
-    _pixelsWide = width;
-    _pixelsHigh = height;
-    _samplesPerPixel = (unsigned int) spp;
-    
-    if (bps != 8 && bps != 16) return nil;
-    _bitsPerSample = bps;
-    
-    if (colorSpaceName == nil) return nil;
-    if (![colorSpaceName isEqual:NSCalibratedWhiteColorSpace] &&
-        ![colorSpaceName isEqual:NSCalibratedBlackColorSpace] &&
-        ![colorSpaceName isEqual:NSCalibratedRGBColorSpace] &&
-        ![colorSpaceName isEqual:NSDeviceWhiteColorSpace] &&
-        ![colorSpaceName isEqual:NSDeviceBlackColorSpace] &&
-        ![colorSpaceName isEqual:NSDeviceRGBColorSpace] &&
-        ![colorSpaceName isEqual:NSDeviceCMYKColorSpace] &&
-        ![colorSpaceName isEqual:NSNamedColorSpace] &&
-        ![colorSpaceName isEqual:NSPatternColorSpace] &&
-        ![colorSpaceName isEqual:NSCustomColorSpace]) return nil;
-    _colorSpace = [colorSpaceName retain];
-    
-    if (rowBytes == 0) {
-        rowBytes = ((isPlanar ? 1 : spp) * bps * width) >> 3;
-        rowBytes += ((-rowBytes) & 15);     // pad to 16-byte boundary
-    }
-    if (rowBytes < 0) return nil;
-    _bytesPerRow = (unsigned int)rowBytes;
-    
-    if (pixelBits == 0)
-        pixelBits = isPlanar ? bps : (bps * spp);
-    if (pixelBits < 0) return nil;
-    _bitsPerPixel = pixelBits;
-    
-    unsigned int planesExpected = isPlanar ? _samplesPerPixel : 1;
-    unsigned int planesProvided = 0;
-    
-    if (planes) {
-        for (unsigned int i = 0 ; i < 5; ++i) {
-            if (i < planesExpected)
-                _imagePlanes[i] = planes[i];
-            else 
-                _imagePlanes[i] = NULL;
-                
-            if (_imagePlanes[i]) ++planesProvided;
-        }
-        
-        if (planesProvided == planesExpected) return self;
-        if (planesProvided > 0) return nil;
-    }
-    
-    NSUInteger planeSize = _bytesPerRow * height;
-    NSUInteger bitmapsize = (isPlanar ? _samplesPerPixel : 1) * planeSize + 16;
-    _imageData = [[NSMutableData dataWithLength:bitmapsize] retain];
-    unsigned char* bytes = (unsigned char*)([_imageData mutableBytes]);
-    bytes += ((-((long)bytes)) & 15);       // pad to 16-byte boundary
-    for (unsigned int i = 0; i < 5; ++i) {
-        if (i < planesExpected) {
-            _imagePlanes[i] = bytes;
-            bytes += planeSize;
-        } else {
-            _imagePlanes[i] = NULL;
-        }
+    if (![self setupWithBitmapDataPlanes: planes 
+                              pixelsWide: width 
+                              pixelsHigh: height 
+                           bitsPerSample: bps 
+                         samplesPerPixel: spp 
+                                hasAlpha: alpha 
+                                isPlanar: isPlanar 
+                          colorSpaceName: colorSpaceName 
+                             bytesPerRow: rowBytes 
+                            bitsPerPixel: pixelBits]) 
+    {
+        [self release];
+        return nil;
     }
     
     return self;

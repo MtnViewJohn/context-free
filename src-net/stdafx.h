@@ -28,3 +28,5 @@
 #pragma once
 
 // TODO: reference additional headers your program requires here
+
+#define _WIN32_WINNT 0x0501
