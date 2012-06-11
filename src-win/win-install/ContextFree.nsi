@@ -114,9 +114,6 @@ SectionIn RO
     File "..\\..\\src-net\\Release64\\CFControls.dll" 
     File "..\\..\\src-net\\Release64\\Controls.dll" 
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
-    File "..\\..\\src-net\\Release64\\avcodec-53.dll" 
-    File "..\\..\\src-net\\Release64\\avformat-53.dll" 
-    File "..\\..\\src-net\\Release64\\avutil-51.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
  
     DetailPrint "Installing Visual Studio 2010 runtime libraries..."
@@ -128,9 +125,6 @@ SectionIn RO
     File "..\\..\\src-net\\release\\CFControls.dll" 
     File "..\\..\\src-net\\release\\Controls.dll" 
     File "..\\..\\src-net\\release\\FileDlgExtenders.dll" 
-    File "..\\..\\src-net\\release\\avcodec-53.dll" 
-    File "..\\..\\src-net\\release\\avformat-53.dll" 
-    File "..\\..\\src-net\\release\\avutil-51.dll" 
     File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.dll" 
  
     DetailPrint "Installing Visual Studio 2010 runtime libraries..."
