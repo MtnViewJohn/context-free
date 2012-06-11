@@ -2,6 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2012 John Horigan - john@glyphic.com
+// Copyright (C) 2000 Free Software Foundation, Inc.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -147,4 +148,94 @@ int __cdecl __mingw_vsscanf(
     for (i=0; i < sizeof(a)/sizeof(a[0]); i++)
         a[i] = va_arg(ap, void *);
     return sscanf(s, fmt, a[0], a[1], a[2], a[3], a[4]);
+}
+
+unsigned __int64 __cdecl udivmodsi4(
+     unsigned __int64 num, 
+     unsigned __int64 den, 
+     int modwanted
+)
+{
+    unsigned __int64 bit = 1;
+    unsigned __int64 res = 0;
+
+    while (den < num && bit && !(den & (1L<<31))) {
+        den <<=1;
+        bit <<=1;
+    }
+    while (bit) {
+        if (num >= den) {
+            num -= den;
+            res |= bit;
+        }
+        bit >>=1;
+        den >>=1;
+    }
+    return modwanted ? num : res;
+}
+
+__int64 __cdecl __divdi3(
+     __int64 a, 
+     __int64 b
+)
+{
+    int neg = 0;
+    __int64 res;
+
+    if (a < 0) {
+        a = -a;
+        neg = !neg;
+    }
+
+    if (b < 0) {
+        b = -b;
+        neg = !neg;
+    }
+
+    res = udivmodsi4(a, b, 0);
+
+    if (neg)
+        res = -res;
+
+    return res;
+}
+
+__int64 __cdecl __moddi3(
+     __int64 a, 
+     __int64 b
+)
+{
+    int neg = 0;
+    __int64 res;
+
+    if (a < 0) {
+        a = -a;
+        neg = 1;
+    }
+
+    if (b < 0)
+        b = -b;
+
+    res = udivmodsi4(a, b, 1);
+
+    if (neg)
+        res = -res;
+
+    return res;
+}
+
+unsigned __int64 __cdecl __udivdi3(
+     unsigned __int64 a, 
+     unsigned __int64 b
+)
+{
+    return udivmodsi4 (a, b, 0);
+}
+
+unsigned __int64 __cdecl __umoddi3(
+     unsigned __int64 a, 
+     unsigned __int64 b
+)
+{
+    return udivmodsi4 (a, b, 1);
 }
