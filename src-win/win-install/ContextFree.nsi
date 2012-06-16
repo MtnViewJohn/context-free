@@ -171,7 +171,6 @@ Section -post
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Context Free.lnk" "$INSTDIR\ContextFree.exe"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall Context Free.lnk" "$INSTDIR\uninst-contextfree.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -229,7 +228,6 @@ Section "Uninstall"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
     
-  Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall Context Free.lnk"
   Delete "$SMPROGRAMS\$MUI_TEMP\Context Free.lnk"
   
   ;Delete empty start menu parent diretories
