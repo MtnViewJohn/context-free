@@ -21,7 +21,7 @@
 ;
 
 !define VER_MAJOR 3
-!define VER_MINOR 0beta
+!define VER_MINOR 0
 
 SetCompressor lzma
 
@@ -120,6 +120,7 @@ SectionIn RO
     File "vcredist_x64.exe"
     ExecWait '"$INSTDIR\vcredist_x64.exe" /passive /norestart'
     Delete $INSTDIR\vcredist_x64.exe
+    RMDir /r '$PROGRAMFILES32\OzoneSoft\ContextFree'
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
     File "..\\..\\src-net\\release\\CFControls.dll" 
