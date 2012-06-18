@@ -219,6 +219,9 @@
     <ClInclude Include="src-common\agg-extras\agg_conv_centroid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src-common\ffCanvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-agg\src\agg_bezier_arc.cpp">
@@ -333,6 +336,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src-common\ast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src-common\ffCanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src-ffmpeg\ffmpegshim.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

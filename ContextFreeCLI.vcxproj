@@ -46,7 +46,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src-ffmpeg\include;..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -59,15 +59,16 @@
       <DisableSpecificWarnings>4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libavformat.a;libavutil.a;libavcodec.a;GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(SolutionDir)/src-ffmpeg/lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src-ffmpeg\include;..\include;src-common;src-win;src-win/derived;src-agg\include;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -78,12 +79,13 @@
       <DisableSpecificWarnings>4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libavformat.a;libavutil.a;libavcodec.a;GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(SolutionDir)/src-ffmpeg/lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -131,6 +133,7 @@
     <ClInclude Include="src-common\builder.h" />
     <ClInclude Include="src-common\cfdg.h" />
     <ClInclude Include="src-common\CmdInfo.h" />
+    <ClInclude Include="src-common\ffCanvas.h" />
     <ClInclude Include="src-common\pathIterator.h" />
     <ClInclude Include="src-common\stacktype.h" />
     <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
@@ -172,8 +175,16 @@
     <ClCompile Include="src-common\builder.cpp" />
     <ClCompile Include="src-common\cfdg.cpp" />
     <ClCompile Include="src-common\CmdInfo.cpp" />
+    <ClCompile Include="src-common\ffCanvas.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src-common\pathIterator.cpp" />
     <ClCompile Include="src-common\stacktype.cpp" />
+    <ClCompile Include="src-ffmpeg\ffmpegshim.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
     <ClCompile Include="src-common\countable.cpp" />
