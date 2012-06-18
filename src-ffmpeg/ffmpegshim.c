@@ -94,12 +94,13 @@ int __cdecl gettimeofday(
 
     if (NULL != tz) {
         int i;
+        long l = 0;
         if (!tzflag) {
             _tzset();
             tzflag++;
         }
-        _get_timezone(&i);
-        tz->tz_minuteswest = i / 60;
+        _get_timezone(&l);
+        tz->tz_minuteswest = l / 60;
         _get_daylight(&i);
         tz->tz_dsttime = i;
     }

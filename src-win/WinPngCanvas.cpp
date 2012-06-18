@@ -22,12 +22,23 @@
 //
 //
 
+#define NOMINMAX
+#include <windows.h>
 #include "WinPngCanvas.h"
 #include <stdlib.h>
-#define ULONG_PTR ULONG
-#include <windows.h>
-#include <gdiplus.h>
 #include "makeCFfilename.h"
+
+#ifndef ULONG_PTR
+#define ULONG_PTR ULONG
+#endif
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+#include <gdiplus.h>
 
 using namespace std;
 using namespace Gdiplus;
