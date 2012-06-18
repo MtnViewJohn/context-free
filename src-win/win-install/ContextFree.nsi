@@ -24,6 +24,7 @@
 !define VER_MINOR 0
 
 SetCompressor lzma
+RequestExecutionLevel user
 
 !define PRODUCT "ContextFree"
 !define VERSION "${VER_MAJOR}.${VER_MINOR}"
@@ -31,6 +32,7 @@ SetCompressor lzma
 !include "MUI.nsh"
 !include WordFunc.nsh
 !include "x64.nsh"
+!include WinVer.nsh
 
 ;--------------------------------
 ;Variables
@@ -94,44 +96,26 @@ SectionIn RO
   SetOutPath "$INSTDIR"
   ClearErrors
   
-  Delete '$INSTDIR\msvcp80.dll'
-  Delete '$INSTDIR\msvcr80.dll'
-  Delete '$INSTDIR\mfc80.dll'
-  Delete '$INSTDIR\mfc80u.dll'
-  RMDir /r "$INSTDIR\Microsoft.VC80.CRT"
-  RMDir /r "$INSTDIR\Microsoft.VC80.MFC"
-  SetRegView 32
-  DeleteRegKey HKCR ".cfdg"
-  DeleteRegKey HKCR "ContextFree.Document"
-  SetRegView 64
-  DeleteRegKey HKCR ".cfdg"
-  DeleteRegKey HKCR "ContextFree.Document"
-  
   File 'license.txt'
 
   ${If} ${RunningX64}
-    RMDir /r '$PROGRAMFILES32\OzoneSoft\ContextFree'
     File "..\\..\\src-net\\Release64\\ContextFree.exe" 
+    File "..\\..\\Release64\\ContextFreeCLI.exe" 
     File "..\\..\\src-net\\Release64\\CFControls.dll" 
     File "..\\..\\src-net\\Release64\\Controls.dll" 
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
- 
-    DetailPrint "Installing Visual Studio 2010 runtime libraries..."
-    File "vcredist_x64.exe"
-    ExecWait '"$INSTDIR\vcredist_x64.exe" /passive /norestart'
-    Delete $INSTDIR\vcredist_x64.exe
+    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x64\Microsoft.VC100.CRT\msvcr100.dll"
+    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x64\Microsoft.VC100.CRT\msvcp100.dll"
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
+    File "..\\..\\Release\\ContextFreeCLI.exe" 
     File "..\\..\\src-net\\release\\CFControls.dll" 
     File "..\\..\\src-net\\release\\Controls.dll" 
     File "..\\..\\src-net\\release\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.dll" 
- 
-    DetailPrint "Installing Visual Studio 2010 runtime libraries..."
-    File "vcredist_x86.exe"
-    ExecWait '"$INSTDIR\vcredist_x86.exe" /passive /norestart'
-    Delete $INSTDIR\vcredist_x86.exe
+    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT\msvcr100.dll"
+    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT\msvcp100.dll"
   ${EndIf}
 
 SectionEnd
@@ -139,23 +123,13 @@ SectionEnd
 
 Section -post
 
-  ${If} ${RunningX64}
-    SetRegView 32
-    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
-    SetRegView 64
-  ${Else}
-    SetRegView 64
-    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
-    SetRegView 32
-  ${EndIf}
-
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
                    "DisplayName" "Context Free"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
                    "UninstallString" '"$INSTDIR\uninst-contextfree.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
                    "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
                    "NoRepair" 1
 
   SetOutPath $INSTDIR
@@ -183,8 +157,8 @@ FunctionEnd
 
 Function .onInit
   ;Folder-selection page
-  ${If} ${RunningX64}
-    StrCpy $INSTDIR "$PROGRAMFILES64\OzoneSoft\${PRODUCT}"
+  ${If} ${AtLeastWin2000}
+    StrCpy $INSTDIR "$LOCALAPPDATA\OzoneSoft\${PRODUCT}"
   ${Else}
     StrCpy $INSTDIR "$PROGRAMFILES\OzoneSoft\${PRODUCT}"
   ${EndIf}
@@ -215,45 +189,34 @@ FunctionEnd
 
 Section "Uninstall"
   Delete '$INSTDIR\ContextFree.exe'
+  Delete '$INSTDIR\ContextFreeCLI.exe'
   Delete '$INSTDIR\CFControls.dll' 
   Delete '$INSTDIR\Controls.dll'
   Delete '$INSTDIR\FileDlgExtenders.dll'
   Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.dll'
-  Delete '$INSTDIR\avcodec-53.dll'
-  Delete '$INSTDIR\avformat-53.dll'
-  Delete '$INSTDIR\avutil-51.dll'
+  Delete '$INSTDIR\msvcr100.dll'
+  Delete '$INSTDIR\msvcp100.dll'
   Delete '$INSTDIR\license.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
-  RMDir  '$INSTDIR'
-  RMDir  "$PROGRAMFILES\OzoneSoft"
+  RMDir  /r '$INSTDIR'
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
-    
-  Delete "$SMPROGRAMS\$MUI_TEMP\Context Free.lnk"
+
+  RMDir /r "$SMPROGRAMS\$MUI_TEMP"
+  SetShellVarContext all
+  RMDir /r "$SMPROGRAMS\$MUI_TEMP"
   
-  ;Delete empty start menu parent diretories
-  StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
- 
-  startMenuDeleteLoop:
-	ClearErrors
-    RMDir $MUI_TEMP
-    GetFullPathName $MUI_TEMP "$MUI_TEMP\.."
-    
-    IfErrors startMenuDeleteLoopDone
-  
-    StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
-  startMenuDeleteLoopDone:
 
   SetRegView 32
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
-  DeleteRegKey HKCU "SOFTWARE\OzoneSoft\ContextFree" 
-  DeleteRegKey HKCR ".cfdg"
-  DeleteRegKey HKCR "ContextFree.Document"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
+  DeleteRegKey HKCU "Software\OzoneSoft\ContextFree" 
+  DeleteRegKey HKCU "Software\Classes\.cfdg"
+  DeleteRegKey HKCU "Software\Classes\ContextFree.Document"
   SetRegView 64
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
-  DeleteRegKey HKCU "SOFTWARE\OzoneSoft\ContextFree" 
-  DeleteRegKey HKCR ".cfdg"
-  DeleteRegKey HKCR "ContextFree.Document"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}"
+  DeleteRegKey HKCU "Software\OzoneSoft\ContextFree" 
+  DeleteRegKey HKCU "Software\Classes\.cfdg"
+  DeleteRegKey HKCU "Software\Classes\ContextFree.Document"
 
 
 SectionEnd
