@@ -656,7 +656,7 @@ namespace AST {
     }
     
     ASTmodification::ASTmodification(mod_ptr m, const yy::location& loc)
-    : ASTexpression(loc, true, false, ModType)
+    : ASTexpression(loc, true, false, ModType), entropyIndex(0)
     {
         if (m.get()) {
             grab(m.get());
@@ -664,7 +664,6 @@ namespace AST {
             modClass = 0;
             strokeWidth = 0.1;
             flags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
-            entropyIndex = 0;
         }
     }
     
