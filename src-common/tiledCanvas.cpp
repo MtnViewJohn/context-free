@@ -106,7 +106,7 @@ tiledCanvas::tileTransform(const Bounds& b)
     double dx = -centx, dy = -centy;
     mOffset.transform(&dx, &dy);
     mTileList.push_back(agg::point_d(dx, dy));
-    agg::rect_d canvas(0, 0, (double)(mWidth - 1), (double)(mHeight - 1));
+    agg::rect_d canvas(-5, -5, (double)(mWidth + 9), (double)(mHeight + 9));
     
     if (mFrieze) {
         centx += centy;
