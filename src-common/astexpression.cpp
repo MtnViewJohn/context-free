@@ -659,6 +659,7 @@ namespace AST {
     : ASTexpression(loc, true, false, ModType), entropyIndex(0)
     {
         if (m.get()) {
+            modData.mRand64Seed.seed(0);
             grab(m.get());
         } else {
             modClass = 0;
