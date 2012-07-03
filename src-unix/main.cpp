@@ -434,6 +434,11 @@ int main (int argc, char* argv[]) {
     
     Renderer* myRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
                                               opts.variation, opts.borderSize);
+    
+    if (myRenderer == 0) {
+        delete myDesign;
+        return 9;
+    }
     myRenderer->setMaxShapes(opts.maxShapes);
     opts.width = myRenderer->m_width;
     opts.height = myRenderer->m_height;
