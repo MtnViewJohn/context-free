@@ -56,7 +56,7 @@ public:
         return mSeed == r.mSeed;
     };
     void xorString(const char* t, int& i);
-    void xorChar(char c, unsigned i);
+    void xorChar(unsigned char c, unsigned i);
     void bump();
 };
 

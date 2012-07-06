@@ -64,7 +64,7 @@ void Rand64::init()
     mSeed = RAND64_SEED;
 }
 
-void Rand64::xorChar(char c, unsigned i)
+void Rand64::xorChar(unsigned char c, unsigned i)
 {
     mSeed ^= ((unsigned long long)c) << (i * 8);
 }
@@ -72,9 +72,9 @@ void Rand64::xorChar(char c, unsigned i)
 void Rand64::xorString(const char* t, int& i)
 {
     for (; *t; ++t) {
-        xorChar(*t, i);
+        xorChar((unsigned char)(*t), (unsigned)i);
         bump();
-        i = (i + 1)  & 7;
+        i = (i + 1) & 7;
     }
 }
 
