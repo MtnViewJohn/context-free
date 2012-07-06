@@ -29,21 +29,23 @@
 #define RAND64_ADD   0x14057B7EF767814FULL
 #define RAND64_SEED  0x3DF41234ABCD330EULL
 
+#include <cstdint>
+
 // This class  implements the 64-bit linear congruent PRNG from Knuth's MMIX architecture.
 class Rand64 {
 public:
-    unsigned long long mSeed;
+    uint64_t mSeed;
     static Rand64   Common;
     
     Rand64() : mSeed(RAND64_SEED) { }
-    Rand64(unsigned long long seed) : mSeed(seed) { }
+    Rand64(uint64_t seed) : mSeed(seed) { }
     
     double getDouble(bool bump = true);
     long getLong(bool bump = true);
     long getPositive(bool bump = true);
     unsigned long getUnsigned(bool bump = true);
     
-    void seed(unsigned long long seed);
+    void seed(uint64_t seed);
     void init();
     
     Rand64& operator^=(const Rand64& r)

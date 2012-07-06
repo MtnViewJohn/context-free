@@ -24,8 +24,8 @@
 
 
 #include "Rand64.h"
-#include <math.h>
-#include <limits.h>
+#include <cmath>
+#include <climits>
 
 
 Rand64 Rand64::Common;
@@ -66,7 +66,7 @@ void Rand64::init()
 
 void Rand64::xorChar(unsigned char c, unsigned i)
 {
-    mSeed ^= ((unsigned long long)c) << (i * 8);
+    mSeed ^= ((uint64_t)c) << (i * 8);
 }
 
 void Rand64::xorString(const char* t, int& i)
