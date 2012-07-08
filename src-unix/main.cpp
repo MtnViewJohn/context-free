@@ -449,11 +449,13 @@ int main (int argc, char* argv[]) {
             png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
                                 pixfmt, opts.crop, opts.animationFrames, opts.variation);
             myCanvas = (Canvas*)png;
+            break;
         }
         case options::SVGfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
             svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
             myCanvas = (Canvas*)svg;
+            break;
         }
         case options::MOVfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
@@ -464,6 +466,7 @@ int main (int argc, char* argv[]) {
 				exit(8);
 			}
             myCanvas = (Canvas*)mov;
+            break;
         }
     }
     
