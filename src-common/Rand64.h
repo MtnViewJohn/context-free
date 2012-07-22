@@ -29,6 +29,10 @@
 #define RAND64_ADD   0x14057B7EF767814FULL
 #define RAND64_SEED  0x3DF41234ABCD330EULL
 
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
+
 #include <stdint.h>
 
 // This class  implements the 64-bit linear congruent PRNG from Knuth's MMIX architecture.

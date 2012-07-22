@@ -54,7 +54,7 @@ unsigned long Rand64::getUnsigned(bool doBump)
     return (unsigned long) (mSeed & ULONG_MAX);
 }
 
-void Rand64::seed(unsigned long long seed)
+void Rand64::seed(uint64_t seed)
 {
     mSeed = seed;
 }
