@@ -955,8 +955,6 @@
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Context Free";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.6.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.6.sdk;
 				STRIP_INSTALLED_PRODUCT = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
@@ -1080,8 +1078,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				PRODUCT_NAME = "Context Free";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.6.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.6.sdk;
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -1125,8 +1121,6 @@
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Context Free";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.6.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.6.sdk;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = app;
@@ -1150,8 +1144,6 @@
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Context Free";
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.6.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.6.sdk;
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
