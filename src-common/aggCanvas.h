@@ -49,7 +49,7 @@ class aggCanvas : public Canvas {
             RGBA16_Blend = RGBA8_Blend | Has_16bit_Color, 
             RGB16_Blend = RGB8_Blend | Has_16bit_Color
         };
-        static int BytesPerPixel[12];
+        static int BytesPerPixel[13];
         void start(bool clear, const agg::rgba& bk, int width, int height);
         void end();
 
