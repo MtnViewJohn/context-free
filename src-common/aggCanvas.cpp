@@ -76,7 +76,7 @@ typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
 #define ADJ_SQUARE_SIZE     0.80
 #define ADJ_TRIANGLE_SIZE   0.90
 
-int aggCanvas::BytesPerPixel[12] = {1, 4, 3, 4, 3, 4, 0, 0, 2, 8, 6, 0};
+int aggCanvas::BytesPerPixel[13] = {4, 1, 4, 3, 4, 3, 4, 0, 0, 2, 8, 6, 0};
 
 namespace {
     inline double
