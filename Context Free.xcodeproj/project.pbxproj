@@ -45,7 +45,6 @@
 		524D22D013BA0145002732C2 /* agg_trans_affine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2D477A08411FB600697CE7 /* agg_trans_affine.cpp */; };
 		524D22D113BA0145002732C2 /* agg_vcgen_contour.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5233110F0CF7F6260087307A /* agg_vcgen_contour.cpp */; };
 		524D22D213BA0145002732C2 /* agg_vcgen_stroke.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 523311100CF7F6260087307A /* agg_vcgen_stroke.cpp */; };
-		524D22D413BA018C002732C2 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 524D22D313BA018C002732C2 /* libpng.dylib */; };
 		524D22E313BA0200002732C2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22DC13BA0200002732C2 /* main.cpp */; };
 		524D22E413BA0200002732C2 /* pngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22DD13BA0200002732C2 /* pngCanvas.cpp */; };
 		524D22E513BA0200002732C2 /* posixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22DF13BA0200002732C2 /* posixSystem.cpp */; };
@@ -252,7 +251,6 @@
 		524D1FAF13AD0D7C002732C2 /* astexpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = astexpression.h; sourceTree = "<group>"; };
 		524D1FB013AD0D8A002732C2 /* astreplacement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = astreplacement.h; sourceTree = "<group>"; };
 		524D22A713B9FEBD002732C2 /* cfdg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cfdg; sourceTree = BUILT_PRODUCTS_DIR; };
-		524D22D313BA018C002732C2 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = usr/local/lib/libpng.dylib; sourceTree = SDKROOT; };
 		524D22DC13BA0200002732C2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = "src-unix/main.cpp"; sourceTree = "<group>"; };
 		524D22DD13BA0200002732C2 /* pngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pngCanvas.cpp; path = "src-unix/pngCanvas.cpp"; sourceTree = "<group>"; };
 		524D22DE13BA0200002732C2 /* pngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngCanvas.h; path = "src-unix/pngCanvas.h"; sourceTree = "<group>"; };
@@ -405,7 +403,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				524D22D413BA018C002732C2 /* libpng.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,7 +462,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				52E950A31367D3B600BB2D96 /* QuickTime.framework */,
-				524D22D313BA018C002732C2 /* libpng.dylib */,
 			);
 			name = CFDA;
 			sourceTree = "<group>";
@@ -946,7 +942,7 @@
 		52086FBA0ABD19F6005EBDC1 /* Performance */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 34;
 				DEPLOYMENT_POSTPROCESSING = NO;
@@ -1070,7 +1066,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 34;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -1114,7 +1110,7 @@
 		FDB0D3D0085CEE00002FBEED /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 34;
 				GCC_DEBUGGING_SYMBOLS = full;
@@ -1141,7 +1137,7 @@
 		FDB0D3D1085CEE00002FBEED /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 34;
 				DEPLOYMENT_POSTPROCESSING = YES;
