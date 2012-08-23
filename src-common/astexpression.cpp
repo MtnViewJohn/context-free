@@ -598,7 +598,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             ret = definition->mExpression->evalArgs(rti, parent);
             rti->mCFstack.resize(size, StackZero);
@@ -739,7 +739,7 @@ namespace AST {
                                      const yy::location& nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
                     false, false, func->mType),
-      definition(func), arguments(args)
+      definition(func), arguments(args), isLet(false)
     {
         if (definition->mExpression) {
             isConstant = isConstant && definition->mExpression->isConstant;
@@ -761,6 +761,7 @@ namespace AST {
     : AST::ASTuserFunction(args, func, letLoc)
     {
         where = where + defLoc;
+        isLet = true;
     }
     
     ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
@@ -1146,7 +1147,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(res, length, rti);
             rti->mCFstack.resize(size, StackZero);
@@ -1610,7 +1611,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters));
+            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, rti);
             rti->mCFstack.resize(size, StackZero);

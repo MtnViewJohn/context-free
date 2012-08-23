@@ -66,7 +66,7 @@ union StackType {
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
                          const StackType* parent);
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                         const std::vector<AST::ASTparameter>* p);
+                         const std::vector<AST::ASTparameter>* p, bool sequential);
 };
 
 #endif // INCLUDE_STACKTYPE_H

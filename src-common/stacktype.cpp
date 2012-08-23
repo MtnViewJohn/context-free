@@ -393,9 +393,9 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 // Evaluate arguments on the stack
 void
 StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                    const std::vector<AST::ASTparameter>* p)
+                    const std::vector<AST::ASTparameter>* p, bool sequential)
 {
     iterator dest = iterator::begin(this, p);
-    EvalArgs(rti, NULL, dest, arguments, true);
+    EvalArgs(rti, NULL, dest, arguments, sequential);
 }
 

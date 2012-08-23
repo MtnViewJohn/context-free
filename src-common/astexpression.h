@@ -219,6 +219,7 @@ namespace AST {
     public:
         ASTdefine* definition;
         ASTexpression* arguments;
+        bool isLet;
         
         ASTuserFunction(ASTexpression* args, ASTdefine* func, const yy::location& nameLoc);
         virtual ~ASTuserFunction() { delete arguments; }
