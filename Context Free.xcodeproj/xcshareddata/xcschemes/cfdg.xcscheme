@@ -69,11 +69,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 - output/square.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 -a20 input/mtree.cfdg output/mtree.png"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s50 -T10x1 /Users/john/Documents/Context\ Free/tests/friezesymmtest1.cfdg output/feet.png"

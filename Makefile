@@ -32,8 +32,8 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
-# COMMON_SRCS += ffCanvasDummy.cpp
-COMMON_SRCS += ffCanvas.cpp
+COMMON_SRCS += ffCanvasDummy.cpp
+# COMMON_SRCS += ffCanvas.cpp
 
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
