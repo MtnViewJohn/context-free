@@ -77,7 +77,6 @@ public:
     int             mCompilePhase;
     
     AST::ASTrepContainer mParamDecls;
-    bool            isFunction;
     
     static std::map<std::string, int> FlagNames;
     

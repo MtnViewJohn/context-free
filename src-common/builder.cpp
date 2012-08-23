@@ -53,7 +53,7 @@ Builder* Builder::CurrentBuilder = 0;
 Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
   mInPathContainer(false), mCurrentShape(-1),
-  mWant2ndPass(false), mCompilePhase(1), isFunction(false),
+  mWant2ndPass(false), mCompilePhase(1),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(0), 
   mErrorOccured(false)
 { 
@@ -372,10 +372,12 @@ void
 Builder::NextParameter(const std::string& name, exp_ptr e,
                        const yy::location& nameLoc, const yy::location& expLoc) 
 {
-    if (isFunction) {
+    bool isFunction = false;
+    if (!mContainerStack.empty() && mContainerStack.back() == &mParamDecls) {
         pop_repContainer(NULL);         // pop mParamDecls
         mParamDecls.mParameters.clear();
         mParamDecls.mStackCount = 0;
+        isFunction = true;
     }
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
         if (isFunction)
@@ -431,7 +433,6 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             }
         }
 
-        isFunction = false;
         return;
     } else if (def) {
         CfdgError::Error(nameLoc, "Definition with same name as user function");
@@ -858,7 +859,7 @@ void
 Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
                          const std::string& type)
 {
-    if (isFunction) {
+    {
         for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
              eit = mParamDecls.mParameters.end(); it != eit; ++it)
         {

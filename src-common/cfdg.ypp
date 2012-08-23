@@ -392,45 +392,55 @@ global_definition:
         ;
 
 global_definition_header:
-        SHAPE USER_STRING mandatory_function_parameter_list BECOMES {
+        SHAPE USER_STRING function_parameter_list BECOMES {
             static const std::string numtype("shape");
             driver.push_paramDecls(*$2, @$, numtype);
             $$ = $2;
         }
-        | 
+        |
         USER_STRING function_parameter_list BECOMES {
             static const std::string numtype("number");
             driver.push_paramDecls(*$1, @$, numtype);
             $$ = $1;
         }
-        | 
-        MODTYPE function_parameter_list BECOMES {
-            driver.isFunction = false;
-            error(@1, "Reserved keyword: adjustment");
-            $$ = 0;
-        }
         |
-        USER_STRING USER_STRING mandatory_function_parameter_list BECOMES {
+        USER_STRING USER_STRING function_parameter_list BECOMES {
             str_ptr type($1);
             driver.push_paramDecls(*$2, @$, *type);
             $$ = $2;
         }
+        | 
+        USER_STRING BECOMES {
+            $$ = $1;
+        }
         |
-        USER_STRING MODTYPE function_parameter_list BECOMES {
-            str_ptr type($1);
-            driver.isFunction = false;
+        SHAPE MODTYPE function_parameter_list BECOMES {
             error(@2, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
+        |
+        MODTYPE function_parameter_list BECOMES {
+            error(@1, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
+        |
+        USER_STRING MODTYPE parameter_list BECOMES {
+            str_ptr type($1);
+            error(@2, "Reserved keyword: adjustment");
+            $$ = 0;
+        }
+        | 
+        MODTYPE BECOMES {
+            error(@1, "Reserved keyword: adjustment");
             $$ = 0;
         }
         ;
 
 definition_header:
         USER_STRING BECOMES {
-            driver.isFunction = false;
             $$ = $1;
         }
         | MODTYPE BECOMES {
-            driver.isFunction = false;
             error(@1, "Reserved keyword: adjustment");
             $$ = 0;
         }
@@ -653,14 +663,8 @@ parameter_list:
 		;
 
 function_parameter_list:
-        '(' buncha_parameters ')' { driver.isFunction = true; }
-        | '(' ')' { driver.isFunction = true; }
-        | { driver.isFunction = false; }
-        ;
-
-mandatory_function_parameter_list:
-        '(' buncha_parameters ')' { driver.isFunction = true; }
-        | '(' ')' { driver.isFunction = true; }
+        '(' buncha_parameters ')'
+        | '(' ')'
         ;
 
 parameter_spec:
@@ -1212,7 +1216,6 @@ letHeader:
         LET {
             ASTrepContainer* tempHolder = new ASTrepContainer();
             driver.push_repContainer(*tempHolder);
-            driver.isFunction = false;
             $$ = tempHolder;
         }
         ;
