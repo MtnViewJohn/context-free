@@ -344,7 +344,8 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 
 static void
 EvalArgs(Renderer* rti, const StackType* parent, 
-         iterator& dest, const AST::ASTexpression* arguments)
+         iterator& dest, const AST::ASTexpression* arguments,
+         bool onStack)
 {
     if (arguments->mType == AST::ASTexpression::NumericType && 
         arguments->size() == dest.type().mTuplesize)
@@ -375,6 +376,8 @@ EvalArgs(Renderer* rti, const StackType* parent,
             default:
                 break;
         }
+        if (onStack)
+            rti->mLogicalStackTop = &(*dest);
     }
 }
 
@@ -384,7 +387,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const StackType* parent)
 {
     iterator dest = iterator::begin(this);
-    EvalArgs(rti, parent, dest, arguments);
+    EvalArgs(rti, parent, dest, arguments, false);
 }
 
 // Evaluate arguments on the stack
@@ -393,6 +396,6 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const std::vector<AST::ASTparameter>* p)
 {
     iterator dest = iterator::begin(this, p);
-    EvalArgs(rti, NULL, dest, arguments);
+    EvalArgs(rti, NULL, dest, arguments, true);
 }
 
