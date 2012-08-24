@@ -347,13 +347,6 @@ EvalArgs(Renderer* rti, const StackType* parent,
          iterator& dest, const AST::ASTexpression* arguments,
          bool onStack)
 {
-    if (arguments->mType == AST::ASTexpression::NumericType && 
-        arguments->size() == dest.type().mTuplesize)
-    {
-        // Special case if there is only one parameter and it is a vector
-        arguments->evaluate(&(dest->number), dest.type().mTuplesize, rti);
-        return;
-    }
     for (int i = 0; i < arguments->size(); ++i, ++dest) {
         const AST::ASTexpression* arg = (*arguments)[i];
         switch (arg->mType) {
