@@ -493,7 +493,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 ASTreal* top = new ASTreal(data[0], bound->mDefinition->mExpression->where);
                 top->text = name;                // use variable name for entropy
                 ASTexpression* list = top;
-                for (int i = 2; i < valCount; ++i) {
+                for (int i = 1; i < valCount; ++i) {
                     ASTreal* next = new ASTreal(data[i], 
                                                 bound->mDefinition->mExpression->where);
                     list = list->append(next);

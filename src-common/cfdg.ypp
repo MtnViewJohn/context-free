@@ -141,7 +141,7 @@ namespace AST {
 %left '*' '/'
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
-%type <expression> exp exp2 expfunc exp2func explist parameter_spec letBody
+%type <expression> exp exp2 exp3 expfunc exp2func explist arglist parameter_spec letBody
 %type <mod> modification modification_v2 buncha_adjustments
 %type <term> adjustment
 %type <component> element element_simple
@@ -158,7 +158,7 @@ namespace AST {
 %type <bodyObj> letHeader
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP USER_ARRAYNAME fileString fileNameSpace definition_header global_definition_header shapeName
-%destructor { delete $$; } exp exp2 expfunc exp2func explist parameter_spec letBody
+%destructor { delete $$; } exp exp2 exp3 expfunc exp2func explist arglist parameter_spec letBody
 %destructor { delete $$; } adjustment
 %destructor { delete $$; } modification modification_v2 buncha_adjustments
 %destructor { driver.pop_repContainer(NULL); delete $$; } loopHeader_v2
@@ -668,7 +668,7 @@ function_parameter_list:
         ;
 
 parameter_spec:
-        '(' exp2 ')' { $$ = $2;}
+        '(' arglist ')' { $$ = $2;}
         | '(' BECOMES ')' { $$ = new ASTexpression(@$); }
         | '(' ')' { $$ = 0; }
         | { $$ = 0; }
@@ -1255,6 +1255,17 @@ explist:
         }
         ;
 
+
+arglist:
+        arglist ',' exp3 {
+            $$ = $1->append(new ASTparen($3));
+        }
+        |
+        exp3 {
+            $$ = new ASTcons(new ASTparen($1), 0);
+        }
+        ;
+        
 exp:
         USER_RATIONAL       { $$ = new ASTreal(*$1, @$); delete $1; }
         |
@@ -1339,13 +1350,71 @@ exp2:
         modification         { $$ = $1; }
         ;
 
+exp3:
+        USER_RATIONAL        { $$ = new ASTreal(*$1, @$); delete $1; }
+        |
+        CF_INFINITY          { $$ = new ASTreal(Renderer::Infinity, @$); }
+        |
+        exp2func             { $$ = $1; }
+        |
+        exp3 RANGEOP exp3 {
+            exp_ptr pair($1->append($3));
+            $$ = new ASTfunction("rand", pair, driver.mSeed, @1, @$);
+        }
+        |
+        exp3 PLUSMINUSOP exp3 {
+            exp_ptr pair($1->append($3));
+            $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @1, @$);
+        }
+        | 
+        exp3 '+' exp3        { $$ = new ASToperator('+', $1, $3); }
+        | 
+        exp3 '-' exp3        { $$ = new ASToperator('-', $1, $3); }
+        | 
+        exp3 '_' exp3        { $$ = new ASToperator('_', $1, $3); }
+        | 
+        exp3 '*' exp3        { $$ = new ASToperator('*', $1, $3); }
+        | 
+        exp3 '/' exp3        { $$ = new ASToperator('/', $1, $3); }
+        | 
+        '-' exp3  %prec NEG  { $$ = new ASToperator('N', $2, NULL); }
+        | 
+        '+' exp3  %prec POS  { $$ = new ASToperator('P', $2, NULL); }
+        | 
+        NOT exp3             { $$ = new ASToperator('!', $2, NULL); }
+        | 
+        exp3 '^' exp3        { $$ = new ASToperator('^', $1, $3); }
+        | 
+        exp3 LT exp3         { $$ = new ASToperator('<', $1, $3); }
+        | 
+        exp3 LE exp3         { $$ = new ASToperator('L', $1, $3); }
+        | 
+        exp3 GT exp3         { $$ = new ASToperator('>', $1, $3); }
+        | 
+        exp3 GE exp3         { $$ = new ASToperator('G', $1, $3); }
+        | 
+        exp3 EQ exp3         { $$ = new ASToperator('=', $1, $3); }
+        | 
+        exp3 NEQ exp3        { $$ = new ASToperator('n', $1, $3); }
+        | 
+        exp3 AND exp3        { $$ = new ASToperator('&', $1, $3); }
+        | 
+        exp3 OR exp3         { $$ = new ASToperator('|', $1, $3); }
+        | 
+        exp3 XOR exp3        { $$ = new ASToperator('X', $1, $3); }
+        | 
+        '(' exp2 ')'         { $$ = new ASTparen($2); }
+        | 
+        modification         { $$ = $1; }
+        ;
+
 expfunc:
         USER_STRING '(' ')'   { 
             str_ptr func($1);
             $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, false);
         }
         | 
-        USER_STRING '(' exp2 ')'   { 
+        USER_STRING '(' arglist ')'   { 
             str_ptr func($1);
             exp_ptr args($3);
             $$ = driver.MakeFunction(func, args, @1, @3, true);
@@ -1381,7 +1450,7 @@ exp2func:
             $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, false);
         }
         | 
-        USER_STRING '(' exp2 ')'   { 
+        USER_STRING '(' arglist ')'   { 
             str_ptr func($1);
             exp_ptr args($3);
             $$ = driver.MakeFunction(func, args, @1, @3, false);
