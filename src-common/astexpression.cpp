@@ -2186,6 +2186,12 @@ namespace AST {
     ASTexpression*
     ASTcons::simplify()
     {
+        if (children.size() == 1) {
+            ASTexpression* ret = children[0]->simplify();
+            children[0] = NULL;
+            delete this;
+            return ret;
+        }
         for (size_t i = 0; i < children.size(); ++i)
             children[i] = children[i]->simplify();
         return this;
