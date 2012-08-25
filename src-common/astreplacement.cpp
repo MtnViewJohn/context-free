@@ -397,6 +397,7 @@ namespace AST {
                 CfdgError::Error(flags->where, "Unexpected argument in path command");
                 return;
             }
+            flags.reset(flags.release()->simplify());
             ASTreal* r = dynamic_cast<ASTreal*> (flags.get());
             if (r) {
                 int f = (int)(r->value);
