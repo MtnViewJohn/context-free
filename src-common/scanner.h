@@ -95,6 +95,7 @@ private:
     void setupLoc(CfdgParser::location_type* yylloc);
     unsigned int utf8length(const char* txt, size_t len);
     std::stack<CfdgParser::location_type> mLocationStack;
+    bool        atStartup;
 };
 
 } // namespace yy

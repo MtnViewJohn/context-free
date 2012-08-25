@@ -73,9 +73,9 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
     // reset location
     setupLoc(yylloc);
     
-    if (startToken) {
+    if (atStartup) {
         int t = startToken;
-        startToken = 0;
+        atStartup = false;
         return t;
     }
 %}
@@ -166,16 +166,10 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "b"             {yylval->modToken = AST::ASTmodTerm::bright;        return token::MODTYPE;}
 "alpha"         {yylval->modToken = AST::ASTmodTerm::alpha;         return token::MODTYPE;}
 "a"             {yylval->modToken = AST::ASTmodTerm::alpha;         return token::MODTYPE;}
-"x1"            {yylval->modToken = AST::ASTmodTerm::x1;            return token::MODTYPE;}
-"y1"            {yylval->modToken = AST::ASTmodTerm::y1;            return token::MODTYPE;}
-"x2"            {yylval->modToken = AST::ASTmodTerm::x2;            return token::MODTYPE;}
-"y2"            {yylval->modToken = AST::ASTmodTerm::y2;            return token::MODTYPE;}
 "transform"     {yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 "trans"         {yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 "x"             {yylval->modToken = AST::ASTmodTerm::x;             return token::MODTYPE;}
 "y"             {yylval->modToken = AST::ASTmodTerm::y;             return token::MODTYPE;}
-"rx"            {yylval->modToken = AST::ASTmodTerm::xrad;          return token::MODTYPE;}
-"ry"            {yylval->modToken = AST::ASTmodTerm::yrad;          return token::MODTYPE;}
 "z"             {yylval->modToken = AST::ASTmodTerm::z;             return token::MODTYPE;}
 "size"          {yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
 "s"             {yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
@@ -191,6 +185,61 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "param"         {yylval->modToken = AST::ASTmodTerm::param;         return token::PARAM;}
 "p"             {yylval->modToken = AST::ASTmodTerm::param;         return token::PARAM;}
 "width"         {yylval->modToken = AST::ASTmodTerm::stroke;        return token::MODTYPE;}
+
+"x1" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::x1;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
+"y1" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::y1;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
+"x2" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::x2;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
+"y2" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::y2;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
+"rx" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::xrad;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
+"ry" {
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::yrad;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 
 "<"             { return token::LT; }
 "<="            { return token::LE; }
@@ -293,7 +342,7 @@ namespace yy {
 Scanner::Scanner(std::istream* in,
 		 std::ostream* out)
     : yyFlexLexer(in, out), nextLocAction(normalAction), 
-      startToken(token::CFDG2), maybeVersion(0)
+      startToken(token::CFDG2), maybeVersion(0), atStartup(true)
 {
     utf8chars[token::RANGEOP] = "\xe2\x80\xa6";
     utf8chars[token::PLUSMINUSOP] = "\xc2\xb1";
