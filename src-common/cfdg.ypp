@@ -244,6 +244,7 @@ statement_v2:
 v3clues:
         USER_STRING BECOMES { delete $1; }
         | MODTYPE BECOMES {}
+        | PARAM BECOMES {}
         | USER_STRING '(' { delete $1; }
         | USER_STRING USER_STRING '(' { delete $1; delete $2; }
         | IMPORT
