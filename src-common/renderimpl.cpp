@@ -95,6 +95,9 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     shapeMap[0].mPath = &shape0;
     shapeMap[1].mPath = &shape1;
     shapeMap[2].mPath = &shape2;
+    
+    m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, 0);
+    m_cfdg->hasParameter("CF::Frame", mCurrentFrame, 0);
 }
 
 void
@@ -126,10 +129,6 @@ RendererImpl::init()
         mFixedBorderX = 0.0;
     if (mShapeBorder <= 0.0)
         mShapeBorder = 1.0;
-    
-    mCurrentTime = mCurrentFrame = 0.0;
-    m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, 0);
-    m_cfdg->hasParameter("CF::Frame", mCurrentFrame, 0);
     
     if (m_cfdg->hasParameter("CF::MaxNatural", mMaxNatural, this) &&
         (mMaxNatural < 1.0 || (mMaxNatural - 1.0) == mMaxNatural))
@@ -535,6 +534,8 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
         mFrameTimeBounds.tend = mTimeBounds.tbegin + frameInc * frameCount;
         
         if (ftime) {
+            mCurrentTime = (mFrameTimeBounds.tbegin + mFrameTimeBounds.tend) * 0.5;
+            mCurrentFrame = (frameCount - 1.0)/(frames - 1.0);
             try {
                 init();
             } catch (CfdgError err) {
@@ -545,8 +546,6 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
                 outputStats();
                 return;
             }
-            mCurrentTime = (mFrameTimeBounds.tbegin + mFrameTimeBounds.tend) * 0.5;
-            mCurrentFrame = (frameCount - 1.0)/(frames - 1.0);
             run(canvas, false);
             m_canvas = canvas;
         } else {
