@@ -220,7 +220,7 @@ class Renderer {
           requestUpdate(false),
           m_tiledCanvas(0),
           mMaxNatural(1000.0),
-          mCurrentTime(0.0),
+          mCurrentTime(0.0), mCurrentFrame(0.0),
           mCurrentPath(0)
      { }
 };
