@@ -406,6 +406,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         "CF::Frame",
         "CF::FrameTime",
         "CF::Impure",
+        "CF::MaxNatural",
         "CF::MinimumSize",
         "CF::Size",
         "CF::Symmetry",
