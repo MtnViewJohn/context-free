@@ -1065,6 +1065,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LIBRARY = "libstdc++";
+				CODE_SIGN_IDENTITY = "Mac Developer: John Horigan (TR6ES2TBTV)";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 34;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -1078,6 +1079,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				PRODUCT_NAME = "Context Free";
+				PROVISIONING_PROFILE = "E36258C9-C0C3-47B3-BDD2-3FB55B36E10A";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
