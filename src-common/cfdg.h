@@ -190,6 +190,8 @@ class Renderer {
         Rand64      mCurrentSeed;
         bool        mRandUsed;
     
+        double      mMaxNatural;
+
         double      mCurrentTime;
         double      mCurrentFrame;
         
@@ -204,6 +206,7 @@ class Renderer {
         AST::InfoCache::iterator mCurrentCommand;
     
         void init();
+        bool isNatural(double n);
         virtual void storeParams(const StackType* p) = 0;
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
@@ -216,6 +219,7 @@ class Renderer {
           requestFinishUp(false),
           requestUpdate(false),
           m_tiledCanvas(0),
+          mMaxNatural(1000.0),
           mCurrentTime(0.0),
           mCurrentPath(0)
      { }

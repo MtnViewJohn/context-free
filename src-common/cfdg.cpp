@@ -174,6 +174,12 @@ Renderer::init()
     mIndex = mNextIndex = 0;
 }
 
+bool
+Renderer::isNatural(double n)
+{
+    return n >= 0 && n <= mMaxNatural && n == floor(n);
+}
+
 void
 Renderer::initStack(const StackType* p)
 {

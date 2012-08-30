@@ -131,6 +131,15 @@ RendererImpl::init()
     m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, 0);
     m_cfdg->hasParameter("CF::Frame", mCurrentFrame, 0);
     
+    if (m_cfdg->hasParameter("CF::MaxNatural", mMaxNatural, this) &&
+        (mMaxNatural < 1.0 || (mMaxNatural - 1.0) == mMaxNatural))
+    {
+        const ASTexpression* max = m_cfdg->hasParameter("CF::MaxNatural");
+        throw CfdgError(max->where, (mMaxNatural < 1.0) ?
+                            "CF::MaxNatural must be >= 1" :
+                            "CF::MaxNatural must be < 9007199254740992");
+    }
+    
     mCurrentPath = new AST::ASTcompiledPath();
     
     m_cfdg->getSymmetry(mSymmetryOps, this);
@@ -526,7 +535,16 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
         mFrameTimeBounds.tend = mTimeBounds.tbegin + frameInc * frameCount;
         
         if (ftime) {
-            init();
+            try {
+                init();
+            } catch (CfdgError err) {
+                system()->syntaxError(err);
+                cleanup();
+                mBounds = saveBounds;
+                m_stats.animating = false;
+                outputStats();
+                return;
+            }
             mCurrentTime = (mFrameTimeBounds.tbegin + mFrameTimeBounds.tend) * 0.5;
             mCurrentFrame = (frameCount - 1.0)/(frames - 1.0);
             run(canvas, false);
