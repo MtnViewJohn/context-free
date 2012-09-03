@@ -1650,7 +1650,7 @@ namespace AST {
                         bool justCheck, int& seedIndex, 
                         Renderer* rti) const
     {
-        double modArgs[6];
+        double modArgs[6] {0.0};
         int argcount = 0;
         
         if (args) {
