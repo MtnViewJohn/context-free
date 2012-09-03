@@ -9,7 +9,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 36
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -51,6 +51,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -58,6 +59,7 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
+#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -88,15 +90,12 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
-#endif /* ! C99 */
-
 #endif /* ! FLEXINT_H */
 
 /* begin standard C++ headers. */
 #include <iostream> 
 #include <errno.h>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 
@@ -197,7 +196,7 @@ extern yy_size_t yyleng;
 	do \
 		{ \
 		/* Undo effects of setting up yytext. */ \
-        yy_size_t yyless_macro_arg = (n); \
+        int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		*yy_cp = (yy_hold_char); \
 		YY_RESTORE_YY_MORE_OFFSET \
@@ -333,7 +332,7 @@ int yyFlexLexer::yywrap() { return 1; }
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (size_t) (yy_cp - yy_bp); \
+	yyleng = (yy_size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -352,15 +351,15 @@ static yyconst flex_int16_t yy_accept[295] =
         0,    0,   90,   88,   86,   87,   74,   88,    1,   88,
        88,   88,   88,   88,   84,   65,   15,   68,   80,   80,
        80,   80,   80,   88,   80,   39,   37,   80,   80,   31,
-       33,   80,   80,   63,   29,   52,   80,   80,   46,   47,
-       50,   88,   80,   80,   86,    0,    3,   75,    0,   78,
+       33,   80,   80,   57,   29,   46,   80,   80,   42,   43,
+       44,   88,   80,   80,   86,    0,    3,   75,    0,   78,
        21,   81,    2,    1,   84,   81,   84,    0,   66,   72,
        71,   69,    0,    0,   80,   80,   80,   80,   80,   80,
        80,   77,   80,   80,   80,   80,   80,   80,   80,   80,
-       80,   17,   80,   80,   80,   80,   80,   80,   80,   48,
-       49,   80,   80,   80,   80,   80,   80,   80,   80,   80,
+       80,   17,   80,   80,   80,   80,   80,   80,   80,   63,
+       64,   80,   80,   80,   80,   80,   80,   80,   80,   80,
 
-       40,   42,   41,   43,   61,   59,   55,    0,   76,   23,
+       59,   61,   60,   62,   55,   53,   49,    0,   76,   23,
        80,   80,   80,   24,   81,    0,    0,   81,   83,   81,
         0,    0,   82,    0,   80,   80,   80,   80,   80,   80,
        80,   80,   80,   80,   80,   80,   80,   32,   80,   80,
@@ -369,18 +368,18 @@ static yyconst flex_int16_t yy_accept[295] =
        22,   25,   73,   67,   70,    0,   82,    0,   82,   82,
         0,   80,   80,   80,   80,   80,   80,   80,   80,   80,
        20,   80,   18,   80,   30,   80,   80,   12,   80,   10,
-       80,    9,   80,   80,   51,   53,   80,   80,    8,   26,
+       80,    9,   80,   80,   45,   47,   80,   80,    8,   26,
 
-       80,   80,    0,    0,   54,   57,   82,   82,    0,   80,
+       80,   80,    0,    0,   48,   51,   82,   82,    0,   80,
        79,   80,   80,   80,   80,   80,   80,   38,   80,   80,
-       13,   80,   80,   80,   62,   80,   80,   11,   80,   80,
-       80,   45,   64,    0,    0,    0,   85,   80,   80,   80,
+       13,   80,   80,   80,   56,   80,   80,   11,   80,   80,
+       80,   41,   58,    0,    0,    0,   85,   80,   80,   80,
        80,   80,   80,   80,   80,    7,   80,   28,   80,   80,
-       19,   80,   80,   60,    0,    0,   80,   80,   80,   80,
+       19,   80,   80,   54,    0,    0,   80,   80,   80,   80,
        16,    6,   80,   80,   80,   80,    0,    0,   80,   80,
        80,   80,   80,   80,   80,    0,    0,   80,   80,   80,
-       80,   27,   44,    0,    0,    5,   36,   34,    4,    0,
-        0,   58,   56,    0
+       80,   27,   40,    0,    0,    5,   36,   34,    4,    0,
+        0,   52,   50,    0
 
     } ;
 
@@ -850,7 +849,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[90] =
  * yylex is invoked, the begin position is moved onto the end position. */
 #line 66 "../../src-common/cfdg.l"
 #define YY_USER_ACTION  yylloc->columns(utf8length(yytext, yyleng));
-#line 854 "lex.yy.cpp"
+#line 853 "lex.yy.cpp"
 
 #define INITIAL 0
 
@@ -958,15 +957,15 @@ YY_DECL
     // reset location
     setupLoc(yylloc);
     
-    if (startToken) {
+    if (atStartup) {
         int t = startToken;
-        startToken = 0;
+        atStartup = false;
         return t;
     }
 
                                                                 
  /* comment line */
-#line 970 "lex.yy.cpp"
+#line 969 "lex.yy.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1296,206 +1295,278 @@ YY_RULE_SETUP
 case 40:
 YY_RULE_SETUP
 #line 169 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::x1;            return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 170 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::y1;            return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 171 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::x2;            return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::x;             return token::MODTYPE;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 172 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::y2;            return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::y;             return token::MODTYPE;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 173 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::z;             return token::MODTYPE;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 174 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 175 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::x;             return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 176 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::y;             return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::skew;          return token::MODTYPE;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 177 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::xrad;          return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 178 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::yrad;          return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 179 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::z;             return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 180 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 181 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 182 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::skew;          return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 183 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 184 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
+{yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 185 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
+#line 186 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::param;
+        return token::PARAM;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 186 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
+#line 195 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::param;
+        return token::PARAM;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 187 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
+#line 204 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::stroke;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 188 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
+#line 213 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::x1;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 189 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
+#line 222 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::y1;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 190 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
+#line 231 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::x2;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 191 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::param;         return token::PARAM;}
+#line 240 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::y2;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 192 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::param;         return token::PARAM;}
+#line 249 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::xrad;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 193 "../../src-common/cfdg.l"
-{yylval->modToken = AST::ASTmodTerm::stroke;        return token::MODTYPE;}
+#line 258 "../../src-common/cfdg.l"
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = AST::ASTmodTerm::yrad;
+        return token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
+}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 195 "../../src-common/cfdg.l"
+#line 268 "../../src-common/cfdg.l"
 { return token::LT; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 196 "../../src-common/cfdg.l"
+#line 269 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 197 "../../src-common/cfdg.l"
+#line 270 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 198 "../../src-common/cfdg.l"
+#line 271 "../../src-common/cfdg.l"
 { return token::GT; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 199 "../../src-common/cfdg.l"
+#line 272 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 200 "../../src-common/cfdg.l"
+#line 273 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 201 "../../src-common/cfdg.l"
+#line 274 "../../src-common/cfdg.l"
 { return token::EQ; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 202 "../../src-common/cfdg.l"
+#line 275 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 203 "../../src-common/cfdg.l"
+#line 276 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 204 "../../src-common/cfdg.l"
+#line 277 "../../src-common/cfdg.l"
 { return token::NOT; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 205 "../../src-common/cfdg.l"
+#line 278 "../../src-common/cfdg.l"
 { return token::AND; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 206 "../../src-common/cfdg.l"
+#line 279 "../../src-common/cfdg.l"
 { return token::OR; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 207 "../../src-common/cfdg.l"
+#line 280 "../../src-common/cfdg.l"
 { return token::XOR; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 208 "../../src-common/cfdg.l"
+#line 281 "../../src-common/cfdg.l"
 { return '_'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 210 "../../src-common/cfdg.l"
+#line 283 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 211 "../../src-common/cfdg.l"
+#line 284 "../../src-common/cfdg.l"
 {
     // This greedy string regex gobbles up Unicode operators. Find the first one
     // and chop the string there.
@@ -1540,17 +1611,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 252 "../../src-common/cfdg.l"
+#line 325 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 253 "../../src-common/cfdg.l"
+#line 326 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 254 "../../src-common/cfdg.l"
+#line 327 "../../src-common/cfdg.l"
 {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
@@ -1560,18 +1631,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 260 "../../src-common/cfdg.l"
+#line 333 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 261 "../../src-common/cfdg.l"
+#line 334 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 	YY_BREAK
 /* gobble up white-spaces */
 case 86:
 YY_RULE_SETUP
-#line 264 "../../src-common/cfdg.l"
+#line 337 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1580,7 +1651,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 269 "../../src-common/cfdg.l"
+#line 342 "../../src-common/cfdg.l"
 {
     yylloc->lines(1); yylloc->step();
 }
@@ -1588,13 +1659,13 @@ YY_RULE_SETUP
 /* pass all other characters up to bison */
 case 88:
 YY_RULE_SETUP
-#line 274 "../../src-common/cfdg.l"
+#line 347 "../../src-common/cfdg.l"
 {
     return static_cast<int>(*yytext);
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 278 "../../src-common/cfdg.l"
+#line 351 "../../src-common/cfdg.l"
 {
     if (!YY_CURRENT_BUFFER)
         yyterminate();
@@ -1608,10 +1679,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 289 "../../src-common/cfdg.l"
+#line 362 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1615 "lex.yy.cpp"
+#line 1686 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1798,9 +1869,9 @@ void yyFlexLexer::switch_streams( std::istream* new_in, std::ostream* new_out )
 }
 
 #ifdef YY_INTERACTIVE
-int yyFlexLexer::LexerInput( char* buf, int /* max_size */ )
+size_t yyFlexLexer::LexerInput( char* buf, size_t /* max_size */ )
 #else
-int yyFlexLexer::LexerInput( char* buf, int max_size )
+size_t yyFlexLexer::LexerInput( char* buf, size_t max_size )
 #endif
 {
 	if ( yyin->eof() || yyin->fail() )
@@ -1818,18 +1889,18 @@ int yyFlexLexer::LexerInput( char* buf, int max_size )
 	return 1;
 
 #else
-	(void) yyin->read( buf, (yy_size_t)max_size );
+	(void) yyin->read( buf, max_size );
 
 	if ( yyin->bad() )
 		return -1;
 	else
-		return (int)yyin->gcount();
+		return yyin->gcount();
 #endif
 }
 
-void yyFlexLexer::LexerOutput( const char* buf, int size )
+void yyFlexLexer::LexerOutput( const char* buf, size_t size )
 {
-	(void) yyout->write( buf, (yy_size_t)size );
+	(void) yyout->write( buf, size );
 }
 
 /* yy_get_next_buffer - try to read in a new buffer
@@ -1892,7 +1963,7 @@ int yyFlexLexer::yy_get_next_buffer()
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
@@ -2025,7 +2096,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 	yy_is_jam = (yy_current_state == 294);
 
-		return yy_is_jam ? 0 : yy_current_state;
+	return yy_is_jam ? 0 : yy_current_state;
 }
 
     void yyFlexLexer::yyunput( int c, register char* yy_bp)
@@ -2111,7 +2182,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return EOF;
+						return 0;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -2250,6 +2321,8 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	Cfdgfree((void *) b  );
 }
+
+extern "C" int isatty (int );
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
@@ -2517,7 +2590,7 @@ void Cfdgfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 289 "../../src-common/cfdg.l"
+#line 362 "../../src-common/cfdg.l"
 
 
 
@@ -2526,7 +2599,7 @@ namespace yy {
 Scanner::Scanner(std::istream* in,
 		 std::ostream* out)
     : yyFlexLexer(in, out), nextLocAction(normalAction), 
-      startToken(token::CFDG2), maybeVersion(0)
+      startToken(token::CFDG2), maybeVersion(0), atStartup(true)
 {
     utf8chars[token::RANGEOP] = "\xe2\x80\xa6";
     utf8chars[token::PLUSMINUSOP] = "\xc2\xb1";
