@@ -372,8 +372,8 @@ namespace AST {
         static bool Impure;
         
         ASTparameter() :    mType(ASTexpression::NoType), isParameter(false), 
-          isLoopIndex(false), mName(-1), mStackIndex(-1), 
-          mTuplesize(1) {};
+          isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
+          mDefinition(0), mStackIndex(-1), mTuplesize(1) {};
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, ASTdefine*  def);
         void check(const yy::location& typeLoc, const yy::location& nameLoc);
