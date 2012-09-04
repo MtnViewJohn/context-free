@@ -694,13 +694,12 @@ namespace AST {
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
-    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(NULL), ifSelect(asIf)
+    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(args.release()),
+      ifSelect(asIf)
     {
         isConstant = false;
-        args->entropy(ent);
+        arguments->entropy(ent);
         ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
-        
-        arguments = args.release()->simplify();
         
         if (arguments->size() < 3) {
             CfdgError::Error(loc, "select()/if() function requires arguments");
