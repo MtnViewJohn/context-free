@@ -419,7 +419,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             CfdgError::Error(expLoc, "Mismatch between declared natural and defined not-natural type of user function");
         }
         delete def->mExpression;                        // Replace placeholder with actual expression
-        def->mExpression = e.release()->simplify();
+        def->mExpression = mWant2ndPass ? e.release() : e.release()->simplify();
         def->isConstant = def->mExpression->isConstant;
         def->mLocation = defLoc;
         
@@ -837,7 +837,8 @@ Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
         std::string ent;
         (*it)->entropy(ent);
         mod->addEntropy(ent);
-        *it = static_cast<ASTmodTerm*>((*it)->simplify());
+        if (!mWant2ndPass)
+            *it = static_cast<ASTmodTerm*>((*it)->simplify());
     }
     if (canonical)
         mod->makeCanonical();
