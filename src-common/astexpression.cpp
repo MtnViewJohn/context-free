@@ -466,8 +466,6 @@ namespace AST {
                 simp[0].ruleHeader.mRefCount = StackRule::MaxRefCount;
                 simpleRule = simp;
                 argSource = SimpleArgs;
-            } else {
-                arguments = arguments->simplify();
             }
         } else if (arguments && arguments->mType == ASTexpression::NoType) {
             argSource = ParentArgs;

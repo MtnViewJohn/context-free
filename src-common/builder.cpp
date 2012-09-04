@@ -589,28 +589,17 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
 ASTruleSpecifier*  
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
 {
-    if (name.compare("if") == 0) {
+    if (name == "if" || name == "let" || name == "select") {
         if (args->mType != ASTexpression::RuleType)
-            CfdgError::Error(args->where, "If function does not return a shape");
-        return new ASTruleSpecifier(args, loc);
+            CfdgError::Error(args->where, "Function does not return a shape");
+        if (name == "select") {
+            yy::location argsLoc = args->where;
+            args.reset(new ASTselect(args, argsLoc, false));
+        }
+        ASTruleSpecifier* spec = new ASTruleSpecifier(args, loc);
+        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
-    
-    if (name.compare("let") == 0) {
-        if (args->mType != ASTexpression::RuleType)
-            CfdgError::Error(args->where, "Let function does not return a shape");
-        return new ASTruleSpecifier(args, loc);
-    }
-    
-    if (name.compare("select") == 0) {
-        yy::location argsLoc = args->where;
-        args.reset(new ASTselect(args, argsLoc, false));
-        if (!mWant2ndPass)
-            args.reset(args.release()->simplify());
-        if (args->mType != ASTexpression::RuleType)
-            CfdgError::Error(argsLoc, "Select function does not return a shape");
-        return new ASTruleSpecifier(args, loc);
-    }
-    
+
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
     
@@ -623,15 +612,17 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
         } else {
             args.reset(new ASTuserFunction(args.release(), def, loc));
         }
-        return new ASTruleSpecifier(args, loc);
+        ASTruleSpecifier* spec = new ASTruleSpecifier(args, loc);
+        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
     
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
     if (bound == 0 || bound->mType != ASTexpression::RuleType) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        return new ASTruleSpecifier(nameIndex, name, args, loc, 
-                                    m_CFDG->getShapeParams(nameIndex),
-                                    m_CFDG->getShapeParams(mCurrentShape));
+        ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, args, loc,
+                                                      m_CFDG->getShapeParams(nameIndex),
+                                                      m_CFDG->getShapeParams(mCurrentShape));
+        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
     
     if (args.get() != NULL)
@@ -804,14 +795,17 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     
     const ASTparameters* p = m_CFDG->getShapeParams(nameIndex);
     if (p) {
-        if (!(p->empty()))
-            return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
-                                        m_CFDG->getShapeParams(mCurrentShape));
+        if (!(p->empty())) {
+            ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+                                                          m_CFDG->getShapeParams(mCurrentShape));
+            return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
+        }
         
         if (consAllowed) {
             ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
                                                        p, m_CFDG->getShapeParams(mCurrentShape));
-            return r->append(args.release());
+            ASTexpression* ret = r->append(args.release());
+            return mWant2ndPass ? ret : ret->simplify();
         }
         error(nameLoc + argsLoc, "Shape takes no arguments");
     }
