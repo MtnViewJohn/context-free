@@ -549,8 +549,9 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
         CfdgError::Error(nameLoc, "This is not a numeric vector");
         return args.release();
     }
-    return new ASTarray(bound, args, isGlobal ? 0 : mLocalStackDepth,
-                        nameLoc + argsLoc, *name);
+    ASTexpression* ret =  new ASTarray(bound, args, isGlobal ? 0 : mLocalStackDepth,
+                                       nameLoc + argsLoc, *name);
+    return mWant2ndPass ? ret : ret->simplify();
 }
 
 ASTexpression*
