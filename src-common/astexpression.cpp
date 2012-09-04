@@ -1343,6 +1343,9 @@ namespace AST {
         int count = arguments->evaluate(a, 2, rti);
         // no need to check the argument count, the constructor already checked it
         
+        // But check it anyway to make valgrind happy
+        if (count < 0) return 1;
+
         switch (functype) {
             case  Cos:  
                 *res = cos(a[0] * 0.0174532925199);
