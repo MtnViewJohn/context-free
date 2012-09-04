@@ -1,0 +1,25 @@
+startshape SPIKES
+
+shape SPIKES
+{
+	loop 4 [r 90] SPIKE []
+}
+
+shape SPIKE
+rule {
+	LSPIKE []
+}
+rule {
+	LSPIKE [ flip 90 ]
+}
+
+shape LSPIKE
+rule {
+	SQUARE []
+	LSPIKE [ y 0.98 s 0.99 r 1]
+}
+rule 0.01 {
+	SPIKE [ r 90 ]
+	SPIKE [ r -90 ]
+	LSPIKE [ y 0.98 s 0.99  r 1]
+}

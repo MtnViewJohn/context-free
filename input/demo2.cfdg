@@ -1,0 +1,24 @@
+#
+# An example, showing how to include another file.
+# Note that the include path has to be absolute OR
+# relative to the directory you run .cfdg in
+#
+
+startshape thingy
+import i_pix.cfdg
+
+shape thingy
+{
+ point [y -1 rotate 180]
+ point []
+}
+
+shape point
+{
+  C_5by5 []
+  F_5by5 [x 1.2]
+  D_5by5 [y -1.2]
+  G_5by5 [y -1.2 x 1.2]
+  point [y 2.0 x -2.5 rotate 20 size 0.6]
+  point [y 2.0 x 2.5 rotate -20 size 0.6]
+}

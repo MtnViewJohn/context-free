@@ -1,0 +1,1556 @@
+// This is a library file that is included in other files
+// It offers a family of curves
+
+startshape test_i_curves
+
+ shape curveright_0_9_5
+rule {
+ SQUARE [ ] 
+ curveright_0_9_5 [ rotate -5 size 0.9 x -0.0124921 y 0.909067 ]
+}
+
+ shape curveright_0_9_4
+rule {
+ SQUARE [ ] 
+ curveright_0_9_4 [ rotate -4 size 0.9 x -0.0197055 y 0.917513 ]
+}
+
+ shape curveright_0_9_3
+rule {
+ SQUARE [ ] 
+ curveright_0_9_3 [ rotate -3 size 0.9 x -0.0270653 y 0.925832 ]
+}
+
+ shape curveright_0_9_2
+rule {
+ SQUARE [ ] 
+ curveright_0_9_2 [ rotate -2 size 0.9 x -0.0345691 y 0.934021 ]
+}
+
+ shape curveright_0_9_1
+rule {
+ SQUARE [ ] 
+ curveright_0_9_1 [ rotate -1 size 0.9 x -0.0422147 y 0.942078 ]
+}
+
+shape curveleft_0_9_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_0 [ rotate 0 size 0.9 x 0.0500008 y 0.950001 ]
+}
+
+shape curveleft_0_9_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_1 [ rotate 1 size 0.9 x 0.0422158 y 0.942079 ]
+}
+
+shape curveleft_0_9_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_2 [ rotate 2 size 0.9 x 0.0345701 y 0.934022 ]
+}
+
+shape curveleft_0_9_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_3 [ rotate 3 size 0.9 x 0.0270664 y 0.925833 ]
+}
+
+shape curveleft_0_9_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_4 [ rotate 4 size 0.9 x 0.0197066 y 0.917514 ]
+}
+
+shape curveleft_0_9_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_9_5 [ rotate 5 size 0.9 x 0.0124931 y 0.909068 ]
+}
+
+ shape curveright_0_91_5
+rule {
+ SQUARE [ ] 
+ curveright_0_91_5 [ rotate -5 size 0.91 x -0.00707531 y 0.913612 ]
+}
+
+ shape curveright_0_91_4
+rule {
+ SQUARE [ ] 
+ curveright_0_91_4 [ rotate -4 size 0.91 x -0.0143689 y 0.922152 ]
+}
+
+ shape curveright_0_91_3
+rule {
+ SQUARE [ ] 
+ curveright_0_91_3 [ rotate -3 size 0.91 x -0.0218104 y 0.930563 ]
+}
+
+ shape curveright_0_91_2
+rule {
+ SQUARE [ ] 
+ curveright_0_91_2 [ rotate -2 size 0.91 x -0.0293976 y 0.938843 ]
+}
+
+ shape curveright_0_91_1
+rule {
+ SQUARE [ ] 
+ curveright_0_91_1 [ rotate -1 size 0.91 x -0.0371282 y 0.94699 ]
+}
+
+shape curveleft_0_91_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_0 [ rotate 0 size 0.91 x 0.0450008 y 0.955001 ]
+}
+
+shape curveleft_0_91_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_1 [ rotate 1 size 0.91 x 0.0371293 y 0.946991 ]
+}
+
+shape curveleft_0_91_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_2 [ rotate 2 size 0.91 x 0.0293987 y 0.938844 ]
+}
+
+shape curveleft_0_91_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_3 [ rotate 3 size 0.91 x 0.0218115 y 0.930565 ]
+}
+
+shape curveleft_0_91_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_4 [ rotate 4 size 0.91 x 0.01437 y 0.922153 ]
+}
+
+shape curveleft_0_91_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_91_5 [ rotate 5 size 0.91 x 0.00707635 y 0.913614 ]
+}
+
+ shape curveright_0_92_5
+rule {
+ SQUARE [ ] 
+ curveright_0_92_5 [ rotate -5 size 0.92 x -0.00165855 y 0.918158 ]
+}
+
+ shape curveright_0_92_4
+rule {
+ SQUARE [ ] 
+ curveright_0_92_4 [ rotate -4 size 0.92 x -0.00903229 y 0.926791 ]
+}
+
+ shape curveright_0_92_3
+rule {
+ SQUARE [ ] 
+ curveright_0_92_3 [ rotate -3 size 0.92 x -0.0165556 y 0.935295 ]
+}
+
+ shape curveright_0_92_2
+rule {
+ SQUARE [ ] 
+ curveright_0_92_2 [ rotate -2 size 0.92 x -0.0242262 y 0.943666 ]
+}
+
+ shape curveright_0_92_1
+rule {
+ SQUARE [ ] 
+ curveright_0_92_1 [ rotate -1 size 0.92 x -0.0320417 y 0.951902 ]
+}
+
+shape curveleft_0_92_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_0 [ rotate 0 size 0.92 x 0.0400008 y 0.960001 ]
+}
+
+shape curveleft_0_92_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_1 [ rotate 1 size 0.92 x 0.0320428 y 0.951903 ]
+}
+
+shape curveleft_0_92_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_2 [ rotate 2 size 0.92 x 0.0242272 y 0.943667 ]
+}
+
+shape curveleft_0_92_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_3 [ rotate 3 size 0.92 x 0.0165567 y 0.935296 ]
+}
+
+shape curveleft_0_92_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_4 [ rotate 4 size 0.92 x 0.00903342 y 0.926793 ]
+}
+
+shape curveleft_0_92_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_92_5 [ rotate 5 size 0.92 x 0.00165959 y 0.918159 ]
+}
+
+ shape curveright_0_93_5
+rule {
+ SQUARE [ ] 
+ curveright_0_93_5 [ rotate -5 size 0.93 x 0.00375817 y 0.922703 ]
+}
+
+ shape curveright_0_93_4
+rule {
+ SQUARE [ ] 
+ curveright_0_93_4 [ rotate -4 size 0.93 x -0.00369572 y 0.93143 ]
+}
+
+ shape curveright_0_93_3
+rule {
+ SQUARE [ ] 
+ curveright_0_93_3 [ rotate -3 size 0.93 x -0.0113008 y 0.940026 ]
+}
+
+ shape curveright_0_93_2
+rule {
+ SQUARE [ ] 
+ curveright_0_93_2 [ rotate -2 size 0.93 x -0.0190547 y 0.948488 ]
+}
+
+ shape curveright_0_93_1
+rule {
+ SQUARE [ ] 
+ curveright_0_93_1 [ rotate -1 size 0.93 x -0.0269552 y 0.956814 ]
+}
+
+shape curveleft_0_93_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_0 [ rotate 0 size 0.93 x 0.0350009 y 0.965001 ]
+}
+
+shape curveleft_0_93_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_1 [ rotate 1 size 0.93 x 0.0269564 y 0.956815 ]
+}
+
+shape curveleft_0_93_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_2 [ rotate 2 size 0.93 x 0.0190558 y 0.948489 ]
+}
+
+shape curveleft_0_93_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_3 [ rotate 3 size 0.93 x 0.0113019 y 0.940027 ]
+}
+
+shape curveleft_0_93_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_4 [ rotate 4 size 0.93 x 0.00369686 y 0.931432 ]
+}
+
+shape curveleft_0_93_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_93_5 [ rotate 5 size 0.93 x -0.00375711 y 0.922704 ]
+}
+
+ shape curveright_0_94_5
+rule {
+ SQUARE [ ] 
+ curveright_0_94_5 [ rotate -5 size 0.94 x 0.00917493 y 0.927248 ]
+}
+
+ shape curveright_0_94_4
+rule {
+ SQUARE [ ] 
+ curveright_0_94_4 [ rotate -4 size 0.94 x 0.00164089 y 0.936069 ]
+}
+
+ shape curveright_0_94_3
+rule {
+ SQUARE [ ] 
+ curveright_0_94_3 [ rotate -3 size 0.94 x -0.00604596 y 0.944758 ]
+}
+
+ shape curveright_0_94_2
+rule {
+ SQUARE [ ] 
+ curveright_0_94_2 [ rotate -2 size 0.94 x -0.0138833 y 0.953311 ]
+}
+
+ shape curveright_0_94_1
+rule {
+ SQUARE [ ] 
+ curveright_0_94_1 [ rotate -1 size 0.94 x -0.0218687 y 0.961725 ]
+}
+
+shape curveleft_0_94_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_0 [ rotate 0 size 0.94 x 0.0300009 y 0.970001 ]
+}
+
+shape curveleft_0_94_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_1 [ rotate 1 size 0.94 x 0.0218699 y 0.961727 ]
+}
+
+shape curveleft_0_94_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_2 [ rotate 2 size 0.94 x 0.0138844 y 0.953312 ]
+}
+
+shape curveleft_0_94_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_3 [ rotate 3 size 0.94 x 0.00604711 y 0.944759 ]
+}
+
+shape curveleft_0_94_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_4 [ rotate 4 size 0.94 x -0.00163974 y 0.936071 ]
+}
+
+shape curveleft_0_94_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_94_5 [ rotate 5 size 0.94 x -0.00917386 y 0.927249 ]
+}
+
+ shape curveright_0_95_5
+rule {
+ SQUARE [ ] 
+ curveright_0_95_5 [ rotate -5 size 0.95 x 0.0145917 y 0.931793 ]
+}
+
+ shape curveright_0_95_4
+rule {
+ SQUARE [ ] 
+ curveright_0_95_4 [ rotate -4 size 0.95 x 0.0069775 y 0.940708 ]
+}
+
+ shape curveright_0_95_3
+rule {
+ SQUARE [ ] 
+ curveright_0_95_3 [ rotate -3 size 0.95 x 0 y 0.949489 ]
+}
+
+ shape curveright_0_95_2
+rule {
+ SQUARE [ ] 
+ curveright_0_95_2 [ rotate -2 size 0.95 x -0.00871182 y 0.958133 ]
+}
+
+ shape curveright_0_95_1
+rule {
+ SQUARE [ ] 
+ curveright_0_95_1 [ rotate -1 size 0.95 x -0.0167822 y 0.966637 ]
+}
+
+shape curveleft_0_95_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_0 [ rotate 0 size 0.95 x 0.0250009 y 0.975001 ]
+}
+
+shape curveleft_0_95_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_1 [ rotate 1 size 0.95 x 0.0167834 y 0.966639 ]
+}
+
+shape curveleft_0_95_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_2 [ rotate 2 size 0.95 x 0.00871294 y 0.958134 ]
+}
+
+shape curveleft_0_95_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_3 [ rotate 3 size 0.95 x 0 y 0.94949 ]
+}
+
+shape curveleft_0_95_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_4 [ rotate 4 size 0.95 x -0.00697634 y 0.94071 ]
+}
+
+shape curveleft_0_95_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_95_5 [ rotate 5 size 0.95 x -0.0145906 y 0.931794 ]
+}
+
+ shape curveright_0_96_5
+rule {
+ SQUARE [ ] 
+ curveright_0_96_5 [ rotate -5 size 0.96 x 0.0200085 y 0.936338 ]
+}
+
+ shape curveright_0_96_4
+rule {
+ SQUARE [ ] 
+ curveright_0_96_4 [ rotate -4 size 0.96 x 0.0123141 y 0.945347 ]
+}
+
+ shape curveright_0_96_3
+rule {
+ SQUARE [ ] 
+ curveright_0_96_3 [ rotate -3 size 0.96 x 0.00446371 y 0.954221 ]
+}
+
+ shape curveright_0_96_2
+rule {
+ SQUARE [ ] 
+ curveright_0_96_2 [ rotate -2 size 0.96 x -0.00354036 y 0.962956 ]
+}
+
+ shape curveright_0_96_1
+rule {
+ SQUARE [ ] 
+ curveright_0_96_1 [ rotate -1 size 0.96 x -0.0116957 y 0.971549 ]
+}
+
+shape curveleft_0_96_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_0 [ rotate 0 size 0.96 x 0.0200009 y 0.980001 ]
+}
+
+shape curveleft_0_96_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_1 [ rotate 1 size 0.96 x 0.0116969 y 0.971551 ]
+}
+
+shape curveleft_0_96_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_2 [ rotate 2 size 0.96 x 0.00354149 y 0.962957 ]
+}
+
+shape curveleft_0_96_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_3 [ rotate 3 size 0.96 x -0.00446254 y 0.954222 ]
+}
+
+shape curveleft_0_96_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_4 [ rotate 4 size 0.96 x -0.0123129 y 0.945349 ]
+}
+
+shape curveleft_0_96_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_96_5 [ rotate 5 size 0.96 x -0.0200074 y 0.93634 ]
+}
+
+ shape curveright_0_97_5
+rule {
+ SQUARE [ ] 
+ curveright_0_97_5 [ rotate -5 size 0.97 x 0.0254252 y 0.940884 ]
+}
+
+ shape curveright_0_97_4
+rule {
+ SQUARE [ ] 
+ curveright_0_97_4 [ rotate -4 size 0.97 x 0.0176507 y 0.949986 ]
+}
+
+ shape curveright_0_97_3
+rule {
+ SQUARE [ ] 
+ curveright_0_97_3 [ rotate -3 size 0.97 x 0.00971855 y 0.958952 ]
+}
+
+ shape curveright_0_97_2
+rule {
+ SQUARE [ ] 
+ curveright_0_97_2 [ rotate -2 size 0.97 x 0.0016311 y 0.967778 ]
+}
+
+ shape curveright_0_97_1
+rule {
+ SQUARE [ ] 
+ curveright_0_97_1 [ rotate -1 size 0.97 x -0.00660916 y 0.976461 ]
+}
+
+shape curveleft_0_97_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_0 [ rotate 0 size 0.97 x 0.0150009 y 0.985001 ]
+}
+
+shape curveleft_0_97_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_1 [ rotate 1 size 0.97 x 0.00661039 y 0.976463 ]
+}
+
+shape curveleft_0_97_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_2 [ rotate 2 size 0.97 x -0.00162996 y 0.967779 ]
+}
+
+shape curveleft_0_97_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_3 [ rotate 3 size 0.97 x -0.00971737 y 0.958953 ]
+}
+
+shape curveleft_0_97_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_4 [ rotate 4 size 0.97 x -0.0176495 y 0.949988 ]
+}
+
+shape curveleft_0_97_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_97_5 [ rotate 5 size 0.97 x -0.0254241 y 0.940885 ]
+}
+
+ shape curveright_0_98_5
+rule {
+ SQUARE [ ] 
+ curveright_0_98_5 [ rotate -5 size 0.98 x 0.030842 y 0.945429 ]
+}
+
+ shape curveright_0_98_4
+rule {
+ SQUARE [ ] 
+ curveright_0_98_4 [ rotate -4 size 0.98 x 0.0229873 y 0.954625 ]
+}
+
+ shape curveright_0_98_3
+rule {
+ SQUARE [ ] 
+ curveright_0_98_3 [ rotate -3 size 0.98 x 0.0149734 y 0.963684 ]
+}
+
+ shape curveright_0_98_2
+rule {
+ SQUARE [ ] 
+ curveright_0_98_2 [ rotate -2 size 0.98 x 0.00680257 y 0.9726 ]
+}
+
+ shape curveright_0_98_1
+rule {
+ SQUARE [ ] 
+ curveright_0_98_1 [ rotate -1 size 0.98 x -0.00152265 y 0.981373 ]
+}
+
+shape curveleft_0_98_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_0 [ rotate 0 size 0.98 x 0.0100009 y 0.990001 ]
+}
+
+shape curveleft_0_98_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_1 [ rotate 1 size 0.98 x 0.00152389 y 0.981375 ]
+}
+
+shape curveleft_0_98_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_2 [ rotate 2 size 0.98 x -0.00680141 y 0.972602 ]
+}
+
+shape curveleft_0_98_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_3 [ rotate 3 size 0.98 x -0.0149722 y 0.963685 ]
+}
+
+shape curveleft_0_98_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_4 [ rotate 4 size 0.98 x -0.0229861 y 0.954627 ]
+}
+
+shape curveleft_0_98_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_98_5 [ rotate 5 size 0.98 x -0.0308409 y 0.94543 ]
+}
+
+ shape curveright_0_99_5
+rule {
+ SQUARE [ ] 
+ curveright_0_99_5 [ rotate -5 size 0.99 x 0.0362587 y 0.949974 ]
+}
+
+ shape curveright_0_99_4
+rule {
+ SQUARE [ ] 
+ curveright_0_99_4 [ rotate -4 size 0.99 x 0.028324 y 0.959264 ]
+}
+
+ shape curveright_0_99_3
+rule {
+ SQUARE [ ] 
+ curveright_0_99_3 [ rotate -3 size 0.99 x 0.0202282 y 0.968415 ]
+}
+
+ shape curveright_0_99_2
+rule {
+ SQUARE [ ] 
+ curveright_0_99_2 [ rotate -2 size 0.99 x 0.011974 y 0.977423 ]
+}
+
+ shape curveright_0_99_1
+rule {
+ SQUARE [ ] 
+ curveright_0_99_1 [ rotate -1 size 0.99 x 0.00356386 y 0.986285 ]
+}
+
+shape curveleft_0_99_0
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_0 [ rotate 0 size 0.99 x 0.0050009 y 0.995001 ]
+}
+
+shape curveleft_0_99_1
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_1 [ rotate 1 size 0.99 x -0.00356261 y 0.986287 ]
+}
+
+shape curveleft_0_99_2
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_2 [ rotate 2 size 0.99 x -0.0119729 y 0.977424 ]
+}
+
+shape curveleft_0_99_3
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_3 [ rotate 3 size 0.99 x -0.020227 y 0.968416 ]
+}
+
+shape curveleft_0_99_4
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_4 [ rotate 4 size 0.99 x -0.0283227 y 0.959266 ]
+}
+
+shape curveleft_0_99_5
+rule {
+ SQUARE [ ] 
+ curveleft_0_99_5 [ rotate 5 size 0.99 x -0.0362576 y 0.949975 ]
+}
+
+ shape curveright_1_5
+rule {
+ SQUARE [ ] 
+ curveright_1_5 [ rotate -5 size 1 x 0.0416755 y 0.954519 ]
+}
+
+ shape curveright_1_4
+rule {
+ SQUARE [ ] 
+ curveright_1_4 [ rotate -4 size 1 x 0.0336605 y 0.963903 ]
+}
+
+ shape curveright_1_3
+rule {
+ SQUARE [ ] 
+ curveright_1_3 [ rotate -3 size 1 x 0.025483 y 0.973146 ]
+}
+
+ shape curveright_1_2
+rule {
+ SQUARE [ ] 
+ curveright_1_2 [ rotate -2 size 1 x 0.0171454 y 0.982245 ]
+}
+
+ shape curveright_1_1
+rule {
+ SQUARE [ ] 
+ curveright_1_1 [ rotate -1 size 1 x 0.00865033 y 0.991197 ]
+}
+
+shape curveleft_1_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_0 [ rotate 0 size 1 x 0 y 1 ]
+}
+
+shape curveleft_1_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_1 [ rotate 1 size 1 x -0.00864906 y 0.991199 ]
+}
+
+shape curveleft_1_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_2 [ rotate 2 size 1 x -0.0171443 y 0.982247 ]
+}
+
+shape curveleft_1_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_3 [ rotate 3 size 1 x -0.0254818 y 0.973148 ]
+}
+
+shape curveleft_1_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_4 [ rotate 4 size 1 x -0.0336593 y 0.963905 ]
+}
+
+shape curveleft_1_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_5 [ rotate 5 size 1 x -0.0416743 y 0.954521 ]
+}
+
+ shape curveright_1_01_5
+rule {
+ SQUARE [ ] 
+ curveright_1_01_5 [ rotate -5 size 1.01 x 0.0470922 y 0.959064 ]
+}
+
+ shape curveright_1_01_4
+rule {
+ SQUARE [ ] 
+ curveright_1_01_4 [ rotate -4 size 1.01 x 0.0389971 y 0.968542 ]
+}
+
+ shape curveright_1_01_3
+rule {
+ SQUARE [ ] 
+ curveright_1_01_3 [ rotate -3 size 1.01 x 0.0307379 y 0.977878 ]
+}
+
+ shape curveright_1_01_2
+rule {
+ SQUARE [ ] 
+ curveright_1_01_2 [ rotate -2 size 1.01 x 0.0223169 y 0.987068 ]
+}
+
+ shape curveright_1_01_1
+rule {
+ SQUARE [ ] 
+ curveright_1_01_1 [ rotate -1 size 1.01 x 0.0137368 y 0.996109 ]
+}
+
+shape curveleft_1_01_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_0 [ rotate 0 size 1.01 x -0.00499905 y 1.005 ]
+}
+
+shape curveleft_1_01_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_1 [ rotate 1 size 1.01 x -0.0137356 y 0.996111 ]
+}
+
+shape curveleft_1_01_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_2 [ rotate 2 size 1.01 x -0.0223157 y 0.987069 ]
+}
+
+shape curveleft_1_01_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_3 [ rotate 3 size 1.01 x -0.0307366 y 0.977879 ]
+}
+
+shape curveleft_1_01_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_4 [ rotate 4 size 1.01 x -0.0389959 y 0.968544 ]
+}
+
+shape curveleft_1_01_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_01_5 [ rotate 5 size 1.01 x -0.0470911 y 0.959066 ]
+}
+
+ shape curveright_1_02_5
+rule {
+ SQUARE [ ] 
+ curveright_1_02_5 [ rotate -5 size 1.02 x 0.0525089 y 0.96361 ]
+}
+
+ shape curveright_1_02_4
+rule {
+ SQUARE [ ] 
+ curveright_1_02_4 [ rotate -4 size 1.02 x 0.0443337 y 0.973181 ]
+}
+
+ shape curveright_1_02_3
+rule {
+ SQUARE [ ] 
+ curveright_1_02_3 [ rotate -3 size 1.02 x 0.0359927 y 0.982609 ]
+}
+
+ shape curveright_1_02_2
+rule {
+ SQUARE [ ] 
+ curveright_1_02_2 [ rotate -2 size 1.02 x 0.0274883 y 0.99189 ]
+}
+
+ shape curveright_1_02_1
+rule {
+ SQUARE [ ] 
+ curveright_1_02_1 [ rotate -1 size 1.02 x 0.0188233 y 1.00102 ]
+}
+
+shape curveleft_1_02_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_0 [ rotate 0 size 1.02 x -0.00999901 y 1.01 ]
+}
+
+shape curveleft_1_02_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_1 [ rotate 1 size 1.02 x -0.018822 y 1.00102 ]
+}
+
+shape curveleft_1_02_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_2 [ rotate 2 size 1.02 x -0.0274871 y 0.991892 ]
+}
+
+shape curveleft_1_02_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_3 [ rotate 3 size 1.02 x -0.0359914 y 0.982611 ]
+}
+
+shape curveleft_1_02_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_4 [ rotate 4 size 1.02 x -0.0443325 y 0.973183 ]
+}
+
+shape curveleft_1_02_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_02_5 [ rotate 5 size 1.02 x -0.0525078 y 0.963611 ]
+}
+
+ shape curveright_1_03_5
+rule {
+ SQUARE [ ] 
+ curveright_1_03_5 [ rotate -5 size 1.03 x 0.0579257 y 0.968155 ]
+}
+
+ shape curveright_1_03_4
+rule {
+ SQUARE [ ] 
+ curveright_1_03_4 [ rotate -4 size 1.03 x 0.0496704 y 0.977821 ]
+}
+
+ shape curveright_1_03_3
+rule {
+ SQUARE [ ] 
+ curveright_1_03_3 [ rotate -3 size 1.03 x 0.0412475 y 0.987341 ]
+}
+
+ shape curveright_1_03_2
+rule {
+ SQUARE [ ] 
+ curveright_1_03_2 [ rotate -2 size 1.03 x 0.0326598 y 0.996713 ]
+}
+
+ shape curveright_1_03_1
+rule {
+ SQUARE [ ] 
+ curveright_1_03_1 [ rotate -1 size 1.03 x 0.0239099 y 1.00593 ]
+}
+
+shape curveleft_1_03_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_0 [ rotate 0 size 1.03 x -0.014999 y 1.015 ]
+}
+
+shape curveleft_1_03_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_1 [ rotate 1 size 1.03 x -0.0239086 y 1.00593 ]
+}
+
+shape curveleft_1_03_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_2 [ rotate 2 size 1.03 x -0.0326586 y 0.996714 ]
+}
+
+shape curveleft_1_03_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_3 [ rotate 3 size 1.03 x -0.0412463 y 0.987342 ]
+}
+
+shape curveleft_1_03_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_4 [ rotate 4 size 1.03 x -0.0496691 y 0.977822 ]
+}
+
+shape curveleft_1_03_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_03_5 [ rotate 5 size 1.03 x -0.0579246 y 0.968156 ]
+}
+
+ shape curveright_1_04_5
+rule {
+ SQUARE [ ] 
+ curveright_1_04_5 [ rotate -5 size 1.04 x 0.0633425 y 0.9727 ]
+}
+
+ shape curveright_1_04_4
+rule {
+ SQUARE [ ] 
+ curveright_1_04_4 [ rotate -4 size 1.04 x 0.0550069 y 0.98246 ]
+}
+
+ shape curveright_1_04_3
+rule {
+ SQUARE [ ] 
+ curveright_1_04_3 [ rotate -3 size 1.04 x 0.0465023 y 0.992072 ]
+}
+
+ shape curveright_1_04_2
+rule {
+ SQUARE [ ] 
+ curveright_1_04_2 [ rotate -2 size 1.04 x 0.0378313 y 1.00154 ]
+}
+
+ shape curveright_1_04_1
+rule {
+ SQUARE [ ] 
+ curveright_1_04_1 [ rotate -1 size 1.04 x 0.0289963 y 1.01085 ]
+}
+
+shape curveleft_1_04_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_0 [ rotate 0 size 1.04 x -0.019999 y 1.02 ]
+}
+
+shape curveleft_1_04_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_1 [ rotate 1 size 1.04 x -0.028995 y 1.01085 ]
+}
+
+shape curveleft_1_04_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_2 [ rotate 2 size 1.04 x -0.03783 y 1.00154 ]
+}
+
+shape curveleft_1_04_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_3 [ rotate 3 size 1.04 x -0.0465011 y 0.992074 ]
+}
+
+shape curveleft_1_04_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_4 [ rotate 4 size 1.04 x -0.0550057 y 0.982461 ]
+}
+
+shape curveleft_1_04_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_04_5 [ rotate 5 size 1.04 x -0.0633413 y 0.972701 ]
+}
+
+ shape curveright_1_05_5
+rule {
+ SQUARE [ ] 
+ curveright_1_05_5 [ rotate -5 size 1.05 x 0.0687592 y 0.977245 ]
+}
+
+ shape curveright_1_05_4
+rule {
+ SQUARE [ ] 
+ curveright_1_05_4 [ rotate -4 size 1.05 x 0.0603435 y 0.987099 ]
+}
+
+ shape curveright_1_05_3
+rule {
+ SQUARE [ ] 
+ curveright_1_05_3 [ rotate -3 size 1.05 x 0.0517571 y 0.996804 ]
+}
+
+ shape curveright_1_05_2
+rule {
+ SQUARE [ ] 
+ curveright_1_05_2 [ rotate -2 size 1.05 x 0.0430027 y 1.00636 ]
+}
+
+ shape curveright_1_05_1
+rule {
+ SQUARE [ ] 
+ curveright_1_05_1 [ rotate -1 size 1.05 x 0.0340828 y 1.01576 ]
+}
+
+shape curveleft_1_05_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_0 [ rotate 0 size 1.05 x -0.024999 y 1.025 ]
+}
+
+shape curveleft_1_05_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_1 [ rotate 1 size 1.05 x -0.0340815 y 1.01576 ]
+}
+
+shape curveleft_1_05_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_2 [ rotate 2 size 1.05 x -0.0430014 y 1.00636 ]
+}
+
+shape curveleft_1_05_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_3 [ rotate 3 size 1.05 x -0.0517558 y 0.996805 ]
+}
+
+shape curveleft_1_05_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_4 [ rotate 4 size 1.05 x -0.0603422 y 0.9871 ]
+}
+
+shape curveleft_1_05_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_05_5 [ rotate 5 size 1.05 x -0.068758 y 0.977246 ]
+}
+
+ shape curveright_1_06_5
+rule {
+ SQUARE [ ] 
+ curveright_1_06_5 [ rotate -5 size 1.06 x 0.074176 y 0.98179 ]
+}
+
+ shape curveright_1_06_4
+rule {
+ SQUARE [ ] 
+ curveright_1_06_4 [ rotate -4 size 1.06 x 0.0656802 y 0.991738 ]
+}
+
+ shape curveright_1_06_3
+rule {
+ SQUARE [ ] 
+ curveright_1_06_3 [ rotate -3 size 1.06 x 0.057012 y 1.00154 ]
+}
+
+ shape curveright_1_06_2
+rule {
+ SQUARE [ ] 
+ curveright_1_06_2 [ rotate -2 size 1.06 x 0.0481742 y 1.01118 ]
+}
+
+ shape curveright_1_06_1
+rule {
+ SQUARE [ ] 
+ curveright_1_06_1 [ rotate -1 size 1.06 x 0.0391693 y 1.02067 ]
+}
+
+shape curveleft_1_06_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_0 [ rotate 0 size 1.06 x -0.029999 y 1.03 ]
+}
+
+shape curveleft_1_06_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_1 [ rotate 1 size 1.06 x -0.039168 y 1.02067 ]
+}
+
+shape curveleft_1_06_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_2 [ rotate 2 size 1.06 x -0.0481729 y 1.01118 ]
+}
+
+shape curveleft_1_06_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_3 [ rotate 3 size 1.06 x -0.0570107 y 1.00154 ]
+}
+
+shape curveleft_1_06_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_4 [ rotate 4 size 1.06 x -0.0656789 y 0.991739 ]
+}
+
+shape curveleft_1_06_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_06_5 [ rotate 5 size 1.06 x -0.0741748 y 0.981792 ]
+}
+
+ shape curveright_1_07_5
+rule {
+ SQUARE [ ] 
+ curveright_1_07_5 [ rotate -5 size 1.07 x 0.0795927 y 0.986336 ]
+}
+
+ shape curveright_1_07_4
+rule {
+ SQUARE [ ] 
+ curveright_1_07_4 [ rotate -4 size 1.07 x 0.0710168 y 0.996377 ]
+}
+
+ shape curveright_1_07_3
+rule {
+ SQUARE [ ] 
+ curveright_1_07_3 [ rotate -3 size 1.07 x 0.0622668 y 1.00627 ]
+}
+
+ shape curveright_1_07_2
+rule {
+ SQUARE [ ] 
+ curveright_1_07_2 [ rotate -2 size 1.07 x 0.0533456 y 1.016 ]
+}
+
+ shape curveright_1_07_1
+rule {
+ SQUARE [ ] 
+ curveright_1_07_1 [ rotate -1 size 1.07 x 0.0442559 y 1.02558 ]
+}
+
+shape curveleft_1_07_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_0 [ rotate 0 size 1.07 x -0.034999 y 1.035 ]
+}
+
+shape curveleft_1_07_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_1 [ rotate 1 size 1.07 x -0.0442545 y 1.02558 ]
+}
+
+shape curveleft_1_07_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_2 [ rotate 2 size 1.07 x -0.0533444 y 1.016 ]
+}
+
+shape curveleft_1_07_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_3 [ rotate 3 size 1.07 x -0.0622655 y 1.00627 ]
+}
+
+shape curveleft_1_07_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_4 [ rotate 4 size 1.07 x -0.0710155 y 0.996378 ]
+}
+
+shape curveleft_1_07_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_07_5 [ rotate 5 size 1.07 x -0.0795915 y 0.986337 ]
+}
+
+ shape curveright_1_08_5
+rule {
+ SQUARE [ ] 
+ curveright_1_08_5 [ rotate -5 size 1.08 x 0.0850095 y 0.990881 ]
+}
+
+ shape curveright_1_08_4
+rule {
+ SQUARE [ ] 
+ curveright_1_08_4 [ rotate -4 size 1.08 x 0.0763534 y 1.00102 ]
+}
+
+ shape curveright_1_08_3
+rule {
+ SQUARE [ ] 
+ curveright_1_08_3 [ rotate -3 size 1.08 x 0.0675217 y 1.011 ]
+}
+
+ shape curveright_1_08_2
+rule {
+ SQUARE [ ] 
+ curveright_1_08_2 [ rotate -2 size 1.08 x 0.0585171 y 1.02083 ]
+}
+
+ shape curveright_1_08_1
+rule {
+ SQUARE [ ] 
+ curveright_1_08_1 [ rotate -1 size 1.08 x 0.0493424 y 1.03049 ]
+}
+
+shape curveleft_1_08_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_0 [ rotate 0 size 1.08 x -0.039999 y 1.04 ]
+}
+
+shape curveleft_1_08_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_1 [ rotate 1 size 1.08 x -0.049341 y 1.03049 ]
+}
+
+shape curveleft_1_08_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_2 [ rotate 2 size 1.08 x -0.0585158 y 1.02083 ]
+}
+
+shape curveleft_1_08_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_3 [ rotate 3 size 1.08 x -0.0675204 y 1.011 ]
+}
+
+shape curveleft_1_08_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_4 [ rotate 4 size 1.08 x -0.0763521 y 1.00102 ]
+}
+
+shape curveleft_1_08_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_08_5 [ rotate 5 size 1.08 x -0.0850083 y 0.990882 ]
+}
+
+ shape curveright_1_09_5
+rule {
+ SQUARE [ ] 
+ curveright_1_09_5 [ rotate -5 size 1.09 x 0.0904263 y 0.995426 ]
+}
+
+ shape curveright_1_09_4
+rule {
+ SQUARE [ ] 
+ curveright_1_09_4 [ rotate -4 size 1.09 x 0.08169 y 1.00565 ]
+}
+
+ shape curveright_1_09_3
+rule {
+ SQUARE [ ] 
+ curveright_1_09_3 [ rotate -3 size 1.09 x 0.0727765 y 1.01573 ]
+}
+
+ shape curveright_1_09_2
+rule {
+ SQUARE [ ] 
+ curveright_1_09_2 [ rotate -2 size 1.09 x 0.0636886 y 1.02565 ]
+}
+
+ shape curveright_1_09_1
+rule {
+ SQUARE [ ] 
+ curveright_1_09_1 [ rotate -1 size 1.09 x 0.0544289 y 1.03541 ]
+}
+
+shape curveleft_1_09_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_0 [ rotate 0 size 1.09 x -0.044999 y 1.045 ]
+}
+
+shape curveleft_1_09_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_1 [ rotate 1 size 1.09 x -0.0544275 y 1.03541 ]
+}
+
+shape curveleft_1_09_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_2 [ rotate 2 size 1.09 x -0.0636873 y 1.02565 ]
+}
+
+shape curveleft_1_09_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_3 [ rotate 3 size 1.09 x -0.0727752 y 1.01573 ]
+}
+
+shape curveleft_1_09_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_4 [ rotate 4 size 1.09 x -0.0816887 y 1.00566 ]
+}
+
+shape curveleft_1_09_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_09_5 [ rotate 5 size 1.09 x -0.090425 y 0.995427 ]
+}
+
+ shape curveright_1_1_5
+rule {
+ SQUARE [ ] 
+ curveright_1_1_5 [ rotate -5 size 1.1 x 0.095843 y 0.999971 ]
+}
+
+ shape curveright_1_1_4
+rule {
+ SQUARE [ ] 
+ curveright_1_1_4 [ rotate -4 size 1.1 x 0.0870266 y 1.01029 ]
+}
+
+ shape curveright_1_1_3
+rule {
+ SQUARE [ ] 
+ curveright_1_1_3 [ rotate -3 size 1.1 x 0.0780314 y 1.02046 ]
+}
+
+ shape curveright_1_1_2
+rule {
+ SQUARE [ ] 
+ curveright_1_1_2 [ rotate -2 size 1.1 x 0.06886 y 1.03047 ]
+}
+
+ shape curveright_1_1_1
+rule {
+ SQUARE [ ] 
+ curveright_1_1_1 [ rotate -1 size 1.1 x 0.0595154 y 1.04032 ]
+}
+
+shape curveleft_1_1_0
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_0 [ rotate 0 size 1.1 x -0.049999 y 1.05 ]
+}
+
+shape curveleft_1_1_1
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_1 [ rotate 1 size 1.1 x -0.059514 y 1.04032 ]
+}
+
+shape curveleft_1_1_2
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_2 [ rotate 2 size 1.1 x -0.0688587 y 1.03047 ]
+}
+
+shape curveleft_1_1_3
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_3 [ rotate 3 size 1.1 x -0.07803 y 1.02046 ]
+}
+
+shape curveleft_1_1_4
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_4 [ rotate 4 size 1.1 x -0.0870253 y 1.0103 ]
+}
+
+shape curveleft_1_1_5
+rule {
+ SQUARE [ ] 
+ curveleft_1_1_5 [ rotate 5 size 1.1 x -0.0958418 y 0.999973 ]
+}
+
+
+shape test_i_curves
+rule {
+    test_i_curves_0_9  [ x -35 y -40 ]
+    test_i_curves_0_91 [ x   0 y -40 ]
+    test_i_curves_0_92 [ x  35 y -40 ]
+    test_i_curves_0_93 [ x -40 y -20 ]
+    test_i_curves_0_94 [ x   0 y -20 ]
+    test_i_curves_0_95 [ x  40 y -20 ]
+    test_i_curves_0_96 [ x -55 y   0 ]
+    test_i_curves_0_97 [ x   0 y   0 ]
+    test_i_curves_0_98 [ x  55 y   0 ]
+    test_i_curves_0_99 [ x   0 y  40 ]
+}
+
+shape test_i_curves_0_9
+rule {
+    curveright_0_9_5 [ x 10 ]
+    curveright_0_9_4 [ x 8 ]
+    curveright_0_9_3 [ x 6 ]
+    curveright_0_9_2 [ x 4 ]
+    curveright_0_9_1 [ x 2 ]
+    curveleft_0_9_0 [ ]
+    curveleft_0_9_1 [ x -2 ]
+    curveleft_0_9_2 [ x -4 ]
+    curveleft_0_9_3 [ x -6 ]
+    curveleft_0_9_4 [ x -8 ]
+    curveleft_0_9_5 [ x -10 ]
+}
+
+shape test_i_curves_0_91
+rule {
+    curveright_0_91_5 [ x 10 ]
+    curveright_0_91_4 [ x 8 ]
+    curveright_0_91_3 [ x 6 ]
+    curveright_0_91_2 [ x 4 ]
+    curveright_0_91_1 [ x 2 ]
+    curveleft_0_91_0 [ ]
+    curveleft_0_91_1 [ x -2 ]
+    curveleft_0_91_2 [ x -4 ]
+    curveleft_0_91_3 [ x -6 ]
+    curveleft_0_91_4 [ x -8 ]
+    curveleft_0_91_5 [ x -10 ]
+}
+
+shape test_i_curves_0_92
+rule {
+    curveright_0_92_5 [ x 10 ]
+    curveright_0_92_4 [ x 8 ]
+    curveright_0_92_3 [ x 6 ]
+    curveright_0_92_2 [ x 4 ]
+    curveright_0_92_1 [ x 2 ]
+    curveleft_0_92_0 [ ]
+    curveleft_0_92_1 [ x -2 ]
+    curveleft_0_92_2 [ x -4 ]
+    curveleft_0_92_3 [ x -6 ]
+    curveleft_0_92_4 [ x -8 ]
+    curveleft_0_92_5 [ x -10 ]
+}
+
+shape test_i_curves_0_93
+rule {
+    curveright_0_93_5 [ x 10 ]
+    curveright_0_93_4 [ x 8 ]
+    curveright_0_93_3 [ x 6 ]
+    curveright_0_93_2 [ x 4 ]
+    curveright_0_93_1 [ x 2 ]
+    curveleft_0_93_0 [ ]
+    curveleft_0_93_1 [ x -2 ]
+    curveleft_0_93_2 [ x -4 ]
+    curveleft_0_93_3 [ x -6 ]
+    curveleft_0_93_4 [ x -8 ]
+    curveleft_0_93_5 [ x -10 ]
+}
+
+shape test_i_curves_0_94
+rule {
+    curveright_0_94_5 [ x 10 ]
+    curveright_0_94_4 [ x 8 ]
+    curveright_0_94_3 [ x 6 ]
+    curveright_0_94_2 [ x 4 ]
+    curveright_0_94_1 [ x 2 ]
+    curveleft_0_94_0 [ ]
+    curveleft_0_94_1 [ x -2 ]
+    curveleft_0_94_2 [ x -4 ]
+    curveleft_0_94_3 [ x -6 ]
+    curveleft_0_94_4 [ x -8 ]
+    curveleft_0_94_5 [ x -10 ]
+}
+
+shape test_i_curves_0_95
+rule {
+    curveright_0_95_5 [ x 10 ]
+    curveright_0_95_4 [ x 8 ]
+    curveright_0_95_3 [ x 6 ]
+    curveright_0_95_2 [ x 4 ]
+    curveright_0_95_1 [ x 2 ]
+    curveleft_0_95_0 [ ]
+    curveleft_0_95_1 [ x -2 ]
+    curveleft_0_95_2 [ x -4 ]
+    curveleft_0_95_3 [ x -6 ]
+    curveleft_0_95_4 [ x -8 ]
+    curveleft_0_95_5 [ x -10 ]
+}
+
+shape test_i_curves_0_96
+rule {
+    curveright_0_96_5 [ x 10 ]
+    curveright_0_96_4 [ x 8 ]
+    curveright_0_96_3 [ x 6 ]
+    curveright_0_96_2 [ x 4 ]
+    curveright_0_96_1 [ x 2 ]
+    curveleft_0_96_0 [ ]
+    curveleft_0_96_1 [ x -2 ]
+    curveleft_0_96_2 [ x -4 ]
+    curveleft_0_96_3 [ x -6 ]
+    curveleft_0_96_4 [ x -8 ]
+    curveleft_0_96_5 [ x -10 ]
+}
+
+shape test_i_curves_0_97
+rule {
+    curveright_0_97_5 [ x 10 ]
+    curveright_0_97_4 [ x 8 ]
+    curveright_0_97_3 [ x 6 ]
+    curveright_0_97_2 [ x 4 ]
+    curveright_0_97_1 [ x 2 ]
+    curveleft_0_97_0 [ ]
+    curveleft_0_97_1 [ x -2 ]
+    curveleft_0_97_2 [ x -4 ]
+    curveleft_0_97_3 [ x -6 ]
+    curveleft_0_97_4 [ x -8 ]
+    curveleft_0_97_5 [ x -10 ]
+}
+
+shape test_i_curves_0_98
+rule {
+    curveright_0_98_5 [ x 10 ]
+    curveright_0_98_4 [ x 8 ]
+    curveright_0_98_3 [ x 6 ]
+    curveright_0_98_2 [ x 4 ]
+    curveright_0_98_1 [ x 2 ]
+    curveleft_0_98_0 [ ]
+    curveleft_0_98_1 [ x -2 ]
+    curveleft_0_98_2 [ x -4 ]
+    curveleft_0_98_3 [ x -6 ]
+    curveleft_0_98_4 [ x -8 ]
+    curveleft_0_98_5 [ x -10 ]
+}
+
+shape test_i_curves_0_99
+rule {
+    curveright_0_99_5 [ x 10 ]
+    curveright_0_99_4 [ x 8 ]
+    curveright_0_99_3 [ x 6 ]
+    curveright_0_99_2 [ x 4 ]
+    curveright_0_99_1 [ x 2 ]
+    curveleft_0_99_0 [ ]
+    curveleft_0_99_1 [ x -2 ]
+    curveleft_0_99_2 [ x -4 ]
+    curveleft_0_99_3 [ x -6 ]
+    curveleft_0_99_4 [ x -8 ]
+    curveleft_0_99_5 [ x -10 ]
+}
+

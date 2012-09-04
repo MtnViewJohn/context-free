@@ -1,0 +1,183 @@
+startshape Tests
+
+rule Tests {
+	// borders should be 8 pixels beyond these pins
+	Pin { x 0 y 0 r 135 s 0.5 }
+	Pin { x 20 y 0 r -135 s 0.5 }
+	Pin { x 0 y 20 r 45 s 0.5 }
+	Pin { x 20 y 20 r -45 s 0.5 }
+
+	// top row, left to right
+	TouchingTestsSized { x 2 y 5.5 }
+	TouchingTestsRotated { x 7.5 y 5.5 }
+	SizeTests { x 11 y 17 s 0.5 r -90 }
+	SquareEdge { x 13 y 6 }
+	CircleLine { x 15 y 6 }
+	BrightnessLines { x 17 y 6 }
+
+	// bottom row
+	TouchingTestsJittered { x 1.5 y 2 b 0.5 }
+}
+
+rule TouchingTestsSized {
+	TouchingTests { x 0 }
+	TouchingTests { y 5 s 0.7 }
+	TouchingTests { y 8.5 s 0.4 }
+}
+rule TouchingTestsRotated {
+	TouchingTests { x 0 y 9 s 0.4 r 45 }
+	TouchingTests { x 0 y 6.5 s 0.4 r 30 }
+	TouchingTests { x 0 y 4.2 s 0.4 r 15 }	
+	TouchingTests { x 0 y 2 s 0.4 r 5 }	
+	TouchingTests { x 0 y -0.25 s 0.4 r 2 }	
+}
+rule TouchingTestsJittered {
+	// at 2000pixels, 1 unit = 100pixels
+	// important: there should be no scaling between the startshape and here!
+	// optimally, only the rightmost pair should touch
+	TouchPair { x 00 y 0.0200 }	// 2 pixel gap
+	TouchPair { x 01 y 0.0150 }	// 1.5 pixel gap
+	TouchPair { x 02 y 0.0100 }	// 1 pixel gap
+	TouchPair { x 03 y 0.0090 }
+	TouchPair { x 04 y 0.0080 }
+	TouchPair { x 05 y 0.0070 }
+	TouchPair { x 06 y 0.0060 }
+	TouchPair { x 07 y 0.0050 }
+	TouchPair { x 08 y 0.0040 }
+	TouchPair { x 09 y 0.0030 }
+	TouchPair { x 10 y 0.0020 }
+	TouchPair { x 11 y 0.0010 }
+	TouchPair { x 12 y 0.0000 }	// exact
+	TouchFixed { x 00 }
+	TouchFixed { x 01 }
+	TouchFixed { x 02 }
+	TouchFixed { x 03 }
+	TouchFixed { x 04 }
+	TouchFixed { x 05 }
+	TouchFixed { x 06 }
+	TouchFixed { x 07 }
+	TouchFixed { x 08 }
+	TouchFixed { x 09 }
+	TouchFixed { x 10 }
+	TouchFixed { x 11 }
+	TouchFixed { x 12 }
+}
+rule TouchPair {
+	SQUARE { x 0 y 0.0 s 0.5 b 0.0 }
+	SQUARE { x 0 y 0.5 s 0.5 b 0.0 }
+}
+rule TouchFixed {
+	SQUARE { x 0 y 1 s 0.5 b 0.0 }
+}
+	
+rule TouchingTests {
+	SquareAbutTest { x 0 y 2.5 }
+	OverlapTest { x 3 y 2.5 }
+	CircleAbutTest { x 0 y 0 }
+	CircleInSquaresTest { x 3 y 0 }
+}
+rule SquareAbutTest {
+// there should be no white showing between these
+	SQUARE { x -0.5 }
+	SQUARE { x 0.5 }
+	SQUARE { y 1 }
+}
+
+rule CircleInSquaresTest {
+// the circle should just touch the squares
+	CIRCLE { }
+	SQUARE { x -1 }
+	SQUARE { x 1 }
+	SQUARE { y 1 }
+}
+
+rule CircleAbutTest {
+// the circles should just touch
+	CIRCLE { x -0.5 }
+	CIRCLE { x 0.5 }
+	CIRCLE { y 1 x -0.5 }
+	CIRCLE { y 1 x 0.5 }
+}
+
+rule OverlapTest {
+// center should be a clean cross-hair
+	SQUARE { x -0.5 }
+	SQUARE { x 0.5 b 0.5 }
+	SQUARE { x -0.5 y 1 b 0.75 }
+	SQUARE { x 0.5 y 1 b 0.25 }
+}
+
+rule SizeTests {
+// the progression of shapes should appear smooth
+	SizeSquareTests { y -0.75 }
+	SizeCircleTests { y 0.75 }
+}
+rule SizeCircleTests {
+	CIRCLE {  }
+	SizeCircleTests { x 2.25 s 0.90 }
+}
+rule SizeSquareTests {
+	SQUARE {  }
+	SizeSquareTests { x 2.25 s 0.90 }
+}
+
+rule SquareEdge {
+// there should be no white space between the squares as they get smaller, and the right edge should be a straight line
+	SQUARE { }
+	SquareEdge { y 0.95 x 0.05 s 0.90 }
+}
+
+rule CircleLine {
+// the circles should just touch as they get smaller
+	CIRCLE { }
+	CircleLine { y 0.95 s 0.90 }
+}
+
+rule BrightnessLines {
+	BrightnessLinePerCent { x 0 }
+	BrightnessLineHex { x 0.84375 y -0.15625 s 0.6875 }
+	Pin { x -0.5 y 10.5 r -135 s 0.25 }
+	Pin { x 1.1875 y 10.5 r 135 s 0.25 }
+}
+rule BrightnessLinePerCent {
+// eleven even gradations from white to black
+	SQUARE { b 0.0 y 0 }
+	SQUARE { b 0.1 y 1 }
+	SQUARE { b 0.2 y 2 }
+	SQUARE { b 0.3 y 3 }
+	SQUARE { b 0.4 y 4 }
+	SQUARE { b 0.5 y 5 }
+	SQUARE { b 0.6 y 6 }
+	SQUARE { b 0.7 y 7 }
+	SQUARE { b 0.8 y 8 }
+	SQUARE { b 0.9 y 9 }
+	SQUARE { b 1.0 y 10 }
+}
+rule BrightnessLineHex {
+// sixteen even gradations from white to black
+	SQUARE { b 0.0 y 0 }
+	SQUARE { b 0.0666666667 y 1 }
+	SQUARE { b 0.1333333333 y 2 }
+	SQUARE { b 0.2000000000 y 3 }
+	SQUARE { b 0.2666666667 y 4 }
+	SQUARE { b 0.3333333333 y 5 }
+	SQUARE { b 0.4000000000 y 6 }
+	SQUARE { b 0.4666666667 y 7 }
+	SQUARE { b 0.5333333333 y 8 }
+	SQUARE { b 0.6000000000 y 9 }
+	SQUARE { b 0.6666666667 y 10 }
+	SQUARE { b 0.7333333333 y 11 }
+	SQUARE { b 0.8000000000 y 12 }
+	SQUARE { b 0.8666666667 y 13 }
+	SQUARE { b 0.9333333333 y 14 }
+	SQUARE { b 1.0000000000 y 15 }
+}
+
+rule Pin {
+	PinLine { y -1 s 0.2 }
+}
+
+rule PinLine {
+	CIRCLE { }
+	PinLine { y 0.25 s 0.95 }
+}
