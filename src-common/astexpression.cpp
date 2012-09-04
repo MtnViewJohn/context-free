@@ -786,6 +786,7 @@ namespace AST {
         if (args.get() == 0 || args->mType != ASTexpression::NumericType) {
             CfdgError::Error(loc, "Array arguments must be numeric");
             mArgs = new ASTreal(0.0, loc);
+            isConstant = mConstData = false;
             return;     // deleting args
         }
 
