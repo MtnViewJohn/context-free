@@ -793,7 +793,7 @@ namespace AST {
             mConstData = bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
         }
         if ((*args)[0]->evaluate(0, 0) == 1) {
-            mArgs = (*args)[0]->simplify();
+            mArgs = (*args)[0];
             if (!args->release(0)) {
                 args.release();
                 args.reset(new ASTexpression(mArgs->where)); // replace with dummy
@@ -843,7 +843,7 @@ namespace AST {
                     break;
             }
         } else {
-            mArgs = args.release()->simplify();
+            mArgs = args.release();
             if (mArgs->evaluate(0, 0) != 1)
                 CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
         }
@@ -2280,7 +2280,10 @@ namespace AST {
     ASTexpression*
     ASTarray::simplify()
     {
-        if (!isConstant) return this;
+        if (!isConstant) {
+            mArgs = mArgs->simplify();
+            return this;
+        }
         
         double i;
         if (mArgs->evaluate(&i, 1) != 1) {
