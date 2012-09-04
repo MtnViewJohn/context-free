@@ -1,0 +1,64 @@
+startshape POINT
+
+rule POINT {
+     POINT {rotate 43.345223}
+     UNIT { y 100 size 1}
+}
+
+rule POINT {
+     POINT {rotate 73.9 size 0.99} UNIT { y 100 size 0.7}
+}
+rule POINT {
+     POINT {rotate 73.9 size 0.99} UNIT { y 100 size 0.3}
+}
+rule POINT 2 {
+     POINT {rotate 73.9 size 0.99} UNIT { y 100 size 0.1}
+}
+
+rule UNIT { SEED {size 10}}
+
+
+rule SEED {BRANCH {}}
+rule SEED {BRANCH {rotate 1}}
+rule SEED {BRANCH {rotate -1}}
+rule SEED {BRANCH {rotate 2}}
+rule SEED {BRANCH {rotate -2}}
+rule SEED {FORK {}}
+
+rule BRANCH {LEFTBRANCH {flip 90}}
+rule BRANCH {LEFTBRANCH {}}
+
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.1 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.2 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.1 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.2 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.1 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.2 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.1 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 0.2 size 0.99}}
+rule LEFTBRANCH {BLOCK {} LEFTBRANCH {y 0.885 rotate 4 size 0.99}}
+rule LEFTBRANCH {BLOCK {} FORK {}}
+
+
+rule BLOCK {
+     SQUARE {rotate 1}
+     SQUARE {rotate -1}
+     SQUARE {}
+}
+
+rule FORK {
+     BRANCH { }
+     BRANCH {size 0.5 rotate 40}
+}
+rule FORK {
+     BRANCH { }
+     BRANCH {size 0.5 rotate -40}
+}
+rule FORK {
+     BRANCH {size 0.5 rotate -20}
+     BRANCH { }
+}
+rule FORK {
+     BRANCH {size 0.7 y 0.1 rotate 20}
+     BRANCH {size 0.7 y 0.1 rotate -20}
+}

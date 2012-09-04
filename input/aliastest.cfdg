@@ -1,0 +1,29 @@
+startshape Tests
+
+rule Tests {
+	SQUARE { x 0 y 0 r 45 }
+	CIRCLE { x 2 y 0 }
+	Angles { x 0 y -2 }
+	Sizes  { x 0 y -4 }
+}
+
+rule Angles {
+	AngleLine { s 0.5 }
+}
+
+rule AngleLine {
+	SQUARE { x  0.0 y 0 r  0 }
+	SQUARE { x  1.5 y 0 r  5 }
+	SQUARE { x  3.0 y 0 r 10 }
+	SQUARE { x  4.5 y 0 r 15 }
+	SQUARE { x  6.0 y 0 r 20 }
+	SQUARE { x  7.5 y 0 r 25 }
+	SQUARE { x  9.0 y 0 r 30 }
+	SQUARE { x 10.5 y 0 r 35 }
+	SQUARE { x 12.0 y 0 r 40 }
+}
+
+rule Sizes {
+	CIRCLE { x 0 y 0 s 1.00 }
+	Sizes  { x 1.5 s 0.7 }
+}

@@ -1,0 +1,17 @@
+startshape SEED1
+
+shape SEED1
+rule {
+ SQUARE[]
+ SEED1 [y 1.2 size 0.99 rotate 1.5 brightness 0.03]
+}
+
+rule 0.05 {SEED1 [flip 90]}
+
+rule 0.05 {
+ SQUARE[]
+ SEED1 [y 1.2 s 0.99 r 1.5 b -0.5 flip 90]
+ SEED1 [y 1.2 x 1.2 s 0.6 r -60 b -0.5]
+ SEED1 [y 1.2 x -1.2 s 0.5 r 60 b -0.5 flip 90]
+}
+

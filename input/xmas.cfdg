@@ -1,0 +1,69 @@
+startshape Tree
+
+rule Tree {
+	Pine { }
+	Star { y 16 b 0.5 s 0.5 }
+	CandlesL { y 3 s 0.8 }
+	CandlesR { y 3.5 s 0.8 }
+}
+
+rule Pine {
+	Trunk { }
+	BranchesL { y 3 s 0.8 }
+	BranchesR { y 3.5 s 0.8 }
+}
+rule Trunk {
+	SQUARE { }
+	Trunk { y 0.4 s 0.975 }
+}
+rule BranchesL {
+	Pine { r 80 s 0.5 }
+	BranchesL { y 3 s 0.815 }
+}
+rule BranchesR {
+	Pine { r -80 s 0.5 }
+	BranchesR { y 3 s 0.81 }
+}
+
+rule CandlesL {
+	Candle { x -6.5 y 1.2 s 0.4 }
+	CandlesL { y 3 s 0.815 }
+}
+rule CandlesR {
+	Candle { x 6.5 y 1.2 s 0.4 }
+	CandlesR { y 3 s 0.81 }
+}
+rule Candle {
+	SQUARE { y 0 }
+	SQUARE { y 0.7 }
+	SQUARE { y 1.4 }
+	SQUARE { y 2 }
+	Flame { y 3.1 b 0.3 }
+	Ray { y 3.6 s 0.5 b 0.5 }
+}
+rule Flame {
+	CIRCLE { }
+	Flame { y 0.15 s 0.9 b 0.1 r 2 }
+}
+
+rule Star {
+	Arm { r 0 }
+	Arm { r 72 }
+	Arm { r 144 }
+	Arm { r -72 }
+	Arm { r -144 }
+	Ray { b 0.7 r 180 }
+}
+rule Arm {
+	CIRCLE { }
+	Arm { y 0.1 s 0.9 }
+}
+rule Ray {
+	Line { y 8 s 0.2 }
+	Ray { r -36 s 0.97 }
+}
+rule Line {
+	SQUARE { }
+	Line { y 0.8 s 0.9 }
+}
+
