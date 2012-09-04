@@ -604,6 +604,8 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     if (name.compare("select") == 0) {
         yy::location argsLoc = args->where;
         args.reset(new ASTselect(args, argsLoc, false));
+        if (!mWant2ndPass)
+            args.reset(args.release()->simplify());
         if (args->mType != ASTexpression::RuleType)
             CfdgError::Error(argsLoc, "Select function does not return a shape");
         return new ASTruleSpecifier(args, loc);
@@ -789,10 +791,10 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
         return MakeVariable(*name, nameLoc)->append(args.release());
     }
     
-    if (*name == "select")
-        return new ASTselect(args, nameLoc + argsLoc, false);
-    if (*name == "if")
-        return new ASTselect(args, nameLoc + argsLoc, true);
+    if (*name == "select" || *name == "if") {
+        ASTselect* sel = new ASTselect(args, nameLoc + argsLoc, *name == "if");
+        return mWant2ndPass ? sel : sel->simplify();
+    }
     
     ASTfunction::FuncType t = ASTfunction::GetFuncType(*name);
     if (t == ASTfunction::Ftime || t == ASTfunction::Frame)
