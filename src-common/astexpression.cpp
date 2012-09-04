@@ -569,6 +569,17 @@ namespace AST {
     }
     
     const StackType*
+    ASTparen::evalArgs(Renderer* rti, const StackType* parent) const
+    {
+        if (mType != RuleType) {
+            CfdgError::Error(where, "Evaluation of a non-shape expression in a shape context");
+            return NULL;
+        }
+        
+        return e->evalArgs(rti, parent);
+    }
+    
+    const StackType*
     ASTselect::evalArgs(Renderer* rti, const StackType* parent) const
     {
         if (mType != RuleType) {
@@ -1643,6 +1654,19 @@ namespace AST {
         m = modData;
         for (ASTtermArray::const_iterator it = modExp.begin(); it != modExp.end(); ++it)
             (*it)->evaluate(m, p, width, justCheck, seedIndex, rti);
+    }
+    
+    void
+    ASTparen::evaluate(Modification& m, int* p, double* width,
+                       bool justCheck, int& seedIndex,
+                       Renderer* rti) const
+    {
+        if (mType != ModType) {
+            CfdgError::Error(where, "Expression does not evaluate to an adjustment");
+            return;
+        }
+        
+        e->evaluate(m, p, width, justCheck, seedIndex, rti);
     }
     
     void
