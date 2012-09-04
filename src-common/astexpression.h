@@ -260,6 +260,10 @@ namespace AST {
         { isLocal = e1->isLocal; };
         virtual ~ASTparen() { delete e; }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual void evaluate(Modification& m, int* p, double* width,
+                              bool justCheck, int& seedIndex,
+                              Renderer* r = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
