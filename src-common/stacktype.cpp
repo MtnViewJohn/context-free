@@ -348,6 +348,8 @@ EvalArgs(Renderer* rti, const StackType* parent,
          bool onStack)
 {
     for (int i = 0; i < arguments->size(); ++i, ++dest) {
+        if (onStack)
+            rti->mLogicalStackTop = &(*dest);
         const AST::ASTexpression* arg = (*arguments)[i];
         switch (arg->mType) {
             case AST::ASTexpression::NumericType: {
@@ -371,8 +373,6 @@ EvalArgs(Renderer* rti, const StackType* parent,
             default:
                 break;
         }
-        if (onStack)
-            rti->mLogicalStackTop = &(*dest);
     }
 }
 
