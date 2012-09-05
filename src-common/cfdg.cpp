@@ -134,7 +134,13 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         lexer.yyrestart(input);
         //parser.set_debug_level(1);
         
-        int yyresult = parser.parse();
+        int yyresult = 0;
+        try {
+            yyresult = parser.parse();
+        } catch (CfdgError err) {
+            system->syntaxError(err);
+            return 0;
+        }
 
         if (b.mErrorOccured)
             return 0;
@@ -175,9 +181,9 @@ Renderer::init()
 }
 
 bool
-Renderer::isNatural(double n)
+Renderer::isNatural(Renderer* r, double n)
 {
-    return n >= 0 && n <= mMaxNatural && n == floor(n);
+    return n >= 0 && (r == 0 || n <= r->mMaxNatural) && n == floor(n);
 }
 
 void

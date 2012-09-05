@@ -354,7 +354,7 @@ EvalArgs(Renderer* rti, const StackType* parent,
         switch (arg->mType) {
             case AST::ASTexpression::NumericType: {
                 arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
-                if (dest.type().isNatural && !rti->isNatural(dest->number))
+                if (dest.type().isNatural && !Renderer::isNatural(rti, dest->number))
                     throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
                 break;
             }

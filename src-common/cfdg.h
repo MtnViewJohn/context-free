@@ -206,7 +206,7 @@ class Renderer {
         AST::InfoCache::iterator mCurrentCommand;
     
         void init();
-        bool isNatural(double n);
+        static bool isNatural(Renderer* r, double n);
         virtual void storeParams(const StackType* p) = 0;
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
