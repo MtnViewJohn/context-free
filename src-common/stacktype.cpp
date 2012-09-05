@@ -343,11 +343,12 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 }
 
 static void
-EvalArgs(Renderer* rti, const StackType* parent, 
-         iterator& dest, const AST::ASTexpression* arguments,
+EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
+         iterator& end, const AST::ASTexpression* arguments,
          bool onStack)
 {
     for (int i = 0; i < arguments->size(); ++i, ++dest) {
+        assert(dest != end);
         if (onStack)
             rti->mLogicalStackTop = &(*dest);
         const AST::ASTexpression* arg = (*arguments)[i];
@@ -374,6 +375,7 @@ EvalArgs(Renderer* rti, const StackType* parent,
                 break;
         }
     }
+    assert(dest == end);
 }
 
 // Evaluate arguments on the heap
@@ -382,7 +384,8 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const StackType* parent)
 {
     iterator dest = iterator::begin(this);
-    EvalArgs(rti, parent, dest, arguments, false);
+    iterator end = iterator::end();
+    EvalArgs(rti, parent, dest, end, arguments, false);
 }
 
 // Evaluate arguments on the stack
@@ -391,6 +394,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
                     const std::vector<AST::ASTparameter>* p, bool sequential)
 {
     iterator dest = iterator::begin(this, p);
-    EvalArgs(rti, NULL, dest, arguments, sequential);
+    iterator end = iterator::end();
+    EvalArgs(rti, NULL, dest, end, arguments, sequential);
 }
 
