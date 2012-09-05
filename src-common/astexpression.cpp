@@ -2203,8 +2203,15 @@ namespace AST {
     ASTexpression*
     ASTruleSpecifier::simplify()
     {
-        if (arguments) 
-            arguments = arguments->simplify();
+        if (arguments) {
+            ASTcons* carg = dynamic_cast<ASTcons*>(arguments);
+            if (carg) {
+                for (size_t i = 0; i < carg->children.size(); ++i)
+                    carg->children[i] = carg->children[i]->simplify();
+            } else {
+                arguments = arguments->simplify();
+            }
+        }
         return this;
     }
     
