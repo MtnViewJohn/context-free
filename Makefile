@@ -32,8 +32,8 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
-COMMON_SRCS += ffCanvasDummy.cpp
-# COMMON_SRCS += ffCanvas.cpp
+# COMMON_SRCS += ffCanvasDummy.cpp
+COMMON_SRCS += ffCanvas.cpp
 
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
@@ -47,7 +47,7 @@ SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS) $(AGG_SRCS)
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst %.o,%.d,$(OBJS))
 LIBS = stdc++ png z
-# LIBS += avformat avcodec avutil
+LIBS += avformat avcodec avutil
 
 LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
@@ -66,7 +66,7 @@ $(OBJS): $(OBJ_DIR)/Sentry
 
 cfdg: $(OBJS)
 	$(LINK.o) $^ $(LINKFLAGS) -o $@
-#	strip $@
+	strip $@
 
 
 #
@@ -116,8 +116,8 @@ $(OUTPUT_DIR)/rtest-2k.png: cfdg $(RTEST_CFDG)
 #
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O0 -Wall -march=nocona -Wno-parentheses
-CPPFLAGS += -ggdb
+CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses
+#CPPFLAGS += -ggdb
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
