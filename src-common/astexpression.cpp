@@ -42,7 +42,7 @@ namespace AST {
         "cosh", "sinh", "tanh", 
         "acosh", "asinh", "atanh", 
         "log", "log10", "sqrt", "exp", "abs", "floor", "infinity", 
-        "factorial", "sg",
+        "factorial", "sg", "isNatural",
         "bitnot", "bitor", "bitand", "bitxor", "bitleft", "bitright",
         "atan2", "mod", "divides", "div", "min", "max", "ftime", "frame",
         "rand_static", "rand", "rand+/-", "randint"
@@ -127,6 +127,7 @@ namespace AST {
         "\x2C\x28\x50\xCC\xDE\x44",     // Infinity
         "\x19\xD7\x83\x29\x47\x99",     // Factorial
         "\xB7\x05\x28\xBA\xCD\x2E",     // Sg
+        "\x49\xD6\xF8\x5B\x45\x59",     // IsNatural
         "\x79\x19\x1A\x9F\x4D\xA0",     // BitNot
         "\xF2\x77\xAB\x5C\x33\x43",     // BitOr
         "\xC3\x56\x9E\x75\xE0\x44",     // BitAnd
@@ -422,9 +423,11 @@ namespace AST {
         {
             isNatural = arguments->isNatural;
         }
-        if (functype == Factorial || functype == Sg || functype == Div || functype == Divides) {
+        if (functype == Factorial || functype == Sg || functype == IsNatural ||
+            functype == Div || functype == Divides)
+        {
             if (!arguments->isNatural)
-                CfdgError(arguments->where, "function is defined over natural numbers only");
+                CfdgError::Error(arguments->where, "function is defined over natural numbers only");
             isNatural = true;
         }
     }
@@ -1415,6 +1418,9 @@ namespace AST {
                 break;
             case Sg:
                 *res = a[0] == 0.0 ? 0.0 : 1.0;
+                break;
+            case IsNatural:
+                *res = Renderer::isNatural(rti, a[0]);
                 break;
             case BitNot:
                 *res = (double)(~(uint64_t)a[0] & 0xfffffffffffffull);

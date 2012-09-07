@@ -78,7 +78,7 @@ namespace AST {
         enum FuncType { IllegalArguments = -2, NotAFunction = -1, 
             Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
             Cosh, Sinh, Tanh, Acosh, Asinh, Atanh, Log, Log10,
-            Sqrt, Exp, Abs, Floor, Infinity, Factorial, Sg,
+            Sqrt, Exp, Abs, Floor, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
             Min, Max, Ftime, Frame,
