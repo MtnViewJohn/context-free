@@ -169,6 +169,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFColorDepthToolStripMenuIt
 private: System::Windows::Forms::ToolStripMenuItem^  cFFrameToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFFrametimeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFImpureToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFMaxNaturalToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFMinimumSizeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFSizeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFSymmetryToolStripMenuItem;
@@ -382,6 +383,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cFFrameToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFFrametimeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFImpureToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFMaxNaturalToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFMinimumSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFSymmetryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -960,10 +962,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             // 
             // insertVariableToolStripMenuItem
             // 
-            this->insertVariableToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(15) {this->cFAllowOverlapToolStripMenuItem, 
+            this->insertVariableToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(16) {this->cFAllowOverlapToolStripMenuItem, 
                 this->cFAlphaToolStripMenuItem, this->cFBackgroundToolStripMenuItem, this->cFBorderDynamicToolStripMenuItem, this->cFBorderFixedToolStripMenuItem, 
                 this->cFColorToolStripMenuItem, this->cFColorDepthToolStripMenuItem, this->cFFrameToolStripMenuItem, this->cFFrametimeToolStripMenuItem, 
-                this->cFImpureToolStripMenuItem, this->cFMinimumSizeToolStripMenuItem, this->cFSizeToolStripMenuItem, this->cFSymmetryToolStripMenuItem, 
+                this->cFImpureToolStripMenuItem, this->cFMaxNaturalToolStripMenuItem, this->cFMinimumSizeToolStripMenuItem, this->cFSizeToolStripMenuItem, this->cFSymmetryToolStripMenuItem, 
                 this->cFTileToolStripMenuItem, this->cFTimeToolStripMenuItem});
             this->insertVariableToolStripMenuItem->Name = L"insertVariableToolStripMenuItem";
             this->insertVariableToolStripMenuItem->Size = System::Drawing::Size(189, 22);
@@ -1143,6 +1145,13 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cFImpureToolStripMenuItem->Size = System::Drawing::Size(176, 22);
             this->cFImpureToolStripMenuItem->Text = L"CF::Impure";
             this->cFImpureToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            //
+            // cFMaxNaturalToolStripMenuItem
+            //
+            this->cFMaxNaturalToolStripMenuItem->Name = L"cFMaxNaturalToolStripMenuItem";
+            this->cFMaxNaturalToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFMaxNaturalToolStripMenuItem->Text = L"CF::MaxNatural";
+            this->cFMaxNaturalToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
             // cFMinimumSizeToolStripMenuItem
             // 
