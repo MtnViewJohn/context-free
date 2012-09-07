@@ -49,6 +49,7 @@ using namespace AST;
 
 std::map<std::string, int> Builder::FlagNames;
 Builder* Builder::CurrentBuilder = 0;
+double Builder:: MaxNatural = 1000.0;
 
 Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
@@ -100,6 +101,7 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     }
     assert(Builder::CurrentBuilder == NULL);    // ensure singleton
     Builder::CurrentBuilder = this;
+    MaxNatural = 1000.0;
     ASTparameter::Impure = false;
     mContainerStack.push_back(&(cfdg->mCFDGcontents));
     
@@ -405,8 +407,23 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         e.reset(e.release()->simplify());
         if (!m_CFDG->addParameter(name, e, mIncludeDepth))
             warning(nameLoc, "Unknown configuration parameter");
+        if (name == "CF::MaxNatural") {
+            const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
+            double v = -1.0;
+            if (!max || !max->isConstant ||
+                max->mType != ASTexpression::NumericType ||
+                max->evaluate(&v, 1) != 1)
+            {
+                CfdgError::Error(max->where, "CF::MaxNatural requires a constant numeric expression");
+            } else if (v < 1.0 || (v - 1.0) == v) {
+                error(max->where, (v < 1.0) ? "CF::MaxNatural must be >= 1" :
+                                              "CF::MaxNatural must be < 9007199254740992");
+            } else {
+                MaxNatural = v;
+            }
+        }
         return;
-    } 
+    }
  
     int nameIndex = StringToShape(name, nameLoc, false);
     ASTdefine* def = m_CFDG->findFunction(nameIndex);
