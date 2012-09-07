@@ -183,7 +183,7 @@ Renderer::init()
 bool
 Renderer::isNatural(Renderer* r, double n)
 {
-    return n >= 0 && (r == 0 || n <= r->mMaxNatural) && n == floor(n);
+    return n >= 0 && n <= (r ? r->mMaxNatural : Builder::MaxNatural) && n == floor(n);
 }
 
 void

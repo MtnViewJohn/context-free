@@ -58,6 +58,7 @@ namespace yy {
 class Builder {
 public:
     static Builder* CurrentBuilder;
+    static double   MaxNatural;
 
     CFDGImpl*       m_CFDG;
     std::stack<std::string*>   m_filesToLoad;
