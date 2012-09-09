@@ -289,6 +289,10 @@ namespace AST {
             if (!arg->isLocal && param_it->mType == ASTexpression::NumericType &&
                 !param_it->isNatural && !ASTparameter::Impure && checkNumber)
             {
+                // Unwrap any parentheses and check if the non-local expression
+                // is actually an unmodified parameter. If so then accept it.
+                while (const ASTparen* p = dynamic_cast<const ASTparen*> (arg))
+                    arg = p->e;
                 const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
                 if (!v || !v->isParameter) {
                     CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
