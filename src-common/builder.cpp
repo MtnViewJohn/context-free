@@ -458,8 +458,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     }
 
     CheckVariableName(nameIndex, nameLoc);
-    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
-    if (m) {
+    if (ASTmodification* m = dynamic_cast<ASTmodification*> (e.get())) {
         mod_ptr mod(m); e.release();
         def = new ASTdefine(name, mod, defLoc);
     } else {
@@ -522,12 +521,12 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 return new ASTmodification(bound->mDefinition->mChildChange, loc);
             case ASTexpression::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-                const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression);
-                if (r == 0) {
+                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
+                    return new ASTruleSpecifier(r->shapeType, name, exp_ptr(), loc, NULL, NULL);
+                } else {
                     CfdgError::Error(loc, "Internal error computing bound rule specifier");
                     return new ASTruleSpecifier(varNum, name, exp_ptr(), loc, NULL, NULL);
                 }
-                return new ASTruleSpecifier(r->shapeType, name, exp_ptr(), loc, NULL, NULL);
             }
             default:
                 break;
@@ -579,8 +578,7 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     for (ASTbody::iterator it = lastContainer->mBody.begin(), 
                           eit = lastContainer->mBody.end(); it != eit; ++it)
     {
-        const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(*it);
-        if (cdef) {
+        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(*it)) {
             ASTdefine* def = const_cast<ASTdefine*>(cdef);
             args = ASTexpression::Append(args, def->mExpression);
             def->mExpression = 0;
@@ -648,12 +646,12 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     
     if (bound->mStackIndex == -1) {
         // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression);
-        if (r == 0) {
+        if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
+            return new ASTruleSpecifier(r, name, loc);
+        } else {
             CfdgError::Error(loc, "Internal error computing bound rule specifier");
             return new ASTruleSpecifier(nameIndex, name, args, loc, NULL, NULL);
         }
-        return new ASTruleSpecifier(r, name, loc);
     }
     
     return new ASTruleSpecifier(name, loc, bound->mStackIndex - 

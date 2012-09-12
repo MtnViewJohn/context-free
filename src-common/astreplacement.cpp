@@ -398,8 +398,7 @@ namespace AST {
                 return;
             }
             flags.reset(flags.release()->simplify());
-            ASTreal* r = dynamic_cast<ASTreal*> (flags.get());
-            if (r) {
+            if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
                 int f = (int)(r->value);
                 if (f & CF_JOIN_PRESENT)
                     mChildChange.flags &= ~CF_JOIN_MASK;
@@ -565,10 +564,12 @@ namespace AST {
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
-                const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i]);
-                if (m == NULL) continue;
-                r->mCurrentSeed ^= m->modData.mRand64Seed;
-                m->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+                if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i])) {
+                    r->mCurrentSeed ^= m->modData.mRand64Seed;
+                    m->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+                } else {
+                    continue;
+                }
             } else {
                 child.mWorldState.m_transform.premultiply(mTransforms[i - modsLength]);
             }
@@ -994,8 +995,7 @@ namespace AST {
                 case ASTexpression::FlagType: {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
-                    ASTreal* rf = dynamic_cast<ASTreal*> (temp);
-                    if (rf)
+                    if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
                         mFlags = (int)(rf->value);
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");

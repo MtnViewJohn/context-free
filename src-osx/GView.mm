@@ -849,8 +849,7 @@ namespace {
         else
             mRenderer->draw(mCanvas);
         
-        ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas);
-        if (ic) 
+        if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas))
             mCanvasColor256 = ic->colorCount256();
     }
     
