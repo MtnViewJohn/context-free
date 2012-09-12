@@ -628,6 +628,7 @@ namespace AST {
     ASTcons::ASTcons(ASTexpression* l, ASTexpression* r)
     : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
     {
+        isLocal = l->isLocal;
         children.push_back(l);
         append(r);
     };
