@@ -122,7 +122,7 @@ namespace ContextFreeNet {
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(130, 16);
 			this->label2->TabIndex = 2;
-			this->label2->Text = L"version 3.0.1 (v30)";
+			this->label2->Text = L"version 3.0.2 (v31)";
 			// 
 			// label3
 			// 
