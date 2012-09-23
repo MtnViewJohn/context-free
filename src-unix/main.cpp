@@ -39,6 +39,8 @@
 #include "variation.h"
 #ifdef _WIN32
 #include "WinPngCanvas.h"
+#define NOMINMAX
+#include <windows.h>
 #else
 #include "pngCanvas.h"
 #endif
@@ -112,6 +114,10 @@ usage(bool inError)
         << "V        generate SVG (vector) output" << endl;
     out << "    " << APP_OPTCHAR()
         << "Q        generate Quicktime movie output" << endl;
+#ifdef _WIN32
+    out << "    " << APP_OPTCHAR()
+        << "W        generate desktop wallpaper output" << endl;
+#endif
     out << "    " << APP_OPTCHAR()
         << "c        crop image output" << endl;
     out << "    " << APP_OPTCHAR()
@@ -128,7 +134,7 @@ usage(bool inError)
 }
 
 struct options {
-    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2 };
+    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3 };
     int   width;
     int   height;
     int   widthMult;
@@ -153,13 +159,14 @@ struct options {
     bool quiet;
     bool outputTime;
     bool outputStdout;
+    bool outputWallpaper;
     
     options()
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
 	  input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
-	  outputTime(false), outputStdout(false)
+	  outputTime(false), outputStdout(false), outputWallpaper(false)
     { }
 };
 
@@ -228,6 +235,12 @@ floatArg(char arg, const char* str)
     return v;
 }
 
+#ifdef _WIN32
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQtW?"
+#else
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQt?"
+#endif
+
 void
 processCommandLine(int argc, char* argv[], options& opt)
 {
@@ -237,7 +250,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     invokeName = argv[0];
     
     int i;
-    while ((i = getopt(argc, argv, ":w:h:s:m:x:b:v:a:o:T:cCVzqQt?")) != -1) {
+    while ((i = getopt(argc, argv, OPTCHARS)) != -1) {
         char c = (char)i;
         switch(c) {
             case 'w':
@@ -282,11 +295,17 @@ processCommandLine(int argc, char* argv[], options& opt)
                 break;
 			}
             case 'V':
-                if (opt.animationFrames) usage(true);
+                if (opt.format != options::PNGfile) usage(true);
                 opt.format = options::SVGfile;
                 break;
             case 'Q':
+                if (opt.format != options::PNGfile) usage(true);
                 opt.format = options::MOVfile;
+                break;
+            case 'W':
+                if (opt.format != options::PNGfile || opt.crop) usage(true);
+                opt.format = options::BMPfile;
+                opt.outputWallpaper = true;
                 break;
             case 'c':
                 opt.crop = true;
@@ -380,6 +399,13 @@ int main (int argc, char* argv[]) {
             return 6;
         }
     }
+
+#ifdef _WIN32
+    if (opts.outputWallpaper) {
+        opts.width  = ::GetSystemMetrics(SM_CXFULLSCREEN);
+        opts.height = ::GetSystemMetrics(SM_CYFULLSCREEN);
+    }
+#endif
     
     // If a static output file name is provided then generate an output
     // file name format string by escaping any '%' characters. If this is 
@@ -419,7 +445,7 @@ int main (int argc, char* argv[]) {
     bool useRGBA = myDesign->usesColor;
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
     bool use16bit = pixfmt & aggCanvas::Has_16bit_Color;
-	const char* fmtnames[3] = { "PNG image", "SVG vector output", "Quicktime movie" };
+	const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
     
     *myCout << "Generating " << (use16bit ? "16bit " : "8bit ") 
         << (useRGBA ? "color" : "gray-scale")
@@ -445,9 +471,11 @@ int main (int argc, char* argv[]) {
     opts.crop = opts.crop || myDesign->isTiled() || myDesign->isFrieze();
     
     switch (opts.format) {
+        case options::BMPfile:
         case options::PNGfile: {
             png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
-                                pixfmt, opts.crop, opts.animationFrames, opts.variation);
+                                pixfmt, opts.crop, opts.animationFrames, opts.variation,
+                                opts.format == options::PNGfile);
             myCanvas = (Canvas*)png;
             break;
         }
@@ -511,7 +539,6 @@ int main (int argc, char* argv[]) {
         runTime = (toTime - startTime) / clocksPerMsec;
         *myCout << "The cfdg file took a total of " << runTime << " msec to process." << endl;
     }
-    
     
     delete png;
     delete svg;

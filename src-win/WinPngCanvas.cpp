@@ -51,8 +51,8 @@ int pngCanvas::CanvasCount = 0;
 
 pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
                      PixelFormat pixfmt, bool crop, int frameCount,
-                     int variation)
-    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop, frameCount, variation)
+                     int variation, bool PNGfile)
+    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop, frameCount, variation, PNGfile)
 {
     if (CanvasCount++ == 0)
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
@@ -155,10 +155,13 @@ void pngCanvas::output(const char* outfilename, int frame)
     }
 
     WCHAR wpath[MAX_PATH];
+    TCHAR fullpath[MAX_PATH];
 	size_t cvt;
     ::mbstowcs_s(&cvt, wpath, MAX_PATH, outfilename, MAX_PATH);
+    ::GetFullPathName(wpath, MAX_PATH, fullpath, NULL);
+    const WCHAR* mimetype = mPNGfile ? L"image/png" : L"image/bmp";
 
-    if (encClsid == CLSID_NULL && GetEncoderClsid(L"image/png", &encClsid) == -1) {
+    if (encClsid == CLSID_NULL && GetEncoderClsid(mimetype, &encClsid) == -1) {
         cerr << endl << "Image encoder missing from GDI+!" << endl;
         return;
     } 
@@ -224,10 +227,15 @@ void pngCanvas::output(const char* outfilename, int frame)
             LocalFree(lpMsgBuf);
         }
         cerr << endl;
+    } else if (!mPNGfile && frame == -1) {
+        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, (LPVOID)fullpath, 
+                             SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
     }
 
     delete saveBM;
     delete[] data8;
+
+    return;
 }
 
 

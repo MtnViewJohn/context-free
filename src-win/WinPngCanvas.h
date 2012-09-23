@@ -28,7 +28,8 @@ class pngCanvas : public abstractPngCanvas
 {
 public:
   pngCanvas(const char* outfilename, bool quiet, int width, int height, 
-            PixelFormat pixfmt, bool crop, int frameCount, int variation);
+            PixelFormat pixfmt, bool crop, int frameCount, int variation,
+            bool PNGfile);
   ~pngCanvas();
 
 protected:
