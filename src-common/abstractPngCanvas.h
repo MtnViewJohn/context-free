@@ -31,7 +31,7 @@ class abstractPngCanvas : public aggCanvas {
 public:
     abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                       PixelFormat pixfmt, bool crop, int frameCount,
-                      int variation);
+                      int variation, bool PNGfile);
     virtual ~abstractPngCanvas();
     virtual void start(bool , const agg::rgba& , int , int );
     virtual void end();
@@ -49,6 +49,7 @@ protected:
     PixelFormat mPixelFormat;
     bool mCrop;
     bool mQuiet;
+    bool mPNGfile;
     
     Renderer* mRenderer;
     int mWidthMult;

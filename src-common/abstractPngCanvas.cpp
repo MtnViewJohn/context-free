@@ -32,11 +32,11 @@ using namespace std;
 
 abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
-                                     int variation)
+                                     int variation, bool PNGfile)
 : aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
   mCurrentFrame(0), mVariation(variation), mData(0), mPixelFormat(pixfmt), 
-  mCrop(crop), mQuiet(quiet), mRenderer(0), mWidthMult(1), mHeightMult(1), 
-  mOriginX(0), mOriginY(0)
+  mCrop(crop), mQuiet(quiet), mPNGfile(PNGfile), mRenderer(0), mWidthMult(1), 
+  mHeightMult(1), mOriginX(0), mOriginY(0)
 {
 	mWidth = width;
 	mHeight = height;
