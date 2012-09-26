@@ -166,6 +166,7 @@ class Renderer {
         
         virtual void setMaxShapes(int n) = 0;        
         virtual void resetBounds() = 0;
+        virtual void resetSize(int x, int y) = 0;
 
         virtual double run(Canvas* canvas, bool partialDraw) = 0;
         virtual void draw(Canvas* canvas) = 0;

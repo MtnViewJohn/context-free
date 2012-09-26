@@ -32,16 +32,43 @@ using namespace std;
 
 abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
-                                     int variation, bool PNGfile)
+                                     int variation, bool wallpaper, Renderer *r, int mx, int my)
 : aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
   mCurrentFrame(0), mVariation(variation), mData(0), mPixelFormat(pixfmt), 
-  mCrop(crop), mQuiet(quiet), mPNGfile(PNGfile), mRenderer(0), mWidthMult(1), 
-  mHeightMult(1), mOriginX(0), mOriginY(0)
+  mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
+  mFullHeight(height), mOriginX(0), mOriginY(0)
 {
-	mWidth = width;
-	mHeight = height;
-	if (quiet) return;
-    cout << width << "w x " << height << "h pixel image." << endl;
+    if (wallpaper) {
+        mWidth = r->m_width;
+        mHeight = r->m_height;
+        mFullWidth = width;
+        mFullHeight = height;
+
+        double scalex = (double)width /  ( mWidth * mx);
+        double scaley = (double)height / (mHeight * my);
+        double scale = scalex < scaley ? scalex : scaley;
+        mWidth *= scale;
+        mHeight *= scale;
+    } else {
+    	mWidth = width;
+	    mHeight = height;
+        mFullWidth = mWidth * mx;
+        mFullHeight = mHeight * my;
+    }
+    
+    mOriginX = (mFullWidth - mWidth) / 2;
+    mOriginY = (mFullHeight - mHeight) / 2;
+    
+    mStride = mFullWidth * aggCanvas::BytesPerPixel[mPixelFormat];
+#ifdef _WIN32
+    mStride += ((-mStride) & 3);
+#endif
+    mData = new unsigned char[mStride * height];
+    attach(mData + mOriginY * mStride + mOriginX * BytesPerPixel[mPixelFormat], 
+           mWidth, mHeight, mStride);
+
+    if (quiet) return;
+    cout << mFullWidth << "w x " << mFullHeight << "h pixel image." << endl;
     cout << "Generating..." << endl;
 }
 
@@ -56,36 +83,7 @@ abstractPngCanvas::start(bool clear, const agg::rgba &bk, int width, int height)
 	if (!mFrameCount && !mQuiet)
         cout << endl << "Rendering..." << endl;
     
-    if (mData) {
-        if (mCrop && (mWidth != width || mHeight != height)) {
-            cerr << endl << "Error: Frame size changed after the first frame." << endl;
-            delete [] mData;
-            mData = 0;
-        } else {
-            aggCanvas::start(clear, bk, mWidth, mHeight);
-            return;
-        }
-    }
-    
-    if (mCrop) {
-        mWidth = width;
-        mHeight = height;
-    }
-    
-    width = mWidth * mWidthMult;
-    height = mHeight * mHeightMult;
-    mOriginX = (width - mWidth) / 2;
-    mOriginY = (height - mHeight) / 2;
-    
-    mStride = width * aggCanvas::BytesPerPixel[mPixelFormat];
-#ifdef _WIN32
-    mStride += ((-mStride) & 3);
-#endif
-    mData = new unsigned char[mStride * height];
-    attach(mData + mOriginY * mStride + mOriginX * BytesPerPixel[mPixelFormat], 
-           mWidth, mHeight, mStride);
-    
-    aggCanvas::start(clear, bk, mWidth, mHeight);
+    aggCanvas::start(clear, bk, width, height);
 }
 
 void
@@ -95,7 +93,7 @@ abstractPngCanvas::end()
     
     if (mRenderer && mRenderer->m_tiledCanvas) {
         tileList points;
-        mRenderer->m_tiledCanvas->getTesselation(points, mWidth * mWidthMult, mHeight * mHeightMult,
+        mRenderer->m_tiledCanvas->getTesselation(points, mFullWidth, mFullHeight,
                                                  mOriginX, mOriginY, true);
         
         for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
@@ -118,21 +116,13 @@ abstractPngCanvas::end()
 }
 
 void
-abstractPngCanvas::setTiler(Renderer *r, int x, int y)
-{
-    mRenderer = r;
-    mWidthMult = x;
-    mHeightMult = y;
-}
-
-void
 abstractPngCanvas::copyImageUnscaled(int destx, int desty)
 {
     destx *= BytesPerPixel[mPixelFormat];
     int srcx = mOriginX * BytesPerPixel[mPixelFormat];
     int srcy = mOriginY;
     for (int y = 0; y < mHeight; ++y) {
-        if (y + desty < 0 || y + desty >= mHeight * mHeightMult) continue;
+        if (y + desty < 0 || y + desty >= mFullHeight) continue;
         for (int x = 0; x < mWidth * BytesPerPixel[mPixelFormat]; ++x) {
             if (destx + x >= 0 && destx + x < mStride)
                 mData[(y + desty) * mStride + destx + x] = mData[(y + srcy) * mStride + srcx + x];

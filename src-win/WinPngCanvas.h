@@ -29,7 +29,7 @@ class pngCanvas : public abstractPngCanvas
 public:
   pngCanvas(const char* outfilename, bool quiet, int width, int height, 
             PixelFormat pixfmt, bool crop, int frameCount, int variation,
-            bool PNGfile);
+            bool wallpaper, Renderer *r, int mx, int my);
   ~pngCanvas();
 
 protected:

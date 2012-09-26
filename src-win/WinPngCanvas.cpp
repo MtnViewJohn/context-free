@@ -49,10 +49,22 @@ static GdiplusStartupInput GdiPStartInput;
 static GdiplusStartupOutput GdiPStartOutput;
 int pngCanvas::CanvasCount = 0;
 
+static int ScreenWidth(int w, bool wallpaper)
+{
+    return wallpaper ? ::GetSystemMetrics(SM_CXFULLSCREEN) : w;
+}
+
+static int ScreenHeight(int h, bool wallpaper)
+{
+    return wallpaper ? ::GetSystemMetrics(SM_CYFULLSCREEN) : h;
+}
+
 pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
                      PixelFormat pixfmt, bool crop, int frameCount,
-                     int variation, bool PNGfile)
-    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop, frameCount, variation, PNGfile)
+                     int variation, bool wallpaper, Renderer *r, int mx, int my)
+    : abstractPngCanvas(outfilename, quiet, ScreenWidth(width, wallpaper), 
+                        ScreenHeight(height, wallpaper), pixfmt, crop, 
+                        frameCount, variation, wallpaper, r, mx, my)
 {
     if (CanvasCount++ == 0)
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
@@ -127,8 +139,8 @@ static CLSID encClsid = CLSID_NULL;
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
-    int width = mWidth * mWidthMult;
-    int height = mHeight * mHeightMult;
+    int width = mFullWidth;
+    int height = mFullHeight;
     // If the canvas is 16-bit then copy it to an 8-bit version
     // and output that. GDI+ doesn't really support 16-bit modes.
     unsigned char* data = mData;
@@ -154,12 +166,18 @@ void pngCanvas::output(const char* outfilename, int frame)
         pf = (PixelFormat)(pf & (~Has_16bit_Color));
     }
 
+    if (mCrop) {
+        width = cropWidth();
+        height = cropHeight();
+        data += cropY() * stride + cropX() * BytesPerPixel[pf];
+    }
+
     WCHAR wpath[MAX_PATH];
     TCHAR fullpath[MAX_PATH];
 	size_t cvt;
     ::mbstowcs_s(&cvt, wpath, MAX_PATH, outfilename, MAX_PATH);
     ::GetFullPathName(wpath, MAX_PATH, fullpath, NULL);
-    const WCHAR* mimetype = mPNGfile ? L"image/png" : L"image/bmp";
+    const WCHAR* mimetype = mWallpaper ? L"image/bmp" : L"image/png";
 
     if (encClsid == CLSID_NULL && GetEncoderClsid(mimetype, &encClsid) == -1) {
         cerr << endl << "Image encoder missing from GDI+!" << endl;
@@ -178,14 +196,14 @@ void pngCanvas::output(const char* outfilename, int frame)
 
     switch (pf) {
         case aggCanvas::Gray8_Blend:
-            saveBM = new Bitmap(width, height, mStride, PixelFormat8bppIndexed, data);
+            saveBM = new Bitmap(width, height, stride, PixelFormat8bppIndexed, data);
             saveBM->SetPalette(GrayPalette);
             break;
         case aggCanvas::RGB8_Blend:
-            saveBM = new Bitmap(width, height, mStride, PixelFormat24bppRGB, data);
+            saveBM = new Bitmap(width, height, stride, PixelFormat24bppRGB, data);
             break;
         case aggCanvas::RGBA8_Blend:
-            saveBM = new Bitmap(width, height, mStride, PixelFormat32bppPARGB, data);
+            saveBM = new Bitmap(width, height, stride, PixelFormat32bppPARGB, data);
             break;
         default:
             saveBM = 0;
@@ -227,7 +245,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             LocalFree(lpMsgBuf);
         }
         cerr << endl;
-    } else if (!mPNGfile && frame == -1) {
+    } else if (mWallpaper && frame == -1) {
         SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, (LPVOID)fullpath, 
                              SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
     }
