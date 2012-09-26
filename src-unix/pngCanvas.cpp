@@ -52,11 +52,6 @@ namespace {
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
-	if (frame == -1 && !mQuiet) {
-        cout << endl << "Writing "
-             << mWidth << "w x " << mHeight << "h pixel image..." << endl;
-	} 
-
     FILE *out = 0;
     png_structp png_ptr = 0;
     png_infop info_ptr = 0;
@@ -108,16 +103,22 @@ void pngCanvas::output(const char* outfilename, int frame)
                 throw "Unknown pixel format";
         }
         
-        int width = mWidth;
-        int height = mHeight;
-        int srcx = mOriginX;
-        int srcy = mOriginY;
-        if (mRenderer && mRenderer->m_tiledCanvas) {
-            width *= mWidthMult;
-            height *= mHeightMult;
-            srcx = srcy = 0;
+        int width = mFullWidth;
+        int height = mFullHeight;
+        int srcx = 0;
+        int srcy = 0;
+        if (mCrop) {
+            width = cropWidth();
+            height = cropHeight();
+            srcx = cropX();
+            srcy = cropY();
         }
 
+        if (frame == -1 && !mQuiet) {
+            cout << endl << "Writing "
+            << width << "w x " << height << "h pixel image..." << endl;
+        } 
+        
         png_set_IHDR(png_ptr, info_ptr,
             width, height, (mPixelFormat & Has_16bit_Color) + 8, pngFormat,
             PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,

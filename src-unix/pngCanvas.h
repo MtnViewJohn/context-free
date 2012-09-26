@@ -32,8 +32,10 @@ class pngCanvas : public abstractPngCanvas
 {
 public:
     pngCanvas(const char* outfilename, bool quiet, int width, int height, 
-              PixelFormat pixfmt, bool crop, int frameCount, int variation)
-    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop, frameCount, variation)
+              PixelFormat pixfmt, bool crop, int frameCount, int variation,
+              bool wallpaper, Renderer *r, int mx, int my)
+    : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop,
+                        wallpaper, frameCount, variation, r, mx, my)
     {
     }
 protected:
