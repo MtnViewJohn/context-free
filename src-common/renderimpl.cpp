@@ -172,6 +172,18 @@ RendererImpl::initBounds()
     if (m_frieze == CFDG::frieze_x)
         mFixedBorderX = 0.0;
 }
+
+void
+RendererImpl::resetSize(int x, int y)
+{
+    m_width = x;
+    m_height = y;
+    if (m_tiled || m_sized) {
+        m_currScale = m_currArea = 0.0;
+        rescaleOutput(m_width, m_height, true);
+        mScaleArea = m_currArea;
+    }
+}
     
 static void releaser(const Shape& s)
 {

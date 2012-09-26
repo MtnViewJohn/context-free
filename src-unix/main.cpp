@@ -39,8 +39,6 @@
 #include "variation.h"
 #ifdef _WIN32
 #include "WinPngCanvas.h"
-#define NOMINMAX
-#include <windows.h>
 #else
 #include "pngCanvas.h"
 #endif
@@ -299,7 +297,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 opt.format = options::SVGfile;
                 break;
             case 'Q':
-                if (opt.format != options::PNGfile) usage(true);
+                if (opt.format != options::PNGfile || opt.crop) usage(true);
                 opt.format = options::MOVfile;
                 break;
             case 'W':
@@ -308,6 +306,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 opt.outputWallpaper = true;
                 break;
             case 'c':
+                if (opt.format == options::MOVfile) usage(true);
                 opt.crop = true;
                 break;
             case 'C':
@@ -394,19 +393,12 @@ int main (int argc, char* argv[]) {
             cerr << "Tiled output multiplication only allowed for tiled or frieze designs." << endl;
             return 6;
         }
-        if (opts.format != options::PNGfile) {
+        if (opts.format != options::PNGfile && opts.format != options::BMPfile) {
             cerr << "Tiled output multiplication only allowed for PNG output." << endl;
             return 6;
         }
     }
 
-#ifdef _WIN32
-    if (opts.outputWallpaper) {
-        opts.width  = ::GetSystemMetrics(SM_CXFULLSCREEN);
-        opts.height = ::GetSystemMetrics(SM_CYFULLSCREEN);
-    }
-#endif
-    
     // If a static output file name is provided then generate an output
     // file name format string by escaping any '%' characters. If this is 
     // an animation run then add "_%f" before the extension.
@@ -468,15 +460,21 @@ int main (int argc, char* argv[]) {
     myRenderer->setMaxShapes(opts.maxShapes);
     opts.width = myRenderer->m_width;
     opts.height = myRenderer->m_height;
-    opts.crop = opts.crop || myDesign->isTiled() || myDesign->isFrieze();
+    opts.crop = opts.crop && !(myDesign->isTiled() || myDesign->isFrieze());
     
     switch (opts.format) {
         case options::BMPfile:
         case options::PNGfile: {
             png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
                                 pixfmt, opts.crop, opts.animationFrames, opts.variation,
-                                opts.format == options::PNGfile);
+                                opts.format == options::BMPfile, myRenderer, 
+                                opts.widthMult, opts.heightMult);
             myCanvas = (Canvas*)png;
+            if (png->mWidth != opts.width || png->mHeight != opts.height) {
+                myRenderer->resetSize(png->mWidth, png->mHeight);
+                opts.width = myRenderer->m_width;
+                opts.height = myRenderer->m_height;
+            }
             break;
         }
         case options::SVGfile: {
@@ -497,12 +495,6 @@ int main (int argc, char* argv[]) {
             break;
         }
     }
-    
-    if (opts.widthMult != 1 || opts.heightMult != 1) {
-        assert(png);
-        png->setTiler(myRenderer, opts.widthMult, opts.heightMult);
-    }
-    
     
     myRenderer->run(opts.animationFrames ? 0 : myCanvas, false);
     

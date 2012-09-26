@@ -67,6 +67,7 @@ class RendererImpl : public Renderer {
     
         void setMaxShapes(int n);
         void resetBounds();
+        void resetSize(int x, int y);
         void initBounds();
         
         double run(Canvas* canvas, bool partialDraw);
