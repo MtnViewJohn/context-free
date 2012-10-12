@@ -35,7 +35,7 @@ public:
               PixelFormat pixfmt, bool crop, int frameCount, int variation,
               bool wallpaper, Renderer *r, int mx, int my)
     : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop,
-                        wallpaper, frameCount, variation, r, mx, my)
+                        frameCount, variation, wallpaper, r, mx, my)
     {
     }
 protected:
