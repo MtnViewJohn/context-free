@@ -64,6 +64,9 @@
 /* misc math functions */
 extern const uint8_t ff_log2_tab[256];
 
+/**
+ * Reverse the order of the bits of an 8-bits unsigned integer.
+ */
 extern const uint8_t av_reverse[256];
 
 static av_always_inline av_const int av_log2_c(unsigned int v)
@@ -168,7 +171,7 @@ static av_always_inline av_const int16_t av_clip_int16_c(int a)
 static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a)
 {
     if ((a+0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (a>>63) ^ 0x7FFFFFFF;
-    else                                         return a;
+    else                                         return (int32_t)a;
 }
 
 /**
@@ -181,6 +184,30 @@ static av_always_inline av_const unsigned av_clip_uintp2_c(int a, int p)
 {
     if (a & ~((1<<p) - 1)) return -a >> 31 & ((1<<p) - 1);
     else                   return  a;
+}
+
+/**
+ * Add two signed 32-bit values with saturation.
+ *
+ * @param  a one value
+ * @param  b another value
+ * @return sum with signed saturation
+ */
+static av_always_inline int av_sat_add32_c(int a, int b)
+{
+    return av_clipl_int32((int64_t)a + b);
+}
+
+/**
+ * Add a doubled value to another value with saturation at both stages.
+ *
+ * @param  a first value
+ * @param  b value doubled and added to a
+ * @return sum with signed saturation
+ */
+static av_always_inline int av_sat_dadd32_c(int a, int b)
+{
+    return av_sat_add32(a, av_sat_add32(b, b));
 }
 
 /**
@@ -220,8 +247,18 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
     return (x + (x >> 16)) & 0x3F;
 }
 
-#define MKTAG(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((d) << 24))
-#define MKBETAG(a,b,c,d) ((d) | ((c) << 8) | ((b) << 16) | ((a) << 24))
+/**
+ * Count number of bits set to one in x
+ * @param x value to count bits of
+ * @return the number of bits set to one in x
+ */
+static av_always_inline av_const int av_popcount64_c(uint64_t x)
+{
+    return av_popcount((uint32_t)x) + av_popcount(x >> 32);
+}
+
+#define MKTAG(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
+#define MKBETAG(a,b,c,d) ((d) | ((c) << 8) | ((b) << 16) | ((unsigned)(a) << 24))
 
 /**
  * Convert a UTF-8 character (up to 4 bytes) to its 32-bit UCS-4 encoded form.
@@ -270,16 +307,16 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
         }\
     }\
 
-/*!
- * \def PUT_UTF8(val, tmp, PUT_BYTE)
+/**
+ * @def PUT_UTF8(val, tmp, PUT_BYTE)
  * Convert a 32-bit Unicode character to its UTF-8 encoded form (up to 4 bytes long).
- * \param val is an input-only argument and should be of type uint32_t. It holds
+ * @param val is an input-only argument and should be of type uint32_t. It holds
  * a UCS-4 encoded Unicode character that is to be converted to UTF-8. If
  * val is given as a function it is executed only once.
- * \param tmp is a temporary variable and should be of type uint8_t. It
+ * @param tmp is a temporary variable and should be of type uint8_t. It
  * represents an intermediate value during conversion that is to be
  * output by PUT_BYTE.
- * \param PUT_BYTE writes the converted UTF-8 bytes to any proper destination.
+ * @param PUT_BYTE writes the converted UTF-8 bytes to any proper destination.
  * It could be a function or a statement, and uses tmp as the input byte.
  * For example, PUT_BYTE could be "*output++ = tmp;" PUT_BYTE will be
  * executed up to 4 times for values in the valid UTF-8 range and up to
@@ -306,16 +343,16 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
         }\
     }
 
-/*!
- * \def PUT_UTF16(val, tmp, PUT_16BIT)
+/**
+ * @def PUT_UTF16(val, tmp, PUT_16BIT)
  * Convert a 32-bit Unicode character to its UTF-16 encoded form (2 or 4 bytes).
- * \param val is an input-only argument and should be of type uint32_t. It holds
+ * @param val is an input-only argument and should be of type uint32_t. It holds
  * a UCS-4 encoded Unicode character that is to be converted to UTF-16. If
  * val is given as a function it is executed only once.
- * \param tmp is a temporary variable and should be of type uint16_t. It
+ * @param tmp is a temporary variable and should be of type uint16_t. It
  * represents an intermediate value during conversion that is to be
  * output by PUT_16BIT.
- * \param PUT_16BIT writes the converted UTF-16 data to any proper destination
+ * @param PUT_16BIT writes the converted UTF-16 data to any proper destination
  * in desired endianness. It could be a function or a statement, and uses tmp
  * as the input byte.  For example, PUT_BYTE could be "*output++ = tmp;"
  * PUT_BYTE will be executed 1 or 2 times depending on input character.
@@ -379,9 +416,18 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
 #ifndef av_clip_uintp2
 #   define av_clip_uintp2   av_clip_uintp2_c
 #endif
+#ifndef av_sat_add32
+#   define av_sat_add32     av_sat_add32_c
+#endif
+#ifndef av_sat_dadd32
+#   define av_sat_dadd32    av_sat_dadd32_c
+#endif
 #ifndef av_clipf
 #   define av_clipf         av_clipf_c
 #endif
 #ifndef av_popcount
 #   define av_popcount      av_popcount_c
+#endif
+#ifndef av_popcount64
+#   define av_popcount64    av_popcount64_c
 #endif

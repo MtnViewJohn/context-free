@@ -30,6 +30,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#undef PixelFormat
 }
 
 class ffCanvas::Impl
@@ -45,11 +46,8 @@ public:
     int             mHeight;
     int             mStride;
     char*           mBuffer;
-	int             mFrameRate;
+    int             mFrameRate;
     const char*     mError;
-    
-    uint8_t*        mDataBuffer;
-    int             mDataBufferSize;
     
     AVFormatContext *mOutputCtx;
     AVFrame         *mFrame;
@@ -65,8 +63,7 @@ const uint32_t ffCanvas::Impl::dummyPalette[256] = { 0 };
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
                      char* bits, int fps)
 : mWidth(width), mHeight(height), mStride(stride), mBuffer(bits), mFrameRate(fps),
-  mError(NULL), mDataBuffer(NULL), mDataBufferSize(256 * 1024), mOutputCtx(NULL), 
-  mFrame(NULL)
+  mError(NULL), mOutputCtx(NULL), mFrame(NULL)
 {
     avcodec_register_all();
     av_register_all();
@@ -77,7 +74,13 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
     
-    AVStream* stream = av_new_stream(mOutputCtx, 0);
+    AVCodec *codec = avcodec_find_encoder(CODEC_ID_QTRLE);
+    if (codec == NULL) {
+        mError = "codec not found";
+        return;
+    }
+    
+    AVStream* stream = avformat_new_stream(mOutputCtx, codec);
     if (stream == NULL) {
         mError = "out of memory";
         return;
@@ -85,12 +88,6 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     
     AVCodecContext *codecCtx = stream->codec;
 
-    AVCodec *codec = avcodec_find_encoder(CODEC_ID_QTRLE);
-    if (codec == NULL) {
-        mError = "codec not found";
-        return;
-    }
-    
     avcodec_get_context_defaults3(codecCtx, codec);
     
     /* put sample parameters */
@@ -120,7 +117,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
             return;
     }
     
-    if (avcodec_open(codecCtx, codec) < 0) {
+    if (avcodec_open2(codecCtx, codec, NULL) < 0) {
         mError = "could not open codec";
         return;
     }
@@ -137,15 +134,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     mFrame->linesize[1] = codecCtx->pix_fmt == PIX_FMT_GRAY8 ? 1024 : 0;
     mFrame->linesize[2] = mFrame->linesize[3] = 0;
     
-    int size = width * height * 6 + 1664;
-    mDataBufferSize = FFMAX(size, mDataBufferSize);
-    mDataBuffer = (uint8_t*)av_malloc(mDataBufferSize);
-    if (mDataBuffer == NULL) {
-        mError = "out of memory";
-        return;
-    }
-    
-    if (avio_open(&(mOutputCtx->pb), name, AVIO_WRONLY) < 0) {
+    if (avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE) < 0) {
         mError = "failed to write video file header";
         return;
     }
@@ -160,10 +149,32 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
 ffCanvas::Impl::~Impl()
 {
     if (!mError) {
-        int ret = av_write_trailer(mOutputCtx);
+        AVStream* stream = mOutputCtx->streams[0];
+        AVPacket pkt;
+        
+        av_init_packet(&pkt);
+        pkt.data = NULL;    // packet data will be allocated by the encoder
+        pkt.size = 0;
+        int ret = 0;
+        for (int got_output = 1; got_output; ) {
+            ret = avcodec_encode_video2(stream->codec, &pkt, NULL, &got_output);
+            if (ret < 0)
+                break;
+            if (got_output) {
+                pkt.stream_index = stream->index;
+                
+                if (stream->codec->coded_frame->key_frame)
+                    pkt.flags |= AV_PKT_FLAG_KEY;
+                ret = av_write_frame(mOutputCtx, &pkt);
+                if (ret < 0)
+                    av_free_packet(&pkt);
+                //av_free_packet(&pkt);
+            }
+        }
+        ret = av_write_trailer(mOutputCtx);
         if (ret >= 0)
             ret = avio_close(mOutputCtx->pb);
-        if (ret <0)
+        if (ret < 0)
             mError = "error closing movie file";
     }
     
@@ -175,10 +186,6 @@ ffCanvas::Impl::~Impl()
         av_free(mFrame); mFrame = NULL;
     }
     
-    if (mDataBuffer) {
-        av_free(mDataBuffer); mDataBuffer = NULL;
-    }
-    
     delete[] mBuffer; mBuffer = NULL;
 }
 
@@ -186,20 +193,23 @@ void
 ffCanvas::Impl::addFrame()
 {
     AVStream* stream = mOutputCtx->streams[0];
-    int bytes = avcodec_encode_video(stream->codec, mDataBuffer, mDataBufferSize, mFrame);
+    AVPacket pkt;
+    int got_output;
     
-    if (bytes < 0) {
+    av_init_packet(&pkt);
+    pkt.data = NULL;    // packet data will be allocated by the encoder
+    pkt.size = 0;
+    
+    int ret = avcodec_encode_video2(stream->codec, &pkt, mFrame, &got_output);
+    
+    if (ret < 0) {
         mError = "video encoding failed";
         return;
     }
     
-    if (bytes > 0) {
-        AVPacket pkt;
-        av_init_packet(&pkt);
-        pkt.stream_index = 0;
+    if (got_output) {
+        pkt.stream_index = stream->index;
         
-        pkt.data = mDataBuffer;
-        pkt.size = bytes;
         if (stream->codec->coded_frame->key_frame)
             pkt.flags |= AV_PKT_FLAG_KEY;
         if (av_write_frame(mOutputCtx, &pkt) < 0) {
@@ -207,7 +217,7 @@ ffCanvas::Impl::addFrame()
             av_free_packet(&pkt);
             return;
         }
-        av_free_packet(&pkt);
+        //av_free_packet(&pkt);
     }
 }
 
