@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Baptiste Coudurier <baptiste.coudurier@gmail.com>
+ * Copyright (c) 2000-2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -18,26 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_RANDOM_SEED_H
-#define AVUTIL_RANDOM_SEED_H
+#ifndef AVUTIL_TIME_H
+#define AVUTIL_TIME_H
 
 #include <stdint.h>
-/**
- * @addtogroup lavu_crypto
- * @{
- */
 
 /**
- * Get a seed to use in conjunction with random functions.
- * This function tries to provide a good seed at a best effort bases.
- * Its possible to call this function multiple times if more bits are needed.
- * It can be quite slow, which is why it should only be used as seed for a faster
- * PRNG. The quality of the seed depends on the platform.
+ * Get the current time in microseconds.
  */
-uint32_t av_get_random_seed(void);
+int64_t av_gettime(void);
 
 /**
- * @}
+ * Sleep for a period of time.  Although the duration is expressed in
+ * microseconds, the actual delay may be rounded to the precision of the
+ * system timer.
+ *
+ * @param  usec Number of microseconds to sleep.
+ * @return zero on success or (negative) error code.
  */
+int av_usleep(unsigned usec);
 
-#endif /* AVUTIL_RANDOM_SEED_H */
+#endif /* AVUTIL_TIME_H */
