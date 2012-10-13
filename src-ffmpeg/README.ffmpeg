@@ -1,5 +1,5 @@
-The Windows and Linux builds of Context Free/cfdg use FFmpeg 0.7.12 to generate 
-Quicktime animation output. Do not use FFmpeg 0.6 or earlier or 0.8 or later
+The Windows and Linux builds of Context Free/cfdg use FFmpeg 1.0 to generate 
+Quicktime animation output. Ealier or later versions of ffmpeg may not work
 as the FFmpeg API is a moving target.
 
 Building the libraries:
