@@ -71,7 +71,7 @@ namespace {
     };
 
     // Preferences keys
-    static NSString* prefKeyCheckUpdateWeekly	= @"CheckUpdatesWeekly";
+    static NSString* prefKeyCheckUpdateWeekly   = @"CheckUpdatesWeekly";
     static NSString* prefKeyCheckUpdateLast     = @"CheckUpdatesLastTime";
 
     // Update location

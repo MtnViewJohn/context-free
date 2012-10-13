@@ -83,14 +83,14 @@ void WinSystem::message(const char* fmt, ...)
 
 void WinSystem::syntaxError(const CfdgError& errLoc)
 {
-	if (mName.compare(*(errLoc.where.begin.filename)) == 0) {
+    if (mName.compare(*(errLoc.where.begin.filename)) == 0) {
         message("Error - <a href='#e:%d:%d:%d:%d'>%s</a>",
-            errLoc.where.begin.line, errLoc.where.begin.column,
-            errLoc.where.end.line, errLoc.where.end.column, errLoc.what);
-	} else {
-		message("Error in file %s - %s", 
-			::PathFindFileNameA(errLoc.where.begin.filename->c_str()), errLoc.what);
-	}
+                errLoc.where.begin.line, errLoc.where.begin.column,
+                errLoc.where.end.line, errLoc.where.end.column, errLoc.what);
+    } else {
+        message("Error in file %s - %s", 
+        ::PathFindFileNameA(errLoc.where.begin.filename->c_str()), errLoc.what);
+    }
 }
 
 
@@ -133,10 +133,10 @@ std::string WinSystem::relativeFilePath(const std::string& base, const std::stri
     strcpy(buf, base.c_str());
     PathRemoveFileSpecA(buf);
     PathAppendA(buf, rel.c_str());
-	if (PathFileExistsA(buf))
-	    return string(buf);
-	else
-		return rel;
+    if (PathFileExistsA(buf))
+        return string(buf);
+    else
+        return rel;
 }
 
 void WinSystem::stats(const Stats& s)

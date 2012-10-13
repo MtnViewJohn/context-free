@@ -30,7 +30,7 @@
 #import "BitmapImageHolder.h"
 
 ImageCanvas::ImageCanvas(GView* view, BitmapImageHolder* bitmap,
-		PixelFormat format)
+        PixelFormat format)
     : aggCanvas(format), mView(view)
 {
     attach([bitmap bitmapData], [bitmap pixelsWide], [bitmap pixelsHigh],

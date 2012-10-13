@@ -33,38 +33,38 @@
 #include <string>
 
 class Upload {
-	public:
-        Upload() : mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
-		enum Compression {
-			CompressJPEG = 0,
-			CompressPNG8 = 1
-		};
-
-		std::string		mUserName;
-		std::string		mPassword;
-		
-		std::string		mTitle;
-		std::string		mNotes;
-		
-		std::string		mFileName;	// include .cfdg ending here
-		int				mVariation;
-		Compression		mCompression;
-        int             mTiled;
+public:
+    Upload() : mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
+    enum Compression {
+        CompressJPEG = 0,
+        CompressPNG8 = 1
+    };
     
-        std::string     mccLicenseURI;
-        std::string     mccLicenseName;
-        std::string     mccLicenseImage;
+    std::string     mUserName;
+    std::string     mPassword;
     
-		const char*		mText;		// cfdg file, utf-8 text
-		size_t			mTextLen;
-		
-		const char*		mImage;		// png data
-		size_t			mImageLen;
-		
-		void generatePayload(std::ostream&);
-		
-        static std::string generateHeader();
-		static std::string generateContentType();
+    std::string     mTitle;
+    std::string     mNotes;
+    
+    std::string     mFileName;         // include .cfdg ending here
+    int             mVariation;
+    Compression     mCompression;
+    int             mTiled;
+    
+    std::string     mccLicenseURI;
+    std::string     mccLicenseName;
+    std::string     mccLicenseImage;
+    
+    const char*         mText;         // cfdg file, utf-8 text
+    size_t              mTextLen;
+    
+    const char*         mImage;        // png data
+    size_t              mImageLen;
+    
+    void generatePayload(std::ostream&);
+    
+    static std::string generateHeader();
+    static std::string generateContentType();
 };
 
 #endif // INCLUDE_UPLOAD_H

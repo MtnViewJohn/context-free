@@ -48,18 +48,18 @@ Bounds::Bounds(const agg::trans_affine& trans, pathIterator& helper, double scal
 Bounds
 Bounds::interpolate(const Bounds& other, double alpha) const
 {
-	double beta = 1.0 - alpha;
-	
-	Bounds r;
-	if (!mValid || !other.mValid) return r;
-	
-	r.mMax_X = beta * mMax_X + alpha * other.mMax_X;
-	r.mMin_X = beta * mMin_X + alpha * other.mMin_X;
-	r.mMax_Y = beta * mMax_Y + alpha * other.mMax_Y;
-	r.mMin_Y = beta * mMin_Y + alpha * other.mMin_Y;
-	r.mValid = true;
-	
-	return r;
+    double beta = 1.0 - alpha;
+    
+    Bounds r;
+    if (!mValid || !other.mValid) return r;
+    
+    r.mMax_X = beta * mMax_X + alpha * other.mMax_X;
+    r.mMin_X = beta * mMin_X + alpha * other.mMin_X;
+    r.mMax_Y = beta * mMax_Y + alpha * other.mMax_Y;
+    r.mMin_Y = beta * mMin_Y + alpha * other.mMin_Y;
+    r.mValid = true;
+    
+    return r;
 }
 
 Bounds
@@ -90,95 +90,95 @@ Bounds::dilate(double dilation) const
 Bounds
 Bounds::slewCenter(const Bounds& other, double alpha) const
 {
-	Bounds r;
-	if (!mValid || !other.mValid) return r;
-	
-	double offsetX
-		= alpha * ((other.mMax_X + other.mMin_X) - (mMax_X + mMin_X)) / 2.0;
-	double offsetY
-		= alpha * ((other.mMax_Y + other.mMin_Y) - (mMax_Y + mMin_Y)) / 2.0;
-
-	double absX = fabs(offsetX);
-	double absY = fabs(offsetY);
-	
-	r.mMax_X = mMax_X + absX + offsetX;
-	r.mMin_X = mMin_X - absX + offsetX;
-	r.mMax_Y = mMax_Y + absY + offsetY;
-	r.mMin_Y = mMin_Y - absY + offsetY;
-	r.mValid = true;
-	
-	return r;
+    Bounds r;
+    if (!mValid || !other.mValid) return r;
+    
+    double offsetX
+    = alpha * ((other.mMax_X + other.mMin_X) - (mMax_X + mMin_X)) / 2.0;
+    double offsetY
+    = alpha * ((other.mMax_Y + other.mMin_Y) - (mMax_Y + mMin_Y)) / 2.0;
+    
+    double absX = fabs(offsetX);
+    double absY = fabs(offsetY);
+    
+    r.mMax_X = mMax_X + absX + offsetX;
+    r.mMin_X = mMin_X - absX + offsetX;
+    r.mMax_Y = mMax_Y + absY + offsetY;
+    r.mMin_Y = mMin_Y - absY + offsetY;
+    r.mValid = true;
+    
+    return r;
 }
 
 void
 Bounds::gather(const Bounds& other, double weight)
 {
-	if (!other.mValid) return;
-	
+    if (!other.mValid) return;
+    
     if (!mValid) {
         mMax_X = weight * other.mMax_X;
         mMin_X = weight * other.mMin_X;
         mMax_Y = weight * other.mMax_Y;
         mMin_Y = weight * other.mMin_Y;
         mValid = true;
-		return;
+        return;
     }
-
-	mMax_X += weight * other.mMax_X;
-	mMin_X += weight * other.mMin_X;
-	mMax_Y += weight * other.mMax_Y;
-	mMin_Y += weight * other.mMin_Y;
+    
+    mMax_X += weight * other.mMax_X;
+    mMin_X += weight * other.mMin_X;
+    mMax_Y += weight * other.mMax_Y;
+    mMin_Y += weight * other.mMin_Y;
 }
 
 double
 Bounds::computeScale(int& width, int& height, double borderX, double borderY,
-			bool modify, agg::trans_affine* trans, bool exact)
+                     bool modify, agg::trans_affine* trans, bool exact)
 {
     double scale;
     double virtual_width = mMax_X - mMin_X;
     double virtual_height = mMax_Y - mMin_Y;
     double target_width = width - 2.0 * borderX;
     double target_height = height - 2.0 * borderY;
-    	
+    
     if (!mValid) virtual_width = virtual_height = 1.0;
     
-	int newWidth = width;
-	int newHeight = height;
-	
+    int newWidth = width;
+    int newHeight = height;
+    
     if (virtual_width / target_width >
         virtual_height / target_height)
-	{
+    {
         scale = target_width / virtual_width;
-		newHeight = (int)floor(scale * virtual_height + 2.0 * borderY + 0.5);
-		if (!exact)
+        newHeight = (int)floor(scale * virtual_height + 2.0 * borderY + 0.5);
+        if (!exact)
             newHeight = newHeight + ((newHeight ^ height) & 0x1);
-
+        
         if (modify) {
-			height = newHeight;
-		}
+            height = newHeight;
+        }
     }
     else {
         scale = target_height / virtual_height;
-		newWidth = (int)floor(scale * virtual_width + 2.0 * borderX + 0.5);
-		if (!exact)
+        newWidth = (int)floor(scale * virtual_width + 2.0 * borderX + 0.5);
+        if (!exact)
             newWidth = newWidth + ((newWidth ^ width) & 0x1);
-		
-		if (modify) {
-			width = newWidth;
-		}
+        
+        if (modify) {
+            width = newWidth;
+        }
     }
-
+    
     if (trans) {
         double offsetX = scale * (mMax_X + mMin_X) / 2.0 - newWidth / 2.0;
         double offsetY = scale * (mMax_Y + mMin_Y) / 2.0 - newHeight / 2.0;
-
+        
         agg::trans_affine_scaling sc(scale);
         agg::trans_affine_translation tr(-offsetX, -offsetY);
         *trans = sc;
         *trans *= tr;
     }
-	
-	return scale;
+    
+    return scale;
 }
 
 void

@@ -143,27 +143,27 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
 
         if (usernameBox->Text->Length == 0) {
-			statusLabelUpload->Text = "You must provide a username.";
+            statusLabelUpload->Text = "You must provide a username.";
             uploadBrowser->Navigate("about:NavigationFailure");
-			return;
+            return;
         }
         array<Byte>^ utf8array = encodeutf8->GetBytes(usernameBox->Text);
         pin_ptr<Byte> utf8arraypin = &utf8array[0];
         mUpload->mUserName = reinterpret_cast<const char*>(utf8arraypin);
 
         if (passwordBox->Text->Length == 0) {
-			statusLabelUpload->Text = "You must provide a password.";
+            statusLabelUpload->Text = "You must provide a password.";
             uploadBrowser->Navigate("about:NavigationFailure");
-			return;
+            return;
         }
         utf8array = encodeutf8->GetBytes(passwordBox->Text);
         utf8arraypin = &utf8array[0];
         mUpload->mPassword = reinterpret_cast<const char*>(utf8arraypin);
 
         if (titleBox->Text->Length == 0) {
-			statusLabelUpload->Text = "You must provide a title.";
+            statusLabelUpload->Text = "You must provide a title.";
             uploadBrowser->Navigate("about:NavigationFailure");
-			return;
+            return;
         }
         utf8array = encodeutf8->GetBytes(titleBox->Text);
         utf8arraypin = &utf8array[0];
@@ -176,9 +176,9 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         }
 
         if (fileNameBox->Text->Length == 0) {
-			statusLabelUpload->Text = "You must provide a file name.";
+            statusLabelUpload->Text = "You must provide a file name.";
             uploadBrowser->Navigate("about:NavigationFailure");
-			return;
+            return;
         }
         utf8array = encodeutf8->GetBytes(fileNameBox->Text + ".cfdg");
         utf8arraypin = &utf8array[0];
@@ -211,11 +211,11 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
 
         MemoryStream^ bitmapStream = gcnew MemoryStream();
         if (!mDoc->saveToPNGorJPEG(nullptr, bitmapStream, false) || bitmapStream->Length == 0)
-		{
-			statusLabelUpload->Text = "Upload failed because of image problems.";
+        {
+            statusLabelUpload->Text = "Upload failed because of image problems.";
             uploadBrowser->Navigate("about:NavigationFailure");
-			return;
-		}
+            return;
+        }
         array<Byte>^ imageDataArray = bitmapStream->GetBuffer();
         pin_ptr<Byte> imageData = &imageDataArray[0];
         mUpload->mImage = reinterpret_cast<const char*>(imageData);

@@ -39,7 +39,7 @@ HANDLE timerQueueTimer = NULL;
 
 void
 setupTimer(Renderer* renderer)
-{	
+{
     runningRenderer = renderer;
     if (renderer) {
         CreateTimerQueueTimer(&timerQueueTimer, NULL, statusTimer, 

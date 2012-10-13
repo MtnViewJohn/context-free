@@ -168,8 +168,8 @@ namespace AST {
         ASTdefine(const std::string& name, mod_ptr m, const yy::location& loc);
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
         virtual ~ASTdefine() { delete mExpression; }
-	private:
-		ASTdefine& operator=(const ASTdefine&);
+    private:
+        ASTdefine& operator=(const ASTdefine&);
     };
     class ASTrule : public ASTreplacement {
     public:

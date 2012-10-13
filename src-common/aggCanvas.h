@@ -59,8 +59,8 @@ class aggCanvas : public Canvas {
         void fill(RGBA8 c);
         void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
         
-		bool colorCount256();
-			// return whether the aggCanvas can fit in byte pixels
+        bool colorCount256();
+            // return whether the aggCanvas can fit in byte pixels
         
         static PixelFormat SuggestPixelFormat(CFDG* engine);
         
@@ -71,10 +71,10 @@ class aggCanvas : public Canvas {
         void attach(void* data, unsigned width, unsigned height, int stride, bool invert = true);
             // data is int8u grayscale pixels or int32u pixels
         
-		void copy(void* data, unsigned width, unsigned height,
-							int stride, PixelFormat format);
-			// copy the image from different pixel buffer
-			
+        void copy(void* data, unsigned width, unsigned height,
+                  int stride, PixelFormat format);
+            // copy the image from different pixel buffer
+
     public:
         int cropX();
         int cropY();

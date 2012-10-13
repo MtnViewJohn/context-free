@@ -37,28 +37,28 @@ typedef std::vector<agg::point_i> tileList;
 
 class tiledCanvas : public Canvas {
 public:
-	void start(bool clear, const agg::rgba& bk, int width, int height);
-	void end();
-	
-	void circle(RGBA8 c, agg::trans_affine tr);
-	void square(RGBA8 c, agg::trans_affine tr);
-	void triangle(RGBA8 c, agg::trans_affine tr);
+    void start(bool clear, const agg::rgba& bk, int width, int height);
+    void end();
+    
+    void circle(RGBA8 c, agg::trans_affine tr);
+    void square(RGBA8 c, agg::trans_affine tr);
+    void triangle(RGBA8 c, agg::trans_affine tr);
     void fill(RGBA8 c);
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
-	
-	tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
+    
+    tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
     ~tiledCanvas() {};
     
     void scale(double scaleFactor);
     
     void getTesselation(tileList& tl, int width, int height, int x, int y, bool flipY = false);
-	void tileTransform(const Bounds& b);
+    void tileTransform(const Bounds& b);
     
 private:
-	Canvas* mTile;
+    Canvas* mTile;
     const agg::trans_affine mTileTransform;
     CFDG::frieze_t mFrieze;
-	agg::trans_affine mOffset;
+    agg::trans_affine mOffset;
     agg::trans_affine mInvert;
     std::vector<agg::point_d> mTileList;
     tiledCanvas& operator=(const tiledCanvas&);

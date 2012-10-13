@@ -33,12 +33,12 @@ void tiledCanvas::start(bool clear, const agg::rgba& bk, int w, int h)
 {
     mWidth = w;
     mHeight = h;
-	mTile->start(clear, bk, w, h);
+    mTile->start(clear, bk, w, h);
 }
 
 void tiledCanvas::end() 
 {
-	mTile->end();
+    mTile->end();
 }
 
 void tiledCanvas::circle(RGBA8 c, agg::trans_affine tr)
@@ -101,7 +101,7 @@ tiledCanvas::tileTransform(const Bounds& b)
     mInvert.transform(&centx, &centy);          // transform to unit square tesselation
     centx = floor(centx + 0.5);                 // round to nearest integer
     centy = floor(centy + 0.5);                 // round to nearest integer
-	
+
     mTileList.clear();
     double dx = -centx, dy = -centy;
     mOffset.transform(&dx, &dy);

@@ -58,7 +58,7 @@ struct HSBColor
         return h != hsb.h || s != hsb.s || b != hsb.b || a != hsb.s;
     }
 
-	double h, s, b, a;
+    double h, s, b, a;
     int mUseTarget;
     
     static inline double adjust(const double& base, const double& adjustment, 

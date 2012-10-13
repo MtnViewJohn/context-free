@@ -47,8 +47,8 @@ class AbstractSystem;
     IBOutlet GView*         mGView;
     IBOutlet NSPanel*       mHiresSheet;
     
-	GalleryUploader*		mUploader;
-	
+    GalleryUploader*        mUploader;
+
     NSString*               mDisplayName;
 }
 

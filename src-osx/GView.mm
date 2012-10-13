@@ -171,12 +171,12 @@ enum {
 namespace {
     NSString* saveImageDirectory = nil;
 
-	NSString* PrefKeyMovieZoom = @"MovieZoom";
+    NSString* PrefKeyMovieZoom = @"MovieZoom";
     NSString* PrefKeyMovieLength = @"MovieLength";
     NSString* PrefKeyMovieFrameRate = @"MovieFrameRate";
     NSString* PrefKeyMovieFormat = @"MovieFormat";
     NSString* PrefKeyMovieQuality = @"MovieQuality";
-	
+
 
     class RenderParameters
     {
@@ -184,9 +184,9 @@ namespace {
         bool    render;
         bool    periodicUpdate;
         bool    animate;
-		bool	animateZoom;
-		int		animateFrameCount;
-		
+        bool    animateZoom;
+        int     animateFrameCount;
+
         RenderParameters()
             : render(true), periodicUpdate(true), animate(false)
             { }
@@ -212,7 +212,7 @@ namespace {
         mRenderer = 0;
         mCanvas = 0;
         
-		mRenderBitmap = nil;
+        mRenderBitmap = nil;
         mDrawingImage = nil;
         mRestartRenderer = false;
         mUpdateTimer = nil;
@@ -225,10 +225,10 @@ namespace {
         
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
-		
-		mAnimationCanvas = 0;
-		
-		mTiled = false;
+
+        mAnimationCanvas = 0;
+
+        mTiled = false;
         
         mFullScreenMenu = nil;
     }
@@ -239,7 +239,7 @@ namespace {
 {
     [mSaveImageAccessory retain];
     [mSaveTileAccessory retain];
-	[mSaveAnimationAccessory retain];
+    [mSaveAnimationAccessory retain];
     [mDocument retain];
     [self initializeVariation];
     
@@ -300,11 +300,11 @@ namespace {
     delete mEngine;                 mEngine = 0;
     [mDocument release];            mDocument = nil;
     [mDrawingImage release];        mDrawingImage = nil;
-	[mRenderBitmap release];		mRenderBitmap = nil;
+    [mRenderBitmap release];        mRenderBitmap = nil;
     [mUpdateTimer release];         mUpdateTimer = nil;
     [mSaveImageAccessory release];  mSaveImageAccessory = nil;
     [mSaveTileAccessory release];  mSaveTileAccessory = nil;
-	[mSaveAnimationAccessory release]; mSaveAnimationAccessory = nil;
+    [mSaveAnimationAccessory release]; mSaveAnimationAccessory = nil;
     
     [super dealloc];
 }
@@ -324,18 +324,18 @@ namespace {
     [self validateDrawingImage];
     
     if (!mDrawingImage) {
-		[[NSColor whiteColor] set];
-		[NSBezierPath fillRect: rect];
-		return;
-	}
+        [[NSColor whiteColor] set];
+        [NSBezierPath fillRect: rect];
+        return;
+    }
     
-	agg::rgba backgroundColor(1.0, 1.0, 1.0, 1.0);
-	if (mEngine && mRenderer)
+    agg::rgba backgroundColor(1.0, 1.0, 1.0, 1.0);
+    if (mEngine && mRenderer)
         backgroundColor = mEngine->getBackgroundColor(0);
     
-	if (backgroundColor.opacity() < 1.0) {
-		[self drawCheckerboardRect: rect];
-	}
+    if (backgroundColor.opacity() < 1.0) {
+        [self drawCheckerboardRect: rect];
+    }
     
     [[NSColor colorWithCalibratedRed: backgroundColor.r
                                green: backgroundColor.g
@@ -343,39 +343,38 @@ namespace {
                                alpha: backgroundColor.a ] set];
     [NSBezierPath fillRect: rect];
     
-	NSGraphicsContext* ctx = [NSGraphicsContext currentContext];
-	NSImageInterpolation oldInterp = [ctx imageInterpolation];
-	[ctx setImageInterpolation:
-		[self inLiveResize]
-			? NSImageInterpolationNone
+    NSGraphicsContext* ctx = [NSGraphicsContext currentContext];
+    NSImageInterpolation oldInterp = [ctx imageInterpolation];
+    [ctx setImageInterpolation:
+        [self inLiveResize]
+            ? NSImageInterpolationNone
 #if 0
-			: NSImageInterpolationHigh
+            : NSImageInterpolationHigh
 #else
-			: NSImageInterpolationDefault
+            : NSImageInterpolationDefault
 #endif
-		];
+        ];
     
-	NSSize fSize = [self frame].size;
-	NSSize rSize = mRenderedRect.size;
-	
-	float scale;
-	if (rSize.width <= fSize.width  &&  rSize.height <= fSize.height) {
-		// rendered area fits within frame, center it
-		scale = 1.0f;
-	}
-	else {
-		float wScale = fSize.width / rSize.width;
-		float hScale = fSize.height / rSize.height;
-		scale = (hScale < wScale) ? hScale : wScale;
-	}
-	
-	NSRect dRect;
+    NSSize fSize = [self frame].size;
+    NSSize rSize = mRenderedRect.size;
 
-	// center scaled image rectangle
-	dRect.size.width = rSize.width * scale;
-	dRect.size.height = rSize.height * scale;
-	float ox = dRect.origin.x = floorf((fSize.width - dRect.size.width) / 2.0f);
-	float oy = dRect.origin.y = floorf((fSize.height - dRect.size.height) / 2.0f);
+    float scale;
+    if (rSize.width <= fSize.width  &&  rSize.height <= fSize.height) {
+        // rendered area fits within frame, center it
+        scale = 1.0f;
+    } else {
+        float wScale = fSize.width / rSize.width;
+        float hScale = fSize.height / rSize.height;
+        scale = (hScale < wScale) ? hScale : wScale;
+    }
+
+    NSRect dRect;
+
+    // center scaled image rectangle
+    dRect.size.width = rSize.width * scale;
+    dRect.size.height = rSize.height * scale;
+    float ox = dRect.origin.x = floorf((fSize.width - dRect.size.width) / 2.0f);
+    float oy = dRect.origin.y = floorf((fSize.height - dRect.size.height) / 2.0f);
 
     if (mTiled && scale == 1.0f) {
         tileList points;
@@ -509,7 +508,7 @@ namespace {
     if (action == @selector(saveImage:)
     ||  action == @selector(saveAsSVG:)
     ||  action == @selector(saveAsMovie:)
-	||  action == @selector(uploadToGallery:))
+    ||  action == @selector(uploadToGallery:))
         return !mRendering && mRenderBitmap;
             
     return [super validateMenuItem: anItem];
@@ -531,7 +530,7 @@ namespace {
     
     if (s.inOutput || s.animating) {
         if (s.fullOutput || s.finalOutput || s.animating) {
-			NSString* prefix = s.finalOutput ? @"drawing - " : @"rescaling - ";
+            NSString* prefix = s.finalOutput ? @"drawing - " : @"rescaling - ";
             message = [NSLocalizedString(prefix, @"")
                 stringByAppendingString: message];
         }
@@ -590,17 +589,17 @@ namespace {
 
 -(int)variation
 {
-	return mCurrentVariation;
+    return mCurrentVariation;
 }
 
 -(bool)canvasColor256
 {
-	return mCanvasColor256;
+    return mCanvasColor256;
 }
 
 -(bool)isTiled
 {
-	return mTiled;
+    return mTiled;
 }
 
 -(int)isFrieze
@@ -842,8 +841,8 @@ namespace {
             assert(qt);
             qt->enterThread();
             mRenderer->animate(mCanvas,
-				parameters.animateFrameCount, 
-				parameters.animateZoom);
+                               parameters.animateFrameCount, 
+                               parameters.animateZoom);
             qt->exitThread();
         }
         else
@@ -983,37 +982,37 @@ namespace {
 
 - (void)drawCheckerboardRect:(NSRect)rect
 {
-	[[NSColor whiteColor] set];
-	[NSBezierPath fillRect: rect];
+    [[NSColor whiteColor] set];
+    [NSBezierPath fillRect: rect];
 
-	if ([self inLiveResize]) return;
-	
-	static NSColor* gray = nil;
-	if (!gray) {
-		gray = [[NSColor colorWithCalibratedWhite: 0.95 alpha: 1.0] retain];
-	}
-	[gray set];
-	
-	static const float u = 10.0;
-	 
-	NSRect box;
-	box.size.width = u;
-	box.size.height = u;
-	
-	for (box.origin.y = floor(NSMinY(rect) / box.size.height) * box.size.height;
-		box.origin.y < NSMaxY(rect);
-		box.origin.y += box.size.height)
-	{
-		for (box.origin.x = 
-				(floor(NSMinX(rect) / (2.0 * box.size.width)) * 2.0
-				 + fmodf(box.origin.y / box.size.height, 2.0))
-				 * box.size.width;
-			box.origin.x < NSMaxX(rect);
-			box.origin.x += 2*box.size.width)
-		{
-			[NSBezierPath fillRect: NSIntersectionRect(box, rect)];
-		}
-	}
+    if ([self inLiveResize]) return;
+
+    static NSColor* gray = nil;
+    if (!gray) {
+        gray = [[NSColor colorWithCalibratedWhite: 0.95 alpha: 1.0] retain];
+    }
+    [gray set];
+
+    static const float u = 10.0;
+ 
+    NSRect box;
+    box.size.width = u;
+    box.size.height = u;
+
+    for (box.origin.y = floor(NSMinY(rect) / box.size.height) * box.size.height;
+        box.origin.y < NSMaxY(rect);
+        box.origin.y += box.size.height)
+    {
+        for (box.origin.x = 
+                (floor(NSMinX(rect) / (2.0 * box.size.width)) * 2.0
+                + fmodf(box.origin.y / box.size.height, 2.0))
+                * box.size.width;
+            box.origin.x < NSMaxX(rect);
+            box.origin.x += 2*box.size.width)
+        {
+            [NSBezierPath fillRect: NSIntersectionRect(box, rect)];
+        }
+    }
 }
 
 - (void)buildEngine
@@ -1034,7 +1033,7 @@ namespace {
         (int)size.width, (int)size.height,
         minSize,
         mCurrentVariation,
-		[[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]);
+        [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]);
 }
 
 - (void)buildImageCanvasSize
@@ -1078,7 +1077,7 @@ namespace {
 {
     if (mDrawingImage || !mRenderBitmap) return;
     
-	mDrawingImage = [[NSImage alloc] initWithSize: mRenderedRect.size];
+    mDrawingImage = [[NSImage alloc] initWithSize: mRenderedRect.size];
     [mDrawingImage setScalesWhenResized: TRUE];
     [mDrawingImage setDataRetained: TRUE];
     
@@ -1154,20 +1153,20 @@ namespace {
     [saveImageDirectory release];
     saveImageDirectory = [[sheet directory] retain];
 
-	bool doSave =
-		result == NSOKButton
-		&& [sheet makeFirstResponder: nil];
-	NSString* filename = [sheet filename];
+    bool doSave =
+        result == NSOKButton
+        && [sheet makeFirstResponder: nil];
+    NSString* filename = [sheet filename];
 
-	NSInvocation* send
-		= [NSInvocation invocationWithMethodSignature:
-			[self methodSignatureForSelector: (SEL)ctx]];
-	
-	[send setTarget: self];
-	[send setSelector: (SEL)ctx];
-	[send setArgument: &doSave atIndex: 2];
-	[send setArgument: &filename atIndex: 3];
-	[send invoke];
+    NSInvocation* send
+        = [NSInvocation invocationWithMethodSignature:
+            [self methodSignatureForSelector: (SEL)ctx]];
+
+    [send setTarget: self];
+    [send setSelector: (SEL)ctx];
+    [send setArgument: &doSave atIndex: 2];
+    [send setArgument: &filename atIndex: 3];
+    [send invoke];
 }
 
 
@@ -1175,9 +1174,9 @@ namespace {
 {
     if (!save) return;
 
-	NSData *pngData =
-		[self pngImageDataCropped:
-			[[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
+    NSData *pngData =
+        [self pngImageDataCropped:
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
                        multiplier: nil];
 
     if (pngData) {
@@ -1194,7 +1193,7 @@ namespace {
     
     NSSize mult = NSMakeSize([mSaveTileWidth floatValue], [mSaveTileHeight floatValue]);
     
-	NSData *pngData =
+    NSData *pngData =
         [self pngImageDataCropped: YES multiplier: &mult];
     
     if (pngData) {
@@ -1223,10 +1222,9 @@ namespace {
 
 - (void)saveMovie:(bool)save toFile:(NSString*)filename
 {
-    if (!save || mRendering)
-	{
+    if (!save || mRendering) {
         return;
-	}
+    }
 
     RenderParameters parameters;
     parameters.render = false;
@@ -1234,7 +1232,7 @@ namespace {
     parameters.animate = true;
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-	parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
+    parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     int movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     bool mpeg4 = (bool)[defaults integerForKey: PrefKeyMovieFormat];

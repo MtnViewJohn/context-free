@@ -33,7 +33,7 @@ Rand64 Rand64::Common;
 double Rand64::getDouble(bool doBump)
 {
     if (doBump) bump();
-	return  ldexp((double) (mSeed & 0xffffffffffffULL), -48);
+    return  ldexp((double) (mSeed & 0xffffffffffffULL), -48);
 }
 
 long Rand64::getLong(bool doBump)

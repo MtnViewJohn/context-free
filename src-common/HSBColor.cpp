@@ -36,25 +36,25 @@
 void HSBColor::getRGBA(agg::rgba& c) const
 {
     // Determine which facet of the HSB hexcone we are in and how 
-	// far we are into this hextant.
+    // far we are into this hextant.
     double hue = h / 60.0;; 
     double remainder, hex; 
-
-	for(;;) {
+    
+    for(;;) {
         // try splitting the hue into an integer hextant in [0,6) and
         // a real remainder in [0,1)
-		remainder = modf(hue, &hex);
-		if (hex > -0.1 && hex < 5.1 && remainder >= 0)
-			break;
-
+        remainder = modf(hue, &hex);
+        if (hex > -0.1 && hex < 5.1 && remainder >= 0)
+            break;
+        
         // We didn't get the ranges that we wanted. Adjust hue and try again.
-		if (hex < 0 || remainder < 0)
-			hue += 6.0;
-		if (hex > 5.5)
-			hue -= 6.0;
-	}
-
-	int hextant = (int)(hex + 0.5); // guaranteed to be in 0..5
+            if (hex < 0 || remainder < 0)
+                hue += 6.0;
+            if (hex > 5.5)
+                hue -= 6.0;
+    }
+    
+    int hextant = (int)(hex + 0.5); // guaranteed to be in 0..5
     
     double p = b * (1 - s);
     double q = b * (1 - (s * remainder));
@@ -80,7 +80,7 @@ void HSBColor::getRGBA(agg::rgba& c) const
         case 5:  
             c.r = b; c.g = p; c.b = q;
             return;
-        default: 	// this should never happen
+        default:        // this should never happen
             c.r = 0; c.g = 0; c.b = 0; c.a = 1;
             return;
     }
@@ -91,32 +91,32 @@ static inline double myfmax(double x, double y) { return x > y ? x : y; }
 
 HSBColor::HSBColor(const agg::rgba& c)
 {
-	double min = myfmin(c.r, myfmin(c.g, c.b));	
-	double max = myfmax(c.r, myfmax(c.g, c.b));
-	double delta = max - min;
-	
-	b = max;
-	if (delta < EQUALITY_THRESHOLD) {
-		h = s = 0.0;
+    double min = myfmin(c.r, myfmin(c.g, c.b));
+    double max = myfmax(c.r, myfmax(c.g, c.b));
+    double delta = max - min;
+    
+    b = max;
+    if (delta < EQUALITY_THRESHOLD) {
+        h = s = 0.0;
     } else {
-		s = delta / b;  // hsb.b can't be zero here
-
-		// The == operator is normally useless for floats and doubles. But
-		// since max is always assigned from either c.r/g/b we will take
-		// a chance.
-		double temp;
-		if (c.r == max) {
-			temp = (c.g - c.b) / (delta);
+        s = delta / b;  // hsb.b can't be zero here
+        
+        // The == operator is normally useless for floats and doubles. But
+        // since max is always assigned from either c.r/g/b we will take
+        // a chance.
+        double temp;
+        if (c.r == max) {
+            temp = (c.g - c.b) / (delta);
         } else if (c.g == max) {
-			temp = 2 + ((c.b - c.r) / (delta));
+            temp = 2 + ((c.b - c.r) / (delta));
         } else /* if (c.b == max) */ {
-			temp = 4 + ((c.r - c.g) / (delta));
+            temp = 4 + ((c.r - c.g) / (delta));
         }
-
+        
         // compute hue in the interval [0,360)
-		temp *= 60;
+        temp *= 60;
         h = temp < 0.0 ? fmod(temp + 360.0, 360.0) : fmod(temp, 360.0);
-	}
+    }
     a = c.a;
 }
 

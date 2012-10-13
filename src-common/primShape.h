@@ -29,23 +29,23 @@
 
 class primShape : public agg::path_storage
 {
-	public:
-		enum {circleType = 0, squareType = 1, triangleType = 2, fillType = 3,
-        numTypes = 4};
-        primShape(const agg::point_d* p, unsigned s)
-        {
-            move_to(p[0].x, p[0].y);
-            for (unsigned i = 1; i < s; ++i) line_to(p[i].x, p[i].y);
-            end_poly(agg::path_flags_close);
-        }
-        primShape() {}
+public:
+    enum {circleType = 0, squareType = 1, triangleType = 2, fillType = 3,
+    numTypes = 4};
+    primShape(const agg::point_d* p, unsigned s)
+    {
+        move_to(p[0].x, p[0].y);
+        for (unsigned i = 1; i < s; ++i) line_to(p[i].x, p[i].y);
+        end_poly(agg::path_flags_close);
+    }
+    primShape() {}
     
-		static const primShape circle;
-		static const primShape square;
-		static const primShape triangle;
-        static const primShape* shapeMap[numTypes];
-        static bool isPrimShape(unsigned v) { return v < numTypes; }
-        static bool isPrimShape(agg::path_storage* p);
+    static const primShape circle;
+    static const primShape square;
+    static const primShape triangle;
+    static const primShape* shapeMap[numTypes];
+    static bool isPrimShape(unsigned v) { return v < numTypes; }
+    static bool isPrimShape(agg::path_storage* p);
 };
-	
+
 #endif // INCLUDE_PRIMSHAPE_H

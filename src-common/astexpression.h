@@ -367,7 +367,7 @@ namespace AST {
         bool        isLoopIndex;
         bool        isNatural;
         bool        isLocal;
-        int			mName;
+        int         mName;
         yy::location mLocation;
         ASTdefine*  mDefinition;
         int         mStackIndex;

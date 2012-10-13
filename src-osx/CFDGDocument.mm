@@ -252,7 +252,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (self) {
         mSystem = new DocSystem(self);
         mContent = nil;
-		mUploader = nil;
+        mUploader = nil;
         mDisplayName = nil;
     }
     return self;
@@ -260,9 +260,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)dealloc
 {
-    delete mSystem;			mSystem = 0;
-    [mContent release];		mContent = nil;
-	[mUploader release];	mUploader = nil;
+    delete mSystem;     mSystem = 0;
+    [mContent release]; mContent = nil;
+    [mUploader release]; mUploader = nil;
     [super dealloc];
 }
 
@@ -504,9 +504,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (IBAction) startHiresRender:(id)sender
 {
-	if (![mHiresSheet makeFirstResponder: nil])
-		return;
-	
+    if (![mHiresSheet makeFirstResponder: nil])
+    return;
+
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     float hiresWidth = [defaults floatForKey: @"HiresWidth"];
     float hiresHeight = [defaults floatForKey: @"HiresHeight"];
@@ -525,11 +525,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (IBAction) uploadToGallery:(id)sender
 {
-	if (!mUploader) {
-		mUploader= [[GalleryUploader alloc]
-							initForDocument: self andView: mGView];
-	}
-	[mUploader show: self];
+    if (!mUploader) {
+        mUploader= [[GalleryUploader alloc]
+                    initForDocument: self andView: mGView];
+    }
+    [mUploader show: self];
 }
 
 - (void)showContent

@@ -28,7 +28,7 @@
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include <stdint.h>		// Use the C99 official header
+#include <stdint.h>               // Use the C99 official header
 #include <vector>
 #include <iosfwd>
 

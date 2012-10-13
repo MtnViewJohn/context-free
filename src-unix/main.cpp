@@ -145,8 +145,8 @@ struct options {
     bool  crop;
     bool  check;
     int   animationFrames;
-	int   animationTime;
-	int   animationFPS;
+    int   animationTime;
+    int   animationFPS;
     bool  animationZoom;
     
     const char* input;
@@ -163,8 +163,8 @@ struct options {
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-	  input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
-	  outputTime(false), outputStdout(false), outputWallpaper(false)
+      input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
+      outputTime(false), outputStdout(false), outputWallpaper(false)
     { }
 };
 
@@ -196,9 +196,9 @@ intArg2(char arg, const char* str, int& x, int& y)
         y = (int)v;
     } else {
         y = x;
-		return 1;
+        return 1;
     }
-	return 2;
+    return 2;
 }
 
 int
@@ -280,18 +280,18 @@ processCommandLine(int argc, char* argv[], options& opt)
                 opt.output_fmt = optarg;
                 break;
             case 'a': {
-				int fps = 15, time = 0;
+                int fps = 15, time = 0;
                 if (opt.format == options::SVGfile) usage(true);
-				if (intArg2(c, optarg, time, fps) == 2) {
-					opt.animationTime = time;
-					opt.animationFPS = fps;
-					opt.animationFrames = time * fps;
-				} else {
-					opt.animationTime = time / opt.animationFPS;
-					opt.animationFrames = time;
-				}
+                if (intArg2(c, optarg, time, fps) == 2) {
+                    opt.animationTime = time;
+                    opt.animationFPS = fps;
+                    opt.animationFrames = time * fps;
+                } else {
+                    opt.animationTime = time / opt.animationFPS;
+                    opt.animationFrames = time;
+                }
                 break;
-			}
+            }
             case 'V':
                 if (opt.format != options::PNGfile) usage(true);
                 opt.format = options::SVGfile;
@@ -359,12 +359,12 @@ processCommandLine(int argc, char* argv[], options& opt)
 class nullstreambuf : public streambuf
 {
 protected:
-	int overflow(int c) { return c; }
+    int overflow(int c) { return c; }
 };
 class nullostream : public ostream
 {
 public:
-	nullostream() : ostream (new nullstreambuf()) {}
+    nullostream() : ostream (new nullstreambuf()) {}
 };
 
 
@@ -437,11 +437,11 @@ int main (int argc, char* argv[]) {
     bool useRGBA = myDesign->usesColor;
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
     bool use16bit = pixfmt & aggCanvas::Has_16bit_Color;
-	const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
+    const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
     
     *myCout << "Generating " << (use16bit ? "16bit " : "8bit ") 
         << (useRGBA ? "color" : "gray-scale")
-		<< ' ' << fmtnames[opts.format]
+        << ' ' << fmtnames[opts.format]
         << ", variation " 
         << code << "..." << endl;
     
@@ -486,11 +486,11 @@ int main (int argc, char* argv[]) {
         case options::MOVfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
             mov = new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height, 
-					           opts.animationFPS);
-			if (mov->mError) {
-				cerr << "Failed to create movie file: " << mov->mError << endl;
-				exit(8);
-			}
+                               opts.animationFPS);
+            if (mov->mError) {
+                cerr << "Failed to create movie file: " << mov->mError << endl;
+                exit(8);
+            }
             myCanvas = (Canvas*)mov;
             break;
         }

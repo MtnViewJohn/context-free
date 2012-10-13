@@ -36,11 +36,11 @@ extern "C" {
 class ffCanvas::Impl
 {
 public:
-	Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
+    Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
          char* bits, int fps);
-	~Impl();
+    ~Impl();
     
-	void addFrame();
+    void addFrame();
     
     int             mWidth;
     int             mHeight;
@@ -55,7 +55,7 @@ public:
     static const uint32_t
                     dummyPalette[256];
     
-	friend class ffCanvas;
+    friend class ffCanvas;
 };
 
 const uint32_t ffCanvas::Impl::dummyPalette[256] = { 0 };
@@ -100,7 +100,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     codecCtx->time_base.num = 1;
     codecCtx->time_base.den = fps;
     codecCtx->gop_size = 10; /* emit one intra frame every ten frames */
-	codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
     
     switch (fmt) {
         case aggCanvas::Gray8_Blend:
@@ -264,7 +264,7 @@ void
 ffCanvas::end()
 {
     aggCanvas::end();
-	
+
     if (impl) {
         impl->addFrame();
         if (impl->mError) {
