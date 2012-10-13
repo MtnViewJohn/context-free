@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="$PATH:$HOME/mingw-w64-i686/bin"
+export PATH="$PATH:$HOME/software/mingw-w64/mingw-w64-i686/bin"
 PKG_CONFIG_PATH="$HOME/software/packages/win32/lib/pkgconfig"
 LDFLAGS="-L$HOME/software/packages/win32/lib"
 CFLAGS="-I$HOME/software/packages/win32/include"
