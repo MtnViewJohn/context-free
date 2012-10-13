@@ -173,10 +173,10 @@ class aggCanvas::impl {
         virtual void fill(RGBA8 bk) = 0;
         virtual void draw(RGBA8 c, agg::filling_rule_e fr = agg::fill_non_zero) = 0;
         
-		virtual bool colorCount256() = 0;
-
-		virtual void copy(void* data, unsigned width, unsigned height,
-							int stride, PixelFormat format) = 0;
+        virtual bool colorCount256() = 0;
+        
+        virtual void copy(void* data, unsigned width, unsigned height,
+                          int stride, PixelFormat format) = 0;
 };
 
 
@@ -205,10 +205,10 @@ template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
         void fill(RGBA8 bk);
         void draw(RGBA8 c, agg::filling_rule_e fr = agg::fill_non_zero);
 
-		bool colorCount256();
+        bool colorCount256();
         
-		void copy(void* data, unsigned width, unsigned height,
-							int stride, aggCanvas::PixelFormat format);
+        void copy(void* data, unsigned width, unsigned height,
+                  int stride, aggCanvas::PixelFormat format);
 };
 
 template <class pixel_fmt>
@@ -263,47 +263,47 @@ aggPixelPainter<pixel_fmt>::draw(RGBA8 col, agg::filling_rule_e fr)
 template <class  pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
-	int stride, aggCanvas::PixelFormat format)
+                                 int stride, aggCanvas::PixelFormat format)
 {
-	agg::rendering_buffer srcBuffer((agg::int8u*)data, width, height, -stride);
-	
-	switch (format) {
-		case aggCanvas::Gray8_Blend: {
-			gray_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-
-		case aggCanvas::Gray16_Blend: {
-			gray16_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-            
-		case aggCanvas::RGBA8_Blend: {
-			color32_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-
-		case aggCanvas::RGBA16_Blend: {
-			color64_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-            
-		case aggCanvas::RGB8_Blend: {
-			color24_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-            
-		case aggCanvas::RGB16_Blend: {
-			color48_pixel_fmt srcPixFmt(srcBuffer);
-			agg::copy_rect(srcPixFmt, pixFmt);
-			break;
-		}
-
+    agg::rendering_buffer srcBuffer((agg::int8u*)data, width, height, -stride);
+    
+    switch (format) {
+        case aggCanvas::Gray8_Blend: {
+            gray_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
+        case aggCanvas::Gray16_Blend: {
+            gray16_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
+        case aggCanvas::RGBA8_Blend: {
+            color32_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
+        case aggCanvas::RGBA16_Blend: {
+            color64_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
+        case aggCanvas::RGB8_Blend: {
+            color24_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
+        case aggCanvas::RGB16_Blend: {
+            color48_pixel_fmt srcPixFmt(srcBuffer);
+            agg::copy_rect(srcPixFmt, pixFmt);
+            break;
+        }
+        
         case aggCanvas::FF_Blend:
         case aggCanvas::FF24_Blend:
         case aggCanvas::QT_Blend:
@@ -312,8 +312,8 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
             
         default:
             break;
-	}
-	
+    }
+    
 }
 
 
@@ -425,9 +425,9 @@ aggCanvas::attach(void* data, unsigned width, unsigned height, int stride, bool 
 
 void
 aggCanvas::copy(void* data, unsigned width, unsigned height,
-	int stride, PixelFormat format)
+                int stride, PixelFormat format)
 {
-	m->copy(data, width, height, stride, format);
+    m->copy(data, width, height, stride, format);
 }
 
 bool    aggCanvas::colorCount256()  { return m->colorCount256(); }

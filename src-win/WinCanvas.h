@@ -35,13 +35,13 @@ class WinCanvas : public aggCanvas
 public:
     WinCanvas(WinSystem* sys, aggCanvas::PixelFormat pixfmt, 
         int width, int height, agg::rgba bkgrnd);
-    WinCanvas(const WinCanvas&);				// declare but do not implement
-    WinCanvas& operator=(const WinCanvas&);		// declare but do not implement
+    WinCanvas(const WinCanvas&);                // declare but do not implement
+    WinCanvas& operator=(const WinCanvas&);     // declare but do not implement
     ~WinCanvas();
 
     int mStride;
     aggCanvas::PixelFormat mPixelFormat;
-	char* mBM;
+    char* mBM;
     agg::rgba mBackground;
     bool mNoUpdate;
     

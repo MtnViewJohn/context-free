@@ -136,7 +136,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "tile"          {return token::TILE;}
 "rule"          {return token::RULE;}
 "path"          {return token::PATH;}
-"shape"			{return token::SHAPE;}
+"shape"         {return token::SHAPE;}
 "loop"          {return token::LOOP;}
 "clone"         {return token::CLONE;}
 "let"           {return token::LET;}
@@ -156,7 +156,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "timescale"     {yylval->modToken = AST::ASTmodTerm::timescale;     return token::MODTYPE;}
 "rotate"        {yylval->modToken = AST::ASTmodTerm::rot;           return token::MODTYPE;}
 "r"             {yylval->modToken = AST::ASTmodTerm::rot;           return token::MODTYPE;}
-"flip"	        {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
+"flip"          {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
 "f"             {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
 "hue"           {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
 "h"             {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
@@ -363,8 +363,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 
 namespace yy {
 
-Scanner::Scanner(std::istream* in,
-		 std::ostream* out)
+Scanner::Scanner(std::istream* in, std::ostream* out)
     : yyFlexLexer(in, out), nextLocAction(normalAction), 
       startToken(token::CFDG2), maybeVersion(0), atStartup(true)
 {

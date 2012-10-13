@@ -44,19 +44,19 @@ using namespace std;
 void
 PosixSystem::message(const char* fmt, ...)
 {
-	if (mQuiet && !mErrorMode) return;
-
-	char buf[256];
-	{
-		va_list args;
-		va_start(args, fmt);
-		vsnprintf(buf, sizeof(buf), fmt, args);
-		buf[sizeof(buf)-1] = '\0';
-		va_end(args);
-	}
-	
-	ostream& out = mErrorMode ? cerr : cout;
-	out << buf << "                            " << endl;
+    if (mQuiet && !mErrorMode) return;
+    
+    char buf[256];
+    {
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(buf, sizeof(buf), fmt, args);
+        buf[sizeof(buf)-1] = '\0';
+        va_end(args);
+    }
+    
+    ostream& out = mErrorMode ? cerr : cout;
+    out << buf << "                            " << endl;
 }
 
 void
@@ -87,13 +87,13 @@ PosixSystem::openFileForRead(const string& path)
         }
         return new istringstream(*mInputBuffer, ios::binary);
     }
-	return new ifstream(path.c_str(), ios::binary);
+    return new ifstream(path.c_str(), ios::binary);
 }
 
 istream*
 PosixSystem::tempFileForRead(const string& path)
 {
-	return new ifstream(path.c_str(), ios::binary);
+    return new ifstream(path.c_str(), ios::binary);
 }
 
 PosixSystem::~PosixSystem()
@@ -111,48 +111,48 @@ PosixSystem::tempFileForWrite(string& prefixInNameOut)
     free((void*)path);
     return f;
 #else
-	string t = "/tmp/" + prefixInNameOut + "XXXXXX";
-	char* b = new char[t.size() + 1];
-	strcpy(b, t.c_str());
-	
-	ofstream* f = 0;
-	
-	// Please ignore the warning about mktemp() being unsafe. There is no 
-	// standard way to turn the descriptor returned by mkstemp() into an
-	// ostream object. We could add the boost library to the project (NO!!!!)
-	// or roll our own file descriptor ostream class (code exists on the
-	// internet). But it just doesn't seem worth the bother. mktemp() is 
-	// unsafe for some types of programs, but who cares if an attacker takes
-	// down your Context Free.
-	if (mktemp(b)) {
-		f = new ofstream;
-		f->open(b, ios::binary);
-		prefixInNameOut = b;
-	}
-	delete b;
-	
-	return f;
+    string t = "/tmp/" + prefixInNameOut + "XXXXXX";
+    char* b = new char[t.size() + 1];
+    strcpy(b, t.c_str());
+    
+    ofstream* f = 0;
+    
+    // Please ignore the warning about mktemp() being unsafe. There is no 
+    // standard way to turn the descriptor returned by mkstemp() into an
+    // ostream object. We could add the boost library to the project (NO!!!!)
+    // or roll our own file descriptor ostream class (code exists on the
+    // internet). But it just doesn't seem worth the bother. mktemp() is 
+    // unsafe for some types of programs, but who cares if an attacker takes
+    // down your Context Free.
+    if (mktemp(b)) {
+        f = new ofstream;
+        f->open(b, ios::binary);
+        prefixInNameOut = b;
+    }
+    delete b;
+    
+    return f;
 #endif
 }
-		
+
 string
 PosixSystem::relativeFilePath(const string& base, const string& rel)
 {
-	string s = base;
-	
-	string::size_type i = s.rfind('/');
-	if (i == string::npos) {
-		return rel;
-	}
-	i += 1;
-	s.replace(i, s.length() - i, rel);	
-	return s;
+    string s = base;
+    
+    string::size_type i = s.rfind('/');
+    if (i == string::npos) {
+        return rel;
+    }
+    i += 1;
+    s.replace(i, s.length() - i, rel);
+    return s;
 }
 
 void
 PosixSystem::stats(const Stats& s)
 {
-	if (mQuiet || mErrorMode) return;
+    if (mQuiet || mErrorMode) return;
 
     cout << "    " << s.shapeCount << " shapes";
 
@@ -162,7 +162,7 @@ PosixSystem::stats(const Stats& s)
         cout << "                            ";
 
     cout << "        \r";
-	cout.flush();
+    cout.flush();
 }
 
 

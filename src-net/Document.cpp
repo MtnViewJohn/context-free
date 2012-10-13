@@ -475,7 +475,7 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
     }
 
     Imaging::EncoderParameters^ iParams = gcnew Imaging::EncoderParameters(1);
-	long long qual = (long long)(Form1::prefs->JPEGQuality);
+    long long qual = (long long)(Form1::prefs->JPEGQuality);
     iParams->Param[0] = gcnew Imaging::EncoderParameter(Imaging::Encoder::Quality, qual);
 
     try {
@@ -510,15 +510,15 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
                     Path::GetExtension(path);
             }
 
-			if (JPEG) 
-	            bm->Save(fileName, jpegCodec, iParams);
-			else
-				bm->Save(fileName, Imaging::ImageFormat::Png);
+            if (JPEG) 
+                bm->Save(fileName, jpegCodec, iParams);
+            else
+                bm->Save(fileName, Imaging::ImageFormat::Png);
         } else if (str != nullptr) {
-			if (JPEG)
-	            bm->Save(str, jpegCodec, iParams);
-			else
-				bm->Save(str, Imaging::ImageFormat::Png);
+            if (JPEG)
+                bm->Save(str, jpegCodec, iParams);
+            else
+                bm->Save(str, Imaging::ImageFormat::Png);
         } else {
             setMessageText("Nowhere to save the image.");
         }
@@ -526,11 +526,11 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
         setMessageText("Image save complete.");
     } catch (Exception^) {
         setMessageText("Image save failed.");
-		success =  false;
+        success =  false;
     }
     delete mTempCanvas;
     mTempCanvas = 0;
-	return success;
+    return success;
 }
 
 void Document::saveToSVG(String^ path)
@@ -571,7 +571,7 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
     }
 
     SaveMovie saveMovieDlg(Path::GetFileNameWithoutExtension(Text) + ".mov",
-							((Form1^)MdiParent)->saveDirectory);
+                           ((Form1^)MdiParent)->saveDirectory);
     saveMovieDlg.checkZoom->Enabled = !mTiled;
 
     if (saveMovieDlg.ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
@@ -600,7 +600,7 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
         pin_ptr<Byte> pathutf8pin = &pathutf8[0];
         const char* path = reinterpret_cast<const char*>(pathutf8pin);
 
-		mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine),
+        mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine),
                                         renderParams->width, renderParams->height,
                                         Form1::prefs->AnimateFrameRate);
 
@@ -800,11 +800,11 @@ void Document::WndProc( Message% m )
 
                     if (stat->inOutput) {
                         if (mProgressDelay > 2) {
-							int bar = 0;
+                            int bar = 0;
                             if (stat->outputCount)
                                 bar = (int)((100.0 * (double)stat->outputDone) / stat->outputCount);
-							if (bar >= 0 && bar <= 100)
-	                            toolStripProgressBar->Value = bar;
+                            if (bar >= 0 && bar <= 100)
+                                toolStripProgressBar->Value = bar;
                         } else {
                             ++mProgressDelay;
                             toolStripProgressBar->Value = 0;

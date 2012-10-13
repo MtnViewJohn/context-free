@@ -33,42 +33,42 @@
 @class GView;
 
 @interface GalleryUploader : NSWindowController {
-	CFDGDocument*		mDocument;
-	GView*				mView;
+    CFDGDocument*               mDocument;
+    GView*                      mView;
     int                 mStatus;
 
-	IBOutlet NSView*	mContentView;
+    IBOutlet NSView*    mContentView;
 
     IBOutlet NSView*    mLicenseView;
     IBOutlet WebView*       mCreativeCommonsWidget;
     
-    IBOutlet NSView*	mFormView;
-		IBOutlet NSTextField*	mUserNameField;
-		IBOutlet NSTextField*	mPasswordField;
-		IBOutlet NSTextField*	mTitleField;
-		IBOutlet NSTextView*	mNotesView;
-		IBOutlet NSTextField*	mFileField;
-		IBOutlet NSTextField*	mVariationField;
-		IBOutlet NSMatrix*		mCompressionMatrix;
-        IBOutlet NSButton*      mTiled;
-        IBOutlet NSTextField*   mLicenseName;
-        IBOutlet NSButton*      mLicenseImage;
-        IBOutlet NSTextField*   mSaveTileWidth;
-        IBOutlet NSTextField*   mSaveTileHeight;
-        IBOutlet NSButton*      mCropCheck;
-        IBOutlet NSTextField*   mWidthLabel;
-        IBOutlet NSTextField*   mHeightLabel;
-        IBOutlet NSTextField*   mMultLabel;
-	
-	IBOutlet NSView*	mProgressView;
-		IBOutlet NSProgressIndicator*	mProgressBar;
-	
-	IBOutlet NSView*	mDoneView;
-		IBOutlet NSTextView*	mMessage;
-		IBOutlet NSButton*      mRetryButton;
-	
-	NSURLConnection*	mConnection;
-	NSMutableData*		mResponseBody;
+    IBOutlet NSView*    mFormView;
+    IBOutlet NSTextField*      mUserNameField;
+    IBOutlet NSTextField*      mPasswordField;
+    IBOutlet NSTextField*      mTitleField;
+    IBOutlet NSTextView*       mNotesView;
+    IBOutlet NSTextField*      mFileField;
+    IBOutlet NSTextField*      mVariationField;
+    IBOutlet NSMatrix*         mCompressionMatrix;
+    IBOutlet NSButton*         mTiled;
+    IBOutlet NSTextField*      mLicenseName;
+    IBOutlet NSButton*         mLicenseImage;
+    IBOutlet NSTextField*      mSaveTileWidth;
+    IBOutlet NSTextField*      mSaveTileHeight;
+    IBOutlet NSButton*         mCropCheck;
+    IBOutlet NSTextField*      mWidthLabel;
+    IBOutlet NSTextField*      mHeightLabel;
+    IBOutlet NSTextField*      mMultLabel;
+
+    IBOutlet NSView*           mProgressView;
+    IBOutlet NSProgressIndicator* mProgressBar;
+
+    IBOutlet NSView*           mDoneView;
+    IBOutlet NSTextView*       mMessage;
+    IBOutlet NSButton*         mRetryButton;
+
+    NSURLConnection*           mConnection;
+    NSMutableData*             mResponseBody;
     
     NSString* mDefccURI;
     NSString* mDefccName;

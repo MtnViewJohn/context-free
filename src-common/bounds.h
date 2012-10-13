@@ -42,19 +42,19 @@ class pathIterator;
 class Bounds {
     public:
         Bounds() : mValid(false) {}
-		
+
         Bounds(const agg::trans_affine& trans, pathIterator& helper, 
                double scale, const AST::CommandInfo& attr,
                agg::point_d* cent = NULL, double* area = NULL);
                 // set bounds to be the bounds of this shape, transformed
-		
-		bool valid() { return mValid; }
+
+        bool valid() { return mValid; }
     
         Bounds dilate(agg::point_d& cent, double dilation) const;
         Bounds dilate(double dilation) const;
-		
-		void merge(const Bounds& b)
-			// merge the other bounds into this bounds
+
+        void merge(const Bounds& b)
+            // merge the other bounds into this bounds
         {
             if (mValid && b.mValid) {
                 if (b.mMin_X < mMin_X) mMin_X = b.mMin_X;
@@ -65,7 +65,7 @@ class Bounds {
                 *this = b;
             }
         }
-		
+
         void merge(double x, double y)
         // merge a point into this bounds
         {
@@ -85,36 +85,36 @@ class Bounds {
         // merge a point into this bounds
     
         Bounds operator+(const Bounds& other)
-			{ Bounds t(*this); t.merge(other); return t; }
-			
-		Bounds& operator+=(const Bounds& other)
-			{ merge(other); return *this; }
-		
+        { Bounds t(*this); t.merge(other); return t; }
+        
+        Bounds& operator+=(const Bounds& other)
+        { merge(other); return *this; }
+        
         Bounds operator+(const agg::point_d& p)
-            { Bounds t(*this); t.merge(p); return t; }
+        { Bounds t(*this); t.merge(p); return t; }
         
         Bounds& operator+=(const agg::point_d& p)
-            { merge(p); return *this; }
+        { merge(p); return *this; }
         
         Bounds interpolate(const Bounds& other, double alpha) const;
-			// compute the interpolation between this bounds and the other
-			// an alpha of 0.0 has no effect, an alpha of 1.0 give the other
-		Bounds slewCenter(const Bounds& other, double alpha) const;
-			// compute a new bounds who's center is slewed alpha of the way
-			// toward the other center, yet incorporates all of the current
-			// bounds
-			
-		double computeScale(int& width, int& height, double borderX, double borderY,
-					bool modify = false, agg::trans_affine* trans = 0,
-                    bool exact = false);
-			// Computes the scale factor of fitting this bounds into a canvas
-			// of the given width and height, with the provided fixed border.
-			// If modify is true, width and height are reset to the scaled size.
-			// If trans isn't null, it is set to the needed transformation.
-            // If exact is true then the diensions are not bumped to preserve parity.
-
-		void gather(const Bounds& other, double weight);
-		
+        // compute the interpolation between this bounds and the other
+        // an alpha of 0.0 has no effect, an alpha of 1.0 give the other
+        Bounds slewCenter(const Bounds& other, double alpha) const;
+        // compute a new bounds who's center is slewed alpha of the way
+        // toward the other center, yet incorporates all of the current
+        // bounds
+        
+        double computeScale(int& width, int& height, double borderX, double borderY,
+                            bool modify = false, agg::trans_affine* trans = 0,
+                            bool exact = false);
+        // Computes the scale factor of fitting this bounds into a canvas
+        // of the given width and height, with the provided fixed border.
+        // If modify is true, width and height are reset to the scaled size.
+        // If trans isn't null, it is set to the needed transformation.
+        // If exact is true then the diensions are not bumped to preserve parity.
+        
+        void gather(const Bounds& other, double weight);
+        
         void update(const agg::trans_affine& trns, pathIterator& helper, 
                     double scale, const AST::CommandInfo& attr,
                     agg::point_d* cent = NULL, double* area = NULL);

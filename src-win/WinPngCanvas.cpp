@@ -184,13 +184,13 @@ void pngCanvas::output(const char* outfilename, int frame)
         return;
     } 
 
-	if (pf == aggCanvas::Gray8_Blend && !GrayPalette) {
+    if (pf == aggCanvas::Gray8_Blend && !GrayPalette) {
         GrayPalette = (ColorPalette*)malloc(sizeof(ColorPalette) + 256*sizeof(ARGB));
         GrayPalette->Count = 256;
         GrayPalette->Flags = PaletteFlagsGrayScale;
         for (int i = 0; i < 256; i++)
             GrayPalette->Entries[i] = Color::MakeARGB(255, (BYTE)i, (BYTE)i, (BYTE)i);
-	}
+    }
 
     Bitmap* saveBM;
 
@@ -210,10 +210,10 @@ void pngCanvas::output(const char* outfilename, int frame)
             break;
     }
 
-	if (frame == -1 && !mQuiet) {
+    if (frame == -1 && !mQuiet) {
         cout << endl << "Writing "
              << width << "w x " << height << "h pixel image..." << endl;
-	}
+    }
 
     PropertyItem pi;
     pi.id = PropertyTagImageDescription;
@@ -224,9 +224,9 @@ void pngCanvas::output(const char* outfilename, int frame)
 
     Status s = saveBM ? saveBM->Save(wpath, &encClsid, NULL) : Gdiplus::UnknownImageFormat;
 
-	if (s != Ok){
-		cerr << endl << "A GDI+ error occured during PNG write: " << 
-			errorMsg[s];
+    if (s != Ok){
+        cerr << endl << "A GDI+ error occured during PNG write: " << 
+            errorMsg[s];
         if (s == Gdiplus::Win32Error) {
             LPVOID lpMsgBuf;
             DWORD dw = ::GetLastError(); 

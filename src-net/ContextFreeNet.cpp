@@ -34,11 +34,11 @@ using namespace System::Windows::Forms;
 [System::STAThreadAttribute]
 int main(array<System::String ^> ^args)
 {
-	// Enabling Windows XP visual effects before any controls are created
+    // Enabling Windows XP visual effects before any controls are created
     Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false); 
 
-	// Create the main window and run it
+    // Create the main window and run it
     if (SingletonController::IamFirst()) {
         Form1^ mainApp = gcnew Form1(args);
         SingletonController::Receiver += gcnew SingletonController::ReceiveDelegate(mainApp, &Form1::processArgs);
@@ -47,7 +47,7 @@ int main(array<System::String ^> ^args)
         SingletonController::Send(args);
     }
     SingletonController::Cleanup();
-	return 0;
+    return 0;
 }
 
 int __stdcall WinMain(int hInstance, int hPrevInstance, char *lpCmdLine, int nShowCmd)

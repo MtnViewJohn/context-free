@@ -45,7 +45,7 @@ class ShapeOp
 {
 public:
     ShapeOp() { };
-	virtual ~ShapeOp();
+    virtual ~ShapeOp();
     
     virtual void apply(const FinishedShape&) = 0;
 
@@ -60,46 +60,46 @@ public:
         iterator& operator*()       { return *this; }
         
         iterator& operator=(const FinishedShape& s)
-			{ mOp.apply(s); return *this; }
+            { mOp.apply(s); return *this; }
     
     private:
         friend class ShapeOp;
         
         iterator(ShapeOp& op) : mOp(op) { }
         
-        void operator=(const iterator&);	// not defined: can't be assigned
+        void operator=(const iterator&);        // not defined: can't be assigned
         
-		ShapeOp& mOp;
-	};
+        ShapeOp& mOp;
+    };
     
     iterator outputIterator() { return iterator(*this); }
 
 
-	class function : public std::unary_function<const FinishedShape&, void>
-	{
+    class function : public std::unary_function<const FinishedShape&, void>
+    {
     public:
         function(const function& f) : mOp(f.mOp) { }
-		
+
         void operator()(const FinishedShape& s) const
-			{ mOp.apply(s); }
-			
+            { mOp.apply(s); }
+
     private:
         friend class ShapeOp;
         
         function(ShapeOp& op) : mOp(op) { }
         
-        void operator=(const function&);	// not defined: can't be assigned
+        void operator=(const function&);        // not defined: can't be assigned
         
         ShapeOp& mOp;
-	};
-	
-	function outputFunction() { return function(*this); }
+    };
+
+    function outputFunction() { return function(*this); }
 
 
-private:		
-	ShapeOp(const ShapeOp&);
-	ShapeOp& operator=(const ShapeOp&);
-		// not implemented, not copyable
+private:
+    ShapeOp(const ShapeOp&);
+    ShapeOp& operator=(const ShapeOp&);
+        // not implemented, not copyable
 };
 
 
@@ -110,12 +110,12 @@ public:
     ~OutputMerge();
     
     typedef std::multiset<FinishedShape> ShapeSource;
-    typedef ShapeSource::iterator		 ShapeIter;
+    typedef ShapeSource::iterator        ShapeIter;
     
     void addShapes(ShapeIter begin, ShapeIter end);
 
     
-	typedef std::unary_function<ref_ptr<TempFile>, void > TempFileAdderBase;
+    typedef std::unary_function<ref_ptr<TempFile>, void > TempFileAdderBase;
     class TempFileAdder: public TempFileAdderBase
     {
     public:
@@ -149,8 +149,8 @@ public:
     
 private:
     typedef std::istream_iterator<FinishedShape>    FileIter;
-    typedef std::vector<std::istream*>				FileStreams;
-    typedef std::vector<FileIter>					FileIters;
+    typedef std::vector<std::istream*>              FileStreams;
+    typedef std::vector<FileIter>                   FileIters;
     
     AbstractSystem&     mSystem;
     FileStreams mStreams;
@@ -162,7 +162,7 @@ private:
     ShapeIter   mShapesEnd;
 
     typedef std::map<FinishedShape, int>    Sieve;
-    typedef Sieve::value_type				SievePair;
+    typedef Sieve::value_type               SievePair;
     
     Sieve       mSieve;
     

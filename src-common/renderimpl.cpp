@@ -245,10 +245,10 @@ void
 RendererImpl::outputPrep(Canvas* canvas)
 {
     m_canvas = canvas;
-	
-	if (canvas) {
-		m_width = canvas->mWidth;
-		m_height = canvas->mHeight;
+
+    if (canvas) {
+        m_width = canvas->mWidth;
+        m_height = canvas->mHeight;
         if (m_tiled || m_frieze) {
             agg::trans_affine tr;
             m_cfdg->isTiled(&tr);
@@ -260,14 +260,14 @@ RendererImpl::outputPrep(Canvas* canvas)
         }
 
         mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);
-	}
+    }
     
     requestStop = false;
     requestFinishUp = false;
     requestUpdate = false;
     
     m_stats.inOutput = false;
-	m_stats.animating = false;
+    m_stats.animating = false;
 }
 
 
@@ -362,23 +362,23 @@ public:
                  double shapeBorder, int width, int height, double fixedBorderX,
                  double fixedBorderY, RendererImpl& renderer);
     void apply(const FinishedShape&);
-	
-	const Bounds& frameBounds(int frame) { return mFrameBounds[frame]; }
-	int           frameCount(int frame) { return mFrameCounts[frame]; }
-	
-	void finalAccumulate();
-		// call after all the frames to compute the bounds at each frame
-		
-	void backwardFilter(double framesToHalf);
-	void smooth(int window);
+
+    const Bounds& frameBounds(int frame) { return mFrameBounds[frame]; }
+    int           frameCount(int frame) { return mFrameCounts[frame]; }
+    
+    void finalAccumulate();
+    // call after all the frames to compute the bounds at each frame
+    
+    void backwardFilter(double framesToHalf);
+    void smooth(int window);
     class Stopped { }; 
-	
+    
 private:
     agg::trans_affine_time mTimeBounds;
-	double			mFrameScale;
-	double			mShapeBorder;
-    vector<Bounds>	mFrameBounds;
-	vector<int>		mFrameCounts;
+    double          mFrameScale;
+    double          mShapeBorder;
+    vector<Bounds>  mFrameBounds;
+    vector<int>     mFrameCounts;
     double          mScale;
     int             mWidth;
     int             mHeight;
@@ -391,13 +391,13 @@ private:
 OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
                            double shapeBorder, int width, int height, double fixedBorderX,
                            double fixedBorderY, RendererImpl& renderer)
-	: mTimeBounds(timeBounds), mShapeBorder(shapeBorder), mScale(0.0),
-      mWidth(width), mHeight(height), mFrames(frames), mFixedBorderX(fixedBorderX),
-      mFixedBorderY(fixedBorderY), mRenderer(renderer)
+: mTimeBounds(timeBounds), mShapeBorder(shapeBorder), mScale(0.0),
+  mWidth(width), mHeight(height), mFrames(frames), mFixedBorderX(fixedBorderX),
+  mFixedBorderY(fixedBorderY), mRenderer(renderer)
 {
     mFrameScale = (double)frames / (timeBounds.tend - timeBounds.tbegin);
-	mFrameBounds.resize(frames);
-	mFrameCounts.resize(frames, 0);
+    mFrameBounds.resize(frames);
+    mFrameCounts.resize(frames, 0);
 }
 
 void
@@ -430,62 +430,62 @@ OutputBounds::finalAccumulate()
     return;
     // Accumulation is done in the apply method
 #if 0
-	vector<Bounds>::iterator prev, curr, end;
-	prev = mFrameBounds.begin();
-	end = mFrameBounds.end();
-	if (prev == end) return;
-	
-	for (curr = prev + 1; curr != end; prev = curr, ++curr) {
-		*curr += *prev;
-	}
+    vector<Bounds>::iterator prev, curr, end;
+    prev = mFrameBounds.begin();
+    end = mFrameBounds.end();
+    if (prev == end) return;
+
+    for (curr = prev + 1; curr != end; prev = curr, ++curr) {
+        *curr += *prev;
+    }
 #endif
 }
 
 void
 OutputBounds::backwardFilter(double framesToHalf)
 {
-	double alpha = pow(0.5, 1.0 / framesToHalf);
-	
-	vector<Bounds>::reverse_iterator prev, curr, end;
-	prev = mFrameBounds.rbegin();
-	end = mFrameBounds.rend();
-	if (prev == end) return;
-
-	for (curr = prev + 1; curr != end; prev = curr, ++curr) {
-		*curr = curr->interpolate(*prev, alpha);
-	}
+    double alpha = pow(0.5, 1.0 / framesToHalf);
+    
+    vector<Bounds>::reverse_iterator prev, curr, end;
+    prev = mFrameBounds.rbegin();
+    end = mFrameBounds.rend();
+    if (prev == end) return;
+    
+    for (curr = prev + 1; curr != end; prev = curr, ++curr) {
+        *curr = curr->interpolate(*prev, alpha);
+    }
 } 
 
 void
 OutputBounds::smooth(int window)
 {
-	int frames = (int)mFrameBounds.size();
-	if (frames == 0) return;
-	
-	mFrameBounds.resize(frames + window - 1, mFrameBounds.back());
-	
-	vector<Bounds>::iterator write, read, end;
-	read = mFrameBounds.begin();
-	
-	double factor = 1.0 / window;
-	
-	Bounds accum;
-	for (int i = 0; i < window; ++i)
-		accum.gather(*read++, factor);
-	
-	write = mFrameBounds.begin();
-	end = mFrameBounds.end();
-	for (;;) {
-		Bounds old = *write;
-		*write++ = accum;
-		accum.gather(old, -factor);
-		
-		if (read == end) break;
-		
-		accum.gather(*read++, factor);
-	} 
-	
-	mFrameBounds.resize(frames, Bounds());
+    int frames = (int)mFrameBounds.size();
+    if (frames == 0) return;
+    
+    mFrameBounds.resize(frames + window - 1, mFrameBounds.back());
+    
+    vector<Bounds>::iterator write, read, end;
+    read = mFrameBounds.begin();
+    
+    double factor = 1.0 / window;
+    
+    Bounds accum;
+    for (int i = 0; i < window; ++i)
+        accum.gather(*read++, factor);
+    
+    write = mFrameBounds.begin();
+    end = mFrameBounds.end();
+    for (;;) {
+        Bounds old = *write;
+        *write++ = accum;
+        accum.gather(old, -factor);
+        
+        if (read == end) break;
+        
+        accum.gather(*read++, factor);
+    } 
+    
+    mFrameBounds.resize(frames, Bounds());
 }
 
 
@@ -508,13 +508,13 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     m_canvas->start(true, m_cfdg->getBackgroundColor(0),
         curr_width, curr_height);
     m_canvas->end();
-	
+
     double frameInc = (mTimeBounds.tend - mTimeBounds.tbegin) / frames;
     
-	OutputBounds outputBounds(frames, mTimeBounds, mShapeBorder, 
+    OutputBounds outputBounds(frames, mTimeBounds, mShapeBorder, 
                               curr_width, curr_height, mFixedBorderX, mFixedBorderY, 
                               *this);
-	if (zoom) {
+    if (zoom) {
         system()->message("Computing zoom");
 
         try {
@@ -526,20 +526,20 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
             m_stats.animating = false;
             return;
         }
-	}
-	
-	m_stats.shapeCount = 0;
-	m_stats.animating = true;
+    }
+
+    m_stats.shapeCount = 0;
+    m_stats.animating = true;
     mFrameTimeBounds.tend = mTimeBounds.tbegin;
     
     Bounds saveBounds = mBounds;
-	
+
     for (int frameCount = 1; frameCount <= frames; ++frameCount)
     {
         system()->message("Generating frame %d of %d", frameCount, frames);
         
-		if (zoom) mBounds = outputBounds.frameBounds(frameCount - 1);
-		m_stats.shapeCount += outputBounds.frameCount(frameCount - 1);
+        if (zoom) mBounds = outputBounds.frameBounds(frameCount - 1);
+        m_stats.shapeCount += outputBounds.frameCount(frameCount - 1);
         mFrameTimeBounds.tbegin = mFrameTimeBounds.tend;
         mFrameTimeBounds.tend = mTimeBounds.tbegin + frameInc * frameCount;
         
@@ -568,11 +568,11 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
 
         if (requestStop || requestFinishUp) break;
     }
-	
+
     mBounds = saveBounds;
-	m_stats.animating = false;
-	outputStats();
-	system()->message("Animation of %d frames complete", frames);
+    m_stats.animating = false;
+    outputStats();
+    system()->message("Animation of %d frames complete", frames);
 }
 
 void
@@ -821,12 +821,12 @@ RendererImpl::moveFinishedToFile()
 
 void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
 {
-	agg::trans_affine trans;
+    agg::trans_affine trans;
     double scale;
     
     if (!mBounds.mValid) return;
-	
-	scale = mBounds.computeScale(curr_width, curr_height,
+
+    scale = mBounds.computeScale(curr_width, curr_height,
                                  mFixedBorderX, mFixedBorderY, true, 
                                  &trans, m_tiled || m_sized || m_frieze);
 
@@ -848,57 +848,55 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
 void
 RendererImpl::forEachShape(bool final, ShapeOp& op)
 {
-	if (!final) {
+    if (!final) {
         if (m_outputSoFar)
             m_outputPosition = ++m_outputPosition;
         else
             m_outputPosition = mFinishedShapes.begin();
-		for_each(m_outputPosition, mFinishedShapes.end(), op.outputFunction());
-		m_outputSoFar = (int)mFinishedShapes.size();
+        for_each(m_outputPosition, mFinishedShapes.end(), op.outputFunction());
+        m_outputSoFar = (int)mFinishedShapes.size();
         if (m_outputSoFar)
             m_outputPosition = --(mFinishedShapes.end());
-	}
-	else if (m_finishedFiles.empty()) {
-		for_each(mFinishedShapes.begin(), mFinishedShapes.end(),
-			op.outputFunction());
-	}
-	else {
-		deque< ref_ptr<TempFile> >::iterator begin, last, end;
-
-		while (m_finishedFiles.size() > MAX_MERGE_FILES) {
-			OutputMerge merger(*system());
-			
-			begin = m_finishedFiles.begin();
-			last = begin + (MAX_MERGE_FILES - 1);
-			end = last + 1;
-							
-			for_each(begin, end, merger.tempFileAdder());
-				
-			ref_ptr<TempFile> t = TempFile::build(system(), "cfdg-temp-mrg-",
-													"merge", ++mFinishedFileCount);
-
-			ostream* f = t->forWrite();
-			system()->message("Merging temp files %d through %d",
-								(*begin)->number(), (*last)->number());
-								
-			merger.merge(ostream_iterator<FinishedShape>(*f));
-
-			delete f;
-			
-			m_finishedFiles.erase(begin, end);
-			m_finishedFiles.push_back(t);
-		}
-
-		OutputMerge merger(*system());
-		
-		begin = m_finishedFiles.begin();
-		end = m_finishedFiles.end();
-		
-		for_each(begin, end, merger.tempFileAdder());
-		
-		merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
-		merger.merge(op.outputIterator());
-	}
+    } else if (m_finishedFiles.empty()) {
+        for_each(mFinishedShapes.begin(), mFinishedShapes.end(),
+                 op.outputFunction());
+    } else {
+        deque< ref_ptr<TempFile> >::iterator begin, last, end;
+        
+        while (m_finishedFiles.size() > MAX_MERGE_FILES) {
+            OutputMerge merger(*system());
+            
+            begin = m_finishedFiles.begin();
+            last = begin + (MAX_MERGE_FILES - 1);
+            end = last + 1;
+            
+            for_each(begin, end, merger.tempFileAdder());
+            
+            ref_ptr<TempFile> t = TempFile::build(system(), "cfdg-temp-mrg-",
+                                                  "merge", ++mFinishedFileCount);
+            
+            ostream* f = t->forWrite();
+            system()->message("Merging temp files %d through %d",
+            (*begin)->number(), (*last)->number());
+            
+            merger.merge(ostream_iterator<FinishedShape>(*f));
+            
+            delete f;
+            
+            m_finishedFiles.erase(begin, end);
+            m_finishedFiles.push_back(t);
+        }
+        
+        OutputMerge merger(*system());
+        
+        begin = m_finishedFiles.begin();
+        end = m_finishedFiles.end();
+        
+        for_each(begin, end, merger.tempFileAdder());
+        
+        merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
+        merger.merge(op.outputIterator());
+    }
 }
 
 
@@ -1004,7 +1002,7 @@ void RendererImpl::output(bool final)
     m_drawingMode = true;
     OutputDraw draw(*this, final);
     try {
-		forEachShape(final, draw);
+        forEachShape(final, draw);
     }
     catch (OutputDraw::Stopped) { }
 

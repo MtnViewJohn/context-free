@@ -115,7 +115,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         istream* input = system->openFileForRead(fname);
         if (!input || !input->good()) {
             delete input;
-			input = 0;
+            input = 0;
             system->error();
             system->message("Couldn't open rules file %s", fname);
             return 0;
@@ -195,7 +195,7 @@ Renderer::initStack(const StackType* p)
     }
     if (!mCFstack.empty()) {
         mLogicalStackTop = &(mCFstack.back()) + 1;
-	} else {
+    } else {
         mLogicalStackTop = NULL;
     }
 }

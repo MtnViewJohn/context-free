@@ -45,9 +45,9 @@ class qtCanvas;
     
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
-	BitmapImageHolder*	mRenderBitmap;  // this bitmap must never be drawn
+    BitmapImageHolder*  mRenderBitmap;  // this bitmap must never be drawn
 
-    NSImage*			mDrawingImage;
+    NSImage*            mDrawingImage;
 
     NSTimer*    mUpdateTimer;
     int         mOutputProgressDelay;
@@ -82,13 +82,13 @@ class qtCanvas;
     IBOutlet NSView*                mSaveTileAccessory;
     IBOutlet NSTextField*           mSaveTileWidth;
     IBOutlet NSTextField*           mSaveTileHeight;
-	IBOutlet NSView*				mSaveAnimationAccessory;
+    IBOutlet NSView*                mSaveAnimationAccessory;
     
     NSMenuItem*    mFullScreenMenu;
     
-	qtCanvas*	mAnimationCanvas;
-	
-	bool	mTiled;
+    qtCanvas*      mAnimationCanvas;
+
+    bool    mTiled;
     double  mScale;
 }
 

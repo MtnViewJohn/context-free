@@ -71,7 +71,7 @@ public:
     
     std::string     mCurrentNameSpace;
     
-	int				mCurrentShape;
+    int             mCurrentShape;
     Rand64          mSeed;
     
     bool            mWant2ndPass;
@@ -122,9 +122,9 @@ public:
     void            Initialize(AST::rep_ptr init);
     void            SetShape(AST::ASTshape* s, bool isPath = false);
     void            AddRule(AST::ASTrule* rule);
-	void            NextParameterDecl(const std::string& type, const std::string& name,
+    void            NextParameterDecl(const std::string& type, const std::string& name,
                                       const yy::location& typeLoc, const yy::location& nameLoc);
-	void            NextParameter(const std::string& name, AST::exp_ptr e,
+    void            NextParameter(const std::string& name, AST::exp_ptr e,
                                   const yy::location& nameLoc, const yy::location& expLoc);
     AST::ASTexpression*  
                     MakeVariable(const std::string& name, const yy::location& loc);

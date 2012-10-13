@@ -50,8 +50,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
         mWidth *= scale;
         mHeight *= scale;
     } else {
-    	mWidth = width;
-	    mHeight = height;
+        mWidth = width;
+        mHeight = height;
         mFullWidth = mWidth * mx;
         mFullHeight = mHeight * my;
     }
@@ -80,7 +80,7 @@ abstractPngCanvas::~abstractPngCanvas()
 void
 abstractPngCanvas::start(bool clear, const agg::rgba &bk, int width, int height)
 {
-	if (!mFrameCount && !mQuiet)
+    if (!mFrameCount && !mQuiet)
         cout << endl << "Rendering..." << endl;
     
     aggCanvas::start(clear, bk, width, height);
@@ -105,14 +105,14 @@ abstractPngCanvas::end()
         
     }
     
-	string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
-	                             mVariation);
-	
-	if (mFrameCount) {
-		output(name.c_str(), mCurrentFrame++);
-	} else {
-		output(name.c_str());
-	}
+    string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
+                                 mVariation);
+    
+    if (mFrameCount) {
+        output(name.c_str(), mCurrentFrame++);
+    } else {
+        output(name.c_str());
+    }
 }
 
 void

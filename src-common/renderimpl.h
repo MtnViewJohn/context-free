@@ -81,17 +81,17 @@ class RendererImpl : public Renderer {
     private:
         void outputPrep(Canvas*);
         void rescaleOutput(int& curr_width, int& curr_height, bool final);
-		void forEachShape(bool final, ShapeOp& op);
+        void forEachShape(bool final, ShapeOp& op);
         void processPrimShapeSiblings(const Shape& s, const AST::ASTrule* attr);
 
         void output(bool final);
         void outputPartial() { output(false); }
         void outputFinal() { output(true); }
         void outputStats();
-		
+
         friend class OutputDraw;
         friend class OutputMerge;
-		friend class OutputBounds;
+        friend class OutputBounds;
         
         bool isDone();
         void fileIfNecessary();

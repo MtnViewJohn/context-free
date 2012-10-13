@@ -178,7 +178,7 @@ namespace AST {
 #include "math.h"
 #include "builder.h"
 #include <cassert>
-	
+
 #undef yylex
 #define yylex driver.lexer->lex
 %}
@@ -466,11 +466,11 @@ shape:
                                &(driver.mParamDecls.mParameters));
             ASTshape* s = new ASTshape(r, false, @1 + @2);
             s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-			driver.SetShape(s);
+            driver.SetShape(s);
             s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : NULL;
             $$ = s;
         }
-		;
+        ;
 
 shape_singleton_header:
         shape '{' {
@@ -538,8 +538,8 @@ rule_header:
             } else {
                 $$ = 0;
             }
-		}
-		|
+        }
+        |
         RULE USER_RATIONAL {
             driver.mInPathContainer = false;
             str_ptr weight($2);
@@ -553,7 +553,7 @@ rule_header:
             } else {
                 $$ = 0;
             }
-		}
+        }
         ;
 
 path_header:
@@ -566,7 +566,7 @@ path_header:
                                &(driver.mParamDecls.mParameters));
             ASTshape* s = new ASTshape(r, false, @1 + @2);
             s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-			driver.SetShape(s, true);
+            driver.SetShape(s, true);
             s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : NULL;
             driver.mInPathContainer = true;
             if (driver.mCompilePhase == 2) {
@@ -621,11 +621,11 @@ path_v2:
         ;
 
 parameter:
-		USER_STRING USER_STRING {
+        USER_STRING USER_STRING {
             str_ptr type($1);
             str_ptr var($2);
             driver.NextParameterDecl(*type, *var, @1, @2);
-		}
+        }
         |
         SHAPE USER_STRING {
             static std::string shapeStr("shape");
@@ -651,17 +651,17 @@ parameter:
         MODTYPE {
             error(@1, "Reserved keyword: adjustment");
         }
-		;
+        ;
 
 buncha_parameters:
         buncha_parameters ',' parameter
         | parameter
-		;
+        ;
 
 parameter_list:
         '(' buncha_parameters ')'
         |
-		;
+        ;
 
 function_parameter_list:
         '(' buncha_parameters ')'

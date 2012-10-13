@@ -89,8 +89,8 @@ class AbstractSystem {
             int     outputCount;    // number to be output
             int     outputDone;     // number output so far
             clock_t outputTime;
-			
-			bool	animating;		// inside the animation loop
+
+            bool    animating;      // inside the animation loop
 
             Stats()
                 : shapeCount(0), toDoCount(0), inOutput(false),
@@ -116,12 +116,12 @@ class Canvas {
         virtual void fill(RGBA8) = 0;
         virtual void path(RGBA8 , agg::trans_affine, const AST::CommandInfo& ) = 0;
 
-		Canvas(int width, int height) 
-			: mWidth(width), mHeight(height) {}
+        Canvas(int width, int height) 
+        : mWidth(width), mHeight(height) {}
         virtual ~Canvas();
-		
-		int mWidth;
-		int mHeight;
+        
+        int mWidth;
+        int mHeight;
         clock_t mTime;
 };
 

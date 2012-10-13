@@ -35,26 +35,26 @@
 
 class PosixSystem : public AbstractSystem
 {
-	protected:
-		bool mQuiet;
-		bool mErrorMode;
-        std::string* mInputBuffer;
-    public:
-		PosixSystem(bool q = false) : mQuiet(q), mErrorMode(false), mInputBuffer(0) {};
-        ~PosixSystem();
-        virtual void message(const char* fmt, ...);
-        virtual void syntaxError(const CfdgError& err);
-        virtual bool error(bool errorOccurred = true);
-        
-        virtual std::istream* openFileForRead(const std::string& path);
-        virtual std::istream* tempFileForRead(const std::string& path);
-        virtual std::ostream* tempFileForWrite(std::string& prefixInNameOut);
-            // caller must delete returned streams when done
-            
-        virtual std::string relativeFilePath(
-            const std::string& base, const std::string& rel);
-
-		virtual void stats(const Stats&);
+protected:
+    bool mQuiet;
+    bool mErrorMode;
+    std::string* mInputBuffer;
+public:
+    PosixSystem(bool q = false) : mQuiet(q), mErrorMode(false), mInputBuffer(0) {};
+    ~PosixSystem();
+    virtual void message(const char* fmt, ...);
+    virtual void syntaxError(const CfdgError& err);
+    virtual bool error(bool errorOccurred = true);
+    
+    virtual std::istream* openFileForRead(const std::string& path);
+    virtual std::istream* tempFileForRead(const std::string& path);
+    virtual std::ostream* tempFileForWrite(std::string& prefixInNameOut);
+    // caller must delete returned streams when done
+    
+    virtual std::string relativeFilePath(
+        const std::string& base, const std::string& rel);
+    
+    virtual void stats(const Stats&);
 };
 
 #endif // INCLUDE_POSIX_SYSTEM

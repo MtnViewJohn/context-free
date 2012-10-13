@@ -323,7 +323,7 @@ Builder::SetShape(AST::ASTshape* s, bool isPath)
     }
     if (m_CFDG->findFunction(s->mNameIndex))
         CfdgError::Warning(s->mLocation, "There is a function with the same name as this shape");
-	mCurrentShape = s->mNameIndex;
+    mCurrentShape = s->mNameIndex;
     if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
         mWant2ndPass = true;
     const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize, isPath);

@@ -35,30 +35,30 @@
 
 class qtCanvas::Impl
 {
-	Impl(NSString* name, BitmapImageHolder* bits, int fps, int qual, bool mpeg4);
-	~Impl();
+    Impl(NSString* name, BitmapImageHolder* bits, int fps, int qual, bool mpeg4);
+    ~Impl();
     
-	void addFrame();
+    void addFrame();
     void enterThread();
     void exitThread();
     
-	int             mFrameRate;
+    int             mFrameRate;
     NSSize          mSize;
     
 #if !__LP64__
-    DataHandler		mDataHandler;
+    DataHandler     mDataHandler;
 #else
     NSObject*       mDataHandler;
 #endif
-	QTMovie*		mMovie;
+    QTMovie*        mMovie;
     
     NSDictionary*   mDict;
     
-    BitmapImageHolder*	mImageData;
+    BitmapImageHolder* mImageData;
     
     NSError*        mError;
-	
-	friend class qtCanvas;
+
+    friend class qtCanvas;
 };
 
 qtCanvas::Impl::Impl(NSString* name, BitmapImageHolder* bits, int fps, 
@@ -197,8 +197,8 @@ void
 qtCanvas::end()
 {
     aggCanvas::end();
-	
-	impl.addFrame();
+
+    impl.addFrame();
 }
 
 NSError*

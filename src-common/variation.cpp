@@ -102,11 +102,11 @@ int Variation::random(int letters)
     static bool seeded = false;
     if (!seeded) {
 #ifdef WIN32
-		HCRYPTPROV csphandle;
-		unsigned long long randomSeed = 0ULL;
-		CryptAcquireContext(&csphandle, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
-		CryptGenRandom(csphandle, 8, (BYTE*)randomSeed);
-		CryptReleaseContext(csphandle, 0);
+        HCRYPTPROV csphandle;
+        unsigned long long randomSeed = 0ULL;
+        CryptAcquireContext(&csphandle, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
+        CryptGenRandom(csphandle, 8, (BYTE*)randomSeed);
+        CryptReleaseContext(csphandle, 0);
         Rand64::Common.seed(randomSeed);
 #else
         /* [AMS] 2/13/2007 -- Added seeding from /dev/urandom */
