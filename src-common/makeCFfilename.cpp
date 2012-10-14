@@ -38,6 +38,9 @@ string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
     stringstream namestream(stringstream::out);
     int numLength = 1;
     
+    if (strcmp(fmt, "-") == 0)
+        return namestream.str();        // empty string becomes stdout
+    
     if (frameCount)
         numLength = (int)log10((double)frameCount) + 1;
 

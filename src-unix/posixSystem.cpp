@@ -55,8 +55,7 @@ PosixSystem::message(const char* fmt, ...)
         va_end(args);
     }
     
-    ostream& out = mErrorMode ? cerr : cout;
-    out << buf << "                            " << endl;
+    cerr << buf << "                            " << endl;
 }
 
 void
@@ -154,15 +153,15 @@ PosixSystem::stats(const Stats& s)
 {
     if (mQuiet || mErrorMode) return;
 
-    cout << "    " << s.shapeCount << " shapes";
+    cerr << "    " << s.shapeCount << " shapes";
 
     if (s.toDoCount > 0)
-        cout << " - " << s.toDoCount << " expansions to do";
+        cerr << " - " << s.toDoCount << " expansions to do";
     else
-        cout << "                            ";
+        cerr << "                            ";
 
-    cout << "        \r";
-    cout.flush();
+    cerr << "        \r";
+    cerr.flush();
 }
 
 
