@@ -115,7 +115,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         }
 
         if (frame == -1 && !mQuiet) {
-            cout << endl << "Writing "
+            cerr << endl << "Writing "
             << width << "w x " << height << "h pixel image..." << endl;
         } 
         
@@ -176,8 +176,10 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         png_write_end(png_ptr, 0);
 
-        if (fclose(out) != 0) throw "File I/O error!?!?!";
-        out = 0;
+        if (out != stdout) {
+            if (fclose(out) != 0) throw "File I/O error!?!?!";
+            out = 0;
+        }
     }
     catch (const char* msg) {
         cerr << "***" << msg << endl;
@@ -187,7 +189,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     if (row)        delete[] row;
     if (row16)      delete[] row16;
 
-    if (out)        fclose(out), out = 0;
+    if (out && out != stdout)        fclose(out), out = 0;
     if (png_ptr)    png_destroy_write_struct(&png_ptr, &info_ptr);
 }
 

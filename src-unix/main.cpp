@@ -54,7 +54,7 @@ using namespace std;
 
 void setupTimer(Renderer* renderer);
 
-ostream* myCout = &cout;
+ostream* myCout = &cerr;
 
 const char* invokeName = "";
 
@@ -349,9 +349,11 @@ processCommandLine(int argc, char* argv[], options& opt)
         cerr << "Missing input file" << endl;
         usage(true);
     }
-    if (!opt.output && !opt.output_fmt && !opt.check) {
+    if ((!opt.output || strcmp(opt.output, "-") == 0) && 
+        !opt.output_fmt && !opt.check)
+    {
         opt.outputStdout = true;
-        opt.output_fmt = "";
+        opt.output_fmt = "-";
         opt.quiet = true;
     }
 }
@@ -367,6 +369,7 @@ public:
     nullostream() : ostream (new nullstreambuf()) {}
 };
 
+static nullostream cnull;
 
 int main (int argc, char* argv[]) {
     options opts;
@@ -374,7 +377,7 @@ int main (int argc, char* argv[]) {
     
     processCommandLine(argc, argv, opts);
     
-    if (opts.quiet) myCout = new nullostream();
+    if (opts.quiet) myCout = &cnull;
     
     clock_t startTime = clock();
     clock_t fromTime = startTime;
