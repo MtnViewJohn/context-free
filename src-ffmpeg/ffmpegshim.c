@@ -131,6 +131,14 @@ double __cdecl __strtod(
     return strtod(nptr, endptr);
 }
 
+__int64 strtoll(
+     const char *nptr, 
+     char **endptr, 
+     int base)
+{
+    return _strtoi64(nptr, endptr, base);
+}
+
 double __cdecl trunc(
      double n
 )

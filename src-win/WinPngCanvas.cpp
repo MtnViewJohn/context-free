@@ -211,7 +211,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     }
 
     if (frame == -1 && !mQuiet) {
-        cout << endl << "Writing "
+        cerr << endl << "Writing "
              << width << "w x " << height << "h pixel image..." << endl;
     }
 
@@ -240,7 +240,7 @@ void pngCanvas::output(const char* outfilename, int frame)
                 (LPSTR) &lpMsgBuf,
                 0, NULL );
 
-            cerr<< ": " << (char*)lpMsgBuf;
+            cerr << ": " << (char*)lpMsgBuf;
 
             LocalFree(lpMsgBuf);
         }
