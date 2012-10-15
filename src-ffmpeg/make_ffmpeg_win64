@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export PATH="$PATH:$HOME/software/mingw-w64/mingw-w64-x86_64/bin"
+PKG_CONFIG_PATH="$HOME/software/packages/win64/lib/pkgconfig"
+LDFLAGS="-L$HOME/software/packages/win64/lib"
+CFLAGS="-I$HOME/software/packages/win64/include"
+
+~/ffmpeg/configure --pkg-config=pkg-config --prefix="$HOME/software/packages/win64" --extra-cflags="-fno-stack-check -fno-stack-protector -mno-stack-arg-probe" --enable-memalign-hack --arch=x86 --target-os=mingw32 --cross-prefix=x86_64-w64-mingw32- --disable-swscale-alpha --enable-gpl --disable-w32threads --enable-runtime-cpudetect --disable-doc --disable-ffmpeg --disable-pthreads --disable-swscale-alpha --disable-ffplay --disable-ffprobe --disable-ffserver --disable-avdevice --disable-postproc --disable-avfilter --disable-everything --enable-encoder=qtrle --enable-encoder=rawvideo --enable-muxer=mov --disable-network --disable-dct --disable-mdct --disable-rdft --disable-fft --enable-protocol=file && make && make install
+

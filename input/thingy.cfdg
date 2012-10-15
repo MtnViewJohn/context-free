@@ -1,0 +1,13 @@
+startshape THINGY
+
+rule THINGY {
+   MINICIRCLE {}
+   THINGY {x 1 size 0.5}
+   THINGY {x -1 size 0.5}
+   THINGY {y 1 size 0.5}
+   THINGY {y -1 size 0.5}
+}
+
+rule MINICIRCLE {
+   CIRCLE { size 0.5}
+}

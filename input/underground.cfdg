@@ -1,0 +1,66 @@
+startshape MAP
+
+shape MAP
+{
+	LOGO [ ]
+	ROUTE [ x 80 y 80 rotate 90 ]
+}
+
+shape ROUTE
+rule {
+	LINES [ brightness 0.2 ]
+}
+rule {
+	LINES [ brightness -0.2 ]
+}
+shape LINES
+{
+	LINE [ ]
+	LINE [ rotate 180 ]
+}
+
+shape LINE
+rule 1000 {
+	CIRCLE [ ]
+	LINE [ y 0.1 ]
+}
+// turns
+rule 1 { LINE [ rotate 45 ] }
+rule 1 { LINE [ rotate -45 ] }
+rule 1 { LINE [ rotate 90 ] }
+rule 1 { LINE [ rotate -90 ] }
+
+// station
+rule 4 {
+	SQUARE [
+		size 3
+		rotate 45
+	]
+	LINE [ ]
+}
+
+// interchange
+rule 0.5 {
+	LINE [ ]
+	ROUTE [ rotate 90 ]
+}
+
+// terminus
+rule 1 {
+	CIRCLE [ size 3 ]
+	CIRCLE [ size 1
+		brightness 1 ]
+}
+
+shape LOGO
+{
+	CIRCLE [
+		size 5
+		brightness 0.5
+	]
+	CIRCLE [
+		size 3.5
+		brightness 1.0
+	]
+	SQUARE [ s 6 1 ]
+}

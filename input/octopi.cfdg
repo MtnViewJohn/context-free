@@ -1,0 +1,48 @@
+startshape family 
+
+shape family
+{ 
+octopus [] 
+family [x 10 y 2 s 0.3 r -10] 
+family [x 0 y 10 s 0.3 r 10] 
+
+} 
+
+shape octopus
+{ 
+octopus_leg1 [r 90 s 0.7] 
+octopus_leg1 [r 100] 
+octopus_leg1 [r 80] 
+octopus_leg1 [r 110] 
+octopus_leg1 [r 180 s 0.7 flip 90] 
+octopus_leg1 [r 190 flip 90] 
+octopus_leg1 [r 170 flip 90] 
+octopus_leg1 [r 200 flip 90] 
+CIRCLE [s 5 x 2 y 2] 
+CIRCLE [s 5 x 2.5 y 2.5] 
+CIRCLE [s 5 x 3 y 3] 
+CIRCLE [b 1 x 1 y 3] 
+CIRCLE [b 1 x 3 y 2] 
+CIRCLE [s 0.7 x 1.1 y 2.9] 
+CIRCLE [s 0.7 x 2.9 y 1.9] 
+} 
+
+shape octopus_leg1
+{ 
+unit [] 
+octopus_leg1 [x 1 y 1 r 10 s 0.95] 
+octopus_leg1 [s 0.2 x 1 y 1 r 90] 
+} 
+
+shape unit
+{ 
+seed [] 
+seed [r 90] 
+} 
+
+shape seed
+{ 
+CIRCLE [x -0.5] 
+SQUARE [] 
+CIRCLE [x 0.5] 
+}

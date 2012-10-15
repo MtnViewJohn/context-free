@@ -1,0 +1,27 @@
+startshape WHOLE
+
+shape WHOLE
+{
+	QUAD [ x -0.5 y -0.5 ]
+	QUAD [ x  0.5 y -0.5 ]
+	QUAD [ x  0.5 y  0.5 ]
+	QUAD [ x -0.5 y  0.5 ]
+}
+
+shape QUAD
+rule {
+	FILLIT [ ]
+}
+rule 5 {
+	WHOLE [ size 0.45 r 2 ]
+}
+rule 0.5 {
+	// nothing
+}
+
+shape FILLIT
+{
+	SQUARE [
+		size 0.8
+	]
+}

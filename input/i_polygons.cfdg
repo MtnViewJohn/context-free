@@ -1,0 +1,150 @@
+startshape polygontest
+
+// This is kind of a dumb way to define a general regular polygon path.
+// But it matches the existing polygon shapes.
+path polygon(number sides) {
+	MOVETO(	 0.5*cos(180/sides),
+			-0.5*sin(180/sides))
+	loop sides - 1 [r (360/sides)]
+		LINETO(	0.5*cos(180/sides),
+				0.5*sin(180/sides))
+	CLOSEPOLY()
+	FILL[]
+}
+
+shape polygontest
+{
+	polygonRightTriangle []
+	CIRCLE [x 2]
+	SQUARE [size 1.0 0.1 x 4 rotate 45]
+	TRIANGLE [x 6]
+	SQUARE [x 8]
+	polygon5sided [x 0 y 2]
+	polygon6sided [x 2 y 2]
+	polygon7sided [x 4 y 2]
+	polygon8sided [x 6 y 2]
+	polygon9sided [x 8 y 2]
+	polygon10sided [x 0 y 4]
+	polygon11sided [x 2 y 4]
+	polygon12sided [x 4 y 4]
+	polygon13sided [x 6 y 4]
+	polygon14sided [x 8 y 4]
+	polygon15sided [x 0 y 6]
+	polygon16sided [x 2 y 6]
+	polygon17sided [x 4 y 6]
+	polygon18sided [x 6 y 6]
+	polygon19sided [x 8 y 6]
+	polygon20sided [x 0 y 8]
+	polygon21sided [x 2 y 8]
+	polygon22sided [x 4 y 8]
+	polygon23sided [x 6 y 8]
+	polygon24sided [x 8 y 8]
+}
+
+// This is a unit right triangle
+shape polygonRightTriangle
+{
+	TRIANGLE [[ size 1 1.155 x 0.165 y -0.144 skew 30 0 ]]
+}
+
+
+shape polygon5sided
+{
+	polygon(5)[]
+	loop 5 [r 72] SQUARE [[rotate 0 size 0.404509 0.587785 x 0.5]]
+}
+
+shape polygon6sided
+{
+	loop 3 [r 60] SQUARE [[rotate 0 size 0.866025 0.5]]
+}
+
+shape polygon7sided
+{
+	loop 7 [r 51.4286] SQUARE [[rotate 0 size 0.450484 0.433884 x 0.5]]
+}
+
+shape polygon8sided
+{
+	loop 4 [r 45] SQUARE [[rotate 0 size 0.92388 0.382683]]
+}
+
+shape polygon9sided
+{
+	loop 9 [r 40] SQUARE [[rotate 0 size 0.469846 0.34202 x 0.5]]
+}
+
+shape polygon10sided
+{
+	loop 5 [r 36] SQUARE [[rotate 0 size 0.951057 0.309017]]
+}
+
+shape polygon11sided
+{
+	loop 11 [r 32.7273] SQUARE [[rotate 0 size 0.479746 0.281733 x 0.5]]
+}
+
+shape polygon12sided
+{
+	loop 6 [r 30] SQUARE [[rotate 0 size 0.965926 0.258819]]
+}
+
+shape polygon13sided
+{
+	loop 13 [r 27.6923] SQUARE [[rotate 0 size 0.485471 0.239316 x 0.5]]
+}
+
+shape polygon14sided
+{
+	loop 7 [r 25.7143] SQUARE [[rotate 0 size 0.974928 0.222521]]
+}
+
+shape polygon15sided
+{
+	loop 15 [r 24] SQUARE [[rotate 0 size 0.489074 0.207912 x 0.5]]
+}
+
+shape polygon16sided
+{
+	loop 8 [r 22.5] SQUARE [[rotate 0 size 0.980785 0.19509]]
+}
+
+shape polygon17sided
+{
+	loop 17 [r 21.1765] SQUARE [[rotate 0 size 0.491487 0.18375 x 0.5]]
+}
+
+shape polygon18sided
+{
+	loop 9 [r 20] SQUARE [[rotate 0 size 0.984808 0.173648]]
+}
+
+shape polygon19sided
+{
+	loop 19 [r 18.9474] SQUARE [[rotate 0 size 0.493181 0.164595 x 0.5]]
+}
+
+shape polygon20sided
+{
+	loop 10 [r 18] SQUARE [[rotate 0 size 0.987688 0.156434]]
+}
+
+shape polygon21sided
+{
+	loop 21 [r 17.1429] SQUARE [[rotate 0 size 0.494415 0.149042 x 0.5]]
+}
+
+shape polygon22sided
+{
+	loop 11 [r 16.3636] SQUARE [[rotate 0 size 0.989821 0.142315]]
+}
+
+shape polygon23sided
+{
+	loop 23 [r 15.6522] SQUARE [[rotate 0 size 0.495343 0.136167 x 0.5]]
+}
+
+shape polygon24sided
+{
+	loop 12 [r 15] SQUARE [[rotate 0 size 0.991445 0.130526]]
+}
