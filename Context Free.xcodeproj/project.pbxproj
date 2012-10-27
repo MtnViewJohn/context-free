@@ -140,7 +140,7 @@
 				"${DERIVED_FILES_DIR}/cfdg.tab.cpp",
 				"${DERIVED_FILES_DIR}/cfdg.tab.hpp",
 			);
-			script = "/opt/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"";
+			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"";
 		};
 		524D22EB13BA0318002732C2 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -171,7 +171,7 @@
 				"$(DERIVED_FILES_DIR)/cfdg.tab.cpp",
 				"$(DERIVED_FILES_DIR)/cfdg.tab.hpp",
 			);
-			script = "/opt/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"";
+			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"";
 		};
 /* End PBXBuildRule section */
 
