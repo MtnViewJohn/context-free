@@ -101,8 +101,8 @@ int Variation::random(int letters)
 {
     static bool seeded = false;
     if (!seeded) {
-#ifdef WIN32
         unsigned long long randomSeed = (unsigned long long)time(0);
+#ifdef WIN32
         HMODULE hLib = LoadLibrary(TEXT("ADVAPI32.DLL"));
         if (hLib) {
             BOOLEAN (APIENTRY *pfn)(void*, ULONG) = 
@@ -112,25 +112,25 @@ int Variation::random(int letters)
 
             FreeLibrary(hLib);
         }
-        Rand64::Common.seed(randomSeed);
 #else
         /* [AMS] 2/13/2007 -- Added seeding from /dev/urandom */
-        unsigned long long urandomSeed = 0ULL;
         std::ifstream urand("/dev/urandom", std::ios::in | std::ios::binary);
         if (urand.is_open()) {
-            urand.read((char*)(&urandomSeed), sizeof(unsigned long long));
+            urand.read((char*)(&randomSeed), sizeof(randomSeed));
             urand.close();
-            Rand64::Common.seed(urandomSeed);
-        } else {
-            Rand64::Common.seed((unsigned long long)time(0));
         }
 #endif
+        Rand64::Common.seed(randomSeed);
         seeded = true;
     }
 
     int min = recommendedMin();
     int max = recommendedMax(letters);
-    return min + Rand64::Common.getUnsigned() % (max - min + 1);
+    for (;;) {
+        unsigned long rnd = Rand64::Common.getUnsigned();
+        if (rnd + max > rnd)
+            return min + rnd % (max - min + 1);
+    }
 }
 
 #ifdef TEST_MAIN
