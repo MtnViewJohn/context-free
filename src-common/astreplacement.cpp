@@ -27,6 +27,7 @@
 
 #include "agg_basics.h"
 #include "pathIterator.h"
+#include <cassert>
 
 #ifdef _MSC_VER
 #include <intrin.h>
@@ -991,6 +992,7 @@ namespace AST {
 
         for (int i = 0; mArguments && i < mArguments->size(); ++i) {
             ASTexpression* temp = (*mArguments)[i];
+			assert(temp);
             switch (temp->mType) {
                 case ASTexpression::FlagType: {
                     if (i != mArguments->size() - 1)
