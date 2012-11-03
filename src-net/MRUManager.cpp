@@ -228,7 +228,7 @@ String^ MRUManager::OnMRUClicked(System::Object^ sender, System::EventArgs^ e)
 System::Void MRUManager::OnOwnerClosing(System::Object^ sender, 
                                         System::ComponentModel::CancelEventArgs^ e)
 {
-    int i, n;
+    Int32 i, n;
 
     try {
         RegistryKey^ key = Registry::CurrentUser->CreateSubKey(registryPath);
@@ -242,7 +242,7 @@ System::Void MRUManager::OnOwnerClosing(System::Object^ sender,
 
             n = mruList.Count;
             for (i = 0; i < n; ++i) {
-                key->SetValue(regEntryName + i.ToString(), mruList[i]);
+				key->SetValue(String::Concat(regEntryName, i), mruList[i]);
             }
 
             key->SetValue(nullptr, currentDirectory);
@@ -265,8 +265,8 @@ void MRUManager::LoadMRU()
         RegistryKey^ key = Registry::CurrentUser->OpenSubKey(registryPath);
 
         if (key != nullptr) {
-            for (int i = 0; i < maxNumberOfFiles; ++i) {
-                sKey = regEntryName + i.ToString();
+			for (Int32 i = 0; i < maxNumberOfFiles; ++i) {
+                sKey = String::Concat(regEntryName, i);
 
                 s = (String^)key->GetValue(sKey, String::Empty);
 
