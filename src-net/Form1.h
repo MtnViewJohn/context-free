@@ -71,6 +71,7 @@ namespace ContextFreeNet {
 			{
 				delete components;
 			}
+			delete mruManager;
 		}
 
     public: OzoneUtil::MRUManager^ mruManager;

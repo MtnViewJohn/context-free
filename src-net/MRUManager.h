@@ -117,6 +117,7 @@ namespace OzoneUtil {
     protected:
         ~MRUManager()
         {
+			delete lowerSeparator;
         }
 
     public:
@@ -140,7 +141,7 @@ namespace OzoneUtil {
         System::Windows::Forms::ToolStripMenuItem^  menuItemParent;
         System::String^                             registryPath;
         System::EventHandler^                       clickHandler;
-        static const System::String^                regEntryName = "file";
+        static System::String^						regEntryName = "file";
 
         bool                                        isInlineList;
         System::Windows::Forms::ToolStripSeparator^ lowerSeparator;
