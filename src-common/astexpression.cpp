@@ -266,6 +266,7 @@ namespace AST {
             }
             
             const ASTexpression* arg = (*args)[count];
+			assert(arg);
             
             if (param_it->mType != arg->mType) {
                 CfdgError::Error(arg->where, "Incorrect argument type.");
@@ -293,6 +294,7 @@ namespace AST {
                 // is actually an unmodified parameter. If so then accept it.
                 while (const ASTparen* p = dynamic_cast<const ASTparen*> (arg))
                     arg = p->e;
+				assert(arg);
                 const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
                 if (!v || !v->isParameter) {
                     CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
@@ -1552,7 +1554,7 @@ namespace AST {
             return -1;
         
         if (res) {
-            if (rti == NULL && !isConstant) throw DeferUntilRuntime();
+            if (rti == NULL && !mConstData) throw DeferUntilRuntime();
             
             double i;
             if (mArgs->evaluate(&i, 1, rti) != 1) {
@@ -1703,7 +1705,7 @@ namespace AST {
         
         int minCount = 1;
         int maxCount = 1;
-        double arg[6];
+		double arg[6] = {0.0};
         for (int i = 0; i < argcount; ++i)
             arg[i] = fmax(-1.0, fmin(1.0, modArgs[i]));
         

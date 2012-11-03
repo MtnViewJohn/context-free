@@ -53,7 +53,7 @@ System::Void HSBEdit::textHandler(System::Object^ sender, System::EventArgs^ e)
     bool accept = true;
     try {
         number = System::Double::Parse(numberT);
-    } catch (FormatException^ e) {
+    } catch (FormatException^) {
         accept = validNumber->IsMatch(numberT);
         number = 0.0;
     }
