@@ -764,12 +764,16 @@ RendererImpl::moveUnfinishedToTwoFiles()
     deque<Shape>::iterator usi = mUnfinishedShapes.begin() + count,
                            use = mUnfinishedShapes.end();
     
-    // Split the bottom 2/3 of the heap between the two files
-    while (usi != use) {
-        usi->write(*((m_unfinishedInFilesCount & 1) ? f1 : f2));
-        ++usi;
-        ++m_unfinishedInFilesCount;
-    }
+	if (f1->good() && f2->good()) {
+		// Split the bottom 2/3 of the heap between the two files
+		while (usi != use) {
+			usi->write(*((m_unfinishedInFilesCount & 1) ? f1 : f2));
+			++usi;
+			++m_unfinishedInFilesCount;
+		}
+	} else {
+		system()->message("Cannot open temporary file for unfinished shapes");
+	}
 
     // Remove the written shapes and reestablish the heap property
     static const Shape neverActuallyUsed;
@@ -809,8 +813,12 @@ RendererImpl::moveFinishedToFile()
     
     ostream* f = t->forWrite();
 
-    copy(mFinishedShapes.begin(), mFinishedShapes.end(), 
-         ostream_iterator<FinishedShape>(*f));
+	if (f->good()) {
+	    copy(mFinishedShapes.begin(), mFinishedShapes.end(), 
+		     ostream_iterator<FinishedShape>(*f));
+	} else {
+		system()->message("Cannot open temporary file for finished shapes");
+	}
 
     mFinishedShapes.clear();
     
