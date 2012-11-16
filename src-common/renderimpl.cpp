@@ -772,11 +772,12 @@ RendererImpl::moveUnfinishedToTwoFiles()
 			++m_unfinishedInFilesCount;
 		}
 	} else {
-		system()->message("Cannot open temporary file for unfinished shapes");
+		system()->message("Cannot open temporary file for expansions");
 	}
 
     // Remove the written shapes and reestablish the heap property
     static const Shape neverActuallyUsed;
+    system()->message("Resorting expansions");
     mUnfinishedShapes.resize(count, neverActuallyUsed);
     make_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
 
