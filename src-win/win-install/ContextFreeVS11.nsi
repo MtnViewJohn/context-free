@@ -198,7 +198,7 @@ Section "Uninstall"
   Delete '$INSTDIR\msvcp100.dll'
   Delete '$INSTDIR\license.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
-  RMDir  /r '$INSTDIR'
+  RMDir  '$INSTDIR'
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
 
