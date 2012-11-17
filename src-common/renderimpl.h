@@ -99,6 +99,8 @@ class RendererImpl : public Renderer {
         void moveUnfinishedToTwoFiles();
         void getUnfinishedFromFile();
         AbstractSystem* system() { return m_cfdg->system(); }
+        void fixupHeap();
+        bool checkHeap();
     
         void init();
         void cleanup();
