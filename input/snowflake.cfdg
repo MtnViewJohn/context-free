@@ -1,0 +1,15 @@
+startshape SPIKE
+
+CF::Symmetry = CF::Dihedral, 6
+
+shape SPIKE
+rule {
+	SQUARE []
+	SPIKE [y 0.95 s 0.97]
+}
+rule 0.03 {
+	SQUARE []
+	SPIKE [r 60]
+	SPIKE [r -60]
+	SPIKE [y 0.95 s 0.97]
+}

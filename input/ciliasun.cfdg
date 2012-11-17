@@ -1,0 +1,35 @@
+startshape SUN
+
+shape SUN
+{
+	loop 72 [r 5]
+		LINER(-3…3) [y 5 sat 1 b 0.3]
+}
+
+shape LINER(number angle)
+rule {
+	UTRIANGLE [y 0.5 s 0.86 r 0.5]
+	LINER(=) [r angle b 0.1 hue 0.1 60 
+		y 0.75 x 0.4330125 s 0.97]
+}
+rule .1 { 
+	LINER(-3…3) []
+}
+
+path UTRIANGLE {
+	MOVETO(0, -0.5)
+	loop 3 [r 120] {
+		CURVEREL(
+			0.25, sqrt(3)/4,
+			-0.05, 0.025,
+			0, sqrt(3)/8
+		)
+		CURVEREL(
+			0.25, sqrt(3)/4,
+			0.25 + 0.025, sqrt(3)/4 - 0.025,
+			CF::Continuous
+		)
+	}
+	CLOSEPOLY(CF::Align)
+	FILL[]
+}
