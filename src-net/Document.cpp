@@ -798,7 +798,7 @@ void Document::WndProc( Message% m )
                             + endText, !stat->inOutput);
                     }
 
-                    if (stat->inOutput) {
+                    if (stat->inOutput || stat->showProgress) {
                         if (mProgressDelay > 2) {
                             int bar = 0;
                             if (stat->outputCount)
