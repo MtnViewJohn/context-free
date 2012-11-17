@@ -33,6 +33,7 @@
 #include <string>
 #include <algorithm>
 #include <stack>
+#include <cassert>
 
 #ifdef _WIN32
 #include <float.h>
@@ -789,11 +790,10 @@ RendererImpl::moveUnfinishedToTwoFiles()
         requestStop = true;
 	}
 
-    // Remove the written shapes and reestablish the heap property
+    // Remove the written shapes, heap property remains intact
     static const Shape neverActuallyUsed;
-    system()->message("Resorting expansions");
     mUnfinishedShapes.resize(count, neverActuallyUsed);
-    make_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
+    assert(checkHeap());
 
     delete f1;
     delete f2;
@@ -811,6 +811,7 @@ RendererImpl::getUnfinishedFromFile()
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
         *f >> outStats.outputCount;
+        outStats.outputDone = 0;
         outStats.showProgress = true;
         istream_iterator<Shape> it(*f);
         istream_iterator<Shape> eit;
@@ -831,11 +832,77 @@ RendererImpl::getUnfinishedFromFile()
         requestStop = true;
     }
     system()->message("Resorting expansions");
-    make_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
+    fixupHeap();
 
     delete f;
 
     m_unfinishedFiles.pop_front();
+}
+
+bool
+RendererImpl::checkHeap()
+{
+    // Confirm that mUnfinishedShapes still has the heap property
+    size_t parent = 0;
+    size_t num = mUnfinishedShapes.size();
+    for (size_t child = 1; child < num; ++child) {
+        if (mUnfinishedShapes[parent] < mUnfinishedShapes[child])
+            return false;
+        if ((child & 1) == 0)
+            ++parent;
+	}
+    return true;
+}
+
+void
+RendererImpl::fixupHeap()
+{
+    // Restore heap property to mUnfinishedShapes
+    size_t size = mUnfinishedShapes.size();
+    if (size < 2) return;
+    // Add a dummy entry to the end to guarantee that all nodes have two children
+    Shape s;
+    s.mAreaCache = DBL_MIN;
+    s.mShapeType = -1;
+    mUnfinishedShapes.push_back(s);
+    size_t top = (size - 1) / 2;
+    AbstractSystem::Stats outStats = m_stats;
+    outStats.outputCount = top;
+    outStats.outputDone = 0;
+    outStats.showProgress = true;
+    for (;;--top) {
+        s = mUnfinishedShapes[top];
+        size_t child = top * 2;
+        size_t hole = top;
+        // Bubble up children until we find a place for the current node
+        while (s < mUnfinishedShapes[child] || s < mUnfinishedShapes[child + 1])
+        {
+            // Bubble up the largest child
+            if (mUnfinishedShapes[child] < mUnfinishedShapes[child + 1])
+                ++child;
+            mUnfinishedShapes[hole] = mUnfinishedShapes[child];
+            hole = child;
+            if (child * 2 >= size) break;
+            child = child * 2;
+        }
+        // Copy down the node only if at least one child bubbled up
+        if (hole > top)
+            mUnfinishedShapes[hole] = s;
+        if (top == 0)
+            break;
+        ++outStats.outputDone;
+        if (requestUpdate) {
+            system()->stats(outStats);
+            requestUpdate = false;
+        }
+        if (requestStop)
+            return;
+    }
+    // Dummy entry should still be at end, remove it
+    assert(mUnfinishedShapes.back().mAreaCache == DBL_MIN);
+    assert(mUnfinishedShapes.back().mShapeType == -1);
+    mUnfinishedShapes.pop_back();
+    assert(checkHeap());
 }
 
 //-------------------------------------------------------------------------////
@@ -852,6 +919,7 @@ RendererImpl::moveFinishedToFile()
 	if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
         outStats.outputCount = mFinishedShapes.size();
+        outStats.outputDone = 0;
         outStats.showProgress = true;
         for (multiset<FinishedShape>::iterator it = mFinishedShapes.begin(),
              eit = mFinishedShapes.end(); it != eit; ++it)
