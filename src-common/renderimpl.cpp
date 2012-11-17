@@ -765,14 +765,28 @@ RendererImpl::moveUnfinishedToTwoFiles()
                            use = mUnfinishedShapes.end();
     
 	if (f1->good() && f2->good()) {
+        AbstractSystem::Stats outStats = m_stats;
+        outStats.outputCount = count;
+        *f1 << outStats.outputCount;
+        *f2 << outStats.outputCount;
+        outStats.outputCount = count * 2;
+        outStats.showProgress = true;
 		// Split the bottom 2/3 of the heap between the two files
 		while (usi != use) {
 			usi->write(*((m_unfinishedInFilesCount & 1) ? f1 : f2));
 			++usi;
 			++m_unfinishedInFilesCount;
+            ++outStats.outputDone;
+            if (requestUpdate) {
+                system()->stats(outStats);
+                requestUpdate = false;
+            }
+            if (requestStop)
+                break;
 		}
 	} else {
 		system()->message("Cannot open temporary file for expansions");
+        requestStop = true;
 	}
 
     // Remove the written shapes and reestablish the heap property
@@ -794,8 +808,29 @@ RendererImpl::getUnfinishedFromFile()
     
     istream* f = t->forRead();
 
-    copy(istream_iterator<Shape>(*f), istream_iterator<Shape>(), 
-         inserter<deque<Shape> >(mUnfinishedShapes, mUnfinishedShapes.end()));
+    if (f->good()) {
+        AbstractSystem::Stats outStats = m_stats;
+        *f >> outStats.outputCount;
+        outStats.showProgress = true;
+        istream_iterator<Shape> it(*f);
+        istream_iterator<Shape> eit;
+        insert_iterator< deque<Shape> > sendto(mUnfinishedShapes, mUnfinishedShapes.end());
+        while (it != eit) {
+            *sendto = *it;
+            ++it;
+            ++outStats.outputDone;
+            if (requestUpdate) {
+                system()->stats(outStats);
+                requestUpdate = false;
+            }
+            if (requestStop)
+                break;
+        }
+	} else {
+		system()->message("Cannot open temporary file for expansions");
+        requestStop = true;
+    }
+    system()->message("Resorting expansions");
     make_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
 
     delete f;
@@ -815,10 +850,24 @@ RendererImpl::moveFinishedToFile()
     ostream* f = t->forWrite();
 
 	if (f->good()) {
-	    copy(mFinishedShapes.begin(), mFinishedShapes.end(), 
-		     ostream_iterator<FinishedShape>(*f));
+        AbstractSystem::Stats outStats = m_stats;
+        outStats.outputCount = mFinishedShapes.size();
+        outStats.showProgress = true;
+        for (multiset<FinishedShape>::iterator it = mFinishedShapes.begin(),
+             eit = mFinishedShapes.end(); it != eit; ++it)
+        {
+            *f << *it;
+            ++outStats.outputDone;
+            if (requestUpdate) {
+                system()->stats(outStats);
+                requestUpdate = false;
+            }
+            if (requestStop)
+                break;
+        }
 	} else {
-		system()->message("Cannot open temporary file for finished shapes");
+		system()->message("Cannot open temporary file for shapes");
+        requestStop = true;
 	}
 
     mFinishedShapes.clear();
