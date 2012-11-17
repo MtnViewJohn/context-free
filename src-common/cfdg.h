@@ -86,6 +86,7 @@ class AbstractSystem {
             bool    inOutput;       // true if we are in the output loop
             bool    fullOutput;     // not an incremental output
             bool    finalOutput;    // the last output
+            bool    showProgress;
             int     outputCount;    // number to be output
             int     outputDone;     // number output so far
             clock_t outputTime;
@@ -94,8 +95,8 @@ class AbstractSystem {
 
             Stats()
                 : shapeCount(0), toDoCount(0), inOutput(false),
-                  fullOutput(false), finalOutput(false), outputCount(0),
-                  outputDone(0), outputTime(0), animating(false) {}
+                  fullOutput(false), finalOutput(false), showProgress(false),
+                  outputCount(0), outputDone(0), outputTime(0), animating(false) {}
         };
 
         virtual void stats(const Stats&);
