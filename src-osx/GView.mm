@@ -563,7 +563,7 @@ namespace {
     
     [mStatus setStringValue: message];
     
-    if (s.inOutput  &&  s.fullOutput) {
+    if ((s.inOutput && s.fullOutput) || s.showProgress) {
         if (mOutputProgressDelay == PROGRESS_DELAY) {
             [mOutputProgress setHidden: NO];
             [mTopBar relayout];
