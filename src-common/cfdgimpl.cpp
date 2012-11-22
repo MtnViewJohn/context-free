@@ -712,7 +712,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         r->initBounds();
     } catch (CfdgError e) {
         m_system->syntaxError(e);
-        delete r;
+        delete r;   // deletes this
         return 0;
     }
     return r;

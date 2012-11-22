@@ -182,6 +182,7 @@ class Renderer {
         tiledCanvas* m_tiledCanvas;
     
         static double Infinity;
+        static bool   AbortEverything;
     
     // AST interface
         std::vector<StackType>  mCFstack;

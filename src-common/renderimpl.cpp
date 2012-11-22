@@ -185,26 +185,40 @@ RendererImpl::resetSize(int x, int y)
         mScaleArea = m_currArea;
     }
 }
+
+class Stopped { };
     
 static void releaser(const Shape& s)
 {
+    if (Renderer::AbortEverything)
+        throw Stopped();
     s.releaseParams();
 }
 
 RendererImpl::~RendererImpl()
 {
     cleanup();
+    delete m_cfdg;
 }
 
 void
 RendererImpl::cleanup()
 {
-    for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaser);
-    for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaser);
+    // delete temp files before checking for abort
+    m_finishedFiles.clear();
+    m_unfinishedFiles.clear();
+
+    try {
+        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaser);
+        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaser);
+    } catch (Stopped) {
+        return;
+    }
     for (std::deque<const StackType*>::const_iterator cit = mLongLivedParams.begin();
          cit != mLongLivedParams.end(); ++cit)
     {
         delete[] *cit;
+        if (AbortEverything) return;
     }
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
@@ -214,6 +228,7 @@ RendererImpl::cleanup()
     for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
          endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
     {
+        if (AbortEverything) return;
         const ASTreplacement* rep = *cit;
         if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep)) {
             if (def->mType == ASTexpression::RuleType)
@@ -223,8 +238,6 @@ RendererImpl::cleanup()
     }
     mCFstack.clear();
     
-    m_finishedFiles.clear();
-    m_unfinishedFiles.clear();
     delete mCurrentPath; mCurrentPath = 0;
     m_cfdg->resetCachedPaths();
 }
@@ -302,10 +315,10 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     }
     
     for (;;) {
+        fileIfNecessary();
+        
         if (requestStop) break;
         if (requestFinishUp) break;
-        
-        fileIfNecessary();
         
         if (mUnfinishedShapes.empty()) break;
         if ((m_stats.shapeCount + m_stats.toDoCount) > m_maxShapes)
@@ -754,8 +767,8 @@ RendererImpl::moveUnfinishedToTwoFiles()
     m_unfinishedFiles.push_back(t1);
     m_unfinishedFiles.push_back(t2);
 
-    ostream* f1 = t1->forWrite();
-    ostream* f2 = t2->forWrite();
+    auto_ptr<ostream> f1(t1->forWrite());
+    auto_ptr<ostream> f2(t2->forWrite());
     
     system()->message("Writing %s temp files %d & %d",
                         t1->type().c_str(), t1->number(), t2->number());
@@ -783,20 +796,18 @@ RendererImpl::moveUnfinishedToTwoFiles()
                 requestUpdate = false;
             }
             if (requestStop)
-                break;
+                return;
 		}
 	} else {
 		system()->message("Cannot open temporary file for expansions");
         requestStop = true;
+        return;
 	}
 
     // Remove the written shapes, heap property remains intact
     static const Shape neverActuallyUsed;
     mUnfinishedShapes.resize(count, neverActuallyUsed);
     assert(checkHeap());
-
-    delete f1;
-    delete f2;
 }
 
 void
@@ -806,7 +817,7 @@ RendererImpl::getUnfinishedFromFile()
     
     ref_ptr<TempFile> t = m_unfinishedFiles.front();
     
-    istream* f = t->forRead();
+    auto_ptr<istream> f(t->forRead());
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -825,16 +836,15 @@ RendererImpl::getUnfinishedFromFile()
                 requestUpdate = false;
             }
             if (requestStop)
-                break;
+                return;
         }
 	} else {
 		system()->message("Cannot open temporary file for expansions");
         requestStop = true;
+        return;
     }
     system()->message("Resorting expansions");
     fixupHeap();
-
-    delete f;
 
     m_unfinishedFiles.pop_front();
 }
@@ -867,7 +877,7 @@ RendererImpl::fixupHeap()
     mUnfinishedShapes.push_back(s);
     size_t top = (size - 1) / 2;
     AbstractSystem::Stats outStats = m_stats;
-    outStats.outputCount = top;
+    outStats.outputCount = (int)top;
     outStats.outputDone = 0;
     outStats.showProgress = true;
     for (;;--top) {
@@ -914,11 +924,11 @@ RendererImpl::moveFinishedToFile()
                                             "shapes", ++mFinishedFileCount);
     m_finishedFiles.push_back(t);
     
-    ostream* f = t->forWrite();
+    auto_ptr<ostream> f(t->forWrite());
 
 	if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
-        outStats.outputCount = mFinishedShapes.size();
+        outStats.outputCount = (int)mFinishedShapes.size();
         outStats.outputDone = 0;
         outStats.showProgress = true;
         for (multiset<FinishedShape>::iterator it = mFinishedShapes.begin(),
@@ -931,16 +941,15 @@ RendererImpl::moveFinishedToFile()
                 requestUpdate = false;
             }
             if (requestStop)
-                break;
+                return;
         }
 	} else {
 		system()->message("Cannot open temporary file for shapes");
         requestStop = true;
+        return;
 	}
 
     mFinishedShapes.clear();
-    
-    delete f;
 }
 
 //-------------------------------------------------------------------------////
