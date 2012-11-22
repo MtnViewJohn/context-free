@@ -118,9 +118,8 @@ void Document::InitializeStuff()
 void Document::DestroyStuff()
 {
     delete mCanvas;
-    delete mRenderer;
+    Form1::DeleteRenderer(mRenderer); mRenderer = 0; mEngine = 0;
     delete mSystem;
-    delete mEngine;
     delete mSVGCanvas;
     delete mAnimationCanvas;
     delete renderParams;
@@ -939,10 +938,7 @@ void Document::updateRenderButton()
 
 void Document::DoRender()
 {
-    delete mRenderer;
-    mRenderer = 0;
-    delete mEngine;
-    mEngine = 0;
+    Form1::DeleteRenderer(mRenderer); mRenderer = 0; mEngine = 0;
     setMessageText(nullptr);
 
     if (!mSystem)
@@ -972,8 +968,7 @@ void Document::DoRender()
 
     mRenderer = mEngine->renderer(renderParams->width, renderParams->height, 
         (float)renderParams->minimumSize, currentVariation, renderParams->borderSize);
-    if (!mRenderer)
-        return;
+    if (!mRenderer) return;
 
     renderParams->width = mRenderer->m_width;
     renderParams->height = mRenderer->m_height;
@@ -1035,7 +1030,7 @@ void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
         case RenderParameters::RenderActions::Render:
             {
                 mRenderer->run(mCanvas, renderParams->periodicUpdate);
-                if (!mCanvas) {
+                if (!mCanvas && !mRenderer->requestStop) {
                     setupCanvas(mRenderer);
                     mRenderer->draw(mCanvas);
                 }
