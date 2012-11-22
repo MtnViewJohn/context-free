@@ -47,6 +47,7 @@ using namespace std;
 
 yy::location CfdgError::Default;
 double Renderer::Infinity = numeric_limits<double>::infinity();      // Ignore the gcc warning
+bool Renderer::AbortEverything = false;
 
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
 : what(msg), where(loc)
