@@ -31,6 +31,8 @@
 #include "AboutBox.h"
 #include "ColorCalculator.h"
 
+std::queue<Renderer*>* DeleteQ = 0;
+
 using namespace ContextFreeNet;
 using namespace System;
 using namespace System::IO;
@@ -95,6 +97,12 @@ void Form1::StaticInitialization()
     exampleSet->TrimToSize();
 
     openFiles = gcnew System::Collections::Generic::Dictionary<String^, Form^>();
+
+    DeleteSignal = gcnew Threading::EventWaitHandle(false, Threading::EventResetMode::AutoReset);
+    DeleteQMutex = gcnew Threading::Mutex();
+    DeleteWorker = gcnew System::Threading::Thread(gcnew Threading::ThreadStart(&Form1::RunDeleteThread));
+    DeleteQ = new std::queue<Renderer*>();
+    DeleteWorker->Start();
 }
 
 void Form1::MoreInitialization()
@@ -441,8 +449,36 @@ void Form1::appIsIdle(System::Object^  sender, System::EventArgs^  e)
 
 void Form1::appIsExiting(System::Object^  sender, System::EventArgs^  e)
 {
+    Renderer::AbortEverything = true;
+    DeleteSignal->Set();
     if (idleHandler != nullptr)
         Application::Idle -= idleHandler;
+}
+
+void Form1::RunDeleteThread()
+{
+    while (!Renderer::AbortEverything) {
+        Renderer* r = 0;
+        DeleteQMutex->WaitOne();
+        if (!DeleteQ->empty()) {
+            r = DeleteQ->front();
+            DeleteQ->pop();
+        }
+        DeleteQMutex->ReleaseMutex();
+        delete r;
+
+        DeleteSignal->WaitOne(1000);
+    }
+}
+
+void Form1::DeleteRenderer(Renderer* r)
+{
+    if (r) {
+        DeleteQMutex->WaitOne();
+        DeleteQ->push(r);
+        DeleteQMutex->ReleaseMutex();
+        DeleteSignal->Set();
+    }
 }
 
 System::Void Form1::urlMenuItem_Click(System::Object^  sender, System::EventArgs^  e)
