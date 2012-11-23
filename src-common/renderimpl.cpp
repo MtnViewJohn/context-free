@@ -775,8 +775,9 @@ RendererImpl::moveUnfinishedToTwoFiles()
 
     int count = (int)mUnfinishedShapes.size() / 3;
 
-    deque<Shape>::iterator usi = mUnfinishedShapes.begin() + count,
-                           use = mUnfinishedShapes.end();
+    UnfinishedContainer::iterator usi = mUnfinishedShapes.begin(),
+                                  use = mUnfinishedShapes.end();
+    usi += count;
     
 	if (f1->good() && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -826,7 +827,7 @@ RendererImpl::getUnfinishedFromFile()
         outStats.showProgress = true;
         istream_iterator<Shape> it(*f);
         istream_iterator<Shape> eit;
-        insert_iterator< deque<Shape> > sendto(mUnfinishedShapes, mUnfinishedShapes.end());
+        back_insert_iterator< UnfinishedContainer > sendto(mUnfinishedShapes);
         while (it != eit) {
             *sendto = *it;
             ++it;
