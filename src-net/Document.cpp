@@ -119,7 +119,7 @@ void Document::DestroyStuff()
 {
     delete mCanvas;
     Form1::DeleteRenderer(mRenderer); mRenderer = 0; mEngine = 0;
-    delete mSystem;
+    mSystem->orphan();
     delete mSVGCanvas;
     delete mAnimationCanvas;
     delete renderParams;

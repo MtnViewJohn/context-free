@@ -55,7 +55,9 @@ public:
     // caller must delete returned streams when done
     
     virtual std::string relativeFilePath(
-        const std::string& base, const std::string& rel);
+    const std::string& base, const std::string& rel);
+
+    virtual void orphan();
 
     virtual void stats(const Stats&);
     void statusUpdate();

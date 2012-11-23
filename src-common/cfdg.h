@@ -99,6 +99,8 @@ class AbstractSystem {
                   outputCount(0), outputDone(0), outputTime(0), animating(false) {}
         };
 
+        virtual void orphan() = 0;
+
         virtual void stats(const Stats&);
         
         virtual ~AbstractSystem();
