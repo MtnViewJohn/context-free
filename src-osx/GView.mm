@@ -296,8 +296,7 @@ namespace {
 
 - (void)dealloc
 {
-    delete mRenderer;               mRenderer = 0;
-    delete mEngine;                 mEngine = 0;
+    delete mRenderer;               mRenderer = 0; mEngine = 0;
     [mDocument release];            mDocument = nil;
     [mDrawingImage release];        mDrawingImage = nil;
     [mRenderBitmap release];        mRenderBitmap = nil;
@@ -1019,7 +1018,6 @@ namespace {
 {
     delete mRenderer;
     mRenderer = 0;
-    delete mEngine;
     mEngine = [mDocument buildEngine];
     mTiled = false;
 }
@@ -1028,7 +1026,7 @@ namespace {
 {
     if (!mEngine) return;
     
-    delete mRenderer;
+    assert(mRenderer == 0);
     mRenderer = mEngine->renderer(
         (int)size.width, (int)size.height,
         minSize,

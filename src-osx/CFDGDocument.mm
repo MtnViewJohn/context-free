@@ -69,6 +69,8 @@ namespace {
         
         virtual void stats(const Stats& s);
         
+        virtual void orphan();
+        
     private:
         CFDGDocument* mDoc;
         
@@ -198,6 +200,10 @@ namespace {
 
         return string([newStr UTF8String]);
     }
+    
+    void
+    DocSystem::orphan()
+    { }
 };
 
 @implementation CfdgErrorWrapper
