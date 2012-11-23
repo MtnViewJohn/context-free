@@ -67,6 +67,7 @@ bool WinSystem::updateInfo(const char* newName, const char* newText)
 
 void WinSystem::message(const char* fmt, ...)
 {
+    if (!mWindow) return;
     va_list args;
     va_start(args, fmt);
     char cbuf[256];
@@ -83,6 +84,7 @@ void WinSystem::message(const char* fmt, ...)
 
 void WinSystem::syntaxError(const CfdgError& errLoc)
 {
+    if (!mWindow) return;
     if (mName.compare(*(errLoc.where.begin.filename)) == 0) {
         message("Error - <a href='#e:%d:%d:%d:%d'>%s</a>",
                 errLoc.where.begin.line, errLoc.where.begin.column,
@@ -141,6 +143,7 @@ std::string WinSystem::relativeFilePath(const std::string& base, const std::stri
 
 void WinSystem::stats(const Stats& s)
 {
+    if (!mWindow) return;
     Stats* stat = new Stats(s);
     if (!::PostMessage((HWND)mWindow, WM_USER_STATUS_UPDATE,(WPARAM)stat, NULL))
         delete stat;
@@ -148,6 +151,13 @@ void WinSystem::stats(const Stats& s)
 
 void WinSystem::statusUpdate()
 {
-    ::PostMessage((HWND)mWindow, WM_USER_STATUS_UPDATE, NULL, NULL);
+    if (mWindow)
+        ::PostMessage((HWND)mWindow, WM_USER_STATUS_UPDATE, NULL, NULL);
 }
 
+void WinSystem::orphan()
+{
+    mWindow = 0;
+    mName.clear();
+    mText.clear();
+}
