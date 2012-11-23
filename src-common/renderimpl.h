@@ -47,6 +47,7 @@
 #include "shape.h"
 #include "CmdInfo.h"
 #include "pathIterator.h"
+#include "chunk_vector.h"
 
 class ShapeOp;
 namespace AST {
@@ -119,7 +120,8 @@ class RendererImpl : public Renderer {
         bool m_drawingMode;
 
         std::multiset<FinishedShape> mFinishedShapes;
-        std::deque<Shape> mUnfinishedShapes;
+        typedef chunk_vector<Shape, 10> UnfinishedContainer;
+        UnfinishedContainer mUnfinishedShapes;
 
         std::deque< ref_ptr<TempFile> > m_finishedFiles;
         std::deque< ref_ptr<TempFile> > m_unfinishedFiles;

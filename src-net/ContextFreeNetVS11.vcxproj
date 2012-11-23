@@ -1353,6 +1353,7 @@
     <ClInclude Include="..\src-common\agg-extras\agg_conv_centroid.h" />
     <ClInclude Include="..\src-common\astexpression.h" />
     <ClInclude Include="..\src-common\astreplacement.h" />
+    <ClInclude Include="..\src-common\chunk_vector.h" />
     <ClInclude Include="..\src-common\CmdInfo.h" />
     <ClInclude Include="..\src-common\ffCanvas.h" />
     <ClInclude Include="..\src-common\stacktype.h" />
