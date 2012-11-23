@@ -25,6 +25,7 @@
 #import "CFDGController.h"
 #import "CFDGDocument.h"
 #include "SystemConfiguration/SCNetwork.h"
+#include "cfdg.h"
 
 @interface CFDGController (setup)
 + (void)setupURLs;
@@ -204,6 +205,12 @@ namespace {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     [self checkForUpdateInBackground];
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
+{
+    Renderer::AbortEverything = true;
+    return NSTerminateNow;
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
