@@ -4,21 +4,29 @@
 #include <cassert>
 
 template <typename _valType, unsigned _power2>
-struct chunk_vector_iterator : std::iterator<std::random_access_iterator_tag, _valType>
+struct chunk_vector_iterator
 {
     enum consts_e {
         _chunk_size = 1 << _power2,
         _chunk_mask = _chunk_size - 1
     };
-    _valType** _chunksPtr;
-    _valType*  _current;
-    size_t _size;
-    size_t _index;
-
+    
+    typedef std::random_access_iterator_tag iterator_category;
+    typedef _valType                        value_type;
+    typedef _valType*                       pointer;
+    typedef _valType&                       reference;
+    typedef size_t                          size_type;
+    typedef ptrdiff_t                       difference_type;
+    
+    pointer*    _chunksPtr;
+    pointer     _current;
+    size_type   _size;
+    size_type   _index;
+    
     chunk_vector_iterator(_valType** vals, size_t size, bool begin)
         : _chunksPtr(vals), _size(size), _index(begin ? 0 : size)
     {
-        if (size)
+        if (_index < size)
             _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
     }
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
@@ -68,7 +76,8 @@ struct chunk_vector_iterator : std::iterator<std::random_access_iterator_tag, _v
     chunk_vector_iterator& operator+=(difference_type n)
     {
         _index += n;
-        _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        if (_index < _size)
+            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
         return *this;
     }
 
@@ -82,7 +91,8 @@ struct chunk_vector_iterator : std::iterator<std::random_access_iterator_tag, _v
     chunk_vector_iterator& operator-=(difference_type n)
     {
         _index -= n;
-        _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        if (_index < _size)
+            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
         return *this;
     }
 
