@@ -222,6 +222,7 @@ namespace {
         mRendererFinishing = false;
         mRendererStopping = false;
         mLastRenderWasHires = false;
+        mCloseOnRenderStopped = false;
         
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
@@ -264,11 +265,11 @@ namespace {
             [window standardWindowButton:NSWindowFullScreenButton];
         [fullscreenButton setAction:@selector(enterFullscreen:)];
         [fullscreenButton setTarget:self];
-        [window setDelegate: self];
         
         NSMenuItem* winMenu = [[NSApp mainMenu] itemWithTitle: @"Window"];
         mFullScreenMenu = [[winMenu submenu] itemWithTag: (NSInteger)420];
     }
+    [window setDelegate: self];
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
@@ -282,6 +283,15 @@ namespace {
 - (void)windowDidExitFullScreen:(NSNotification *)notification
 {
     [self updateFullScreenMenu];
+}
+- (BOOL)windowShouldClose:(id)sender
+{
+    if (mRendering && mRenderer) {
+        mRenderer->requestStop = true;
+        mCloseOnRenderStopped = true;
+        return NO;
+    }
+    return YES;
 }
 
 - (void)updateFullScreenMenu
@@ -886,7 +896,7 @@ namespace {
     [mRenderControl setTitle: NSLocalizedString(@"Render", @"")];
     [mRenderControl setEnabled: YES];
 
-    if (mRestartRenderer) {
+    if (mRestartRenderer && !mCloseOnRenderStopped) {
         mRestartRenderer = false;
         [self startRender: self];
     }
@@ -895,6 +905,9 @@ namespace {
     [self release];
     [mDocument release];
     [[self window] release];
+    
+    if (mCloseOnRenderStopped)
+        [[self window] performClose: self];
 }
 
 @end

@@ -57,6 +57,7 @@ class qtCanvas;
     bool mRendererFinishing;
     bool mRendererStopping;
     bool mLastRenderWasHires;
+    bool mCloseOnRenderStopped;
     
     NSSize mLastRenderSize;
     double mLastRenderMin;
