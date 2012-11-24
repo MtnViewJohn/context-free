@@ -457,7 +457,6 @@ int main (int argc, char* argv[]) {
                                               opts.variation, opts.borderSize);
     
     if (myRenderer == 0) {
-        delete myDesign;
         return 9;
     }
     myRenderer->setMaxShapes(opts.maxShapes);
@@ -503,7 +502,6 @@ int main (int argc, char* argv[]) {
     
     if (system.error(false)) {
         delete myRenderer;
-        delete myDesign;
         return 5;
     }
     
@@ -539,7 +537,6 @@ int main (int argc, char* argv[]) {
     delete svg;
     delete mov;
     delete myRenderer;
-    delete myDesign;
     
     return 0;
 }

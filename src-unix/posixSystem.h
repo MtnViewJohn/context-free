@@ -55,6 +55,7 @@ public:
         const std::string& base, const std::string& rel);
     
     virtual void stats(const Stats&);
+    virtual void orphan() {};
 };
 
 #endif // INCLUDE_POSIX_SYSTEM
