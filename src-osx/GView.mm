@@ -165,6 +165,8 @@ enum {
 - (void)saveSvg:(bool)save toFile:(NSString*)filename;
 - (void)saveMovie:(bool)save toFile:(NSString*)filename;
 
+- (void)deleteRenderer;
++ (void)rendererDeleteThread:(id)arg;
 @end
 
 
@@ -306,7 +308,7 @@ namespace {
 
 - (void)dealloc
 {
-    delete mRenderer;               mRenderer = 0; mEngine = 0;
+    [self deleteRenderer];
     [mDocument release];            mDocument = nil;
     [mDrawingImage release];        mDrawingImage = nil;
     [mRenderBitmap release];        mRenderBitmap = nil;
@@ -1029,8 +1031,7 @@ namespace {
 
 - (void)buildEngine
 {
-    delete mRenderer;
-    mRenderer = 0;
+    [self deleteRenderer];
     mEngine = [mDocument buildEngine];
     mTiled = false;
 }
@@ -1280,6 +1281,24 @@ namespace {
     }
 }
 
+- (void)deleteRenderer
+{
+    mEngine = 0;
+    if (mRenderer == 0) return;
+    NSValue* r = [NSValue valueWithPointer: (const void*)mRenderer];
+    mRenderer = 0;
+    [NSThread detachNewThreadSelector:@selector(rendererDeleteThread:) toTarget:[GView class] withObject:r];
+}
 
++ (void)rendererDeleteThread:(id)arg
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSValue* rv = (NSValue*)arg;
+    Renderer* r = (Renderer*)[rv pointerValue];
+    delete r;
+
+    [pool release];
+}
 
 @end
