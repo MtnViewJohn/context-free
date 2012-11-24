@@ -94,6 +94,7 @@ namespace {
     void
     DocSystem::message(const char* fmt, ...)
     {
+        if (!mDoc) return;
         char buf[256];
         {
             va_list args;
@@ -111,6 +112,7 @@ namespace {
     void
     DocSystem::stats(const Stats& s)
     {
+        if (!mDoc) return;
         NSValue* value = [NSValue value: &s withObjCType: @encode(Stats)];
         
         [mDoc performSelectorOnMainThread: @selector(noteStats:)
@@ -121,6 +123,7 @@ namespace {
     void 
     DocSystem::syntaxError(const CfdgError& err)
     {
+        if (!mDoc) return;
         if (err.where.begin.filename == NULL) return;
         
         CfdgErrorWrapper* objcerr = [[[CfdgErrorWrapper alloc] initWithError: &err]
@@ -203,7 +206,7 @@ namespace {
     
     void
     DocSystem::orphan()
-    { }
+    { mDoc = nil; }
 };
 
 @implementation CfdgErrorWrapper
