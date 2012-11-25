@@ -115,7 +115,7 @@ public:
     void            PushNameSpace(AST::str_ptr n, const yy::location& loc);
     void            CheckName(const std::string& name, const yy::location& loc,
                               bool colonsAllowed);
-    void            CheckVariableName(int index, const yy::location& loc);
+    void            CheckVariableName(int index, const yy::location& loc, bool param);
     void            PopNameSpace();
     void            IncludeFile(const std::string& fname);
     bool            EndInclude();

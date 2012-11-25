@@ -1005,7 +1005,6 @@ loopHeader:
             exp_ptr index($4);
             if (driver.mCompilePhase == 2) {
                 int nameIndex = driver.StringToShape(*var, @2, false);
-                driver.CheckVariableName(nameIndex, @2);
                 loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod_ptr()));
                 driver.push_repContainer(loop->mLoopBody);
                 $$ = loop.release();
