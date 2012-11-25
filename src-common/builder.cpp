@@ -366,8 +366,8 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
                            const yy::location& typeLoc, const yy::location& nameLoc) 
 {
     int nameIndex = StringToShape(name, nameLoc, false);
+    CheckVariableName(nameIndex, nameLoc, true);
     mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
-    CheckVariableName(nameIndex, nameLoc);
 }
 
 void
@@ -457,7 +457,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         def = 0;
     }
 
-    CheckVariableName(nameIndex, nameLoc);
+    CheckVariableName(nameIndex, nameLoc, false);
     if (ASTmodification* m = dynamic_cast<ASTmodification*> (e.get())) {
         mod_ptr mod(m); e.release();
         def = new ASTdefine(name, mod, defLoc);
@@ -1035,14 +1035,19 @@ Builder::PopNameSpace()
 }
 
 void
-Builder::CheckVariableName(int index, const yy::location& loc)
+Builder::CheckVariableName(int index, const yy::location& loc, bool param)
 {
-    if (mAllowOverlap) return;
-    bool dummy;
-    ASTparameter* p = findExpression(index, dummy);
-    if (p) {
-        warning(loc, "Scope of name overlaps variable/parameter with same name");
-        warning(p->mLocation, "previous variable/parameter declared here");
+    if (mAllowOverlap && !param) return;
+    
+    const ASTrepContainer* thisLevel = param ? &mParamDecls : mContainerStack.back();
+    
+    for (ASTparameters::const_reverse_iterator pit = thisLevel->mParameters.rbegin(),
+         epit = thisLevel->mParameters.rend(); pit != epit; ++pit)
+    {
+        if (pit->mName == index) {
+            warning(loc, "Scope of name overlaps variable/parameter with same name");
+            warning(pit->mLocation, "previous variable/parameter declared here");
+        }
     }
 }
 
