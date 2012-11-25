@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.2.  */
+/* A Bison parser, made by GNU Bison 2.6.4.  */
 
 /* Stack handling for Bison parsers in C++
    
-      Copyright (C) 2002-2010 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,21 +30,24 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef BISON_STACK_HH
-# define BISON_STACK_HH
+/**
+ ** \file stack.hh
+ ** Define the yy::stack class.
+ */
 
-#include <deque>
+#ifndef YY_YY_STACK_HH_INCLUDED
+# define YY_YY_STACK_HH_INCLUDED
+
+# include <deque>
 
 
 namespace yy {
-
-/* Line 1066 of lalr1.cc  */
-#line 43 "stack.hh"
+/* Line 37 of stack.hh  */
+#line 47 "stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
   {
   public:
-
     // Hide our reversed order.
     typedef typename S::reverse_iterator iterator;
     typedef typename S::const_reverse_iterator const_iterator;
@@ -83,7 +86,7 @@ namespace yy {
     pop (unsigned int n = 1)
     {
       for (; n; --n)
-	seq_.pop_front ();
+        seq_.pop_front ();
     }
 
     inline
@@ -97,7 +100,6 @@ namespace yy {
     inline const_iterator end () const { return seq_.rend (); }
 
   private:
-
     S seq_;
   };
 
@@ -106,10 +108,9 @@ namespace yy {
   class slice
   {
   public:
-
-    slice (const S& stack,
-	   unsigned int range) : stack_ (stack),
-				 range_ (range)
+    slice (const S& stack, unsigned int range)
+      : stack_ (stack)
+      , range_ (range)
     {
     }
 
@@ -121,15 +122,12 @@ namespace yy {
     }
 
   private:
-
     const S& stack_;
     unsigned int range_;
   };
 
 } // yy
+/* Line 119 of stack.hh  */
+#line 132 "stack.hh"
 
-/* Line 1152 of lalr1.cc  */
-#line 133 "stack.hh"
-
-#endif // not BISON_STACK_HH[]dnl
-
+#endif /* !YY_YY_STACK_HH_INCLUDED  */
