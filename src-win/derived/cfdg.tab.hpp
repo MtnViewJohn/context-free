@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.2.  */
+/* A Bison parser, made by GNU Bison 2.6.4.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2010 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,30 +30,21 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file cfdg.tab.hpp
+ ** Define the yy::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef YY_YY_CFDG_TAB_HPP_INCLUDED
+# define YY_YY_CFDG_TAB_HPP_INCLUDED
 
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-namespace yy {
-
-/* Line 34 of lalr1.cc  */
-#line 49 "cfdg.tab.hpp"
-  class position;
-  class location;
-
-} // yy
-
-/* Line 34 of lalr1.cc  */
-#line 56 "cfdg.tab.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -61,43 +52,10 @@ namespace yy {
 # define YYDEBUG 0
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
 
 namespace yy {
-
-/* Line 34 of lalr1.cc  */
-#line 101 "cfdg.tab.hpp"
+/* Line 267 of lalr1.cc  */
+#line 59 "cfdg.tab.hpp"
 
   /// A Bison parser.
   class CfdgParser
@@ -107,8 +65,7 @@ namespace yy {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 34 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 64 "../../src-common/cfdg.ypp"
 
     int modToken;
@@ -126,9 +83,8 @@ namespace yy {
     AST::ASTrepContainer* bodyObj;
 
 
-
-/* Line 34 of lalr1.cc  */
-#line 132 "cfdg.tab.hpp"
+/* Line 267 of lalr1.cc  */
+#line 88 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -225,7 +181,7 @@ namespace yy {
     /// Generate an error message.
     /// \param state   the state where the error occurred.
     /// \param tok     the lookahead token.
-    virtual std::string yysyntax_error_ (int yystate);
+    virtual std::string yysyntax_error_ (int yystate, int tok);
 
 #if YYDEBUG
     /// \brief Report a symbol value on the debug stream.
@@ -261,6 +217,14 @@ namespace yy {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned char token_number_type;
     /* Tables.  */
@@ -268,7 +232,7 @@ namespace yy {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned char yydefact_[];
@@ -292,19 +256,12 @@ namespace yy {
     /// For a rule, its LHS.
     static const unsigned char yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
-
-#if YYERROR_VERBOSE
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static const unsigned char yyr2_[]; 
 
 #if YYDEBUG
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
     /// A `-1'-separated list of the rules' RHS.
@@ -359,10 +316,9 @@ namespace yy {
   };
 
 } // yy
-
-/* Line 34 of lalr1.cc  */
-#line 365 "cfdg.tab.hpp"
-
+/* Line 267 of lalr1.cc  */
+#line 321 "cfdg.tab.hpp"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !YY_YY_CFDG_TAB_HPP_INCLUDED  */

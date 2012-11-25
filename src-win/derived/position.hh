@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.2.  */
+/* A Bison parser, made by GNU Bison 2.6.4.  */
 
 /* Positions for Bison parsers in C++
    
-      Copyright (C) 2002-2007, 2009-2010 Free Software Foundation, Inc.
+      Copyright (C) 2002-2007, 2009-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -35,56 +35,67 @@
  ** Define the yy::position class.
  */
 
-#ifndef BISON_POSITION_HH
-# define BISON_POSITION_HH
+#ifndef YY_YY_POSITION_HH_INCLUDED
+# define YY_YY_POSITION_HH_INCLUDED
 
+# include <algorithm> // std::max
 # include <iostream>
 # include <string>
-# include <algorithm>
+
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 
 namespace yy {
-
-/* Line 37 of location.cc  */
-#line 50 "position.hh"
+/* Line 38 of location.cc  */
+#line 57 "position.hh"
   /// Abstract a position.
   class position
   {
   public:
 
     /// Construct a position.
-    position ()
-      : filename (0), line (1), column (1)
+    explicit position (std::string* f = YY_NULL,
+                       unsigned int l = 1u,
+                       unsigned int c = 1u)
+      : filename (f)
+      , line (l)
+      , column (c)
     {
     }
 
 
     /// Initialization.
-    inline void initialize (std::string* fn)
+    void initialize (std::string* fn = YY_NULL,
+                     unsigned int l = 1u,
+                     unsigned int c = 1u)
     {
       filename = fn;
-      line = 1;
-      column = 1;
+      line = l;
+      column = c;
     }
 
     /** \name Line and Column related manipulators
      ** \{ */
-  public:
     /// (line related) Advance to the COUNT next lines.
-    inline void lines (int count = 1)
+    void lines (int count = 1)
     {
-      column = 1;
+      column = 1u;
       line += count;
     }
 
     /// (column related) Advance to the COUNT next columns.
-    inline void columns (int count = 1)
+    void columns (int count = 1)
     {
       column = std::max (1u, column + count);
     }
     /** \} */
 
-  public:
     /// File name to which this position refers.
     std::string* filename;
     /// Current line number.
@@ -155,7 +166,6 @@ namespace yy {
 
 
 } // yy
-
-/* Line 144 of location.cc  */
-#line 161 "position.hh"
-#endif // not BISON_POSITION_HH
+/* Line 149 of location.cc  */
+#line 171 "position.hh"
+#endif /* !YY_YY_POSITION_HH_INCLUDED  */

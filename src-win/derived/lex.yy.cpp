@@ -2596,8 +2596,7 @@ void Cfdgfree (void * ptr )
 
 namespace yy {
 
-Scanner::Scanner(std::istream* in,
-		 std::ostream* out)
+Scanner::Scanner(std::istream* in, std::ostream* out)
     : yyFlexLexer(in, out), nextLocAction(normalAction), 
       startToken(token::CFDG2), maybeVersion(0), atStartup(true)
 {
