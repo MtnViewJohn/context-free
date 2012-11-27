@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 2.6.4.  */
+/* A Bison parser, made by GNU Bison 2.6.5.993-06ec-dirty.  */
 
 /* Positions for Bison parsers in C++
-   
-      Copyright (C) 2002-2007, 2009-2012 Free Software Foundation, Inc.
-   
+
+   Copyright (C) 2002-2012 Free Software Foundation, Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,7 +26,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -52,7 +52,7 @@
 
 
 namespace yy {
-/* Line 38 of location.cc  */
+/* Line 309 of location.cc  */
 #line 57 "position.hh"
   /// Abstract a position.
   class position
@@ -105,7 +105,7 @@ namespace yy {
   };
 
   /// Add and assign a position.
-  inline const position&
+  inline position&
   operator+= (position& res, const int width)
   {
     res.columns (width);
@@ -121,7 +121,7 @@ namespace yy {
   }
 
   /// Add and assign a position.
-  inline const position&
+  inline position&
   operator-= (position& res, const int width)
   {
     return res += -width;
@@ -166,6 +166,6 @@ namespace yy {
 
 
 } // yy
-/* Line 149 of location.cc  */
+/* Line 309 of location.cc  */
 #line 171 "position.hh"
 #endif /* !YY_YY_POSITION_HH_INCLUDED  */
