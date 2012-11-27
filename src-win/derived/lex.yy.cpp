@@ -9,7 +9,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_SUBMINOR_VERSION 37
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -51,7 +51,6 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
-typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -59,7 +58,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -90,12 +88,15 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#endif /* ! C99 */
+
 #endif /* ! FLEXINT_H */
 
 /* begin standard C++ headers. */
 #include <iostream> 
 #include <errno.h>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 
@@ -185,7 +186,7 @@ extern yy_size_t yyleng;
      */
     #define  YY_LESS_LINENO(n) \
             do { \
-                yy_size_t yyl;\
+                int yyl;\
                 for ( yyl = n; yyl < yyleng; ++yyl )\
                     if ( yytext[yyl] == '\n' )\
                         --yylineno;\
@@ -332,7 +333,7 @@ int yyFlexLexer::yywrap() { return 1; }
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (yy_size_t) (yy_cp - yy_bp); \
+	yyleng = (size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -849,7 +850,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[90] =
  * yylex is invoked, the begin position is moved onto the end position. */
 #line 66 "../../src-common/cfdg.l"
 #define YY_USER_ACTION  yylloc->columns(utf8length(yytext, yyleng));
-#line 853 "lex.yy.cpp"
+#line 854 "lex.yy.cpp"
 
 #define INITIAL 0
 
@@ -965,7 +966,7 @@ YY_DECL
 
                                                                 
  /* comment line */
-#line 969 "lex.yy.cpp"
+#line 970 "lex.yy.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1035,7 +1036,7 @@ yy_find_action:
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			yy_size_t yyl;
+			int yyl;
 			for ( yyl = 0; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
 					   
@@ -1682,7 +1683,7 @@ YY_RULE_SETUP
 #line 362 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1686 "lex.yy.cpp"
+#line 1687 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1869,9 +1870,9 @@ void yyFlexLexer::switch_streams( std::istream* new_in, std::ostream* new_out )
 }
 
 #ifdef YY_INTERACTIVE
-size_t yyFlexLexer::LexerInput( char* buf, size_t /* max_size */ )
+int yyFlexLexer::LexerInput( char* buf, int /* max_size */ )
 #else
-size_t yyFlexLexer::LexerInput( char* buf, size_t max_size )
+int yyFlexLexer::LexerInput( char* buf, int max_size )
 #endif
 {
 	if ( yyin->eof() || yyin->fail() )
@@ -1898,7 +1899,7 @@ size_t yyFlexLexer::LexerInput( char* buf, size_t max_size )
 #endif
 }
 
-void yyFlexLexer::LexerOutput( const char* buf, size_t size )
+void yyFlexLexer::LexerOutput( const char* buf, int size )
 {
 	(void) yyout->write( buf, size );
 }
@@ -1963,7 +1964,7 @@ int yyFlexLexer::yy_get_next_buffer()
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
@@ -2096,7 +2097,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 	yy_is_jam = (yy_current_state == 294);
 
-	return yy_is_jam ? 0 : yy_current_state;
+		return yy_is_jam ? 0 : yy_current_state;
 }
 
     void yyFlexLexer::yyunput( int c, register char* yy_bp)
@@ -2182,7 +2183,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return 0;
+						return EOF;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -2321,8 +2322,6 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	Cfdgfree((void *) b  );
 }
-
-extern "C" int isatty (int );
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
