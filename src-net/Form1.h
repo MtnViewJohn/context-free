@@ -30,7 +30,6 @@
 #include "MessageCtrl.h"
 #include "PreferenceDialog.h"
 #include "FindReplaceForm.h"
-#include <queue>
 
 class Renderer;
 
@@ -103,12 +102,8 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::ToolStripMenuItem^  menuFOpen;
     private: System::Windows::Forms::ToolStripMenuItem^  menuFExit;
 
-    public:  static void                                         DeleteRenderer(Renderer* r);
-    private: static System::Threading::EventWaitHandle^          DeleteSignal;
-             static System::Threading::Thread^                   DeleteWorker;
-             static void                                         RunDeleteThread();
-             static std::queue<Renderer*>*                       DeleteQ;
-             static System::Threading::Mutex^                    DeleteQMutex;
+    public:  static void DeleteRenderer(Renderer* r);
+    private: static void RunDeleteThread(System::Object^ data);
 
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
