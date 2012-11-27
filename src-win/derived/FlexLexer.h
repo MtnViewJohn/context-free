@@ -63,7 +63,7 @@ public:
 	virtual ~FlexLexer()	{ }
 
 	const char* YYText() const	{ return yytext; }
-	size_t YYLeng()	const	{ return yyleng; }
+	int YYLeng()	const	{ return yyleng; }
 
 	virtual void
 		yy_switch_to_buffer( struct yy_buffer_state* new_buffer ) = 0;
@@ -93,7 +93,7 @@ public:
 
 protected:
 	char* yytext;
-	size_t yyleng;
+	int yyleng;
 	int yylineno;		// only maintained if you use %option yylineno
 	int yy_flex_debug;	// only has effect with -d or "%option debug"
 };
@@ -130,8 +130,8 @@ public:
 	virtual int yywrap();
 
 protected:
-	virtual size_t LexerInput( char* buf, size_t max_size );
-	virtual void LexerOutput( const char* buf, size_t size );
+	virtual int LexerInput( char* buf, int max_size );
+	virtual void LexerOutput( const char* buf, int size );
 	virtual void LexerError( const char* msg );
 
 	void yyunput( int c, char* buf_ptr );
@@ -160,7 +160,7 @@ protected:
 	char yy_hold_char;
 
 	// Number of characters read into yy_ch_buf.
-	size_t yy_n_chars;
+	int yy_n_chars;
 
 	// Points to current character in buffer.
 	char* yy_c_buf_p;
