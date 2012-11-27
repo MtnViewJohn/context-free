@@ -31,8 +31,6 @@
 #include "AboutBox.h"
 #include "ColorCalculator.h"
 
-std::queue<Renderer*>* DeleteQ = 0;
-
 using namespace ContextFreeNet;
 using namespace System;
 using namespace System::IO;
@@ -97,12 +95,6 @@ void Form1::StaticInitialization()
     exampleSet->TrimToSize();
 
     openFiles = gcnew System::Collections::Generic::Dictionary<String^, Form^>();
-
-    DeleteSignal = gcnew Threading::EventWaitHandle(false, Threading::EventResetMode::AutoReset);
-    DeleteQMutex = gcnew Threading::Mutex();
-    DeleteWorker = gcnew System::Threading::Thread(gcnew Threading::ThreadStart(&Form1::RunDeleteThread));
-    DeleteQ = new std::queue<Renderer*>();
-    DeleteWorker->Start();
 }
 
 void Form1::MoreInitialization()
@@ -450,34 +442,27 @@ void Form1::appIsIdle(System::Object^  sender, System::EventArgs^  e)
 void Form1::appIsExiting(System::Object^  sender, System::EventArgs^  e)
 {
     Renderer::AbortEverything = true;
-    DeleteSignal->Set();
     if (idleHandler != nullptr)
         Application::Idle -= idleHandler;
 }
 
-void Form1::RunDeleteThread()
+void Form1::RunDeleteThread(Object^ data)
 {
-    while (!Renderer::AbortEverything) {
-        Renderer* r = 0;
-        DeleteQMutex->WaitOne();
-        if (!DeleteQ->empty()) {
-            r = DeleteQ->front();
-            DeleteQ->pop();
-        }
-        DeleteQMutex->ReleaseMutex();
-        delete r;
+    // Force application to wait for thread to terminate. This prevents
+    // temp files from clogging the disk. Renderer::AbortEverything
+    // will cause the rest of deletion to bypass
+    Threading::Thread::CurrentThread->IsBackground = false;
 
-        DeleteSignal->WaitOne(1000);
-    }
+    IntPtr^ rp = safe_cast<IntPtr^>(data);
+    Renderer* r = (Renderer*)(rp->ToPointer());
+    delete r;
 }
 
 void Form1::DeleteRenderer(Renderer* r)
 {
     if (r) {
-        DeleteQMutex->WaitOne();
-        DeleteQ->push(r);
-        DeleteQMutex->ReleaseMutex();
-        DeleteSignal->Set();
+        IntPtr^ rp = gcnew IntPtr((void*)r);
+        Threading::ThreadPool::QueueUserWorkItem(gcnew Threading::WaitCallback(Form1::RunDeleteThread), rp);
     }
 }
 
