@@ -58,6 +58,29 @@ ostream* myCout = &cerr;
 
 const char* invokeName = "";
 
+static Renderer* TheRenderer = 0;
+
+#ifdef _WIN32
+#else
+#include <csignal>
+
+void termination_handler(int signum)
+{
+    if (!TheRenderer) return;
+    
+    if (!TheRenderer->requestFinishUp) {
+        TheRenderer->requestFinishUp = true;
+        cerr << endl << "Render interrupted, drawing current shapes" << endl;
+    } else if (!TheRenderer->requestStop) {
+        TheRenderer->requestStop = true;
+        cerr << endl << "Render interrupted, skipping drawing, cleaning up temporary files" << endl;
+    } else {
+        exit(9);
+    }
+}
+
+#endif     
+
 void
 usage(bool inError)
 {
@@ -375,6 +398,18 @@ int main (int argc, char* argv[]) {
     options opts;
     int var = Variation::random(6);
     
+#ifdef _WIN32
+#else
+    struct sigaction new_action, old_action;
+    new_action.sa_handler = termination_handler;
+    sigemptyset(&new_action.sa_mask);
+    new_action.sa_flags = 0;
+
+    sigaction(SIGINT, NULL, &old_action);
+    if (old_action.sa_handler != SIG_IGN)
+        sigaction(SIGINT, &new_action, NULL);
+#endif    
+    
     processCommandLine(argc, argv, opts);
     
     if (opts.quiet) myCout = &cnull;
@@ -453,15 +488,15 @@ int main (int argc, char* argv[]) {
     ffCanvas*  mov = 0;
     Canvas* myCanvas = 0;
     
-    Renderer* myRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
-                                              opts.variation, opts.borderSize);
+    TheRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
+                                     opts.variation, opts.borderSize);
     
-    if (myRenderer == 0) {
+    if (TheRenderer == 0) {
         return 9;
     }
-    myRenderer->setMaxShapes(opts.maxShapes);
-    opts.width = myRenderer->m_width;
-    opts.height = myRenderer->m_height;
+    TheRenderer->setMaxShapes(opts.maxShapes);
+    opts.width = TheRenderer->m_width;
+    opts.height = TheRenderer->m_height;
     opts.crop = opts.crop && !(myDesign->isTiled() || myDesign->isFrieze());
     
     switch (opts.format) {
@@ -469,13 +504,13 @@ int main (int argc, char* argv[]) {
         case options::PNGfile: {
             png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
                                 pixfmt, opts.crop, opts.animationFrames, opts.variation,
-                                opts.format == options::BMPfile, myRenderer, 
+                                opts.format == options::BMPfile, TheRenderer, 
                                 opts.widthMult, opts.heightMult);
             myCanvas = (Canvas*)png;
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
-                myRenderer->resetSize(png->mWidth, png->mHeight);
-                opts.width = myRenderer->m_width;
-                opts.height = myRenderer->m_height;
+                TheRenderer->resetSize(png->mWidth, png->mHeight);
+                opts.width = TheRenderer->m_width;
+                opts.height = TheRenderer->m_height;
             }
             break;
         }
@@ -498,10 +533,12 @@ int main (int argc, char* argv[]) {
         }
     }
     
-    myRenderer->run(opts.animationFrames ? 0 : myCanvas, false);
+    TheRenderer->run(opts.animationFrames ? 0 : myCanvas, false);
     
-    if (system.error(false)) {
-        delete myRenderer;
+    if (system.error(false) || TheRenderer->requestStop) {
+        setupTimer(0);
+        Renderer::AbortEverything = true;
+        delete TheRenderer;  TheRenderer = 0;
         return 5;
     }
     
@@ -512,10 +549,10 @@ int main (int argc, char* argv[]) {
         fromTime = toTime;
     }
     
-    if (!opts.quiet) setupTimer(myRenderer);
+    if (!opts.quiet) setupTimer(TheRenderer);
     
     if (opts.animationFrames) {
-        myRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
+        TheRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
     }
     *myCout << endl;
     
@@ -536,7 +573,8 @@ int main (int argc, char* argv[]) {
     delete png;
     delete svg;
     delete mov;
-    delete myRenderer;
+    Renderer::AbortEverything = true;
+    delete TheRenderer; TheRenderer = 0;
     
     return 0;
 }
