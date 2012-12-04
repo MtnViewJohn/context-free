@@ -355,8 +355,11 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     if (!requestStop) {
         outputFinal();
     }
+    
+    if (!requestStop) {
+        outputStats();
+    }
 
-    outputStats();
     return m_currScale;
 }
 
