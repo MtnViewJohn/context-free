@@ -61,12 +61,20 @@ const char* invokeName = "";
 static Renderer* TheRenderer = 0;
 
 #ifdef _WIN32
+#include <Windows.h>
+
+BOOL CtrlHandler(DWORD ctrlType) 
+{
+    if (!TheRenderer) return FALSE;
+    if (ctrlType != CTRL_C_EVENT && ctrlType != CTRL_BREAK_EVENT)
+        return FALSE;
 #else
 #include <csignal>
 
 void termination_handler(int signum)
 {
     if (!TheRenderer) return;
+#endif
     
     if (!TheRenderer->requestFinishUp) {
         TheRenderer->requestFinishUp = true;
@@ -77,9 +85,11 @@ void termination_handler(int signum)
     } else {
         exit(9);
     }
+#ifdef _WIN32
+    return TRUE;
+#endif
 }
 
-#endif     
 
 void
 usage(bool inError)
@@ -399,6 +409,7 @@ int main (int argc, char* argv[]) {
     int var = Variation::random(6);
     
 #ifdef _WIN32
+    SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE);
 #else
     struct sigaction new_action, old_action;
     new_action.sa_handler = termination_handler;
