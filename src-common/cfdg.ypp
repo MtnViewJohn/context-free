@@ -265,7 +265,7 @@ v2stuff:
 
 inclusion:
         INCLUDE fileString {
-            str_ptr file($2);
+            str_ptr file($2); $2 = 0;
             driver.lexer->maybeVersion = token::CFDG2;
             driver.SetShape(NULL);
             driver.IncludeFile(*file);
@@ -274,8 +274,8 @@ inclusion:
 
 import:
         IMPORT fileNameSpace fileString {
-            str_ptr file($3);
-            str_ptr nm($2);
+            str_ptr file($3); $3 = 0;
+            str_ptr nm($2); $2 = 0;
             driver.SetShape(NULL);
             driver.IncludeFile(*file);
             if (nm.get())
@@ -300,9 +300,9 @@ fileNameSpace:
 
 initialization:
         STARTSHAPE USER_STRING parameter_spec modification {
-            str_ptr name($2);
-            exp_ptr p($3);
-            mod_ptr mod($4);
+            str_ptr name($2); $2 = 0;
+            exp_ptr p($3); $3 = 0;
+            mod_ptr mod($4); $4 = 0;
             driver.SetShape(NULL);
             if (driver.mCompilePhase == 2) {
                 ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
@@ -313,8 +313,8 @@ initialization:
         }
         |
         STARTSHAPE USER_ARRAYNAME modification {
-            str_ptr name($2);
-            mod_ptr mod($3);
+            str_ptr name($2); $2 = 0;
+            mod_ptr mod($3); $3 = 0;
             driver.SetShape(NULL);
             if (driver.mCompilePhase == 2) {
                 ruleSpec_ptr r(driver.MakeRuleSpec(*name, exp_ptr(), @2));
@@ -325,8 +325,8 @@ initialization:
         }
         |
         STARTSHAPE USER_STRING parameter_spec {
-            str_ptr name($2);
-            exp_ptr p($3);
+            str_ptr name($2); $2 = 0;
+            exp_ptr p($3); $3 = 0;
             driver.SetShape(NULL);
             if (driver.mCompilePhase == 2) {
                 ruleSpec_ptr r(driver.MakeRuleSpec(*name, p, @2));
@@ -339,7 +339,7 @@ initialization:
 
 initialization_v2:
         STARTSHAPE USER_STRING {
-            str_ptr name($2);
+            str_ptr name($2); $2 = 0;
             driver.SetShape(NULL);
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, exp_ptr(), @2));
             rep_ptr start(new ASTreplacement(*r, *name, mod_ptr(), @$));
@@ -350,7 +350,7 @@ initialization_v2:
 
 background:
         BACKGROUND modification_v2 {
-            exp_ptr mod($2);
+            exp_ptr mod($2); $2 = 0;
             static const std::string backVar("CF::Background");
             driver.lexer->maybeVersion = token::CFDG2;
             driver.NextParameter(backVar, mod, @1, @2);
@@ -360,7 +360,7 @@ background:
 
 tile:
         TILE modification_v2 {
-            exp_ptr mod($2);
+            exp_ptr mod($2); $2 = 0;
             static const std::string tileVar("CF::Tile");
             driver.lexer->maybeVersion = token::CFDG2;
             driver.NextParameter(tileVar, mod, @1, @2);
@@ -370,7 +370,7 @@ tile:
 
 size:
         MODTYPE modification_v2 {
-            exp_ptr mod($2);
+            exp_ptr mod($2); $2 = 0;
             driver.lexer->maybeVersion = token::CFDG2;
             if ($1 != ASTmodTerm::size && $1 != ASTmodTerm::time) {
                 error(@1, "Syntax error");
@@ -385,8 +385,8 @@ size:
 
 global_definition:
         global_definition_header exp2 { 
-            str_ptr var($1);
-            exp_ptr exp($2);
+            str_ptr var($1); $1 = 0;
+            exp_ptr exp($2); $2 = 0;
             if (var.get())
                 driver.NextParameter(*var, exp, @1, @2);
         }
@@ -406,7 +406,7 @@ global_definition_header:
         }
         |
         USER_STRING USER_STRING function_parameter_list BECOMES {
-            str_ptr type($1);
+            str_ptr type($1); $1 = 0;
             driver.push_paramDecls(*$2, @$, *type);
             $$ = $2;
         }
@@ -426,7 +426,7 @@ global_definition_header:
         }
         |
         USER_STRING MODTYPE parameter_list BECOMES {
-            str_ptr type($1);
+            str_ptr type($1); $1 = 0;
             error(@2, "Reserved keyword: adjustment");
             $$ = 0;
         }
@@ -449,8 +449,8 @@ definition_header:
 
 definition:
         definition_header exp2 { 
-            str_ptr var($1);
-            exp_ptr exp($2);
+            str_ptr var($1); $1 = 0;
+            exp_ptr exp($2);  $2 = 0;
             if (var.get() && driver.mCompilePhase == 2)
                 driver.NextParameter(*var, exp, @1, @2);
         }
@@ -458,7 +458,7 @@ definition:
 
 shape:
         SHAPE USER_STRING parameter_list {
-            str_ptr name($2);
+            str_ptr name($2); $2 = 0;
             bool hasParams = !driver.mParamDecls.mParameters.empty();
             exp_ptr dummy(hasParams ? new ASTexpression(@2) : NULL);
             ASTruleSpecifier r(driver.StringToShape(*name, @2, false), *name, dummy,
@@ -497,7 +497,7 @@ shape_singleton:
 
 rule_header_v2:
         RULE USER_STRING {
-            str_ptr name($2);
+            str_ptr name($2); $2 = 0;
             driver.SetShape(NULL);
             rule_ptr rule(new ASTrule(driver.StringToShape(*name, @2, false), @$));
             driver.AddRule(rule.get());
@@ -506,8 +506,8 @@ rule_header_v2:
         }
         |
         RULE USER_STRING USER_RATIONAL {
-            str_ptr name($2);
-            str_ptr weight($3);
+            str_ptr name($2); $2 = 0;
+            str_ptr weight($3); $3 = 0;
             driver.SetShape(NULL);
             rule_ptr rule(new ASTrule(driver.StringToShape(*name, @2, false), 
                                       CFatof(weight->c_str()), 
@@ -542,7 +542,7 @@ rule_header:
         |
         RULE USER_RATIONAL {
             driver.mInPathContainer = false;
-            str_ptr weight($2);
+            str_ptr weight($2); $2 = 0;
             if (driver.mCompilePhase == 2) {
                 rule_ptr rule(new ASTrule(-1, CFatof(weight->c_str()), 
                                           weight->find_first_of('%')  != std::string::npos,
@@ -558,7 +558,7 @@ rule_header:
 
 path_header:
         PATH USER_STRING parameter_list {
-            str_ptr name($2);
+            str_ptr name($2); $2 = 0;
             bool hasParams = !driver.mParamDecls.mParameters.empty();
             exp_ptr dummy(hasParams ? new ASTexpression(@2) : NULL);
             ASTruleSpecifier r(driver.StringToShape(*name, @2, false), *name, dummy,
@@ -602,7 +602,7 @@ path:
 
 path_header_v2:
         PATH USER_STRING {
-            str_ptr name($2);
+            str_ptr name($2); $2 = 0;
             driver.SetShape(NULL);
             rule_ptr newPath(new ASTrule(driver.StringToShape(*$2, @2, false), @$));
             newPath->isPath = true;
@@ -622,14 +622,14 @@ path_v2:
 
 parameter:
         USER_STRING USER_STRING {
-            str_ptr type($1);
-            str_ptr var($2);
+            str_ptr type($1); $1 = 0;
+            str_ptr var($2); $2 = 0;
             driver.NextParameterDecl(*type, *var, @1, @2);
         }
         |
         SHAPE USER_STRING {
             static std::string shapeStr("shape");
-            str_ptr var($2);
+            str_ptr var($2); $2 = 0;
             driver.NextParameterDecl(shapeStr, *var, @1, @2);
         }
         |
@@ -644,7 +644,7 @@ parameter:
         |
         USER_STRING {
             static const std::string numtype("number");
-            str_ptr var($1);
+            str_ptr var($1); $1 = 0;
             driver.NextParameterDecl(numtype, *var, @1, @1);
         }
         |
@@ -693,15 +693,15 @@ buncha_pathOps_v2:
 
 pathOp_simple_v2:
         USER_PATHOP '{' buncha_adjustments '}' {
-            str_ptr pop($1);
-            mod_ptr mod($3);
+            str_ptr pop($1); $1 = 0;
+            mod_ptr mod($3); $3 = 0;
             driver.lexer->maybeVersion = token::CFDG2;
             $$ = new ASTpathOp(*pop, mod, @$);
         }
         |
         shapeName modification_v2 {
-            str_ptr cmd($1);
-            mod_ptr mod($2);
+            str_ptr cmd($1); $1 = 0;
+            mod_ptr mod($2); $2 = 0;
             driver.lexer->maybeVersion = token::CFDG2;
             rep_ptr item(new ASTpathCommand(*cmd, mod, @$));
             $$ = item.release();
@@ -710,8 +710,8 @@ pathOp_simple_v2:
 
 element_simple:
         USER_PATHOP '(' exp2 ')' {
-            str_ptr pop($1);
-            exp_ptr mod($3);
+            str_ptr pop($1); $1 = 0;
+            exp_ptr mod($3); $3 = 0;
             if (driver.mCompilePhase == 2)
                 $$ = new ASTpathOp(*pop, mod, @$);
             else
@@ -719,7 +719,7 @@ element_simple:
         }
         |
         USER_PATHOP '(' ')' {
-            str_ptr pop($1);
+            str_ptr pop($1); $1 = 0;
             exp_ptr mod;
             if (driver.mCompilePhase == 2)
                 $$ = new ASTpathOp(*pop, mod, @$);
@@ -728,9 +728,9 @@ element_simple:
         }
         |
         shapeName parameter_spec modification {
-            str_ptr cmd($1);
-            exp_ptr p($2);
-            mod_ptr mod($3);
+            str_ptr cmd($1); $1 = 0;
+            exp_ptr p($2); $2 = 0;
+            mod_ptr mod($3); $3 = 0;
             if (driver.mCompilePhase == 2) {
                 rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, false);
                 $$ = item.release();
@@ -740,8 +740,8 @@ element_simple:
         }
         | 
         IF '(' exp2 ')' modification  { 
-            exp_ptr args($3);
-            mod_ptr mod($5);
+            exp_ptr args($3); $3 = 0;
+            mod_ptr mod($5); $5 = 0;
             if (driver.mCompilePhase == 2) {
                 str_ptr func(new std::string("if"));
                 args.reset(driver.MakeFunction(func, args, @1, @3, false));
@@ -755,8 +755,8 @@ element_simple:
         |
         letHeader letBody modification {
             std::auto_ptr<ASTrepContainer> vars($1);
-            exp_ptr exp($2);
-            mod_ptr mod($3);
+            exp_ptr exp($2); $2 = 0;
+            mod_ptr mod($3); $3 = 0;
             exp.reset(driver.MakeLet(@1, exp));     // must do unconditionally
             if (driver.mCompilePhase == 2) {
                 static const std::string letstr("let");
@@ -768,9 +768,9 @@ element_simple:
         }
         |
         PATH shapeName parameter_spec modification {
-            str_ptr cmd($2);
-            exp_ptr p($3);
-            mod_ptr mod($4);
+            str_ptr cmd($2); $2 = 0;
+            exp_ptr p($3); $3 = 0;
+            mod_ptr mod($4); $4 = 0;
             if (driver.mCompilePhase == 2) {
                 rep_ptr item = driver.MakeElement(*cmd, mod, p, @$, true);
                 $$ = item.release();
@@ -939,7 +939,7 @@ pathOp_v3clues:
 element_loop:
         loopHeader modification one_or_more_elements {
             // parse loop mod and loop body with loop index in scope
-            mod_ptr loopmod($2);
+            mod_ptr loopmod($2); $2 = 0;
             if (driver.mCompilePhase == 2)
                 $1->mChildChange.grab(loopmod.get());
             $$ = $1;
@@ -964,8 +964,8 @@ one_or_more_replacements_v2:
 
 replacement_simple_v2:
         shapeName modification_v2 {
-            str_ptr name($1);
-            mod_ptr mod($2);
+            str_ptr name($1); $1 = 0;
+            mod_ptr mod($2); $2 = 0;
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, exp_ptr(), @1));
             $$ = new ASTreplacement(*r, r->entropyVal, mod, @$);
         }
@@ -986,9 +986,9 @@ replacement_v2:
 
 loopHeader_v2:
         USER_RATIONAL '*' { ++driver.mLocalStackDepth; } modification_v2 {
-            str_ptr cstr($1);
+            str_ptr cstr($1); $1 = 0;
             exp_ptr count(new ASTreal(*cstr, @1));
-            mod_ptr mod($4);
+            mod_ptr mod($4); $4 = 0;
             static const std::string dummyvar("~~inaccessiblevar~~");
             --driver.mLocalStackDepth;
             driver.lexer->maybeVersion = token::CFDG2;
@@ -1001,8 +1001,8 @@ loopHeader_v2:
 
 loopHeader:
         LOOP USER_STRING BECOMES exp2 {
-            str_ptr var($2);
-            exp_ptr index($4);
+            str_ptr var($2); $2 = 0;
+            exp_ptr index($4); $4 = 0;
             if (driver.mCompilePhase == 2) {
                 int nameIndex = driver.StringToShape(*var, @2, false);
                 loop_ptr loop(new ASTloop(nameIndex, *var, @2, index, @4, mod_ptr()));
@@ -1014,7 +1014,7 @@ loopHeader:
         }
         |
         LOOP MODTYPE BECOMES exp2 {
-            exp_ptr index($4);
+            exp_ptr index($4); $4 = 0;
             if (driver.mCompilePhase == 2) {
                 static const std::string dummyvar("~~inaccessiblevar~~");
                 loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
@@ -1028,7 +1028,7 @@ loopHeader:
         }
         |
         LOOP exp2 {
-            exp_ptr count($2);
+            exp_ptr count($2); $2 = 0;
             if (driver.mCompilePhase == 2) {
                 static const std::string dummyvar("~~inaccessiblevar~~");
                 loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, @1, false), 
@@ -1043,7 +1043,7 @@ loopHeader:
 
 ifHeader:
         IF '(' exp2 ')' {
-            exp_ptr cond($3);
+            exp_ptr cond($3); $3 = 0;
             if (driver.mCompilePhase == 2) {
                 if_ptr ifHeader(new ASTif(cond, @3));
                 driver.push_repContainer(ifHeader->mThenBody);
@@ -1066,7 +1066,7 @@ ifElseHeader:
 
 transHeader:
         MODTYPE exp2 {
-            exp_ptr mods($2);
+            exp_ptr mods($2); $2 = 0;
             if ($1 != ASTmodTerm::transform)
                 error(@1, "Syntax error");
             if (driver.mCompilePhase == 2) {
@@ -1078,7 +1078,7 @@ transHeader:
             }
         }
         | CLONE exp2 {
-            exp_ptr mods($2);
+            exp_ptr mods($2); $2 = 0;
             if (!ASTparameter::Impure)
                 error(@1, "shape cloning only permitted in impure mode");
             if (driver.mCompilePhase == 2) {
@@ -1094,7 +1094,7 @@ transHeader:
 
 switchHeader:
         SWITCH '(' exp2 ')' {
-            exp_ptr caseVal($3);
+            exp_ptr caseVal($3); $3 = 0;
             if (driver.mCompilePhase == 2) {
                 switch_ptr switchHeader(new ASTswitch(caseVal, @3));
                 driver.switchStack.push(switchHeader.get());
@@ -1107,7 +1107,7 @@ switchHeader:
 
 caseHeader:
         CASE exp2 ':' {
-            exp_ptr valExp($2);
+            exp_ptr valExp($2); $2 = 0;
             
             if (driver.mCompilePhase == 2) {
                 double val = 0.0;
@@ -1149,31 +1149,31 @@ caseHeader:
 
 modification_v2:
         '{' buncha_adjustments '}' {
-            mod_ptr mod($2);
+            mod_ptr mod($2); $2 = 0;
             $$ = driver.MakeModification(mod, @$, true);
         }
         |
         '[' buncha_adjustments ']' {
-            mod_ptr mod($2);
+            mod_ptr mod($2); $2 = 0;
             $$ = driver.MakeModification(mod, @$, false);
         }
         ;
 
 modification:
         '[' buncha_adjustments ']' {
-            mod_ptr mod($2);
+            mod_ptr mod($2); $2 = 0;
             $$ = driver.MakeModification(mod, @$, true);
         }
         |
         '[' '[' buncha_adjustments ']' ']' {
-            mod_ptr mod($3);
+            mod_ptr mod($3); $3 = 0;
             $$ = driver.MakeModification(mod, @$, false);
         }
         ;
         
 buncha_adjustments:
         buncha_adjustments adjustment {
-            term_ptr mod($2);
+            term_ptr mod($2); $2 = 0;
             driver.MakeModTerm($1->modExp, mod);
             $$ = $1;
         }
@@ -1187,12 +1187,12 @@ buncha_adjustments:
 
 adjustment:
         MODTYPE explist {
-            exp_ptr mod($2);
+            exp_ptr mod($2); $2 = 0;
             $$ = new ASTmodTerm((ASTmodTerm::modTypeEnum)($1), mod.release(), @$);
         }
         |
         MODTYPE exp '|' {
-            exp_ptr mod($2);
+            exp_ptr mod($2); $2 = 0;
             if ($1 < ASTmodTerm::hue || $1 > ASTmodTerm::alpha) {
                 error(@$, "The target operator can only be applied to color adjustments");
                 $$ = 0;
@@ -1202,12 +1202,12 @@ adjustment:
         }
         |
         PARAM USER_STRING {
-            str_ptr p($2);
+            str_ptr p($2); $2 = 0;
             $$ = new ASTmodTerm(ASTmodTerm::param, *p, @$);
         }
         |
         PARAM USER_QSTRING {
-            str_ptr p($2);
+            str_ptr p($2); $2 = 0;
             $$ = new ASTmodTerm(ASTmodTerm::param, *p, @$);
         }
         ;
@@ -1234,13 +1234,13 @@ letVariables:
         
 letVariable:
         USER_STRING BECOMES exp2 {
-            str_ptr var($1);
-            exp_ptr exp($3);
+            str_ptr var($1); $1 = 0;
+            exp_ptr exp($3); $3 = 0;
             driver.NextParameter(*var, exp, @1, @3);
         }
         |
         MODTYPE BECOMES exp2 {
-            exp_ptr exp($3);
+            exp_ptr exp($3); $3 = 0;
             error(@1, "Reserved keyword: adjustment");
         }
         ;
@@ -1280,12 +1280,12 @@ exp:
         '+' exp             { $$ = new ASToperator('P', $2, NULL);; }
         |
         exp RANGEOP exp {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand", pair, driver.mSeed, @1, @$);
         }
         |
         exp PLUSMINUSOP exp {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @1, @$);
         }
         ;
@@ -1298,12 +1298,12 @@ exp2:
         exp2func             { $$ = $1; }
         |
         exp2 RANGEOP exp2 {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand", pair, driver.mSeed, @1, @$);
         }
         |
         exp2 PLUSMINUSOP exp2 {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @1, @$);
         }
         | 
@@ -1358,12 +1358,12 @@ exp3:
         exp2func             { $$ = $1; }
         |
         exp3 RANGEOP exp3 {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand", pair, driver.mSeed, @1, @$);
         }
         |
         exp3 PLUSMINUSOP exp3 {
-            exp_ptr pair($1->append($3));
+            exp_ptr pair($1->append($3)); $1 = 0; $3 = 0;
             $$ = new ASTfunction("rand+/-", pair, driver.mSeed, @1, @$);
         }
         | 
@@ -1410,78 +1410,78 @@ exp3:
 
 expfunc:
         USER_STRING '(' ')'   { 
-            str_ptr func($1);
+            str_ptr func($1); $1 = 0;
             $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, false);
         }
         | 
         USER_STRING '(' arglist ')'   { 
-            str_ptr func($1);
-            exp_ptr args($3);
+            str_ptr func($1); $1 = 0;
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeFunction(func, args, @1, @3, true);
         }
         | 
         USER_ARRAYNAME '[' exp2 ']'   { 
-            str_ptr func($1);
-            exp_ptr args($3);
+            str_ptr func($1); $1 = 0;
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeArray(func, args, @1, @3);
         }
         |
         IF '(' exp2 ')'   { 
             str_ptr func(new std::string("if"));
-            exp_ptr args($3);
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
         |
         letHeader letBody {
-            exp_ptr exp($2);
+            exp_ptr exp($2); $2 = 0;
             std::auto_ptr<ASTrepContainer> vars($1);
             $$ = driver.MakeLet(@1, exp);
         }
         |
         USER_STRING { 
-            str_ptr var($1);
+            str_ptr var($1); $1 = 0;
             $$ = driver.MakeVariable(*var, @1);
         }
         ;
 
 exp2func:
         USER_STRING '(' ')'   { 
-            str_ptr func($1);
+            str_ptr func($1); $1 = 0;
             $$ = driver.MakeFunction(func, exp_ptr(), @1, @2 + @3, false);
         }
         | 
         USER_STRING '(' arglist ')'   { 
-            str_ptr func($1);
-            exp_ptr args($3);
+            str_ptr func($1); $1 = 0;
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
         | 
         USER_ARRAYNAME '[' exp2 ']'   { 
-            str_ptr func($1);
-            exp_ptr args($3);
+            str_ptr func($1); $1 = 0;
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeArray(func, args, @1, @3);
         }
         | 
         IF '(' exp2 ')'   { 
             str_ptr func(new std::string("if"));
-            exp_ptr args($3);
+            exp_ptr args($3); $3 = 0;
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
         |
         USER_STRING '(' BECOMES ')'   { 
-            str_ptr func($1);
+            str_ptr func($1); $1 = 0;
             exp_ptr args(new ASTexpression(@1 + @4));
             $$ = driver.MakeFunction(func, args, @1, @3, false);
         }
         |
         letHeader letBody {
-            exp_ptr exp($2);
+            exp_ptr exp($2); $2 = 0;
             std::auto_ptr<ASTrepContainer> vars($1);
             $$ = driver.MakeLet(@1, exp);
         }
         |
         USER_STRING { 
-            str_ptr var($1);
+            str_ptr var($1); $1 = 0;
             $$ = driver.MakeVariable(*var, @1);
         }
         ;
