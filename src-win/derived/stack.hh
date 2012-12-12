@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 2.6.5.993-06ec-dirty.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Stack handling for Bison parsers in C++
-
-   Copyright (C) 2002-2012 Free Software Foundation, Inc.
-
+   
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
+   
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,7 +26,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -42,7 +42,7 @@
 
 
 namespace yy {
-/* Line 145 of stack.hh  */
+/* Line 34 of stack.hh  */
 #line 47 "stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
@@ -52,13 +52,11 @@ namespace yy {
     typedef typename S::reverse_iterator iterator;
     typedef typename S::const_reverse_iterator const_iterator;
 
-    stack ()
-      : seq_ ()
+    stack () : seq_ ()
     {
     }
 
-    stack (unsigned int n)
-      : seq_ (n)
+    stack (unsigned int n) : seq_ (n)
     {
     }
 
@@ -92,28 +90,16 @@ namespace yy {
     }
 
     inline
-    typename S::size_type
-    size () const
+    unsigned int
+    height () const
     {
       return seq_.size ();
     }
 
-    inline
-    const_iterator
-    begin () const
-    {
-      return seq_.rbegin ();
-    }
-
-    inline
-    const_iterator
-    end () const
-    {
-      return seq_.rend ();
-    }
+    inline const_iterator begin () const { return seq_.rbegin (); }
+    inline const_iterator end () const { return seq_.rend (); }
 
   private:
-    /// The wrapped container.
     S seq_;
   };
 
@@ -140,9 +126,8 @@ namespace yy {
     unsigned int range_;
   };
 
-
 } // yy
-/* Line 145 of stack.hh  */
-#line 147 "stack.hh"
+/* Line 116 of stack.hh  */
+#line 132 "stack.hh"
 
 #endif /* !YY_YY_STACK_HH_INCLUDED  */
