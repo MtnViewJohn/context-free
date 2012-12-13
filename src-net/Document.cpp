@@ -785,7 +785,7 @@ void Document::WndProc( Message% m )
                 bool show = m.LParam.ToInt32() != 0;
                 if (stat) {
                     String^ preText = show ? "rescaling - " : "";
-                    if (stat->toDoCount > 0 || !mCanvas) {
+                    if ((stat->toDoCount > 0 && !stat->finalOutput) || !mCanvas) {
                         setStatusText(preText + 
                             String::Format("{0:D} shapes and {1:D} expansions to do", 
                             stat->shapeCount, stat->toDoCount), false);
