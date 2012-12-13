@@ -547,7 +547,7 @@ namespace {
         }
     }
     
-    if (s.toDoCount > 0) {
+    if (s.toDoCount > 0 && !s.finalOutput) {
         message = [message stringByAppendingString:
             [NSString localizedStringWithFormat:
                 @" - %d expansions to do", s.toDoCount]];
