@@ -152,9 +152,13 @@ void Form1::MoreInitialization()
     bool updateKeys = false;
     try { 
         RegistryKey^ key;
-        key = Registry::ClassesRoot->OpenSubKey(".cfdg");
+        key = Registry::CurrentUser->OpenSubKey("Software\\Classes\\.cfdg");
+        RegistryKey^ key2 = key->OpenSubKey("ShellNew");
+        String^ newCmd = safe_cast<String^>(key2->GetValue("Command"));
+        updateKeys = newCmd->IndexOf(Application::ExecutablePath) == -1;
+        key2->Close();
         key->Close();
-        key = Registry::ClassesRoot->OpenSubKey("ContextFree.Document");
+        key = Registry::CurrentUser->OpenSubKey("Software\\Classes\\ContextFree.Document");
         key->Close();
     } catch (Exception^) {
         updateKeys = true;
@@ -162,7 +166,7 @@ void Form1::MoreInitialization()
 
     if (!updateKeys) return;
     try {
-        RegistryKey^ classKey = Registry::ClassesRoot->CreateSubKey(".cfdg");
+        RegistryKey^ classKey = Registry::CurrentUser->CreateSubKey("Software\\Classes\\.cfdg");
         classKey->SetValue(String::Empty, "ContextFree.Document");
         RegistryKey^ newKey = classKey->CreateSubKey("ShellNew");
         newKey->SetValue("Command", String::Format("\"{0}\" /new \"%1\"", 
@@ -172,7 +176,7 @@ void Form1::MoreInitialization()
 
         String^ appPath = Application::ExecutablePath;
 
-        classKey = Registry::ClassesRoot->CreateSubKey("ContextFree.Document");
+        classKey = Registry::CurrentUser->CreateSubKey("Software\\Classes\\ContextFree.Document");
         classKey->SetValue(String::Empty, "Context Free file");
         newKey = classKey->CreateSubKey("DefaultIcon");
         newKey->SetValue(String::Empty, String::Format("\"{0}\",1", appPath));
