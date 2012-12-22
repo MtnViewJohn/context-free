@@ -19,6 +19,10 @@ vpath %.cpp $(SRC_DIRS)
 
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
 
+#
+# Library directories for FFmpeg and libpng
+#
+
 LIB_DIRS = $(FFMPEG_DIR)/lib /usr/local/lib
 
 #
@@ -32,8 +36,6 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
-# COMMON_SRCS += ffCanvasDummy.cpp
-COMMON_SRCS += ffCanvas.cpp
 
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
@@ -43,11 +45,26 @@ DERIVED_SRCS = lex.yy.cpp cfdg.tab.cpp
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
 
+LIBS = stdc++ png z
+
+#
+# FFmpeg support
+#
+# Comment out these lines to disable FFmpeg support
+#
+
+COMMON_SRCS += ffCanvas.cpp
+LIBS += avformat avcodec avutil
+
+#
+# Uncomment out this line to disable FFmpeg support
+#
+
+# COMMON_SRCS += ffCanvasDummy.cpp
+
 SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS) $(AGG_SRCS)
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst %.o,%.d,$(OBJS))
-LIBS = stdc++ png z
-LIBS += avformat avcodec avutil
 
 LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
