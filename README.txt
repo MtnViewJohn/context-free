@@ -38,7 +38,7 @@ FILE TREE
 ./input/        - sample input files
 ./src-agg/      - a subset of the Anti_Grain Geometry sources
 ./src-common/   - the CFDG engine
-./src-net/	- Windows .Net specific sources
+./src-net/	    - Windows .Net specific sources
 ./src-osx/      - Mac specific sources
 ./src-unix/     - Unix/Posix specific sources 
 ./src-win/      - Windows specific sources
@@ -61,6 +61,7 @@ WINDOWS GUI BUILD NOTES
 Requires Visual Studio 2010 or later.
 
 The VS2010 solution file is at ./src-net/ContextFreeNet.sln
+The VS2012 Express solution file is at ./src-net/ContextFreeNetVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
@@ -71,7 +72,8 @@ WINDOWS CLI (command line) BUILD NOTES
 
 Requires Visual Studio 2010 or Visual C++ 2010 Express edition, or later.
 
-The CLI solution file is at ./ContextFreeCLI.sln
+The VS2010 CLI solution file is at ./ContextFreeCLI.sln
+The VS2012 Express CLI solution file is at ./ContextFreeCLIVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
@@ -80,17 +82,20 @@ system then cd to src-win/derived and type 'make'.
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
 
-You'll need a c++ compiler, flex (not lex), bison (newer yacc works too)
-and the libpng Library. Most of this should be installed or easily
-available on any modern operating system distribution.  If you need it,
-libpng can be found here:
+You'll need a c++ compiler, flex (not lex), bison and the libpng Library. 
+Most of this should be installed or easily available on any modern operating
+system distribution.  If you need it, libpng can be found here:
     http://libpng.org/pub/png/libpng.html    
+    
+The Makefile assumes that libpng is installed at /usr/local/lib. If libpng is
+installed in a different location then you must update the LIB_DIRS variable
+in the Makefile with this location.
 
 From the top level, you should just run:
     $ make
 
 You'll see a warning about "mktemp" and "mkstemp" during the link step.
-This can be ignored for now.
+This can be ignored.
 
 To run the program, try something like:
     $ ./cfdg -s 500 input/mtree.cfdg mtree.png
