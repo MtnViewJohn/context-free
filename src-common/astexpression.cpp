@@ -608,6 +608,9 @@ namespace AST {
         if (!rti)
             throw DeferUntilRuntime();
         
+        if (rti->requestStop || Renderer::AbortEverything)
+            throw CfdgError(where, "Stopping");
+        
         const StackType* ret = NULL;
         
         if (definition->mStackCount) {
@@ -1160,6 +1163,9 @@ namespace AST {
         if (!rti)
             throw DeferUntilRuntime();
         
+        if (rti->requestStop || Renderer::AbortEverything)
+            throw CfdgError(where, "Stopping");
+        
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();
             if (size + definition->mStackCount > rti->mCFstack.capacity())
@@ -1629,6 +1635,9 @@ namespace AST {
         
         if (!rti)
             throw DeferUntilRuntime();
+        
+        if (rti->requestStop || Renderer::AbortEverything)
+            throw CfdgError(where, "Stopping");
         
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();

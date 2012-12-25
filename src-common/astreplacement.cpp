@@ -533,6 +533,9 @@ namespace AST {
         StackType& index = r->mCFstack.back();
         r->mLogicalStackTop = &index + 1;
         for (;;) {
+            if (r->requestStop || Renderer::AbortEverything)
+                throw CfdgError(mLocation, "Stopping");
+            
             if (step > 0.0) {
                 if (index.number >= end)
                     break;
