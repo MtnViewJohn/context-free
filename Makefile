@@ -45,7 +45,7 @@ DERIVED_SRCS = lex.yy.cpp cfdg.tab.cpp
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
 
-LIBS = stdc++ png z
+LIBS = stdc++ png z m
 
 #
 # FFmpeg support
