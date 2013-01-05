@@ -1660,12 +1660,11 @@ namespace AST {
                               bool justCheck, int& seedIndex, 
                               Renderer* rti) const
     {
-        if (modExp.empty()) {
-            m *= modData;
-        } else {
-            Modification mod;
-            setVal(mod, p, width, justCheck, seedIndex, rti);
-            m *= mod;
+        m *= modData;
+        for (ASTtermArray::const_iterator it = modExp.begin(), eit = modExp.end();
+             it != eit; ++it)
+        {
+            (*it)->evaluate(m, p, width, justCheck, seedIndex, rti);
         }
     }
     
@@ -2037,6 +2036,20 @@ namespace AST {
             }
             case ASTmodTerm::modification: {
                 minCount = maxCount = 0;
+                if (rti == 0) {
+                    const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args);
+                    if (!mod || (mod->modClass & (ASTmodification::HueClass |
+                                                  ASTmodification::HueTargetClass |
+                                                  ASTmodification::BrightClass |
+                                                  ASTmodification::BrightTargetClass |
+                                                  ASTmodification::SatClass |
+                                                  ASTmodification::SatTargetClass |
+                                                  ASTmodification::AlphaClass |
+                                                  ASTmodification::AlphaTargetClass)))
+                    {
+                        throw DeferUntilRuntime();
+                    }
+                }
                 args->evaluate(m, p, width, justCheck, seedIndex, rti);
                 break;
             }
