@@ -481,7 +481,7 @@ namespace AST {
         replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
-        mChildChange.evaluate(s.mWorldState, 0, width, false, dummy, r);
+        mChildChange.evaluate(s.mWorldState, 0, width, false, dummy, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
     
@@ -544,7 +544,7 @@ namespace AST {
                     break;
             }
             mLoopBody.traverse(loopChild, tr || opsOnly, r);
-            mChildChange.evaluate(loopChild.mWorldState, 0, 0, false, dummy, r);
+            mChildChange.evaluate(loopChild.mWorldState, 0, 0, false, dummy, true, r);
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
@@ -570,7 +570,7 @@ namespace AST {
             if (i < modsLength) {
                 if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i])) {
                     r->mCurrentSeed ^= m->modData.mRand64Seed;
-                    m->evaluate(child.mWorldState, 0, 0, false, dummy, r);
+                    m->evaluate(child.mWorldState, 0, 0, false, dummy, true, r);
                 } else {
                     continue;
                 }

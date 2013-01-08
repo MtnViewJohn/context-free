@@ -364,7 +364,7 @@ EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
                 static const Modification zeroMod;
                 Modification& m = reinterpret_cast<Modification&> (dest->number);
                 m = zeroMod;
-                arg->evaluate(m, 0, 0, false, dummy, rti);
+                arg->evaluate(m, 0, 0, false, dummy, false, rti);
                 break;
             }
             case AST::ASTexpression::RuleType: {

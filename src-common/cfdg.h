@@ -212,6 +212,7 @@ class Renderer {
     
         void init();
         static bool isNatural(Renderer* r, double n);
+        static void ColorConflict(Renderer* r, const yy::location& w);
         virtual void storeParams(const StackType* p) = 0;
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
@@ -228,6 +229,7 @@ class Renderer {
           mCurrentTime(0.0), mCurrentFrame(0.0),
           mCurrentPath(0)
      { }
+        virtual void colorConflict(const yy::location& w) = 0;
 };
 
 #endif

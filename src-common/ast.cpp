@@ -775,7 +775,7 @@ namespace AST {
                     } else {
                         Modification mod;
                         int dummy;
-                        cit->evaluate(mod, 0, 0, false, dummy, r);
+                        cit->evaluate(mod, 0, 0, false, dummy, false, r);
                         addUnique(syms, mod.m_transform);
                     }
                     break;

@@ -110,6 +110,8 @@ class RendererImpl : public Renderer {
         CFDGImpl*   m_cfdg;
         Canvas*     m_canvas;
         pathIterator m_pathIter;
+    
+        bool        mColorConflict;
 
         int m_maxShapes;
         bool m_tiled;
@@ -164,6 +166,9 @@ class RendererImpl : public Renderer {
         primShape        shape0;
         primShape        shape1;
         primShape        shape2;
+    
+    protected:
+        virtual void colorConflict(const yy::location& w);
 };
 
 

@@ -1587,7 +1587,7 @@ namespace AST {
     
     void
     ASTselect::evaluate(Modification& m, int* p, double* width, 
-                        bool justCheck, int& seedIndex, 
+                        bool justCheck, int& seedIndex, bool shapeDest,
                         Renderer* rti) const
     {
         if (mType != ModType) {
@@ -1595,12 +1595,12 @@ namespace AST {
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, p, width, justCheck, seedIndex, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
     ASTvariable::evaluate(Modification& m, int*, double*, 
-                          bool justCheck, int&, 
+                          bool justCheck, int&, bool shapeDest,
                           Renderer* rti) const
     {
         if (mType != ModType)
@@ -1611,21 +1611,26 @@ namespace AST {
         const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
             &(rti->mCFstack[stackIndex]);
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
-        m *= *smod;
+        if (shapeDest) {
+            m *= *smod;
+        } else {
+            if (m.merge(*smod))
+                Renderer::ColorConflict(rti, where);
+        }
     }
     
     void
     ASTcons::evaluate(Modification& m, int* p, double* width, 
-                      bool justCheck, int& seedIndex, 
+                      bool justCheck, int& seedIndex, bool shapeDest,
                       Renderer* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, p, width, justCheck, seedIndex, rti);
+            children[i]->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
     ASTuserFunction::evaluate(Modification &m, int *p, double *width, 
-                              bool justCheck, int &seedIndex,
+                              bool justCheck, int &seedIndex, bool shapeDest,
                               Renderer* rti) const
     {
         if (mType != ModType) {
@@ -1647,24 +1652,30 @@ namespace AST {
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
             rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
-            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, rti);
+            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
             rti->mCFstack.resize(size, StackZero);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
-            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, rti);
+            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
         }
     }
     
     void
     ASTmodification::evaluate(Modification& m, int* p, double* width, 
-                              bool justCheck, int& seedIndex, 
+                              bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* rti) const
     {
-        m *= modData;
+        if (shapeDest) {
+            m *= modData;
+        } else {
+            if (m.merge(modData))
+                Renderer::ColorConflict(rti, where);
+        }
+        
         for (ASTtermArray::const_iterator it = modExp.begin(), eit = modExp.end();
              it != eit; ++it)
         {
-            (*it)->evaluate(m, p, width, justCheck, seedIndex, rti);
+            (*it)->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
         }
     }
     
@@ -1675,12 +1686,12 @@ namespace AST {
     {
         m = modData;
         for (ASTtermArray::const_iterator it = modExp.begin(); it != modExp.end(); ++it)
-            (*it)->evaluate(m, p, width, justCheck, seedIndex, rti);
+            (*it)->evaluate(m, p, width, justCheck, seedIndex, false, rti);
     }
     
     void
     ASTparen::evaluate(Modification& m, int* p, double* width,
-                       bool justCheck, int& seedIndex,
+                       bool justCheck, int& seedIndex, bool shapeDest,
                        Renderer* rti) const
     {
         if (mType != ModType) {
@@ -1688,12 +1699,12 @@ namespace AST {
             return;
         }
         
-        e->evaluate(m, p, width, justCheck, seedIndex, rti);
+        e->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
     ASTmodTerm::evaluate(Modification& m, int* p, double* width, 
-                        bool justCheck, int& seedIndex, 
+                        bool justCheck, int& seedIndex, bool shapeDest,
                         Renderer* rti) const
     {
         double modArgs[6] = {0.0};
@@ -1851,13 +1862,22 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if (rti == 0 && m.m_Color.mUseTarget & HSBColor::HueTarget)
-                        throw DeferUntilRuntime();
+                    if (m.m_Color.mUseTarget & HSBColor::HueTarget) {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.h += modArgs[0];
                 } else {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::HueTarget || 
-                                     m.m_Color.h != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::HueTarget ||
+                         m.m_Color.h != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.h = arg[0];
                     m.m_Color.mUseTarget |= HSBColor::HueTarget;
                     m.m_ColorTarget.h = modArgs[1];
@@ -1869,18 +1889,32 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::SaturationTarget || 
-                                     m.m_Color.s != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget ||
+                         m.m_Color.s != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.s = arg[0];
                 } else {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::SaturationTarget || 
-                                     m.m_Color.s != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget ||
+                         m.m_Color.s != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.s = arg[0];
                     m.m_Color.mUseTarget |= HSBColor::SaturationTarget;
-                    if (rti == 0 && m.m_ColorTarget.s != 0.0)
-                        throw DeferUntilRuntime();
+                    if (m.m_ColorTarget.s != 0.0) {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_ColorTarget.s = arg[1];
                     m.m_ColorTarget.mUseTarget |= HSBColor::SaturationTarget;
                 }
@@ -1890,18 +1924,32 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::BrightnessTarget || 
-                                     m.m_Color.b != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget ||
+                         m.m_Color.b != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.b = arg[0];
                 } else {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::BrightnessTarget || 
-                                     m.m_Color.b != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget ||
+                         m.m_Color.b != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.b = arg[0];
                     m.m_Color.mUseTarget |= HSBColor::BrightnessTarget;
-                    if (rti == 0 && m.m_ColorTarget.b != 0.0)
-                        throw DeferUntilRuntime();
+                    if (m.m_ColorTarget.b != 0.0) {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_ColorTarget.b = arg[1];
                     m.m_ColorTarget.mUseTarget |= HSBColor::BrightnessTarget;
                 }
@@ -1913,18 +1961,32 @@ namespace AST {
                     *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::AlphaTarget || 
-                                     m.m_Color.a != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget ||
+                         m.m_Color.a != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.a = arg[0];
                 } else {
-                    if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::AlphaTarget || 
-                                     m.m_Color.a != 0.0))
-                        throw DeferUntilRuntime();
+                    if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget ||
+                         m.m_Color.a != 0.0))
+                    {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_Color.a = arg[0];
                     m.m_Color.mUseTarget |= HSBColor::AlphaTarget;
-                    if (rti == 0 && m.m_ColorTarget.a != 0.0)
-                        throw DeferUntilRuntime();
+                    if (m.m_ColorTarget.a != 0.0) {
+                        if (rti == 0)
+                            throw DeferUntilRuntime();
+                        if (!shapeDest)
+                            Renderer::ColorConflict(rti, where);
+                    }
                     m.m_ColorTarget.a = arg[1];
                     m.m_ColorTarget.mUseTarget |= HSBColor::AlphaTarget;
                 }
@@ -1932,27 +1994,42 @@ namespace AST {
             }
             case ASTmodTerm::hueTarg: {
                 if (justCheck) break;
-                if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::HueTarget || 
-                                 m.m_Color.h != 0.0))
-                    throw DeferUntilRuntime();
+                if ((m.m_Color.mUseTarget & HSBColor::HueTarget ||
+                     m.m_Color.h != 0.0))
+                {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_Color.h = arg[0];
                 m.m_Color.mUseTarget |= HSBColor::HueTarget;
                 break;
             }
             case ASTmodTerm::satTarg: {
                 if (justCheck) break;
-                if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::SaturationTarget || 
-                                 m.m_Color.s != 0.0))
-                    throw DeferUntilRuntime();
+                if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget ||
+                     m.m_Color.s != 0.0))
+                {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_Color.s = arg[0];
                 m.m_Color.mUseTarget |= HSBColor::SaturationTarget;
                 break;
             }
             case ASTmodTerm::brightTarg: {
                 if (justCheck) break;
-                if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::BrightnessTarget || 
-                                 m.m_Color.b != 0.0))
-                    throw DeferUntilRuntime();
+                if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget ||
+                     m.m_Color.b != 0.0))
+                {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_Color.b = arg[0];
                 m.m_Color.mUseTarget |= HSBColor::BrightnessTarget;
                 break;
@@ -1961,9 +2038,14 @@ namespace AST {
                 if (p)
                     *p |= CF_USES_ALPHA;
                 if (justCheck) break;
-                if (rti == 0 && (m.m_Color.mUseTarget & HSBColor::AlphaTarget || 
-                                 m.m_Color.a != 0.0))
-                    throw DeferUntilRuntime();
+                if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget ||
+                     m.m_Color.a != 0.0))
+                {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_Color.a = arg[0];
                 m.m_Color.mUseTarget |= HSBColor::AlphaTarget;
                 break;
@@ -1975,22 +2057,34 @@ namespace AST {
             }
             case ASTmodTerm::targSat: {
                 if (justCheck) break;
-                if (rti == 0 && m.m_ColorTarget.s != 0.0)
-                    throw DeferUntilRuntime();
+                if (m.m_ColorTarget.s != 0.0) {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_ColorTarget.s = arg[0];
                 break;
             }
             case ASTmodTerm::targBright: {
                 if (justCheck) break;
-                if (rti == 0 && m.m_ColorTarget.b != 0.0)
-                    throw DeferUntilRuntime();
+                if (m.m_ColorTarget.b != 0.0) {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_ColorTarget.b = arg[0];
                 break;
             }
             case ASTmodTerm::targAlpha: {
                 if (justCheck) break;
-                if (rti == 0 && m.m_ColorTarget.a != 0.0)
-                    throw DeferUntilRuntime();
+                if (m.m_ColorTarget.a != 0.0) {
+                    if (rti == 0)
+                        throw DeferUntilRuntime();
+                    if (!shapeDest)
+                        Renderer::ColorConflict(rti, where);
+                }
                 m.m_ColorTarget.a = arg[0];
                 break;
             }
@@ -2050,7 +2144,7 @@ namespace AST {
                         throw DeferUntilRuntime();
                     }
                 }
-                args->evaluate(m, p, width, justCheck, seedIndex, rti);
+                args->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
                 break;
             }
             default:
@@ -2380,7 +2474,7 @@ namespace AST {
             bool justCheck = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex);
+                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, NULL);
             } catch (CfdgError) {
                 for (; it != temp.end(); ++it) {
                     delete *it;
