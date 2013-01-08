@@ -604,7 +604,7 @@ path_header_v2:
         PATH USER_STRING {
             str_ptr name($2); $2 = 0;
             driver.SetShape(NULL);
-            rule_ptr newPath(new ASTrule(driver.StringToShape(*$2, @2, false), @$));
+            rule_ptr newPath(new ASTrule(driver.StringToShape(*name, @2, false), @$));
             newPath->isPath = true;
             driver.AddRule(newPath.get());
             driver.push_repContainer(newPath->mRuleBody);
