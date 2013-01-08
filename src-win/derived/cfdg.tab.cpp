@@ -1427,7 +1427,7 @@ namespace yy {
     {
             str_ptr name((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = 0;
             driver.SetShape(NULL);
-            rule_ptr newPath(new ASTrule(driver.StringToShape(*(yysemantic_stack_[(2) - (2)].string), (yylocation_stack_[(2) - (2)]), false), (yyloc)));
+            rule_ptr newPath(new ASTrule(driver.StringToShape(*name, (yylocation_stack_[(2) - (2)]), false), (yyloc)));
             newPath->isPath = true;
             driver.AddRule(newPath.get());
             driver.push_repContainer(newPath->mRuleBody);
