@@ -84,6 +84,8 @@ class Modification {
             mRand64Seed ^= m.mRand64Seed;
             return *this;
         }
+    
+    bool merge(const Modification& m);
 };
 
 class ShapeBase {

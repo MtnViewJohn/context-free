@@ -87,6 +87,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);
 
     m_canvas = 0;
+    mColorConflict = false;
     m_maxShapes = 500000000;
     m_currScale = m_currArea = 0.0;
     mScaleArea = mScale = 0.0;
@@ -99,6 +100,15 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     
     m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, 0);
     m_cfdg->hasParameter("CF::Frame", mCurrentFrame, 0);
+}
+
+void
+RendererImpl::colorConflict(const yy::location& w)
+{
+    if (mColorConflict) return;
+    CfdgError err(w, "Conflicting color change");
+    system()->syntaxError(err);
+    mColorConflict = true;
 }
 
 void

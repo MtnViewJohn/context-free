@@ -188,6 +188,15 @@ Renderer::isNatural(Renderer* r, double n)
 }
 
 void
+Renderer::ColorConflict(Renderer* r, const yy::location& w)
+{
+    if (r)
+        r->colorConflict(w);
+    else
+        CfdgError::Warning(w, "Conflicting color change");
+}
+
+void
 Renderer::initStack(const StackType* p)
 {
     if (p && p->ruleHeader.mParamCount) {

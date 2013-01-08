@@ -358,7 +358,7 @@ CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
     if (!elem->second->second->isConstant && !r) {
         CfdgError::Error(elem->second->second->where, "This expression must be constant");
     } else {
-        elem->second->second->evaluate(value, 0, 0, false, varNum, r);
+        elem->second->second->evaluate(value, 0, 0, false, varNum, true, r);
     }
     return true;
 }
