@@ -648,7 +648,7 @@ void
 RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
 {
     int num = (int)mSymmetryOps.size();
-    if (num == 0) {
+    if (num == 0 || s.mShapeType == primShape::fillType) {
         processPrimShapeSiblings(s, path);
     } else {
         for (int i = 0; i < num; ++i) {
