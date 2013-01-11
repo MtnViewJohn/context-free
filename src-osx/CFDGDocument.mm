@@ -269,7 +269,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)dealloc
 {
-    delete mSystem;     mSystem = 0;
+    //delete mSystem;     mSystem = 0;
+    mSystem->orphan();                      // leave system orphaned on the heap
     [mContent release]; mContent = nil;
     [mUploader release]; mUploader = nil;
     [super dealloc];
