@@ -795,6 +795,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
 	if (f1->good() && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
         outStats.outputCount = count;
+        outStats.outputDone = 0;
         *f1 << outStats.outputCount;
         *f2 << outStats.outputCount;
         outStats.outputCount = count * 2;
