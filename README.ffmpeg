@@ -1,3 +1,31 @@
+*** Context Free
+*** version 3.0
+
+    by Chris Coyne, John Horigan and Mark Lentczner
+
+    Context Free Copyright 2012 John Horigan
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+DISTRIBUTION & LICENSE
+
+Context Free is released under the GNU license.  
+
+Context Free is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
 The Windows and Linux builds of Context Free/cfdg use FFmpeg 1.0 to generate 
 Quicktime animation output. Ealier or later versions of ffmpeg may not work
 as the FFmpeg API is a moving target.

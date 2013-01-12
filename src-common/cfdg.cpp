@@ -4,8 +4,8 @@
  Context Free Design Grammar - version 0.2
 
  Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
- Copyright (C) 2005 Mark Lentczner - markl@glyphic.com
- Copyright (C) 2005 John Horigan - john@glyphic.com
+ Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
+ Copyright (C) 2005-2013 John Horigan - john@glyphic.com
 
  [Send me anything cool you make with it or of it.]
 

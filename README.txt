@@ -3,7 +3,7 @@
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
-    Context Free Copyright 2005-2012 Mark Lentczner and John Horigan
+    Context Free Copyright 2005-2013 Mark Lentczner and John Horigan
     CFDG Copyright 2005 Chris Coyne
 	Anti-Grain Geometry library Copyright 2002-2005 Maxim Shemanarev
 

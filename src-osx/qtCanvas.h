@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2006-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2008 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2011 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
