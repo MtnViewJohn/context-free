@@ -280,6 +280,7 @@
 		528D3E8E0CEAC3D20022E4F1 /* agg_bezier_arc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = agg_bezier_arc.cpp; sourceTree = "<group>"; };
 		529049A10F3E4CC900484FED /* cfdg.ypp */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = cfdg.ypp; sourceTree = "<group>"; };
 		529049A20F3E4CC900484FED /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
+		5298ED5216A216CB00C5726D /* chunk_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_vector.h; sourceTree = "<group>"; };
 		529A79530B7C373200D45C38 /* agg_scanline_p.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = agg_scanline_p.h; sourceTree = "<group>"; };
 		529CC95515A393820079C2B5 /* ffCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffCanvas.h; sourceTree = "<group>"; };
 		529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffCanvasDummy.cpp; sourceTree = "<group>"; };
@@ -493,6 +494,7 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
+				5298ED5216A216CB00C5726D /* chunk_vector.h */,
 				529CC95515A393820079C2B5 /* ffCanvas.h */,
 				529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */,
 				524D22FC13BA0661002732C2 /* makeCFfilename.cpp */,

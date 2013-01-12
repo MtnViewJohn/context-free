@@ -1,7 +1,7 @@
 // winVersion.cpp
 // Context Free
 // ---------------------
-// Copyright (C) 2008 John Horigan
+// Copyright (C) 2008-2013 John Horigan
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
