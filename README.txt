@@ -38,18 +38,27 @@ FILE TREE
 ./input/        - sample input files
 ./src-agg/      - a subset of the Anti_Grain Geometry sources
 ./src-common/   - the CFDG engine
+./src-ffmpeg/   - FFmpeg resources
+./src-ffmpeg/include/  - FFmpeg include files
+./src-ffmpeg/lib/      - FFmpeg libraries for Linux
+./src-ffmpeg/lib32/    - FFmpeg libraries for Windows i386
+./src-ffmpeg/lib64/    - FFmpeg libraries for Windows x86_64
 ./src-net/	    - Windows .Net specific sources
 ./src-osx/      - Mac specific sources
 ./src-unix/     - Unix/Posix specific sources 
 ./src-win/      - Windows specific sources
-./src-win/derived   - pre-built output from flex and yacc for folks that
-                      don't have those tools available
+./src-win/derived/     - pre-built output from flex and yacc for folks that
+                         don't have those tools available
+./src-win/icon/	       - Explorer icons
+./src-win/res/         - UI icons
+./src-win/win-install/ - files for creating NSIS installer EXE
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 MACINTOSH BUILD NOTES
 
 Requires Xcode 4 & Mac OS X 10.5 (Leopard).
-Developed with XCode 4.2 and Mac OS X 10.7 (Lion), has not been tested with older versions of XCode or Mac OS X.
+Developed with XCode 4.5 and Mac OS X 10.8 (Mountain Lion), has not been tested
+with older versions of XCode or Mac OS X.
 
 The Xcode project file is in the top directory:
     ./Context Free.xcodeproj
@@ -65,7 +74,7 @@ The VS2012 Express solution file is at ./src-net/ContextFreeNetVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
-system then cd to src-win/derived and type 'make'.
+or Mac system then cd to src-win/derived and type 'make'.
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS CLI (command line) BUILD NOTES
@@ -77,7 +86,7 @@ The VS2012 Express CLI solution file is at ./ContextFreeCLIVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
-system then cd to src-win/derived and type 'make'.
+or Mac system then cd to src-win/derived and type 'make'.
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
@@ -103,4 +112,7 @@ To run the program, try something like:
 Run it with -? to get a usage summary:
     $ ./cfdg -?
 
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+FFmpeg BUILD NOTES
 
+Check out README.ffmpeg for building ffmpeg or disabling ffmpeg support
