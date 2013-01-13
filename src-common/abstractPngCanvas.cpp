@@ -63,7 +63,7 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
 #ifdef _WIN32
     mStride += ((-mStride) & 3);
 #endif
-    mData = new unsigned char[mStride * height];
+    mData = new unsigned char[mStride * mFullHeight];
     attach(mData + mOriginY * mStride + mOriginX * BytesPerPixel[mPixelFormat], 
            mWidth, mHeight, mStride);
 

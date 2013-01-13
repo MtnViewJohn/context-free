@@ -64,6 +64,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-w 500 -x 0.5 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-?"
             isEnabled = "NO">
          </CommandLineArgument>
@@ -73,7 +77,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 -a20 input/mtree.cfdg output/mtree.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s50 -T10x1 /Users/john/Documents/Context\ Free/tests/friezesymmtest1.cfdg output/feet.png"
