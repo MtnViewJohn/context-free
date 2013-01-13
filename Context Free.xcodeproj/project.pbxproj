@@ -150,7 +150,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
 			);
-			script = "/usr/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"";
+			script = "cd \"${DERIVED_FILES_DIR}\"\n/usr/local/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"";
 		};
 		529049B90F3E9C9B00484FED /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
