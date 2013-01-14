@@ -441,12 +441,16 @@ aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
     if (engine == 0) 
         return RGBA8_Blend;
     
+    int ret = Gray8_Blend;
+    
     if (engine->usesAlpha)
-        return engine->uses16bitColor ? RGBA16_Blend : RGBA8_Blend;
+        ret = RGBA8_Blend;
+    else if (engine->usesColor)
+        ret = RGB8_Blend;
 
-    if (engine->uses16bitColor) {
-        return engine->usesColor ? RGB16_Blend : Gray16_Blend;
-    }
-    return engine->usesColor ? RGB8_Blend : Gray8_Blend;
+    if (engine->uses16bitColor)
+        ret += Has_16bit_Color;
+    
+    return (PixelFormat)ret;
 }
 
