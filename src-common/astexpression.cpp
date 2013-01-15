@@ -1882,14 +1882,14 @@ namespace AST {
                             Renderer::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
+                        m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
+                                                          HSBColor::HueTarget,
+                                                          modArgs[1]);
+                    } else {
                         m.m_Color.h = arg[0];
                         m.m_Color.mUseTarget |= HSBColor::HueTarget;
                         m.m_ColorTarget.h = modArgs[1];
                         m.m_ColorTarget.mUseTarget |= HSBColor::HueTarget;
-                    } else {
-                        m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
-                                                          HSBColor::HueTarget,
-                                                          modArgs[1]);
                     }
                 }
                 break;
