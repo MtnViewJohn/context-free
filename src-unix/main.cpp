@@ -507,7 +507,10 @@ int main (int argc, char* argv[]) {
     if (TheRenderer == 0) {
         return 9;
     }
+
     TheRenderer->setMaxShapes(opts.maxShapes);
+    TheRenderer->run(NULL, false);
+    
     opts.width = TheRenderer->m_width;
     opts.height = TheRenderer->m_height;
     opts.crop = opts.crop && !(myDesign->isTiled() || myDesign->isFrieze());
@@ -546,8 +549,6 @@ int main (int argc, char* argv[]) {
         }
     }
     
-    TheRenderer->run(opts.animationFrames ? 0 : myCanvas, false);
-    
     if (system.error(false) || TheRenderer->requestStop) {
         setupTimer(0);
         Renderer::AbortEverything = true;
@@ -566,6 +567,8 @@ int main (int argc, char* argv[]) {
     
     if (opts.animationFrames) {
         TheRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
+    } else {
+        TheRenderer->draw(myCanvas);
     }
     *myCout << endl;
     
