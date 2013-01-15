@@ -369,6 +369,9 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     if (!requestStop) {
         outputStats();
     }
+    
+    if (!m_canvas && m_frieze)
+        rescaleOutput(m_width, m_height, true);
 
     return m_currScale;
 }
