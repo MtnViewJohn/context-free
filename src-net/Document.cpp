@@ -787,12 +787,12 @@ void Document::WndProc( Message% m )
                     String^ preText = show ? "rescaling - " : "";
                     if ((stat->toDoCount > 0 && !stat->finalOutput) || !mCanvas) {
                         setStatusText(preText + 
-                            String::Format("{0:D} shapes and {1:D} expansions to do", 
+                            String::Format("{0:N0} shapes and {1:N0} expansions to do", 
                             stat->shapeCount, stat->toDoCount), false);
                     } else {
                         String^ endText = mTiled ? ", tiled" : "";
                         setStatusText(preText +
-                            String::Format("{0:D} shapes, {1:D} x {2:D} pixels", 
+                            String::Format("{0:N0} shapes, {1:N0} x {2:N0} pixels", 
                             stat->shapeCount, mCanvas->mWidth, mCanvas->mHeight)
                             + endText, !stat->inOutput);
                     }
