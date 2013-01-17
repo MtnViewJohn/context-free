@@ -49,22 +49,13 @@ static GdiplusStartupInput GdiPStartInput;
 static GdiplusStartupOutput GdiPStartOutput;
 int pngCanvas::CanvasCount = 0;
 
-static int ScreenWidth(int w, bool wallpaper)
-{
-    return wallpaper ? ::GetSystemMetrics(SM_CXFULLSCREEN) : w;
-}
-
-static int ScreenHeight(int h, bool wallpaper)
-{
-    return wallpaper ? ::GetSystemMetrics(SM_CYFULLSCREEN) : h;
-}
-
 pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
                      PixelFormat pixfmt, bool crop, int frameCount,
                      int variation, bool wallpaper, Renderer *r, int mx, int my)
-    : abstractPngCanvas(outfilename, quiet, ScreenWidth(width, wallpaper), 
-                        ScreenHeight(height, wallpaper), pixfmt, crop, 
-                        frameCount, variation, wallpaper, r, mx, my)
+    : abstractPngCanvas(outfilename, quiet, 
+                        wallpaper ? ::GetSystemMetrics(SM_CXFULLSCREEN) : width, 
+                        wallpaper ? ::GetSystemMetrics(SM_CYFULLSCREEN) : height, 
+                        pixfmt, crop, frameCount, variation, wallpaper, r, mx, my)
 {
     if (CanvasCount++ == 0)
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
