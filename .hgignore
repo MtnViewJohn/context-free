@@ -57,6 +57,7 @@ syntax: regexp
 \.plg$
 \.aps$
 \.manifest$
+\.ipch$
 #VC++ Build Directories
 ^ContextFree_Data$
 ^ContextFree_Data/
