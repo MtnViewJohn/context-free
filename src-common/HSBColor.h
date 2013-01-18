@@ -39,18 +39,31 @@ namespace agg {
 
 struct HSBColor
 {
-    enum AssignmentTypes { HueTarget = 1, 
-                           SaturationTarget = 2, 
-                           BrightnessTarget = 4, 
-                           AlphaTarget = 8 
-                         };
+    enum AssignmentTypes {
+        ColorTarget = 1,
+        Color2Value = 3,
+        ColorMask = 3,
+        HueTarget = ColorTarget,
+        Hue2Value = Color2Value,
+        HueMask = 3,
+        SaturationTarget = ColorTarget << 2,
+        Saturation2Value = Color2Value << 2,
+        SaturationMask = 3 << 2,
+        BrightnessTarget = ColorTarget << 4,
+        Brightness2Value = Color2Value << 4,
+        BrightnessMask = 3 << 4,
+        AlphaTarget = ColorTarget << 6,
+        Alpha2Value = Color2Value << 6,
+        AlphaMask = 3 << 6 
+    };
                              
-    HSBColor() : h(0), s(0), b(0), a(0), mUseTarget(0) {};
+    HSBColor() : h(0), s(0), b(0), a(0) {};
     HSBColor(double hue, double sat, double bri, double alpha) 
-        : h(hue), s(sat), b(bri), a(alpha), mUseTarget(0) {};
+        : h(hue), s(sat), b(bri), a(alpha) {};
     HSBColor(const agg::rgba&);
 
-    void adjustWith(const HSBColor& adj, const HSBColor& target = HSBColor(0,0,0,0));
+    static void Adjust(HSBColor& dest, HSBColor& destTarget,
+                       const HSBColor& adj, const HSBColor& adjTarg, int assign);
 
     void getRGBA(agg::rgba& c) const;
     
@@ -59,7 +72,6 @@ struct HSBColor
     }
 
     double h, s, b, a;
-    int mUseTarget;
     
     static inline double adjust(const double& base, const double& adjustment, 
                                 int useTarget = 0, const double& target = 0.0);
@@ -105,7 +117,7 @@ HSBColor::adjustHue(const double& base, const double& adjustment,
         return base;
     
     double h;
-    if (useTarget & HueTarget) {
+    if (useTarget) {
         // decrease or increase toward target. If the target hue does not 
         // cooperate by being smaller (or larger) than the current hue then 
         // add/subtract 360 to make it so. This only works if all hues are

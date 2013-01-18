@@ -75,9 +75,9 @@ Modification::merge(const Modification& m)
     m_time.premultiply(m.m_time);
     mRand64Seed ^= m.mRand64Seed;
     
-    bool conflict = (m_Color.mUseTarget & m.m_Color.mUseTarget) ||
-                    ((m.m_Color.mUseTarget & HSBColor::HueTarget) &&   m_Color.h != 0.0) ||
-                    ((  m_Color.mUseTarget & HSBColor::HueTarget) && m.m_Color.h != 0.0) ||
+    bool conflict = (m_ColorAssignment & m.m_ColorAssignment) ||
+                    ((m.m_ColorAssignment & HSBColor::HueMask) &&   m_Color.h != 0.0) ||
+                    ((  m_ColorAssignment & HSBColor::HueMask) && m.m_Color.h != 0.0) ||
                     (m_Color.b != 0.0 && m.m_Color.b != 0.0) ||
                     (m_Color.s != 0.0 && m.m_Color.s != 0.0) ||
                     (m_Color.a != 0.0 && m.m_Color.a != 0.0);
@@ -86,12 +86,11 @@ Modification::merge(const Modification& m)
     m_ColorTarget.b += m.m_ColorTarget.b;
     m_ColorTarget.s += m.m_ColorTarget.s;
     m_ColorTarget.a += m.m_ColorTarget.a;
-    m_ColorTarget.mUseTarget |= m.m_ColorTarget.mUseTarget;
     m_Color.h += m.m_Color.h;
     m_Color.b += m.m_Color.b;
     m_Color.s += m.m_Color.s;
     m_Color.a += m.m_Color.a;
-    m_Color.mUseTarget |= m.m_Color.mUseTarget;
+    m_ColorAssignment |= m.m_ColorAssignment;
     
     return conflict;
 }

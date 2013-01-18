@@ -120,13 +120,26 @@ HSBColor::HSBColor(const agg::rgba& c)
     a = c.a;
 }
 
-void HSBColor::adjustWith(const HSBColor& adj, const HSBColor& target)
+void
+HSBColor::Adjust(HSBColor& dest, HSBColor& destTarget,
+                 const HSBColor& adj, const HSBColor& adjTarg, int assign)
 {
-    // Adjust parent color w/shape color
-    h = adjustHue(h, adj.h, adj.mUseTarget, target.h);
-    s = adjust(s, adj.s, adj.mUseTarget & SaturationTarget, target.s);
-    b = adjust(b, adj.b, adj.mUseTarget & BrightnessTarget, target.b);
-    a = adjust(a, adj.a, adj.mUseTarget & AlphaTarget, target.a);
+    int current = assign & HueMask;
+    dest.h = adjustHue(dest.h, adj.h, current, current == Hue2Value ?        adjTarg.h : destTarget.h);
+
+    current = assign & SaturationMask;
+    dest.s =    adjust(dest.s, adj.s, current, current == Saturation2Value ? adjTarg.s : destTarget.s);
+    
+    current = assign & BrightnessMask;
+    dest.b =    adjust(dest.b, adj.b, current, current == Brightness2Value ? adjTarg.b : destTarget.b);
+
+    current = assign & AlphaMask;
+    dest.a =    adjust(dest.a, adj.a, current, current == Alpha2Value ?      adjTarg.a : destTarget.a);
+    
+    destTarget.h = adjustHue(destTarget.h, adjTarg.h);
+    destTarget.s = adjust(destTarget.s, adjTarg.s);
+    destTarget.s = adjust(destTarget.s, adjTarg.s);
+    destTarget.a = adjust(destTarget.a, adjTarg.a);
 }
 
 double HSBColor::delta(double to, double from, unsigned int steps)
