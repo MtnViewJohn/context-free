@@ -1862,7 +1862,7 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if (m.m_Color.mUseTarget & HSBColor::HueTarget) {
+                    if (m.m_ColorAssignment & HSBColor::HueMask) {
                         if (rti == 0)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
@@ -1873,7 +1873,7 @@ namespace AST {
                     else
                         m.m_Color.h += modArgs[0];
                 } else {
-                    if ((m.m_Color.mUseTarget & HSBColor::HueTarget ||
+                    if ((m.m_ColorAssignment & HSBColor::HueMask ||
                          m.m_Color.h != 0.0))
                     {
                         if (rti == 0)
@@ -1887,9 +1887,8 @@ namespace AST {
                                                           modArgs[1]);
                     } else {
                         m.m_Color.h = arg[0];
-                        m.m_Color.mUseTarget |= HSBColor::HueTarget;
                         m.m_ColorTarget.h = modArgs[1];
-                        m.m_ColorTarget.mUseTarget |= HSBColor::HueTarget;
+                        m.m_ColorAssignment |= HSBColor::Hue2Value;
                     }
                 }
                 break;
@@ -1898,7 +1897,7 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget) ||
+                    if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                          m.m_Color.s != 0.0)
                     {
                         if (rti == 0)
@@ -1911,7 +1910,7 @@ namespace AST {
                     else
                         m.m_Color.s = arg[0];
                 } else {
-                    if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget) ||
+                    if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                          m.m_Color.s != 0.0 || m.m_ColorTarget.s != 0.0)
                     {
                         if (rti == 0)
@@ -1923,9 +1922,8 @@ namespace AST {
                         m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0], 1, arg[1]);
                     } else {
                         m.m_Color.s = arg[0];
-                        m.m_Color.mUseTarget |= HSBColor::SaturationTarget;
                         m.m_ColorTarget.s = arg[1];
-                        m.m_ColorTarget.mUseTarget |= HSBColor::SaturationTarget;
+                        m.m_ColorAssignment |= HSBColor::Saturation2Value;
                     }
                 }
                 break;
@@ -1934,7 +1932,7 @@ namespace AST {
                 maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget ||
+                    if ((m.m_ColorAssignment & HSBColor::BrightnessMask ||
                          m.m_Color.b != 0.0))
                     {
                         if (rti == 0)
@@ -1947,7 +1945,7 @@ namespace AST {
                     else
                         m.m_Color.b = arg[0];
                 } else {
-                    if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget) ||
+                    if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
                          m.m_Color.b != 0.0 || m.m_ColorTarget.b != 0.0)
                     {
                         if (rti == 0)
@@ -1959,9 +1957,8 @@ namespace AST {
                         m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0], 1, arg[1]);
                     } else {
                         m.m_Color.b = arg[0];
-                        m.m_Color.mUseTarget |= HSBColor::BrightnessTarget;
                         m.m_ColorTarget.b = arg[1];
-                        m.m_ColorTarget.mUseTarget |= HSBColor::BrightnessTarget;
+                        m.m_ColorAssignment |= HSBColor::Brightness2Value;
                     }
                 }
                 break;
@@ -1972,7 +1969,7 @@ namespace AST {
                     *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if (argcount == 1) {
-                    if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget ||
+                    if ((m.m_ColorAssignment & HSBColor::AlphaMask ||
                          m.m_Color.a != 0.0))
                     {
                         if (rti == 0)
@@ -1985,7 +1982,7 @@ namespace AST {
                     else
                         m.m_Color.a = arg[0];
                 } else {
-                    if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget) ||
+                    if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                          m.m_Color.a != 0.0 || m.m_ColorTarget.a != 0.0)
                     {
                         if (rti == 0)
@@ -1997,16 +1994,15 @@ namespace AST {
                         m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0], 1, arg[1]);
                     } else {
                         m.m_Color.a = arg[0];
-                        m.m_Color.mUseTarget |= HSBColor::AlphaTarget;
                         m.m_ColorTarget.a = arg[1];
-                        m.m_ColorTarget.mUseTarget |= HSBColor::AlphaTarget;
+                        m.m_ColorAssignment |= HSBColor::Alpha2Value;
                     }
                 }
                 break;
             }
             case ASTmodTerm::hueTarg: {
                 if (justCheck) break;
-                if ((m.m_Color.mUseTarget & HSBColor::HueTarget) ||
+                if ((m.m_ColorAssignment & HSBColor::HueMask) ||
                      m.m_Color.h != 0.0)
                 {
                     if (rti == 0)
@@ -2020,13 +2016,13 @@ namespace AST {
                                                       m.m_ColorTarget.h);
                 } else {
                     m.m_Color.h = arg[0];
-                    m.m_Color.mUseTarget |= HSBColor::HueTarget;
+                    m.m_ColorAssignment |= HSBColor::HueTarget;
                 }
                 break;
             }
             case ASTmodTerm::satTarg: {
                 if (justCheck) break;
-                if ((m.m_Color.mUseTarget & HSBColor::SaturationTarget) ||
+                if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                      m.m_Color.s != 0.0)
                 {
                     if (rti == 0)
@@ -2039,13 +2035,13 @@ namespace AST {
                                                    m.m_ColorTarget.s);
                 } else {
                     m.m_Color.s = arg[0];
-                    m.m_Color.mUseTarget |= HSBColor::SaturationTarget;
+                    m.m_ColorAssignment |= HSBColor::SaturationTarget;
                 }
                 break;
             }
             case ASTmodTerm::brightTarg: {
                 if (justCheck) break;
-                if ((m.m_Color.mUseTarget & HSBColor::BrightnessTarget) ||
+                if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
                      m.m_Color.b != 0.0)
                 {
                     if (rti == 0)
@@ -2058,7 +2054,7 @@ namespace AST {
                                                    m.m_ColorTarget.b);
                 } else {
                     m.m_Color.b = arg[0];
-                    m.m_Color.mUseTarget |= HSBColor::BrightnessTarget;
+                    m.m_ColorAssignment |= HSBColor::BrightnessTarget;
                 }
                 break;
             }
@@ -2066,7 +2062,7 @@ namespace AST {
                 if (p)
                     *p |= CF_USES_ALPHA;
                 if (justCheck) break;
-                if ((m.m_Color.mUseTarget & HSBColor::AlphaTarget) ||
+                if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                      m.m_Color.a != 0.0)
                 {
                     if (rti == 0)
@@ -2079,7 +2075,7 @@ namespace AST {
                                                    m.m_ColorTarget.a);
                 } else {
                     m.m_Color.a = arg[0];
-                    m.m_Color.mUseTarget |= HSBColor::AlphaTarget;
+                    m.m_ColorAssignment |= HSBColor::AlphaTarget;
                 }
                 break;
             }

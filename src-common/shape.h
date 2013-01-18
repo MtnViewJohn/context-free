@@ -52,10 +52,11 @@ class Modification {
         
         HSBColor m_Color;
         HSBColor m_ColorTarget;
+        int      m_ColorAssignment;
 
         Rand64 mRand64Seed;
 
-        Modification()
+    Modification() : m_ColorAssignment(0)
         { }
         
         double area() const { return fabs(m_transform.determinant()); }
@@ -72,15 +73,8 @@ class Modification {
             m_transform.premultiply(m.m_transform);
             m_Z.premultiply(m.m_Z);
             m_time.premultiply(m.m_time);
-            
-            if (m.m_ColorTarget.mUseTarget) {
-                m_ColorTarget = m.m_ColorTarget;
-                m_Color.adjustWith(m.m_Color, m_ColorTarget);
-            } else {
-                m_Color.adjustWith(m.m_Color, m_ColorTarget);
-                m_ColorTarget.adjustWith(m.m_ColorTarget, m_ColorTarget);
-            }
-            
+            HSBColor::Adjust(m_Color, m_ColorTarget, m.m_Color, m.m_ColorTarget,
+                             m.m_ColorAssignment);
             mRand64Seed ^= m.mRand64Seed;
             return *this;
         }
