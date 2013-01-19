@@ -79,6 +79,8 @@ public:
         } else {
             _Ptr = 0;
         }
+        if (_Iter == _End)
+            _Ptr = 0;           // Should never happen
     }
     const_iterator(const StackType* s, const std::vector<AST::ASTparameter>* p)
     : _Ptr(s)
@@ -87,6 +89,8 @@ public:
             _Iter = p->begin();
             _End = p->end();
         }
+        if (_Iter == _End)
+            _Ptr = 0;           // Should never happen
     }
     
     const StackType& operator*() const { return *_Ptr; }
@@ -145,6 +149,8 @@ public:
         } else {
             _Ptr = 0;
         }
+        if (_Iter == _End)
+            _Ptr = 0;           // Should never happen
     }
     iterator(StackType* s, const std::vector<AST::ASTparameter>* p)
     : _Ptr(s)
@@ -153,6 +159,8 @@ public:
             _Iter = p->begin();
             _End = p->end();
         }
+        if (_Iter == _End)
+            _Ptr = 0;           // Should never happen
     }
     
     StackType& operator*() { return *_Ptr; }
@@ -293,7 +301,9 @@ StackType::read(std::istream& is)
 void
 StackType::write(std::ostream& os) const
 {
-    uint64_t head = ruleHeader.mRuleName << 24 | ruleHeader.mParamCount << 8 | 0xff;
+    uint64_t head = ((uint64_t)(ruleHeader.mRuleName)) << 24 |
+                    ((uint64_t)(ruleHeader.mParamCount)) << 8 |
+                    0xff;
     os.write((char*)(&head), sizeof(uint64_t));
     if (ruleHeader.mParamCount == 0)
         return;
@@ -354,9 +364,11 @@ EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
         const AST::ASTexpression* arg = (*arguments)[i];
         switch (arg->mType) {
             case AST::ASTexpression::NumericType: {
-                arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
+                int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
                 if (dest.type().isNatural && !Renderer::isNatural(rti, dest->number))
                     throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
+                if (num != dest.type().mTuplesize)
+                    throw CfdgError(arg->where, "Expression does not evaluate to the correct size");
                 break;
             }
             case AST::ASTexpression::ModType: {
