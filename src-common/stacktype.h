@@ -60,7 +60,7 @@ union StackType {
         : _Ptr(s)
         {
             if (_Ptr && _Ptr->ruleHeader.mParamCount) {
-                const std::vector<AST::ASTparameter>* p = (s + 1)->typeInfo;
+                const AST::ASTparameters* p = (s + 1)->typeInfo;
                 _Iter = p->begin();
                 _End = p->end();
                 _Ptr += 2;
@@ -100,21 +100,6 @@ union StackType {
         bool operator==(const const_iterator& o) const { return _Ptr == o._Ptr; }
         bool operator!=(const const_iterator& o) const { return _Ptr != o._Ptr; }
         const AST::ASTparameter& type() const { return *_Iter; }
-        
-        static const_iterator begin(const StackType* s)
-        {
-            return const_iterator(s);
-        }
-        
-        static const_iterator begin(const StackType* s, const AST::ASTparameters* p)
-        {
-            return const_iterator(s, p);
-        }
-        
-        static const_iterator end()
-        {
-            return const_iterator();
-        }
     };
     
     class iterator {
@@ -169,31 +154,16 @@ union StackType {
         bool operator==(const iterator& o) const { return _Ptr == o._Ptr; }
         bool operator!=(const iterator& o) const { return _Ptr != o._Ptr; }
         const AST::ASTparameter& type() const { return *_Iter; }
-        
-        static iterator begin(StackType* s)
-        {
-            return iterator(s);
-        }
-        
-        static iterator begin(StackType* s, const AST::ASTparameters* p)
-        {
-            return iterator(s, p);
-        }
-        
-        static iterator end()
-        {
-            return iterator();
-        }
     };
     
     double      number;
     const StackType*  rule;
     StackRule   ruleHeader;
-    const std::vector<AST::ASTparameter>* typeInfo;
+    const AST::ASTparameters* typeInfo;
 
-    static StackType*  alloc(int name, int size, const std::vector<AST::ASTparameter>* ti);
+    static StackType*  alloc(int name, int size, const AST::ASTparameters* ti);
     void        release() const;
-    void        release(const std::vector<AST::ASTparameter>* p) const;
+    void        release(const AST::ASTparameters* p) const;
     void        retain(Renderer* r) const;
 
     void        read(std::istream& is);
@@ -204,7 +174,44 @@ union StackType {
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
                          const StackType* parent);
     void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                         const std::vector<AST::ASTparameter>* p, bool sequential);
+                         const AST::ASTparameters* p, bool sequential);
+    
+    iterator begin()
+    {
+        return iterator(this);
+    }
+    iterator begin(const AST::ASTparameters* p)
+    {
+        return iterator(this, p);
+    }
+    iterator end()
+    {
+        return iterator();
+    }
+    const_iterator cbegin()
+    {
+        return const_iterator(this);
+    }
+    const_iterator cbegin(const AST::ASTparameters* p)
+    {
+        return const_iterator(this, p);
+    }
+    const_iterator cend()
+    {
+        return const_iterator();
+    }
+    const_iterator begin() const
+    {
+        return const_iterator(this);
+    }
+    const_iterator begin(const AST::ASTparameters* p) const
+    {
+        return const_iterator(this, p);
+    }
+    const_iterator end() const
+    {
+        return const_iterator();
+    }
 };
 
 #endif // INCLUDE_STACKTYPE_H
