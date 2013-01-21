@@ -68,7 +68,7 @@ enum { assert_static__ = 1/((int)(e)) }; \
 } while (0)
 
 StackType*
-StackType::alloc(int name, int size, const std::vector<AST::ASTparameter>* ti)
+StackType::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     assert_static(sizeof(StackType) == sizeof(double));
     StackType* newrule = new StackType[size ? size + 2 : 1];
@@ -86,7 +86,7 @@ void
 StackType::release() const
 {
     if (ruleHeader.mRefCount == 0) {
-        for (const_iterator it = const_iterator::begin(this), e = const_iterator::end(); it != e; ++it)
+        for (const_iterator it = begin(), e = end(); it != e; ++it)
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
         delete[] this;
@@ -99,9 +99,9 @@ StackType::release() const
 
 // Release arguments on the stack
 void
-StackType::release(const std::vector<AST::ASTparameter>* p) const
+StackType::release(const AST::ASTparameters* p) const
 {
-    for (const_iterator it = const_iterator::begin(this, p), e = const_iterator::end(); it != e; ++it)
+    for (const_iterator it = begin(p), e = end(); it != e; ++it)
         if (it.type().mType == AST::RuleType)
             it->rule->release();
 }
@@ -141,7 +141,7 @@ StackType::read(std::istream& is)
     if (ruleHeader.mParamCount == 0)
         return;
     is.read((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (iterator it = iterator::begin(this), e = iterator::end(); it != e; ++it) {
+    for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
@@ -167,7 +167,7 @@ StackType::write(std::ostream& os) const
     if (ruleHeader.mParamCount == 0)
         return;
     os.write((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (const_iterator it = const_iterator::begin(this), e = const_iterator::end(); 
+    for (const_iterator it = begin(), e = end(); 
         it != e; ++it)
     {
         switch (it.type().mType) {
@@ -254,18 +254,18 @@ void
 StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
                     const StackType* parent)
 {
-    iterator dest = iterator::begin(this);
-    iterator end = iterator::end();
-    EvalArgs(rti, parent, dest, end, arguments, false);
+    iterator dest = begin();
+    iterator end_it = end();
+    EvalArgs(rti, parent, dest, end_it, arguments, false);
 }
 
 // Evaluate arguments on the stack
 void
 StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
-                    const std::vector<AST::ASTparameter>* p, bool sequential)
+                    const AST::ASTparameters* p, bool sequential)
 {
-    iterator dest = iterator::begin(this, p);
-    iterator end = iterator::end();
-    EvalArgs(rti, NULL, dest, end, arguments, sequential);
+    iterator dest = begin(p);
+    iterator end_it = end();
+    EvalArgs(rti, NULL, dest, end_it, arguments, sequential);
 }
 
