@@ -31,7 +31,9 @@
 #include <string>
 #include "agg_math_stroke.h"
 #include "agg_trans_affine.h"
-#include "cfdg.h"
+#include "location.hh"
+
+class Renderer;
 
 namespace AST {
     typedef std::vector<agg::trans_affine> SymmList;
@@ -95,6 +97,41 @@ namespace AST {
     typedef std::auto_ptr<ASTmodTerm>       term_ptr;
     typedef std::auto_ptr<ASTmodification>  mod_ptr;
     
+    enum expType {
+        NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
+    };
+    
+    class ASTdefine;
+    
+    class ASTparameter {
+    public:
+        expType     mType;
+        bool        isParameter;
+        bool        isLoopIndex;
+        bool        isNatural;
+        bool        isLocal;
+        int         mName;
+        yy::location mLocation;
+        ASTdefine*  mDefinition;
+        int         mStackIndex;
+        int         mTuplesize;
+        
+        static bool Impure;
+        
+        ASTparameter() :    mType(NoType), isParameter(false),
+        isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
+        mDefinition(0), mStackIndex(-1), mTuplesize(1) {};
+        void init(const std::string& typeName, int nameIndex);
+        void init(int nameIndex, ASTdefine*  def);
+        void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
+        bool operator!=(const ASTparameter& p) const;
+        bool operator!=(const ASTexpression& e) const;
+        
+        static int CheckType(const ASTparameters* types, const ASTparameters* parent,
+                             const ASTexpression* args, const yy::location& where,
+                             bool checkNumber);
+    };
+
     enum FlagTypes {
         CF_NONE = 0,
         CF_MITER_JOIN = agg::miter_join,

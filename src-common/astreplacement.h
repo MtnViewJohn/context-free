@@ -157,7 +157,7 @@ namespace AST {
     public:
         ASTexpression* mExpression;
         int mTuplesize;
-        ASTexpression::expType mType;
+        AST::expType mType;
         bool isConstant;
         ASTparameters mParameters;
         unsigned mStackCount;

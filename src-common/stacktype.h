@@ -31,6 +31,7 @@
 #include <stdint.h>               // Use the C99 official header
 #include <vector>
 #include <iosfwd>
+#include "ast.h"
 
 namespace AST { class ASTparameter; class ASTexpression; }
 
@@ -48,6 +49,143 @@ struct StackRule {
 };
 
 union StackType {
+    class const_iterator {
+    public:
+        const StackType* _Ptr;
+        AST::ASTparameters::const_iterator _Iter;
+        AST::ASTparameters::const_iterator _End;
+        
+        const_iterator() : _Ptr(0) {}
+        const_iterator(const StackType* s)
+        : _Ptr(s)
+        {
+            if (_Ptr && _Ptr->ruleHeader.mParamCount) {
+                const std::vector<AST::ASTparameter>* p = (s + 1)->typeInfo;
+                _Iter = p->begin();
+                _End = p->end();
+                _Ptr += 2;
+            } else {
+                _Ptr = 0;
+            }
+        }
+        const_iterator(const StackType* s, const AST::ASTparameters* p)
+        : _Ptr(s)
+        {
+            if (_Ptr) {
+                _Iter = p->begin();
+                _End = p->end();
+                if (_Iter == _End)
+                    _Ptr = 0;           // Should never happen
+            }
+        }
+        
+        const StackType& operator*() const { return *_Ptr; }
+        const StackType* operator->() const { return _Ptr; }
+        const StackType& operator++()
+        {
+            if (_Ptr) {
+                _Ptr += _Iter->mTuplesize;
+                ++_Iter;
+                if (_Iter == _End)
+                    _Ptr = 0;
+            }
+            return *_Ptr;
+        }
+        const StackType& operator++(int)
+        {
+            const StackType* tmp = _Ptr;
+            ++(*this);
+            return *tmp;
+        }
+        bool operator==(const const_iterator& o) const { return _Ptr == o._Ptr; }
+        bool operator!=(const const_iterator& o) const { return _Ptr != o._Ptr; }
+        const AST::ASTparameter& type() const { return *_Iter; }
+        
+        static const_iterator begin(const StackType* s)
+        {
+            return const_iterator(s);
+        }
+        
+        static const_iterator begin(const StackType* s, const AST::ASTparameters* p)
+        {
+            return const_iterator(s, p);
+        }
+        
+        static const_iterator end()
+        {
+            return const_iterator();
+        }
+    };
+    
+    class iterator {
+    public:
+        StackType* _Ptr;
+        AST::ASTparameters::const_iterator _Iter;
+        AST::ASTparameters::const_iterator _End;
+        
+        iterator() : _Ptr(0) {}
+        iterator(StackType* s)
+        : _Ptr(s)
+        {
+            if (_Ptr && _Ptr->ruleHeader.mParamCount) {
+                const AST::ASTparameters* p = (s + 1)->typeInfo;
+                _Iter = p->begin();
+                _End = p->end();
+                _Ptr += 2;
+            } else {
+                _Ptr = 0;
+            }
+        }
+        iterator(StackType* s, const AST::ASTparameters* p)
+        : _Ptr(s)
+        {
+            if (_Ptr) {
+                _Iter = p->begin();
+                _End = p->end();
+                if (_Iter == _End)
+                    _Ptr = 0;           // Should never happen
+            }
+        }
+        
+        StackType& operator*() { return *_Ptr; }
+        StackType* operator->() { return _Ptr; }
+        StackType& operator++()
+        {
+            if (_Ptr) {
+                _Ptr += _Iter->mTuplesize;
+                ++_Iter;
+                if (_Iter == _End)
+                    _Ptr = 0;
+            }
+            return *_Ptr;
+        }
+        
+        StackType& operator++(int)
+        {
+            StackType* tmp = _Ptr;
+            ++(*this);
+            return *tmp;
+        }
+        bool operator==(const iterator& o) const { return _Ptr == o._Ptr; }
+        bool operator!=(const iterator& o) const { return _Ptr != o._Ptr; }
+        const AST::ASTparameter& type() const { return *_Iter; }
+        
+        static iterator begin(StackType* s)
+        {
+            return iterator(s);
+        }
+        
+        static iterator begin(StackType* s, const AST::ASTparameters* p)
+        {
+            return iterator(s, p);
+        }
+        
+        static iterator end()
+        {
+            return iterator();
+        }
+    };
+    
     double      number;
     const StackType*  rule;
     StackRule   ruleHeader;

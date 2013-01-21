@@ -221,7 +221,7 @@ Renderer::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& para
          it != p_end; ++it)
     {
         if (it->isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()
-        if (it->mType == AST::ASTexpression::RuleType)
+        if (it->mType == AST::RuleType)
             pos->rule->release();
         pos += it->mTuplesize;
         if (pos > &(mCFstack.back()))

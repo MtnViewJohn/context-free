@@ -411,7 +411,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
             double v = -1.0;
             if (!max || !max->isConstant ||
-                max->mType != ASTexpression::NumericType ||
+                max->mType != AST::NumericType ||
                 max->evaluate(&v, 1) != 1)
             {
                 CfdgError::Error(max->where, "CF::MaxNatural requires a constant numeric expression");
@@ -443,7 +443,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         if (def->mExpression->mType != def->mType) {
             CfdgError::Error(expLoc, "Mismatch between declared and defined type of user function");
         } else {
-            if (def->mType == ASTexpression::NumericType &&
+            if (def->mType == AST::NumericType &&
                 def->mTuplesize != def->mExpression->evaluate(0, 0))
             {
                 CfdgError::Error(expLoc, "Mismatch between declared and defined vector length of user function");
@@ -481,7 +481,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
     std::map<std::string,int>::iterator flagItem = FlagNames.find(name);
     if (flagItem != FlagNames.end()) {
         ASTreal* flag = new ASTreal((double)(flagItem->second), loc);
-        flag->mType = ASTexpression::FlagType;
+        flag->mType = AST::FlagType;
         return flag;
     }
     
@@ -498,7 +498,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
     if (bound->mStackIndex == -1) {
         assert(bound->mDefinition);
         switch (bound->mType) {
-            case ASTexpression::NumericType: {
+            case AST::NumericType: {
                 double data[9];
                 bool natural = bound->isNatural;
                 int valCount = bound->mDefinition->mExpression->evaluate(data, 9);
@@ -517,9 +517,9 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 list->isNatural = natural;
                 return list;
             }
-            case ASTexpression::ModType:
+            case AST::ModType:
                 return new ASTmodification(bound->mDefinition->mChildChange, loc);
-            case ASTexpression::RuleType: {
+            case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
                 if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
                     return new ASTruleSpecifier(r->shapeType, name, exp_ptr(), loc, NULL, NULL);
@@ -532,12 +532,12 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 break;
         }
     } else {
-        if (bound->mType == ASTexpression::RuleType) {
+        if (bound->mType == AST::RuleType) {
             return new ASTruleSpecifier(name, loc, bound->mStackIndex - mLocalStackDepth);
         }
         
         ASTvariable* v = new ASTvariable(varNum, name, loc);
-        v->count = bound->mType == ASTexpression::NumericType ? bound->mTuplesize : 1;
+        v->count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
         v->stackIndex = bound->mStackIndex - (isGlobal ? 0 : mLocalStackDepth);
         v->mType = bound->mType;
         v->isNatural = bound->isNatural;
@@ -561,7 +561,7 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
     if (bound == 0) {
         CfdgError::Error(nameLoc, "Cannot find variable or parameter with this name");
         return args.release();
-    } else if (bound->mType != ASTexpression::NumericType) {
+    } else if (bound->mType != AST::NumericType) {
         CfdgError::Error(nameLoc, "This is not a numeric vector");
         return args.release();
     }
@@ -606,7 +606,7 @@ ASTruleSpecifier*
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
 {
     if (name == "if" || name == "let" || name == "select") {
-        if (args->mType != ASTexpression::RuleType)
+        if (args->mType != AST::RuleType)
             CfdgError::Error(args->where, "Function does not return a shape");
         if (name == "select") {
             yy::location argsLoc = args->where;
@@ -621,7 +621,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     
     ASTdefine* def = m_CFDG->findFunction(nameIndex);
     if (def) {
-        if (def->mType != ASTexpression::RuleType) {
+        if (def->mType != AST::RuleType) {
             yy::location nameLoc = loc;
             if (args.get()) nameLoc.end = args->where.begin;
             CfdgError::Error(nameLoc, "Function does not return a shape");
@@ -633,7 +633,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     }
     
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == 0 || bound->mType != ASTexpression::RuleType) {
+    if (bound == 0 || bound->mType != AST::RuleType) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, args, loc,
                                                       m_CFDG->getShapeParams(nameIndex),
@@ -672,7 +672,7 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         CfdgError::Error(t->where, "Color target feature unavailable in v3 syntax");
     
     int argcount = 0;
-    if (t->args && t->args->mType == ASTexpression::NumericType)
+    if (t->args && t->args->mType == AST::NumericType)
         argcount = t->args->evaluate(0, 0);
 
     // Try to merge consecutive x and y adjustments
@@ -890,7 +890,7 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
         exp_ptr r;
         
         switch (p.mType) {
-            case ASTexpression::NumericType: {
+            case AST::NumericType: {
                 ASTexpression* num = new ASTreal(p.isNatural ? 1.0 : 1.5, defLoc);
                 num->isConstant = false;
                 for (int i = 1; i < p.mTuplesize; ++i)
@@ -898,14 +898,14 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
                 r.reset(num);
                 break;
             }
-            case ASTexpression::ModType:
+            case AST::ModType:
                 r.reset(new ASTmodification(defLoc));
                 break;
-            case ASTexpression::NoType:
-            case ASTexpression::FlagType:
+            case AST::NoType:
+            case AST::FlagType:
                 CfdgError::Warning(defLoc, "Unsupported function type");
                 // fall through
-            case ASTexpression::RuleType:
+            case AST::RuleType:
                 r.reset(new ASTruleSpecifier());
                 break;
         }

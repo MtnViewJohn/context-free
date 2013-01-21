@@ -40,10 +40,6 @@ namespace AST {
 
     class ASTexpression {
     public:
-        enum expType {
-            NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
-        };
-
         bool isConstant;
         bool isNatural;
         bool isLocal;
@@ -356,37 +352,6 @@ namespace AST {
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-    };
-    
-    class ASTdefine;
-
-    class ASTparameter {
-    public:
-        ASTexpression::expType mType;
-        bool        isParameter;
-        bool        isLoopIndex;
-        bool        isNatural;
-        bool        isLocal;
-        int         mName;
-        yy::location mLocation;
-        ASTdefine*  mDefinition;
-        int         mStackIndex;
-        int         mTuplesize;
-        
-        static bool Impure;
-        
-        ASTparameter() :    mType(ASTexpression::NoType), isParameter(false), 
-          isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
-          mDefinition(0), mStackIndex(-1), mTuplesize(1) {};
-        void init(const std::string& typeName, int nameIndex);
-        void init(int nameIndex, ASTdefine*  def);
-        void check(const yy::location& typeLoc, const yy::location& nameLoc);
-        bool operator!=(const ASTparameter& p) const;
-        bool operator!=(const ASTexpression& e) const;
-        
-        static int CheckType(const ASTparameters* types, const ASTparameters* parent, 
-                             const ASTexpression* args, const yy::location& where,
-                             bool checkNumber);
     };
 }
 

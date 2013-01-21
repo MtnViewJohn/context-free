@@ -241,7 +241,7 @@ RendererImpl::cleanup()
         if (AbortEverything) return;
         const ASTreplacement* rep = *cit;
         if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep)) {
-            if (def->mType == ASTexpression::RuleType)
+            if (def->mType == AST::RuleType)
                 mCFstack[i].rule->release();
             i += def->mTuplesize;
         }

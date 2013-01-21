@@ -231,7 +231,7 @@ bool
 CFDGImpl::isTiled(agg::trans_affine* tr, double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Tile", ASTexpression::ModType, loc)) return false;
+    if (!hasParameter("CF::Tile", AST::ModType, loc)) return false;
     if (mTileMod.m_transform.sx == 0.0 || mTileMod.m_transform.sy == 0.0) return false;
     if (tr) {
         *tr = mTileMod.m_transform;
@@ -264,7 +264,7 @@ CFDG::frieze_t
 CFDGImpl::isFrieze(agg::trans_affine* tr, double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Tile", ASTexpression::ModType, loc)) return no_frieze;
+    if (!hasParameter("CF::Tile", AST::ModType, loc)) return no_frieze;
     if (mTileMod.m_transform.sx != 0.0 && mTileMod.m_transform.sy != 0.0) return no_frieze;
     if (mTileMod.m_transform.sx == 0.0 && mTileMod.m_transform.sy == 0.0) return no_frieze;
     if (tr) {
@@ -298,7 +298,7 @@ bool
 CFDGImpl::isSized(double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Size", ASTexpression::ModType, loc)) return false;
+    if (!hasParameter("CF::Size", AST::ModType, loc)) return false;
     if (x) *x = mSizeMod.m_transform.sx;
     if (y) *y = mSizeMod.m_transform.sy;
     if (mSizeMod.m_transform.shx != 0.0 || mSizeMod.m_transform.shy != 0.0)
@@ -310,7 +310,7 @@ bool
 CFDGImpl::isTimed(agg::trans_affine_time* t) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Time", ASTexpression::ModType, loc)) return false;
+    if (!hasParameter("CF::Time", AST::ModType, loc)) return false;
     if (t) *t = mTimeMod.m_time;
     if (mTimeMod.m_time.tbegin >= mTimeMod.m_time.tend)
         CfdgError::Error(loc, "Time specification must have positive duration.");
@@ -337,7 +337,7 @@ CFDGImpl::hasParameter(const char* name, double& value, Renderer* r) const
     if (varNum < 0) return false;
     std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
-        elem->second->second->mType != ASTexpression::NumericType) return false;
+        elem->second->second->mType != AST::NumericType) return false;
     if (!elem->second->second->isConstant && !r) {
         CfdgError::Error(elem->second->second->where, "This expression must be constant");
     } else {
@@ -354,7 +354,7 @@ CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
     if (varNum < 0) return false;
     std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
-        elem->second->second->mType != ASTexpression::ModType) return false;
+        elem->second->second->mType != AST::ModType) return false;
     if (!elem->second->second->isConstant && !r) {
         CfdgError::Error(elem->second->second->where, "This expression must be constant");
     } else {
@@ -364,7 +364,7 @@ CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, ASTexpression::expType t, yy::location& where) const
+CFDGImpl::hasParameter(const char* name, AST::expType t, yy::location& where) const
 {
     string n = name;
     int varNum = tryEncodeShapeName(n);
