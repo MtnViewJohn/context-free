@@ -61,7 +61,7 @@ namespace AST {
         mParameters.back().mLocation = typeLoc + nameLoc;
         mParameters.back().init(type, index);
         mParameters.back().isParameter = true;
-        mParameters.back().check(typeLoc, nameLoc);
+        mParameters.back().checkParam(typeLoc, nameLoc);
     }
     
     ASTparameter&
@@ -72,7 +72,7 @@ namespace AST {
         ASTparameter& b = mParameters.back();
         b.mLocation = nameLoc + expLoc;
         b.init(index, def);
-        b.check(nameLoc, nameLoc);
+        b.checkParam(nameLoc, nameLoc);
         return b;
     }
     
@@ -162,7 +162,7 @@ namespace AST {
             }
         }
         
-        ASTexpression loopVar(nameLoc, false, bodyNatural, ASTexpression::NumericType);
+        ASTexpression loopVar(nameLoc, false, bodyNatural, AST::NumericType);
         ASTdefine loopDef(name, exp_ptr(&loopVar), nameLoc);
         ASTparameter& bodyParam = mLoopBody.addParameter(nameIndex, &loopDef, 
                                                          nameLoc, nameLoc);
@@ -189,11 +189,9 @@ namespace AST {
       mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name),
       isFunction(false)
     {
-        if (mType != ASTexpression::NumericType && 
-            mType != ASTexpression::ModType &&
-            mType != ASTexpression::RuleType)
+        if (mType != NumericType && mType != ModType && mType != RuleType)
             CfdgError::Error(e->where, "Unsupported expression type");
-        mTuplesize = e->mType == ASTexpression::NumericType ? e->evaluate(0, 0) : 1;
+        mTuplesize = e->mType == AST::NumericType ? e->evaluate(0, 0) : 1;
         mExpression = e.release()->simplify();
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -203,7 +201,7 @@ namespace AST {
     
     ASTdefine::ASTdefine(const std::string& name, mod_ptr e, const yy::location& loc) 
     : ASTreplacement(ASTruleSpecifier::Zero, e, loc, empty), mExpression(0), 
-      mTuplesize(ModificationSize), mType(ASTexpression::ModType), 
+      mTuplesize(ModificationSize), mType(AST::ModType), 
       isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name),
       isFunction(false)
     {
@@ -239,7 +237,7 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), condLoc, empty), 
       mCondition(ifCond.release()->simplify())
     {
-        if (mCondition->mType != ASTexpression::NumericType || mCondition->evaluate(0, 0) != 1)
+        if (mCondition->mType != NumericType || mCondition->evaluate(0, 0) != 1)
             CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
     }
 
@@ -247,7 +245,7 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), expLoc, empty), 
       mSwitchExp(switchExp.release()->simplify())
     {
-        if (mSwitchExp->mType != ASTexpression::NumericType || mSwitchExp->evaluate(0, 0) != 1)
+        if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(0, 0) != 1)
             CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
     }
     
@@ -362,10 +360,10 @@ namespace AST {
             break;
         case 1:
             switch (params->mType) {
-                case ASTexpression::NumericType:
+                case NumericType:
                     stroke = params;
                     break;
-                case ASTexpression::FlagType:
+                case FlagType:
                     flags = params;
                     break;
                 default:
@@ -383,7 +381,7 @@ namespace AST {
         if (stroke.get()) {
             if (mChildChange.flags & CF_FILL)
                 CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
-            if (stroke->mType != ASTexpression::NumericType || stroke->evaluate(0, 0) != 1) {
+            if (stroke->mType != NumericType || stroke->evaluate(0, 0) != 1) {
                 CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
             } else if (!stroke->isConstant ||
                        stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
@@ -394,7 +392,7 @@ namespace AST {
         }
         
         if (flags.get()) {
-            if (flags->mType != ASTexpression::FlagType) {
+            if (flags->mType != FlagType) {
                 CfdgError::Error(flags->where, "Unexpected argument in path command");
                 return;
             }
@@ -628,18 +626,18 @@ namespace AST {
         StackType* dest = &(r->mCFstack[s]);
         
         switch (mType) {
-            case ASTexpression::NumericType:
+            case NumericType:
                 if (mExpression->evaluate(&dest->number, mTuplesize, r) != mTuplesize)
                     CfdgError::Error(mExpression->where, 
                                    "Error evaluating parameters (too many or not enough).");
                 break;
-            case ASTexpression::ModType: {
+            case ModType: {
                 int dummy;
                 Modification* smod = reinterpret_cast<Modification*> (dest);
                 mChildChange.setVal(*smod, 0, 0, false, dummy, r);
                 break;
             }
-            case ASTexpression::RuleType:
+            case RuleType:
                 dest->rule = mExpression->evalArgs(r, p.mParameters);
                 break;
             default:
@@ -997,7 +995,7 @@ namespace AST {
             ASTexpression* temp = (*mArguments)[i];
 			assert(temp);
             switch (temp->mType) {
-                case ASTexpression::FlagType: {
+                case FlagType: {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
                     if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
@@ -1007,7 +1005,7 @@ namespace AST {
                     --mArgCount;
                     break;
                 }
-                case ASTexpression::NumericType:
+                case NumericType:
                     break;
                 default:
                     CfdgError::Error(temp->where, "Path operation arguments must be numeric expressions or flags");

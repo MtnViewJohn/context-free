@@ -61,147 +61,6 @@
 #include <cstring>
 #include <iostream>
 
-class const_iterator {
-public:
-    const StackType* _Ptr;
-    std::vector<AST::ASTparameter>::const_iterator _Iter;
-    std::vector<AST::ASTparameter>::const_iterator _End;
-
-    const_iterator() : _Ptr(0) {}
-    const_iterator(const StackType* s)
-    : _Ptr(s)
-    {
-        if (_Ptr && _Ptr->ruleHeader.mParamCount) {
-            const AST::ASTparameters* p = (s + 1)->typeInfo;
-            _Iter = p->begin();
-            _End = p->end();
-            _Ptr += 2;
-        } else {
-            _Ptr = 0;
-        }
-        if (_Iter == _End)
-            _Ptr = 0;           // Should never happen
-    }
-    const_iterator(const StackType* s, const std::vector<AST::ASTparameter>* p)
-    : _Ptr(s)
-    {
-        if (_Ptr) {
-            _Iter = p->begin();
-            _End = p->end();
-        }
-        if (_Iter == _End)
-            _Ptr = 0;           // Should never happen
-    }
-    
-    const StackType& operator*() const { return *_Ptr; }
-    const StackType* operator->() const { return _Ptr; }
-    const StackType& operator++()
-    {
-        if (_Ptr) {
-            _Ptr += _Iter->mTuplesize;
-            ++_Iter;
-            if (_Iter == _End)
-                _Ptr = 0;
-        }
-        return *_Ptr;
-    }
-    const StackType& operator++(int)
-    {
-        const StackType* tmp = _Ptr;
-        ++(*this);
-        return *tmp;
-    }
-    bool operator==(const const_iterator& o) const { return _Ptr == o._Ptr; }
-    bool operator!=(const const_iterator& o) const { return _Ptr != o._Ptr; }
-    const AST::ASTparameter& type() const { return *_Iter; }
-
-    static const_iterator begin(const StackType* s)
-    {
-        return const_iterator(s);
-    }
-
-    static const_iterator begin(const StackType* s, const std::vector<AST::ASTparameter>* p)
-    {
-        return const_iterator(s, p);
-    }
-    
-    static const_iterator end()
-    {
-        return const_iterator();
-    }
-};
-
-class iterator {
-public:
-    StackType* _Ptr;
-    AST::ASTparameters::const_iterator _Iter;
-    AST::ASTparameters::const_iterator _End;
-
-    iterator() : _Ptr(0) {}
-    iterator(StackType* s)
-    : _Ptr(s)
-    {
-        if (_Ptr && _Ptr->ruleHeader.mParamCount) {
-            const AST::ASTparameters* p = (s + 1)->typeInfo;
-            _Iter = p->begin();
-            _End = p->end();
-            _Ptr += 2;
-        } else {
-            _Ptr = 0;
-        }
-        if (_Iter == _End)
-            _Ptr = 0;           // Should never happen
-    }
-    iterator(StackType* s, const std::vector<AST::ASTparameter>* p)
-    : _Ptr(s)
-    {
-        if (_Ptr) {
-            _Iter = p->begin();
-            _End = p->end();
-        }
-        if (_Iter == _End)
-            _Ptr = 0;           // Should never happen
-    }
-    
-    StackType& operator*() { return *_Ptr; }
-    StackType* operator->() { return _Ptr; }
-    StackType& operator++()
-    {
-        if (_Ptr) {
-            _Ptr += _Iter->mTuplesize;
-            ++_Iter;
-            if (_Iter == _End)
-                _Ptr = 0;
-        }
-        return *_Ptr;
-    }
-
-    StackType& operator++(int)
-    {
-        StackType* tmp = _Ptr;
-        ++(*this);
-        return *tmp;
-    }
-    bool operator==(const iterator& o) const { return _Ptr == o._Ptr; }
-    bool operator!=(const iterator& o) const { return _Ptr != o._Ptr; }
-    const AST::ASTparameter& type() const { return *_Iter; }
-
-    static iterator begin(StackType* s)
-    {
-        return iterator(s);
-    }
-
-    static iterator begin(StackType* s, const std::vector<AST::ASTparameter>* p)
-    {
-        return iterator(s, p);
-    }
-    
-    static iterator end()
-    {
-        return iterator();
-    }
-};
-
 
 #define assert_static(e) \
 do { \
@@ -228,7 +87,7 @@ StackType::release() const
 {
     if (ruleHeader.mRefCount == 0) {
         for (const_iterator it = const_iterator::begin(this), e = const_iterator::end(); it != e; ++it)
-            if (it.type().mType == AST::ASTexpression::RuleType)
+            if (it.type().mType == AST::RuleType)
                 it->rule->release();
         delete[] this;
         return;
@@ -243,7 +102,7 @@ void
 StackType::release(const std::vector<AST::ASTparameter>* p) const
 {
     for (const_iterator it = const_iterator::begin(this, p), e = const_iterator::end(); it != e; ++it)
-        if (it.type().mType == AST::ASTexpression::RuleType)
+        if (it.type().mType == AST::RuleType)
             it->rule->release();
 }
 
@@ -284,11 +143,11 @@ StackType::read(std::istream& is)
     is.read((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
     for (iterator it = iterator::begin(this), e = iterator::end(); it != e; ++it) {
         switch (it.type().mType) {
-        case AST::ASTexpression::NumericType:
-        case AST::ASTexpression::ModType:
+        case AST::NumericType:
+        case AST::ModType:
             is.read((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
-        case AST::ASTexpression::RuleType:
+        case AST::RuleType:
             it->rule = readHeader(is);
             break;
         default:
@@ -312,11 +171,11 @@ StackType::write(std::ostream& os) const
         it != e; ++it)
     {
         switch (it.type().mType) {
-        case AST::ASTexpression::NumericType:
-        case AST::ASTexpression::ModType:
+        case AST::NumericType:
+        case AST::ModType:
             os.write((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
-        case AST::ASTexpression::RuleType:
+        case AST::RuleType:
             writeHeader(os, it->rule);
             break;
         default:
@@ -353,8 +212,8 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 }
 
 static void
-EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
-         iterator& end, const AST::ASTexpression* arguments,
+EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
+         StackType::iterator& end, const AST::ASTexpression* arguments,
          bool onStack)
 {
     for (int i = 0; i < arguments->size(); ++i, ++dest) {
@@ -363,7 +222,7 @@ EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
             rti->mLogicalStackTop = &(*dest);
         const AST::ASTexpression* arg = (*arguments)[i];
         switch (arg->mType) {
-            case AST::ASTexpression::NumericType: {
+            case AST::NumericType: {
                 int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
                 if (dest.type().isNatural && !Renderer::isNatural(rti, dest->number))
                     throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
@@ -371,7 +230,7 @@ EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
                     throw CfdgError(arg->where, "Expression does not evaluate to the correct size");
                 break;
             }
-            case AST::ASTexpression::ModType: {
+            case AST::ModType: {
                 int dummy;
                 static const Modification zeroMod;
                 Modification& m = reinterpret_cast<Modification&> (dest->number);
@@ -379,7 +238,7 @@ EvalArgs(Renderer* rti, const StackType* parent, iterator& dest,
                 arg->evaluate(m, 0, 0, false, dummy, false, rti);
                 break;
             }
-            case AST::ASTexpression::RuleType: {
+            case AST::RuleType: {
                 dest->rule = arg->evalArgs(rti, parent);
                 break;
             }

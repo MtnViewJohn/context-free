@@ -152,182 +152,6 @@ namespace AST {
     
     static const StackType StackZero = {0};
     
-    bool ASTparameter::Impure = false;
-    
-    void
-    ASTparameter::init(int nameIndex, ASTdefine* def)
-    {
-        mType = def->mType;
-        isLocal = !def->mExpression || def->mExpression->isLocal;
-        mTuplesize = def->mTuplesize;
-        
-        if (mType == ASTexpression::NumericType) {
-            isNatural = def->mExpression && def->mExpression->isNatural && mTuplesize == 1;
-            if (mTuplesize == 0) mTuplesize = 1;    // loop index
-            if (mTuplesize < 1 || mTuplesize > 9)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
-        }
-        
-        mName = nameIndex;
-        mDefinition = (def->isConstant || def->isFunction) ? def : 0;
-    }
-    
-    void
-    ASTparameter::init(const std::string& typeName, int nameIndex)
-    {
-        isLocal = false;
-        if (typeName == "number") {
-            mType = ASTexpression::NumericType;
-        } else if (typeName == "natural") {
-            mType = ASTexpression::NumericType;
-            isNatural = true;
-        } else if (typeName == "adjustment") {
-            mTuplesize = ModificationSize;
-            mType = ASTexpression::ModType;
-        } else if (typeName == "shape") {
-            mType = ASTexpression::RuleType;
-            mTuplesize = 1;
-        } else if (strncmp(typeName.data(), "vector", 6) == 0 && 
-                   typeName.length() == 7 &&
-                   isdigit(typeName[6]))
-        {
-            mType = ASTexpression::NumericType;
-            mTuplesize = typeName[6] - '0';
-            if (mTuplesize < 1 || mTuplesize > 9)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
-        } else mType = ASTexpression::NoType;
-        
-        mName = nameIndex;
-        mDefinition = 0;
-    }
-    
-    void
-    ASTparameter::check(const yy::location& typeLoc, const yy::location& nameLoc) 
-    { 
-        if (mType == ASTexpression::NoType)
-            CfdgError::Error(typeLoc, "Unknown parameter type");
-        if (mName == -1)
-            CfdgError::Error(nameLoc, "Reserved keyword used for parameter name");
-    }
-    
-    bool
-    ASTparameter::operator!=(const ASTparameter& p) const
-    {
-        if (mType != p.mType) return true;
-        if (mType == ASTexpression::NumericType && 
-            mTuplesize != p.mTuplesize) return true;
-        return false;
-    }
-    
-    bool
-    ASTparameter::operator!=(const ASTexpression& e) const
-    {
-        if (mType != e.mType) return true;
-        if (mType == ASTexpression::NumericType && 
-            mTuplesize != e.evaluate(0, 0)) return true;
-        return false;
-    }
-    
-    int
-    ASTparameter::CheckType(const ASTparameters* types, const ASTparameters* parent, 
-                            const ASTexpression* args, const yy::location& where,
-                            bool checkNumber)
-    {
-        // Walks down the right edge of an expression tree checking that the types
-        // of the children match the specified argument types
-        if ((types == NULL || types->empty()) && (args == NULL)) return 0;
-        if (types == NULL && args && Builder::CurrentBuilder->mCompilePhase == 1) {
-            Builder::CurrentBuilder->mWant2ndPass = true;
-            return -1;
-        }
-        if (types == NULL || types->empty()) {
-            CfdgError::Error(args->where, "Arguments are not expected.");
-            return -1;
-        }
-        if (args == NULL) {
-            CfdgError::Error(where, "Arguments are expected.");
-            return -1;
-        }
-        bool justCount = args->mType == ASTexpression::NoType;
-        
-        int count = 0, size = 0;
-        int expect = args->size();
-        ASTparameters::const_iterator param_it = types->begin(), 
-                                      param_end = types->end();
-        
-        for (; param_it != param_end; size += param_it->mTuplesize, 
-                                      ++count, ++param_it)
-        {
-            if (justCount) continue;
-            
-            if (count >= expect) {
-                CfdgError::Error(args->where, "Not enough arguments");
-                return -1;
-            }
-            
-            const ASTexpression* arg = (*args)[count];
-			assert(arg);
-            
-            if (param_it->mType != arg->mType) {
-                CfdgError::Error(arg->where, "Incorrect argument type.");
-                CfdgError::Error(param_it->mLocation, "This is the expected type.");
-                return -1;
-            }
-            if (param_it->isNatural && !arg->isNatural && !ASTparameter::Impure) {
-                CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement");
-                return -1;
-            }
-            if (param_it->mType == ASTexpression::NumericType &&
-                param_it->mTuplesize != arg->evaluate(0, 0))
-            {
-                if (param_it->mTuplesize == 1)
-                    CfdgError::Error(arg->where, "This argument should be scalar");
-                else
-                    CfdgError::Error(arg->where, "This argument should be a vector");
-                CfdgError::Error(param_it->mLocation, "This is the expected type.");
-                return -1;
-            }
-            if (!arg->isLocal && param_it->mType == ASTexpression::NumericType &&
-                !param_it->isNatural && !ASTparameter::Impure && checkNumber)
-            {
-                // Unwrap any parentheses and check if the non-local expression
-                // is actually an unmodified parameter. If so then accept it.
-                while (const ASTparen* p = dynamic_cast<const ASTparen*> (arg))
-                    arg = p->e;
-				assert(arg);
-                const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
-                if (!v || !v->isParameter) {
-                    CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
-                    return -1;
-                }
-            }
-        }
-        
-        if (count < expect) {
-            CfdgError::Error((*args)[count]->where, "Too many arguments.");
-            return -1;
-        }
-        
-        if (justCount && types != parent) {
-            if (parent == NULL) {
-                CfdgError::Error(where, "Parameter reuse not allowed in this context.");
-                return -1;
-            }
-            param_it = types->begin();
-            ASTparameters::const_iterator parent_it = parent->begin();
-            while (param_it != types->end()) {
-                if (parent_it == parent->end() || *param_it != *parent_it) {
-                    CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
-                    return -1;
-                }
-                ++param_it;
-                ++parent_it;
-            }
-        }
-        
-        return size;
-    }
-    
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType), 
@@ -468,7 +292,7 @@ namespace AST {
             return;
         }
             
-        if (arguments && arguments->mType != ASTexpression::NoType) {
+        if (arguments && arguments->mType != AST::NoType) {
             arguments->entropy(entropyVal);
             if (arguments->isConstant) {
                 const StackType* simp = evalArgs();
@@ -476,7 +300,7 @@ namespace AST {
                 simpleRule = simp;
                 argSource = SimpleArgs;
             }
-        } else if (arguments && arguments->mType == ASTexpression::NoType) {
+        } else if (arguments && arguments->mType == AST::NoType) {
             argSource = ParentArgs;
         } else {
             argSource = NoArgs;
@@ -658,10 +482,10 @@ namespace AST {
     ASTmodTerm::ASTmodTerm(ASTmodTerm::modTypeEnum t, ASTexpression* a, const yy::location& loc)
     : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a)
     {
-        if (a->mType == ASTexpression::RuleType)
+        if (a->mType == AST::RuleType)
             CfdgError::Error(loc, "Illegal expression in shape adjustment");
         
-        if (a->mType == ASTexpression::ModType) {
+        if (a->mType == AST::ModType) {
             if (t != ASTmodTerm::transform)
                 CfdgError::Error(loc, "Cannot accept a transform expression here");
 
@@ -793,7 +617,7 @@ namespace AST {
       mCount(bound->mType == NumericType ? bound->mTuplesize : 1),
       isParameter(bound->isParameter), entString(name)
     {
-        if (args.get() == 0 || args->mType != ASTexpression::NumericType) {
+        if (args.get() == 0 || args->mType != AST::NumericType) {
             CfdgError::Error(loc, "Array arguments must be numeric");
             mArgs = new ASTreal(0.0, loc);
             isConstant = mConstData = false;

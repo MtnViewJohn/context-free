@@ -110,7 +110,7 @@ private:
         const AST::ASTexpression* hasParameter(const char* name) const;
         bool hasParameter(const char* name, double& value, Renderer* r) const;
         bool hasParameter(const char* name, Modification& value, Renderer* r) const;
-        bool hasParameter(const char* name, AST::ASTexpression::expType t, 
+        bool hasParameter(const char* name, AST::expType t, 
                           yy::location& where) const;
 
     public:
