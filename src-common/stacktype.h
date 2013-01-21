@@ -1,7 +1,7 @@
 // stacktype.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
