@@ -200,8 +200,15 @@ void
 Renderer::initStack(const StackType* p)
 {
     if (p && p->ruleHeader.mParamCount) {
-        for (unsigned i = 0; i < p->ruleHeader.mParamCount; ++i)
-            mCFstack.push_back(p[i + 2]);
+        for (StackType::const_iterator  it = p->begin(), eit = p->end();
+             it != eit; ++it)
+        {
+            for (int i = 0; i < it.type().mTuplesize; ++i)
+                mCFstack.push_back(*(&*it + i));
+            // Retain any shape params to balance the releases in unwindStack()
+            if (it.type().mType == AST::RuleType)
+                it->rule->retain(this);
+        }
     }
     if (!mCFstack.empty()) {
         mLogicalStackTop = &(mCFstack.back()) + 1;

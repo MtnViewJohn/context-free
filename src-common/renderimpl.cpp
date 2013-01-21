@@ -660,6 +660,7 @@ RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
             processPrimShapeSiblings(sym, path);
         }
     }
+    s.releaseParams();
 }
 
 void
