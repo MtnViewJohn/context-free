@@ -55,5 +55,5 @@ ImageCanvas::end()
     [mView performSelectorOnMainThread: @selector(redisplayImage:)
         withObject: [NSValue valueWithRect:
             NSMakeRect(cropX(), cropY(), cropWidth(), cropHeight())]
-        waitUntilDone: YES];
+        waitUntilDone: NO];
 }
