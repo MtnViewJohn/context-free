@@ -2,6 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2006 Mark Lentczner - markl@glyphic.com
+// Copyright (C) 2009-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,6 +20,9 @@
 // 
 // Mark Lentczner can be contacted at markl@glyphic.com or at
 // Mark Lentczner, 1209 Villa St., Mountain View, CA 94041-1123, USA
+//
+// John Horigan can be contacted at john@glyphic.com or at
+// John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
 //
 //
 
