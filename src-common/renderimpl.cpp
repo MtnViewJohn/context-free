@@ -292,6 +292,7 @@ RendererImpl::outputPrep(Canvas* canvas)
     
     m_stats.inOutput = false;
     m_stats.animating = false;
+    m_stats.finalOutput = false;
 }
 
 
