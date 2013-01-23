@@ -227,6 +227,7 @@ RendererImpl::cleanup()
     for (std::deque<const StackType*>::const_iterator cit = mLongLivedParams.begin();
          cit != mLongLivedParams.end(); ++cit)
     {
+        --Renderer::ParamCount;
         delete[] *cit;
         if (AbortEverything) return;
     }

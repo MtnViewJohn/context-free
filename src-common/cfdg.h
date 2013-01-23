@@ -185,6 +185,7 @@ class Renderer {
     
         static double Infinity;
         static bool   AbortEverything;
+        static unsigned ParamCount;
     
     // AST interface
         std::vector<StackType>  mCFstack;

@@ -71,6 +71,7 @@ StackType*
 StackType::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     assert_static(sizeof(StackType) == sizeof(double));
+    ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
     assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
     newrule[0].ruleHeader.mRuleName = name;
@@ -89,6 +90,7 @@ StackType::release() const
         for (const_iterator it = begin(), e = end(); it != e; ++it)
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
+        --Renderer::ParamCount;
         delete[] this;
         return;
     }
