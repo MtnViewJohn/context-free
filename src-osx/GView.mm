@@ -1103,7 +1103,7 @@ namespace {
 {
     mRenderedRect = [rectObj rectValue];
     [self invalidateDrawingImage];
-    [self display];
+    [self setNeedsDisplay: YES];
 }
 
 - (void)noteProgress
