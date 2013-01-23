@@ -694,6 +694,7 @@ namespace AST {
 
     ASTruleSpecifier::~ASTruleSpecifier()
     {
+        if (simpleRule) --Renderer::ParamCount;
         delete[] simpleRule;
         delete arguments;
     };
