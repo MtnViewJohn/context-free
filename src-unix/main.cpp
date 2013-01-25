@@ -160,6 +160,8 @@ usage(bool inError)
     out << "    " << APP_OPTCHAR()
         << "t        time output, output the time taken to render the cfdg file" << endl;
     out << "    " << APP_OPTCHAR()
+        << "P        Parameter allocation debug, test whether all the parameter blocks were cleaned up" << endl;
+    out << "    " << APP_OPTCHAR()
         << "?        show this message, then exit" << endl;
     out << endl;
     
@@ -193,13 +195,15 @@ struct options {
     bool outputTime;
     bool outputStdout;
     bool outputWallpaper;
+    bool paramTest;
     
     options()
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
       input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
-      outputTime(false), outputStdout(false), outputWallpaper(false)
+      outputTime(false), outputStdout(false), outputWallpaper(false),
+      paramTest(false)
     { }
 };
 
@@ -269,9 +273,9 @@ floatArg(char arg, const char* str)
 }
 
 #ifdef _WIN32
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQtW?"
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQPtW?"
 #else
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQt?"
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQPt?"
 #endif
 
 void
@@ -365,6 +369,9 @@ processCommandLine(int argc, char* argv[], options& opt)
                 break;
             case 't':
                 opt.outputTime = true;
+                break;
+            case 'P':
+                opt.paramTest = true;
                 break;
         }
     }
@@ -589,8 +596,15 @@ int main (int argc, char* argv[]) {
     delete png;
     delete svg;
     delete mov;
-    Renderer::AbortEverything = true;
+    Renderer::AbortEverything = !(opts.paramTest);
     delete TheRenderer; TheRenderer = 0;
+    
+    if (opts.paramTest) {
+        if (Renderer::ParamCount)
+            cerr << "Left-over parameter blocks in memory:" << Renderer::ParamCount << endl;
+        else
+            *myCout << "All parameter blocks deleted" << endl;
+    }
     
     return 0;
 }
