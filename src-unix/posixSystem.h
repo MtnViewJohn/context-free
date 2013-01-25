@@ -37,10 +37,13 @@ class PosixSystem : public AbstractSystem
 {
 protected:
     bool mQuiet;
+    bool mNeedEndl;
     bool mErrorMode;
     std::string* mInputBuffer;
+    const char* maybeLF();
 public:
-    PosixSystem(bool q = false) : mQuiet(q), mErrorMode(false), mInputBuffer(0) {};
+    PosixSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
+        mErrorMode(false), mInputBuffer(0) {};
     ~PosixSystem();
     virtual void message(const char* fmt, ...);
     virtual void syntaxError(const CfdgError& err);
