@@ -38,9 +38,28 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 using namespace std;
 
-static const char* EraseEndofLine = "\x1b[K";
+void 
+PosixSystem::clearAndCR()
+{
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO bufInfo;
+    HANDLE cons = ::GetStdHandle(STD_OUTPUT_HANDLE);
+    BOOL ret = ::GetConsoleScreenBufferInfo(cons, &bufInfo);
+    for (int x = bufInfo.dwCursorPosition.X + 1; x < bufInfo.dwSize.X; ++x)
+        cerr << ' ';
+    bufInfo.dwCursorPosition.X = 0;
+    ret = ::SetConsoleCursorPosition(cons, bufInfo.dwCursorPosition);
+#else
+    static const char* EraseEndofLine = "\x1b[K";
+    cerr << EraseEnfofLine << '\r';
+#endif
+}
 
 const char*
 PosixSystem::maybeLF()
@@ -62,7 +81,7 @@ PosixSystem::message(const char* fmt, ...)
         va_end(args);
     }
     
-    cerr << maybeLF() << buf << EraseEndofLine << endl;
+    cerr << maybeLF() << buf << endl;
     mNeedEndl = false;
 }
 
@@ -177,8 +196,7 @@ PosixSystem::stats(const Stats& s)
             cerr << " - " << s.toDoCount << " expansions to do";
     }
 
-
-    cerr << EraseEndofLine << '\r';
+    clearAndCR();
     mNeedEndl = true;
     cerr.flush();
 }

@@ -41,6 +41,7 @@ protected:
     bool mErrorMode;
     std::string* mInputBuffer;
     const char* maybeLF();
+    void clearAndCR();
 public:
     PosixSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
         mErrorMode(false), mInputBuffer(0) {};
