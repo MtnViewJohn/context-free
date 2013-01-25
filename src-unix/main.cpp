@@ -515,6 +515,8 @@ int main (int argc, char* argv[]) {
         return 9;
     }
 
+    if (!opts.quiet) setupTimer(TheRenderer);
+    
     TheRenderer->setMaxShapes(opts.maxShapes);
     TheRenderer->run(NULL, false);
     
@@ -569,8 +571,6 @@ int main (int argc, char* argv[]) {
         *myCout << "The cfdg file took " << runTime << " msec to execute." << endl;
         fromTime = toTime;
     }
-    
-    if (!opts.quiet) setupTimer(TheRenderer);
     
     if (opts.animationFrames) {
         TheRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
