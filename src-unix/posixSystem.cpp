@@ -40,7 +40,14 @@
 
 using namespace std;
 
+static const char* EraseEndofLine = "\x1b[K";
 
+const char*
+PosixSystem::maybeLF()
+{
+    return mNeedEndl ? "\n" : "";
+}
+                          
 void
 PosixSystem::message(const char* fmt, ...)
 {
@@ -55,7 +62,8 @@ PosixSystem::message(const char* fmt, ...)
         va_end(args);
     }
     
-    cerr << buf << "                            " << endl;
+    cerr << maybeLF() << buf << EraseEndofLine << endl;
+    mNeedEndl = false;
 }
 
 void
@@ -152,15 +160,26 @@ void
 PosixSystem::stats(const Stats& s)
 {
     if (mQuiet || mErrorMode) return;
+    
+    if (s.inOutput || s.showProgress) {
+        double v = (double)s.outputDone / s.outputCount;
+        if (v < 0.0) v = 0.0;
+        if (v > 1.0) v = 1.0;
+        int progress = (int)(v * 50.0 + 0.5);
+        cerr << '[';
+        cerr << "**************************************************" + (50 - progress);
+        cerr << ".................................................." + progress;
+        cerr << ']';
+    } else {
+        cerr << "    " << s.shapeCount << " shapes";
+        
+        if (s.toDoCount > 0)
+            cerr << " - " << s.toDoCount << " expansions to do";
+    }
 
-    cerr << "    " << s.shapeCount << " shapes";
 
-    if (s.toDoCount > 0)
-        cerr << " - " << s.toDoCount << " expansions to do";
-    else
-        cerr << "                            ";
-
-    cerr << "        \r";
+    cerr << EraseEndofLine << '\r';
+    mNeedEndl = true;
     cerr.flush();
 }
 
