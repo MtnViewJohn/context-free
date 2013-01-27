@@ -57,7 +57,7 @@ PosixSystem::clearAndCR()
     ret = ::SetConsoleCursorPosition(cons, bufInfo.dwCursorPosition);
 #else
     static const char* EraseEndofLine = "\x1b[K";
-    cerr << EraseEnfofLine << '\r';
+    cerr << EraseEndofLine << '\r';
 #endif
 }
 
