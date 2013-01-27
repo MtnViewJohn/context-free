@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PKG_CONFIG_PATH="$HOME/software/packages/linux/lib/pkgconfig"
+LDFLAGS="-L$HOME/software/packages/linux/lib"
+CFLAGS="-I$HOME/software/packages/linux/include"
+
+~/ffmpeg/configure --prefix="$HOME/software/packages/linux" --enable-memalign-hack --enable-gpl --disable-w32threads --disable-doc --disable-ffmpeg --disable-pthreads --disable-swscale-alpha --disable-ffplay --disable-ffprobe --disable-ffserver --disable-avdevice --disable-postproc --disable-avfilter --disable-everything --enable-encoder=qtrle --enable-encoder=rawvideo --enable-muxer=mov --disable-network --disable-dct --disable-mdct --disable-rdft --disable-fft --enable-protocol=file && make && make install
+

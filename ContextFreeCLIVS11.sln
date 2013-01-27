@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ContextFreeCLI", "ContextFreeCLIVS11.vcxproj", "{86A42375-C631-493B-8785-DE489713E3A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Debug64|Win32 = Debug64|Win32
+		Debug64|x64 = Debug64|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+		Release64|Win32 = Release64|Win32
+		Release64|x64 = Release64|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug|Win32.Build.0 = Debug|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug|x64.ActiveCfg = Debug|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug|x64.Build.0 = Debug|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug64|Win32.ActiveCfg = Debug64|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug64|Win32.Build.0 = Debug64|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug64|x64.ActiveCfg = Debug64|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Debug64|x64.Build.0 = Debug64|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release|Win32.ActiveCfg = Release|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release|Win32.Build.0 = Release|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release|x64.ActiveCfg = Release|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release|x64.Build.0 = Release|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release64|Win32.ActiveCfg = Release64|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release64|Win32.Build.0 = Release64|Win32
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release64|x64.ActiveCfg = Release64|x64
+		{86A42375-C631-493B-8785-DE489713E3A5}.Release64|x64.Build.0 = Release64|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

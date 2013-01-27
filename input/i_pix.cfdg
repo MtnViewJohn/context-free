@@ -1,0 +1,718 @@
+// This is a library file that is included in other files
+// It offers a dot-matix like alphabet based on a 5 by 5 grid
+
+startshape the5by5_test
+
+shape the5by5_test
+{
+	random_test []
+	the5by5_line []
+}
+
+shape random_test
+{
+	loop 5 [y 1.2] random_test_row [x 24.0 y -21.0] 
+}
+
+shape random_test_row
+{
+	loop 5 [x 1.2] RANDOM_ALNUM_5by5 []
+}
+
+
+shape the5by5_line
+{
+A_5by5 [x 0]
+B_5by5 [x 1.2 ]
+C_5by5 [x 2.4]
+D_5by5 [x 3.6]
+E_5by5 [x 4.8]
+F_5by5 [x 6.0]
+G_5by5 [x 7.2]
+H_5by5 [x 8.4]
+I_5by5 [x 9.6]
+J_5by5 [x 10.8]
+K_5by5 [x 12.0]
+L_5by5 [x 13.2]
+M_5by5 [x 14.4]
+N_5by5 [x 15.6]
+O_5by5 [x 16.8]
+P_5by5 [x 18.0]
+Q_5by5 [x 19.2]
+R_5by5 [x 20.4]
+S_5by5 [x 21.6]
+T_5by5 [x 22.8]
+U_5by5 [x 24.0]
+V_5by5 [x 25.2]
+W_5by5 [x 26.4]
+X_5by5 [x 27.6]
+Y_5by5 [x 28.8]
+Z_5by5 [x 30.0]
+the5by5_line [y -2.4 size 0.90 x 0.2]
+NUM_0_5by5 [y -1.2 x 0]
+NUM_1_5by5 [y -1.2 x 1.2]
+NUM_2_5by5 [y -1.2 x 2.4]
+NUM_3_5by5 [y -1.2 x 3.6]
+NUM_4_5by5 [y -1.2 x 4.8]
+NUM_5_5by5 [y -1.2 x 6.0]
+NUM_6_5by5 [y -1.2 x 7.2]
+NUM_7_5by5 [y -1.2 x 8.4]
+NUM_8_5by5 [y -1.2 x 9.6]
+NUM_9_5by5 [y -1.2 x 10.8]
+}
+
+shape pix_5by5_00
+{ block_5by5 [size 0.20 x -0.4 y 0.4] }
+shape pix_5by5_10
+{ block_5by5 [size 0.20 x -0.2 y 0.4] }
+shape pix_5by5_20
+{ block_5by5 [size 0.20 x 0.0 y 0.4] }
+shape pix_5by5_30
+{ block_5by5 [size 0.20 x 0.2 y 0.4] }
+shape pix_5by5_40
+{ block_5by5 [size 0.20 x 0.4 y 0.4] }
+shape pix_5by5_01
+{ block_5by5 [size 0.20 x -0.4 y 0.2] }
+shape pix_5by5_11
+{ block_5by5 [size 0.20 x -0.2 y 0.2] }
+shape pix_5by5_21
+{ block_5by5 [size 0.20 x 0.0 y 0.2] }
+shape pix_5by5_31
+{ block_5by5 [size 0.20 x 0.2 y 0.2] }
+shape pix_5by5_41
+{ block_5by5 [size 0.20 x 0.4 y 0.2] }
+shape pix_5by5_02
+{ block_5by5 [size 0.20 x -0.4 y 0.0] }
+shape pix_5by5_12
+{ block_5by5 [size 0.20 x -0.2 y 0.0] }
+shape pix_5by5_22
+{ block_5by5 [size 0.20 x 0.0 y 0.0] }
+shape pix_5by5_32
+{ block_5by5 [size 0.20 x 0.2 y 0.0] }
+shape pix_5by5_42
+{ block_5by5 [size 0.20 x 0.4 y 0.0] }
+shape pix_5by5_03
+{ block_5by5 [size 0.20 x -0.4 y -0.2] }
+shape pix_5by5_13
+{ block_5by5 [size 0.20 x -0.2 y -0.2] }
+shape pix_5by5_23
+{ block_5by5 [size 0.20 x 0.0 y -0.2] }
+shape pix_5by5_33
+{ block_5by5 [size 0.20 x 0.2 y -0.2] }
+shape pix_5by5_43
+{ block_5by5 [size 0.20 x 0.4 y -0.2] }
+shape pix_5by5_04
+{ block_5by5 [size 0.20 x -0.4 y -0.4] }
+shape pix_5by5_14
+{ block_5by5 [size 0.20 x -0.2 y -0.4] }
+shape pix_5by5_24
+{ block_5by5 [size 0.20 x 0.0 y -0.4] }
+shape pix_5by5_34
+{ block_5by5 [size 0.20 x 0.2 y -0.4] }
+shape pix_5by5_44
+{ block_5by5 [size 0.20 x 0.4 y -0.4] }
+
+shape block_5by5
+{
+SQUARE [size 0.7]
+}
+
+shape A_5by5
+{
+pix_5by5_04 []
+pix_5by5_44 []
+pix_5by5_03 []
+pix_5by5_43 []
+pix_5by5_02 []
+pix_5by5_42 []
+pix_5by5_11 []
+pix_5by5_31 []
+pix_5by5_20 []
+pix_5by5_20 []
+pix_5by5_13 []
+pix_5by5_23 []
+pix_5by5_33 []
+
+}
+shape B_5by5
+{
+pix_5by5_04 []
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_31 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_43 []
+}
+
+shape C_5by5
+{
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_10 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_34 []
+pix_5by5_40 []
+pix_5by5_44 []
+}
+shape D_5by5
+{
+pix_5by5_04 []
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_34 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+}
+shape E_5by5
+{
+pix_5by5_04 []
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_34 []
+pix_5by5_40 []
+pix_5by5_44 []
+}
+
+shape F_5by5
+{
+pix_5by5_04 []
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_30 []
+pix_5by5_40 []
+}
+
+shape G_5by5
+{
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_10 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_40 []
+pix_5by5_42 []
+pix_5by5_43 []
+}
+
+shape H_5by5
+{
+pix_5by5_00 []
+pix_5by5_04 []
+pix_5by5_03 []
+pix_5by5_02 []
+pix_5by5_01 []
+pix_5by5_12 []
+pix_5by5_22 []
+pix_5by5_32 []
+pix_5by5_40 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+pix_5by5_44 []
+}
+
+shape I_5by5
+{
+H_5by5 [rotate 90]
+}
+
+
+shape J_5by5
+{
+pix_5by5_00 []
+pix_5by5_03 []
+pix_5by5_10 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_31 []
+pix_5by5_32 []
+pix_5by5_33 []
+pix_5by5_40 []
+}
+
+shape K_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_04 []
+pix_5by5_12 []
+pix_5by5_23 []
+pix_5by5_21 []
+pix_5by5_34 []
+pix_5by5_30 []
+pix_5by5_44 []
+pix_5by5_44 []
+}
+
+shape L_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_04 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+pix_5by5_44 []
+
+}
+
+shape M_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_04 []
+pix_5by5_40 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+pix_5by5_44 []
+pix_5by5_10 []
+pix_5by5_21 []
+pix_5by5_30 []
+}
+
+shape N_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_04 []
+pix_5by5_40 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+pix_5by5_44 []
+pix_5by5_11 []
+pix_5by5_22 []
+pix_5by5_33 []
+}
+
+
+shape O_5by5
+{
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+pix_5by5_10 []
+pix_5by5_20 []
+pix_5by5_30 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+}
+
+shape P_5by5
+{
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_04 []
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_41 []
+}
+
+shape Q_5by5
+{
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_10 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_24 []
+pix_5by5_22 []
+pix_5by5_30 []
+pix_5by5_33 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_44 []
+
+}
+
+shape R_5by5
+{
+P_5by5[]
+pix_5by5_33 []
+pix_5by5_44 []
+}
+
+shape S_5by5
+{
+pix_5by5_01 []
+pix_5by5_04 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_24 []
+pix_5by5_22 []
+pix_5by5_30 []
+pix_5by5_34 []
+pix_5by5_32 []
+pix_5by5_40 []
+pix_5by5_43 []
+
+}
+
+shape T_5by5
+{
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_20 []
+pix_5by5_30 []
+pix_5by5_40 []
+pix_5by5_21 []
+pix_5by5_22 []
+pix_5by5_23 []
+pix_5by5_24 []
+}
+
+shape U_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+pix_5by5_40 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+}
+
+shape V_5by5
+{
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_13 []
+pix_5by5_24 []
+pix_5by5_33 []
+pix_5by5_40 []
+pix_5by5_41 []
+pix_5by5_42 []
+}
+
+shape W_5by5
+{
+M_5by5 [rotate 180]
+}
+
+shape X_5by5
+{
+pix_5by5_00 []
+pix_5by5_04 []
+pix_5by5_11 []
+pix_5by5_13 []
+pix_5by5_22 []
+pix_5by5_31 []
+pix_5by5_33 []
+pix_5by5_40 []
+pix_5by5_44 []
+}
+
+shape Y_5by5
+{
+pix_5by5_00 []
+pix_5by5_11 []
+pix_5by5_22 []
+pix_5by5_31 []
+pix_5by5_23 []
+pix_5by5_24 []
+pix_5by5_40 []
+}
+
+shape Z_5by5
+{
+N_5by5 [rotate 90]
+}
+
+shape RANDOM_LETTER_5by5
+rule { A_5by5 []}
+rule { B_5by5 []}
+rule { C_5by5 []}
+rule { D_5by5 []}
+rule { E_5by5 []}
+rule { F_5by5 []}
+rule { G_5by5 []}
+rule { H_5by5 []}
+rule { I_5by5 []}
+rule { J_5by5 []}
+rule { K_5by5 []}
+rule { L_5by5 []}
+rule { M_5by5 []}
+rule { N_5by5 []}
+rule { O_5by5 []}
+rule { P_5by5 []}
+rule { Q_5by5 []}
+rule { R_5by5 []}
+rule { S_5by5 []}
+rule { T_5by5 []}
+rule { U_5by5 []}
+rule { V_5by5 []}
+rule { W_5by5 []}
+rule { X_5by5 []}
+rule { Y_5by5 []}
+rule { Z_5by5 []}
+
+//generate numbers randomly
+shape RANDOM_NUMBER_5by5
+rule { NUM_0_5by5 [] }
+rule { NUM_1_5by5 [] }
+rule { NUM_2_5by5 [] }
+rule { NUM_3_5by5 [] }
+rule { NUM_4_5by5 [] }
+rule { NUM_5_5by5 [] }
+rule { NUM_6_5by5 [] }
+rule { NUM_7_5by5 [] }
+rule { NUM_8_5by5 [] }
+rule { NUM_9_5by5 [] }
+
+shape RANDOM_ALNUM_5by5
+rule 26 { RANDOM_LETTER_5by5 [] }
+rule 10 { RANDOM_NUMBER_5by5 [] }
+
+
+shape NUM_0_5by5
+{
+//make 0
+
+pix_5by5_10 []
+pix_5by5_20 []
+pix_5by5_30 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+pix_5by5_31 []
+pix_5by5_22 []
+pix_5by5_13 []
+}
+
+shape NUM_1_5by5
+{
+//make 1
+
+pix_5by5_20 []
+pix_5by5_21 []
+pix_5by5_22 []
+pix_5by5_23 []
+pix_5by5_24 []
+pix_5by5_04 []
+pix_5by5_14 []
+pix_5by5_34 []
+pix_5by5_44 []
+pix_5by5_01 []
+pix_5by5_10 []
+}
+
+shape NUM_2_5by5
+{
+//make 2
+pix_5by5_20 []
+pix_5by5_30 []
+pix_5by5_41 []
+pix_5by5_32 []
+pix_5by5_22 []
+pix_5by5_22 []
+pix_5by5_04 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+pix_5by5_44 []
+pix_5by5_13 []
+pix_5by5_01 []
+pix_5by5_10 []
+}
+
+shape NUM_3_5by5
+{
+//make 3
+pix_5by5_20 []
+pix_5by5_30 []
+pix_5by5_41 []
+pix_5by5_32 []
+pix_5by5_22 []
+pix_5by5_22 []
+pix_5by5_03 []
+pix_5by5_14 []
+pix_5by5_24 []
+pix_5by5_34 []
+pix_5by5_43 []
+pix_5by5_01 []
+pix_5by5_10 []
+}
+
+shape NUM_4_5by5
+{
+//make 4
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_10 []
+pix_5by5_13 []
+pix_5by5_23 []
+pix_5by5_30 []
+pix_5by5_31 []
+pix_5by5_32 []
+pix_5by5_33 []
+pix_5by5_34 []
+pix_5by5_43 []
+}
+
+shape NUM_5_5by5
+{
+//make 5
+
+pix_5by5_00 []
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_04 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_43 []
+}
+
+shape NUM_6_5by5
+{
+//make 6
+pix_5by5_01 []
+pix_5by5_02 []
+pix_5by5_03 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_43 []
+}
+
+shape NUM_7_5by5
+{
+//make 7
+
+pix_5by5_00 []
+pix_5by5_10 []
+pix_5by5_20 []
+pix_5by5_23 []
+pix_5by5_24 []
+pix_5by5_32 []
+pix_5by5_30 []
+pix_5by5_40 []
+pix_5by5_41 []
+}
+
+shape NUM_8_5by5
+{
+//make 8
+pix_5by5_01 []
+pix_5by5_03 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_43 []
+pix_5by5_41 []
+}
+
+shape NUM_9_5by5
+rule {
+//make 9
+pix_5by5_01 []
+pix_5by5_04 []
+pix_5by5_10 []
+pix_5by5_12 []
+pix_5by5_14 []
+pix_5by5_20 []
+pix_5by5_22 []
+pix_5by5_24 []
+pix_5by5_30 []
+pix_5by5_32 []
+pix_5by5_34 []
+pix_5by5_41 []
+pix_5by5_42 []
+pix_5by5_43 []
+}
