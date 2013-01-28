@@ -816,7 +816,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
                 system()->stats(outStats);
                 requestUpdate = false;
             }
-            if (requestStop)
+            if (requestStop || requestFinishUp)
                 return;
 		}
 	} else {
@@ -856,7 +856,7 @@ RendererImpl::getUnfinishedFromFile()
                 system()->stats(outStats);
                 requestUpdate = false;
             }
-            if (requestStop)
+            if (requestStop || requestFinishUp)
                 return;
         }
 	} else {
@@ -926,7 +926,7 @@ RendererImpl::fixupHeap()
             system()->stats(outStats);
             requestUpdate = false;
         }
-        if (requestStop)
+        if (requestStop || requestFinishUp)
             return;
     }
     // Dummy entry should still be at end, remove it
