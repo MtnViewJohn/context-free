@@ -115,4 +115,4 @@ Run it with -? to get a usage summary:
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 FFmpeg BUILD NOTES
 
-Check out README.ffmpeg for building ffmpeg or disabling ffmpeg support
+Check out README.ffmpeg for building ffmpeg and enabling ffmpeg support

@@ -50,17 +50,17 @@ LIBS = stdc++ png z m
 #
 # FFmpeg support
 #
-# Comment out these lines to disable FFmpeg support
+# Uncomment these lines to enable FFmpeg support
 #
 
-COMMON_SRCS += ffCanvas.cpp
-LIBS += avformat avcodec avutil
+# COMMON_SRCS += ffCanvas.cpp
+# LIBS += avformat avcodec avutil
 
 #
-# Uncomment out this line to disable FFmpeg support
+# Comment out this line to enable FFmpeg support
 #
 
-# COMMON_SRCS += ffCanvasDummy.cpp
+COMMON_SRCS += ffCanvasDummy.cpp
 
 SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS) $(AGG_SRCS)
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
@@ -78,7 +78,6 @@ $(OBJS): $(OBJ_DIR)/Sentry
 #
 # Executable
 #
-# Under Mac OS X replace $(LINK.o) with g++.
 # Under Cygwin replace strip $@ with strip $@.exe
 
 cfdg: $(OBJS)
@@ -134,7 +133,7 @@ $(OUTPUT_DIR)/rtest-2k.png: cfdg $(RTEST_CFDG)
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
 CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses
-#CPPFLAGS += -ggdb
+#CPPFLAGS += -g
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
