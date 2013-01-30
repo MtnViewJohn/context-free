@@ -27,11 +27,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 The Windows and Linux builds of Context Free/cfdg use FFmpeg 1.0 to generate 
-Quicktime animation output. Ealier or later versions of ffmpeg may not work
-as the FFmpeg API is a moving target.
+Quicktime animation output. Earlier or later versions of ffmpeg may not work
+as the FFmpeg API is a moving target. Libav does not work, only FFmpeg.
+
+The source distribution contains prebuilt libraries and include headers for 
+Windows 32-bit and 64-bit. For all other systems, you must build the FFmpeg
+libraries to enable animation output in the command-line builds.
 
 Building the libraries:
-1) Get a cross-compiling build toolchain:
+1) For Windows, get a cross-compiling build toolchain:
 FFmpeg can only be built using gcc. You must have a cross-compiling toolchain 
 installed to make Windows libaries. There is an excellent script at
 http://ffmpeg.zeranoe.com/forum/viewforum.php?f=2 that can create from
@@ -48,12 +52,10 @@ and include files will be installed at ~/software/packages/win32 or
 src-ffmpeg/lib or src-ffmpeg/lib32 or src-ffmpeg/lib64 in the Context Free
 source tree.
 
-Not building the libraries:
-cfdg has the option of dropping support for the Quicktime movie format and
-only supporting individual PNG files for animation frames. This removes the
-need to build the FFmpeg libraries. Some changes to the Makefile are required:
-1) Comment out COMMON_SRCS += ffCanvas.cpp
-2) Uncomment out COMMON_SRCS += ffCanvasDummy.cpp
-3) Comment out LIBS += avformat avcodec avutil
-4) make clean && make
+5) Modify the Makefile to enable FFmpeg support:
+* Uncomment out COMMON_SRCS += ffCanvas.cpp
+* Comment out COMMON_SRCS += ffCanvasDummy.cpp
+* Uncomment out LIBS += avformat avcodec avutil
+
+6) make clean && make
 
