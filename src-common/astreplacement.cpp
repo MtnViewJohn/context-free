@@ -46,8 +46,6 @@ namespace AST {
     
     CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID = 1;
     
-    static const ASTparameter zeroParam;
-    
     const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { 0 };
     
     agg::trans_affine ASTtransform::Dummy;
@@ -57,9 +55,7 @@ namespace AST {
     ASTrepContainer::addParameter(const std::string& type, int index,
                                   const yy::location& typeLoc, const yy::location& nameLoc) 
     {
-        mParameters.push_back(zeroParam);
-        mParameters.back().mLocation = typeLoc + nameLoc;
-        mParameters.back().init(type, index);
+        mParameters.emplace_back(type, index, typeLoc + nameLoc);
         mParameters.back().isParameter = true;
         mParameters.back().checkParam(typeLoc, nameLoc);
     }
@@ -68,23 +64,10 @@ namespace AST {
     ASTrepContainer::addParameter(int index, ASTdefine* def,
                                   const yy::location& nameLoc, const yy::location& expLoc) 
     {
-        mParameters.push_back(zeroParam);
+        mParameters.emplace_back(index, def, nameLoc + expLoc);
         ASTparameter& b = mParameters.back();
-        b.mLocation = nameLoc + expLoc;
-        b.init(index, def);
         b.checkParam(nameLoc, nameLoc);
         return b;
-    }
-    
-    void
-    ASTrepContainer::move(ASTrepContainer& to)
-    {
-        to.mPathOp = mPathOp;
-        to.mRepType = mRepType;
-        mBody.swap(to.mBody);
-        mParameters.swap(to.mParameters);
-        to.isGlobal = isGlobal;
-        to.mStackCount = mStackCount;
     }
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,

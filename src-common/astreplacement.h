@@ -67,7 +67,7 @@ namespace AST {
     private:
         ASTreplacement(const ASTreplacement&);
     };
-    class ASTrepContainer {
+    class ASTrepContainer final {
     public:
         pathOpEnum mPathOp;
         int mRepType;
@@ -78,7 +78,10 @@ namespace AST {
         
         ASTrepContainer() 
         : mPathOp(unknownPathop), mRepType(ASTreplacement::empty),
-        isGlobal(false), mStackCount(0) {};
+          isGlobal(false), mStackCount(0) {};
+        ASTrepContainer(const ASTrepContainer&) = delete;
+        ASTrepContainer& operator=(const ASTrepContainer&) = delete;
+        ASTrepContainer(ASTrepContainer&&) = delete;
         ~ASTrepContainer();
         void traverse(const Shape& parent, bool tr, Renderer* r,
                       bool getParams = false) const
@@ -95,7 +98,6 @@ namespace AST {
                           const yy::location& typeLoc, const yy::location& nameLoc);
         ASTparameter& addParameter(int index, ASTdefine* def,
                           const yy::location& nameLoc, const yy::location& expLoc);
-        void move(ASTrepContainer& to);
     };
     class ASTloop: public ASTreplacement {
     public:
