@@ -240,7 +240,7 @@ RendererImpl::cleanup()
          endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
     {
         if (AbortEverything) return;
-        const ASTreplacement* rep = *cit;
+        const ASTreplacement* rep = cit->get();
         if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep)) {
             if (def->mType == AST::RuleType)
                 mCFstack[i].rule->release();
@@ -309,7 +309,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
          endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
     {
-        const ASTreplacement* rep = *cit;
+        const ASTreplacement* rep = cit->get();
         if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep))
             def->traverse(dummy, false, this);
     }

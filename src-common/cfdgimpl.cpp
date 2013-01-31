@@ -643,8 +643,7 @@ CFDGImpl::resetCachedPaths()
     for (vector<AST::ASTrule*>::iterator it = mRules.begin(), eit = mRules.end();
          it != eit; ++it)
     {
-        delete (*it)->mCachedPath;
-        (*it)->mCachedPath = 0;
+        (*it)->mCachedPath.reset();
     }
 }
 

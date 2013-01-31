@@ -128,26 +128,26 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
                                                   new ASTreal(y, CfdgError::Default)));
                             ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
                                                           std::move(a), CfdgError::Default);
-                            r->mRuleBody.mBody.push_back(op);
+                            r->mRuleBody.mBody.emplace_back(op);
                         }
                     }
                 } else {
                     exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                           new ASTreal(0.0, CfdgError::Default)));
                     ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.push_back(op);
+                    r->mRuleBody.mBody.emplace_back(op);
                     a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
                                         new ASTreal(0.0, CfdgError::Default)));
                     a.get()->append(new ASTreal(0.5, CfdgError::Default));
                     op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.push_back(op);
+                    r->mRuleBody.mBody.emplace_back(op);
                     a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                         new ASTreal(0.0, CfdgError::Default)));
                     a.get()->append(new ASTreal(0.5, CfdgError::Default));
                     op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.push_back(op);
+                    r->mRuleBody.mBody.emplace_back(op);
                 }
-                r->mRuleBody.mBody.push_back(new ASTpathOp(close_op, exp_ptr(),
+                r->mRuleBody.mBody.emplace_back(new ASTpathOp(close_op, exp_ptr(),
                                                            CfdgError::Default));
                 r->mRuleBody.mRepType = ASTreplacement::op;
                 r->mRuleBody.mPathOp = AST::MOVETO;
@@ -435,8 +435,8 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         if (def->mExpression->isNatural && !e->isNatural) {
             CfdgError::Error(expLoc, "Mismatch between declared natural and defined not-natural type of user function");
         }
-        delete def->mExpression;                        // Replace placeholder with actual expression
-        def->mExpression = mWant2ndPass ? e.release() : e.release()->simplify();
+        // Replace placeholder with actual expression
+        def->mExpression.reset(mWant2ndPass ? e.release() : e.release()->simplify());
         def->isConstant = def->mExpression->isConstant;
         def->mLocation = defLoc;
         
@@ -521,7 +521,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
                 return new ASTmodification(bound->mDefinition->mChildChange, loc);
             case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
+                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
                     return new ASTruleSpecifier(r->shapeType, name, nullptr, loc, NULL, NULL);
                 } else {
                     CfdgError::Error(loc, "Internal error computing bound rule specifier");
@@ -578,10 +578,9 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     for (ASTbody::iterator it = lastContainer->mBody.begin(), 
                           eit = lastContainer->mBody.end(); it != eit; ++it)
     {
-        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(*it)) {
+        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(it->get())) {
             ASTdefine* def = const_cast<ASTdefine*>(cdef);
-            args = ASTexpression::Append(args, def->mExpression);
-            def->mExpression = 0;
+            args = ASTexpression::Append(args, def->mExpression.release());
         }
     }
     
@@ -646,7 +645,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     
     if (bound->mStackIndex == -1) {
         // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-        if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
+        if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
             return new ASTruleSpecifier(r, name, loc);
         } else {
             CfdgError::Error(loc, "Internal error computing bound rule specifier");
@@ -977,7 +976,7 @@ Builder::push_rep(ASTreplacement* r, bool global)
     if (r == 0) return;
     ASTrepContainer* container = mContainerStack.back();
     
-    container->mBody.push_back(r);
+    container->mBody.emplace_back(r);
     if (container->mPathOp == unknownPathop)
         container->mPathOp = r->mPathOp;
     int oldType = container->mRepType;

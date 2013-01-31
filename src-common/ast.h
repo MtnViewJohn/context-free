@@ -69,7 +69,6 @@ namespace AST {
 
     class ASTpath;
     class ASTreplacement;
-    typedef std::vector<const ASTreplacement*> ASTbody;
     class ASTparameterList;
     class ASTparameter;
     class ASTrule;
@@ -98,6 +97,8 @@ namespace AST {
     typedef std::unique_ptr<ASTmodTerm>       term_ptr;
     typedef std::unique_ptr<ASTmodification>  mod_ptr;
     typedef std::unique_ptr<ASTrepContainer>  cont_ptr;
+    
+    typedef std::vector<rep_ptr> ASTbody;
     
     enum expType {
         NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
