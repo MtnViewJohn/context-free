@@ -1,0 +1,47 @@
+startshape Top
+
+shape Top
+{
+	Sierpinski [ r -13.5 b 0.5 ]
+}
+
+shape SierpinskiOrig
+{
+	Shape [ ]
+	Sierpinski [ s 0.5 r 5
+		y -1 x 0  ]
+	Sierpinski [  s 0.5 r 5
+		y 0.5 x -0.866025  ]
+	Sierpinski [ s 0.5 r 5
+		y 0.5 x 0.866025  ]
+}
+shape Sierpinski
+{
+	Shape [ ]
+	Sierpinski [ s 0.6 r 5 b 0.2
+		y -1.5 x 0  ]
+	Sierpinski [  s 0.6 r 5 b -0.2
+		y 0.75 x -1.2990375  ]
+	Sierpinski [ s 0.6 r 5
+		y 0.75 x 1.2990375  ]
+}
+
+# comment out all but one of these rules for Shape:
+shape Shape
+{ CIRCLE [ ] }
+#rule Shape { Triangle { s 0.5 } }
+#rule Shape { Triangle { } }
+	// this last one fills the image
+
+shape Triangle
+{ 
+	Arm [ r 0 ]
+	Arm [ r 120 ]
+	Arm [ r -120 ]
+} 
+
+shape Arm
+{
+	CIRCLE [ ]
+	Arm [ y 0.1 s 0.9 ]
+}

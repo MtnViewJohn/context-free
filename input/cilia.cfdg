@@ -1,0 +1,87 @@
+startshape LINES
+
+rule TRIPLES {
+	LINES { r 0 }
+	LINES { r 120 }
+	LINES { r -120 }
+}	
+
+rule LINES {
+	LINER { }
+	LINER { x 2 }
+	LINER { x 4 }
+	LINER { x 6 }
+	LINER { x 8 }
+	LINES { x 0.7 y 1.5 b 0.1 s 0.8 }
+ }
+
+rule LINER { LINER1 { } }
+rule LINER { LINER2 { } }
+rule LINER { LINER3 { } }
+rule LINER { LINER4 { } }
+rule LINER { LINER5 { } }
+rule LINER { LINER6 { } }
+
+rule LINER1 {
+	UTRIANGLE { y 0.5 }
+	LINER1 { r -1 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+rule LINER2 {
+	UTRIANGLE { y 0.5 }
+	LINER2 { r -2 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+rule LINER3 {
+	UTRIANGLE { y 0.5 }
+	LINER3 { r -3 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+rule LINER4 {
+	UTRIANGLE { y 0.5 }
+	LINER4 { r 1 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+rule LINER5 {
+	UTRIANGLE { y 0.5 }
+	LINER5 { r 2 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+rule LINER6 {
+	UTRIANGLE { y 0.5 }
+	LINER6 { r 3 b 0.02
+		y 0.75 x 0.4330125
+		 s 0.97 }
+ }
+
+rule LINER1 .1 { LINER { } }
+rule LINER2 .1 { LINER { } }
+rule LINER3 .1 { LINER { } }
+rule LINER4 .1 { LINER { } }
+rule LINER5 .1 { LINER { } }
+rule LINER6 .1 { LINER { } }
+
+// 0.754877 is the solution to
+// x^2 + x^3 = 1
+// this allows double backed
+// triangles to exactly line up!
+
+
+rule UTRIANGLE {
+	TRIANGLE { r 42.5 s 0.525 }
+}
+rule TRIANGLE{ 
+	ARM { r 0 }
+	ARM { r 120 }
+	ARM { r -120 }
+} 
+
+rule ARM {
+	CIRCLE { }
+	ARM { y 0.1 s 0.9 r 2 }
+}

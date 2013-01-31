@@ -1,0 +1,234 @@
+/* CFDG Lesson */
+
+startshape TOC
+	// each grammar file must
+	// have a "startshape"
+	// statement to say which
+	// shape to begin with
+
+shape TOC
+{
+	// a "rule" statement says how
+	// to compose a shape out of
+	// other shapes
+
+    CHAPTER1 [ x 0 y 0 ]
+    CHAPTER2 [ x 10 y 0 ]
+    CHAPTER3 [ x 0 y -10 ]
+    CHAPTER4 [ x 10 y -10 ]
+	// each entry in the rule
+	// names a shape to draw and
+	// some "adjustments" in curly
+	// braces
+
+    TITLES [ ]
+}
+
+shape CHAPTER1
+{
+    ## BASIC SHAPES ##
+    SQUARE [ x 2 y 5 size 3 ]
+    CIRCLE [ x 6 y 5 size 3 ]
+    TRIANGLE [ x 4 y 2 size 3 ]
+	// these shapes are special:
+	// they draw a shape into the
+	// image, centered at the
+	// current location
+    SHAPES [ y 1 size 3 ]
+	// This tells you the relative
+	// sizes and positions of each
+	// basic shape.
+}
+
+shape SHAPES
+{
+	SQUARE []
+	CIRCLE [b 0.3]
+	TRIANGLE [b 0.5]
+	TRIANGLE [r 60 b 0.7]
+}
+
+shape CHAPTER2
+{
+    ## BASIC ADJUSTMENTS ##
+    SQUARE [ ]
+	// empty adjustments
+	// this is the lone square in
+	// chapter 2's area
+
+    SQUARE [ x 3 y 7 ]
+	// adjust location
+
+	// even though adjustments
+	// are written after the shape
+	// they are applied before!
+
+    SQUARE [ x 5 y 7 rotate 30 ]
+	// adjust rotation
+    SQUARE [ x 3 y 5 size 0.75 ]
+	// adjust size
+
+	// notice that rotaion and size
+	// are adjusted after location
+
+    SQUARE [ x 5 y 5
+        brightness 0.5 ]
+	// adjust brightness
+
+    SQUARE [ x 7 y 6
+	// shorthands:
+        r 45 // for rotate
+        s 0.7 // for size
+        b 0.7 // for brightness
+    ]
+
+    FOURSQUARE [ x 5 y 1
+        size 0.2 rotate 10 ]
+	// adjustments are cumulative
+}
+shape FOURSQUARE
+{
+    SQUARE [ x 0 y 0 size 5  3]
+    SQUARE [ x 0 y 5 size 2 4 ]
+    SQUARE [ x 5 y 5 size 3 ]
+    SQUARE [ x 5 y 0 size 2 ]
+	// even though these are
+	// at locations and sizes
+	// that seem big, they have
+	// all been relocated, scaled
+	// and rotated when the rule
+	// for CHAPTER2 used
+	// FOURSQUARE
+	// Two SQUAREs have been
+	// have been turned into
+	// rectangles
+}
+
+shape CHAPTER3
+{
+    ## RECURSION ##
+    SPIRAL [ x 0 y 3 ]
+}
+shape SPIRAL
+{
+    CIRCLE [ size 0.5 ]
+    SPIRAL [ y 0.2
+         rotate -3
+         size 0.995 ]
+	// a shape can use itself so
+	// long as it keeps getting
+	// smaller
+
+	// the system will stop the
+	// recursion when the shapes
+	// get to small to see
+}
+
+shape CHAPTER4
+{
+    ## RANDOMNESS ##
+    TREE [ x 1 y 0 ]
+    TREE [ x 6 y 0 ]
+    TREE [ x 1 y 4 ]
+    TREE [ x 6 y 4 ]
+	// even though these are the
+	// same shape used four
+	// times, each looks different
+}
+shape TREE
+rule 20 {
+	// first rule for TREE
+    CIRCLE [ size 0.25 ]
+    TREE [ y 0.1 size 0.97 ]
+}
+rule 1.5 {
+	// second rule for TREE
+    BRANCH [  ]
+}
+// When expanding a TREE, a
+// rule is picked randomly.
+// The first rule has been given a
+// weight of 20, the second of 1.5,
+// so the first will be picked
+// proportionally more often
+
+shape BRANCH
+{
+    BRANCH_LEFT [ ]
+    BRANCH_RIGHT [ ]
+}
+shape BRANCH_LEFT
+rule {
+    TREE [ rotate 20 ]
+}
+rule {
+    TREE [ rotate 30 ]
+}
+rule {
+    TREE [ rotate 40 ]
+}
+rule {
+	// empty rules are okay
+}
+// If no weight is given for a rule
+// the weight is 1.  Hence, the
+// above four rules are picked
+// equally randomly
+
+shape BRANCH_RIGHT
+rule {
+    TREE [ rotate -20 ]
+}
+rule {
+    TREE [ rotate -30 ]
+}
+rule {
+    TREE [ rotate -40 ]
+}
+rule {
+	// empty rules are okay
+}
+
+
+
+## Utilities ##
+import i_pix.cfdg
+// The "include" statement reads
+// in all the rules from another file.
+// Any "startshape" in the included
+// file is ignored.
+
+shape TITLES
+{
+	TITLE1 [ x 0 y 8.5 ]
+	TITLE2 [ x 10 y 8.5 ]
+	TITLE3 [ x 0 y -1.5 ]
+	TITLE4 [ x 10 y -1.5 ]
+}
+shape TITLE1
+{
+	O_5by5 [ x 0 ]
+	N_5by5 [ x 1.2 ]
+	E_5by5 [ x 2.4 ]
+}
+shape TITLE2
+{
+	T_5by5 [ x 0 ]
+	W_5by5 [ x 1.2 ]
+	O_5by5 [ x 2.4 ]
+}
+shape TITLE3
+{
+	T_5by5 [ x 0 ]
+	H_5by5 [ x 1.2 ]
+	R_5by5 [ x 2.4 ]
+	E_5by5 [ x 3.6 ]
+	E_5by5 [ x 4.8 ]
+}
+shape TITLE4
+{
+	F_5by5 [ x 0 ]
+	O_5by5 [ x 1.2 ]
+	U_5by5 [ x 2.4 ]
+	R_5by5 [ x 3.6 ]
+}

@@ -1,0 +1,190 @@
+/* CFDG Lesson */
+
+startshape TOC
+
+shape TOC
+{
+    CHAPTER5 [ x 0 y 0 ]
+    CHAPTER6 [ x 10 y 0 ]
+    CHAPTER7 [ x 0 y -10 ]
+    CHAPTER8 [ x 10 y -10 ]
+
+    TITLES [ ]
+}
+
+shape CHAPTER5
+{
+    ## SKEW TRANSFORM ##
+    SierpinskiTri [ x 2 y 4 size 6.0 ]
+    SQUARE [ x 0.5 y 5.5 skew 15 15 size 2 ]
+	// a skew transform (also called 
+	// a shear) pushes a shape parallel
+	// to the x axis or y axis or both.
+	// The two numbers following
+}
+
+shape SierpinskiTri
+{
+	polygonRightTriangle [ ]
+	hole [ b 1 ]
+}
+
+shape hole
+{
+	polygonRightTriangle [ size -0.495 x 0.25 y -0.25 ]
+	hole [ b -0.2 size 0.5 x -0.25 y -0.25 ]
+	hole [ b -0.2 size 0.5 x  0.25 y -0.25 ]
+	hole [ b -0.2 size 0.5 x  0.25 y  0.25 ]
+}
+
+shape polygonRightTriangle
+{
+	TRIANGLE [[ size 1 1.155 x 0.165 y -0.144 skew 30 0 ]]
+}
+
+shape CHAPTER6
+ {
+    ## FLIP TRANSFORM ##
+    HEART [ x 2 y 1 size 0.12 0.1]
+	// A flip transform reflects a 
+	// shape across a line at the
+	// specified angle. 
+}
+
+import i_curves.cfdg
+
+shape HEART
+{
+    curveright_0_99_1 [ r 64 ]
+    curveright_0_99_1 [ flip 90 r -64 ]
+    HEART [ s 0.9 y 2.5 ]
+}
+
+shape CHAPTER7
+{
+    ## TRANSFORM ORDERING ##
+    TranSquare [ s 0.5 x 1 y 5 ]
+    TranCircle [ s 0.5 x 1 y 3 ]
+    TranTriangle [ s 0.5 x -1 y 1 ]
+    SquareLine [ x -1 y 7 ]
+	// When transforms are in curly
+	// braces then they are applied
+	// in a fixed order:
+	// 1) Translate
+	// 2) Rotate
+	// 3) Scale
+	// 4) Skew
+	// 5) Reflect
+	// Only one transform of each 
+	// type is allowed (all but the 
+	// last are ignored).
+
+	// When transforms are in square
+	// braces then they are applied
+	// in the order they are found
+	// and there can be multiple
+	// occurances of a given type
+	// of transform.
+}
+
+shape TranSquare
+{
+    SQUARE [[ r 45 x 4 s 3 ]]
+    SQUARE [[ b 0.2 x 4 s 3 ]]
+    SQUARE [[ b 0.4 x 4 ]]
+    SQUARE [[ b 0.7 ]]
+	// Ordering a rotate before a
+	// translate (x or y) causes the
+	// translate to be rotated. This
+	// saves
+}
+shape TranCircle
+{
+    Ellipse [[ x 4 r 45 s 3 ]]
+    Ellipse [[ b 0.2 r 45 s 3 ]]
+    Ellipse [[ b 0.4 s 3  ]]
+    Ellipse [[ b 0.7 ]]
+	// This happens to be the order
+	// that CF uses when the transforms
+	// are enclosed in curly braces.
+}
+shape TranTriangle
+{
+    TRIANGLE [[ s 3 x 4 r 45 ]]
+    TRIANGLE [[ b 0.2 x 4 r 45 ]]
+    TRIANGLE [[ b 0.4 r 45 ]]
+    TRIANGLE [[ b 0.7 ]]
+	// Putting the scale before the
+	// translate scales the translate
+	// as well
+}
+shape SquareLine
+{
+	SQUARE []
+	SquareLine [[ y -0.5 s 0.75 y -0.5 ]]
+	// Transforms can be specified
+	// more than once and subsequent
+	// transforms are modifed by the
+	// ones before them. In the above 
+	// idiom the squares are always
+	// just touching, even when you
+	// change the scale amount.
+}
+shape Ellipse
+{
+	CIRCLE [ s 1 0.5 ]
+}
+
+
+
+shape CHAPTER8
+ {
+    ## COLOR ##
+	// Coming soon.
+}
+
+
+
+## Utilities ##
+import i_pix.cfdg
+// The "include" statement reads
+// in all the rules from another file.
+// Any "startshape" in the included
+// file is ignored.
+
+shape TITLES
+{
+	TITLE5 [ x 0 y 8.5 ]
+	TITLE6 [ x 10 y 8.5 ]
+	TITLE7 [ x 0 y -1.5 ]
+	TITLE8 [ x 10 y -1.5 ]
+}
+shape TITLE5
+{
+	F_5by5 [ x 0 ]
+	I_5by5 [ x 1.2 ]
+	V_5by5 [ x 2.4 ]
+	E_5by5 [ x 3.6 ]
+}
+shape TITLE6
+{
+	S_5by5 [ x 0 ]
+	I_5by5 [ x 1.2 ]
+	X_5by5 [ x 2.4 ]
+}
+shape TITLE7
+{
+	S_5by5 [ x 0 ]
+	E_5by5 [ x 1.2 ]
+	V_5by5 [ x 2.4 ]
+	E_5by5 [ x 3.6 ]
+	N_5by5 [ x 4.8 ]
+}
+shape TITLE8
+{
+	E_5by5 [ x 0 ]
+	I_5by5 [ x 1.2 ]
+	G_5by5 [ x 2.4 ]
+	H_5by5 [ x 3.6 ]
+	T_5by5 [ x 4.8 ]
+}

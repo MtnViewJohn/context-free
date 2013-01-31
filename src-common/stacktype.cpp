@@ -1,0 +1,273 @@
+// stacktype.cpp
+// this file is part of Context Free
+// ---------------------
+// Copyright (C) 2011-2013 John Horigan - john@glyphic.com
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// John Horigan can be contacted at john@glyphic.com or at
+// John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
+//
+//
+
+// Parameter block layout in memory:
+// param +   0: ruleHeader (shape name, parameter count, reference count)
+// param +   8: typeinfo pointer
+// param +  16: 1st parameter
+// param + 8*n: 2nd parameter
+// ...
+// Numeric parameters use one 8-byte block
+// Numeric vector parameters use n 8-bytes blocks
+// Modification parameters use 22 8-byte blocks
+// Rule parameters use one 8-byte block, which contains a pointer to the 
+// ruleHeader of another parameter block
+//
+// If the rule header indicates that the parameter count is zero then there
+// are no typeinfo or parameter blocks, just one block for the rule header.
+// The parameter count is not the number of parameters, it is the number of
+// 8-byte blocks required to contain the parameters
+
+// Parameter block layout in files:
+// The parameter block is the root of a tree of parameter blocks. This tree
+// is traversed depth first. Rule parameters are encoded in the same manner as
+// the root parameter token (except no zero): rule parameters that are owned by
+// some other object are written out as memory pointers, otherwise the parameter
+// block for the rule parameter is interpolated directly into the parent
+// parameter block as a header token followed by the rest of the child parameter
+// block. The remainder of the parameters continue after the child parameter block
+// (which may itself have grandchild  parameter blocks).
+//
+// Note: only the root parameter token can be zero when there are no parameters.
+// Non-root parameter token nodes will have be a header token with a parameter
+// count of zero if they correspond to a rule with no parameters.
+
+
+#include "stacktype.h"
+#include "cfdg.h"
+#include <cassert>
+#include "astexpression.h"
+#include <cstring>
+#include <iostream>
+
+
+#define assert_static(e) \
+do { \
+enum { assert_static__ = 1/((int)(e)) }; \
+} while (0)
+
+StackType*
+StackType::alloc(int name, int size, const AST::ASTparameters* ti)
+{
+    assert_static(sizeof(StackType) == sizeof(double));
+    ++Renderer::ParamCount;
+    StackType* newrule = new StackType[size ? size + 2 : 1];
+    assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
+    newrule[0].ruleHeader.mRuleName = name;
+    newrule[0].ruleHeader.mRefCount = 0;
+    newrule[0].ruleHeader.mParamCount = size;
+    if (size)
+        newrule[1].typeInfo = ti;
+    return newrule;
+}
+
+// Release arguments on the heap
+void
+StackType::release() const
+{
+    if (ruleHeader.mRefCount == 0) {
+        for (const_iterator it = begin(), e = end(); it != e; ++it)
+            if (it.type().mType == AST::RuleType)
+                it->rule->release();
+        --Renderer::ParamCount;
+        delete[] this;
+        return;
+    }
+    
+    if (ruleHeader.mRefCount < StackRule::MaxRefCount)
+        --(ruleHeader.mRefCount);
+}
+
+// Release arguments on the stack
+void
+StackType::release(const AST::ASTparameters* p) const
+{
+    for (const_iterator it = begin(p), e = end(); it != e; ++it)
+        if (it.type().mType == AST::RuleType)
+            it->rule->release();
+}
+
+void
+StackType::retain(Renderer* r) const
+{
+    if (ruleHeader.mRefCount == StackRule::MaxRefCount)
+        return;
+    
+    ++(ruleHeader.mRefCount);
+    if (ruleHeader.mRefCount == StackRule::MaxRefCount) {
+        r->storeParams(this);
+    }
+}
+
+bool
+StackRule::operator==(const StackRule& o) const
+{
+    if (this == &o) return true;
+    if (mParamCount != o.mParamCount) return false;
+    return std::memcmp((const void*)(this + 2), (const void*)(&o + 2), 
+                       sizeof(StackType)*(mParamCount)) == 0;
+}
+
+bool
+StackRule::Equal(const StackRule* a, const StackType* b)
+{
+    if (a == NULL && b == NULL) return true;
+    if (a == NULL || b == NULL) return false;
+    return (*a) == (b->ruleHeader);
+}
+
+void
+StackType::read(std::istream& is)
+{
+    if (ruleHeader.mParamCount == 0)
+        return;
+    is.read((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
+    for (iterator it = begin(), e = end(); it != e; ++it) {
+        switch (it.type().mType) {
+        case AST::NumericType:
+        case AST::ModType:
+            is.read((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
+            break;
+        case AST::RuleType:
+            it->rule = readHeader(is);
+            break;
+        default:
+            assert(false);
+            break;
+        }
+    }
+}
+
+void
+StackType::write(std::ostream& os) const
+{
+    uint64_t head = ((uint64_t)(ruleHeader.mRuleName)) << 24 |
+                    ((uint64_t)(ruleHeader.mParamCount)) << 8 |
+                    0xff;
+    os.write((char*)(&head), sizeof(uint64_t));
+    if (ruleHeader.mParamCount == 0)
+        return;
+    os.write((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
+    for (const_iterator it = begin(), e = end(); 
+        it != e; ++it)
+    {
+        switch (it.type().mType) {
+        case AST::NumericType:
+        case AST::ModType:
+            os.write((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
+            break;
+        case AST::RuleType:
+            writeHeader(os, it->rule);
+            break;
+        default:
+            assert(false);
+            break;
+        }
+    }
+}
+
+StackType*
+StackType::readHeader(std::istream& is)
+{
+    uint64_t size = 0;
+    is.read((char*)(&size), sizeof(uint64_t));
+    if (size & 3) {
+        // Don't know the typeInfo yet, get it during read
+        StackType* s = StackType::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, NULL);
+        s->read(is);
+        return s;
+    } else {
+        return (StackType*)size;
+    }
+}
+
+void
+StackType::writeHeader(std::ostream& os, const StackType* s)
+{
+    if (s == NULL || s->ruleHeader.mRefCount == StackRule::MaxRefCount) {
+        uint64_t p = (uint64_t)(s);
+        os.write((char*)(&p), sizeof(uint64_t));
+    } else {
+        s->write(os);
+    }
+}
+
+static void
+EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
+         StackType::iterator& end, const AST::ASTexpression* arguments,
+         bool onStack)
+{
+    for (int i = 0; i < arguments->size(); ++i, ++dest) {
+        assert(dest != end);
+        if (onStack)
+            rti->mLogicalStackTop = &(*dest);
+        const AST::ASTexpression* arg = (*arguments)[i];
+        switch (arg->mType) {
+            case AST::NumericType: {
+                int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
+                if (dest.type().isNatural && !Renderer::isNatural(rti, dest->number))
+                    throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
+                if (num != dest.type().mTuplesize)
+                    throw CfdgError(arg->where, "Expression does not evaluate to the correct size");
+                break;
+            }
+            case AST::ModType: {
+                int dummy;
+                static const Modification zeroMod;
+                Modification& m = reinterpret_cast<Modification&> (dest->number);
+                m = zeroMod;
+                arg->evaluate(m, 0, 0, false, dummy, false, rti);
+                break;
+            }
+            case AST::RuleType: {
+                dest->rule = arg->evalArgs(rti, parent);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    assert(dest == end);
+}
+
+// Evaluate arguments on the heap
+void
+StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
+                    const StackType* parent)
+{
+    iterator dest = begin();
+    iterator end_it = end();
+    EvalArgs(rti, parent, dest, end_it, arguments, false);
+}
+
+// Evaluate arguments on the stack
+void
+StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
+                    const AST::ASTparameters* p, bool sequential)
+{
+    iterator dest = begin(p);
+    iterator end_it = end();
+    EvalArgs(rti, NULL, dest, end_it, arguments, sequential);
+}
+
