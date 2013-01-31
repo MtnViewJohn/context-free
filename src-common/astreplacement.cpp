@@ -72,7 +72,7 @@ namespace AST {
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
-    : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
+    : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)
     {
         mChildChange.addEntropy(name);
@@ -80,7 +80,7 @@ namespace AST {
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
                                    const yy::location& loc, repElemListEnum t)
-    : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
+    : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)
     {
     }

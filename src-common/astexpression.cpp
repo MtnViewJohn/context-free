@@ -337,7 +337,7 @@ namespace AST {
         assert(r->argSource == NoArgs || Builder::CurrentBuilder->mWant2ndPass);   // only duplicate constant rule specs
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier& r)
+    ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r)
     : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
       argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
       arguments(r.arguments), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
