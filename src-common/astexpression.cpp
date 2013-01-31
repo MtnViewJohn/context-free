@@ -821,15 +821,15 @@ namespace AST {
                 y.reset();
             }
             
-            AddMod(modExp, x);
-            AddMod(modExp, y);
-            AddMod(modExp, z);
-            AddMod(modExp, rot);
-            AddMod(modExp, size);
-            AddMod(modExp, zsize);
-            AddMod(modExp, skew);
-            AddMod(modExp, flip);
-            AddMod(modExp, transform);
+            AddMod(modExp, std::move(x));
+            AddMod(modExp, std::move(y));
+            AddMod(modExp, std::move(z));
+            AddMod(modExp, std::move(rot));
+            AddMod(modExp, std::move(size));
+            AddMod(modExp, std::move(zsize));
+            AddMod(modExp, std::move(skew));
+            AddMod(modExp, std::move(flip));
+            AddMod(modExp, std::move(transform));
         } catch (...) {
             for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) 
                 delete (*it);

@@ -54,7 +54,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m) 
-: mInitShape(0), mInitShapeDepth(std::numeric_limits<unsigned>::max()), 
+: mInitShape(nullptr), mInitShapeDepth(std::numeric_limits<unsigned>::max()),
   m_backgroundColor(1, 1, 1, 1),
   mStackSize(0), m_system(m), m_secondPass(false), m_Parameters(0), 
   mTileOffset(0, 0), needle(0, CfdgError::Default)
@@ -82,7 +82,7 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
 }
 
 CFDGImpl::CFDGImpl(CFDGImpl* c)
-: mInitShape(0), mInitShapeDepth(std::numeric_limits<unsigned>::max()), 
+: mInitShape(nullptr), mInitShapeDepth(std::numeric_limits<unsigned>::max()),
   m_backgroundColor(1, 1, 1, 1),
   mStackSize(0), m_system(c->m_system), m_secondPass(true), m_Parameters(0), 
   mTileOffset(0, 0), needle(0, CfdgError::Default)
@@ -126,7 +126,7 @@ void
 CFDGImpl::setInitialShape(rep_ptr init, unsigned depth)
 {
     if (depth < mInitShapeDepth) {
-        mInitShape = init;
+        mInitShape = std::move(init);
         m_initialShape.mShapeType = mInitShape->mShapeSpec.shapeType;
         mInitShapeDepth = depth;
     }

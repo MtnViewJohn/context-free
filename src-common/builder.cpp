@@ -114,10 +114,10 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
             if (map) {
                 ASTrule* r = new ASTrule(i, CfdgError::Default);
                 ASTrule::PrimitivePaths[i] = r;
-                static const std::string  move("MOVETO");
-                static const std::string  line("LINETO");
-                static const std::string   arc("ARCTO");
-                static const std::string close("CLOSEPOLY");
+                static const std::string  move_op("MOVETO");
+                static const std::string  line_op("LINETO");
+                static const std::string   arc_op("ARCTO");
+                static const std::string close_op("CLOSEPOLY");
                 if (i != primShape::circleType) {
                     map->rewind(0);
                     double x = 0, y = 0;
@@ -126,28 +126,28 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
                         if (agg::is_vertex(cmd)) {
                             exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default), 
                                                   new ASTreal(y, CfdgError::Default)));
-                            ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move : line,
-                                                          a, CfdgError::Default);
+                            ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
+                                                          std::move(a), CfdgError::Default);
                             r->mRuleBody.mBody.push_back(op);
                         }
                     }
                 } else {
                     exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                           new ASTreal(0.0, CfdgError::Default)));
-                    ASTpathOp* op = new ASTpathOp(move, a, CfdgError::Default);
+                    ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
                                         new ASTreal(0.0, CfdgError::Default)));
                     a.get()->append(new ASTreal(0.5, CfdgError::Default));
-                    op = new ASTpathOp(arc, a, CfdgError::Default);
+                    op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                     a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
                                         new ASTreal(0.0, CfdgError::Default)));
                     a.get()->append(new ASTreal(0.5, CfdgError::Default));
-                    op = new ASTpathOp(arc, a, CfdgError::Default);
+                    op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
                     r->mRuleBody.mBody.push_back(op);
                 }
-                r->mRuleBody.mBody.push_back(new ASTpathOp(close, exp_ptr(),
+                r->mRuleBody.mBody.push_back(new ASTpathOp(close_op, exp_ptr(),
                                                            CfdgError::Default));
                 r->mRuleBody.mRepType = ASTreplacement::op;
                 r->mRuleBody.mPathOp = AST::MOVETO;
@@ -311,7 +311,7 @@ Builder::EndInclude()
 void
 Builder::Initialize(rep_ptr init)
 {
-    m_CFDG->setInitialShape(init, mIncludeDepth);
+    m_CFDG->setInitialShape(std::move(init), mIncludeDepth);
 }
 
 void
@@ -405,7 +405,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             return;
         }
         e.reset(e.release()->simplify());
-        if (!m_CFDG->addParameter(name, e, mIncludeDepth))
+        if (!m_CFDG->addParameter(name, std::move(e), mIncludeDepth))
             warning(nameLoc, "Unknown configuration parameter");
         if (name == "CF::MaxNatural") {
             const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
@@ -460,9 +460,9 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     CheckVariableName(nameIndex, nameLoc, false);
     if (ASTmodification* m = dynamic_cast<ASTmodification*> (e.get())) {
         mod_ptr mod(m); e.release();
-        def = new ASTdefine(name, mod, defLoc);
+        def = new ASTdefine(name, std::move(mod), defLoc);
     } else {
-        def = new ASTdefine(name, e, defLoc);
+        def = new ASTdefine(name, std::move(e), defLoc);
     }
     ASTrepContainer* top = mContainerStack.back();
     ASTparameter& b = top->addParameter(nameIndex, def, nameLoc, expLoc);
@@ -491,7 +491,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(varNum, isGlobal);
     if (bound == 0) {
-        return new ASTruleSpecifier(varNum, name, exp_ptr(), loc, 
+        return new ASTruleSpecifier(varNum, name, nullptr, loc,
                                     m_CFDG->getShapeParams(varNum),
                                     m_CFDG->getShapeParams(mCurrentShape));
     }
@@ -522,10 +522,10 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
             case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
                 if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression)) {
-                    return new ASTruleSpecifier(r->shapeType, name, exp_ptr(), loc, NULL, NULL);
+                    return new ASTruleSpecifier(r->shapeType, name, nullptr, loc, NULL, NULL);
                 } else {
                     CfdgError::Error(loc, "Internal error computing bound rule specifier");
-                    return new ASTruleSpecifier(varNum, name, exp_ptr(), loc, NULL, NULL);
+                    return new ASTruleSpecifier(varNum, name, nullptr, loc, NULL, NULL);
                 }
             }
             default:
@@ -565,7 +565,7 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
         CfdgError::Error(nameLoc, "This is not a numeric vector");
         return args.release();
     }
-    ASTexpression* ret =  new ASTarray(bound, args, isGlobal ? 0 : mLocalStackDepth,
+    ASTexpression* ret =  new ASTarray(bound, std::move(args), isGlobal ? 0 : mLocalStackDepth,
                                        nameLoc + argsLoc, *name);
     return mWant2ndPass ? ret : ret->simplify();
 }
@@ -587,7 +587,7 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     
     static const std::string name("let");
     yy::location defLoc = exp->where;
-    ASTdefine* def = new ASTdefine(name, exp, defLoc);
+    ASTdefine* def = new ASTdefine(name, std::move(exp), defLoc);
     
     for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
          eit = lastContainer->mParameters.end(); it != eit; ++it)
@@ -610,9 +610,9 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
             CfdgError::Error(args->where, "Function does not return a shape");
         if (name == "select") {
             yy::location argsLoc = args->where;
-            args.reset(new ASTselect(args, argsLoc, false));
+            args.reset(new ASTselect(std::move(args), argsLoc, false));
         }
-        ASTruleSpecifier* spec = new ASTruleSpecifier(args, loc);
+        ASTruleSpecifier* spec = new ASTruleSpecifier(std::move(args), loc);
         return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
 
@@ -628,14 +628,14 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
         } else {
             args.reset(new ASTuserFunction(args.release(), def, loc));
         }
-        ASTruleSpecifier* spec = new ASTruleSpecifier(args, loc);
+        ASTruleSpecifier* spec = new ASTruleSpecifier(std::move(args), loc);
         return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
     
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
     if (bound == 0 || bound->mType != AST::RuleType) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, args, loc,
+        ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
                                                       m_CFDG->getShapeParams(nameIndex),
                                                       m_CFDG->getShapeParams(mCurrentShape));
         return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
@@ -650,7 +650,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
             return new ASTruleSpecifier(r, name, loc);
         } else {
             CfdgError::Error(loc, "Internal error computing bound rule specifier");
-            return new ASTruleSpecifier(nameIndex, name, args, loc, NULL, NULL);
+            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, NULL, NULL);
         }
     }
     
@@ -751,9 +751,9 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
                      const yy::location& loc, bool subPath)
 {
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
-        return rep_ptr(new ASTpathCommand(s, mods, params, loc));
+        return rep_ptr(new ASTpathCommand(s, std::move(mods), std::move(params), loc));
     
-    ruleSpec_ptr r(MakeRuleSpec(s, params, loc));
+    ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc)); //TODO: where does this go?
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;
@@ -776,7 +776,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             error(loc, "Subpath references must be to previously declared paths");
         }
     }
-    return rep_ptr(new ASTreplacement(*r, r->entropyVal, mods, loc, t));
+    return rep_ptr(new ASTreplacement(*r, r->entropyVal, std::move(mods), loc, t));
 }
 
 AST::ASTexpression*
@@ -799,7 +799,7 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     }
     
     if (*name == "select" || *name == "if") {
-        ASTselect* sel = new ASTselect(args, nameLoc + argsLoc, *name == "if");
+        ASTselect* sel = new ASTselect(std::move(args), nameLoc + argsLoc, *name == "if");
         return mWant2ndPass ? sel : sel->simplify();
     }
     
@@ -807,18 +807,18 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     if (t == ASTfunction::Ftime || t == ASTfunction::Frame)
         m_CFDG->addParameter(CFDGImpl::FrameTime);
     if (t != ASTfunction::NotAFunction)
-        return new ASTfunction(*name, args, mSeed, nameLoc, argsLoc);
+        return new ASTfunction(*name, std::move(args), mSeed, nameLoc, argsLoc);
     
     const ASTparameters* p = m_CFDG->getShapeParams(nameIndex);
     if (p) {
         if (!(p->empty())) {
-            ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+            ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, *name, std::move(args), nameLoc + argsLoc, p,
                                                           m_CFDG->getShapeParams(mCurrentShape));
             return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
         }
         
         if (consAllowed) {
-            ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, *name, exp_ptr(), nameLoc, 
+            ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, *name, nullptr, nameLoc, 
                                                        p, m_CFDG->getShapeParams(mCurrentShape));
             ASTexpression* ret = r->append(args.release());
             return mWant2ndPass ? ret : ret->simplify();
@@ -836,7 +836,7 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     }
 
     // Just return this, it will get dropped eventually
-    return new ASTruleSpecifier(nameIndex, *name, args, nameLoc + argsLoc, p,
+    return new ASTruleSpecifier(nameIndex, *name, std::move(args), nameLoc + argsLoc, p,
                                 m_CFDG->getShapeParams(mCurrentShape));
 }
 
@@ -910,7 +910,7 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
                 break;
         }
         
-        ASTdefine* def = new ASTdefine(name, r, defLoc);
+        ASTdefine* def = new ASTdefine(name, std::move(r), defLoc);
         def->mParameters = mParamDecls.mParameters;
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;
