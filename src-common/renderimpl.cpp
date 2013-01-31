@@ -786,8 +786,8 @@ RendererImpl::moveUnfinishedToTwoFiles()
     m_unfinishedFiles.push_back(t1);
     m_unfinishedFiles.push_back(t2);
 
-    auto_ptr<ostream> f1(t1->forWrite());
-    auto_ptr<ostream> f2(t2->forWrite());
+    unique_ptr<ostream> f1(t1->forWrite());
+    unique_ptr<ostream> f2(t2->forWrite());
     
     system()->message("Writing %s temp files %d & %d",
                         t1->type().c_str(), t1->number(), t2->number());
@@ -838,7 +838,7 @@ RendererImpl::getUnfinishedFromFile()
     
     ref_ptr<TempFile> t = m_unfinishedFiles.front();
     
-    auto_ptr<istream> f(t->forRead());
+    unique_ptr<istream> f(t->forRead());
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -945,7 +945,7 @@ RendererImpl::moveFinishedToFile()
                                             "shapes", ++mFinishedFileCount);
     m_finishedFiles.push_back(t);
     
-    auto_ptr<ostream> f(t->forWrite());
+    unique_ptr<ostream> f(t->forWrite());
 
 	if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;

@@ -73,7 +73,7 @@ namespace AST {
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
-      mChildChange(mods, loc), mLocation(loc)
+      mChildChange(std::move(mods), loc), mLocation(loc)
     {
         mChildChange.addEntropy(name);
     }
@@ -81,14 +81,14 @@ namespace AST {
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(shapeSpec), mRepType(t), mPathOp(unknownPathop), 
-      mChildChange(mods, loc), mLocation(loc)
+      mChildChange(std::move(mods), loc), mLocation(loc)
     {
     }
     
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
-    : ASTreplacement(ASTruleSpecifier::Zero, mods, nameLoc + argsLoc, empty),
+    : ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), nameLoc + argsLoc, empty),
       mLoopArgs(NULL)
     {
         std::string ent(name);
@@ -161,14 +161,14 @@ namespace AST {
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty), mTransforms(), 
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty), mTransforms(),
       mModifications(getTransforms(mods.get(), mTransforms, NULL, false, Dummy)), 
       mExpHolder(mods.release()), mClone(false)
     {
     }
     
     ASTdefine::ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc) 
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, empty),
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty),
       mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name),
       isFunction(false)
     {
@@ -183,7 +183,7 @@ namespace AST {
     }
     
     ASTdefine::ASTdefine(const std::string& name, mod_ptr e, const yy::location& loc) 
-    : ASTreplacement(ASTruleSpecifier::Zero, e, loc, empty), mExpression(0), 
+    : ASTreplacement(ASTruleSpecifier::Zero, std::move(e), loc, empty), mExpression(0),
       mTuplesize(ModificationSize), mType(AST::ModType), 
       isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name),
       isFunction(false)
@@ -217,7 +217,7 @@ namespace AST {
     }
     
     ASTif::ASTif(exp_ptr ifCond, const yy::location& condLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), condLoc, empty), 
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, condLoc, empty),
       mCondition(ifCond.release()->simplify())
     {
         if (mCondition->mType != NumericType || mCondition->evaluate(0, 0) != 1)
@@ -225,7 +225,7 @@ namespace AST {
     }
 
     ASTswitch::ASTswitch(exp_ptr switchExp, const yy::location& expLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), expLoc, empty), 
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, expLoc, empty),
       mSwitchExp(switchExp.release()->simplify())
     {
         if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(0, 0) != 1)
@@ -257,7 +257,7 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mArguments(0), 
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(0),
       mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -270,12 +270,12 @@ namespace AST {
             CfdgError::Error(loc, "Unknown path operation type");
         }
         
-        checkArguments(a);
+        checkArguments(std::move(a));
         pathDataConst();
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, op), mArguments(0),
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(0),
       mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -288,12 +288,12 @@ namespace AST {
             CfdgError::Error(loc, "Unknown path operation type");
         }
         
-        makePositional(a);
+        makePositional(std::move(a));
         pathDataConst();
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, mods, loc, command), 
+    :   ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), loc, command),
         mMiterLimit(4.0)
     {
         mChildChange.addEntropy(s);
@@ -311,7 +311,7 @@ namespace AST {
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, mods, loc, command), 
+    :   ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), loc, command),
         mMiterLimit(4.0)
     {
         mChildChange.addEntropy(s);
@@ -344,10 +344,10 @@ namespace AST {
         case 1:
             switch (params->mType) {
                 case NumericType:
-                    stroke = params;
+                    stroke = std::move(params);
                     break;
                 case FlagType:
-                    flags = params;
+                    flags = std::move(params);
                     break;
                 default:
                     CfdgError::Error(params->where, "Bad expression type in path command parameters");
@@ -1130,7 +1130,7 @@ namespace AST {
         
         ASTexpression* xy = 0;
         if (mPathOp != CLOSEPOLY) {
-            xy = parseXY(ax, ay, 0.0, mLocation);
+            xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation);
         } 
         
         switch (mPathOp) {
@@ -1138,25 +1138,25 @@ namespace AST {
             case LINEREL:
             case MOVETO:
             case MOVEREL:
-                rejectTerm(ar);
-                rejectTerm(arx);
-                rejectTerm(ary);
-                rejectTerm(ax1);
-                rejectTerm(ay1);
-                rejectTerm(ax2);
-                rejectTerm(ay2);
+                rejectTerm(std::move(ar));
+                rejectTerm(std::move(arx));
+                rejectTerm(std::move(ary));
+                rejectTerm(std::move(ax1));
+                rejectTerm(std::move(ay1));
+                rejectTerm(std::move(ax2));
+                rejectTerm(std::move(ay2));
                 
                 mArguments = xy;
                 break;
             case ARCTO:
             case ARCREL:
-                rejectTerm(ax1);
-                rejectTerm(ay1);
-                rejectTerm(ax2);
-                rejectTerm(ay2);
+                rejectTerm(std::move(ax1));
+                rejectTerm(std::move(ay1));
+                rejectTerm(std::move(ax2));
+                rejectTerm(std::move(ay2));
                 
                 if (arx.get() || ary.get()) {
-                    ASTexpression* rxy = parseXY(arx, ary, 1, mLocation);
+                    ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1, mLocation);
                     ASTexpression* angle = ar.release();
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
@@ -1178,33 +1178,33 @@ namespace AST {
                 break;
             case CURVETO:
             case CURVEREL: {
-                rejectTerm(ar);
-                rejectTerm(arx);
-                rejectTerm(ary);
+                rejectTerm(std::move(ar));
+                rejectTerm(std::move(arx));
+                rejectTerm(std::move(ary));
                 
                 ASTexpression *xy1 = 0, *xy2 = 0;
                 if (ax1.get() || ay1.get()) {
-                    xy1 = parseXY(ax1, ay1, 0.0, mLocation);
+                    xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
                 } else {
                     mFlags |= CF_CONTINUOUS;
                 }
                 if (ax2.get() || ay2.get()) {
-                    xy2 = parseXY(ax2, ay2, 0.0, mLocation);
+                    xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);
                 }
                 
                 mArguments = xy->append(xy1)->append(xy2);
                 break;
             }
             case CLOSEPOLY:
-                rejectTerm(ax);
-                rejectTerm(ay);
-                rejectTerm(ar);
-                rejectTerm(arx);
-                rejectTerm(ary);
-                rejectTerm(ax1);
-                rejectTerm(ay1);
-                rejectTerm(ax2);
-                rejectTerm(ay2);
+                rejectTerm(std::move(ax));
+                rejectTerm(std::move(ay));
+                rejectTerm(std::move(ar));
+                rejectTerm(std::move(arx));
+                rejectTerm(std::move(ary));
+                rejectTerm(std::move(ax1));
+                rejectTerm(std::move(ay1));
+                rejectTerm(std::move(ax2));
+                rejectTerm(std::move(ay2));
                 break;
             default:
                 break;

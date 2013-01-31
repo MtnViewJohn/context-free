@@ -187,11 +187,11 @@ namespace AST {
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, rule), mCachedPath(NULL),
+        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(NULL),
         mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
         weightType(percent ? PercentWeight : ExplicitWeight) { };
         ASTrule(int ruleIndex, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, mod_ptr(), loc, rule), mCachedPath(NULL),
+        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(NULL),
         mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         virtual ~ASTrule();
         void traversePath(const Shape& parent, Renderer* r) const;
@@ -204,7 +204,7 @@ namespace AST {
         int mNameIndex;
         
         ASTshape(ASTruleSpecifier& r, bool path, const yy::location& loc) 
-        : ASTreplacement(r, mod_ptr(), loc, empty), isPath(path), mNameIndex(r.shapeType)
+        : ASTreplacement(r, nullptr, loc, empty), isPath(path), mNameIndex(r.shapeType)
         { mRules.isGlobal = true; }
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
     };
@@ -232,7 +232,7 @@ namespace AST {
         
         // Empty constructor
         ASTpathCommand() :
-        ASTreplacement(ASTruleSpecifier::Zero, mod_ptr()),
+        ASTreplacement(ASTruleSpecifier::Zero, nullptr),
         mMiterLimit(4.0)
         {
         }
