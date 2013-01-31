@@ -1125,7 +1125,7 @@ caseHeader:
                             driver.push_repContainer(*(caseMap[intval]));
                         } else {
                             ASTrepContainer* caseBody = new ASTrepContainer();
-                            caseMap[intval] = caseBody;
+                            caseMap.emplace(intval, caseBody);
                             driver.push_repContainer(*caseBody);
                         }
                     }

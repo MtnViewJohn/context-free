@@ -89,7 +89,7 @@ namespace AST {
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
     : ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), nameLoc + argsLoc, empty),
-      mLoopArgs(NULL)
+      mLoopArgs(nullptr)
     {
         std::string ent(name);
         args->entropy(ent);
@@ -114,7 +114,7 @@ namespace AST {
                 CfdgError::Error(argsLoc, "A loop must have one to three index parameters.");
             }
             
-            mLoopArgs = args.release()->simplify();
+            mLoopArgs.reset(args.release()->simplify());
             
             for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
                 int num = (*mLoopArgs)[i]->evaluate(0, 0);
@@ -157,13 +157,13 @@ namespace AST {
         finallyParam.isLoopIndex = true;
         finallyParam.isNatural = finallyNatural;
         finallyParam.isLocal = local;
-        loopDef.mExpression = 0;
+        loopDef.mExpression.release();
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty), mTransforms(),
       mModifications(getTransforms(mods.get(), mTransforms, NULL, false, Dummy)), 
-      mExpHolder(mods.release()), mClone(false)
+      mExpHolder(std::move(mods)), mClone(false)
     {
     }
     
@@ -175,7 +175,7 @@ namespace AST {
         if (mType != NumericType && mType != ModType && mType != RuleType)
             CfdgError::Error(e->where, "Unsupported expression type");
         mTuplesize = e->mType == AST::NumericType ? e->evaluate(0, 0) : 1;
-        mExpression = e.release()->simplify();
+        mExpression.reset(e.release()->simplify());
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
         mChildChange.modData.mRand64Seed.init();
@@ -183,7 +183,7 @@ namespace AST {
     }
     
     ASTdefine::ASTdefine(const std::string& name, mod_ptr e, const yy::location& loc) 
-    : ASTreplacement(ASTruleSpecifier::Zero, std::move(e), loc, empty), mExpression(0),
+    : ASTreplacement(ASTruleSpecifier::Zero, std::move(e), loc, empty), mExpression(nullptr),
       mTuplesize(ModificationSize), mType(AST::ModType), 
       isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name),
       isFunction(false)
@@ -195,7 +195,7 @@ namespace AST {
     }
     
     void
-    ASTloop::setupLoop(double& start, double& end, double& step, ASTexpression* e, 
+    ASTloop::setupLoop(double& start, double& end, double& step, const ASTexpression* e,
                        const yy::location& loc, Renderer* rti)
     {
         double data[3];
@@ -245,9 +245,6 @@ namespace AST {
 
     ASTrepContainer::~ASTrepContainer() 
     {
-        for (ASTbody::iterator it = mBody.begin(); it != mBody.end(); ++it)
-            delete *it;
-        mBody.clear();
     }
     
     ASTcompiledPath::ASTcompiledPath()
@@ -257,7 +254,7 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(0),
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(nullptr),
       mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -275,7 +272,7 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(0),
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(nullptr),
       mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -401,28 +398,18 @@ namespace AST {
     
     ASTloop::~ASTloop()
     {
-        delete mLoopArgs;
     }
     
     ASTif::~ASTif()
     {
-        delete mCondition;
     }
     
     ASTswitch::~ASTswitch()
     {
-        delete mSwitchExp;
-        for (switchMap::iterator it = mCaseStatements.begin();
-             it != mCaseStatements.end(); ++it)
-        {
-            delete (*it).second;
-        }
-        mCaseStatements.clear();
     }
     
     ASTrule::~ASTrule()
     {
-        delete mCachedPath; mCachedPath = 0;
     }
     
     ASTtransform::~ASTtransform()
@@ -430,12 +417,10 @@ namespace AST {
         ASTexpression* m = const_cast<ASTexpression*>(mModifications);
         if (m && m->release())
             delete mModifications;
-        delete mExpHolder;
     }
     
     ASTpathOp::~ASTpathOp()
     {
-        delete mArguments;
     }
     
     void 
@@ -500,8 +485,8 @@ namespace AST {
         double start, end, step;
         
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
-        if (mLoopArgs) {
-            setupLoop(start, end, step, mLoopArgs, mLocation, r);
+        if (mLoopArgs.get()) {
+            setupLoop(start, end, step, mLoopArgs.get(), mLocation, r);
         } else {
             start = mLoopData[0];
             end = mLoopData[1];
@@ -706,7 +691,7 @@ namespace AST {
         
         if (mCachedPath && StackRule::Equal(mCachedPath->mParameters, parent.mParameters)) {
             savedPath = r->mCurrentPath;
-            r->mCurrentPath = mCachedPath;
+            r->mCurrentPath = mCachedPath.get();
             r->mCurrentCommand = mCachedPath->mCommandInfo.begin();
         }
         
@@ -719,8 +704,8 @@ namespace AST {
         if (savedPath) {
             r->mCurrentPath = savedPath;
         } else {
-            if (!(r->mRandUsed) && mCachedPath == NULL) {
-                mCachedPath = r->mCurrentPath;
+            if (!(r->mRandUsed) && !mCachedPath) {
+                mCachedPath.reset(r->mCurrentPath);
                 mCachedPath->mComplete = true;
                 if (parent.mParameters)
                     mCachedPath->mParameters = &(parent.mParameters->ruleHeader);
@@ -961,8 +946,7 @@ namespace AST {
             double* data = reinterpret_cast<double*> (&mChildChange);
             if (mArguments->evaluate(data, 7) < 0)
                 CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
-            delete mArguments;
-            mArguments = NULL;
+            mArguments.reset();
         }
     }
 
@@ -970,7 +954,7 @@ namespace AST {
     ASTpathOp::checkArguments(exp_ptr a)
     {
         if (a.get()) {
-            mArguments = a.release()->simplify();
+            mArguments.reset(a.release()->simplify());
             mArgCount = mArguments->evaluate(0, 0);
         }
 
@@ -1146,7 +1130,7 @@ namespace AST {
                 rejectTerm(std::move(ax2));
                 rejectTerm(std::move(ay2));
                 
-                mArguments = xy;
+                mArguments.reset(xy);
                 break;
             case ARCTO:
             case ARCREL:
@@ -1164,7 +1148,7 @@ namespace AST {
                     if (angle->evaluate(0, 0) != 1)
                         CfdgError(angle->where, "Arc angle must be a scalar value");
                     
-                    mArguments = xy->append(rxy)->append(angle);
+                    mArguments.reset(xy->append(rxy)->append(angle));
                 } else {
                     ASTexpression* radius = ar.release();
                     if (!radius)
@@ -1173,7 +1157,7 @@ namespace AST {
                     if (radius->evaluate(0, 0) != 1)
                         CfdgError::Error(radius->where, "Arc radius must be a scalar value");
                     
-                    mArguments = xy->append(radius);
+                    mArguments.reset(xy->append(radius));
                 } 
                 break;
             case CURVETO:
@@ -1192,7 +1176,7 @@ namespace AST {
                     xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);
                 }
                 
-                mArguments = xy->append(xy1)->append(xy2);
+                mArguments.reset(xy->append(xy1)->append(xy2));
                 break;
             }
             case CLOSEPOLY:

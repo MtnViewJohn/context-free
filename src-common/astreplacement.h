@@ -101,13 +101,13 @@ namespace AST {
     };
     class ASTloop: public ASTreplacement {
     public:
-        ASTexpression* mLoopArgs;
+        exp_ptr mLoopArgs;
         double  mLoopData[3];
         ASTrepContainer mLoopBody;
         ASTrepContainer mFinallyBody;
         
         static void setupLoop(double& start, double& end, double& step, 
-                              ASTexpression* e, const yy::location& loc,
+                              const ASTexpression* e, const yy::location& loc,
                               Renderer* rti = 0);
         
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
@@ -121,7 +121,7 @@ namespace AST {
         ASTrepContainer mBody;
         SymmList       mTransforms;
         const ASTexpression* mModifications;    // weak pointer
-        ASTexpression* mExpHolder;              // strong pointer
+        exp_ptr mExpHolder;              // strong pointer
         bool mClone;
         
         ASTtransform(const yy::location& loc, exp_ptr mods);
@@ -133,7 +133,7 @@ namespace AST {
     };
     class ASTif: public ASTreplacement {
     public:
-        ASTexpression* mCondition;
+        exp_ptr mCondition;
         ASTrepContainer mThenBody;
         ASTrepContainer mElseBody;
         
@@ -143,9 +143,9 @@ namespace AST {
     };
     class ASTswitch: public ASTreplacement {
     public:
-        typedef std::map<int, ASTrepContainer*> switchMap;
+        typedef std::map<int, cont_ptr> switchMap;
         
-        ASTexpression* mSwitchExp;
+        exp_ptr mSwitchExp;
         switchMap mCaseStatements;
         ASTrepContainer mElseBody;
         
@@ -157,7 +157,7 @@ namespace AST {
     };
     class ASTdefine : public ASTreplacement {
     public:
-        ASTexpression* mExpression;
+        exp_ptr mExpression;
         int mTuplesize;
         AST::expType mType;
         bool isConstant;
@@ -169,7 +169,7 @@ namespace AST {
         ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc);
         ASTdefine(const std::string& name, mod_ptr m, const yy::location& loc);
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
-        virtual ~ASTdefine() { delete mExpression; }
+        virtual ~ASTdefine() { }
     private:
         ASTdefine& operator=(const ASTdefine&);
     };
@@ -177,7 +177,7 @@ namespace AST {
     public:
         enum WeightTypes { NoWeight = 1, PercentWeight = 2, ExplicitWeight = 4};
         ASTrepContainer mRuleBody;
-        mutable ASTcompiledPath* mCachedPath;
+        mutable std::unique_ptr<ASTcompiledPath> mCachedPath;
         double mWeight;
         bool isPath;
         int mNameIndex;
@@ -187,12 +187,12 @@ namespace AST {
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(NULL),
-        mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
-        weightType(percent ? PercentWeight : ExplicitWeight) { };
+        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(nullptr),
+          mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
+          weightType(percent ? PercentWeight : ExplicitWeight) { };
         ASTrule(int ruleIndex, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(NULL),
-        mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
+        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(nullptr),
+          mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         virtual ~ASTrule();
         void traversePath(const Shape& parent, Renderer* r) const;
         virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
@@ -210,7 +210,7 @@ namespace AST {
     };
     class ASTpathOp : public ASTreplacement {
     public:
-        ASTexpression* mArguments;
+        exp_ptr mArguments;
         int mFlags;
         int mArgCount;
         
