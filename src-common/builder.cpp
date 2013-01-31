@@ -753,7 +753,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
         return rep_ptr(new ASTpathCommand(s, std::move(mods), std::move(params), loc));
     
-    ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc)); //TODO: where does this go?
+    ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc));
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;
