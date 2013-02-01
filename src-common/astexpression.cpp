@@ -747,8 +747,7 @@ namespace AST {
             term_ptr flip;
             term_ptr xform;
             
-            for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
-                term_ptr mod = std::move(*it);
+            for (term_ptr& mod: temp) {
                 assert(mod);
                 
                 int argcount = 0;
@@ -1475,11 +1474,8 @@ namespace AST {
                 Renderer::ColorConflict(rti, where);
         }
         
-        for (ASTtermArray::const_iterator it = modExp.begin(), eit = modExp.end();
-             it != eit; ++it)
-        {
-            (*it)->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
-        }
+        for (const term_ptr& term: modExp)
+            term->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
@@ -1488,8 +1484,8 @@ namespace AST {
                             Renderer* rti) const
     {
         m = modData;
-        for (ASTtermArray::const_iterator it = modExp.begin(); it != modExp.end(); ++it)
-            (*it)->evaluate(m, p, width, justCheck, seedIndex, false, rti);
+        for (const term_ptr& term: modExp)
+            term->evaluate(m, p, width, justCheck, seedIndex, false, rti);
     }
     
     void
@@ -2297,13 +2293,11 @@ namespace AST {
         
         ASTtermArray temp;
         temp.swap(modExp);
-        
-        for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
+
+        for (term_ptr& mod: temp) {
             bool keepThisOne = false;
-            term_ptr mod = std::move(*it);
             if (!mod) {
-                CfdgError::Error((*it)->where, "Unknown term in shape adjustment");
-                mod.reset();
+                CfdgError::Error(where, "Unknown term in shape adjustment");
                 continue;
             }
             

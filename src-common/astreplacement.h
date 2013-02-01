@@ -89,9 +89,8 @@ namespace AST {
             size_t s = r->mCFstack.size();
             if (getParams && parent.mParameters)
                 r->initStack(parent.mParameters);
-            for (AST::ASTbody::const_iterator it = mBody.begin(); it != mBody.end(); ++it) {
-                (*it)->traverse(parent, tr, r);
-            }
+            for (const rep_ptr& rep: mBody)
+                rep->traverse(parent, tr, r);
             r->unwindStack(s, mParameters);
         }
         void addParameter(const std::string& type, int index, 

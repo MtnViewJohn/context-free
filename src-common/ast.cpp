@@ -218,10 +218,9 @@ namespace AST {
     void
     addUnique(SymmList& syms, agg::trans_affine& tr)
     {
-        for (SymmList::iterator it = syms.begin(), eit = syms.end(); it != eit; ++it) {
-            if (*it == tr)
+        for (agg::trans_affine& sym: syms)
+            if (sym == tr)
                 return;
-        }
         syms.push_back(tr);
     }
 

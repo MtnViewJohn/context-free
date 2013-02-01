@@ -224,11 +224,9 @@ RendererImpl::cleanup()
     } catch (Stopped) {
         return;
     }
-    for (std::deque<const StackType*>::const_iterator cit = mLongLivedParams.begin();
-         cit != mLongLivedParams.end(); ++cit)
-    {
+    for (const StackType* param: mLongLivedParams) {
         --Renderer::ParamCount;
-        delete[] *cit;
+        delete[] param;
         if (AbortEverything) return;
     }
     mUnfinishedShapes.clear();
@@ -236,12 +234,9 @@ RendererImpl::cleanup()
     mLongLivedParams.clear();
     
     unsigned i = 0;
-    for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
-         endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
-    {
+    for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
         if (AbortEverything) return;
-        const ASTreplacement* rep = cit->get();
-        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep)) {
+        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get())) {
             if (def->mType == AST::RuleType)
                 mCFstack[i].rule->release();
             i += def->mTuplesize;
@@ -306,11 +301,8 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     int reportAt = 250;
 
     Shape dummy;
-    for (ASTbody::const_iterator cit = m_cfdg->mCFDGcontents.mBody.begin(),
-         endit = m_cfdg->mCFDGcontents.mBody.end(); cit != endit; ++cit)
-    {
-        const ASTreplacement* rep = cit->get();
-        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep))
+    for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
+        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get()))
             def->traverse(dummy, false, this);
     }
     
@@ -952,10 +944,8 @@ RendererImpl::moveFinishedToFile()
         outStats.outputCount = (int)mFinishedShapes.size();
         outStats.outputDone = 0;
         outStats.showProgress = true;
-        for (multiset<FinishedShape>::iterator it = mFinishedShapes.begin(),
-             eit = mFinishedShapes.end(); it != eit; ++it)
-        {
-            *f << *it;
+        for (const FinishedShape& fs: mFinishedShapes) {
+            *f << fs;
             ++outStats.outputDone;
             if (requestUpdate) {
                 system()->stats(outStats);
