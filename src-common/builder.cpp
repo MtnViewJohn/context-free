@@ -640,7 +640,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
         return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
     }
     
-    if (args.get() != NULL)
+    if (args)
         CfdgError::Error(loc, "Cannot bind parameters twice");
     
     if (bound->mStackIndex == -1) {
@@ -660,7 +660,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
 void
 Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
 {
-    if (t.get() == NULL) return;
+    if (!t) return;
     
     if (t->modType == ASTmodTerm::time)
         timeWise();
@@ -676,16 +676,15 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
 
     // Try to merge consecutive x and y adjustments
     if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
-        ASTmodTerm* last = dest.back();
+        ASTmodTerm* last = dest.back().get();
         if (last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
-            last->args = last->args->append(t->args);
-            t->args = NULL;
+            last->args.reset(last->args.release()->append(t->args.release()));
             return;     // delete ASTmodTerm t
         }
     }
     
     if (argcount != 3 || (t->modType != ASTmodTerm::size && t->modType != ASTmodTerm::x)) {
-        dest.push_back(t.release());
+        dest.push_back(std::move(t));
         return;
     }
     
@@ -694,8 +693,7 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     // apart the arguments.
     double d[3];
     if (t->args->isConstant && t->args->evaluate(d, 3) == 3) {
-        delete t->args;
-        t->args = new ASTcons(new ASTreal(d[0], t->where), new ASTreal(d[1], t->where));
+        t->args.reset(new ASTcons(new ASTreal(d[0], t->where), new ASTreal(d[1], t->where)));
 
         ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
                                                                          ASTmodTerm::z;
@@ -703,8 +701,8 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         
         // Check if xy part is the identity transform and only save it if it is not
         if (d[0] != 1.0 || d[1] != 1.0)
-            dest.push_back(t.release());
-        dest.push_back(zmod);
+            dest.push_back(std::move(t));
+        dest.emplace_back(zmod);
         return;
     }
     
@@ -720,9 +718,8 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
             // We have successfully split the 3-tuple into a 2-tuple and a scalar
             ASTexpression* zargs = (*t->args)[i];
             t->args->release();
-            delete t->args;
             
-            t->args = xyargs;
+            t->args.reset(xyargs);
             
             ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
                                                                              ASTmodTerm::z;
@@ -733,16 +730,16 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
                 xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
             {
                 // Check if xy part is the identity transform and only save it if it is not
-                dest.push_back(t.release());
+                dest.push_back(std::move(t));
             }
-            dest.push_back(zmod);
+            dest.emplace_back(zmod);
             return;
         }
     }
     
     t->modType = t->modType == ASTmodTerm::size ? ASTmodTerm::sizexyz :
                                                   ASTmodTerm::xyz;
-    dest.push_back(t.release());
+    dest.push_back(std::move(t));
 }
 
 rep_ptr
@@ -849,7 +846,7 @@ Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
         (*it)->entropy(ent);
         mod->addEntropy(ent);
         if (!mWant2ndPass)
-            *it = static_cast<ASTmodTerm*>((*it)->simplify());
+            it->reset(static_cast<ASTmodTerm*>(it->release()->simplify()));
     }
     if (canonical)
         mod->makeCanonical();

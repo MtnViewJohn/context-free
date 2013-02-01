@@ -82,9 +82,6 @@ namespace AST {
     class ASTswitch;
     class ASTmodTerm;
     class ASTrepContainer;
-    typedef std::vector<ASTexpression*> ASTexpArray;
-    typedef std::vector<ASTmodTerm*> ASTtermArray;
-    typedef std::vector<ASTparameter> ASTparameters;
 
     typedef std::unique_ptr<std::string>      str_ptr;
     typedef std::unique_ptr<ASTexpression>    exp_ptr;
@@ -98,7 +95,10 @@ namespace AST {
     typedef std::unique_ptr<ASTmodification>  mod_ptr;
     typedef std::unique_ptr<ASTrepContainer>  cont_ptr;
     
-    typedef std::vector<rep_ptr> ASTbody;
+    typedef std::vector<rep_ptr>              ASTbody;
+    typedef std::vector<exp_ptr>              ASTexpArray;
+    typedef std::vector<term_ptr>             ASTtermArray;
+    typedef std::vector<ASTparameter>         ASTparameters;
     
     enum expType {
         NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8

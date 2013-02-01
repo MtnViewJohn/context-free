@@ -173,7 +173,7 @@ namespace AST {
                 // Unwrap any parentheses and check if the non-local expression
                 // is actually an unmodified parameter. If so then accept it.
                 while (const ASTparen* p = dynamic_cast<const ASTparen*> (arg))
-                    arg = p->e;
+                    arg = p->e.get();
 				assert(arg);
                 const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
                 if (!v || !v->isParameter) {
