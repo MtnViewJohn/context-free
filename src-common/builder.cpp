@@ -575,10 +575,8 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
 {
     ASTexpression* args = NULL;
     ASTrepContainer* lastContainer = mContainerStack.back();
-    for (ASTbody::iterator it = lastContainer->mBody.begin(), 
-                          eit = lastContainer->mBody.end(); it != eit; ++it)
-    {
-        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(it->get())) {
+    for (rep_ptr& rep: lastContainer->mBody) {
+        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(rep.get())) {
             ASTdefine* def = const_cast<ASTdefine*>(cdef);
             args = ASTexpression::Append(args, def->mExpression.release());
         }
@@ -588,12 +586,10 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     yy::location defLoc = exp->where;
     ASTdefine* def = new ASTdefine(name, std::move(exp), defLoc);
     
-    for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
-         eit = lastContainer->mParameters.end(); it != eit; ++it)
-    {
+    for (ASTparameter& param: lastContainer->mParameters) {
         // copy the non-constant definitions
-        if (!(it->mDefinition))
-            def->mParameters.push_back(*it);
+        if (!(param.mDefinition))
+            def->mParameters.push_back(param);
     }
     def->mStackCount = lastContainer->mStackCount;
     def->isFunction = true;
@@ -839,14 +835,12 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 AST::ASTmodification*
 Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
-    for (ASTtermArray::iterator it = mod->modExp.begin(), eit = mod->modExp.end(); 
-         it != eit; ++it)
-    {
+    for (term_ptr& term: mod->modExp) {
         std::string ent;
-        (*it)->entropy(ent);
+        term->entropy(ent);
         mod->addEntropy(ent);
         if (!mWant2ndPass)
-            it->reset(static_cast<ASTmodTerm*>(it->release()->simplify()));
+            term.reset(static_cast<ASTmodTerm*>(term.release()->simplify()));
     }
     if (canonical)
         mod->makeCanonical();
@@ -869,11 +863,8 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
                          const std::string& type)
 {
     {
-        for (ASTparameters::iterator it = mParamDecls.mParameters.begin(),
-             eit = mParamDecls.mParameters.end(); it != eit; ++it)
-        {
-            it->isLocal = true;
-        }
+        for (ASTparameter& param: mParamDecls.mParameters)
+            param.isLocal = true;
         push_repContainer(mParamDecls);
         if (mCompilePhase != 1) return;
 
@@ -926,13 +917,11 @@ Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
 void
 Builder::process_repContainer(ASTrepContainer& c)
 {
-    for (ASTparameters::iterator it = c.mParameters.begin(),
-         eit= c.mParameters.end(); it != eit; ++it)
-    {
-        if (it->isParameter || !it->mDefinition) {
-            it->mStackIndex = mLocalStackDepth;
-            c.mStackCount += it->mTuplesize;
-            mLocalStackDepth += it->mTuplesize;
+    for (ASTparameter& param: c.mParameters) {
+        if (param.isParameter || !param.mDefinition) {
+            param.mStackIndex = mLocalStackDepth;
+            c.mStackCount += param.mTuplesize;
+            mLocalStackDepth += param.mTuplesize;
         }
     }
 }
@@ -949,13 +938,11 @@ Builder::pop_repContainer(ASTreplacement* r)
         if (r->mPathOp == unknownPathop)
             r->mPathOp = lastContainer->mPathOp;
     }
-    for (ASTparameters::iterator it = lastContainer->mParameters.begin(),
-         eit = lastContainer->mParameters.end(); it != eit; ++it)
-    {
+    for (ASTparameter& param: lastContainer->mParameters) {
         // delete the constant definitions, but not functions
-        if (it->mDefinition && !it->mDefinition->isFunction) {
-            delete it->mDefinition;
-            it->mDefinition = 0;
+        if (param.mDefinition && !param.mDefinition->isFunction) {
+            delete param.mDefinition;
+            param.mDefinition = 0;
         }
     }
     mContainerStack.pop_back();
@@ -986,12 +973,8 @@ Builder::push_rep(ASTreplacement* r, bool global)
 ASTparameter*
 Builder::findExpression(int nameIndex, bool& isGlobal)
 {
-    for (ContainerStack_t::reverse_iterator cit = mContainerStack.rbegin();
-         cit != mContainerStack.rend(); ++cit)
-    {
-        for (ASTparameters::reverse_iterator pit = (*cit)->mParameters.rbegin();
-             pit != (*cit)->mParameters.rend(); ++pit)
-        {
+    for (auto cit = mContainerStack.rbegin(); cit != mContainerStack.rend(); ++cit) {
+        for (auto pit = (*cit)->mParameters.rbegin(); pit != (*cit)->mParameters.rend(); ++pit) {
             if (pit->mName == nameIndex) {
                 isGlobal = (*cit)->isGlobal;
                 return &(*pit);
@@ -1037,7 +1020,7 @@ Builder::CheckVariableName(int index, const yy::location& loc, bool param)
     
     const ASTrepContainer* thisLevel = param ? &mParamDecls : mContainerStack.back();
     
-    for (ASTparameters::const_reverse_iterator pit = thisLevel->mParameters.rbegin(),
+    for (auto pit = thisLevel->mParameters.rbegin(),
          epit = thisLevel->mParameters.rend(); pit != epit; ++pit)
     {
         if (pit->mName == index) {

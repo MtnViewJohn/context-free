@@ -547,12 +547,10 @@ namespace AST {
 
             // Specialized mBody.traverse() with cloning behavior
             size_t s = r->mCFstack.size();
-            for (AST::ASTbody::const_iterator bit = mBody.mBody.begin(), 
-                 ebit = mBody.mBody.end(); bit != ebit; ++bit)
-            {
+            for (const rep_ptr& rep: mBody.mBody) {
                 if (mClone)
                     r->mCurrentSeed = cloneSeed;
-                (*bit)->traverse(child, opsOnly || tr, r);
+                rep->traverse(child, opsOnly || tr, r);
             }
             r->unwindStack(s, mBody.mParameters);
         }
@@ -1052,9 +1050,7 @@ namespace AST {
         exp_ptr ary;
         exp_ptr ar;
         
-        for (ASTtermArray::iterator it = a->modExp.begin(); it != a->modExp.end(); ++it) {
-            term_ptr mod = std::move(*it);
-            
+        for (term_ptr& mod: a->modExp) {
             switch (mod ? mod->modType : ASTmodTerm::unknownType) {
                 case ASTmodTerm::x:
                     ax.reset(mod->args.release()->simplify());
@@ -1092,10 +1088,10 @@ namespace AST {
                     break;
                 case ASTmodTerm::z:
                 case ASTmodTerm::zsize:
-                    CfdgError::Error((*it)->where, "Z changes are not permitted in paths");
+                    CfdgError::Error(mod->where, "Z changes are not permitted in paths");
                     break;
                 case ASTmodTerm::unknownType:
-                    CfdgError::Error((*it)->where, "Unrecognized element in a path operation");
+                    CfdgError::Error(mod->where, "Unrecognized element in a path operation");
                     break;
                 default:
                     CfdgError::Error(mod->where, "Unrecognized element in a path operation");
@@ -1195,11 +1191,9 @@ namespace AST {
             CfdgError::Warning(mLocation, "Z changes are not supported within paths");
             return;
         }
-        for (ASTtermArray::const_iterator it = mChildChange.modExp.begin(), 
-             eit = mChildChange.modExp.end(); it != eit; ++it)
-        {
-            if ((*it)->modType == ASTmodTerm::z) {
-                CfdgError::Warning((*it)->where, "Z changes are not supported within paths");
+        for (const term_ptr& term: mChildChange.modExp) {
+            if (term->modType == ASTmodTerm::z) {
+                CfdgError::Warning(term->where, "Z changes are not supported within paths");
                 return;
             }
         }

@@ -90,9 +90,8 @@ CFDGImpl::CFDGImpl(CFDGImpl* c)
     m_shapeTypes.swap(c->m_shapeTypes);
     mFunctions.swap(c->mFunctions);
     fileNames.swap(c->fileNames);
-    for (std::vector<ShapeType>::iterator it = m_shapeTypes.begin(), eit = m_shapeTypes.end(); 
-         it != eit; ++it)
-        it->shapeType = newShape;
+    for (ShapeType& sh: m_shapeTypes)
+        sh.shapeType = newShape;
     mCFDGcontents.isGlobal = true;
 }
 
@@ -640,11 +639,8 @@ CFDGImpl::reportStackDepth(int size)
 void
 CFDGImpl::resetCachedPaths()
 {
-    for (vector<AST::ASTrule*>::iterator it = mRules.begin(), eit = mRules.end();
-         it != eit; ++it)
-    {
-        (*it)->mCachedPath.reset();
-    }
+    for (ASTrule* rule: mRules)
+        rule->mCachedPath.reset();
 }
 
 AST::ASTdefine*
