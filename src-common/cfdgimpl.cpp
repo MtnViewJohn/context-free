@@ -674,7 +674,7 @@ Renderer*
 CFDGImpl::renderer(int width, int height, double minSize,
                     int variation, double border)
 {
-    if (mInitShape.get()) {
+    if (mInitShape) {
         if (mInitShape->mShapeSpec.argSize == 0 &&
             getShapeParamSize(mInitShape->mShapeSpec.shapeType))
         {

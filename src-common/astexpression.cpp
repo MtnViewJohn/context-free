@@ -155,16 +155,16 @@ namespace AST {
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType), 
-      functype(NotAFunction), arguments(NULL)
+      functype(NotAFunction), arguments(nullptr)
     {
         if (&func == 0 || func.empty()) {
             CfdgError::Error(nameLoc, "bad function call");
             return;
         }
         
-        isConstant = args.get() ? args->isConstant : true;
-        isLocal = args.get() ? args->isLocal : true;
-        int argcount = args.get() ? args->evaluate(0, 0) : 0;
+        isConstant = args ? args->isConstant : true;
+        isLocal = args ? args->isLocal : true;
+        int argcount = args ? args->evaluate(0, 0) : 0;
         
         functype = GetFuncType(func);
         
@@ -174,25 +174,25 @@ namespace AST {
         }
         
         if (functype == ASTfunction::Infinity && argcount == 0) {
-            arguments = new ASTreal(1.0, argsLoc);
+            arguments.reset(new ASTreal(1.0, argsLoc));
             return;
         }
         
         if (functype == Ftime) {
-            if (args.get())
+            if (args)
                 CfdgError::Error(argsLoc, "ftime() function takes no arguments");
             isConstant = false;
             isLocal = true;
-            arguments = new ASTreal(1.0, argsLoc);
+            arguments.reset(new ASTreal(1.0, argsLoc));
             return;
         }
         
         if (functype == Frame) {
-            if (args.get())
+            if (args)
                 CfdgError::Error(argsLoc, "frame() functions takes no arguments");
             isConstant = false;
             isLocal = false;
-            arguments = new ASTreal(1.0, argsLoc);
+            arguments.reset(new ASTreal(1.0, argsLoc));
             return;
         }
         
@@ -222,7 +222,7 @@ namespace AST {
                 CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
             }
 
-            arguments = args.release();
+            arguments = std::move(args);
             if (functype == RandInt)
                 isNatural = arguments->isNatural;
             return;
@@ -247,8 +247,8 @@ namespace AST {
                 CfdgError::Error(argsLoc, "function takes at least two arguments");
             }
         }
-        arguments = args.release();
-        if (functype == Mod || functype == Abs || functype == Min || 
+        arguments = std::move(args);
+        if (functype == Mod || functype == Abs || functype == Min ||
             functype == Max || (functype >= BitNot && functype <= BitRight))
         {
             isNatural = arguments->isNatural;
@@ -276,7 +276,7 @@ namespace AST {
     ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, exp_ptr args, 
                                        const yy::location& loc, const ASTparameters* types,
                                        const ASTparameters* parent)
-    : ASTexpression(loc, args.get() == NULL || args->isConstant, false, RuleType), 
+    : ASTexpression(loc, !args || args->isConstant, false, RuleType),
       shapeType(t), entropyVal(name), argSource(DynamicArgs),
       arguments(args.release()), simpleRule(0), mStackIndex(0), typeSignature(types)
     {
@@ -286,7 +286,7 @@ namespace AST {
         }
         if (parent && parent->empty())
             parent = NULL;
-        argSize = ASTparameter::CheckType(types, parent, arguments, loc, true);
+        argSize = ASTparameter::CheckType(types, parent, arguments.get(), loc, true);
         if (argSize < 0) {
             argSource = NoArgs;
             return;
@@ -313,7 +313,7 @@ namespace AST {
                                        int stackIndex)
     : ASTexpression(loc, false, false, RuleType), shapeType(0), argSize(0), 
       entropyVal(name), argSource(StackArgs),
-      arguments(0), simpleRule(0), mStackIndex(stackIndex), typeSignature(0)
+      arguments(nullptr), simpleRule(0), mStackIndex(stackIndex), typeSignature(0)
     {
     }
     
@@ -321,7 +321,7 @@ namespace AST {
                                        const std::string& name, 
                                        const yy::location& loc)
     : ASTexpression(loc, false, false, RuleType), shapeType(r->shapeType), argSize(r->argSize), 
-      entropyVal(name), argSource(NoArgs), arguments(0), simpleRule(0), mStackIndex(0),
+      entropyVal(name), argSource(NoArgs), arguments(nullptr), simpleRule(0), mStackIndex(0),
       typeSignature(r->typeSignature)
     {
         if (r->argSource == SimpleArgs) {
@@ -340,7 +340,7 @@ namespace AST {
     ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r)
     : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
       argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
-      arguments(r.arguments), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
+      arguments(std::move(r.arguments)), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
       typeSignature(r.typeSignature)
     {
         r.arguments = NULL;     // move semantics
@@ -349,7 +349,7 @@ namespace AST {
     
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
     : ASTexpression(loc, false, false, RuleType), shapeType(-1),
-      argSize(0), argSource(ShapeArgs), arguments(args.release()),
+    argSize(0), argSource(ShapeArgs), arguments(std::move(args)),
       simpleRule(0), mStackIndex(0), typeSignature(0)
     {
         assert(arguments);
@@ -388,7 +388,7 @@ namespace AST {
             return parent;
         case DynamicArgs: {
             StackType* ret = StackType::alloc(shapeType, argSize, typeSignature);
-            ret->evalArgs(rti, arguments, parent);
+            ret->evalArgs(rti, arguments.get(), parent);
             return ret;
         }
         case ShapeArgs:
@@ -443,7 +443,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
+            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             ret = definition->mExpression->evalArgs(rti, parent);
             rti->mCFstack.resize(size, StackZero);
@@ -458,7 +458,7 @@ namespace AST {
     : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
     {
         isLocal = l->isLocal;
-        children.push_back(l);
+        children.emplace_back(l);
         append(r);
     };
 
@@ -504,7 +504,7 @@ namespace AST {
     ASTmodification::ASTmodification(mod_ptr m, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), entropyIndex(0)
     {
-        if (m.get()) {
+        if (m) {
             modData.mRand64Seed.seed(0);
             grab(m.get());
         } else {
@@ -529,7 +529,7 @@ namespace AST {
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
-    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(args.release()),
+    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(std::move(args)),
       ifSelect(asIf)
     {
         isConstant = false;
@@ -612,14 +612,14 @@ namespace AST {
     ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
                        const yy::location& loc, const std::string& name)
     : ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
-      mConstData(bound->mStackIndex == -1), mArgs(0), mLength(1), mStride(1), 
+      mConstData(bound->mStackIndex == -1), mArgs(nullptr), mLength(1), mStride(1),
       mStackIndex(bound->mStackIndex - stackOffset), 
       mCount(bound->mType == NumericType ? bound->mTuplesize : 1),
       isParameter(bound->isParameter), entString(name)
     {
-        if (args.get() == 0 || args->mType != AST::NumericType) {
+        if (!args || args->mType != AST::NumericType) {
             CfdgError::Error(loc, "Array arguments must be numeric");
-            mArgs = new ASTreal(0.0, loc);
+            mArgs.reset(new ASTreal(0.0, loc));
             isConstant = mConstData = false;
             return;     // deleting args
         }
@@ -630,7 +630,7 @@ namespace AST {
             mConstData = bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
         }
         if ((*args)[0]->evaluate(0, 0) == 1) {
-            mArgs = (*args)[0];
+            mArgs.reset((*args)[0]);
             if (!args->release(0)) {
                 args.release();
                 args.reset(new ASTexpression(mArgs->where)); // replace with dummy
@@ -671,7 +671,7 @@ namespace AST {
                     mLength = (int)data[1];
                     // fall through
                 case 1:
-                    mArgs = new ASTreal(data[0], args->where);
+                    mArgs.reset(new ASTreal(data[0], args->where));
                     mArgs->isLocal = args->isLocal;
                     break;
                     
@@ -680,7 +680,7 @@ namespace AST {
                     break;
             }
         } else {
-            mArgs = args.release();
+            mArgs = std::move(args);
             if (mArgs->evaluate(0, 0) != 1)
                 CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
         }
@@ -696,33 +696,22 @@ namespace AST {
     {
         if (simpleRule) --Renderer::ParamCount;
         delete[] simpleRule;
-        delete arguments;
     };
     
     ASTcons::~ASTcons()
     {
-        ASTexpArray::iterator it = children.begin(), eit = children.end();
-        for (; it != eit; ++it) {
-            delete *it;
-        }
-        children.clear();
     }
     
     ASTselect::~ASTselect()
     {
-        delete arguments;
     }
     
     ASTmodification::~ASTmodification()
     {
-        for (ASTtermArray::iterator it = modExp.begin(); it != modExp.end(); ++it)
-            delete (*it);
-        modExp.clear();
     }
     
     ASTarray::~ASTarray()
     {
-        delete mArgs;
     }
     
     ASTlet::~ASTlet()
@@ -731,18 +720,11 @@ namespace AST {
     }
 
     static void
-    Setmod(term_ptr& mod, ASTmodTerm* newmod)
+    Setmod(term_ptr& mod, term_ptr& newmod)
     {
-        if (mod.get())
+        if (mod)
             CfdgError::Warning(mod->where, "Warning: this term is being dropped");
-        mod.reset(newmod);
-    }
-    
-    static void
-    AddMod(ASTtermArray& arr, term_ptr mod)
-    {
-        if (mod.get())
-            arr.push_back(mod.release());
+        mod = std::move(newmod);
     }
     
     void
@@ -754,7 +736,7 @@ namespace AST {
         ASTtermArray temp;
         temp.swap(modExp);
         
-        try {
+        {   // no need for try/catch block to clean up temp array
             term_ptr x;
             term_ptr y;
             term_ptr z;
@@ -763,12 +745,11 @@ namespace AST {
             term_ptr size;
             term_ptr zsize;
             term_ptr flip;
-            term_ptr transform;
+            term_ptr xform;
             
             for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
-                ASTmodTerm* mod = *it;
+                term_ptr mod = std::move(*it);
                 assert(mod);
-                *it = 0;
                 
                 int argcount = 0;
                 if (mod->args && mod->args->mType == NumericType)
@@ -789,7 +770,7 @@ namespace AST {
                         break;
                     case ASTmodTerm::modification:
                     case ASTmodTerm::transform:
-                        Setmod(transform, mod);
+                        Setmod(xform, mod);
                         break;
                     case ASTmodTerm::rot:
                         Setmod(rot, mod);
@@ -807,7 +788,7 @@ namespace AST {
                         Setmod(flip, mod);
                         break;
                     default:
-                        modExp.push_back(mod);
+                        modExp.push_back(std::move(mod));
                         break;
                 }
             }
@@ -815,26 +796,20 @@ namespace AST {
             temp.clear();
             
             // If x and y are provided then merge them into a single (x,y) modification
-            if (x.get() && y.get() && x->args->evaluate(0, 0) == 1 && y->args->evaluate(0, 0) == 1) {
-                x->args = x->args->append(y->args);
-                y->args = 0;
+            if (x && y && x->args->evaluate(0, 0) == 1 && y->args->evaluate(0, 0) == 1) {
+                x->args.reset(x->args.release()->append(y->args.release()));
                 y.reset();
             }
             
-            AddMod(modExp, std::move(x));
-            AddMod(modExp, std::move(y));
-            AddMod(modExp, std::move(z));
-            AddMod(modExp, std::move(rot));
-            AddMod(modExp, std::move(size));
-            AddMod(modExp, std::move(zsize));
-            AddMod(modExp, std::move(skew));
-            AddMod(modExp, std::move(flip));
-            AddMod(modExp, std::move(transform));
-        } catch (...) {
-            for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) 
-                delete (*it);
-            temp.clear();
-            throw;
+            if (    x) modExp.push_back(std::move(x));
+            if (    y) modExp.push_back(std::move(y));
+            if (    z) modExp.push_back(std::move(z));
+            if (  rot) modExp.push_back(std::move(rot));
+            if ( size) modExp.push_back(std::move(size));
+            if (zsize) modExp.push_back(std::move(zsize));
+            if ( skew) modExp.push_back(std::move(skew));
+            if ( flip) modExp.push_back(std::move(flip));
+            if (xform) modExp.push_back(std::move(xform));
         }
     }
     
@@ -864,7 +839,7 @@ namespace AST {
         // Cannot insert an ASTcons into children, it will be flattened away.
         // You must wrap the ASTcons in an ASTparen in order to insert it whole.
         for (int i = 0; i < sib->size(); ++i)
-            children.push_back((*sib)[i]);
+            children.emplace_back((*sib)[i]);
         if (sib->release())
             delete sib;
         return this;
@@ -874,9 +849,12 @@ namespace AST {
     ASTcons::release(size_t i)
     {
         if (i == std::numeric_limits<size_t>::max()) {
+            for (exp_ptr& child: children) {
+                child.release();
+            }
             children.clear();
         } else if (i < children.size()) {
-            children[i] = 0;
+            children[i].release();
         } else {
             CfdgError::Error(where, "Expression list bounds exceeded");
         }
@@ -906,7 +884,7 @@ namespace AST {
             CfdgError::Error(where, "Expression list bounds exceeded");
             return this;
         }
-        return children[i];
+        return children[i].get();
     }
     
     const ASTexpression*
@@ -916,7 +894,7 @@ namespace AST {
             CfdgError::Error(where, "Expression list bounds exceeded");
             return this;
         }
-        return children[i];
+        return children[i].get();
     }
     
     // Evaluate a cons tree to see how many reals it has and optionally
@@ -997,7 +975,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
+            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(res, length, rti);
             rti->mCFstack.resize(size, StackZero);
@@ -1173,7 +1151,7 @@ namespace AST {
             return 1;
         
         if (functype == Min || functype == Max) {
-            *res = MinMax(arguments, rti, functype == Min);
+            *res = MinMax(arguments.get(), rti, functype == Min);
             return 1;
         }
         
@@ -1475,7 +1453,7 @@ namespace AST {
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount, StackZero);
-            rti->mCFstack[size].evalArgs(rti, arguments, &(definition->mParameters), isLet);
+            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
             rti->mCFstack.resize(size, StackZero);
@@ -1994,7 +1972,7 @@ namespace AST {
             case ASTmodTerm::modification: {
                 minCount = maxCount = 0;
                 if (rti == 0) {
-                    const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args);
+                    const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
                     if (!mod || (mod->modClass & (ASTmodification::HueClass |
                                                   ASTmodification::HueTargetClass |
                                                   ASTmodification::BrightClass |
@@ -2170,7 +2148,7 @@ namespace AST {
             delete this;
             return r;
         } else {
-            arguments = arguments->simplify();
+            arguments.reset(arguments.release()->simplify());
         }
         
         return this;
@@ -2180,7 +2158,7 @@ namespace AST {
     ASTselect::simplify()
     {
         if (!indexCache) {
-            arguments = arguments->simplify();
+            arguments.reset(arguments.release()->simplify());
             return this;
         }
         
@@ -2196,11 +2174,11 @@ namespace AST {
     ASTruleSpecifier::simplify()
     {
         if (arguments) {
-            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments)) {
+            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
                 for (size_t i = 0; i < carg->children.size(); ++i)
-                    carg->children[i] = carg->children[i]->simplify();
+                    carg->children[i].reset(carg->children[i].release()->simplify());
             } else {
-                arguments = arguments->simplify();
+                arguments.reset(arguments.release()->simplify());
             }
         }
         return this;
@@ -2210,13 +2188,12 @@ namespace AST {
     ASTcons::simplify()
     {
         if (children.size() == 1) {
-            ASTexpression* ret = children[0]->simplify();
-            children[0] = NULL;
+            ASTexpression* ret = children[0].release()->simplify();
             delete this;
             return ret;
         }
         for (size_t i = 0; i < children.size(); ++i)
-            children[i] = children[i]->simplify();
+            children[i].reset(children[i].release()->simplify());
         return this;
     }
     
@@ -2224,11 +2201,14 @@ namespace AST {
     ASTuserFunction::simplify()
     {
         if (arguments) {
-            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments)) {
+            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
+                // Can't use ASTcons::simplify() because it will collapse the
+                // ASTcons if it only has one child and that will break the
+                // function arguments.
                 for (size_t i = 0; i < carg->children.size(); ++i)
-                    carg->children[i] = carg->children[i]->simplify();
+                    carg->children[i].reset(carg->children[i].release()->simplify());
             } else {
-                arguments = arguments->simplify();
+                arguments.reset(arguments.release()->simplify());
             }
         }
         return this;
@@ -2237,8 +2217,8 @@ namespace AST {
     ASTexpression*
     ASToperator::simplify()
     {
-        left = left->simplify();
-        if (right) right = right->simplify();
+        left.reset(left.release()->simplify());
+        if (right) right.reset(right.release()->simplify());
         
         if (isConstant && (mType == NumericType || mType == FlagType)) {
             double result;
@@ -2261,9 +2241,8 @@ namespace AST {
     ASTexpression*
     ASTparen::simplify()
     {
-        ASTexpression* e2 = e->simplify();
+        ASTexpression* e2 = e.release()->simplify();
         
-        e = 0;
         delete this;
         return e2;
     }
@@ -2276,7 +2255,7 @@ namespace AST {
     ASTmodTerm::simplify()
     {
         if (args) {
-            args = args->simplify();
+            args.reset(args.release()->simplify());
         }
         return this;
     }
@@ -2285,7 +2264,7 @@ namespace AST {
     ASTarray::simplify()
     {
         if (!isConstant) {
-            mArgs = mArgs->simplify();
+            mArgs.reset(mArgs.release()->simplify());
             return this;
         }
         
@@ -2321,10 +2300,10 @@ namespace AST {
         
         for (ASTtermArray::iterator it = temp.begin(); it != temp.end(); ++it) {
             bool keepThisOne = false;
-            ASTmodTerm* mod = *it;
-            if (mod == 0) {
+            term_ptr mod = std::move(*it);
+            if (!mod) {
                 CfdgError::Error((*it)->where, "Unknown term in shape adjustment");
-                delete *it;
+                mod.reset();
                 continue;
             }
             
@@ -2338,24 +2317,14 @@ namespace AST {
             
             try {
                 mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, NULL);
-            } catch (CfdgError) {
-                for (; it != temp.end(); ++it) {
-                    delete *it;
-                }
-                for (it = modExp.begin(); it != modExp.end(); ++it) {
-                    delete *it;
-                }
-                throw;
             } catch (DeferUntilRuntime) {
                 keepThisOne = true;
             }
             
             if (justCheck || keepThisOne) {
                 if (mod->args)
-                    mod->args = mod->args->simplify();
-                modExp.push_back(mod);
-            } else {
-                delete *it;
+                    mod->args.reset(mod->args.release()->simplify());
+                modExp.push_back(std::move(mod));
             }
         }
     }

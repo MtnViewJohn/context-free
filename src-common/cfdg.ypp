@@ -278,8 +278,8 @@ import:
             str_ptr nm($2); $2 = 0;
             driver.SetShape(NULL);
             driver.IncludeFile(*file);
-            if (nm.get())
-            driver.PushNameSpace(std::move(nm), @2);
+            if (nm)
+                driver.PushNameSpace(std::move(nm), @2);
         }
         ;
 
@@ -388,7 +388,7 @@ global_definition:
         global_definition_header exp2 { 
             str_ptr var($1); $1 = 0;
             exp_ptr exp($2); $2 = 0;
-            if (var.get())
+            if (var)
                 driver.NextParameter(*var, std::move(exp), @1, @2);
         }
         ;

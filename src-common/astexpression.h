@@ -84,11 +84,11 @@ namespace AST {
         static const char* Entropies[LastOne];
         static FuncType GetFuncType(const std::string& func);
         FuncType functype;
-        ASTexpression* arguments;
+        exp_ptr arguments;
         double random;
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                     const yy::location& nameLoc, const yy::location& argsLoc);
-        virtual ~ASTfunction() {delete arguments;};
+        virtual ~ASTfunction() { };
         virtual int evaluate(double* r, int size, Renderer* rti = 0) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
@@ -100,7 +100,7 @@ namespace AST {
         int              tupleSize;
         unsigned         indexCache;
         std::string      ent;
-        ASTexpression*   arguments;
+        exp_ptr          arguments;
         bool             ifSelect;
         
         ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
@@ -124,7 +124,7 @@ namespace AST {
         int argSize;
         std::string entropyVal;
         ArgSource argSource;
-        ASTexpression* arguments;
+        exp_ptr arguments;
         const StackType* simpleRule;
         int mStackIndex;
         const ASTparameters* typeSignature;
@@ -143,7 +143,7 @@ namespace AST {
         ASTruleSpecifier& operator=(const ASTruleSpecifier&) = delete;
         explicit ASTruleSpecifier()
         :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
-            argSize(0), argSource(NoArgs), arguments(0),
+            argSize(0), argSource(NoArgs), arguments(nullptr),
             simpleRule(0), mStackIndex(0), typeSignature(0) {};
         virtual ~ASTruleSpecifier();
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
@@ -212,12 +212,12 @@ namespace AST {
     };
     class ASTuserFunction : public ASTexpression {
     public:
-        ASTdefine* definition;
-        ASTexpression* arguments;
+        ASTdefine* definition;      // weak ptr
+        exp_ptr arguments;
         bool isLet;
         
         ASTuserFunction(ASTexpression* args, ASTdefine* func, const yy::location& nameLoc);
-        virtual ~ASTuserFunction() { delete arguments; }
+        virtual ~ASTuserFunction() { }
         virtual int evaluate(double* , int, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
@@ -230,15 +230,15 @@ namespace AST {
     public:
         ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
                const yy::location& defLoc);
-        virtual ~ASTlet();
+        virtual ~ASTlet();          // inherited definition ptr owns ASTdefine
     };
     class ASToperator : public ASTexpression {
     public:
         char op;
-        ASTexpression* left;
-        ASTexpression* right;
+        exp_ptr left;
+        exp_ptr right;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
-        virtual ~ASToperator() { delete left; delete right; }
+        virtual ~ASToperator() { }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
@@ -248,12 +248,12 @@ namespace AST {
     };
     class ASTparen : public ASTexpression {
     public:
-        ASTexpression* e;
+        exp_ptr e;
         ASTparen(ASTexpression* e1) : ASTexpression(e1->where, e1->isConstant, 
                                                     e1->isNatural,
                                                     e1->mType), e(e1)
         { isLocal = e1->isLocal; };
-        virtual ~ASTparen() { delete e; }
+        virtual ~ASTparen() { }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width,
                               bool justCheck, int& seedIndex, bool shapeDest,
@@ -276,7 +276,7 @@ namespace AST {
             stroke, param, x1, y1, x2, y2, xrad, yrad, modification, lastModType };
         
         modTypeEnum modType;
-        ASTexpression* args;
+        exp_ptr args;
         std::string entString;
         
         static const char* Entropies[lastModType];
@@ -286,10 +286,10 @@ namespace AST {
         
         ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc);
         ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modType(t), args(0), entString(ent) {};
+        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), entString(ent) {};
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modType(t), args(0) {};
-        virtual ~ASTmodTerm() { delete args; }
+        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr) {};
+        virtual ~ASTmodTerm() { }
         virtual int evaluate(double* r, int size, Renderer* = 0) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
@@ -337,7 +337,7 @@ namespace AST {
     public:
         double  mData[9];
         bool    mConstData;
-        ASTexpression* mArgs;
+        exp_ptr mArgs;
         int     mLength;
         int     mStride;
         int     mStackIndex;

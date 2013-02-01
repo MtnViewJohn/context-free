@@ -323,7 +323,7 @@ namespace AST {
         
         check4z();
         
-        if (params.get() == NULL)
+        if (!params)
             return;
 
         exp_ptr stroke, flags;
@@ -358,7 +358,7 @@ namespace AST {
             return;
         }
         
-        if (stroke.get()) {
+        if (stroke) {
             if (mChildChange.flags & CF_FILL)
                 CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
             if (stroke->mType != NumericType || stroke->evaluate(0, 0) != 1) {
@@ -367,11 +367,11 @@ namespace AST {
                        stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
             {
                 ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, stroke.release()->simplify(), loc);
-                mChildChange.modExp.push_back(w);
+                mChildChange.modExp.emplace_back(w);
             }
         }
         
-        if (flags.get()) {
+        if (flags) {
             if (flags->mType != FlagType) {
                 CfdgError::Error(flags->where, "Unexpected argument in path command");
                 return;
@@ -485,7 +485,7 @@ namespace AST {
         double start, end, step;
         
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
-        if (mLoopArgs.get()) {
+        if (mLoopArgs) {
             setupLoop(start, end, step, mLoopArgs.get(), mLocation, r);
         } else {
             start = mLoopData[0];
@@ -953,7 +953,7 @@ namespace AST {
     void
     ASTpathOp::checkArguments(exp_ptr a)
     {
-        if (a.get()) {
+        if (a) {
             mArguments.reset(a.release()->simplify());
             mArgCount = mArguments->evaluate(0, 0);
         }
@@ -1015,14 +1015,14 @@ namespace AST {
     static ASTexpression*
     parseXY(exp_ptr ax, exp_ptr ay, double def, const yy::location& loc)
     {
-        if (!ax.get())
+        if (!ax)
             ax.reset(new ASTreal(def, loc));
         int sz = ax->evaluate(0, 0);
         
-        if (sz == 1 && !ay.get())
+        if (sz == 1 && !ay)
             ay.reset(new ASTreal(def, loc));
         
-        if (ay.get())
+        if (ay)
             sz += ay->evaluate(0, 0);
         
         if (sz != 2)
@@ -1034,7 +1034,7 @@ namespace AST {
     static void
     rejectTerm(exp_ptr term)
     {
-        if (term.get())
+        if (term)
             CfdgError::Error(term->where, "Illegal argument");
         // and delete it
     }
@@ -1053,44 +1053,35 @@ namespace AST {
         exp_ptr ar;
         
         for (ASTtermArray::iterator it = a->modExp.begin(); it != a->modExp.end(); ++it) {
-            ASTmodTerm* mod = *it;
+            term_ptr mod = std::move(*it);
             
             switch (mod ? mod->modType : ASTmodTerm::unknownType) {
                 case ASTmodTerm::x:
-                    ax.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ax.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::y:
-                    ay.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ay.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::x1:
-                    ax1.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ax1.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::y1:
-                    ay1.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ay1.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::x2:
-                    ax2.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ax2.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::y2:
-                    ay2.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ay2.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::xrad:
-                    arx.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    arx.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::yrad:
-                    ary.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ary.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::rot:
-                    ar.reset(mod->args->simplify());
-                    mod->args = NULL;
+                    ar.reset(mod->args.release()->simplify());
                     break;
                 case ASTmodTerm::param:
                     if (mod->entString.find("large") != std::string::npos)  mFlags |= CF_ARC_LARGE;
@@ -1139,7 +1130,7 @@ namespace AST {
                 rejectTerm(std::move(ax2));
                 rejectTerm(std::move(ay2));
                 
-                if (arx.get() || ary.get()) {
+                if (arx || ary) {
                     ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1, mLocation);
                     ASTexpression* angle = ar.release();
                     if (!angle)
@@ -1167,12 +1158,12 @@ namespace AST {
                 rejectTerm(std::move(ary));
                 
                 ASTexpression *xy1 = 0, *xy2 = 0;
-                if (ax1.get() || ay1.get()) {
+                if (ax1 || ay1) {
                     xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
                 } else {
                     mFlags |= CF_CONTINUOUS;
                 }
-                if (ax2.get() || ay2.get()) {
+                if (ax2 || ay2) {
                     xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);
                 }
                 
