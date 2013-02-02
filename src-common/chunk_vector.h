@@ -63,6 +63,15 @@ struct chunk_vector_iterator
     chunk_vector_iterator()
         : _chunksPtr(0), _current(0), _size(0), _index(0)
     { }
+    
+    chunk_vector_iterator& operator=(const chunk_vector_iterator& rhs)
+    {
+        _chunksPtr = rhs._chunksPtr;
+        _current = rhs._current;
+        _size = rhs._size;
+        _index = rhs._index;
+        return *this;
+    }
 
     reference operator*() const
     { return *_current; }
@@ -142,6 +151,36 @@ struct chunk_vector_iterator
             return *val;
         }
         return *_current;
+    }
+    
+    bool operator<(const chunk_vector_iterator& rhs)
+    {
+        return _index < rhs._index;
+    }
+    
+    bool operator>(const chunk_vector_iterator& rhs)
+    {
+        return _index > rhs._index;
+    }
+    
+    bool operator<=(const chunk_vector_iterator& rhs)
+    {
+        return _index <= rhs._index;
+    }
+    
+    bool operator>=(const chunk_vector_iterator& rhs)
+    {
+        return _index >= rhs._index;
+    }
+    
+    bool operator==(const chunk_vector_iterator& rhs)
+    {
+        return _index == rhs._index;
+    }
+    
+    bool operator!=(const chunk_vector_iterator& rhs)
+    {
+        return _index != rhs._index;
     }
 };
 
