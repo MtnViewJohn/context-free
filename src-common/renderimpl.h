@@ -101,7 +101,6 @@ class RendererImpl : public Renderer {
         void getUnfinishedFromFile();
         AbstractSystem* system() { return m_cfdg->system(); }
         void fixupHeap();
-        bool checkHeap();
     
         void init();
         void cleanup();
