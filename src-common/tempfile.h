@@ -27,27 +27,24 @@
 #define INCLUDE_TEMPFILE_H
 
 #include "cfdg.h"
-#include "countable.h"
 
-class TempFile : protected Countable
+class TempFile
 {
 public:
-    static ref_ptr<TempFile>
-        build(AbstractSystem*, const char* prefix, const char* type, int num);
-
     std::ostream* forWrite();
     std::istream* forRead();
 
     std::string type()   { return mType; }
     int         number() { return mNum; }
     
-protected:
     TempFile(AbstractSystem*, const char* prefix, const char* type, int num);
+    TempFile(const TempFile&) = delete;
+    TempFile(TempFile&&);
+    TempFile& operator=(const TempFile&) = delete;
+    TempFile& operator=(TempFile&&) = default;
     virtual ~TempFile();
 
 private:
-    friend class ref_ptr<TempFile>;
-    
     AbstractSystem*     mSystem;
     std::string mPath;
     std::string mType;

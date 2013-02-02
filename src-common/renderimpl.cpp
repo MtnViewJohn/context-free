@@ -66,7 +66,7 @@ const unsigned int MAX_MERGE_FILES      =      200; // maximum number of files t
 #else
 const unsigned int MOVE_FINISHED_AT     =    1000; // when this many, move to file
 const unsigned int MOVE_UNFINISHED_AT   =     200; // when this many, move to files
-const unsigned int MAX_MERGE_FILES      =       2; // maximum number of files to merge at once
+const unsigned int MAX_MERGE_FILES      =       4; // maximum number of files to merge at once
 #endif
 const double SHAPE_BORDER = 1.0; // multiplier of shape size when calculating bounding box
 const double FIXED_BORDER = 8.0; // fixed extra border, in pixels
@@ -770,19 +770,16 @@ RendererImpl::fileIfNecessary()
 void
 RendererImpl::moveUnfinishedToTwoFiles()
 {
-    ref_ptr<TempFile> t1 = TempFile::build(system(), "cfdg-temp-unfin-",
-                                            "expansion", ++mUnfinishedFileCount);
-    ref_ptr<TempFile> t2 = TempFile::build(system(), "cfdg-temp-unfin-",
-                                            "expansion", ++mUnfinishedFileCount);
+    m_unfinishedFiles.emplace_back(system(), "cfdg-temp-unfin-", "expansion", ++mUnfinishedFileCount);
+    unique_ptr<ostream> f1(m_unfinishedFiles.back().forWrite());
+    int num1 = m_unfinishedFiles.back().number();
 
-    m_unfinishedFiles.push_back(t1);
-    m_unfinishedFiles.push_back(t2);
-
-    unique_ptr<ostream> f1(t1->forWrite());
-    unique_ptr<ostream> f2(t2->forWrite());
+    m_unfinishedFiles.emplace_back(system(), "cfdg-temp-unfin-", "expansion", ++mUnfinishedFileCount);
+    unique_ptr<ostream> f2(m_unfinishedFiles.back().forWrite());
+    int num2 = m_unfinishedFiles.back().number();
     
     system()->message("Writing %s temp files %d & %d",
-                        t1->type().c_str(), t1->number(), t2->number());
+                      m_unfinishedFiles.back().type().c_str(), num1, num2);
 
     int count = (int)mUnfinishedShapes.size() / 3;
 
@@ -828,9 +825,10 @@ RendererImpl::getUnfinishedFromFile()
 {
     if (m_unfinishedFiles.empty()) return;
     
-    ref_ptr<TempFile> t = m_unfinishedFiles.front();
+    TempFile t(std::move(m_unfinishedFiles.front()));
+    m_unfinishedFiles.pop_front();
     
-    unique_ptr<istream> f(t->forRead());
+    unique_ptr<istream> f(t.forRead());
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -858,8 +856,6 @@ RendererImpl::getUnfinishedFromFile()
     }
     system()->message("Resorting expansions");
     fixupHeap();
-
-    m_unfinishedFiles.pop_front();
 }
 
 bool
@@ -933,11 +929,9 @@ RendererImpl::fixupHeap()
 void
 RendererImpl::moveFinishedToFile()
 {
-    ref_ptr<TempFile> t = TempFile::build(system(), "cfdg-temp-fin-",
-                                            "shapes", ++mFinishedFileCount);
-    m_finishedFiles.push_back(t);
+    m_finishedFiles.emplace_back(system(), "cfdg-temp-fin-", "shapes", ++mFinishedFileCount);
     
-    unique_ptr<ostream> f(t->forWrite());
+    unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
 	if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -1007,30 +1001,29 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
         for_each(mFinishedShapes.begin(), mFinishedShapes.end(),
                  op.outputFunction());
     } else {
-        deque< ref_ptr<TempFile> >::iterator begin, last, end;
+        deque<TempFile>::iterator begin, last, end;
         
         while (m_finishedFiles.size() > MAX_MERGE_FILES) {
-            OutputMerge merger(*system());
+            TempFile t(system(), "cfdg-temp-mrg-", "merge", ++mFinishedFileCount);
             
-            begin = m_finishedFiles.begin();
-            last = begin + (MAX_MERGE_FILES - 1);
-            end = last + 1;
-            
-            for_each(begin, end, merger.tempFileAdder());
-            
-            ref_ptr<TempFile> t = TempFile::build(system(), "cfdg-temp-mrg-",
-                                                  "merge", ++mFinishedFileCount);
-            
-            ostream* f = t->forWrite();
-            system()->message("Merging temp files %d through %d",
-            (*begin)->number(), (*last)->number());
-            
-            merger.merge(ostream_iterator<FinishedShape>(*f));
-            
-            delete f;
+            {
+                OutputMerge merger(*system());
+                
+                begin = m_finishedFiles.begin();
+                last = begin + (MAX_MERGE_FILES - 1);
+                end = last + 1;
+                
+                for_each(begin, end, merger.tempFileAdder());
+                
+                std::unique_ptr<ostream> f(t.forWrite());
+                system()->message("Merging temp files %d through %d",
+                                  begin->number(), last->number());
+                
+                merger.merge(ostream_iterator<FinishedShape>(*f));
+            }   // end scope for merger and f
             
             m_finishedFiles.erase(begin, end);
-            m_finishedFiles.push_back(t);
+            m_finishedFiles.push_back(std::move(t));
         }
         
         OutputMerge merger(*system());
