@@ -53,7 +53,7 @@
 using namespace std;
 using namespace AST;
 
-#define DEBUG_SIZES
+//#define DEBUG_SIZES
 #ifndef DEBUG_SIZES
 #if defined(_WIN64) || defined(__x86_64__)
 const unsigned int MOVE_FINISHED_AT     = 10000000; // when this many, move to file
