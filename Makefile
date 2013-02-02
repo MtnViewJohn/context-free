@@ -45,7 +45,7 @@ DERIVED_SRCS = lex.yy.cpp cfdg.tab.cpp
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
 
-LIBS = stdc++ png z m
+LIBS = c++ png z m
 
 #
 # FFmpeg support
@@ -132,7 +132,7 @@ $(OUTPUT_DIR)/rtest-2k.png: cfdg $(RTEST_CFDG)
 #
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses
+CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses -std=c++11 -stdlib=libc++
 #CPPFLAGS += -g
 
 $(OBJ_DIR)/%.o : %.cpp
