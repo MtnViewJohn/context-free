@@ -31,10 +31,10 @@ ShapeOp::~ShapeOp() { }
 
 
 void
-OutputMerge::addTempFile(ref_ptr<TempFile> t)
+OutputMerge::addTempFile(TempFile& t)
 {
-    istream* f = t->forRead();
-    mStreams.push_back(f);
+    istream* f = t.forRead();
+    mStreams.emplace_back(f);
     mIters.push_back(FileIter(*f));
     
     insertNext((int)mIters.size() - 1);
@@ -51,9 +51,6 @@ OutputMerge::addShapes(ShapeIter begin, ShapeIter end)
 
 OutputMerge::~OutputMerge()
 {
-    for (FileStreams::iterator i = mStreams.begin(); i != mStreams.end(); ++i) {
-        delete *i;
-    }
 }
 
 void

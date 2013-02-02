@@ -35,13 +35,6 @@
 using namespace std;
 
 
-ref_ptr<TempFile>
-TempFile::build(AbstractSystem* system, const char* prefix, const char* type, int num)
-{
-    return Countable::build(new TempFile(system, prefix, type, num));
-}
-
-
 std::ostream*
 TempFile::forWrite()
 {
@@ -67,9 +60,18 @@ TempFile::TempFile(AbstractSystem* system, const char* prefix, const char* type,
     : mSystem(system), mPath(prefix), mType(type), mNum(num), mWritten(false)
     { }
 
+TempFile::TempFile(TempFile&& from)
+: mSystem(from.mSystem), mPath(std::move(from.mPath)), mType(std::move(from.mType)),
+  mNum(from.mNum), mWritten(from.mWritten)
+{
+    // Prevent old TempFile from triggering an unlink
+    from.mWritten = false;
+    from.mPath.clear();
+}
+
 TempFile::~TempFile()
 {
-    if (mWritten) {
+    if (mWritten && mPath.length()) {
         mSystem->message("Deleting %s temp file %d", mType.c_str(), mNum);
         unlink(mPath.c_str());
     }

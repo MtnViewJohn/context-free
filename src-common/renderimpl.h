@@ -125,8 +125,8 @@ class RendererImpl : public Renderer {
         typedef chunk_vector<Shape, 10> UnfinishedContainer;
         UnfinishedContainer mUnfinishedShapes;
 
-        std::deque< ref_ptr<TempFile> > m_finishedFiles;
-        std::deque< ref_ptr<TempFile> > m_unfinishedFiles;
+        std::deque<TempFile> m_finishedFiles;
+        std::deque<TempFile> m_unfinishedFiles;
         int mFinishedFileCount;
         int mUnfinishedFileCount;
 

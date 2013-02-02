@@ -40,6 +40,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <memory>
 
 #include "cfdg.h"
 #include "shape.h"
@@ -119,11 +120,11 @@ public:
     void addShapes(ShapeIter begin, ShapeIter end);
 
     
-    typedef std::unary_function<ref_ptr<TempFile>, void > TempFileAdderBase;
+    typedef std::unary_function<TempFile&, void > TempFileAdderBase;
     class TempFileAdder: public TempFileAdderBase
     {
     public:
-        void operator()(ref_ptr<TempFile>& t) { mOM.addTempFile(t); }
+        void operator()(TempFile& t) { mOM.addTempFile(t); }
     private:
         TempFileAdder(OutputMerge& om) : mOM(om) { }
         TempFileAdder& operator=(const TempFileAdder&) { return *this; }
@@ -133,7 +134,7 @@ public:
     
     TempFileAdder tempFileAdder() { return TempFileAdder(*this); }
     
-    void addTempFile(ref_ptr<TempFile>);
+    void addTempFile(TempFile&);
 
 
     template < typename O >
@@ -152,8 +153,9 @@ public:
     
     
 private:
+    typedef std::unique_ptr<std::istream>           file_ptr;
     typedef std::istream_iterator<FinishedShape>    FileIter;
-    typedef std::vector<std::istream*>              FileStreams;
+    typedef std::vector<file_ptr>                   FileStreams;
     typedef std::vector<FileIter>                   FileIters;
     
     AbstractSystem&     mSystem;
