@@ -1124,9 +1124,9 @@ caseHeader:
                             driver.error(@2, "Case value already in use");
                             driver.push_repContainer(*(caseMap[intval]));
                         } else {
-                            ASTrepContainer* caseBody = new ASTrepContainer();
-                            caseMap.emplace(intval, caseBody);
-                            driver.push_repContainer(*caseBody);
+                            cont_ptr caseBody(new ASTrepContainer());
+                            driver.push_repContainer(*(caseBody.get()));
+                            caseMap.emplace(intval, std::move(caseBody));
                         }
                     }
                 }
