@@ -67,7 +67,7 @@ namespace AST {
     private:
         ASTreplacement(const ASTreplacement&);
     };
-    class ASTrepContainer final {
+    class ASTrepContainer {
     public:
         pathOpEnum mPathOp;
         int mRepType;
