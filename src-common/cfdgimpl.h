@@ -82,9 +82,6 @@ private:
         std::map<int, ConfigParam*> m_ConfigParameters;
         static void deleteConfigParam(std::pair<const int, ConfigParam*>& p);
 
-        double m_minSize;
-        double m_minArea;
-        
         Modification mTileMod;
         Modification mSizeMod;
         Modification mTimeMod;
