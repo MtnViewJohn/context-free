@@ -53,7 +53,7 @@
 using namespace std;
 using namespace AST;
 
-//#define DEBUG_SIZES
+#define DEBUG_SIZES
 #ifndef DEBUG_SIZES
 #if defined(_WIN64) || defined(__x86_64__)
 const unsigned int MOVE_FINISHED_AT     = 10000000; // when this many, move to file
@@ -817,7 +817,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
     // Remove the written shapes, heap property remains intact
     static const Shape neverActuallyUsed;
     mUnfinishedShapes.resize(count, neverActuallyUsed);
-    assert(checkHeap());
+    assert(is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
 }
 
 void
@@ -858,57 +858,27 @@ RendererImpl::getUnfinishedFromFile()
     fixupHeap();
 }
 
-bool
-RendererImpl::checkHeap()
-{
-    // Confirm that mUnfinishedShapes still has the heap property
-    size_t parent = 0;
-    size_t num = mUnfinishedShapes.size();
-    for (size_t child = 1; child < num; ++child) {
-        if (mUnfinishedShapes[parent] < mUnfinishedShapes[child])
-            return false;
-        if ((child & 1) == 0)
-            ++parent;
-	}
-    return true;
-}
-
 void
 RendererImpl::fixupHeap()
 {
     // Restore heap property to mUnfinishedShapes
-    size_t size = mUnfinishedShapes.size();
-    if (size < 2) return;
-    // Add a dummy entry to the end to guarantee that all nodes have two children
-    Shape s;
-    s.mAreaCache = DBL_MIN;
-    s.mShapeType = -1;
-    mUnfinishedShapes.push_back(s);
-    size_t top = (size - 1) / 2;
+    auto first = mUnfinishedShapes.begin();
+    auto last = mUnfinishedShapes.end();
+    typedef UnfinishedContainer::iterator::difference_type difference_type;
+    difference_type n = last - first;
+    if (n < 2)
+        return;
+
     AbstractSystem::Stats outStats = m_stats;
-    outStats.outputCount = (int)top;
+    outStats.outputCount = (int)n;
     outStats.outputDone = 0;
     outStats.showProgress = true;
-    for (;;--top) {
-        s = mUnfinishedShapes[top];
-        size_t child = top * 2;
-        size_t hole = top;
-        // Bubble up children until we find a place for the current node
-        while (s < mUnfinishedShapes[child] || s < mUnfinishedShapes[child + 1])
-        {
-            // Bubble up the largest child
-            if (mUnfinishedShapes[child] < mUnfinishedShapes[child + 1])
-                ++child;
-            mUnfinishedShapes[hole] = mUnfinishedShapes[child];
-            hole = child;
-            if (child * 2 >= size) break;
-            child = child * 2;
-        }
-        // Copy down the node only if at least one child bubbled up
-        if (hole > top)
-            mUnfinishedShapes[hole] = s;
-        if (top == 0)
-            break;
+    
+    last = first;
+    ++last;
+    for (difference_type i = 1; i < n; ++i) {
+        push_heap(first, ++last);
+    
         ++outStats.outputDone;
         if (requestUpdate) {
             system()->stats(outStats);
@@ -917,11 +887,7 @@ RendererImpl::fixupHeap()
         if (requestStop || requestFinishUp)
             return;
     }
-    // Dummy entry should still be at end, remove it
-    assert(mUnfinishedShapes.back().mAreaCache == DBL_MIN);
-    assert(mUnfinishedShapes.back().mShapeType == -1);
-    mUnfinishedShapes.pop_back();
-    assert(checkHeap());
+    assert(is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
 }
 
 //-------------------------------------------------------------------------////
