@@ -1126,7 +1126,8 @@ caseHeader:
                         } else {
                             cont_ptr caseBody(new ASTrepContainer());
                             driver.push_repContainer(*(caseBody.get()));
-                            caseMap.emplace(intval, std::move(caseBody));
+                            std::pair<int, cont_ptr> p(intval, std::move(caseBody));
+                            caseMap.insert(std::move(p));
                         }
                     }
                 }
