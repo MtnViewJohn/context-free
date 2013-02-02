@@ -343,8 +343,7 @@ namespace AST {
       arguments(std::move(r.arguments)), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
       typeSignature(r.typeSignature)
     {
-        r.arguments = NULL;     // move semantics
-        r.simpleRule = NULL;
+        r.simpleRule = NULL;    // move semantics
     }
     
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)

@@ -111,7 +111,7 @@ private:
 class OutputMerge
 {
 public:
-    OutputMerge(AbstractSystem& system) : mSystem(system) { }
+    OutputMerge() { }
     ~OutputMerge();
     
     typedef std::multiset<FinishedShape> ShapeSource;
@@ -158,7 +158,6 @@ private:
     typedef std::vector<file_ptr>                   FileStreams;
     typedef std::vector<FileIter>                   FileIters;
     
-    AbstractSystem&     mSystem;
     FileStreams mStreams;
     FileIters   mIters;
     FileIter    mFileEnd;

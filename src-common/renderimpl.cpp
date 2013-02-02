@@ -383,8 +383,7 @@ class OutputBounds : public ShapeOp
 {
 public:
     OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
-                 double shapeBorder, int width, int height, double fixedBorderX,
-                 double fixedBorderY, RendererImpl& renderer);
+                 int width, int height, RendererImpl& renderer);
     void apply(const FinishedShape&);
 
     const Bounds& frameBounds(int frame) { return mFrameBounds[frame]; }
@@ -400,24 +399,19 @@ public:
 private:
     agg::trans_affine_time mTimeBounds;
     double          mFrameScale;
-    double          mShapeBorder;
     vector<Bounds>  mFrameBounds;
     vector<int>     mFrameCounts;
     double          mScale;
     int             mWidth;
     int             mHeight;
     int             mFrames;
-    double          mFixedBorderX;
-    double          mFixedBorderY;
     RendererImpl&   mRenderer;
 };
 
 OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
-                           double shapeBorder, int width, int height, double fixedBorderX,
-                           double fixedBorderY, RendererImpl& renderer)
-: mTimeBounds(timeBounds), mShapeBorder(shapeBorder), mScale(0.0),
-  mWidth(width), mHeight(height), mFrames(frames), mFixedBorderX(fixedBorderX),
-  mFixedBorderY(fixedBorderY), mRenderer(renderer)
+                           int width, int height, RendererImpl& renderer)
+: mTimeBounds(timeBounds), mScale(0.0),
+  mWidth(width), mHeight(height), mFrames(frames), mRenderer(renderer)
 {
     mFrameScale = (double)frames / (timeBounds.tend - timeBounds.tbegin);
     mFrameBounds.resize(frames);
@@ -535,9 +529,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
 
     double frameInc = (mTimeBounds.tend - mTimeBounds.tbegin) / frames;
     
-    OutputBounds outputBounds(frames, mTimeBounds, mShapeBorder, 
-                              curr_width, curr_height, mFixedBorderX, mFixedBorderY, 
-                              *this);
+    OutputBounds outputBounds(frames, mTimeBounds, curr_width, curr_height, *this);
     if (zoom) {
         system()->message("Computing zoom");
 
@@ -973,7 +965,7 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
             TempFile t(system(), "cfdg-temp-mrg-", "merge", ++mFinishedFileCount);
             
             {
-                OutputMerge merger(*system());
+                OutputMerge merger;
                 
                 begin = m_finishedFiles.begin();
                 last = begin + (MAX_MERGE_FILES - 1);
@@ -992,7 +984,7 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
             m_finishedFiles.push_back(std::move(t));
         }
         
-        OutputMerge merger(*system());
+        OutputMerge merger;
         
         begin = m_finishedFiles.begin();
         end = m_finishedFiles.end();

@@ -182,12 +182,14 @@ PosixSystem::stats(const Stats& s)
     
     if (s.inOutput || s.showProgress) {
         double v = (double)s.outputDone / s.outputCount;
+        static const char prog[] = "**************************************************";
+        static const char todo[] = "..................................................";
         if (v < 0.0) v = 0.0;
         if (v > 1.0) v = 1.0;
         int progress = (int)(v * 50.0 + 0.5);
         cerr << '[';
-        cerr << "**************************************************" + (50 - progress);
-        cerr << ".................................................." + progress;
+        cerr << &(prog[50 - progress]);
+        cerr << &(todo[progress]);
         cerr << ']';
     } else {
         cerr << "    " << s.shapeCount << " shapes";
