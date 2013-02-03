@@ -69,6 +69,22 @@ TempFile::TempFile(TempFile&& from)
     from.mPath.clear();
 }
 
+#ifdef _WIN32
+TempFile&
+TempFile::operator=(TempFile&& from)
+{
+    mSystem = from.mSystem;
+    mPath = std::move(from.mPath);
+    mType = std::move(from.mType);
+    mNum = from.mNum;
+    mWritten = from.mWritten;
+    // Prevent old TempFile from triggering an unlink
+    from.mWritten = false;
+    from.mPath.clear();
+    return *this;
+}
+#endif
+
 TempFile::~TempFile()
 {
     if (mWritten && mPath.length()) {

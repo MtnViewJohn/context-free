@@ -79,9 +79,11 @@ namespace AST {
         ASTrepContainer() 
         : mPathOp(unknownPathop), mRepType(ASTreplacement::empty),
           isGlobal(false), mStackCount(0) {};
+#ifndef _WIN32
         ASTrepContainer(const ASTrepContainer&) = delete;
         ASTrepContainer& operator=(const ASTrepContainer&) = delete;
         ASTrepContainer(ASTrepContainer&&) = delete;
+#endif
         ~ASTrepContainer();
         void traverse(const Shape& parent, bool tr, Renderer* r,
                       bool getParams = false) const
@@ -97,6 +99,12 @@ namespace AST {
                           const yy::location& typeLoc, const yy::location& nameLoc);
         ASTparameter& addParameter(int index, ASTdefine* def,
                           const yy::location& nameLoc, const yy::location& expLoc);
+#ifdef _WIN32
+    private:
+        ASTrepContainer(const ASTrepContainer&) { };
+        ASTrepContainer& operator=(const ASTrepContainer&) { return *this; };
+        ASTrepContainer(ASTrepContainer&&) { };
+#endif
     };
     class ASTloop: public ASTreplacement {
     public:
