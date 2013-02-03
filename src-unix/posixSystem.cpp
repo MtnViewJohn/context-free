@@ -44,7 +44,9 @@
 
 using namespace std;
 
-void 
+const char* prettyInt(int);
+
+void
 PosixSystem::clearAndCR()
 {
 #ifdef _WIN32
@@ -192,10 +194,10 @@ PosixSystem::stats(const Stats& s)
         cerr << &(todo[progress]);
         cerr << ']';
     } else {
-        cerr << "    " << s.shapeCount << " shapes";
+        cerr << "    " << prettyInt(s.shapeCount) << " shapes";
         
         if (s.toDoCount > 0)
-            cerr << " - " << s.toDoCount << " expansions to do";
+            cerr << " - " << prettyInt(s.toDoCount) << " expansions to do";
     }
 
     clearAndCR();

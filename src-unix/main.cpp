@@ -56,6 +56,8 @@ using namespace std;
 
 void setupTimer(Renderer* renderer);
 
+const char* prettyInt(int);
+
 ostream* myCout = &cerr;
 
 const char* invokeName = "";
@@ -92,6 +94,28 @@ void termination_handler(int signum)
 #endif
 }
 
+
+const char*
+prettyInt(int v)
+{
+    if (!v) return "0";
+    
+    static char temp[32];
+    temp[31] = '\0';
+    int i = 0;
+    char* pos = temp + 30;
+    for(;;) {
+        *pos = '0' + (v % 10);
+        v = v / 10;
+        if (!v) return pos;
+        ++i;
+        --pos;
+        if (i % 3 == 0) {
+            *pos = ',';
+            --pos;
+        }
+    }
+}
 
 void
 usage(bool inError)
@@ -568,7 +592,7 @@ int main (int argc, char* argv[]) {
     if (opts.outputTime) {
         clock_t toTime = clock();
         clock_t runTime = (toTime - fromTime) / clocksPerMsec;
-        *myCout << "The cfdg file took " << runTime << " msec to execute." << endl;
+        *myCout << "The cfdg file took " << prettyInt(runTime) << " msec to execute." << endl;
         fromTime = toTime;
     }
     
@@ -588,9 +612,9 @@ int main (int argc, char* argv[]) {
     if (opts.outputTime) {
         clock_t toTime = clock();
         clock_t runTime = (toTime - fromTime) / clocksPerMsec;
-        *myCout << "The cfdg file took " << runTime << " msec to render." << endl;
+        *myCout << "The cfdg file took " << prettyInt(runTime) << " msec to render." << endl;
         runTime = (toTime - startTime) / clocksPerMsec;
-        *myCout << "The cfdg file took a total of " << runTime << " msec to process." << endl;
+        *myCout << "The cfdg file took a total of " << prettyInt(runTime) << " msec to process." << endl;
     }
     
     delete png;
@@ -601,7 +625,7 @@ int main (int argc, char* argv[]) {
     
     if (opts.paramTest) {
         if (Renderer::ParamCount)
-            cerr << "Left-over parameter blocks in memory:" << Renderer::ParamCount << endl;
+            cerr << "Left-over parameter blocks in memory:" << prettyInt(Renderer::ParamCount) << endl;
         else
             *myCout << "All parameter blocks deleted" << endl;
     }
