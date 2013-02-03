@@ -809,7 +809,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[90] =
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2005-2009 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2012 John Horigan - john@glyphic.com
 // Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
 //
 // This program is free software; you can redistribute it and/or
