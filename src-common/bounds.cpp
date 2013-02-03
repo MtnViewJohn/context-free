@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2006-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2006-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -41,8 +41,11 @@
 Bounds::Bounds(const agg::trans_affine& trans, pathIterator& helper, double scale, 
                const AST::CommandInfo& attr, agg::point_d* cent, double* area)
 {
-    mValid = helper.boundingRect(trans, attr, mMin_X, mMin_Y, mMax_X, mMax_Y, 
-                                 scale, cent, area);
+    if (!helper.boundingRect(trans, attr, mMin_X, mMin_Y, mMax_X, mMax_Y,
+                             scale, cent, area))
+    {
+        invalidate();
+    }
 }
 
 Bounds
@@ -51,13 +54,12 @@ Bounds::interpolate(const Bounds& other, double alpha) const
     double beta = 1.0 - alpha;
     
     Bounds r;
-    if (!mValid || !other.mValid) return r;
+    if (!valid() || !other.valid()) return r;
     
     r.mMax_X = beta * mMax_X + alpha * other.mMax_X;
     r.mMin_X = beta * mMin_X + alpha * other.mMin_X;
     r.mMax_Y = beta * mMax_Y + alpha * other.mMax_Y;
     r.mMin_Y = beta * mMin_Y + alpha * other.mMin_Y;
-    r.mValid = true;
     
     return r;
 }
@@ -70,7 +72,6 @@ Bounds::dilate(agg::point_d& cent, double dilation) const
     b.mMax_X = dilation * (mMax_X - cent.x) + cent.x;
     b.mMin_Y = dilation * (mMin_Y - cent.y) + cent.y;
     b.mMax_Y = dilation * (mMax_Y - cent.y) + cent.y;
-    b.mValid = mValid;
     return b;
 }
 
@@ -83,7 +84,6 @@ Bounds::dilate(double dilation) const
     b.mMax_X = dilation * (mMax_X - cent.x) + cent.x;
     b.mMin_Y = dilation * (mMin_Y - cent.y) + cent.y;
     b.mMax_Y = dilation * (mMax_Y - cent.y) + cent.y;
-    b.mValid = mValid;
     return b;
 }
 
@@ -91,7 +91,7 @@ Bounds
 Bounds::slewCenter(const Bounds& other, double alpha) const
 {
     Bounds r;
-    if (!mValid || !other.mValid) return r;
+    if (!valid() || !other.valid()) return r;
     
     double offsetX
     = alpha * ((other.mMax_X + other.mMin_X) - (mMax_X + mMin_X)) / 2.0;
@@ -105,7 +105,6 @@ Bounds::slewCenter(const Bounds& other, double alpha) const
     r.mMin_X = mMin_X - absX + offsetX;
     r.mMax_Y = mMax_Y + absY + offsetY;
     r.mMin_Y = mMin_Y - absY + offsetY;
-    r.mValid = true;
     
     return r;
 }
@@ -113,14 +112,13 @@ Bounds::slewCenter(const Bounds& other, double alpha) const
 void
 Bounds::gather(const Bounds& other, double weight)
 {
-    if (!other.mValid) return;
+    if (!other.valid()) return;
     
-    if (!mValid) {
+    if (!valid()) {
         mMax_X = weight * other.mMax_X;
         mMin_X = weight * other.mMin_X;
         mMax_Y = weight * other.mMax_Y;
         mMin_Y = weight * other.mMin_Y;
-        mValid = true;
         return;
     }
     
@@ -132,7 +130,7 @@ Bounds::gather(const Bounds& other, double weight)
 
 double
 Bounds::computeScale(int& width, int& height, double borderX, double borderY,
-                     bool modify, agg::trans_affine* trans, bool exact)
+                     bool modify, agg::trans_affine* trans, bool exact) const
 {
     double scale;
     double virtual_width = mMax_X - mMin_X;
@@ -140,7 +138,7 @@ Bounds::computeScale(int& width, int& height, double borderX, double borderY,
     double target_width = width - 2.0 * borderX;
     double target_height = height - 2.0 * borderY;
     
-    if (!mValid) virtual_width = virtual_height = 1.0;
+    if (!valid()) virtual_width = virtual_height = 1.0;
     
     int newWidth = width;
     int newHeight = height;
