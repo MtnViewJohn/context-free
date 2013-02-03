@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2006-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2006-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -31,6 +31,8 @@
 #define INCLUDE_BOUNDS_H
 
 #include "agg_path_storage.h"
+#include <limits>
+#include <cmath>
 
 namespace agg { struct trans_affine; }
 namespace AST { 
@@ -41,14 +43,16 @@ class pathIterator;
 
 class Bounds {
     public:
-        Bounds() : mValid(false) {}
+        Bounds() : mMin_X(std::numeric_limits<double>::infinity()) {}
 
         Bounds(const agg::trans_affine& trans, pathIterator& helper, 
                double scale, const AST::CommandInfo& attr,
                agg::point_d* cent = NULL, double* area = NULL);
                 // set bounds to be the bounds of this shape, transformed
 
-        bool valid() { return mValid; }
+        bool valid() const { return std::isfinite(mMin_X) && std::isfinite(mMax_X) &&
+                                    std::isfinite(mMin_Y) && std::isfinite(mMax_Y); }
+        void invalidate() { mMin_X = std::numeric_limits<double>::infinity(); }
     
         Bounds dilate(agg::point_d& cent, double dilation) const;
         Bounds dilate(double dilation) const;
@@ -56,12 +60,12 @@ class Bounds {
         void merge(const Bounds& b)
             // merge the other bounds into this bounds
         {
-            if (mValid && b.mValid) {
+            if (valid() && b.valid()) {
                 if (b.mMin_X < mMin_X) mMin_X = b.mMin_X;
                 if (b.mMax_X > mMax_X) mMax_X = b.mMax_X;
                 if (b.mMin_Y < mMin_Y) mMin_Y = b.mMin_Y;
                 if (b.mMax_Y > mMax_Y) mMax_Y = b.mMax_Y;
-            } else if (b.mValid) {
+            } else if (b.valid()) {
                 *this = b;
             }
         }
@@ -69,7 +73,7 @@ class Bounds {
         void merge(double x, double y)
         // merge a point into this bounds
         {
-            if (mValid) {
+            if (valid()) {
                 if (x < mMin_X) mMin_X = x;
                 if (x > mMax_X) mMax_X = x;
                 if (y < mMin_Y) mMin_Y = y;
@@ -77,20 +81,19 @@ class Bounds {
             } else {
                 mMin_X = mMax_X = x;
                 mMin_Y = mMax_Y = y;
-                mValid = true;
             }
         }
         
         void merge(const agg::point_d& p) { merge(p.x, p.y); }
         // merge a point into this bounds
     
-        Bounds operator+(const Bounds& other)
+        Bounds operator+(const Bounds& other) const
         { Bounds t(*this); t.merge(other); return t; }
         
         Bounds& operator+=(const Bounds& other)
         { merge(other); return *this; }
         
-        Bounds operator+(const agg::point_d& p)
+        Bounds operator+(const agg::point_d& p) const
         { Bounds t(*this); t.merge(p); return t; }
         
         Bounds& operator+=(const agg::point_d& p)
@@ -106,7 +109,7 @@ class Bounds {
         
         double computeScale(int& width, int& height, double borderX, double borderY,
                             bool modify = false, agg::trans_affine* trans = 0,
-                            bool exact = false);
+                            bool exact = false) const;
         // Computes the scale factor of fitting this bounds into a canvas
         // of the given width and height, with the provided fixed border.
         // If modify is true, width and height are reset to the scaled size.
@@ -120,7 +123,6 @@ class Bounds {
                     agg::point_d* cent = NULL, double* area = NULL);
     
         double  mMin_X, mMin_Y, mMax_X, mMax_Y;
-        bool    mValid;
 };
 
 #endif // INCLUDE_BOUNDS_H

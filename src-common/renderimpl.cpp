@@ -170,7 +170,6 @@ RendererImpl::initBounds()
         mFixedBorderX = mShapeBorder = 0.0;
         mBounds.mMin_X = -(mBounds.mMax_X = tile_x / 2.0);
         mBounds.mMin_Y = -(mBounds.mMax_Y = tile_y / 2.0);
-        mBounds.mValid = true;
         rescaleOutput(m_width, m_height, true);
         mScaleArea = m_currArea;
     }
@@ -661,7 +660,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
     double oldArea = mTotalArea;
     if (path || s.mShapeType != primShape::fillType) {
         mCurrentCentroid.x = mCurrentCentroid.y = mCurrentArea = 0.0;
-        mPathBounds.mValid = false;
+        mPathBounds.invalidate();
         m_drawingMode = false;
         if (path) {
             path->traversePath(s, this);
@@ -922,7 +921,7 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
     agg::trans_affine trans;
     double scale;
     
-    if (!mBounds.mValid) return;
+    if (!mBounds.valid()) return;
 
     scale = mBounds.computeScale(curr_width, curr_height,
                                  mFixedBorderX, mFixedBorderY, true, 
