@@ -378,7 +378,6 @@
     <ClInclude Include="src-common\stacktype.h" />
     <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
     <ClInclude Include="src-common\cfdgimpl.h" />
-    <ClInclude Include="src-common\countable.h" />
     <ClInclude Include="src-win\derived\FlexLexer.h" />
     <ClInclude Include="src-win\getopt.h" />
     <ClInclude Include="src-common\HSBColor.h" />
@@ -439,7 +438,6 @@
     </ClCompile>
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
-    <ClCompile Include="src-common\countable.cpp" />
     <ClCompile Include="src-win\getopt.c" />
     <ClCompile Include="src-common\HSBColor.cpp" />
     <ClCompile Include="src-win\derived\lex.yy.cpp" />

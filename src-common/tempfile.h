@@ -38,10 +38,14 @@ public:
     int         number() { return mNum; }
     
     TempFile(AbstractSystem*, const char* prefix, const char* type, int num);
-    TempFile(const TempFile&) = delete;
     TempFile(TempFile&&);
+#ifndef _WIN32
+    TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
     TempFile& operator=(TempFile&&) = default;
+#else
+    TempFile& operator=(TempFile&&);
+#endif
     virtual ~TempFile();
 
 private:
@@ -50,6 +54,10 @@ private:
     std::string mType;
     int         mNum;
     bool        mWritten;
+#ifdef _WIN32
+    TempFile(const TempFile&) { };
+    TempFile& operator=(const TempFile&) { return *this; };
+#endif
 };
 
 #endif // INCLUDE_TEMPFILE_H

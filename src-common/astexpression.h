@@ -139,8 +139,10 @@ namespace AST {
                          const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier&& r);
+#ifndef _WIN32
         ASTruleSpecifier(const ASTruleSpecifier&) = delete;
         ASTruleSpecifier& operator=(const ASTruleSpecifier&) = delete;
+#endif
         explicit ASTruleSpecifier()
         :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
             argSize(0), argSource(NoArgs), arguments(nullptr),
@@ -150,6 +152,12 @@ namespace AST {
         virtual const StackType* evalArgs(Renderer* = 0, const StackType* parent = 0) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
+#ifdef _WIN32
+    private:
+        ASTruleSpecifier(const ASTruleSpecifier&) :
+            ASTexpression(CfdgError::Default) { };
+        ASTruleSpecifier& operator=(const ASTruleSpecifier&) { return *this; };
+#endif
     };
     class ASTcons : public ASTexpression {
     public:
