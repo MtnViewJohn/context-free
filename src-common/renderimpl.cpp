@@ -1037,7 +1037,7 @@ OutputDraw::apply(const FinishedShape& s)
     if ((!isfinite(a) && s.mShapeType != primShape::fillType) || 
         a < mRenderer.m_minArea) return;
     
-    if (tiler) {
+    if (tiler && s.mShapeType != primShape::fillType) {
         Bounds b = s.mBounds;
         mRenderer.m_currTrans.transform(&b.mMin_X, &b.mMin_Y);
         mRenderer.m_currTrans.transform(&b.mMax_X, &b.mMax_Y);
