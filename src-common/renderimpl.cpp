@@ -714,7 +714,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         system()->message("A shape got too big.");
         return;
     }
-    mFinishedShapes.insert(fs);
+    mFinishedShapes.push_back(fs);
     if (fs.mParameters)
         fs.mParameters->retain(this);
 }
@@ -884,6 +884,9 @@ RendererImpl::moveFinishedToFile()
     unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
 	if (f->good()) {
+        if (mFinishedShapes.size() > 10000)
+            system()->message("Sorting shapes...");
+        std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
         AbstractSystem::Stats outStats = m_stats;
         outStats.outputCount = (int)mFinishedShapes.size();
         outStats.outputDone = 0;
@@ -938,18 +941,13 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
 void
 RendererImpl::forEachShape(bool final, ShapeOp& op)
 {
-    if (!final) {
-        if (m_outputSoFar)
-            m_outputPosition = ++m_outputPosition;
-        else
-            m_outputPosition = mFinishedShapes.begin();
-        for_each(m_outputPosition, mFinishedShapes.end(), op.outputFunction());
+    if (!final || m_finishedFiles.empty()) {
+        FinishedContainer::iterator start = mFinishedShapes.begin();
+        FinishedContainer::iterator last  = mFinishedShapes.end();
+        if (!final)
+            start += m_outputSoFar;
+        for_each(start, last, op.outputFunction());
         m_outputSoFar = (int)mFinishedShapes.size();
-        if (m_outputSoFar)
-            m_outputPosition = --(mFinishedShapes.end());
-    } else if (m_finishedFiles.empty()) {
-        for_each(mFinishedShapes.begin(), mFinishedShapes.end(),
-                 op.outputFunction());
     } else {
         deque<TempFile>::iterator begin, last, end;
         
@@ -1084,6 +1082,12 @@ void RendererImpl::output(bool final)
     rescaleOutput(curr_width, curr_height, final);
     
     m_stats.outputDone = m_outputSoFar;
+    
+    if (final) {
+        if (mFinishedShapes.size() > 10000)
+            system()->message("Sorting shapes...");
+        std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
+    }
     
     m_canvas->start(m_outputSoFar == 0, m_cfdg->getBackgroundColor(0),
         curr_width, curr_height);

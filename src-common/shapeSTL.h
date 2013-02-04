@@ -41,6 +41,7 @@
 #include <vector>
 #include <set>
 #include <memory>
+#include "chunk_vector.h"
 
 #include "cfdg.h"
 #include "shape.h"
@@ -114,8 +115,8 @@ public:
     OutputMerge() { }
     ~OutputMerge();
     
-    typedef std::multiset<FinishedShape> ShapeSource;
-    typedef ShapeSource::iterator        ShapeIter;
+    typedef chunk_vector<FinishedShape, 10> ShapeSource;
+    typedef ShapeSource::iterator           ShapeIter;
     
     void addShapes(ShapeIter begin, ShapeIter end);
 
