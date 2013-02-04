@@ -120,7 +120,8 @@ class RendererImpl : public Renderer {
         double m_frieze_size;
         bool m_drawingMode;
 
-        std::multiset<FinishedShape> mFinishedShapes;
+        typedef chunk_vector<FinishedShape, 10> FinishedContainer;
+        FinishedContainer mFinishedShapes;
         typedef chunk_vector<Shape, 10> UnfinishedContainer;
         UnfinishedContainer mUnfinishedShapes;
 
@@ -152,7 +153,6 @@ class RendererImpl : public Renderer {
         agg::trans_affine_time mFrameTimeBounds;
         agg::trans_affine m_currTrans;
         unsigned int m_outputSoFar;
-        std::multiset<FinishedShape>::iterator m_outputPosition;
     
         std::vector<agg::trans_affine> mSymmetryOps;
 
