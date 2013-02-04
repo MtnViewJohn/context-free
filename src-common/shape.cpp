@@ -98,13 +98,14 @@ Modification::merge(const Modification& m)
 void
 ShapeBase::write(std::ostream& os) const
 {
-    os.write((const char*)(this), sizeof(ShapeBase));
+    os.write((const char*)(this), offsetof(ShapeBase, mAreaCache));
 }
 
 void
 ShapeBase::read(std::istream& is)
 {
-    is.read((char *)(this), sizeof(ShapeBase));
+    is.read((char *)(this), offsetof(ShapeBase, mAreaCache));
+    mAreaCache = mWorldState.area();
 }
 
 void

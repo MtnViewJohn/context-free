@@ -137,11 +137,11 @@ class FinishedShape : public Shape {
 public:
     Bounds mBounds;
     FinishedShape() : Shape() {}
-    FinishedShape(const Shape& s, double totalArea, const Bounds& b)
+    FinishedShape(const Shape& s, int order, const Bounds& b)
     {
         mShapeType = s.mShapeType;
         mWorldState = s.mWorldState;
-        mAreaCache = totalArea;
+        mWorldState.m_ColorAssignment = order;
         mParameters = s.mParameters;
         mBounds = b;
     };
@@ -149,8 +149,8 @@ public:
     bool operator<(const Shape& b) const
     {
         return (mWorldState.m_Z.tz == b.mWorldState.m_Z.tz) ?
-        (mAreaCache < b.mAreaCache) :
-        (mWorldState.m_Z.tz < b.mWorldState.m_Z.tz);
+            (mWorldState.m_ColorAssignment < b.mWorldState.m_ColorAssignment) :
+            (mWorldState.m_Z.tz < b.mWorldState.m_Z.tz);
     }
     
     void write(std::ostream& os) const;
