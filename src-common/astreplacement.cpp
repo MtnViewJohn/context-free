@@ -1187,13 +1187,29 @@ namespace AST {
     void
     ASTpathCommand::check4z() const
     {
-        if (mChildChange.modData.m_Z.tz != 0.0) {
+        static const agg::trans_affine_1D unitZ;
+        if (mChildChange.modData.m_Z != unitZ) {
             CfdgError::Warning(mLocation, "Z changes are not supported within paths");
             return;
         }
+        static const agg::trans_affine_time unitTime;
+        if (mChildChange.modData.m_time != unitTime) {
+            CfdgError::Warning(mLocation, "Time changes are not supported within paths");
+            return;
+        }
         for (const term_ptr& term: mChildChange.modExp) {
-            if (term->modType == ASTmodTerm::z) {
+            if (term->modType == ASTmodTerm::z ||
+                term->modType == ASTmodTerm::xyz ||
+                term->modType == ASTmodTerm::sizexyz ||
+                term->modType == ASTmodTerm::zsize)
+            {
                 CfdgError::Warning(term->where, "Z changes are not supported within paths");
+                return;
+            }
+            if (term->modType == ASTmodTerm::time ||
+                term->modType == ASTmodTerm::timescale)
+            {
+                CfdgError::Warning(term->where, "Time changes are not supported within paths");
                 return;
             }
         }
