@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0450"
+   LastUpgradeVersion = "0460"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -64,7 +64,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-w 500 -x 0.5 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
+            argument = "-s 1000 -x 0.3 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

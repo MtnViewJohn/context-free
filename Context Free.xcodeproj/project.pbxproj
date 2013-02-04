@@ -755,7 +755,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = FDB0D3D3085CEE00002FBEED /* Build configuration list for PBXProject "Context Free" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -970,11 +970,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_FAST_MATH = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.5;
 				SDKROOT = macosx;
@@ -1008,7 +1015,7 @@
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Development;
 		};
@@ -1038,7 +1045,7 @@
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -1067,7 +1074,7 @@
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Universal;
 		};
@@ -1095,7 +1102,7 @@
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Performance;
 		};
@@ -1139,11 +1146,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_FAST_MATH = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.5;
 				SDKROOT = macosx;
@@ -1222,11 +1236,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_FAST_MATH = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.5;
 				SDKROOT = macosx;
@@ -1237,11 +1258,18 @@
 		FDB0D3D5085CEE00002FBEED /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_FAST_MATH = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.5;
 				SDKROOT = macosx;
