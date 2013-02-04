@@ -657,7 +657,6 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         // make an educated guess.
         mScale = (m_width + m_height) / sqrt(fabs(s.mWorldState.m_transform.determinant()));
     }
-    double oldArea = mTotalArea;
     if (path || s.mShapeType != primShape::fillType) {
         mCurrentCentroid.x = mCurrentCentroid.y = mCurrentArea = 0.0;
         mPathBounds.invalidate();
@@ -681,16 +680,10 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
             mScaleArea = mScale * mScale;
         }
     } else {
-        mCurrentArea = Renderer::Infinity;
+        mCurrentArea = 1.0;
     }
-    if (oldArea == mTotalArea)
-#ifdef _WIN32
-        mTotalArea = _nextafter(mTotalArea, DBL_MAX);
-#else
-        mTotalArea = nextafter(mTotalArea, DBL_MAX);
-#endif
-    FinishedShape fs(s, mTotalArea, mPathBounds);
-    fs.mWorldState.m_ColorTarget.a = mCurrentArea;
+    FinishedShape fs(s, m_stats.shapeCount, mPathBounds);
+    fs.mWorldState.m_Z.sz = mCurrentArea;
     if (!m_cfdg->usesTime) {
         fs.mWorldState.m_time.tbegin = mTotalArea;
         fs.mWorldState.m_time.tend = Renderer::Infinity;
@@ -1032,7 +1025,7 @@ OutputDraw::apply(const FinishedShape& s)
 
     agg::trans_affine tr = s.mWorldState.m_transform;
     tr *= mRenderer.m_currTrans;
-    double a = s.mWorldState.m_ColorTarget.a * mRenderer.m_currArea; //fabs(tr.determinant()); 
+    double a = s.mWorldState.m_Z.sz * mRenderer.m_currArea; //fabs(tr.determinant());
     if ((!isfinite(a) && s.mShapeType != primShape::fillType) || 
         a < mRenderer.m_minArea) return;
     
