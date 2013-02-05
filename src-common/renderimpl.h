@@ -82,8 +82,9 @@ class RendererImpl : public Renderer {
     private:
         void outputPrep(Canvas*);
         void rescaleOutput(int& curr_width, int& curr_height, bool final);
-        void forEachShape(bool final, ShapeOp& op);
+        void forEachShape(bool final, ShapeFunction op);
         void processPrimShapeSiblings(const Shape& s, const AST::ASTrule* attr);
+        void drawShape(const FinishedShape& s);
 
         void output(bool final);
         void outputPartial() { output(false); }
@@ -119,6 +120,7 @@ class RendererImpl : public Renderer {
         CFDG::frieze_t m_frieze;
         double m_frieze_size;
         bool m_drawingMode;
+        bool mFinal;
 
         typedef chunk_vector<FinishedShape, 10> FinishedContainer;
         FinishedContainer mFinishedShapes;
