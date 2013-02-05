@@ -30,6 +30,7 @@
 #include <iterator>
 #include <memory>
 #include <cassert>
+#include <cstddef>
 
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
