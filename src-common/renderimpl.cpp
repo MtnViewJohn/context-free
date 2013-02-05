@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <stack>
 #include <cassert>
+#include <functional>
 
 #ifdef _WIN32
 #include <float.h>
@@ -195,15 +196,6 @@ RendererImpl::resetSize(int x, int y)
     }
 }
 
-class Stopped { };
-    
-static void releaser(const Shape& s)
-{
-    if (Renderer::AbortEverything)
-        throw Stopped();
-    s.releaseParams();
-}
-
 RendererImpl::~RendererImpl()
 {
     cleanup();
@@ -217,9 +209,16 @@ RendererImpl::cleanup()
     m_finishedFiles.clear();
     m_unfinishedFiles.clear();
 
+    class Stopped { };
+    
     try {
-        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaser);
-        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaser);
+        std::function <void (const Shape& s)> releaseParam([](const Shape& s) {
+            if (Renderer::AbortEverything)
+                throw Stopped();
+            s.releaseParams();
+        });
+        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaseParam);
+        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaseParam);
     } catch (Stopped) {
         return;
     }
@@ -961,7 +960,9 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
                 last = begin + (MAX_MERGE_FILES - 1);
                 end = last + 1;
                 
-                for_each(begin, end, merger.tempFileAdder());
+                for_each(begin, end, [&](TempFile& t) {
+                    merger.addTempFile(t);
+                });
                 
                 std::unique_ptr<ostream> f(t.forWrite());
                 system()->message("Merging temp files %d through %d",
@@ -979,7 +980,9 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
         begin = m_finishedFiles.begin();
         end = m_finishedFiles.end();
         
-        for_each(begin, end, merger.tempFileAdder());
+        for_each(begin, end, [&](TempFile& t) {
+            merger.addTempFile(t);
+        });
         
         merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
         merger.merge(op.outputIterator());
