@@ -95,30 +95,8 @@ CFDGImpl::CFDGImpl(CFDGImpl* c)
     mCFDGcontents.isGlobal = true;
 }
 
-void
-CFDGImpl::deleteConfigParam(pair<const int, ConfigParam*>& p)
-{
-    delete p.second->second;
-    delete p.second;
-}
-
-void
-CFDGImpl::deleteFunction(pair<const int, ASTdefine*>& p)
-{
-    delete p.second;
-}
-
-void
-CFDGImpl::deleteShapeParams(ShapeType& s)
-{
-    delete s.parameters;
-}
-
 CFDGImpl::~CFDGImpl()
 {
-    for_each(m_ConfigParameters.begin(), m_ConfigParameters.end(), deleteConfigParam);
-    for_each(mFunctions.begin(), mFunctions.end(), deleteFunction);
-    for_each(m_shapeTypes.begin(), m_shapeTypes.end(), deleteShapeParams);
 }
 
 void
@@ -334,13 +312,13 @@ CFDGImpl::hasParameter(const char* name, double& value, Renderer* r) const
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
+    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
-        elem->second->second->mType != AST::NumericType) return false;
-    if (!elem->second->second->isConstant && !r) {
-        CfdgError::Error(elem->second->second->where, "This expression must be constant");
+        elem->second.second->mType != AST::NumericType) return false;
+    if (!elem->second.second->isConstant && !r) {
+        CfdgError::Error(elem->second.second->where, "This expression must be constant");
     } else {
-        elem->second->second->evaluate(&value, 1, r);
+        elem->second.second->evaluate(&value, 1, r);
     }
     return true;
 }
@@ -351,13 +329,13 @@ CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
+    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
-        elem->second->second->mType != AST::ModType) return false;
-    if (!elem->second->second->isConstant && !r) {
-        CfdgError::Error(elem->second->second->where, "This expression must be constant");
+        elem->second.second->mType != AST::ModType) return false;
+    if (!elem->second.second->isConstant && !r) {
+        CfdgError::Error(elem->second.second->where, "This expression must be constant");
     } else {
-        elem->second->second->evaluate(value, 0, 0, false, varNum, true, r);
+        elem->second.second->evaluate(value, 0, 0, false, varNum, true, r);
     }
     return true;
 }
@@ -368,10 +346,10 @@ CFDGImpl::hasParameter(const char* name, AST::expType t, yy::location& where) co
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
+    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
-        elem->second->second->mType != t) return false;
-    where = elem->second->second->where;
+        elem->second.second->mType != t) return false;
+    where = elem->second.second->where;
     return true;
 }
 
@@ -381,9 +359,9 @@ CFDGImpl::hasParameter(const char* name) const
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return NULL;
-    std::map<int, ConfigParam*>::const_iterator elem = m_ConfigParameters.find(varNum);
+    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end()) return NULL;
-    return elem->second->second;
+    return elem->second.second.get();
 }
 
 static bool
@@ -417,13 +395,16 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         return false;
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     int varNum = encodeShapeName(name);
-    std::map<int, ConfigParam*>::iterator elem = m_ConfigParameters.find(varNum);
+    std::map<int, ConfigParam>::iterator elem = m_ConfigParameters.find(varNum);
+    exp_ptr newExp(e.release()->simplify());
     if (elem == m_ConfigParameters.end()) {
-        m_ConfigParameters.insert(make_pair(varNum, new ConfigParam(depth, e.release()->simplify())));
+        ConfigParam newCfg(depth, std::move(newExp));
+        std::pair<int, ConfigParam> newCfgParam(varNum, std::move(newCfg));
+        m_ConfigParameters.insert(std::move(newCfgParam));
     } else {
-        if (depth < elem->second->first) {
-            elem->second->first = depth;
-            elem->second->second = e.release()->simplify();
+        if (depth < elem->second.first) {
+            elem->second.first = depth;
+            elem->second.second = std::move(newExp);
         } else {
             return true;
         }
@@ -604,7 +585,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
     if (shape.shapeType != newShape)
         return "Shape name already in use by another rule or path";
     
-    shape.parameters = new AST::ASTparameters(p.mParameters);
+    shape.parameters.reset(new AST::ASTparameters(p.mParameters));
     shape.isShape = true;
     shape.argSize = argSize;
     shape.shapeType = isPath ? pathType : newShape;
@@ -617,7 +598,7 @@ CFDGImpl::getShapeParams(int shapetype)
     if (shapetype < 0 || shapetype >= int(m_shapeTypes.size()) ||
         !m_shapeTypes[shapetype].isShape)
         return 0;
-    return m_shapeTypes[shapetype].parameters;
+    return m_shapeTypes[shapetype].parameters.get();
 }
 
 int 
@@ -650,19 +631,16 @@ CFDGImpl::declareFunction(int nameIndex, AST::ASTdefine* def)
     if (prev)
         return prev;
 
-    mFunctions[nameIndex] = def;
+    mFunctions[nameIndex].reset(def);
     return def;
-    // I could write 
-    // return findFunction(nameIndex) || (mFunctions[nameIndex] = def);
-    // But I'm not gonna
 }
 
 AST::ASTdefine*
 CFDGImpl::findFunction(int nameIndex)
 {
-    map<int,AST::ASTdefine*>::iterator fi = mFunctions.find(nameIndex);
+    map<int,AST::def_ptr>::iterator fi = mFunctions.find(nameIndex);
     if (fi != mFunctions.end())
-        return fi->second;
+        return fi->second.get();
     return 0;
 }
 

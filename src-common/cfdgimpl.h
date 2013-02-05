@@ -53,23 +53,21 @@ private:
         int mStackSize;
 
         std::vector<AST::ASTrule*> mRules;
-        std::map<int, AST::ASTdefine*> mFunctions;
-        static void deleteFunction(std::pair<const int, AST::ASTdefine*>& p);
-        
+        std::map<int, AST::def_ptr> mFunctions;
+    
         struct ShapeType {
             std::string  name;
             bool    hasRules;
             bool    isShape;
             int    shapeType;
-            AST::ASTparameters* parameters;
+            std::unique_ptr<AST::ASTparameters> parameters;
             int     argSize;
             bool    shouldHaveNoParams;
             
             ShapeType(const std::string& s) 
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
-              parameters(0), argSize(0), shouldHaveNoParams(false) { }
+              parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
         };
-        static void deleteShapeParams(ShapeType& s);
         
         std::vector<ShapeType> m_shapeTypes;
         
@@ -78,9 +76,8 @@ private:
         bool m_secondPass;
 
         int m_Parameters;
-        typedef std::pair<unsigned, AST::ASTexpression*> ConfigParam;
-        std::map<int, ConfigParam*> m_ConfigParameters;
-        static void deleteConfigParam(std::pair<const int, ConfigParam*>& p);
+        typedef std::pair<unsigned, AST::exp_ptr> ConfigParam;
+        std::map<int, ConfigParam> m_ConfigParameters;
 
         Modification mTileMod;
         Modification mSizeMod;

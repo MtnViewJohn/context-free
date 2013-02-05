@@ -82,6 +82,7 @@ namespace AST {
     class ASTswitch;
     class ASTmodTerm;
     class ASTrepContainer;
+    class ASTdefine;
 
     typedef std::unique_ptr<std::string>      str_ptr;
     typedef std::unique_ptr<ASTexpression>    exp_ptr;
@@ -94,6 +95,7 @@ namespace AST {
     typedef std::unique_ptr<ASTmodTerm>       term_ptr;
     typedef std::unique_ptr<ASTmodification>  mod_ptr;
     typedef std::unique_ptr<ASTrepContainer>  cont_ptr;
+    typedef std::unique_ptr<ASTdefine>        def_ptr;
     
     typedef std::vector<rep_ptr>              ASTbody;
     typedef std::vector<exp_ptr>              ASTexpArray;
