@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <functional>
 
 #include "agg_math_stroke.h"
 #include "agg_trans_affine.h"
@@ -166,5 +167,7 @@ inline std::istream& operator>>(std::istream& is, FinishedShape& s) { s.read(is)
 const double MY_PI =  3.14159265358979323846;
 const int ModificationSize = (sizeof(Modification) + 7) >> 3;
 
+typedef std::function<void (const FinishedShape&)> ShapeFunction;
+        
 
 #endif // INCLUDE_SHAPE_H

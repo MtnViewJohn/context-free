@@ -202,6 +202,8 @@ RendererImpl::~RendererImpl()
     delete m_cfdg;
 }
 
+class Stopped { };
+
 void
 RendererImpl::cleanup()
 {
@@ -209,8 +211,6 @@ RendererImpl::cleanup()
     m_finishedFiles.clear();
     m_unfinishedFiles.clear();
 
-    class Stopped { };
-    
     try {
         std::function <void (const Shape& s)> releaseParam([](const Shape& s) {
             if (Renderer::AbortEverything)
@@ -377,7 +377,7 @@ RendererImpl::draw(Canvas* canvas)
     outputStats();
 }
 
-class OutputBounds : public ShapeOp
+class OutputBounds
 {
 public:
     OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
@@ -392,7 +392,6 @@ public:
     
     void backwardFilter(double framesToHalf);
     void smooth(int window);
-    class Stopped { }; 
     
 private:
     agg::trans_affine_time mTimeBounds;
@@ -532,11 +531,13 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
         system()->message("Computing zoom");
 
         try {
-            forEachShape(true, outputBounds);
+            forEachShape(true, [&](const FinishedShape& s) {
+                outputBounds.apply(s);
+            });
             //outputBounds.finalAccumulate();
             outputBounds.backwardFilter(10.0);
             //outputBounds.smooth(3);
-        } catch (OutputBounds::Stopped) {
+        } catch (Stopped) {
             m_stats.animating = false;
             return;
         }
@@ -938,14 +939,14 @@ void RendererImpl::rescaleOutput(int& curr_width, int& curr_height, bool final)
 
 
 void
-RendererImpl::forEachShape(bool final, ShapeOp& op)
+RendererImpl::forEachShape(bool final, ShapeFunction op)
 {
     if (!final || m_finishedFiles.empty()) {
         FinishedContainer::iterator start = mFinishedShapes.begin();
         FinishedContainer::iterator last  = mFinishedShapes.end();
         if (!final)
             start += m_outputSoFar;
-        for_each(start, last, op.outputFunction());
+        for_each(start, last, op);
         m_outputSoFar = (int)mFinishedShapes.size();
     } else {
         deque<TempFile>::iterator begin, last, end;
@@ -968,7 +969,9 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
                 system()->message("Merging temp files %d through %d",
                                   begin->number(), last->number());
                 
-                merger.merge(ostream_iterator<FinishedShape>(*f));
+                merger.merge([&](const FinishedShape& s) {
+                    *f << s;
+                });
             }   // end scope for merger and f
             
             m_finishedFiles.erase(begin, end);
@@ -985,82 +988,61 @@ RendererImpl::forEachShape(bool final, ShapeOp& op)
         });
         
         merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
-        merger.merge(op.outputIterator());
+        merger.merge(op);
     }
-}
-
-
-class OutputDraw : public ShapeOp
-{
-public:
-    OutputDraw(RendererImpl& renderer, bool final);
-    
-    void apply(const FinishedShape&);
-
-    class Stopped { }; 
-
-private:
-    RendererImpl& mRenderer;
-    bool mFinal;
-    tiledCanvas* tiler;
-};
-
-OutputDraw::OutputDraw(RendererImpl& renderer, bool final)
-     : mRenderer(renderer), mFinal(final), tiler(renderer.m_tiledCanvas)
-{
 }
 
 void
-OutputDraw::apply(const FinishedShape& s)
+RendererImpl::drawShape(const FinishedShape& s)
 {
-    if (mRenderer.requestStop) throw Stopped();
-    if (!mFinal  &&  mRenderer.requestFinishUp) throw Stopped();
+    if (requestStop) throw Stopped();
+    if (!mFinal  &&  requestFinishUp) throw Stopped();
     
-    if (mRenderer.requestUpdate)
-        mRenderer.outputStats();
+    if (requestUpdate)
+        outputStats();
 
-    if (!s.mWorldState.m_time.overlaps(mRenderer.mFrameTimeBounds))
+    if (!s.mWorldState.m_time.overlaps(mFrameTimeBounds))
         return;
 
-    mRenderer.m_stats.outputDone += 1;
+    m_stats.outputDone += 1;
 
     agg::trans_affine tr = s.mWorldState.m_transform;
-    tr *= mRenderer.m_currTrans;
-    double a = s.mWorldState.m_Z.sz * mRenderer.m_currArea; //fabs(tr.determinant());
+    tr *= m_currTrans;
+    double a = s.mWorldState.m_Z.sz * m_currArea; //fabs(tr.determinant());
     if ((!isfinite(a) && s.mShapeType != primShape::fillType) || 
-        a < mRenderer.m_minArea) return;
+        a < m_minArea) return;
     
-    if (tiler && s.mShapeType != primShape::fillType) {
+    if (m_tiledCanvas && s.mShapeType != primShape::fillType) {
         Bounds b = s.mBounds;
-        mRenderer.m_currTrans.transform(&b.mMin_X, &b.mMin_Y);
-        mRenderer.m_currTrans.transform(&b.mMax_X, &b.mMax_Y);
-        tiler->tileTransform(b);
+        m_currTrans.transform(&b.mMin_X, &b.mMin_Y);
+        m_currTrans.transform(&b.mMax_X, &b.mMax_Y);
+        m_tiledCanvas->tileTransform(b);
     }
 
-    if (mRenderer.m_cfdg->getShapeType(s.mShapeType) == CFDGImpl::pathType) {
+    if (m_cfdg->getShapeType(s.mShapeType) == CFDGImpl::pathType) {
         //mRenderer.m_canvas->path(s.mColor, tr, *s.mAttributes);
-        const ASTrule* rule = mRenderer.m_cfdg->findRule(s.mShapeType, 0.0);
-        rule->traversePath(s, &mRenderer);
+        const ASTrule* rule = m_cfdg->findRule(s.mShapeType, 0.0);
+        rule->traversePath(s, this);
     } else {
-        RGBA8 color = mRenderer.m_cfdg->getColor(s.mWorldState.m_Color);
+        RGBA8 color = m_cfdg->getColor(s.mWorldState.m_Color);
         switch(s.mShapeType) {
             case primShape::circleType:
-                mRenderer.m_canvas->circle(color, tr);
+                m_canvas->circle(color, tr);
                 break;
             case primShape::squareType:
-                mRenderer.m_canvas->square(color, tr);
+                m_canvas->square(color, tr);
                 break;
             case primShape::triangleType:
-                mRenderer.m_canvas->triangle(color, tr);
+                m_canvas->triangle(color, tr);
                 break;
             case primShape::fillType:
-                mRenderer.m_canvas->fill(color);
+                m_canvas->fill(color);
                 break;
             default:
-                mRenderer.system()->error();
-                mRenderer.system()->message("Non drawable shape with no rules: %s",
-                    mRenderer.m_cfdg->decodeShapeName(s.mShapeType).c_str());
-                mRenderer.requestStop = true;
+                system()->error();
+                system()->message("Non drawable shape with no rules: %s",
+                    m_cfdg->decodeShapeName(s.mShapeType).c_str());
+                requestStop = true;
                 throw Stopped();
         }
     }
@@ -1079,6 +1061,7 @@ void RendererImpl::output(bool final)
     m_stats.fullOutput = final;
     m_stats.finalOutput = final;
     m_stats.outputCount = m_stats.shapeCount;
+    mFinal = final;
 
     int curr_width = m_width;
     int curr_height = m_height;
@@ -1096,11 +1079,13 @@ void RendererImpl::output(bool final)
         curr_width, curr_height);
 
     m_drawingMode = true;
-    OutputDraw draw(*this, final);
+    //OutputDraw draw(*this, final);
     try {
-        forEachShape(final, draw);
+        forEachShape(final, [=](const FinishedShape& s) {
+            this->drawShape(s);
+        });
     }
-    catch (OutputDraw::Stopped) { }
+    catch (Stopped) { }
 
     m_canvas->end();
     m_stats.inOutput = false;

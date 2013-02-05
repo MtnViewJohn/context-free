@@ -47,68 +47,6 @@
 #include "shape.h"
 #include "tempfile.h"
 
-class ShapeOp
-{
-public:
-    ShapeOp() { };
-    virtual ~ShapeOp();
-    
-    virtual void apply(const FinishedShape&) = 0;
-
-
-    class iterator
-    {
-    public:
-        iterator(const iterator& i) : mOp(i.mOp) { }
-        
-        iterator& operator++()      { return *this; }
-        iterator& operator++(int)   { return *this; }
-        iterator& operator*()       { return *this; }
-        
-        iterator& operator=(const FinishedShape& s)
-            { mOp.apply(s); return *this; }
-    
-    private:
-        friend class ShapeOp;
-        
-        iterator(ShapeOp& op) : mOp(op) { }
-        
-        void operator=(const iterator&);        // not defined: can't be assigned
-        
-        ShapeOp& mOp;
-    };
-    
-    iterator outputIterator() { return iterator(*this); }
-
-
-    class function : public std::unary_function<const FinishedShape&, void>
-    {
-    public:
-        function(const function& f) : mOp(f.mOp) { }
-
-        void operator()(const FinishedShape& s) const
-            { mOp.apply(s); }
-
-    private:
-        friend class ShapeOp;
-        
-        function(ShapeOp& op) : mOp(op) { }
-        
-        void operator=(const function&);        // not defined: can't be assigned
-        
-        ShapeOp& mOp;
-    };
-
-    function outputFunction() { return function(*this); }
-
-
-private:
-    ShapeOp(const ShapeOp&);
-    ShapeOp& operator=(const ShapeOp&);
-        // not implemented, not copyable
-};
-
-
 class OutputMerge
 {
 public:
@@ -120,31 +58,15 @@ public:
     
     void addShapes(ShapeIter begin, ShapeIter end);
 
-    
-    typedef std::unary_function<TempFile&, void > TempFileAdderBase;
-    class TempFileAdder: public TempFileAdderBase
-    {
-    public:
-        void operator()(TempFile& t) { mOM.addTempFile(t); }
-    private:
-        TempFileAdder(OutputMerge& om) : mOM(om) { }
-        TempFileAdder& operator=(const TempFileAdder&) { return *this; }
-        OutputMerge& mOM;
-        friend class OutputMerge;
-    };
-    
-    TempFileAdder tempFileAdder() { return TempFileAdder(*this); }
-    
     void addTempFile(TempFile&);
 
 
-    template < typename O >
-    void merge(O output)
+    void merge(ShapeFunction op)
     {
         while (!mSieve.empty()) {
             Sieve::iterator nextShape = mSieve.begin();
-        
-            *output++ = nextShape->first;
+            
+            op(nextShape->first);
             int i = nextShape->second;
         
             mSieve.erase(nextShape);

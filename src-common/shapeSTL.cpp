@@ -27,8 +27,6 @@
 
 using namespace std;
 
-ShapeOp::~ShapeOp() { }
-
 
 void
 OutputMerge::addTempFile(TempFile& t)
