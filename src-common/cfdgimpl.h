@@ -67,6 +67,22 @@ private:
             ShapeType(const std::string& s) 
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
               parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
+
+            ShapeType(ShapeType&& from)
+                : name(std::move(from.name)), hasRules(from.hasRules), isShape(from.isShape),
+                  shapeType(from.shapeType), parameters(std::move(from.parameters)), 
+                  argSize(from.argSize), shouldHaveNoParams(from.shouldHaveNoParams) { }
+
+            ShapeType& operator=(ShapeType&& from) {
+                name = std::move(from.name); hasRules = from.hasRules; isShape = from.isShape;
+                shapeType = from.shapeType; parameters = std::move(from.parameters); 
+                argSize = from.argSize; shouldHaveNoParams = from.shouldHaveNoParams;
+                return *this;
+            }
+
+        private:
+            ShapeType(const ShapeType&);
+            ShapeType& operator=(const ShapeType&);
         };
         
         std::vector<ShapeType> m_shapeTypes;
