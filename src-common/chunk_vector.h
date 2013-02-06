@@ -31,6 +31,7 @@
 #include <memory>
 #include <cassert>
 #include <cstddef>
+#include <utility>
 
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
@@ -260,6 +261,17 @@ public:
         _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
         _valAlloc.construct(endVal, x);
         ++_size;
+    }
+    template<typename... Args>
+    void emplace_back(Args&&... args)
+    {
+        size_t chunkNum = _size >> _power2;
+        if (_chunks.size() <= chunkNum)
+            _chunks.push_back(_valAlloc.allocate(_chunk_size));
+        _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
+        _valAlloc.construct(endVal, std::forward<Args>(args)...);
+        ++_size;
+        
     }
     void pop_back()
     {
