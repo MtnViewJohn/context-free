@@ -34,6 +34,13 @@
 #include <limits>
 #include <cmath>
 
+#ifdef _WIN32
+#include <float.h>
+#define myfinite _finite
+#else
+#define myfinite std::isfinite
+#endif
+
 namespace agg { struct trans_affine; }
 namespace AST { 
     class ASTpathCommand; 
@@ -50,8 +57,8 @@ class Bounds {
                agg::point_d* cent = NULL, double* area = NULL);
                 // set bounds to be the bounds of this shape, transformed
 
-        bool valid() const { return std::isfinite(mMin_X) && std::isfinite(mMax_X) &&
-                                    std::isfinite(mMin_Y) && std::isfinite(mMax_Y); }
+        bool valid() const { return myfinite(mMin_X) && myfinite(mMax_X) &&
+                                    myfinite(mMin_Y) && myfinite(mMax_Y); }
         void invalidate() { mMin_X = std::numeric_limits<double>::infinity(); }
     
         Bounds dilate(agg::point_d& cent, double dilation) const;
