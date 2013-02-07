@@ -53,10 +53,10 @@
 namespace {
     using namespace std;
     
-    class DocSystem : public AbstractSystem
+    class CocoaSystem : public AbstractSystem
     {
     public:
-        DocSystem(CFDGDocument* doc) : mDoc(doc) { }
+        CocoaSystem(CFDGDocument* doc) : mDoc(doc) { }
         
         virtual void message(const char* fmt, ...);
         virtual void syntaxError(const CfdgError& err);
@@ -78,7 +78,7 @@ namespace {
     };
     
     CFDGDocument*
-    DocSystem::findDocFor(const string& path)
+    CocoaSystem::findDocFor(const string& path)
     {
         if (path.empty())
             return mDoc;
@@ -92,7 +92,7 @@ namespace {
     
     
     void
-    DocSystem::message(const char* fmt, ...)
+    CocoaSystem::message(const char* fmt, ...)
     {
         if (!mDoc) return;
         char buf[256];
@@ -110,7 +110,7 @@ namespace {
     }
 
     void
-    DocSystem::stats(const Stats& s)
+    CocoaSystem::stats(const Stats& s)
     {
         if (!mDoc) return;
         NSValue* value = [NSValue value: &s withObjCType: @encode(Stats)];
@@ -121,7 +121,7 @@ namespace {
     
     
     void 
-    DocSystem::syntaxError(const CfdgError& err)
+    CocoaSystem::syntaxError(const CfdgError& err)
     {
         if (!mDoc) return;
         if (err.where.begin.filename == NULL) return;
@@ -135,7 +135,7 @@ namespace {
     }
             
     istream*
-    DocSystem::openFileForRead(const string& path)
+    CocoaSystem::openFileForRead(const string& path)
     {
         CFDGDocument* doc = findDocFor(path);
                 
@@ -151,13 +151,13 @@ namespace {
     }
     
     istream*
-    DocSystem::tempFileForRead(const string& path)
+    CocoaSystem::tempFileForRead(const string& path)
     {
         return new ifstream(path.c_str(), ios::in | ios::binary);
     }
 
     ostream*
-    DocSystem::tempFileForWrite(string& prefixInNameOut)
+    CocoaSystem::tempFileForWrite(string& prefixInNameOut)
     {
         string t = prefixInNameOut + "XXXXXX";
 
@@ -180,7 +180,7 @@ namespace {
     }
             
     string
-    DocSystem::relativeFilePath(const string& base, const string& rel)
+    CocoaSystem::relativeFilePath(const string& base, const string& rel)
     {
         NSString* baseStr =
             [NSString stringWithUTF8String: base.c_str()];
@@ -205,7 +205,7 @@ namespace {
     }
     
     void
-    DocSystem::orphan()
+    CocoaSystem::orphan()
     { mDoc = nil; }
 };
 
@@ -259,7 +259,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     self = [super init];
     if (self) {
-        mSystem = new DocSystem(self);
+        mSystem = new CocoaSystem(self);
         mContent = nil;
         mUploader = nil;
         mDisplayName = nil;
