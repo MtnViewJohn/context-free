@@ -39,6 +39,7 @@ public:
     PosixSystem() {};
     ~PosixSystem() {};
     
+    virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
 };
 

@@ -74,7 +74,7 @@ class AbstractSystem {
         
         virtual std::istream* openFileForRead(const std::string& path) = 0;
         virtual std::istream* tempFileForRead(const std::string& path);
-        virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
+        virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) = 0;
         virtual const char* tempFileDirectory() = 0;
             // caller must delete returned streams when done
             

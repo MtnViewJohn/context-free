@@ -30,6 +30,8 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <stdio.h>
+#include <fstream>
 
 using namespace std;
 
@@ -50,6 +52,24 @@ Win32System::tempFileDirectory()
 {
     static char tempPathBuffer[MAX_PATH];
     
-    DWORD ret = GetTempPathA(MAX_PATH, tempPathBuffer);
+    GetTempPathA(MAX_PATH, tempPathBuffer);
     return tempPathBuffer;
 }
+
+ostream*
+Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
+{    
+    ofstream* f = 0;
+    
+    char* b = _tempnam(tempFileDirectory(), TempPrefixes[tt]);
+    if (b) {
+        f = new ofstream;
+        f->open(b, ios::binary | ios::trunc | ios::out);
+        nameOut.assign(b);
+    }
+    free(b);
+    
+    return f;
+}
+
+
