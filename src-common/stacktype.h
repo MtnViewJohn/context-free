@@ -39,7 +39,6 @@ union StackType;
 class Renderer;
 
 struct StackRule {
-    enum { MaxRefCount = UINT32_MAX };
     int16_t     mRuleName;
     uint16_t    mParamCount;
     mutable uint32_t    mRefCount;

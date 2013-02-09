@@ -296,7 +296,7 @@ namespace AST {
             arguments->entropy(entropyVal);
             if (arguments->isConstant) {
                 const StackType* simp = evalArgs();
-                simp[0].ruleHeader.mRefCount = StackRule::MaxRefCount;
+                simp[0].ruleHeader.mRefCount = UINT32_MAX;
                 simpleRule = simp;
                 argSource = SimpleArgs;
             }
@@ -305,7 +305,7 @@ namespace AST {
         } else {
             argSource = NoArgs;
             simpleRule = StackType::alloc(shapeType, 0, types);
-            simpleRule[0].ruleHeader.mRefCount = StackRule::MaxRefCount;
+            simpleRule[0].ruleHeader.mRefCount = UINT32_MAX;
         }
     }
     
@@ -326,7 +326,7 @@ namespace AST {
     {
         if (r->argSource == SimpleArgs) {
             StackType* simp = StackType::alloc(shapeType, argSize, 0);
-            simp[0].ruleHeader.mRefCount = StackRule::MaxRefCount;
+            simp[0].ruleHeader.mRefCount = UINT32_MAX;
             argSource = SimpleArgs;
             simpleRule = simp;
             if (argSize)

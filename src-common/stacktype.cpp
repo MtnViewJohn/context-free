@@ -74,9 +74,9 @@ StackType::alloc(int name, int size, const AST::ASTparameters* ti)
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
     assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
-    newrule[0].ruleHeader.mRuleName = name;
+    newrule[0].ruleHeader.mRuleName = (int16_t)name;
     newrule[0].ruleHeader.mRefCount = 0;
-    newrule[0].ruleHeader.mParamCount = size;
+    newrule[0].ruleHeader.mParamCount = (uint16_t)size;
     if (size)
         newrule[1].typeInfo = ti;
     return newrule;
@@ -95,7 +95,7 @@ StackType::release() const
         return;
     }
     
-    if (ruleHeader.mRefCount < StackRule::MaxRefCount)
+    if (ruleHeader.mRefCount < UINT32_MAX)
         --(ruleHeader.mRefCount);
 }
 
@@ -111,11 +111,11 @@ StackType::release(const AST::ASTparameters* p) const
 void
 StackType::retain(Renderer* r) const
 {
-    if (ruleHeader.mRefCount == StackRule::MaxRefCount)
+    if (ruleHeader.mRefCount == UINT32_MAX)
         return;
     
     ++(ruleHeader.mRefCount);
-    if (ruleHeader.mRefCount == StackRule::MaxRefCount) {
+    if (ruleHeader.mRefCount == UINT32_MAX) {
         r->storeParams(this);
     }
 }
@@ -205,7 +205,7 @@ StackType::readHeader(std::istream& is)
 void
 StackType::writeHeader(std::ostream& os, const StackType* s)
 {
-    if (s == NULL || s->ruleHeader.mRefCount == StackRule::MaxRefCount) {
+    if (s == NULL || s->ruleHeader.mRefCount == UINT32_MAX) {
         uint64_t p = (uint64_t)(s);
         os.write((char*)(&p), sizeof(uint64_t));
     } else {
