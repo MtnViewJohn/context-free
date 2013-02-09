@@ -46,7 +46,7 @@
 #endif
 #include "SVGCanvas.h"
 #include "ffCanvas.h"
-#include "posixSystem.h"
+#include "commandLineSystem.h"
 #include "version.h"
 #include "Rand64.h"
 #include "makeCFfilename.h"
@@ -466,7 +466,7 @@ int main (int argc, char* argv[]) {
     char code[Variation::maxStringLength];
     Variation::toString(opts.variation, code, false);
     
-    PosixSystem system(opts.quiet);;
+    CommandLineSystem system(opts.quiet);;
     CFDG* myDesign = CFDG::ParseFile(opts.input, &system, opts.variation);
     if (!myDesign) return 1;
     if (opts.check) return 0;

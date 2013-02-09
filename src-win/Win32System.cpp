@@ -1,8 +1,8 @@
-// posixSystem.h
+// posixSystem.cpp
 // Context Free
 // ---------------------
 // Copyright (C) 2005-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2007-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2007-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,20 +26,30 @@
 //
 //
 
-#ifndef INCLUDE_POSIX_SYSTEM
-#define INCLUDE_POSIX_SYSTEM
+#include "Win32System.h"
 
-#include "cfdg.h"
+#include <Windows.h>
+#include <iostream>
 
-class PosixSystem : public AbstractSystem
+using namespace std;
+
+void
+Win32System::clearAndCR()
 {
-protected:
-    virtual void clearAndCR();
-public:
-    PosixSystem() {};
-    ~PosixSystem() {};
-    
-    virtual const char* tempFileDirectory();
-};
+    CONSOLE_SCREEN_BUFFER_INFO bufInfo;
+    HANDLE cons = ::GetStdHandle(STD_OUTPUT_HANDLE);
+    BOOL ret = ::GetConsoleScreenBufferInfo(cons, &bufInfo);
+    for (int x = bufInfo.dwCursorPosition.X + 1; x < bufInfo.dwSize.X; ++x)
+        cerr << ' ';
+    bufInfo.dwCursorPosition.X = 0;
+    ret = ::SetConsoleCursorPosition(cons, bufInfo.dwCursorPosition);
+}
 
-#endif // INCLUDE_POSIX_SYSTEM
+const char*
+Win32System::tempFileDirectory()
+{
+    static char tempPathBuffer[MAX_PATH];
+    
+    DWORD ret = GetTempPathA(MAX_PATH, tempPathBuffer);
+    return tempPathBuffer;
+}

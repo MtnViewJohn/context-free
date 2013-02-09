@@ -60,6 +60,8 @@
 		5276ACE9137A513B000FA1AB /* stacktype.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5276ACE8137A513B000FA1AB /* stacktype.cpp */; };
 		527FE238135ABF2400F9B15F /* pathIterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 527FE237135ABF2400F9B15F /* pathIterator.cpp */; };
 		528D3E8F0CEAC3D20022E4F1 /* agg_bezier_arc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528D3E8E0CEAC3D20022E4F1 /* agg_bezier_arc.cpp */; };
+		528EC35116C5D28D004DAEC2 /* commandLineSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */; };
+		528EC35216C5DAA0004DAEC2 /* posixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22DF13BA0200002732C2 /* posixSystem.cpp */; };
 		529049A30F3E4CC900484FED /* cfdg.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 529049A10F3E4CC900484FED /* cfdg.ypp */; };
 		529CC95715A393820079C2B5 /* ffCanvasDummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */; };
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
@@ -276,6 +278,8 @@
 		527FE236135ABF2400F9B15F /* pathIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathIterator.h; sourceTree = "<group>"; };
 		527FE237135ABF2400F9B15F /* pathIterator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathIterator.cpp; sourceTree = "<group>"; };
 		528D3E8E0CEAC3D20022E4F1 /* agg_bezier_arc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = agg_bezier_arc.cpp; sourceTree = "<group>"; };
+		528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = commandLineSystem.cpp; sourceTree = "<group>"; };
+		528EC35016C5D28D004DAEC2 /* commandLineSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commandLineSystem.h; sourceTree = "<group>"; };
 		529049A10F3E4CC900484FED /* cfdg.ypp */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = cfdg.ypp; sourceTree = "<group>"; };
 		529049A20F3E4CC900484FED /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
 		5298ED5216A216CB00C5726D /* chunk_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_vector.h; sourceTree = "<group>"; };
@@ -491,6 +495,8 @@
 			isa = PBXGroup;
 			children = (
 				5298ED5216A216CB00C5726D /* chunk_vector.h */,
+				528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */,
+				528EC35016C5D28D004DAEC2 /* commandLineSystem.h */,
 				529CC95515A393820079C2B5 /* ffCanvas.h */,
 				529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */,
 				524D22FC13BA0661002732C2 /* makeCFfilename.cpp */,
@@ -842,6 +848,7 @@
 				52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */,
 				52BA888C155F30490026AF04 /* ast.cpp in Sources */,
 				529CC95715A393820079C2B5 /* ffCanvasDummy.cpp in Sources */,
+				528EC35116C5D28D004DAEC2 /* commandLineSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,6 +899,7 @@
 				5276AA9913776AE1000FA1AB /* CmdInfo.cpp in Sources */,
 				5276ACE9137A513B000FA1AB /* stacktype.cpp in Sources */,
 				52BA888B155F30490026AF04 /* ast.cpp in Sources */,
+				528EC35216C5DAA0004DAEC2 /* posixSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
