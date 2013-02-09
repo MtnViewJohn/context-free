@@ -30,6 +30,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <sys/stat.h>
 
 using namespace std;
