@@ -529,8 +529,8 @@ namespace AST {
         
         int dummy;
         
-        int modsLength = mModifications ? mModifications->size() : 0;
-        int totalLength = modsLength + mTransforms.size();
+        int modsLength = mModifications ? (int)mModifications->size() : 0;
+        int totalLength = modsLength + (int)mTransforms.size();
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
@@ -906,12 +906,12 @@ namespace AST {
     ASTcompiledPath::NextPathUID()
     {
 #ifdef _MSC_VER
-        do {
+        for(;;) {
             __int64 from = (__int64)GlobalPathUID;
             __int64 next = from + 1;
             if (_InterlockedCompareExchange64((__int64*)(&GlobalPathUID), next, from) == from)
                 return (uint64_t)next;
-        } while (true);
+        }
 #else
         return __sync_fetch_and_add(&GlobalPathUID, (CommandInfo::UIDtype)1);
 #endif

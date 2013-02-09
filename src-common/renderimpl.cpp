@@ -403,6 +403,8 @@ private:
     int             mHeight;
     int             mFrames;
     RendererImpl&   mRenderer;
+
+    OutputBounds& operator=(const OutputBounds&);   // not defined
 };
 
 OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 

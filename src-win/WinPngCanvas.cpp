@@ -209,7 +209,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     PropertyItem pi;
     pi.id = PropertyTagImageDescription;
     pi.type = PropertyTagTypeASCII;
-    pi.length = strlen("Context Free generated image") + 1;
+    pi.length = (ULONG)strlen("Context Free generated image") + 1;
     pi.value = (VOID*)"Context Free generated image";
     if (saveBM) saveBM->SetPropertyItem(&pi);
 

@@ -49,8 +49,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
         double scalex = (double)width /  ( mWidth * mx);
         double scaley = (double)height / (mHeight * my);
         double scale = scalex < scaley ? scalex : scaley;
-        mWidth *= scale;
-        mHeight *= scale;
+        mWidth = (int)(mWidth * scale);
+        mHeight = (int)(mHeight * scale);
     } else {
         mWidth = width;
         mHeight = height;
