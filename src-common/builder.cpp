@@ -696,7 +696,7 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], t->where), t->where);
         
         // Check if xy part is the identity transform and only save it if it is not
-        if (d[0] != 1.0 || d[1] != 1.0)
+        if (d[0] != 1.0 || d[1] != 1.0 || t->modType == ASTmodTerm::x)
             dest.push_back(std::move(t));
         dest.emplace_back(zmod);
         return;
