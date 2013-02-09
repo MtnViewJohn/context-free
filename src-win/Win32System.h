@@ -41,6 +41,9 @@ public:
 
     virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
+
+    virtual std::string relativeFilePath(
+        const std::string& base, const std::string& rel);
 };
 
 #endif // INCLUDE_WIN32_SYSTEM

@@ -95,20 +95,6 @@ CommandLineSystem::openFileForRead(const string& path)
     return new ifstream(path.c_str(), ios::binary);
 }
 
-string
-CommandLineSystem::relativeFilePath(const string& base, const string& rel)
-{
-    string s = base;
-    
-    string::size_type i = s.rfind('/');
-    if (i == string::npos) {
-        return rel;
-    }
-    i += 1;
-    s.replace(i, s.length() - i, rel);
-    return s;
-}
-
 void
 CommandLineSystem::stats(const Stats& s)
 {

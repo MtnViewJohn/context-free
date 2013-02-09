@@ -115,18 +115,6 @@ std::istream* WinSystem::openFileForRead(const std::string& path)
     }
 }
 
-std::string WinSystem::relativeFilePath(const std::string& base, const std::string& rel)
-{
-    char buf[MAX_PATH+1];
-    strcpy(buf, base.c_str());
-    PathRemoveFileSpecA(buf);
-    PathAppendA(buf, rel.c_str());
-    if (PathFileExistsA(buf))
-        return string(buf);
-    else
-        return rel;
-}
-
 void WinSystem::stats(const Stats& s)
 {
     if (!mWindow) return;

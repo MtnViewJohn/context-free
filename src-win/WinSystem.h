@@ -52,9 +52,6 @@ public:
     virtual std::istream* openFileForRead(const std::string& path);
     // caller must delete returned streams when done
     
-    virtual std::string relativeFilePath(
-    const std::string& base, const std::string& rel);
-
     virtual void orphan();
 
     virtual void stats(const Stats&);

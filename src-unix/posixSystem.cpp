@@ -73,3 +73,17 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
     return f;
 }
 
+string
+PosixSystem::relativeFilePath(const string& base, const string& rel)
+{
+    string s = base;
+    
+    string::size_type i = s.rfind('/');
+    if (i == string::npos) {
+        return rel;
+    }
+    i += 1;
+    s.replace(i, s.length() - i, rel);
+    return s;
+}
+
