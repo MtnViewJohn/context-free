@@ -62,9 +62,6 @@ public:
     
     virtual std::istream* openFileForRead(const std::string& path);
     
-    virtual std::string relativeFilePath(
-        const std::string& base, const std::string& rel);
-    
     virtual void stats(const Stats&);
     virtual void orphan() {};
 };

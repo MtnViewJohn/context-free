@@ -32,6 +32,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
+#include <shlwapi.h>
 
 using namespace std;
 
@@ -70,6 +71,19 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
     free(b);
     
     return f;
+}
+
+std::string
+Win32System::relativeFilePath(const std::string& base, const std::string& rel)
+{
+    char buf[MAX_PATH+1];
+    strcpy(buf, base.c_str());
+    PathRemoveFileSpecA(buf);
+    PathAppendA(buf, rel.c_str());
+    if (PathFileExistsA(buf))
+        return string(buf);
+    else
+        return rel;
 }
 
 
