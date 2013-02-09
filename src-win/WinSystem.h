@@ -27,10 +27,10 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "cfdg.h"
+#include "Win32System.h"
 
 #define myWM_USER (0x400)
-class WinSystem : public AbstractSystem 
+class WinSystem : public Win32System 
 {
 public:
     enum {  WM_USER_MESSAGE_UPDATE  = myWM_USER + 100, 
@@ -50,8 +50,6 @@ public:
     virtual bool error(bool errorOccurred = true);
 
     virtual std::istream* openFileForRead(const std::string& path);
-    virtual std::istream* tempFileForRead(const std::string& path);
-    virtual std::ostream* tempFileForWrite(std::string& prefixInNameOut);
     // caller must delete returned streams when done
     
     virtual std::string relativeFilePath(

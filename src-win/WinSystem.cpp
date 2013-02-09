@@ -115,20 +115,6 @@ std::istream* WinSystem::openFileForRead(const std::string& path)
     }
 }
 
-std::istream* WinSystem::tempFileForRead(const std::string& path)
-{
-    return new ifstream(path.c_str(), ios::binary);
-}
-
-std::ostream* WinSystem::tempFileForWrite(std::string& prefixInNameOut)
-{
-    char* path = _tempnam(0, prefixInNameOut.c_str());
-    prefixInNameOut = path;
-    ofstream* f = new ofstream(path, ios::binary | ios::out | ios::trunc);
-    free((void*)path);
-    return f;
-}
-
 std::string WinSystem::relativeFilePath(const std::string& base, const std::string& rel)
 {
     char buf[MAX_PATH+1];
