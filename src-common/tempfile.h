@@ -38,10 +38,10 @@ public:
     std::ostream* forWrite();
     std::istream* forRead();
 
-    std::string type()   { return mType; }
+    const std::string& type()   { return mTypeName; }
     int         number() { return mNum; }
     
-    TempFile(AbstractSystem*, const char* prefix, const char* type, int num);
+    TempFile(AbstractSystem*, AbstractSystem::TempType t, const char* type, int num);
     TempFile(TempFile&&);
 #ifndef _WIN32
     TempFile(const TempFile&) = delete;
@@ -55,7 +55,8 @@ public:
 private:
     AbstractSystem*     mSystem;
     std::string mPath;
-    std::string mType;
+    AbstractSystem::TempType mType;
+    std::string mTypeName;
     int         mNum;
     bool        mWritten;
 #ifdef _WIN32

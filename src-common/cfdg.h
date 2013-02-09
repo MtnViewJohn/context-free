@@ -67,13 +67,15 @@ public:
 
 class AbstractSystem {
     public:
+        enum TempType { ShapeTemp = 0, ExpensionTemp = 1, MergeTemp = 2, NumberofTempTypes = 3 };
         virtual void message(const char* fmt, ...) = 0;
         virtual void syntaxError(const CfdgError& err) = 0;
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
         
         virtual std::istream* openFileForRead(const std::string& path) = 0;
-        virtual std::istream* tempFileForRead(const std::string& path) = 0;
-        virtual std::ostream* tempFileForWrite(std::string& prefixInNameOut) = 0;
+        virtual std::istream* tempFileForRead(const std::string& path);
+        virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
+        virtual const char* tempFileDirectory() = 0;
             // caller must delete returned streams when done
             
         virtual std::string relativeFilePath(
@@ -104,6 +106,9 @@ class AbstractSystem {
         virtual void stats(const Stats&);
         
         virtual ~AbstractSystem();
+    protected:
+        static const char* TempPrefixes[NumberofTempTypes];
+        virtual void clearAndCR() {};
 };
 
 class Canvas {

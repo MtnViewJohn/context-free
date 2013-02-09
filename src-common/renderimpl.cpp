@@ -754,11 +754,13 @@ RendererImpl::fileIfNecessary()
 void
 RendererImpl::moveUnfinishedToTwoFiles()
 {
-    m_unfinishedFiles.emplace_back(system(), "cfdg-temp-unfin-", "expansion", ++mUnfinishedFileCount);
+    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpensionTemp,
+                                   "expansion", ++mUnfinishedFileCount);
     unique_ptr<ostream> f1(m_unfinishedFiles.back().forWrite());
     int num1 = m_unfinishedFiles.back().number();
 
-    m_unfinishedFiles.emplace_back(system(), "cfdg-temp-unfin-", "expansion", ++mUnfinishedFileCount);
+    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpensionTemp,
+                                   "expansion", ++mUnfinishedFileCount);
     unique_ptr<ostream> f2(m_unfinishedFiles.back().forWrite());
     int num2 = m_unfinishedFiles.back().number();
     
@@ -879,7 +881,7 @@ RendererImpl::fixupHeap()
 void
 RendererImpl::moveFinishedToFile()
 {
-    m_finishedFiles.emplace_back(system(), "cfdg-temp-fin-", "shapes", ++mFinishedFileCount);
+    m_finishedFiles.emplace_back(system(), AbstractSystem::ShapeTemp, "shapes", ++mFinishedFileCount);
     
     unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
@@ -952,7 +954,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         deque<TempFile>::iterator begin, last, end;
         
         while (m_finishedFiles.size() > MAX_MERGE_FILES) {
-            TempFile t(system(), "cfdg-temp-mrg-", "merge", ++mFinishedFileCount);
+            TempFile t(system(), AbstractSystem::MergeTemp, "merge", ++mFinishedFileCount);
             
             {
                 OutputMerge merger;
