@@ -46,8 +46,8 @@ TempFile::forWrite()
         cerr << "TempFile::forWrite already wrote to " << mPath << endl;
     }
     mWritten = true;
-    mSystem->message("Writing %s temp file %d", mType.c_str(), mNum);
-    return mSystem->tempFileForWrite(mPath);
+    mSystem->message("Writing %s temp file %d", mTypeName.c_str(), mNum);
+    return mSystem->tempFileForWrite(mType, mPath);
 }
 
 std::istream*
@@ -56,12 +56,12 @@ TempFile::forRead()
     if (!mWritten) {
         cerr << "TempFile::forRead temp file never written, " << mPath << endl;
     }
-    mSystem->message("Reading %s temp file %d", mType.c_str(), mNum);
+    mSystem->message("Reading %s temp file %d", mTypeName.c_str(), mNum);
     return mSystem->tempFileForRead(mPath);
 }
 
-TempFile::TempFile(AbstractSystem* system, const char* prefix, const char* type, int num)
-    : mSystem(system), mPath(prefix), mType(type), mNum(num), mWritten(false)
+TempFile::TempFile(AbstractSystem* system, AbstractSystem::TempType t, const char* type, int num)
+    : mSystem(system), mType(t), mTypeName(type), mNum(num), mWritten(false)
     { }
 
 TempFile::TempFile(TempFile&& from)
@@ -79,7 +79,8 @@ TempFile::operator=(TempFile&& from)
 {
     mSystem = from.mSystem;
     mPath = std::move(from.mPath);
-    mType = std::move(from.mType);
+    mType = from.mType;
+    mTypeName = std::move(from.mTypeName);
     mNum = from.mNum;
     mWritten = from.mWritten;
     // Prevent old TempFile from triggering an unlink
@@ -92,7 +93,7 @@ TempFile::operator=(TempFile&& from)
 TempFile::~TempFile()
 {
     if (mWritten && mPath.length()) {
-        mSystem->message("Deleting %s temp file %d", mType.c_str(), mNum);
+        mSystem->message("Deleting %s temp file %d", mTypeName.c_str(), mNum);
         unlink(mPath.c_str());
     }
 }
