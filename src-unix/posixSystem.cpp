@@ -51,3 +51,25 @@ PosixSystem::tempFileDirectory()
     return (!tmpenv || stat(tmpenv, &sb) || !S_ISDIR(sb.st_mode)) ? "/tmp/" : tmpenv;
 }
 
+ostream*
+PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
+{
+    string t(tempFileDirectory());
+    if (t.back() != '/')
+        t.push_back('/');
+    t.append(TempPrefixes[tt]);
+    t.append("XXXXXX");
+    
+    ofstream* f = 0;
+    
+    char* b = strdup(t.c_str());
+    if (mktemp(b)) {
+        f = new ofstream;
+        f->open(b, ios::binary | ios::trunc | ios::out);
+        nameOut.assign(b);
+    }
+    free(b);
+    
+    return f;
+}
+

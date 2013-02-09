@@ -39,6 +39,7 @@ public:
     Win32System() {};
     ~Win32System() {};
 
+    virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
 };
 

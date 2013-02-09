@@ -97,34 +97,6 @@ AbstractSystem::tempFileForRead(const string& path)
     return new ifstream(path.c_str(), ios::binary);
 }
 
-ostream*
-AbstractSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
-{
-#ifdef _WIN32
-    const char dirchar = '\\';
-#else
-    const char dirchar = '/';
-#endif
-    
-    string t(tempFileDirectory());
-    if (t.back() != dirchar)
-        t.push_back(dirchar);
-    t.append(TempPrefixes[tt]);
-    t.append("XXXXXX");
-    
-    ofstream* f = 0;
-    
-    char* b = strdup(t.c_str());
-    if (mktemp(b)) {
-        f = new ofstream;
-        f->open(b, ios::binary | ios::trunc | ios::out);
-        nameOut.assign(b);
-    }
-    free(b);
-    
-    return f;
-}
-
 Canvas::~Canvas() { }
 
 Renderer::~Renderer() { delete mCurrentPath; delete m_tiledCanvas; }

@@ -373,6 +373,7 @@
     <ClInclude Include="src-common\builder.h" />
     <ClInclude Include="src-common\cfdg.h" />
     <ClInclude Include="src-common\CmdInfo.h" />
+    <ClInclude Include="src-common\commandLineSystem.h" />
     <ClInclude Include="src-common\ffCanvas.h" />
     <ClInclude Include="src-common\pathIterator.h" />
     <ClInclude Include="src-common\stacktype.h" />
@@ -382,7 +383,6 @@
     <ClInclude Include="src-win\getopt.h" />
     <ClInclude Include="src-common\HSBColor.h" />
     <ClInclude Include="src-common\makeCFfilename.h" />
-    <ClInclude Include="src-unix\posixSystem.h" />
     <ClInclude Include="src-common\primShape.h" />
     <ClInclude Include="src-common\qtCanvas.h" />
     <ClInclude Include="src-common\Rand64.h" />
@@ -396,6 +396,7 @@
     <ClInclude Include="src-common\upload.h" />
     <ClInclude Include="src-common\variation.h" />
     <ClInclude Include="src-common\version.h" />
+    <ClInclude Include="src-win\Win32System.h" />
     <ClInclude Include="src-win\WinPngCanvas.h" />
   </ItemGroup>
   <ItemGroup>
@@ -414,6 +415,7 @@
     <ClCompile Include="src-common\builder.cpp" />
     <ClCompile Include="src-common\cfdg.cpp" />
     <ClCompile Include="src-common\CmdInfo.cpp" />
+    <ClCompile Include="src-common\commandLineSystem.cpp" />
     <ClCompile Include="src-common\ffCanvas.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">NotUsing</PrecompiledHeader>
@@ -443,7 +445,6 @@
     <ClCompile Include="src-win\derived\lex.yy.cpp" />
     <ClCompile Include="src-unix\main.cpp" />
     <ClCompile Include="src-common\makeCFfilename.cpp" />
-    <ClCompile Include="src-unix\posixSystem.cpp" />
     <ClCompile Include="src-common\primShape.cpp" />
     <ClCompile Include="src-common\Rand64.cpp" />
     <ClCompile Include="src-common\renderimpl.cpp" />
@@ -453,6 +454,7 @@
     <ClCompile Include="src-common\tempfile.cpp" />
     <ClCompile Include="src-common\tiledCanvas.cpp" />
     <ClCompile Include="src-common\variation.cpp" />
+    <ClCompile Include="src-win\Win32System.cpp" />
     <ClCompile Include="src-win\WinPngCanvas.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">false</PreprocessToFile>
     </ClCompile>
