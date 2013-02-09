@@ -34,6 +34,7 @@
 #include <sstream>
 
 #include "cfdg.h"
+#include "posixSystem.h"
 #include "location.hh"
 
 @interface CfdgErrorWrapper : NSObject
@@ -53,7 +54,7 @@
 namespace {
     using namespace std;
     
-    class CocoaSystem : public AbstractSystem
+    class CocoaSystem : public PosixSystem
     {
     public:
         CocoaSystem(CFDGDocument* doc) : mDoc(doc) { }
@@ -62,9 +63,7 @@ namespace {
         virtual void syntaxError(const CfdgError& err);
         
         virtual istream* openFileForRead(const string& path);
-        virtual istream* tempFileForRead(const string& path);
-        virtual ostream* tempFileForWrite(string& prefixInNameOut);
-            
+        virtual const char* tempFileDirectory();
         virtual string relativeFilePath(const string& base, const string& rel);
         
         virtual void stats(const Stats& s);
@@ -150,35 +149,12 @@ namespace {
         return new ifstream(path.c_str(), ios::in);
     }
     
-    istream*
-    CocoaSystem::tempFileForRead(const string& path)
+    const char*
+    CocoaSystem::tempFileDirectory()
     {
-        return new ifstream(path.c_str(), ios::in | ios::binary);
+        return [NSTemporaryDirectory() UTF8String];
     }
-
-    ostream*
-    CocoaSystem::tempFileForWrite(string& prefixInNameOut)
-    {
-        string t = prefixInNameOut + "XXXXXX";
-
-        NSString* prefix =
-            [NSString stringWithUTF8String: t.c_str()];
-        NSString* path =
-            [NSTemporaryDirectory() stringByAppendingPathComponent: prefix];
-                
-        ofstream* f = 0;
-        
-        char* b = strdup([path UTF8String]);
-        if (mktemp(b)) {
-            f = new ofstream;
-            f->open(b, ios::binary | ios::trunc | ios::out);
-            prefixInNameOut = b;
-        }
-        delete b;
-        
-        return f;
-    }
-            
+    
     string
     CocoaSystem::relativeFilePath(const string& base, const string& rel)
     {

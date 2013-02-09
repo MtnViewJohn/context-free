@@ -1,8 +1,8 @@
-// posixSystem.h
+// Win32System.h
 // Context Free
 // ---------------------
 // Copyright (C) 2005-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2007-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2007-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,20 +26,20 @@
 //
 //
 
-#ifndef INCLUDE_POSIX_SYSTEM
-#define INCLUDE_POSIX_SYSTEM
+#ifndef INCLUDE_WIN32_SYSTEM
+#define INCLUDE_WIN32_SYSTEM
 
 #include "cfdg.h"
 
-class PosixSystem : public AbstractSystem
+class Win32System : public AbstractSystem
 {
 protected:
     virtual void clearAndCR();
 public:
-    PosixSystem() {};
-    ~PosixSystem() {};
-    
+    Win32System() {};
+    ~Win32System() {};
+
     virtual const char* tempFileDirectory();
 };
 
-#endif // INCLUDE_POSIX_SYSTEM
+#endif // INCLUDE_WIN32_SYSTEM

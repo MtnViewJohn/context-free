@@ -1,8 +1,8 @@
-// posixSystem.h
+// commandLineSystem.h
 // Context Free
 // ---------------------
 // Copyright (C) 2005-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2007-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2007-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,20 +26,47 @@
 //
 //
 
-#ifndef INCLUDE_POSIX_SYSTEM
-#define INCLUDE_POSIX_SYSTEM
+#ifndef INCLUDE_COMMANDLINE_SYSTEM
+#define INCLUDE_COMMANDLINE_SYSTEM
 
 #include "cfdg.h"
+#include <iosfwd>
+#include <string>
+#include <memory>
 
-class PosixSystem : public AbstractSystem
+#ifdef _WIN32
+#include "Win32System.h"
+#else
+#include "posixSystem.h"
+#endif
+
+#ifdef _WIN32
+class CommandLineSystem : public Win32System
+#else
+class CommandLineSystem : public PosixSystem
+#endif
 {
 protected:
-    virtual void clearAndCR();
+    bool mQuiet;
+    bool mNeedEndl;
+    bool mErrorMode;
+    std::unique_ptr<std::string> mInputBuffer;
+    virtual const char* maybeLF();
 public:
-    PosixSystem() {};
-    ~PosixSystem() {};
+    CommandLineSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
+        mErrorMode(false) { };
+    ~CommandLineSystem() { };
+    virtual void message(const char* fmt, ...);
+    virtual void syntaxError(const CfdgError& err);
+    virtual bool error(bool errorOccurred = true);
     
-    virtual const char* tempFileDirectory();
+    virtual std::istream* openFileForRead(const std::string& path);
+    
+    virtual std::string relativeFilePath(
+        const std::string& base, const std::string& rel);
+    
+    virtual void stats(const Stats&);
+    virtual void orphan() {};
 };
 
-#endif // INCLUDE_POSIX_SYSTEM
+#endif // INCLUDE_COMMANDLINE_SYSTEM
