@@ -85,6 +85,7 @@ CfdgError::Warning(const yy::location& errLoc, const char* msg)
 const char* AbstractSystem::TempPrefixes[AbstractSystem::NumberofTempTypes] = {
     "cfdg-temp-fin-", "cfdg-temp-unfin-", "cfdg-temp-mrg-"
 };
+const char* AbstractSystem::TempPrefixAll = "cfdg-temp-";
 
 AbstractSystem::~AbstractSystem() { }
 
