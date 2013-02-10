@@ -83,5 +83,6 @@ class AbstractSystem;
 
 + (NSString*)documentType;
 + (BOOL)autosavesInPlace;
++ (NSArray*) checkForTempFiles;
 
 @end
