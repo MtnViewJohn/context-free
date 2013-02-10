@@ -5,7 +5,7 @@
  
  Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
  Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
- Copyright (C) 2008-2012 John Horigan - john@glyphic.com
+ Copyright (C) 2008-2013 John Horigan - john@glyphic.com
  
  [Send me anything cool you make with it or of it.]
  
@@ -33,6 +33,7 @@
 #include <time.h>
 #ifdef _WIN32
 #include "getopt.h"
+#include <stdio.h>
 #else
 #include <unistd.h>
 #endif
@@ -186,6 +187,8 @@ usage(bool inError)
     out << "    " << APP_OPTCHAR()
         << "P        Parameter allocation debug, test whether all the parameter blocks were cleaned up" << endl;
     out << "    " << APP_OPTCHAR()
+        << "d        Delete old temporary files" << endl;
+    out << "    " << APP_OPTCHAR()
         << "?        show this message, then exit" << endl;
     out << endl;
     
@@ -220,6 +223,7 @@ struct options {
     bool outputStdout;
     bool outputWallpaper;
     bool paramTest;
+    bool deleteTemps;
     
     options()
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
@@ -227,7 +231,7 @@ struct options {
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
       input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
       outputTime(false), outputStdout(false), outputWallpaper(false),
-      paramTest(false)
+      paramTest(false), deleteTemps(false)
     { }
 };
 
@@ -297,9 +301,9 @@ floatArg(char arg, const char* str)
 }
 
 #ifdef _WIN32
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQPtW?"
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCdVzqQPtW?"
 #else
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCVzqQPt?"
+#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCdVzqQPt?"
 #endif
 
 void
@@ -397,6 +401,9 @@ processCommandLine(int argc, char* argv[], options& opt)
             case 'P':
                 opt.paramTest = true;
                 break;
+            case 'd':
+                opt.deleteTemps = true;
+                break;
         }
     }
     
@@ -411,7 +418,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         usage(true);
     }
     
-    if (!opt.input) {
+    if (!opt.input && !opt.deleteTemps) {
         cerr << "Missing input file" << endl;
         usage(true);
     }
@@ -466,7 +473,33 @@ int main (int argc, char* argv[]) {
     char code[Variation::maxStringLength];
     Variation::toString(opts.variation, code, false);
     
-    CommandLineSystem system(opts.quiet);;
+    CommandLineSystem system(opts.quiet);
+    
+    if (!opts.quiet || opts.deleteTemps) {
+        vector<string> temps = system.findTempFiles();
+        if (temps.empty()) {
+            if (opts.deleteTemps)
+                cerr << "No temporary files found." << endl;
+        } else {
+            if (opts.deleteTemps) {
+                cerr << "Old temporary files deleted:\n";
+                for (string& temp: temps)
+                    if (unlink(temp.c_str()))
+                        cerr << "Failed to delete: " << temp << '\n';
+                    else
+                        cerr << temp << '\n';
+                cerr << endl;
+            } else {
+                cerr << "Old temporary files found:\n";
+                for (string& temp: temps)
+                    cerr << temp << '\n';
+                cerr << endl;
+            }
+        }
+        
+        if (!opts.input) exit(0);
+    }
+    
     CFDG* myDesign = CFDG::ParseFile(opts.input, &system, opts.variation);
     if (!myDesign) return 1;
     if (opts.check) return 0;
