@@ -77,7 +77,8 @@ class AbstractSystem {
         virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) = 0;
         virtual const char* tempFileDirectory() = 0;
             // caller must delete returned streams when done
-            
+        virtual std::vector<std::string> findTempFiles() = 0;
+    
         virtual std::string relativeFilePath(
             const std::string& base, const std::string& rel) = 0;
         
@@ -108,6 +109,7 @@ class AbstractSystem {
         virtual ~AbstractSystem();
     protected:
         static const char* TempPrefixes[NumberofTempTypes];
+        static const char* TempPrefixAll;
         virtual void clearAndCR() {};
 };
 

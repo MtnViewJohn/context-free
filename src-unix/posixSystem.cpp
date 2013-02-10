@@ -32,6 +32,9 @@
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string.h>
 
 using namespace std;
 
@@ -86,5 +89,28 @@ PosixSystem::relativeFilePath(const string& base, const string& rel)
     i += 1;
     s.replace(i, s.length() - i, rel);
     return s;
+}
+
+vector<string>
+PosixSystem::findTempFiles()
+{
+    vector<string> ret;
+    const char* dir = tempFileDirectory();
+    size_t len = strlen(TempPrefixAll);
+    DIR* dirp = opendir(dir);
+    dirent de;
+    dirent* der = nullptr;
+    for(;;) {
+        if (readdir_r(dirp, &de, &der) || der == nullptr)
+            break;
+        if (strncmp(TempPrefixAll, de.d_name, len) == 0) {
+            ret.emplace_back(dir);
+            if (ret.back().back() != '/')
+                ret.back().push_back('/');
+            ret.back().append(de.d_name);
+        }
+    }
+    
+    return ret;
 }
 
