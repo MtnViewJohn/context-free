@@ -313,6 +313,29 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
             menuFNew_Click(nullptr, nullptr);
             break;
     }
+
+    WinSystem* sys = new WinSystem(0);
+    std::vector<std::string> temps = sys->findTempFiles();
+    delete sys;
+    if (!temps.empty()) {
+        System::Text::StringBuilder files(1024 * temps.size());
+        for (std::string& temp: temps) {
+            String^ name = gcnew String(temp.c_str());
+            if (files.Length)
+                files.AppendLine();
+            files.Append(name);
+        }
+        ::DialogResult dlgr = MessageBox::Show(this, files.ToString(), 
+            "Delete these old temporary files?", 
+            MessageBoxButtons::YesNo, MessageBoxIcon::Question, 
+            MessageBoxDefaultButton::Button1);
+        if (dlgr == ::DialogResult::Yes) {
+            for (std::string& temp: temps) {
+                String^ file = gcnew String(temp.c_str());
+                File::Delete(file);
+            }
+        }
+    }
 }
 
 Void Form1::processArgs(array<System::String^>^ args)
