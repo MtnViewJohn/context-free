@@ -231,6 +231,21 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return YES;
 }
 
++ (NSArray*) checkForTempFiles
+{
+    NSMutableArray* files = nil;
+    
+    CocoaSystem sys(nil);
+    std::vector<std::string> temps = sys.findTempFiles();
+    if (!temps.empty())
+        files = [NSMutableArray arrayWithCapacity: temps.size()];
+
+    for (string& temp: temps)
+        [files addObject: [NSString stringWithUTF8String: temp.c_str()]];
+    
+    return files;
+}
+
 - (id)init
 {
     self = [super init];
