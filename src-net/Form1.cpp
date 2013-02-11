@@ -319,8 +319,11 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     delete sys;
     if (!temps.empty()) {
         System::Text::StringBuilder files(1024 * temps.size());
+        cli::array<String^>^ names = gcnew  cli::array<String^>(temps.size());
+        int i = 0;
         for (std::string& temp: temps) {
             String^ name = gcnew String(temp.c_str());
+            names[i++] = name;
             if (files.Length)
                 files.AppendLine();
             files.Append(name);
@@ -330,9 +333,10 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
             MessageBoxButtons::YesNo, MessageBoxIcon::Question, 
             MessageBoxDefaultButton::Button1);
         if (dlgr == ::DialogResult::Yes) {
-            for (std::string& temp: temps) {
-                String^ file = gcnew String(temp.c_str());
-                File::Delete(file);
+            for each (String^ file in names) {
+                try {
+                    File::Delete(file);
+                } catch (Exception^) { } 
             }
         }
     }
