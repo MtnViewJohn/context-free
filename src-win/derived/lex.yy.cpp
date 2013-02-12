@@ -1588,7 +1588,7 @@ YY_RULE_SETUP
         // Unicode operator found at 1st char, Unread all but the operator and
         // return the token for the operator.
         delete yylval->string;
-        yylval->string = 0;
+        yylval->string = nullptr;
         size_t len = strlen(utf8chars[tok]);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(1);
