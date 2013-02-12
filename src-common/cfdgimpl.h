@@ -111,10 +111,10 @@ private:
                 int width, int height, double minSize,
                 int variation, double border = 2.0);
         
-        bool isTiled(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const;
-        frieze_t isFrieze(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const;
-        bool isSized(double* x = 0, double* y = 0) const;
-        bool isTimed(agg::trans_affine_time* t = 0) const;
+        bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
+        frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
+        bool isSized(double* x = nullptr, double* y = nullptr) const;
+        bool isTimed(agg::trans_affine_time* t = nullptr) const;
         const agg::rgba& getBackgroundColor(Renderer* r);
         void getSymmetry(AST::SymmList& syms, Renderer* r);
         const AST::ASTexpression* hasParameter(const char* name) const;

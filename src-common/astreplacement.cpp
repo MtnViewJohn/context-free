@@ -46,7 +46,7 @@ namespace AST {
     
     CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID = 1;
     
-    const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { 0 };
+    const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { nullptr };
     
     agg::trans_affine ASTtransform::Dummy;
 
@@ -109,7 +109,7 @@ namespace AST {
             finallyNatural = bodyNatural && mLoopData[1] + mLoopData[2] >= -1.0 &&
                 mLoopData[1] + mLoopData[2] < 9007199254740992.;
         } else {
-            int c = args->evaluate(0, 0);
+            int c = args->evaluate(nullptr, 0);
             if (c < 1 || c > 3) {
                 CfdgError::Error(argsLoc, "A loop must have one to three index parameters.");
             }
@@ -117,7 +117,7 @@ namespace AST {
             mLoopArgs.reset(args.release()->simplify());
             
             for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
-                int num = (*mLoopArgs)[i]->evaluate(0, 0);
+                int num = (*mLoopArgs)[i]->evaluate(nullptr, 0);
                 switch (count) {
                     case 0:
                         if ((*mLoopArgs)[i]->isNatural)
@@ -162,7 +162,7 @@ namespace AST {
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty), mTransforms(),
-      mModifications(getTransforms(mods.get(), mTransforms, NULL, false, Dummy)), 
+      mModifications(getTransforms(mods.get(), mTransforms, nullptr, false, Dummy)),
       mExpHolder(std::move(mods)), mClone(false)
     {
     }
@@ -174,7 +174,7 @@ namespace AST {
     {
         if (mType != NumericType && mType != ModType && mType != RuleType)
             CfdgError::Error(e->where, "Unsupported expression type");
-        mTuplesize = e->mType == AST::NumericType ? e->evaluate(0, 0) : 1;
+        mTuplesize = e->mType == AST::NumericType ? e->evaluate(nullptr, 0) : 1;
         mExpression.reset(e.release()->simplify());
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -220,7 +220,7 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, condLoc, empty),
       mCondition(ifCond.release()->simplify())
     {
-        if (mCondition->mType != NumericType || mCondition->evaluate(0, 0) != 1)
+        if (mCondition->mType != NumericType || mCondition->evaluate(nullptr, 0) != 1)
             CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
     }
 
@@ -228,7 +228,7 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, expLoc, empty),
       mSwitchExp(switchExp.release()->simplify())
     {
-        if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(0, 0) != 1)
+        if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(nullptr, 0) != 1)
             CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
     }
     
@@ -248,7 +248,7 @@ namespace AST {
     }
     
     ASTcompiledPath::ASTcompiledPath()
-    : mComplete(false), mUseTerminal(false), mParameters(NULL)
+    : mComplete(false), mUseTerminal(false), mParameters(nullptr)
     {
         mPathUID = NextPathUID();
     }
@@ -361,7 +361,7 @@ namespace AST {
         if (stroke) {
             if (mChildChange.flags & CF_FILL)
                 CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
-            if (stroke->mType != NumericType || stroke->evaluate(0, 0) != 1) {
+            if (stroke->mType != NumericType || stroke->evaluate(nullptr, 0) != 1) {
                 CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
             } else if (!stroke->isConstant ||
                        stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
@@ -428,7 +428,7 @@ namespace AST {
     {
         if (mShapeSpec.argSource == ASTruleSpecifier::NoArgs) {
             s.mShapeType = mShapeSpec.shapeType;
-            s.mParameters = NULL;
+            s.mParameters = nullptr;
         } else {
             s.mParameters = mShapeSpec.evalArgs(r, s.mParameters);
             if (mShapeSpec.argSource == ASTruleSpecifier::SimpleParentArgs)
@@ -436,7 +436,7 @@ namespace AST {
             else
                 s.mShapeType = s.mParameters->ruleHeader.mRuleName;
             if (s.mParameters->ruleHeader.mParamCount == 0)
-                s.mParameters = NULL;
+                s.mParameters = nullptr;
         }
     }
     
@@ -447,7 +447,7 @@ namespace AST {
         replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
-        mChildChange.evaluate(s.mWorldState, 0, width, false, dummy, true, r);
+        mChildChange.evaluate(s.mWorldState, nullptr, width, false, dummy, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
     
@@ -510,7 +510,7 @@ namespace AST {
                     break;
             }
             mLoopBody.traverse(loopChild, tr || opsOnly, r);
-            mChildChange.evaluate(loopChild.mWorldState, 0, 0, false, dummy, true, r);
+            mChildChange.evaluate(loopChild.mWorldState, nullptr, nullptr, false, dummy, true, r);
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
@@ -536,7 +536,7 @@ namespace AST {
             if (i < modsLength) {
                 if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i])) {
                     r->mCurrentSeed ^= m->modData.mRand64Seed;
-                    m->evaluate(child.mWorldState, 0, 0, false, dummy, true, r);
+                    m->evaluate(child.mWorldState, nullptr, nullptr, false, dummy, true, r);
                 } else {
                     continue;
                 }
@@ -600,7 +600,7 @@ namespace AST {
             case ModType: {
                 int dummy;
                 Modification* smod = reinterpret_cast<Modification*> (dest);
-                mChildChange.setVal(*smod, 0, 0, false, dummy, r);
+                mChildChange.setVal(*smod, nullptr, nullptr, false, dummy, r);
                 break;
             }
             case RuleType:
@@ -650,7 +650,7 @@ namespace AST {
         double width = mChildChange.strokeWidth;
         replace(child, r, &width);
         
-        CommandInfo* info = NULL;
+        CommandInfo* info = nullptr;
         
         if (r->mCurrentPath->mComplete) {
             if (r->mCurrentCommand == r->mCurrentPath->mCommandInfo.end())
@@ -685,7 +685,7 @@ namespace AST {
         r->mCurrentSeed = parent.mWorldState.mRand64Seed;
         r->mRandUsed = false;
         
-        ASTcompiledPath* savedPath = NULL;
+        ASTcompiledPath* savedPath = nullptr;
         
         if (mCachedPath && StackRule::Equal(mCachedPath->mParameters, parent.mParameters)) {
             savedPath = r->mCurrentPath;
@@ -953,7 +953,7 @@ namespace AST {
     {
         if (a) {
             mArguments.reset(a.release()->simplify());
-            mArgCount = mArguments->evaluate(0, 0);
+            mArgCount = mArguments->evaluate(nullptr, 0);
         }
 
         for (int i = 0; mArguments && i < mArguments->size(); ++i) {
@@ -1015,13 +1015,13 @@ namespace AST {
     {
         if (!ax)
             ax.reset(new ASTreal(def, loc));
-        int sz = ax->evaluate(0, 0);
+        int sz = ax->evaluate(nullptr, 0);
         
         if (sz == 1 && !ay)
             ay.reset(new ASTreal(def, loc));
         
         if (ay)
-            sz += ay->evaluate(0, 0);
+            sz += ay->evaluate(nullptr, 0);
         
         if (sz != 2)
             CfdgError::Error(loc, "Error parsing path operation arguments");
@@ -1099,7 +1099,7 @@ namespace AST {
             }
         }
         
-        ASTexpression* xy = 0;
+        ASTexpression* xy = nullptr;
         if (mPathOp != CLOSEPOLY) {
             xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation);
         } 
@@ -1132,7 +1132,7 @@ namespace AST {
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
                     
-                    if (angle->evaluate(0, 0) != 1)
+                    if (angle->evaluate(nullptr, 0) != 1)
                         CfdgError(angle->where, "Arc angle must be a scalar value");
                     
                     mArguments.reset(xy->append(rxy)->append(angle));
@@ -1141,7 +1141,7 @@ namespace AST {
                     if (!radius)
                         radius = new ASTreal(1.0, mLocation);
                     
-                    if (radius->evaluate(0, 0) != 1)
+                    if (radius->evaluate(nullptr, 0) != 1)
                         CfdgError::Error(radius->where, "Arc radius must be a scalar value");
                     
                     mArguments.reset(xy->append(radius));
@@ -1153,7 +1153,7 @@ namespace AST {
                 rejectTerm(std::move(arx));
                 rejectTerm(std::move(ary));
                 
-                ASTexpression *xy1 = 0, *xy2 = 0;
+                ASTexpression *xy1 = nullptr, *xy2 = nullptr;
                 if (ax1 || ay1) {
                     xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
                 } else {
@@ -1181,7 +1181,7 @@ namespace AST {
                 break;
         } 
         
-        mArgCount = mArguments ? mArguments->evaluate(0, 0) : 0;
+        mArgCount = mArguments ? mArguments->evaluate(nullptr, 0) : 0;
     }
     
     void

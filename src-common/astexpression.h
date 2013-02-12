@@ -51,14 +51,14 @@ namespace AST {
         ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
         : isConstant(c), isNatural(n), isLocal(true), mType(t), where(loc) {};
         virtual ~ASTexpression() {};
-        virtual int evaluate(double* , int, Renderer* = 0) const 
+        virtual int evaluate(double* , int, Renderer* = nullptr) const
         { return 0; }
         virtual void evaluate(Modification& , int* , double* ,
                               bool , int& , bool ,
                               Renderer*) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
-        virtual const StackType* evalArgs(Renderer* = 0, const StackType* = 0) const
-        { CfdgError::Error(where, "Cannot convert this expression into a shape"); return NULL; }
+        virtual const StackType* evalArgs(Renderer* = nullptr, const StackType* = nullptr) const
+        { CfdgError::Error(where, "Cannot convert this expression into a shape"); return nullptr; }
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
         
@@ -89,7 +89,7 @@ namespace AST {
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                     const yy::location& nameLoc, const yy::location& argsLoc);
         virtual ~ASTfunction() { };
-        virtual int evaluate(double* r, int size, Renderer* rti = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* rti = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
@@ -105,17 +105,17 @@ namespace AST {
         
         ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
         virtual ~ASTselect();
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* r) const;
-        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = nullptr, const StackType* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
         ASTselect(const yy::location& loc)
         : ASTexpression(loc), tupleSize(-1), indexCache(0) {}
-        unsigned getIndex(Renderer* rti = 0) const;
+        unsigned getIndex(Renderer* rti = nullptr) const;
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
@@ -146,10 +146,10 @@ namespace AST {
         explicit ASTruleSpecifier()
         :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
             argSize(0), argSource(NoArgs), arguments(nullptr),
-            simpleRule(0), mStackIndex(0), typeSignature(0) {};
+            simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr) {};
         virtual ~ASTruleSpecifier();
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
-        virtual const StackType* evalArgs(Renderer* = 0, const StackType* parent = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
+        virtual const StackType* evalArgs(Renderer* = nullptr, const StackType* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
 #ifdef _WIN32
@@ -164,7 +164,7 @@ namespace AST {
         ASTexpArray children;
         ASTcons(ASTexpression* l, ASTexpression* r);
         virtual ~ASTcons();
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* r) const;
@@ -196,7 +196,7 @@ namespace AST {
                         floor(v) == v && v >= 0.0 && v < 9007199254740992.,
                         NumericType), value(v) {};
         virtual ~ASTreal() {};
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void entropy(std::string& e) const;
     private:
         ASTreal() : ASTexpression(CfdgError::Default) {};
@@ -210,7 +210,7 @@ namespace AST {
         bool isParameter;
         
         ASTvariable(int stringNum, const std::string& str, const yy::location& loc); 
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* r) const;
@@ -226,11 +226,11 @@ namespace AST {
         
         ASTuserFunction(ASTexpression* args, ASTdefine* func, const yy::location& nameLoc);
         virtual ~ASTuserFunction() { }
-        virtual int evaluate(double* , int, Renderer* = 0) const;
+        virtual int evaluate(double* , int, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* r) const;
-        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = nullptr, const StackType* parent = nullptr) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
     };
@@ -247,7 +247,7 @@ namespace AST {
         exp_ptr right;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
         virtual ~ASToperator() { }
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
@@ -262,11 +262,11 @@ namespace AST {
                                                     e1->mType), e(e1)
         { isLocal = e1->isLocal; };
         virtual ~ASTparen() { }
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width,
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer* r) const;
-        virtual const StackType* evalArgs(Renderer* rti = 0, const StackType* parent = 0) const;
+        virtual const StackType* evalArgs(Renderer* rti = nullptr, const StackType* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
@@ -289,8 +289,8 @@ namespace AST {
         
         static const char* Entropies[lastModType];
         
-        static void Eval(ASTexpression* mod, Modification& m, std::string* p = 0, 
-                         double* width = 0, Renderer* r = 0);
+        static void Eval(ASTexpression* mod, Modification& m, std::string* p = nullptr,
+                         double* width = nullptr, Renderer* r = nullptr);
         
         ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc);
         ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc)
@@ -298,7 +298,7 @@ namespace AST {
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr) {};
         virtual ~ASTmodTerm() { }
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer*) const;
@@ -323,19 +323,19 @@ namespace AST {
         static int ModClass[ASTmodTerm::lastModType];
         
         ASTmodification(const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modExp(0), modClass(NotAClass),
+        : ASTexpression(loc, true, false, ModType), modClass(NotAClass),
           strokeWidth(0.1), flags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), 
           entropyIndex(0) {}
         ASTmodification(const ASTmodification& m, const yy::location& loc);
         ASTmodification(mod_ptr m, const yy::location& loc);
         virtual ~ASTmodification();
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               Renderer*) const;
         void setVal(Modification& m, int* p, double* width, 
                     bool justCheck, int& seedIndex, 
-                    Renderer* = 0) const;
+                    Renderer* = nullptr) const;
         void addEntropy(const std::string& name);
         void evalConst();
         void makeCanonical();
@@ -356,7 +356,7 @@ namespace AST {
         ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
                  const yy::location& loc, const std::string& name);
         virtual ~ASTarray();
-        virtual int evaluate(double* r, int size, Renderer* = 0) const;
+        virtual int evaluate(double* r, int size, Renderer* = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     };

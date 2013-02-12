@@ -1,7 +1,7 @@
 // SVGCanvas.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2006-2011 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ public:
     void fill(RGBA8 c);
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
 
-    SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = 0, int length = -1);
+    SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
 
 private:
     typedef std::pair<AST::CommandInfo::UIDtype, unsigned> uniquePath;

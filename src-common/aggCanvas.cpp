@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2006-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -328,7 +328,7 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case FF_Blend:    m = new aggPixelPainter<ff_pixel_fmt>(this); break;
         case FF24_Blend:  m = new aggPixelPainter<ff24_pixel_fmt>(this); break;
         case QT_Blend:    m = new aggPixelPainter<qt_pixel_fmt>(this); break;
-        default: m = 0; break;
+        default: m = nullptr; break;
     }
 }
 aggCanvas::~aggCanvas()                 { delete m; }
@@ -438,7 +438,7 @@ int     aggCanvas::cropHeight()     { return m->cropHeight; }
 
 aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
 {
-    if (engine == 0) 
+    if (engine == nullptr) 
         return RGBA8_Blend;
     
     int ret = Gray8_Blend;

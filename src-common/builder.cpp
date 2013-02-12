@@ -48,14 +48,14 @@
 using namespace AST;
 
 std::map<std::string, int> Builder::FlagNames;
-Builder* Builder::CurrentBuilder = 0;
+Builder* Builder::CurrentBuilder = nullptr;
 double Builder:: MaxNatural = 1000.0;
 
 Builder::Builder(CFDGImpl* cfdg, int variation)
-: m_CFDG(cfdg), m_currentPath(0), m_basePath(0), m_pathCount(1), 
+: m_CFDG(cfdg), m_currentPath(nullptr), m_basePath(nullptr), m_pathCount(1),
   mInPathContainer(false), mCurrentShape(-1),
   mWant2ndPass(false), mCompilePhase(1),
-  mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(0), 
+  mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)
 { 
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
@@ -99,13 +99,13 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
         FlagNames.insert(std::pair<std::string, int>("CF::p6", AST::CF_P6));
         FlagNames.insert(std::pair<std::string, int>("CF::p6m", AST::CF_P6M));
     }
-    assert(Builder::CurrentBuilder == NULL);    // ensure singleton
+    assert(Builder::CurrentBuilder == nullptr);    // ensure singleton
     Builder::CurrentBuilder = this;
     MaxNatural = 1000.0;
     ASTparameter::Impure = false;
     mContainerStack.push_back(&(cfdg->mCFDGcontents));
     
-    if (ASTrule::PrimitivePaths[primShape::circleType] == 0) {
+    if (ASTrule::PrimitivePaths[primShape::circleType] == nullptr) {
         for (unsigned i = 0; i < primShape::numTypes; ++i) {
             // primShape statics are const because of thread safety issues.
             // But Builder is a singleton and preceeds any thread's access
@@ -158,9 +158,9 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 
 Builder::~Builder()
 {
-    pop_repContainer(NULL);
+    pop_repContainer(nullptr);
     delete m_CFDG;
-    Builder::CurrentBuilder = 0;
+    Builder::CurrentBuilder = nullptr;
     while (!m_streamsToLoad.empty()) {
         delete m_streamsToLoad.top();
         m_streamsToLoad.pop();
@@ -177,7 +177,7 @@ getUniqueFile(const std::string* base, const std::string* file)
             return f;
     }
     if (*b == '\0' && *f == '\0')
-        return NULL;
+        return nullptr;
     return file->c_str();
 }
 
@@ -196,7 +196,7 @@ Builder::warning(const yy::location& l, const std::string& msg)
     CfdgError err(l, msg.c_str());
     if (l.begin.filename) {
         const char* fname = getUniqueFile(m_basePath, l.begin.filename);
-        if (fname == 0) {
+        if (fname == nullptr) {
             m_CFDG->system()->syntaxError(err);
         } else {
             m_CFDG->system()->error();
@@ -218,7 +218,7 @@ void Builder::error(int line, const char* msg)
     CfdgError err(loc, msg);
     const char* fname = getUniqueFile(m_basePath, loc.begin.filename);
     mErrorOccured = true;
-    if (fname == 0) {
+    if (fname == nullptr) {
         m_CFDG->system()->syntaxError(err);
     } else {
         m_CFDG->system()->message("Error in %s at line %d - %s", 
@@ -261,7 +261,7 @@ Builder::IncludeFile(const std::string& fname)
     std::istream* input = m_CFDG->system()->openFileForRead(path);
     if (!input || !input->good()) {
         delete input;
-        input = 0;
+        input = nullptr;
         m_CFDG->system()->error();
         mErrorOccured = true;
         m_CFDG->system()->message("Couldn't open rules file %s", path.c_str());
@@ -276,7 +276,7 @@ Builder::IncludeFile(const std::string& fname)
     ++m_pathCount;
     ++mIncludeDepth;
     mCurrentShape = -1;
-    SetShape(NULL);
+    SetShape(nullptr);
     
     m_CFDG->system()->message("Reading rules file %s", fname.c_str());
     
@@ -289,7 +289,7 @@ bool
 Builder::EndInclude()
 {
     bool endOfInput = mIncludeDepth == 0;
-    SetShape(NULL);
+    SetShape(nullptr);
     lexer->yypop_buffer_state();
     lexer->nextLocAction = yy::Scanner::popLoc;
     --mIncludeDepth;
@@ -303,7 +303,7 @@ Builder::EndInclude()
     m_streamsToLoad.pop();
     m_filesToLoad.pop();
     m_includeNamespace.pop();
-    m_currentPath = m_filesToLoad.empty() ? NULL : m_filesToLoad.top();
+    m_currentPath = m_filesToLoad.empty() ? nullptr : m_filesToLoad.top();
     return endOfInput;
 }
 
@@ -317,7 +317,7 @@ Builder::Initialize(rep_ptr init)
 void
 Builder::SetShape(AST::ASTshape* s, bool isPath)
 {
-    if (s == NULL) {
+    if (s == nullptr) {
         mCurrentShape = -1;
         return;
     }
@@ -376,7 +376,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
 {
     bool isFunction = false;
     if (!mContainerStack.empty() && mContainerStack.back() == &mParamDecls) {
-        pop_repContainer(NULL);         // pop mParamDecls
+        pop_repContainer(nullptr);         // pop mParamDecls
         mParamDecls.mParameters.clear();
         mParamDecls.mStackCount = 0;
         isFunction = true;
@@ -444,7 +444,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
             CfdgError::Error(expLoc, "Mismatch between declared and defined type of user function");
         } else {
             if (def->mType == AST::NumericType &&
-                def->mTuplesize != def->mExpression->evaluate(0, 0))
+                def->mTuplesize != def->mExpression->evaluate(nullptr, 0))
             {
                 CfdgError::Error(expLoc, "Mismatch between declared and defined vector length of user function");
             }
@@ -454,7 +454,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     } else if (def) {
         CfdgError::Error(nameLoc, "Definition with same name as user function");
         CfdgError::Error(def->mLocation, "    user function definition is here.");
-        def = 0;
+        def = nullptr;
     }
 
     CheckVariableName(nameIndex, nameLoc, false);
@@ -490,7 +490,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
     int varNum = StringToShape(name, loc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(varNum, isGlobal);
-    if (bound == 0) {
+    if (bound == nullptr) {
         return new ASTruleSpecifier(varNum, name, nullptr, loc,
                                     m_CFDG->getShapeParams(varNum),
                                     m_CFDG->getShapeParams(mCurrentShape));
@@ -522,10 +522,10 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
             case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
                 if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
-                    return new ASTruleSpecifier(r->shapeType, name, nullptr, loc, NULL, NULL);
+                    return new ASTruleSpecifier(r->shapeType, name, nullptr, loc, nullptr, nullptr);
                 } else {
                     CfdgError::Error(loc, "Internal error computing bound rule specifier");
-                    return new ASTruleSpecifier(varNum, name, nullptr, loc, NULL, NULL);
+                    return new ASTruleSpecifier(varNum, name, nullptr, loc, nullptr, nullptr);
                 }
             }
             default:
@@ -558,7 +558,7 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
     int varNum = StringToShape(*name, nameLoc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(varNum, isGlobal);
-    if (bound == 0) {
+    if (bound == nullptr) {
         CfdgError::Error(nameLoc, "Cannot find variable or parameter with this name");
         return args.release();
     } else if (bound->mType != AST::NumericType) {
@@ -573,7 +573,7 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
 ASTexpression*
 Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
 {
-    ASTexpression* args = NULL;
+    ASTexpression* args = nullptr;
     ASTrepContainer* lastContainer = mContainerStack.back();
     for (rep_ptr& rep: lastContainer->mBody) {
         if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(rep.get())) {
@@ -593,7 +593,7 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     }
     def->mStackCount = lastContainer->mStackCount;
     def->isFunction = true;
-    pop_repContainer(NULL);
+    pop_repContainer(nullptr);
     return new ASTlet(args, def, letLoc, defLoc);
 }
 
@@ -628,7 +628,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     }
     
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == 0 || bound->mType != AST::RuleType) {
+    if (bound == nullptr || bound->mType != AST::RuleType) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
                                                       m_CFDG->getShapeParams(nameIndex),
@@ -645,7 +645,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
             return new ASTruleSpecifier(r, name, loc);
         } else {
             CfdgError::Error(loc, "Internal error computing bound rule specifier");
-            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, NULL, NULL);
+            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, nullptr, nullptr);
         }
     }
     
@@ -668,12 +668,12 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     
     int argcount = 0;
     if (t->args && t->args->mType == AST::NumericType)
-        argcount = t->args->evaluate(0, 0);
+        argcount = t->args->evaluate(nullptr, 0);
 
     // Try to merge consecutive x and y adjustments
     if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
         ASTmodTerm* last = dest.back().get();
-        if (last->modType == ASTmodTerm::x && last->args->evaluate(0, 0) == 1) {
+        if (last->modType == ASTmodTerm::x && last->args->evaluate(nullptr, 0) == 1) {
             last->args.reset(last->args.release()->append(t->args.release()));
             return;     // delete ASTmodTerm t
         }
@@ -703,14 +703,14 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     }
     
     if (t->args->size() > 1) {
-        ASTexpression* xyargs = 0;
+        ASTexpression* xyargs = nullptr;
         int i = 0;
         for (; i < t->args->size(); ++i) {
             xyargs = ASTexpression::Append(xyargs, (*t->args)[i]);
-            if (xyargs->evaluate(0, 0) >= 2)
+            if (xyargs->evaluate(nullptr, 0) >= 2)
                 break;
         }
-        if (xyargs && xyargs->evaluate(0, 0) == 2 && i == t->args->size() - 1) {
+        if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == t->args->size() - 1) {
             // We have successfully split the 3-tuple into a 2-tuple and a scalar
             ASTexpression* zargs = (*t->args)[i];
             t->args->release();
@@ -942,7 +942,7 @@ Builder::pop_repContainer(ASTreplacement* r)
         // delete the constant definitions, but not functions
         if (param.mDefinition && !param.mDefinition->isFunction) {
             delete param.mDefinition;
-            param.mDefinition = 0;
+            param.mDefinition = nullptr;
         }
     }
     mContainerStack.pop_back();
@@ -957,7 +957,7 @@ static bool badContainer(int containerType)
 void
 Builder::push_rep(ASTreplacement* r, bool global)
 {
-    if (r == 0) return;
+    if (r == nullptr) return;
     ASTrepContainer* container = mContainerStack.back();
     
     container->mBody.emplace_back(r);
@@ -981,7 +981,7 @@ Builder::findExpression(int nameIndex, bool& isGlobal)
             }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 void

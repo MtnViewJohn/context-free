@@ -110,9 +110,9 @@ CFDG::~CFDG() { }
 CFDG*
 CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
 {
-    CFDGImpl* pCfdg = NULL;
+    CFDGImpl* pCfdg = nullptr;
     for (int version = 2; version <= 4; ++version) {
-        if (pCfdg == NULL)
+        if (pCfdg == nullptr)
             pCfdg = new CFDGImpl(system); 
         Builder b(pCfdg, variation);
 
@@ -128,10 +128,10 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         istream* input = system->openFileForRead(fname);
         if (!input || !input->good()) {
             delete input;
-            input = 0;
+            input = nullptr;
             system->error();
             system->message("Couldn't open rules file %s", fname);
-            return 0;
+            return nullptr;
         }
         
         pCfdg->fileNames.push_back(fname);
@@ -152,29 +152,29 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             yyresult = parser.parse();
         } catch (CfdgError err) {
             system->syntaxError(err);
-            return 0;
+            return nullptr;
         }
 
         if (b.mErrorOccured)
-            return 0;
+            return nullptr;
         if (yyresult == 0) {
             pCfdg->rulesLoaded();
             if (b.mErrorOccured)
-                return 0;
+                return nullptr;
             if (b.mWant2ndPass) {
                 pCfdg = new CFDGImpl(pCfdg);
                 system->message("Compiling 2nd phase");
                 continue;
             }
-            b.m_CFDG = 0;
+            b.m_CFDG = nullptr;
             break;
         }
         if (lexer.maybeVersion == 0 || 
             lexer.maybeVersion == (version == 2 ? yy::CfdgParser::token::CFDG2 : 
                                                   yy::CfdgParser::token::CFDG3))
-            return 0;
+            return nullptr;
         system->message("Restarting as a version 3 design");
-        pCfdg = NULL;
+        pCfdg = nullptr;
     }
     
     system->message("%d rules loaded", pCfdg->numRules());
@@ -225,7 +225,7 @@ Renderer::initStack(const StackType* p)
     if (!mCFstack.empty()) {
         mLogicalStackTop = &(mCFstack.back()) + 1;
     } else {
-        mLogicalStackTop = NULL;
+        mLogicalStackTop = nullptr;
     }
 }
 
@@ -248,5 +248,5 @@ Renderer::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& para
     if (oldsize)
         mLogicalStackTop = &(mCFstack[0]) + oldsize;
     else
-        mLogicalStackTop = NULL;
+        mLogicalStackTop = nullptr;
 }

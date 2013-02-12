@@ -53,7 +53,7 @@ namespace AST {
         pathOpEnum mPathOp;
         ASTmodification mChildChange;
         yy::location mLocation;
-        void replace(Shape& s, Renderer* r, double* width = NULL) const;
+        void replace(Shape& s, Renderer* r, double* width = nullptr) const;
         void replaceShape(Shape& s, Renderer* r) const;
         
         ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods, 
@@ -115,7 +115,7 @@ namespace AST {
         
         static void setupLoop(double& start, double& end, double& step, 
                               const ASTexpression* e, const yy::location& loc,
-                              Renderer* rti = 0);
+                              Renderer* rti = nullptr);
         
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                 exp_ptr args, const yy::location& argsLoc,

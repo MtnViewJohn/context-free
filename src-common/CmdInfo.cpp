@@ -1,7 +1,7 @@
 // CmdInfo.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 
 namespace AST {
 
-    const CommandInfo CommandInfo::Default(0, 0);
+    const CommandInfo CommandInfo::Default(0, nullptr);
     
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
     : mIndex(0), mPathUID(std::numeric_limits<UIDtype>::max())

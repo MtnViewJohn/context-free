@@ -54,7 +54,7 @@ class Bounds {
 
         Bounds(const agg::trans_affine& trans, pathIterator& helper, 
                double scale, const AST::CommandInfo& attr,
-               agg::point_d* cent = NULL, double* area = NULL);
+               agg::point_d* cent = nullptr, double* area = nullptr);
                 // set bounds to be the bounds of this shape, transformed
 
         bool valid() const { return myfinite(mMin_X) && myfinite(mMax_X) &&
@@ -115,7 +115,7 @@ class Bounds {
         // bounds
         
         double computeScale(int& width, int& height, double borderX, double borderY,
-                            bool modify = false, agg::trans_affine* trans = 0,
+                            bool modify = false, agg::trans_affine* trans = nullptr,
                             bool exact = false) const;
         // Computes the scale factor of fitting this bounds into a canvas
         // of the given width and height, with the provided fixed border.
@@ -127,7 +127,7 @@ class Bounds {
         
         void update(const agg::trans_affine& trns, pathIterator& helper, 
                     double scale, const AST::CommandInfo& attr,
-                    agg::point_d* cent = NULL, double* area = NULL);
+                    agg::point_d* cent = nullptr, double* area = nullptr);
     
         double  mMin_X, mMin_Y, mMax_X, mMax_Y;
 };

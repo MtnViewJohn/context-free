@@ -63,7 +63,7 @@ ostream* myCout = &cerr;
 
 const char* invokeName = "";
 
-static Renderer* TheRenderer = 0;
+static Renderer* TheRenderer = nullptr;
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -229,7 +229,7 @@ struct options {
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-      input(0), output(0), output_fmt(0), format(PNGfile), quiet(false), 
+      input(nullptr), output(nullptr), output_fmt(nullptr), format(PNGfile), quiet(false),
       outputTime(false), outputStdout(false), outputWallpaper(false),
       paramTest(false), deleteTemps(false)
     { }
@@ -560,15 +560,15 @@ int main (int argc, char* argv[]) {
         << ", variation " 
         << code << "..." << endl;
     
-    pngCanvas* png = 0;
-    SVGCanvas* svg = 0;
-    ffCanvas*  mov = 0;
-    Canvas* myCanvas = 0;
+    pngCanvas* png = nullptr;
+    SVGCanvas* svg = nullptr;
+    ffCanvas*  mov = nullptr;
+    Canvas* myCanvas = nullptr;
     
     TheRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
                                      opts.variation, opts.borderSize);
     
-    if (TheRenderer == 0) {
+    if (TheRenderer == nullptr) {
         return 9;
     }
 
@@ -618,7 +618,7 @@ int main (int argc, char* argv[]) {
     if (system.error(false) || TheRenderer->requestStop) {
         setupTimer(0);
         Renderer::AbortEverything = true;
-        delete TheRenderer;  TheRenderer = 0;
+        delete TheRenderer;  TheRenderer = nullptr;
         return 5;
     }
     
@@ -654,7 +654,7 @@ int main (int argc, char* argv[]) {
     delete svg;
     delete mov;
     Renderer::AbortEverything = !(opts.paramTest);
-    delete TheRenderer; TheRenderer = 0;
+    delete TheRenderer; TheRenderer = nullptr;
     
     if (opts.paramTest) {
         if (Renderer::ParamCount)

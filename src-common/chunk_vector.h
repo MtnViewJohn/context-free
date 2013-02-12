@@ -1,7 +1,7 @@
 // chunk_vector.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2012 John Horigan - john@glyphic.com
+// Copyright (C) 2012-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ struct chunk_vector_iterator
         : _chunksPtr(cvi._chunksPtr), _current(cvi._current), _size(cvi._size), _index(cvi._index)
     { }
     chunk_vector_iterator()
-        : _chunksPtr(0), _current(0), _size(0), _index(0)
+        : _chunksPtr(nullptr), _current(nullptr), _size(0), _index(0)
     { }
     
     chunk_vector_iterator& operator=(const chunk_vector_iterator& rhs)

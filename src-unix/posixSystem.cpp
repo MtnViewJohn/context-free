@@ -64,7 +64,7 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
     t.append(TempPrefixes[tt]);
     t.append("XXXXXX");
     
-    ofstream* f = 0;
+    ofstream* f = nullptr;
     
     char* b = strdup(t.c_str());
     if (mktemp(b)) {

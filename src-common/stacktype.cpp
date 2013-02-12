@@ -132,8 +132,8 @@ StackRule::operator==(const StackRule& o) const
 bool
 StackRule::Equal(const StackRule* a, const StackType* b)
 {
-    if (a == NULL && b == NULL) return true;
-    if (a == NULL || b == NULL) return false;
+    if (a == nullptr && b == nullptr) return true;
+    if (a == nullptr || b == nullptr) return false;
     return (*a) == (b->ruleHeader);
 }
 
@@ -194,7 +194,7 @@ StackType::readHeader(std::istream& is)
     is.read((char*)(&size), sizeof(uint64_t));
     if (size & 3) {
         // Don't know the typeInfo yet, get it during read
-        StackType* s = StackType::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, NULL);
+        StackType* s = StackType::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
         s->read(is);
         return s;
     } else {
@@ -205,7 +205,7 @@ StackType::readHeader(std::istream& is)
 void
 StackType::writeHeader(std::ostream& os, const StackType* s)
 {
-    if (s == NULL || s->ruleHeader.mRefCount == UINT32_MAX) {
+    if (s == nullptr || s->ruleHeader.mRefCount == UINT32_MAX) {
         uint64_t p = (uint64_t)(s);
         os.write((char*)(&p), sizeof(uint64_t));
     } else {
@@ -237,7 +237,7 @@ EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
                 static const Modification zeroMod;
                 Modification& m = reinterpret_cast<Modification&> (dest->number);
                 m = zeroMod;
-                arg->evaluate(m, 0, 0, false, dummy, false, rti);
+                arg->evaluate(m, nullptr, nullptr, false, dummy, false, rti);
                 break;
             }
             case AST::RuleType: {
@@ -268,6 +268,6 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 {
     iterator dest = begin(p);
     iterator end_it = end();
-    EvalArgs(rti, NULL, dest, end_it, arguments, sequential);
+    EvalArgs(rti, nullptr, dest, end_it, arguments, sequential);
 }
 

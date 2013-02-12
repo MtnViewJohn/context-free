@@ -162,7 +162,7 @@ CFDGImpl::findRule(int shapetype)
         if ((*i)->mNameIndex == shapetype)
             return *i;
     
-    return NULL;
+    return nullptr;
 }
 
 // Adds a new rule/path to the rule container. Updates information about the rule
@@ -335,7 +335,7 @@ CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
     if (!elem->second.second->isConstant && !r) {
         CfdgError::Error(elem->second.second->where, "This expression must be constant");
     } else {
-        elem->second.second->evaluate(value, 0, 0, false, varNum, true, r);
+        elem->second.second->evaluate(value, nullptr, nullptr, false, varNum, true, r);
     }
     return true;
 }
@@ -358,9 +358,9 @@ CFDGImpl::hasParameter(const char* name) const
 {
     string n = name;
     int varNum = tryEncodeShapeName(n);
-    if (varNum < 0) return NULL;
+    if (varNum < 0) return nullptr;
     std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
-    if (elem == m_ConfigParameters.end()) return NULL;
+    if (elem == m_ConfigParameters.end()) return nullptr;
     return elem->second.second.get();
 }
 
@@ -475,13 +475,13 @@ CFDGImpl::rulesLoaded()
     
     // Wait until done and then update these members
     double value;
-    uses16bitColor = hasParameter("CF::ColorDepth", value, NULL) && 
+    uses16bitColor = hasParameter("CF::ColorDepth", value, nullptr) &&
         floor(value) == 16.0;
     
-    if (hasParameter("CF::Color", value, NULL))
+    if (hasParameter("CF::Color", value, nullptr))
         usesColor = value != 0.0;
     
-    if (hasParameter("CF::Alpha", value, NULL))
+    if (hasParameter("CF::Alpha", value, nullptr))
         usesAlpha = value != 0.0;
 }
 
@@ -552,7 +552,7 @@ CFDGImpl::shapeHasRules(int shapetype)
 void
 CFDGImpl::setShapeHasNoParams(int shapetype, const ASTexpression* args)
 {
-    if (shapetype < int(m_shapeTypes.size()) && args == NULL)
+    if (shapetype < int(m_shapeTypes.size()) && args == nullptr)
         m_shapeTypes[shapetype].shouldHaveNoParams = true;
 }
 
@@ -568,7 +568,7 @@ const char*
 CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bool isPath)
 {
     if (m_secondPass)
-        return 0;
+        return nullptr;
     ShapeType& shape = m_shapeTypes[shapetype];
     if (shape.isShape) {
         // There has been a forward declaration, so this shape declaration
@@ -580,7 +580,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
             return "Shape name already in use by another rule or path";
         if (isPath)
             return "Path name already in use by another rule or path";
-        return 0;
+        return nullptr;
     }
     if (shape.shapeType != newShape)
         return "Shape name already in use by another rule or path";
@@ -589,7 +589,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
     shape.isShape = true;
     shape.argSize = argSize;
     shape.shapeType = isPath ? pathType : newShape;
-    return 0;
+    return nullptr;
 }
 
 const AST::ASTparameters* 
@@ -597,7 +597,7 @@ CFDGImpl::getShapeParams(int shapetype)
 {
     if (shapetype < 0 || shapetype >= int(m_shapeTypes.size()) ||
         !m_shapeTypes[shapetype].isShape)
-        return 0;
+        return nullptr;
     return m_shapeTypes[shapetype].parameters.get();
 }
 
@@ -641,7 +641,7 @@ CFDGImpl::findFunction(int nameIndex)
     map<int,AST::def_ptr>::iterator fi = mFunctions.find(nameIndex);
     if (fi != mFunctions.end())
         return fi->second.get();
-    return 0;
+    return nullptr;
 }
 
 Renderer*
@@ -654,39 +654,39 @@ CFDGImpl::renderer(int width, int height, double minSize,
         {
             CfdgError e(mInitShape->mLocation, "This shape takes parameters");
             m_system->syntaxError(e);
-            return 0;
+            return nullptr;
         }
     } else {
         m_system->message("No startshape found");
         m_system->error();
-        return 0;
+        return nullptr;
     }
-    RendererImpl* r = NULL;
+    RendererImpl* r = nullptr;
     try {
         r = new RendererImpl(this, width, height, minSize, variation, border);
         Modification tiled;
         Modification sized;
         Modification timed;
-        if (hasParameter("CF::Tile", tiled, NULL)) {
+        if (hasParameter("CF::Tile", tiled, nullptr)) {
             mTileMod = tiled;
             mTileOffset.x = mTileMod.m_transform.tx;
             mTileOffset.y = mTileMod.m_transform.ty;
             mTileMod.m_transform.tx = mTileMod.m_transform.ty = 0.0;
         }
-        if (hasParameter("CF::Size", sized, NULL)) {
+        if (hasParameter("CF::Size", sized, nullptr)) {
             mSizeMod = sized;
             mTileOffset.x = mSizeMod.m_transform.tx;
             mTileOffset.y = mSizeMod.m_transform.ty;
             mSizeMod.m_transform.tx = mSizeMod.m_transform.ty = 0.0;
         }
-        if (hasParameter("CF::Time", timed, NULL)) {
+        if (hasParameter("CF::Time", timed, nullptr)) {
             mTimeMod = timed;
         }
         r->initBounds();
     } catch (CfdgError e) {
         m_system->syntaxError(e);
         delete r;   // deletes this
-        return 0;
+        return nullptr;
     }
     return r;
 }

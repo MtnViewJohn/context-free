@@ -87,7 +87,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     mCFstack.reserve(8000);
     mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);
 
-    m_canvas = 0;
+    m_canvas = nullptr;
     mColorConflict = false;
     m_maxShapes = 500000000;
     m_currScale = m_currArea = 0.0;
@@ -99,8 +99,8 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     shapeMap[1].mPath = &shape1;
     shapeMap[2].mPath = &shape2;
     
-    m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, 0);
-    m_cfdg->hasParameter("CF::Frame", mCurrentFrame, 0);
+    m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, nullptr);
+    m_cfdg->hasParameter("CF::Frame", mCurrentFrame, nullptr);
 }
 
 void
@@ -162,8 +162,8 @@ RendererImpl::initBounds()
 {
     init();
     double tile_x, tile_y;
-    m_tiled = m_cfdg->isTiled(0, &tile_x, &tile_y);
-    m_frieze = m_cfdg->isFrieze(0, &tile_x, &tile_y);
+    m_tiled = m_cfdg->isTiled(nullptr, &tile_x, &tile_y);
+    m_frieze = m_cfdg->isFrieze(nullptr, &tile_x, &tile_y);
     m_sized = m_cfdg->isSized(&tile_x, &tile_y);
     m_timed = m_cfdg->isTimed(&mTimeBounds);
     
@@ -242,7 +242,7 @@ RendererImpl::cleanup()
     }
     mCFstack.clear();
     
-    delete mCurrentPath; mCurrentPath = 0;
+    delete mCurrentPath; mCurrentPath = nullptr;
     m_cfdg->resetCachedPaths();
 }
 
@@ -522,7 +522,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     int curr_height = m_height;
     rescaleOutput(curr_width, curr_height, true);
     
-    m_canvas->start(true, m_cfdg->getBackgroundColor(0),
+    m_canvas->start(true, m_cfdg->getBackgroundColor(nullptr),
         curr_width, curr_height);
     m_canvas->end();
 
@@ -666,7 +666,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         if (path) {
             path->traversePath(s, this);
         } else {
-            CommandInfo* attr = 0;
+            CommandInfo* attr = nullptr;
             if (s.mShapeType < 3) attr = &(shapeMap[s.mShapeType]);
             processPathCommand(s, attr);
         }
@@ -724,7 +724,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
 void
 RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
 {
-    const ASTrule* rule = 0;
+    const ASTrule* rule = nullptr;
     if (m_cfdg->getShapeType(s.mShapeType) != CFDGImpl::pathType && 
         primShape::isPrimShape(s.mShapeType) && expectedType == ASTreplacement::op)
     {
