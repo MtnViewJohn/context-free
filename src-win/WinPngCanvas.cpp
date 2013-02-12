@@ -43,7 +43,7 @@
 using namespace std;
 using namespace Gdiplus;
 
-static ColorPalette* GrayPalette = 0;
+static ColorPalette* GrayPalette = nullptr;
 static ULONG_PTR GdiPToken;
 static GdiplusStartupInput GdiPStartInput;
 static GdiplusStartupOutput GdiPStartOutput;
@@ -75,14 +75,14 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
    UINT  num = 0;          // number of image encoders
    UINT  size = 0;         // size of the image encoder array in bytes
 
-   ImageCodecInfo* pImageCodecInfo = NULL;
+   ImageCodecInfo* pImageCodecInfo = nullptr;
 
    GetImageEncodersSize(&num, &size);
    if(size == 0)
       return -1;  // Failure
 
    pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
-   if(pImageCodecInfo == NULL)
+   if(pImageCodecInfo == nullptr)
       return -1;  // Failure
 
    GetImageEncoders(num, size, pImageCodecInfo);
@@ -167,7 +167,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     TCHAR fullpath[MAX_PATH];
 	size_t cvt;
     ::mbstowcs_s(&cvt, wpath, MAX_PATH, outfilename, MAX_PATH);
-    ::GetFullPathName(wpath, MAX_PATH, fullpath, NULL);
+    ::GetFullPathName(wpath, MAX_PATH, fullpath, nullptr);
     const WCHAR* mimetype = mWallpaper ? L"image/bmp" : L"image/png";
 
     if (encClsid == CLSID_NULL && GetEncoderClsid(mimetype, &encClsid) == -1) {
@@ -197,7 +197,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             saveBM = new Bitmap(width, height, stride, PixelFormat32bppPARGB, data);
             break;
         default:
-            saveBM = 0;
+            saveBM = nullptr;
             break;
     }
 
@@ -225,11 +225,11 @@ void pngCanvas::output(const char* outfilename, int frame)
             ::FormatMessageA(
                 FORMAT_MESSAGE_ALLOCATE_BUFFER | 
                 FORMAT_MESSAGE_FROM_SYSTEM,
-                NULL,
+                nullptr,
                 dw,
                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                 (LPSTR) &lpMsgBuf,
-                0, NULL );
+                0, nullptr );
 
             cerr << ": " << (char*)lpMsgBuf;
 

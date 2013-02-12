@@ -27,7 +27,7 @@
 
 const char* APP_NAME(const char* argv0)
 {
-    if (argv0 == 0) return "ContextFreeCLI.exe";
+    if (argv0 == nullptr) return "ContextFreeCLI.exe";
     
     const char* dir = strrchr(argv0, '\\');
     

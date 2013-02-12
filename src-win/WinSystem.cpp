@@ -1,7 +1,7 @@
 // WinSystem.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2005-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -131,7 +131,7 @@ void WinSystem::statusUpdate()
 
 void WinSystem::orphan()
 {
-    mWindow = 0;
+    mWindow = nullptr;
     mName.clear();
     mText.clear();
 }

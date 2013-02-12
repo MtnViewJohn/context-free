@@ -314,7 +314,7 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
             break;
     }
 
-    WinSystem* sys = new WinSystem(0);
+    WinSystem* sys = new WinSystem(nullptr);
     std::vector<std::string> temps = sys->findTempFiles();
     delete sys;
     if (!temps.empty()) {
