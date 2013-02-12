@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2007 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2007-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2007-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -92,7 +92,7 @@ enum {
     switch (fmt) {
         case aggCanvas::RGBA8_Blend:
         case aggCanvas::RGBA16_Blend:
-            self = [super initWithBitmapDataPlanes: NULL
+            self = [super initWithBitmapDataPlanes: nullptr
                                         pixelsWide: width
                                         pixelsHigh: height
                                      bitsPerSample: bps 
@@ -103,7 +103,7 @@ enum {
             break;
         case aggCanvas::RGB8_Blend:
         case aggCanvas::RGB16_Blend:
-            self = [super initWithBitmapDataPlanes: NULL
+            self = [super initWithBitmapDataPlanes: nullptr
                                         pixelsWide: width
                                         pixelsHigh: height
                                      bitsPerSample: bps 
@@ -114,7 +114,7 @@ enum {
             break;
         case aggCanvas::Gray8_Blend:
         case aggCanvas::Gray16_Blend:
-            self = [super initWithBitmapDataPlanes: NULL
+            self = [super initWithBitmapDataPlanes: nullptr
                                         pixelsWide: width
                                         pixelsHigh: height
                                      bitsPerSample: bps 
@@ -210,9 +210,9 @@ namespace {
 {
     self = [super initWithFrame:frame];
     if (self) {
-        mEngine = 0;
-        mRenderer = 0;
-        mCanvas = 0;
+        mEngine = nullptr;
+        mRenderer = nullptr;
+        mCanvas = nullptr;
         
         mRenderBitmap = nil;
         mDrawingImage = nil;
@@ -229,7 +229,7 @@ namespace {
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
 
-        mAnimationCanvas = 0;
+        mAnimationCanvas = nullptr;
 
         mTiled = false;
         
@@ -674,7 +674,7 @@ namespace {
                                          (CFStringRef)@"public.png", 1, nil);
     if (!destref) return nil;
     
-    CGImageDestinationAddImage(destref, iref, NULL);
+    CGImageDestinationAddImage(destref, iref, nullptr);
     CGImageDestinationFinalize(destref);
     CFRelease(destref);
     return mdata;
@@ -885,7 +885,7 @@ namespace {
     mRendererStopping = false;
 
     delete mCanvas;
-    mCanvas = 0;
+    mCanvas = nullptr;
     
 #ifndef PROGRESS_ANIMATE_DIRECTLY
     [mProgress stopAnimation: self];
@@ -1040,7 +1040,7 @@ namespace {
 {
     if (!mEngine) return;
     
-    assert(mRenderer == 0);
+    assert(mRenderer == nullptr);
     mRenderer = mEngine->renderer(
         (int)size.width, (int)size.height,
         minSize,
@@ -1270,12 +1270,12 @@ namespace {
     bool movieOK = mAnimationCanvas->getError() == nil;
     if (movieOK) {
         mCanvas = mAnimationCanvas;
-        mAnimationCanvas = 0;
+        mAnimationCanvas = nullptr;
         
         [self renderBegin: &parameters];
     } else {
         delete mAnimationCanvas;
-        mAnimationCanvas = 0;
+        mAnimationCanvas = nullptr;
         [mStatus setStringValue: @"An error occured while initializing the movie file."];
         NSBeep();
     }
@@ -1283,10 +1283,10 @@ namespace {
 
 - (void)deleteRenderer
 {
-    mEngine = 0;
-    if (mRenderer == 0) return;
+    mEngine = nullptr;
+    if (mRenderer == nullptr) return;
     NSValue* r = [NSValue valueWithPointer: (const void*)mRenderer];
-    mRenderer = 0;
+    mRenderer = nullptr;
     [NSThread detachNewThreadSelector:@selector(rendererDeleteThread:) toTarget:[GView class] withObject:r];
 }
 

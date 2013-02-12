@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2008-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -65,8 +65,8 @@ enum {
 #endif  // MAC_OS_X_VERSION_10_7
 
 namespace {
-    NSArray* urls = 0;
-    NSArray* examples = 0;
+    NSArray* urls = nil;
+    NSArray* examples = nil;
     
     NSString* PrefKeyLaunchAction = @"LaunchAction";
     enum LaunchAction {

@@ -58,9 +58,9 @@ void pngCanvas::output(const char* outfilename, int frame)
     png_infop info_ptr = 0;
 
     png_bytep row = (mPixelFormat & Has_16bit_Color) ? 
-        NULL : new png_byte[mStride];
+        nullptr : new png_byte[mStride];
     png_uint_16p row16 = (mPixelFormat & Has_16bit_Color) ? 
-        new png_uint_16[mStride >> 1] : NULL;
+        new png_uint_16[mStride >> 1] : nullptr;
     
     try {
         png_ptr = png_create_write_struct(

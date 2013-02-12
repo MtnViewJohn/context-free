@@ -96,7 +96,7 @@
             if (i < planesExpected)
                 _imagePlanes[i] = planes[i];
             else 
-                _imagePlanes[i] = NULL;
+                _imagePlanes[i] = nullptr;
                 
             if (_imagePlanes[i]) ++planesProvided;
         }
@@ -115,7 +115,7 @@
             _imagePlanes[i] = bytes;
             bytes += planeSize;
         } else {
-            _imagePlanes[i] = NULL;
+            _imagePlanes[i] = nullptr;
         }
     }
     
@@ -229,7 +229,7 @@
     int offset =    (int)cropRect.origin.y * _bytesPerRow + 
                     (int)cropRect.origin.x * (_bitsPerPixel >> 3);
     for (unsigned int i = 0; i < 5; ++i)
-        planes[i] = _imagePlanes[i] ? (_imagePlanes[i] + offset) : NULL;
+        planes[i] = _imagePlanes[i] ? (_imagePlanes[i] + offset) : nullptr;
     int width = (int)cropRect.size.width;
     int height = (int)cropRect.size.height;
 
