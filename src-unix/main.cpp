@@ -456,9 +456,9 @@ int main (int argc, char* argv[]) {
     sigemptyset(&new_action.sa_mask);
     new_action.sa_flags = 0;
 
-    sigaction(SIGINT, NULL, &old_action);
+    sigaction(SIGINT, nullptr, &old_action);
     if (old_action.sa_handler != SIG_IGN)
-        sigaction(SIGINT, &new_action, NULL);
+        sigaction(SIGINT, &new_action, nullptr);
 #endif    
     
     processCommandLine(argc, argv, opts);
@@ -575,7 +575,7 @@ int main (int argc, char* argv[]) {
     if (!opts.quiet) setupTimer(TheRenderer);
     
     TheRenderer->setMaxShapes(opts.maxShapes);
-    TheRenderer->run(NULL, false);
+    TheRenderer->run(nullptr, false);
     
     opts.width = TheRenderer->m_width;
     opts.height = TheRenderer->m_height;

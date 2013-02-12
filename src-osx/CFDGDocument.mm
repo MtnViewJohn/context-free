@@ -123,7 +123,7 @@ namespace {
     CocoaSystem::syntaxError(const CfdgError& err)
     {
         if (!mDoc) return;
-        if (err.where.begin.filename == NULL) return;
+        if (err.where.begin.filename == nullptr) return;
         
         CfdgErrorWrapper* objcerr = [[[CfdgErrorWrapper alloc] initWithError: &err]
                                      autorelease];
@@ -302,7 +302,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     static NSLock* parseLock = [[NSLock alloc] init];
     
-    CFDG* result = 0;
+    CFDG* result = nullptr;
     if ([parseLock lockBeforeDate: [NSDate dateWithTimeIntervalSinceNow: 2.0]]) {
         result = CFDG::ParseFile(fileName, mSystem, [mGView variation]);
         [parseLock unlock];
