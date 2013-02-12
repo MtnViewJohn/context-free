@@ -60,7 +60,7 @@ Win32System::tempFileDirectory()
 ostream*
 Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
 {    
-    ofstream* f = 0;
+    ofstream* f = nullptr;
     
     char* b = _tempnam(tempFileDirectory(), TempPrefixes[tt]);
     if (b) {

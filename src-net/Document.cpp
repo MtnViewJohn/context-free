@@ -118,7 +118,7 @@ void Document::InitializeStuff()
 void Document::DestroyStuff()
 {
     delete mCanvas;
-    Form1::DeleteRenderer(mRenderer); mRenderer = 0; mEngine = 0;
+    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; mEngine = nullptr;
     if (mSystem) mSystem->orphan();
     delete mSVGCanvas;
     delete mAnimationCanvas;
@@ -528,7 +528,7 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
         success =  false;
     }
     delete mTempCanvas;
-    mTempCanvas = 0;
+    mTempCanvas = nullptr;
     return success;
 }
 
@@ -605,7 +605,7 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
 
         if (mAnimationCanvas->mError) {
             delete mAnimationCanvas;
-            mAnimationCanvas = NULL;
+            mAnimationCanvas = nullptr;
         } else {
             postAction = PostRenderAction::DoNothing;
             renderThread->RunWorkerAsync();
@@ -938,7 +938,7 @@ void Document::updateRenderButton()
 
 void Document::DoRender()
 {
-    Form1::DeleteRenderer(mRenderer); mRenderer = 0; mEngine = 0;
+    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; mEngine = nullptr;
     setMessageText(nullptr);
 
     if (!mSystem)
@@ -976,7 +976,7 @@ void Document::DoRender()
     mTiled = mEngine->isTiled() || mEngine->isFrieze();
 
     delete mCanvas;
-    mCanvas = 0;
+    mCanvas = nullptr;
 
     if (renderParams->periodicUpdate)
         setupCanvas(mRenderer);
@@ -988,7 +988,7 @@ void Document::DoRender()
         updateRenderButton();
     } else {
         delete mCanvas;
-        mCanvas = 0;
+        mCanvas = nullptr;
     }
 }
 
@@ -1019,13 +1019,13 @@ void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
                     renderParams->animateZoom && !mTiled);
 
                 delete mAnimationCanvas;
-                mAnimationCanvas = 0;
+                mAnimationCanvas = nullptr;
             }
             break;
         case RenderParameters::RenderActions::SaveSVG:
             mRenderer->draw(mSVGCanvas);
             delete mSVGCanvas;
-            mSVGCanvas = 0;
+            mSVGCanvas = nullptr;
             break;
         case RenderParameters::RenderActions::Render:
             {
@@ -1156,7 +1156,7 @@ void Document::setupCanvas(Renderer* r)
 
     if (!mCanvas) {
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine), 
-            renderParams->width, renderParams->height, mEngine->getBackgroundColor(0));
+            renderParams->width, renderParams->height, mEngine->getBackgroundColor(nullptr));
     }
 }
 
@@ -1218,7 +1218,7 @@ void Document::updateRenderBox()
     if (newBitmap == nullptr) {
         delete g;
         delete mTempCanvas;
-        mTempCanvas = 0;
+        mTempCanvas = nullptr;
         return;
     }
 
@@ -1245,7 +1245,7 @@ void Document::updateRenderBox()
     delete newBitmap;
     delete g;
     delete mTempCanvas;
-    mTempCanvas = 0;
+    mTempCanvas = nullptr;
 
     renderBox->Invalidate();
 }
