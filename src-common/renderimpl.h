@@ -76,7 +76,7 @@ class RendererImpl : public Renderer {
         void animate(Canvas* canvas, int frames, bool zoom);
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr);
         virtual void processShape(const Shape& s);
-        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = 0);
+        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr);
         virtual void processSubpath(const Shape& s, bool tr, int);
         
     private:

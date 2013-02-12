@@ -1,7 +1,7 @@
 // tiledAggCanvas.cpp
 // Context Free
 // ---------------------
-// Copyright (C) 2012 John Horigan - john@glyphic.com
+// Copyright (C) 2012-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
                                      int variation, bool wallpaper, Renderer *r, int mx, int my)
 : aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
-  mCurrentFrame(0), mVariation(variation), mData(0), mPixelFormat(pixfmt), 
+  mCurrentFrame(0), mVariation(variation), mData(nullptr), mPixelFormat(pixfmt),
   mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
   mFullHeight(height), mOriginX(0), mOriginY(0)
 {

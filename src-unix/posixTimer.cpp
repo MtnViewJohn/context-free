@@ -1,7 +1,7 @@
 // posixTimer.cpp
 // Context Free
 // ---------------------
-// Copyright (C) 2008-2011 John Horigan
+// Copyright (C) 2008-2013 John Horigan
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 #include <sys/time.h>
 #include <signal.h>
 
-Renderer* runningRenderer = 0;
+Renderer* runningRenderer = nullptr;
 
 void
 statusTimer(int signal)

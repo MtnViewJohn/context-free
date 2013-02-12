@@ -54,7 +54,7 @@ union StackType {
         AST::ASTparameters::const_iterator _Iter;
         AST::ASTparameters::const_iterator _End;
         
-        const_iterator() : _Ptr(0) {}
+        const_iterator() : _Ptr(nullptr) {}
         const_iterator(const StackType* s)
         : _Ptr(s)
         {
@@ -64,7 +64,7 @@ union StackType {
                 _End = p->end();
                 _Ptr += 2;
             } else {
-                _Ptr = 0;
+                _Ptr = nullptr;
             }
         }
         const_iterator(const StackType* s, const AST::ASTparameters* p)
@@ -74,7 +74,7 @@ union StackType {
                 _Iter = p->begin();
                 _End = p->end();
                 if (_Iter == _End)
-                    _Ptr = 0;           // Should never happen
+                    _Ptr = nullptr;           // Should never happen
             }
         }
         
@@ -86,7 +86,7 @@ union StackType {
                 _Ptr += _Iter->mTuplesize;
                 ++_Iter;
                 if (_Iter == _End)
-                    _Ptr = 0;
+                    _Ptr = nullptr;
             }
             return *_Ptr;
         }
@@ -107,7 +107,7 @@ union StackType {
         AST::ASTparameters::const_iterator _Iter;
         AST::ASTparameters::const_iterator _End;
         
-        iterator() : _Ptr(0) {}
+        iterator() : _Ptr(nullptr) {}
         iterator(StackType* s)
         : _Ptr(s)
         {
@@ -117,7 +117,7 @@ union StackType {
                 _End = p->end();
                 _Ptr += 2;
             } else {
-                _Ptr = 0;
+                _Ptr = nullptr;
             }
         }
         iterator(StackType* s, const AST::ASTparameters* p)
@@ -127,7 +127,7 @@ union StackType {
                 _Iter = p->begin();
                 _End = p->end();
                 if (_Iter == _End)
-                    _Ptr = 0;           // Should never happen
+                    _Ptr = nullptr;           // Should never happen
             }
         }
         
@@ -139,7 +139,7 @@ union StackType {
                 _Ptr += _Iter->mTuplesize;
                 ++_Iter;
                 if (_Iter == _End)
-                    _Ptr = 0;
+                    _Ptr = nullptr;
             }
             return *_Ptr;
         }

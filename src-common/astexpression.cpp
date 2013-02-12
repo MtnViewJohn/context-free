@@ -157,14 +157,14 @@ namespace AST {
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType), 
       functype(NotAFunction), arguments(nullptr)
     {
-        if (&func == 0 || func.empty()) {
+        if (&func == nullptr || func.empty()) {
             CfdgError::Error(nameLoc, "bad function call");
             return;
         }
         
         isConstant = args ? args->isConstant : true;
         isLocal = args ? args->isLocal : true;
-        int argcount = args ? args->evaluate(0, 0) : 0;
+        int argcount = args ? args->evaluate(nullptr, 0) : 0;
         
         functype = GetFuncType(func);
         
@@ -278,14 +278,14 @@ namespace AST {
                                        const ASTparameters* parent)
     : ASTexpression(loc, !args || args->isConstant, false, RuleType),
       shapeType(t), entropyVal(name), argSource(DynamicArgs),
-      arguments(args.release()), simpleRule(0), mStackIndex(0), typeSignature(types)
+      arguments(args.release()), simpleRule(nullptr), mStackIndex(0), typeSignature(types)
     {
         if (types && types->empty()) {
-            types = NULL;
-            typeSignature = NULL;
+            types = nullptr;
+            typeSignature = nullptr;
         }
         if (parent && parent->empty())
-            parent = NULL;
+            parent = nullptr;
         argSize = ASTparameter::CheckType(types, parent, arguments.get(), loc, true);
         if (argSize < 0) {
             argSource = NoArgs;
@@ -313,7 +313,7 @@ namespace AST {
                                        int stackIndex)
     : ASTexpression(loc, false, false, RuleType), shapeType(0), argSize(0), 
       entropyVal(name), argSource(StackArgs),
-      arguments(nullptr), simpleRule(0), mStackIndex(stackIndex), typeSignature(0)
+      arguments(nullptr), simpleRule(nullptr), mStackIndex(stackIndex), typeSignature(nullptr)
     {
     }
     
@@ -321,11 +321,11 @@ namespace AST {
                                        const std::string& name, 
                                        const yy::location& loc)
     : ASTexpression(loc, false, false, RuleType), shapeType(r->shapeType), argSize(r->argSize), 
-      entropyVal(name), argSource(NoArgs), arguments(nullptr), simpleRule(0), mStackIndex(0),
+      entropyVal(name), argSource(NoArgs), arguments(nullptr), simpleRule(nullptr), mStackIndex(0),
       typeSignature(r->typeSignature)
     {
         if (r->argSource == SimpleArgs) {
-            StackType* simp = StackType::alloc(shapeType, argSize, 0);
+            StackType* simp = StackType::alloc(shapeType, argSize, nullptr);
             simp[0].ruleHeader.mRefCount = UINT32_MAX;
             argSource = SimpleArgs;
             simpleRule = simp;
@@ -343,13 +343,13 @@ namespace AST {
       arguments(std::move(r.arguments)), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
       typeSignature(r.typeSignature)
     {
-        r.simpleRule = NULL;    // move semantics
+        r.simpleRule = nullptr;    // move semantics
     }
     
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
     : ASTexpression(loc, false, false, RuleType), shapeType(-1),
-    argSize(0), argSource(ShapeArgs), arguments(std::move(args)),
-      simpleRule(0), mStackIndex(0), typeSignature(0)
+      argSize(0), argSource(ShapeArgs), arguments(std::move(args)),
+      simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr)
     {
         assert(arguments);
     }
@@ -394,7 +394,7 @@ namespace AST {
             return arguments->evalArgs(rti, parent);
         default:
             assert(false);
-            return NULL;
+            return nullptr;
         }
     }
     
@@ -403,7 +403,7 @@ namespace AST {
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape expression in a shape context");
-            return NULL;
+            return nullptr;
         }
         
         return e->evalArgs(rti, parent);
@@ -414,7 +414,7 @@ namespace AST {
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
-            return NULL;
+            return nullptr;
         }
         
         return (*arguments)[getIndex(rti)]->evalArgs(rti, parent);
@@ -425,7 +425,7 @@ namespace AST {
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Function does not evaluate to a shape");
-            return NULL;
+            return nullptr;
         }
         
         if (!rti)
@@ -434,7 +434,7 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        const StackType* ret = NULL;
+        const StackType* ret = nullptr;
         
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();
@@ -541,7 +541,7 @@ namespace AST {
         }
         
         if ((*arguments)[0]->mType != NumericType || 
-            (*arguments)[0]->evaluate(0, 0) != 1)
+            (*arguments)[0]->evaluate(nullptr, 0) != 1)
         {
             CfdgError::Error((*arguments)[0]->where, "is()/select() selector must be a numeric scalar");
             return;
@@ -550,7 +550,7 @@ namespace AST {
         mType = (*arguments)[1]->mType;
         isLocal = (*arguments)[0]->isLocal && (*arguments)[1]->isLocal;
         isNatural = (*arguments)[1]->isNatural;
-        tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(0, 0) : 1;
+        tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(nullptr, 0) : 1;
         if (tupleSize > 1) isNatural = false;
         if (tupleSize == -1)
             CfdgError::Error((*arguments)[1]->where, "Error determining tuple size");
@@ -559,7 +559,7 @@ namespace AST {
             if (mType != (*arguments)[i]->mType) {
                 CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same type");
             } else if (mType == NumericType && tupleSize != -1 && 
-                     (*arguments)[i]->evaluate(0, 0) != tupleSize)
+                     (*arguments)[i]->evaluate(nullptr, 0) != tupleSize)
             {
                 CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
             }
@@ -597,7 +597,7 @@ namespace AST {
         if (!args && func->mStackCount)
             CfdgError::Error(nameLoc, "Function takes arguments");
         if (args && func->mStackCount)
-            ASTparameter::CheckType(&(func->mParameters), NULL, args, args->where, false);
+            ASTparameter::CheckType(&(func->mParameters), nullptr, args, args->where, false);
     }
     
     ASTlet::ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
@@ -628,7 +628,7 @@ namespace AST {
         if (mConstData) {
             mConstData = bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
         }
-        if ((*args)[0]->evaluate(0, 0) == 1) {
+        if ((*args)[0]->evaluate(nullptr, 0) == 1) {
             mArgs.reset((*args)[0]);
             if (!args->release(0)) {
                 args.release();
@@ -680,7 +680,7 @@ namespace AST {
             }
         } else {
             mArgs = std::move(args);
-            if (mArgs->evaluate(0, 0) != 1)
+            if (mArgs->evaluate(nullptr, 0) != 1)
                 CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
         }
         if (mStride < 0 || mLength < 0)
@@ -751,7 +751,7 @@ namespace AST {
                 
                 int argcount = 0;
                 if (mod->args && mod->args->mType == NumericType)
-                    argcount = mod->args->evaluate(0, 0);
+                    argcount = mod->args->evaluate(nullptr, 0);
                 
                 switch (mod->modType) {
                     case ASTmodTerm::x:
@@ -794,7 +794,7 @@ namespace AST {
             temp.clear();
             
             // If x and y are provided then merge them into a single (x,y) modification
-            if (x && y && x->args->evaluate(0, 0) == 1 && y->args->evaluate(0, 0) == 1) {
+            if (x && y && x->args->evaluate(nullptr, 0) == 1 && y->args->evaluate(nullptr, 0) == 1) {
                 x->args.reset(x->args.release()->append(y->args.release()));
                 y.reset();
             }
@@ -940,7 +940,7 @@ namespace AST {
         if (res && (length < count))
             return -1;
         if (res) {
-            if (rti == NULL) throw DeferUntilRuntime();
+            if (rti == nullptr) throw DeferUntilRuntime();
             const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
                 &(rti->mCFstack[stackIndex]);
             for (int i = 0; i < count; ++i)
@@ -994,9 +994,9 @@ namespace AST {
             return -1;
         
         if (mType == FlagType && op == '+') {
-            if (left->evaluate(res ? &l : 0, 1, rti) != 1)
+            if (left->evaluate(res ? &l : nullptr, 1, rti) != 1)
                 return -1;
-            if (!right || right->evaluate(res ? &r : 0, 1, rti) != 1)
+            if (!right || right->evaluate(res ? &r : nullptr, 1, rti) != 1)
                 return -1;
             int f = (int)l | (int)r;
             if (res)
@@ -1009,7 +1009,7 @@ namespace AST {
             return -1;
         }
         
-        if (left->evaluate(res ? &l : 0, 1, rti) != 1) {
+        if (left->evaluate(res ? &l : nullptr, 1, rti) != 1) {
             CfdgError::Error(left->where, "illegal operand");
             return -1;
         }
@@ -1026,7 +1026,7 @@ namespace AST {
             }
         }
         
-        int rightnum = right ? right->evaluate(res ? &r : 0, 1, rti) : 0; 
+        int rightnum = right ? right->evaluate(res ? &r : nullptr, 1, rti) : 0;
         
         if (rightnum == 0 && (op == 'N' || op == 'P' || op == '!')) {
             if (res) {
@@ -1113,7 +1113,7 @@ namespace AST {
                     return -1;
             }
         } else {
-            if (strchr("+-*/^_<>LG=n&|X", op) == 0)
+            if (strchr("+-*/^_<>LG=n&|X", op) == nullptr)
                 return -1;
         }
         
@@ -1273,28 +1273,28 @@ namespace AST {
                 *res = floor(a[0]);
                 break;
             case Ftime:
-                if (rti == NULL) throw DeferUntilRuntime();
+                if (rti == nullptr) throw DeferUntilRuntime();
                 *res = rti->mCurrentTime;
                 break;
             case Frame:
-                if (rti == NULL) throw DeferUntilRuntime();
+                if (rti == nullptr) throw DeferUntilRuntime();
                 *res = rti->mCurrentFrame;
                 break;
             case Rand_Static: 
                 *res = random * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
                 break;
             case Rand: 
-                if (rti == NULL) throw DeferUntilRuntime();
+                if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
                 *res = rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
                 break;
             case Rand2: 
-                if (rti == NULL) throw DeferUntilRuntime();
+                if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
                 *res = (rti->mCurrentSeed.getDouble() * 2.0 - 1.0) * a[1] + a[0];
                 break;
             case RandInt: 
-                if (rti == NULL) throw DeferUntilRuntime();
+                if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
                 *res = floor(rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
                 break;
@@ -1313,7 +1313,7 @@ namespace AST {
             return -1;
         }
         
-        if (res == NULL)
+        if (res == nullptr)
             return tupleSize;
         
         return (*arguments)[getIndex(rti)]->evaluate(res, length, rti);
@@ -1361,7 +1361,7 @@ namespace AST {
             return -1;
         
         if (res) {
-            if (rti == NULL && !mConstData) throw DeferUntilRuntime();
+            if (rti == nullptr && !mConstData) throw DeferUntilRuntime();
             
             double i;
             if (mArgs->evaluate(&i, 1, rti) != 1) {
@@ -1407,7 +1407,7 @@ namespace AST {
         if (mType != ModType)
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
         
-        if (rti == NULL) throw DeferUntilRuntime();
+        if (rti == nullptr) throw DeferUntilRuntime();
         if (justCheck) return;
         const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
             &(rti->mCFstack[stackIndex]);
@@ -1511,7 +1511,7 @@ namespace AST {
         if (args) {
             if (modType != modification && args->mType == NumericType) {
                 if (justCheck)
-                    argcount = args->evaluate(0, 0);
+                    argcount = args->evaluate(nullptr, 0);
                 else 
                     argcount = args->evaluate(modArgs, 6, rti);
             } else if (modType == modification && args->mType != ModType){
@@ -1661,7 +1661,7 @@ namespace AST {
                 if (justCheck) break;
                 if (argcount == 1) {
                     if (m.m_ColorAssignment & HSBColor::HueMask) {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1674,7 +1674,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::HueMask ||
                          m.m_Color.h != 0.0))
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1698,7 +1698,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                          m.m_Color.s != 0.0)
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1711,7 +1711,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                          m.m_Color.s != 0.0 || m.m_ColorTarget.s != 0.0)
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1733,7 +1733,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::BrightnessMask ||
                          m.m_Color.b != 0.0))
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1746,7 +1746,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
                          m.m_Color.b != 0.0 || m.m_ColorTarget.b != 0.0)
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1770,7 +1770,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::AlphaMask ||
                          m.m_Color.a != 0.0))
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1783,7 +1783,7 @@ namespace AST {
                     if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                          m.m_Color.a != 0.0 || m.m_ColorTarget.a != 0.0)
                     {
-                        if (rti == 0)
+                        if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             Renderer::ColorConflict(rti, where);
@@ -1803,7 +1803,7 @@ namespace AST {
                 if ((m.m_ColorAssignment & HSBColor::HueMask) ||
                      m.m_Color.h != 0.0)
                 {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1823,7 +1823,7 @@ namespace AST {
                 if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                      m.m_Color.s != 0.0)
                 {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1842,7 +1842,7 @@ namespace AST {
                 if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
                      m.m_Color.b != 0.0)
                 {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1863,7 +1863,7 @@ namespace AST {
                 if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                      m.m_Color.a != 0.0)
                 {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1885,7 +1885,7 @@ namespace AST {
             case ASTmodTerm::targSat: {
                 if (justCheck) break;
                 if (m.m_ColorTarget.s != 0.0) {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1899,7 +1899,7 @@ namespace AST {
             case ASTmodTerm::targBright: {
                 if (justCheck) break;
                 if (m.m_ColorTarget.b != 0.0) {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1913,7 +1913,7 @@ namespace AST {
             case ASTmodTerm::targAlpha: {
                 if (justCheck) break;
                 if (m.m_ColorTarget.a != 0.0) {
-                    if (rti == 0)
+                    if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         Renderer::ColorConflict(rti, where);
@@ -1966,7 +1966,7 @@ namespace AST {
             }
             case ASTmodTerm::modification: {
                 minCount = maxCount = 0;
-                if (rti == 0) {
+                if (rti == nullptr) {
                     const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
                     if (!mod || (mod->modClass & (ASTmodification::HueClass |
                                                   ASTmodification::HueTargetClass |
@@ -2218,7 +2218,7 @@ namespace AST {
         if (isConstant && (mType == NumericType || mType == FlagType)) {
             double result;
             if (evaluate(&result, 1) != 1) {
-                return 0;
+                return nullptr;
             }
             
             ASTreal* r = new ASTreal(result, where);
@@ -2309,7 +2309,7 @@ namespace AST {
             bool justCheck = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, NULL);
+                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, nullptr);
             } catch (DeferUntilRuntime) {
                 keepThisOne = true;
             }

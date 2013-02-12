@@ -301,7 +301,7 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
         // Unicode operator found at 1st char, Unread all but the operator and
         // return the token for the operator.
         delete yylval->string;
-        yylval->string = 0;
+        yylval->string = nullptr;
         size_t len = strlen(utf8chars[tok]);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(1);

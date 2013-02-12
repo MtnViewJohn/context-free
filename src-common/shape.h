@@ -102,7 +102,7 @@ protected:
 // and executing a cfdg file
 class Shape : public ShapeBase {
 public:
-    Shape() : ShapeBase(), mParameters(NULL) {}
+    Shape() : ShapeBase(), mParameters(nullptr) {}
     
     const StackType* mParameters;
 

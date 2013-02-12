@@ -154,10 +154,10 @@ class CFDG {
         bool uses16bitColor;
         bool usesTime;
         bool usesFrameTime;
-        virtual bool isTiled(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const = 0;
-        virtual frieze_t isFrieze(agg::trans_affine* tr = 0, double* x = 0, double* y = 0) const = 0;
-        virtual bool isSized(double* x = 0, double* y = 0) const = 0;
-        virtual bool isTimed(agg::trans_affine_time* t = 0) const = 0;
+        virtual bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
+        virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
+        virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
+        virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
         virtual const agg::rgba& getBackgroundColor(Renderer* r) = 0;
         virtual void getSymmetry(AST::SymmList& syms, Renderer* r) = 0;
 
@@ -224,7 +224,7 @@ class Renderer {
         virtual void storeParams(const StackType* p) = 0;
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
-        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = 0) = 0;
+        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) = 0;
         virtual void processSubpath(const Shape& s, bool tr, int) = 0;
     
     protected:
@@ -232,10 +232,10 @@ class Renderer {
         : requestStop(false),
           requestFinishUp(false),
           requestUpdate(false),
-          m_tiledCanvas(0),
+          m_tiledCanvas(nullptr),
           mMaxNatural(1000.0),
           mCurrentTime(0.0), mCurrentFrame(0.0),
-          mCurrentPath(0)
+          mCurrentPath(nullptr)
      { }
         virtual void colorConflict(const yy::location& w) = 0;
 };

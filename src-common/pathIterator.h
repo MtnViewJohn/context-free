@@ -71,7 +71,7 @@ public:
                  const AST::CommandInfo& attr);
     bool boundingRect(const agg::trans_affine& tr, const AST::CommandInfo& attr,
                       double& minx, double& miny, double& maxx, double& maxy,
-                      double scale, agg::point_d* cent = NULL, double* area = NULL);
+                      double scale, agg::point_d* cent = nullptr, double* area = nullptr);
 };
 
 #endif

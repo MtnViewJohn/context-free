@@ -1,7 +1,7 @@
 // CmdInfo.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2010-2011 John Horigan - john@glyphic.com
+// Copyright (C) 2010-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -56,13 +56,13 @@ namespace AST {
                             Default;
         
         CommandInfo() 
-        : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(NULL), 
+        : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(nullptr), 
         mPathUID(std::numeric_limits<UIDtype>::max()) {};
-        CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = NULL);
-        void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = NULL);
+        CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
+        void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     private:
         CommandInfo(unsigned i, agg::path_storage* p);
-        void init(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = NULL);
+        void init(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     };
 
     typedef std::deque<CommandInfo> InfoCache;

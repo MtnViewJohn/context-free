@@ -53,7 +53,7 @@ const char* prettyInt(int);
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
-    FILE *out = 0;
+    FILE *out = nullptr;
     png_structp png_ptr = 0;
     png_infop info_ptr = 0;
 
@@ -179,7 +179,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         if (out != stdout) {
             if (fclose(out) != 0) throw "File I/O error!?!?!";
-            out = 0;
+            out = nullptr;
         }
     }
     catch (const char* msg) {
@@ -190,7 +190,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     if (row)        delete[] row;
     if (row16)      delete[] row16;
 
-    if (out && out != stdout)        fclose(out), out = 0;
+    if (out && out != stdout)        fclose(out), out = nullptr;
     if (png_ptr)    png_destroy_write_struct(&png_ptr, &info_ptr);
 }
 

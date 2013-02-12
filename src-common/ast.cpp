@@ -49,7 +49,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        mDefinition = (def->isConstant || def->isFunction) ? def : 0;
+        mDefinition = (def->isConstant || def->isFunction) ? def : nullptr;
     }
     
     void
@@ -78,7 +78,7 @@ namespace AST {
         } else mType = AST::NoType;
         
         mName = nameIndex;
-        mDefinition = 0;
+        mDefinition = nullptr;
     }
     
     void
@@ -104,7 +104,7 @@ namespace AST {
     {
         if (mType != e.mType) return true;
         if (mType == AST::NumericType &&
-            mTuplesize != e.evaluate(0, 0)) return true;
+            mTuplesize != e.evaluate(nullptr, 0)) return true;
         return false;
     }
     
@@ -115,16 +115,16 @@ namespace AST {
     {
         // Walks down the right edge of an expression tree checking that the types
         // of the children match the specified argument types
-        if ((types == NULL || types->empty()) && (args == NULL)) return 0;
-        if (types == NULL && args && Builder::CurrentBuilder->mCompilePhase == 1) {
+        if ((types == nullptr || types->empty()) && (args == nullptr)) return 0;
+        if (types == nullptr && args && Builder::CurrentBuilder->mCompilePhase == 1) {
             Builder::CurrentBuilder->mWant2ndPass = true;
             return -1;
         }
-        if (types == NULL || types->empty()) {
+        if (types == nullptr || types->empty()) {
             CfdgError::Error(args->where, "Arguments are not expected.");
             return -1;
         }
-        if (args == NULL) {
+        if (args == nullptr) {
             CfdgError::Error(where, "Arguments are expected.");
             return -1;
         }
@@ -158,7 +158,7 @@ namespace AST {
                 return -1;
             }
             if (param_it->mType == AST::NumericType &&
-                param_it->mTuplesize != arg->evaluate(0, 0))
+                param_it->mTuplesize != arg->evaluate(nullptr, 0))
             {
                 if (param_it->mTuplesize == 1)
                     CfdgError::Error(arg->where, "This argument should be scalar");
@@ -189,7 +189,7 @@ namespace AST {
         }
         
         if (justCount && types != parent) {
-            if (parent == NULL) {
+            if (parent == nullptr) {
                 CfdgError::Error(where, "Parameter reuse not allowed in this context.");
                 return -1;
             }
@@ -913,8 +913,8 @@ namespace AST {
                   bool tiled, agg::trans_affine& tile)
     {
         syms.clear();
-        if (e == NULL) return NULL;
-        ASTexpression* ret = 0;
+        if (e == nullptr) return nullptr;
+        ASTexpression* ret = nullptr;
         
         std::vector<double> symmSpec;
         yy::location where;
@@ -928,7 +928,7 @@ namespace AST {
                 case NumericType: {
                     if (symmSpec.empty() && cit->mType != FlagType)
                         CfdgError::Error(cit->where, "Symmetry flag expected here");
-                    int sz = cit->evaluate(0, 0);
+                    int sz = cit->evaluate(nullptr, 0);
                     if (sz < 1) {
                         CfdgError::Error(cit->where, "Could not evaluate this");
                     } else {
@@ -953,7 +953,7 @@ namespace AST {
                     } else {
                         Modification mod;
                         int dummy;
-                        cit->evaluate(mod, 0, 0, false, dummy, false, r);
+                        cit->evaluate(mod, nullptr, nullptr, false, dummy, false, r);
                         addUnique(syms, mod.m_transform);
                     }
                     break;

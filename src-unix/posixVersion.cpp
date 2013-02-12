@@ -27,7 +27,7 @@
 
 const char* APP_NAME(const char* argv0)
 {
-    if (argv0 == 0) return "cfdg";
+    if (argv0 == nullptr) return "cfdg";
     
     const char* dir = strrchr(argv0, '/');
     
