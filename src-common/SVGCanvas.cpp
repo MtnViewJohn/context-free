@@ -178,7 +178,7 @@ void SVGCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr
     mOutput << mEndline << "<g ";
     complete(c, tr, 3, attr, true);
     indent(2);
-    uniquePath attrPath(attr.mPathUID, attr.mIndex);
+    uniquePath attrPath(attr.mPathUID.load(), attr.mIndex);
     unsigned id = mPathIDMap[attrPath];
     if (id) {
         mOutput << mEndline << "<use xlink:href=\"#path" << id << "\" />";

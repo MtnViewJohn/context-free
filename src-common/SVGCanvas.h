@@ -48,7 +48,7 @@ public:
     SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
 
 private:
-    typedef std::pair<AST::CommandInfo::UIDtype, unsigned> uniquePath;
+    typedef std::pair<AST::CommandInfo::UIDdatatype, unsigned> uniquePath;
     
     int mPadding;
     char mEndline[82];
