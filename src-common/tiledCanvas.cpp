@@ -105,7 +105,7 @@ tiledCanvas::tileTransform(const Bounds& b)
     mTileList.clear();
     double dx = -centx, dy = -centy;
     mOffset.transform(&dx, &dy);
-    mTileList.push_back(agg::point_d(dx, dy));
+    mTileList.emplace_back(dx, dy);
     agg::rect_d canvas(-5, -5, (double)(mWidth + 9), (double)(mHeight + 9));
     
     if (mFrieze) {
@@ -121,7 +121,7 @@ tiledCanvas::tileTransform(const Bounds& b)
                 agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
                 if (shape.overlaps(canvas)) {
                     hit = true;
-                    mTileList.push_back(agg::point_d(dx, dy));
+                    mTileList.emplace_back(dx, dy);
                 }
             }
             if (!hit) return;
@@ -145,7 +145,7 @@ tiledCanvas::tileTransform(const Bounds& b)
                 agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
                 if (shape.overlaps(canvas)) {
                     hit = true;
-                    mTileList.push_back(agg::point_d(dx, dy));
+                    mTileList.emplace_back(dx, dy);
                 }
             }
         }
@@ -208,7 +208,7 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
                 agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
                 if (tile.overlaps(screen)) {
                     hit = true;
-                    tessPoints.push_back(agg::point_i(px, py));
+                    tessPoints.emplace_back(px, py);
                 }
             }
             if (!hit) return;
@@ -236,7 +236,7 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
                 agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
                 if (tile.overlaps(screen)) {
                     hit = true;
-                    tessPoints.push_back(agg::point_i(px, py));
+                    tessPoints.emplace_back(px, py);
                 }
             }
         }

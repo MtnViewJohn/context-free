@@ -518,7 +518,7 @@ CFDGImpl::encodeShapeName(const string& s)
     int i = tryEncodeShapeName(s);
     if (i >= 0) return i;
 
-    m_shapeTypes.push_back(ShapeType(s));
+    m_shapeTypes.emplace_back(s);
     return (int)m_shapeTypes.size() - 1;
 }
 
