@@ -28,11 +28,7 @@
 #include "agg_basics.h"
 #include "pathIterator.h"
 #include <cassert>
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#pragma intrinsic(_InterlockedCompareExchange64)
-#endif
+#include <atomic>
 
 namespace AST {
     
@@ -44,7 +40,7 @@ namespace AST {
         "CLOSEPOLY"
     };
     
-    CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID = 1;
+    CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID(1);
     
     const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { nullptr };
     
@@ -669,8 +665,7 @@ namespace AST {
             {
                 r->mCurrentPath->mCommandInfo.push_back(mInfoCache);
             } else {
-                CommandInfo newCmd(r->mIndex, r->mCurrentPath, width, this);
-                r->mCurrentPath->mCommandInfo.push_back(newCmd);
+                r->mCurrentPath->mCommandInfo.emplace_back(r->mIndex, r->mCurrentPath, width, this);
             }
             info = &(r->mCurrentPath->mCommandInfo.back());
         }
@@ -902,19 +897,10 @@ namespace AST {
         }
     }
     
-    CommandInfo::UIDtype
+    CommandInfo::UIDdatatype
     ASTcompiledPath::NextPathUID()
     {
-#ifdef _MSC_VER
-        for(;;) {
-            __int64 from = (__int64)GlobalPathUID;
-            __int64 next = from + 1;
-            if (_InterlockedCompareExchange64((__int64*)(&GlobalPathUID), next, from) == from)
-                return (uint64_t)next;
-        }
-#else
-        return __sync_fetch_and_add(&GlobalPathUID, (CommandInfo::UIDtype)1);
-#endif
+        return ++GlobalPathUID;
     }
     
     bool

@@ -34,31 +34,34 @@
 #include "agg_path_storage.h"
 #include <deque>
 #include <stdint.h>
+#include <atomic>
 
 namespace AST {
     class ASTpathCommand;
     class ASTcompiledPath;
     
     struct CommandInfo {
-#if defined(__ppc__) || defined(__powerpc__)
-        typedef uint32_t    UIDtype;
-#else
-        typedef uint64_t    UIDtype;
-#endif
+        typedef uint_fast64_t UIDdatatype;
+        typedef std::atomic<UIDdatatype>
+                            UIDtype;
+        
         int                 mFlags;
         double              mMiterLimit;
         double              mStrokeWidth;
         unsigned            mIndex;
         agg::path_storage*  mPath;
         UIDtype             mPathUID;
+        static UIDdatatype  PathUIDDefault;
         
         static const CommandInfo
                             Default;
         
         CommandInfo() 
         : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(nullptr), 
-        mPathUID(std::numeric_limits<UIDtype>::max()) {};
+          mPathUID(PathUIDDefault) {};
         CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
+        CommandInfo(CommandInfo&&);
+        CommandInfo(const CommandInfo&);
         void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     private:
         CommandInfo(unsigned i, agg::path_storage* p);

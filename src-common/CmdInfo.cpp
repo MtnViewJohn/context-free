@@ -26,18 +26,16 @@
 #include "CmdInfo.h"
 #include "astreplacement.h"
 #include "primShape.h"
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#pragma intrinsic(_InterlockedCompareExchange64)
-#endif
+#include <atomic>
 
 namespace AST {
 
     const CommandInfo CommandInfo::Default(0, nullptr);
-    
+    CommandInfo::UIDdatatype CommandInfo::PathUIDDefault =
+            std::numeric_limits<CommandInfo::UIDdatatype>::max();
+
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
-    : mIndex(0), mPathUID(std::numeric_limits<UIDtype>::max())
+    : mIndex(0), mPathUID(PathUIDDefault)
     {
         init(i, path, w, c);
     }
@@ -53,13 +51,7 @@ namespace AST {
     {
         // Try to change the path UID from the default value to a value that is 
         // guaranteed to not be in use. If successful then perform initialization
-#ifdef _MSC_VER
-        if (_InterlockedCompareExchange64((__int64*)(&mPathUID), 
-                                          (__int64)(std::numeric_limits<uint64_t>::max()), 
-                                          (__int64)0) == (__int64)(std::numeric_limits<uint64_t>::max()))
-#else
-        if (__sync_bool_compare_and_swap(&mPathUID, std::numeric_limits<UIDtype>::max(), (UIDtype)0))
-#endif
+        if (mPathUID.compare_exchange_strong(PathUIDDefault, 0ULL))
             init(i, path, w, c);
     }
 
@@ -77,9 +69,22 @@ namespace AST {
 
             mIndex = i;
             mPath = &(path->mPath);
-            mPathUID = path->mPathUID;              // this step must be last
+            mPathUID = path->mPathUID.load();              // this step must be last
             mStrokeWidth = w;
         }
     }
+    
+    CommandInfo::CommandInfo(CommandInfo&& from)
+    : mFlags(from.mFlags), mMiterLimit(from.mMiterLimit),
+      mStrokeWidth(from.mStrokeWidth), mIndex(from.mIndex), mPath(from.mPath),
+      mPathUID(from.mPathUID.load())
+    { }
+
+    CommandInfo::CommandInfo(const CommandInfo& from)
+    : mFlags(from.mFlags), mMiterLimit(from.mMiterLimit),
+      mStrokeWidth(from.mStrokeWidth), mIndex(from.mIndex), mPath(from.mPath),
+      mPathUID(from.mPathUID.load())
+    { }
+    
     
 }
