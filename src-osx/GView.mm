@@ -157,13 +157,10 @@ enum {
         accessoryView:(NSView *)view
         didEndSelector:(SEL)selector;
 
-- (void)savePanelDidEnd:(NSSavePanel *)sheet
-    returnCode:(int)result contextInfo:(void *)ctx;
-
-- (void)saveImage:(bool)save toFile:(NSString*)filename;
-- (void)saveTileImage:(bool)save toFile:(NSString*)filename;
-- (void)saveSvg:(bool)save toFile:(NSString*)filename;
-- (void)saveMovie:(bool)save toFile:(NSString*)filename;
+- (void)saveImagetoFile:(NSURL*)filename;
+- (void)saveTileImagetoFile:(NSURL*)filename;
+- (void)saveSvgtoFile:(NSURL*)filename;
+- (void)saveMovietoFile:(NSURL*)filename;
 
 - (void)deleteRenderer;
 + (void)rendererDeleteThread:(id)arg;
@@ -171,7 +168,7 @@ enum {
 
 
 namespace {
-    NSString* saveImageDirectory = nil;
+    NSURL*    saveImageDirectory = nil;
 
     NSString* PrefKeyMovieZoom = @"MovieZoom";
     NSString* PrefKeyMovieLength = @"MovieLength";
@@ -450,7 +447,7 @@ namespace {
         [self showSavePanelTitle: NSLocalizedString(@"Save Image", @"")
             fileType: @"png"
             accessoryView: mSaveImageAccessory
-            didEndSelector: @selector(saveImage:toFile:)];
+            didEndSelector: @selector(saveImagetoFile:)];
     }
 }
 
@@ -477,7 +474,7 @@ namespace {
     [self showSavePanelTitle: NSLocalizedString(@"Save Image", @"")
                     fileType: @"png"
                accessoryView: mSaveTileAccessory
-              didEndSelector: @selector(saveTileImage:toFile:)];
+              didEndSelector: @selector(saveTileImagetoFile:)];
 }
 
 - (IBAction)saveAsSVG:(id)sender
@@ -485,7 +482,7 @@ namespace {
     [self showSavePanelTitle: NSLocalizedString(@"Save as SVG", @"")
         fileType: @"svg"
         accessoryView: nil
-        didEndSelector: @selector(saveSvg:toFile:)];
+        didEndSelector: @selector(saveSvgtoFile:)];
 }
 
 - (IBAction)saveAsMovie:(id)sender
@@ -493,7 +490,7 @@ namespace {
     [self showSavePanelTitle: NSLocalizedString(@"Save as Animation", @"")
         fileType: @"mov"
         accessoryView: mSaveAnimationAccessory
-        didEndSelector: @selector(saveMovie:toFile:)];
+        didEndSelector: @selector(saveMovietoFile:)];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem;
@@ -1126,13 +1123,19 @@ namespace {
         didEndSelector:(SEL)selector
 {
     NSSavePanel *sp = [NSSavePanel savePanel];
-    [sp setRequiredFileType: fileType];
+    [sp setAllowedFileTypes: [NSArray arrayWithObject: fileType]];
     [sp setTitle: title];
     [sp setAccessoryView: view];
     [sp setCanSelectHiddenExtension: YES];
+    [sp setExtensionHidden: NO];
     
     if (saveImageDirectory == nil) {
-        saveImageDirectory = [NSHomeDirectory() retain];
+        saveImageDirectory = [[[NSFileManager defaultManager]
+                                 URLForDirectory: NSDocumentDirectory
+                                        inDomain: NSUserDomainMask
+                               appropriateForURL: nil
+                                          create: YES
+                                           error: NULL] retain];
     }
     
     NSString* name =
@@ -1150,77 +1153,59 @@ namespace {
         name = [name stringByAppendingFormat: @"-%@", var];
     }
     
-    [sp beginSheetForDirectory: saveImageDirectory
-        file: name
-        modalForWindow: [self window]
-        modalDelegate: self
-        didEndSelector: @selector(savePanelDidEnd:returnCode:contextInfo:)
-        contextInfo: (void*)selector]; 
+    [sp setDirectoryURL: saveImageDirectory];
+    [sp setNameFieldStringValue: name];
+    [sp beginWithCompletionHandler: ^(NSInteger result) {
+        [saveImageDirectory release];
+        saveImageDirectory = [[sp directoryURL] retain];
+        if (result == NSFileHandlingPanelOKButton) {
+            NSURL* file = [sp URL];
+            NSInvocation* send
+            = [NSInvocation invocationWithMethodSignature:
+               [self methodSignatureForSelector: (SEL)selector]];
+            
+            [send setTarget: self];
+            [send setSelector: selector];
+            [send setArgument: &file atIndex: 2];
+            [send invoke];
+        }
+    }];
 }
 
 
-- (void)savePanelDidEnd:(NSSavePanel *)sheet
-    returnCode:(int)result contextInfo:(void *)ctx
+- (void)saveImagetoFile:(NSURL*)filename
 {
-    [saveImageDirectory release];
-    saveImageDirectory = [[sheet directory] retain];
-
-    bool doSave =
-        result == NSOKButton
-        && [sheet makeFirstResponder: nil];
-    NSString* filename = [sheet filename];
-
-    NSInvocation* send
-        = [NSInvocation invocationWithMethodSignature:
-            [self methodSignatureForSelector: (SEL)ctx]];
-
-    [send setTarget: self];
-    [send setSelector: (SEL)ctx];
-    [send setArgument: &doSave atIndex: 2];
-    [send setArgument: &filename atIndex: 3];
-    [send invoke];
-}
-
-
-- (void)saveImage:(bool)save toFile:(NSString*)filename
-{
-    if (!save) return;
-
     NSData *pngData =
         [self pngImageDataCropped:
             [[NSUserDefaults standardUserDefaults] boolForKey: @"SaveCropped"]
                        multiplier: nil];
-
+    
     if (pngData) {
-        [pngData writeToFile: filename atomically: YES];
+        [pngData writeToURL: filename atomically: YES];
     } else {
         [mStatus setStringValue: @"An error occured while writing the PNG file."];
         NSBeep();
     }
 }
 
-- (void)saveTileImage:(bool)save toFile:(NSString*)filename
+- (void)saveTileImagetoFile:(NSURL*)filename
 {
-    if (!save) return;
-    
     NSSize mult = NSMakeSize([mSaveTileWidth floatValue], [mSaveTileHeight floatValue]);
     
     NSData *pngData =
         [self pngImageDataCropped: YES multiplier: &mult];
     
     if (pngData) {
-        [pngData writeToFile: filename atomically: YES];
+        [pngData writeToURL: filename atomically: YES];
     } else {
         [mStatus setStringValue: @"An error occured while writing the PNG file."];
         NSBeep();
     }
 }
 
-- (void)saveSvg:(bool)save toFile:(NSString*)filename
+- (void)saveSvgtoFile:(NSURL*)filename
 {
-    if (!save || mRendering) return;
-
-    mCanvas = new SVGCanvas([filename UTF8String],
+    mCanvas = new SVGCanvas([[filename path] UTF8String],
         (int)mRenderedRect.size.width, (int)mRenderedRect.size.height,
         false);
     
@@ -1232,12 +1217,8 @@ namespace {
 }
 
 
-- (void)saveMovie:(bool)save toFile:(NSString*)filename
+- (void)saveMovietoFile:(NSURL*)filename
 {
-    if (!save || mRendering) {
-        return;
-    }
-
     RenderParameters parameters;
     parameters.render = false;
     parameters.periodicUpdate = false;
@@ -1264,7 +1245,7 @@ namespace {
         return;
     }
     
-    mAnimationCanvas = new qtCanvas(filename, [bits autorelease],
+    mAnimationCanvas = new qtCanvas([filename path], [bits autorelease],
                                     movieFrameRate, qual, mpeg4);
     
     bool movieOK = mAnimationCanvas->getError() == nil;
