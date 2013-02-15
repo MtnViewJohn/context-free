@@ -29,6 +29,7 @@
 #import "CFDGController.h"
 #import "CFDGDocument.h"
 #include "SystemConfiguration/SCNetwork.h"
+#include <SystemConfiguration/SCNetworkReachability.h>
 #include "cfdg.h"
 
 @interface CFDGController (setup)
@@ -390,13 +391,15 @@ namespace {
     
     bool networkUp = false;
     SCNetworkConnectionFlags flags;
-    if (SCNetworkCheckReachabilityByName(updateServer, &flags)) {
+    SCNetworkReachabilityRef target = SCNetworkReachabilityCreateWithName(NULL, updateServer);
+    if (SCNetworkReachabilityGetFlags(target, &flags)) {
         networkUp =
                 !(flags & kSCNetworkFlagsConnectionRequired)
              &&  (flags & kSCNetworkFlagsReachable);
         // See "Technical Note TN1145 Living in a Dynamic TCP/IP Environment
         // http://developer.apple.com/technotes/tn/tn1145.html
     }
+    CFRelease(target);
     if (!networkUp) {
         if (!inBackground) {
             [self gotUpdateInfo: self]; // Hack: non-nil means not in background
