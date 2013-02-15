@@ -65,10 +65,8 @@
     
     if (colorSpaceName == nil) return FALSE;
     if (![colorSpaceName isEqual:NSCalibratedWhiteColorSpace] &&
-        ![colorSpaceName isEqual:NSCalibratedBlackColorSpace] &&
         ![colorSpaceName isEqual:NSCalibratedRGBColorSpace] &&
         ![colorSpaceName isEqual:NSDeviceWhiteColorSpace] &&
-        ![colorSpaceName isEqual:NSDeviceBlackColorSpace] &&
         ![colorSpaceName isEqual:NSDeviceRGBColorSpace] &&
         ![colorSpaceName isEqual:NSDeviceCMYKColorSpace] &&
         ![colorSpaceName isEqual:NSNamedColorSpace] &&
