@@ -47,8 +47,6 @@ class qtCanvas::Impl
     
 #if !__LP64__
     DataHandler     mDataHandler;
-#else
-    NSObject*       mDataHandler;
 #endif
     QTMovie*        mMovie;
     
@@ -63,8 +61,11 @@ class qtCanvas::Impl
 
 qtCanvas::Impl::Impl(NSString* name, BitmapImageHolder* bits, int fps, 
                      int qual, bool mpeg4)
-: mFrameRate(fps), mDataHandler(nil), mDict(nil), mImageData([bits retain]), mError(nil)
+: mFrameRate(fps), mDict(nil), mImageData([bits retain]), mError(nil)
 {
+#if !__LP64__
+    DataHandler = nil;
+#endif
     mSize.width  = (CGFloat)[bits pixelsWide];
     mSize.height = (CGFloat)[bits pixelsHigh];
     
