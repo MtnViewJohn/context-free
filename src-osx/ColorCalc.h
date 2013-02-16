@@ -26,13 +26,13 @@
 
 
 @interface ColorCalc : NSObject {
-    float   startHue;
-    float   startSaturation;
-    float   startBrightness;
+    CGFloat   startHue;
+    CGFloat   startSaturation;
+    CGFloat   startBrightness;
     
-    float   finishHue;
-    float   finishSaturation;
-    float   finishBrightness;
+    CGFloat   finishHue;
+    CGFloat   finishSaturation;
+    CGFloat   finishBrightness;
 
     int     deltaSteps;
 }
@@ -45,12 +45,12 @@
 - (NSString*)   startText;
 - (NSString*)   finishText;
 
-- (float)       deltaHue;
-- (void)     setDeltaHue:           (float) h;
-- (float)       deltaSaturation;
-- (void)     setDeltaSaturation:    (float) s;
-- (float)       deltaBrightness;
-- (void)     setDeltaBrightness:     (float) b;
+- (CGFloat)       deltaHue;
+- (void)     setDeltaHue:           (CGFloat) h;
+- (CGFloat)       deltaSaturation;
+- (void)     setDeltaSaturation:    (CGFloat) s;
+- (CGFloat)       deltaBrightness;
+- (void)     setDeltaBrightness:    (CGFloat) b;
 - (NSString*)   deltaText;
 
 
