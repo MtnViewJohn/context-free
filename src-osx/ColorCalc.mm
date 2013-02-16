@@ -26,7 +26,7 @@
 #include "HSBColor.h"
 
 namespace {
-    NSString* buildText(float hue, float saturation, float brightness)
+    NSString* buildText(CGFloat hue, CGFloat saturation, CGFloat brightness)
     {
         return [NSString stringWithFormat: @"hue %.1f sat %.4f b %.4f",
             hue, saturation, brightness];
@@ -109,13 +109,13 @@ namespace {
 + (NSSet *)keyPathsForValuesAffectingFinishText
     { return [NSSet setWithObjects:@"finishHue", @"finishSaturation", @"finishBrightness", nil]; }
 
-- (float) deltaHue
+- (CGFloat) deltaHue
     { return HSBColor::deltaHue(finishHue, startHue, deltaSteps); }
 
 + (NSSet *)keyPathsForValuesAffectingDeltaHue
     { return [NSSet setWithObjects:@"startHue", @"finishHue", @"deltaSteps", nil]; }
 
-- (void) setDeltaHue: (float) h
+- (void) setDeltaHue: (CGFloat) h
 { 
     finishHue = startHue;
     for (int i = 0; i < deltaSteps; ++i)
@@ -127,13 +127,13 @@ namespace {
     return [NSSet setWithObjects:@"startHue", @"deltaHue", @"finishColor", nil];                // but not deltaSteps
 }
 
-- (float) deltaSaturation
+- (CGFloat) deltaSaturation
     { return HSBColor::delta(finishSaturation, startSaturation, deltaSteps); }
 
 + (NSSet *)keyPathsForValuesAffectingDeltaSaturation
     { return [NSSet setWithObjects:@"startSaturation", @"finishSaturation", @"deltaSteps", nil]; }
 
-- (void) setDeltaSaturation: (float) s
+- (void) setDeltaSaturation: (CGFloat) s
 { 
     finishSaturation = startSaturation;
     for (int i = 0; i < deltaSteps; ++i)
@@ -145,13 +145,13 @@ namespace {
     return [NSSet setWithObjects:@"startSaturation", @"deltaSaturation", @"finishColor", nil];  // but not deltaSteps
 }
 
-- (float) deltaBrightness
+- (CGFloat) deltaBrightness
     { return HSBColor::delta(finishBrightness, startBrightness, deltaSteps); }
 
 + (NSSet *)keyPathsForValuesAffectingDeltaBrightness
     { return [NSSet setWithObjects:@"startBrightness", @"finishBrightness", @"deltaSteps", nil]; }
 
-- (void) setDeltaBrightness: (float) b
+- (void) setDeltaBrightness: (CGFloat) b
 { 
     finishBrightness = startBrightness;
     for (int i = 0; i < deltaSteps; ++i)
