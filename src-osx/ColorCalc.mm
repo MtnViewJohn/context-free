@@ -36,71 +36,6 @@ namespace {
 
 @implementation ColorCalc
 
-+ (void)initialize {
-    NSArray* a;
-    
-    a = [NSArray arrayWithObject: @"startColor"];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"startHue"];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"startSaturation"];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"startBrightness"];
-    
-    a = [NSArray arrayWithObjects:
-        @"startHue", @"startSaturation", @"startBrightness", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"startColor"];
-
-    a = [NSArray arrayWithObjects:
-        @"startHue", @"startSaturation", @"startBrightness",
-        @"startColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"startText"];
-
-
-
-    a = [NSArray arrayWithObjects:
-        @"startHue", @"finishHue", @"deltaSteps", 
-        @"startColor", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"deltaHue"];
-
-    a = [NSArray arrayWithObjects:
-        @"startSaturation", @"finishSaturation", @"deltaSteps", 
-        @"startColor", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"deltaSaturation"];
-
-    a = [NSArray arrayWithObjects:
-        @"startBrightness", @"finishBrightness", @"deltaSteps", 
-        @"startColor", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"deltaBrightness"];
-
-    a = [NSArray arrayWithObjects:
-        @"startHue", @"startSaturation", @"startBrightness",
-        @"deltaHue", @"deltaSaturation", @"deltaBrightness",
-        @"finishHue", @"finishSaturation", @"finishBrightness",
-        @"startColor", @"finishColor", @"deltaSteps", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"deltaText"];
-
-
-
-    a = [NSArray arrayWithObjects: @"deltaHue", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"finishHue"];
-
-    a = [NSArray arrayWithObjects: @"deltaSaturation", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"finishSaturation"];
-
-    a = [NSArray arrayWithObjects: @"deltaBrightness", @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"finishBrightness"];
-
-    a = [NSArray arrayWithObjects:
-        @"deltaHue", @"deltaSaturation", @"deltaBrightness",
-        @"finishHue", @"finishSaturation", @"finishBrightness",
-        nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"finishColor"];
-
-    a = [NSArray arrayWithObjects:
-        @"deltaHue", @"deltaSaturation", @"deltaBrightness",
-        @"finishHue", @"finishSaturation", @"finishBrightness",
-        @"finishColor", nil];
-    [self setKeys: a triggerChangeNotificationsForDependentKey: @"finishText"];
-}
-
 - init
 {
     if ((self = [super init])) {
@@ -118,12 +53,34 @@ namespace {
                 alpha: 1.0];
 }
 
++ (NSSet *)keyPathsForValuesAffectingStartHue
+{
+    return [NSSet setWithObject: @"startColor"];
+}
++ (NSSet *)keyPathsForValuesAffectingStartSaturation
+{
+    return [NSSet setWithObject:@"startColor"];
+}
++ (NSSet *)keyPathsForValuesAffectingStartBrightness
+{
+    return [NSSet setWithObject:@"startColor"];
+}
++ (NSSet *)keyPathsForValuesAffectingStartColor
+{
+    return [NSSet setWithObjects:@"startHue", @"startSaturation", @"startBrightness", nil];
+}
+
 - (NSColor*) finishColor;
 {
     return [NSColor colorWithCalibratedHue: finishHue / 360.0
                 saturation: finishSaturation
                 brightness: finishBrightness
                 alpha: 1.0];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFinishColor
+{
+    return [NSSet setWithObjects:@"finishHue", @"finishSaturation", @"finishBrightness", nil];
 }
 
 - (void)  setStartColor: (NSColor*) c
@@ -143,12 +100,21 @@ namespace {
 - (NSString*)   startText
     { return buildText(startHue, startSaturation, startBrightness); }
 
++ (NSSet *)keyPathsForValuesAffectingStartText
+    { return [NSSet setWithObjects:@"startHue", @"startSaturation", @"startBrightness", nil]; }
+
 - (NSString*)   finishText;
     { return buildText(finishHue, finishSaturation, finishBrightness); }
 
++ (NSSet *)keyPathsForValuesAffectingFinishText
+    { return [NSSet setWithObjects:@"finishHue", @"finishSaturation", @"finishBrightness", nil]; }
+
 - (float) deltaHue
     { return HSBColor::deltaHue(finishHue, startHue, deltaSteps); }
-    
+
++ (NSSet *)keyPathsForValuesAffectingDeltaHue
+    { return [NSSet setWithObjects:@"startHue", @"finishHue", @"deltaSteps", nil]; }
+
 - (void) setDeltaHue: (float) h
 { 
     finishHue = startHue;
@@ -156,8 +122,16 @@ namespace {
         finishHue = HSBColor::adjustHue(finishHue, h); 
 }
 
++ (NSSet *)keyPathsForValuesAffectingFinishHue
+{
+    return [NSSet setWithObjects:@"startHue", @"deltaHue", @"finishColor", nil];                // but not deltaSteps
+}
+
 - (float) deltaSaturation
     { return HSBColor::delta(finishSaturation, startSaturation, deltaSteps); }
+
++ (NSSet *)keyPathsForValuesAffectingDeltaSaturation
+    { return [NSSet setWithObjects:@"startSaturation", @"finishSaturation", @"deltaSteps", nil]; }
 
 - (void) setDeltaSaturation: (float) s
 { 
@@ -166,22 +140,40 @@ namespace {
         finishSaturation = HSBColor::adjust(finishSaturation, s); 
 }
 
++ (NSSet *)keyPathsForValuesAffectingFinishSaturation
+{
+    return [NSSet setWithObjects:@"startSaturation", @"deltaSaturation", @"finishColor", nil];  // but not deltaSteps
+}
+
 - (float) deltaBrightness
     { return HSBColor::delta(finishBrightness, startBrightness, deltaSteps); }
-    
+
++ (NSSet *)keyPathsForValuesAffectingDeltaBrightness
+    { return [NSSet setWithObjects:@"startBrightness", @"finishBrightness", @"deltaSteps", nil]; }
+
 - (void) setDeltaBrightness: (float) b
 { 
     finishBrightness = startBrightness;
     for (int i = 0; i < deltaSteps; ++i)
         finishBrightness = HSBColor::adjust(finishBrightness, b); 
 }
-    
+
++ (NSSet *)keyPathsForValuesAffectingFinishBrightness
+{
+    return [NSSet setWithObjects:@"startBrightness", @"deltaBrightness", @"finishColor", nil];  // but not deltaSteps
+}
+
 - (NSString*) deltaText
 {
     return buildText(
         [self deltaHue], [self deltaSaturation], [self deltaBrightness]);
 }
-        
+
++ (NSSet *)keyPathsForValuesAffectingDeltaText
+{
+    return [NSSet setWithObjects:@"deltaHue", @"deltaSaturation", @"deltaBrightness", nil];
+}
+
 
 
 @end
