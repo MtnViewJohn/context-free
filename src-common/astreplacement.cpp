@@ -57,13 +57,21 @@ namespace AST {
     }
     
     ASTparameter&
-    ASTrepContainer::addParameter(int index, ASTdefine* def,
+    ASTrepContainer::addDefParameter(int index, ASTdefine* def,
                                   const yy::location& nameLoc, const yy::location& expLoc) 
     {
         mParameters.emplace_back(index, def, nameLoc + expLoc);
         ASTparameter& b = mParameters.back();
         b.checkParam(nameLoc, nameLoc);
         return b;
+    }
+    
+    void
+    ASTrepContainer::addLoopParameter(int index, bool natural, bool local,
+                                      const yy::location& nameLoc)
+    {
+        mParameters.emplace_back(index, natural, local, nameLoc);
+        mParameters.back().checkParam(nameLoc, nameLoc);
     }
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
@@ -141,19 +149,8 @@ namespace AST {
             }
         }
         
-        ASTexpression loopVar(nameLoc, false, bodyNatural, AST::NumericType);
-        ASTdefine loopDef(name, exp_ptr(&loopVar), nameLoc);
-        ASTparameter& bodyParam = mLoopBody.addParameter(nameIndex, &loopDef, 
-                                                         nameLoc, nameLoc);
-        bodyParam.isLoopIndex = true;
-        bodyParam.isNatural = bodyNatural;
-        bodyParam.isLocal = local;
-        ASTparameter& finallyParam = mFinallyBody.addParameter(nameIndex, &loopDef, 
-                                                               nameLoc, nameLoc);
-        finallyParam.isLoopIndex = true;
-        finallyParam.isNatural = finallyNatural;
-        finallyParam.isLocal = local;
-        loopDef.mExpression.release();
+        mLoopBody.addLoopParameter(nameIndex, bodyNatural, local, nameLoc);
+        mFinallyBody.addLoopParameter(nameIndex, finallyNatural, local, nameLoc);
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)

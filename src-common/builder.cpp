@@ -465,7 +465,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
         def = new ASTdefine(name, std::move(e), defLoc);
     }
     ASTrepContainer* top = mContainerStack.back();
-    ASTparameter& b = top->addParameter(nameIndex, def, nameLoc, expLoc);
+    ASTparameter& b = top->addDefParameter(nameIndex, def, nameLoc, expLoc);
  
     if (!b.mDefinition) { 
         b.mStackIndex = mLocalStackDepth;
