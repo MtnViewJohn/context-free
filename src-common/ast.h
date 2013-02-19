@@ -137,6 +137,11 @@ namespace AST {
           isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
           mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
         { init(nameIndex, def); }
+        ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
+        : mType(NumericType), isParameter(false),
+          isLoopIndex(true), isNatural(natural), isLocal(local), mName(nameIndex),
+          mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
+        { }     // ctor for loop variables
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, ASTdefine*  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
