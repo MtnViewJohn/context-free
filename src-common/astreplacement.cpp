@@ -57,8 +57,9 @@ namespace AST {
     }
     
     ASTparameter&
-    ASTrepContainer::addDefParameter(int index, ASTdefine* def,
-                                  const yy::location& nameLoc, const yy::location& expLoc) 
+    ASTrepContainer::addDefParameter(int index, def_ptr& def,
+                                     const yy::location& nameLoc,
+                                     const yy::location& expLoc)
     {
         mParameters.emplace_back(index, def, nameLoc + expLoc);
         ASTparameter& b = mParameters.back();

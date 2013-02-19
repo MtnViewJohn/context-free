@@ -132,7 +132,7 @@ namespace AST {
           isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
           mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
         { init(typeName, nameIndex); }
-        ASTparameter(int nameIndex, ASTdefine*  def, const yy::location& where)
+        ASTparameter(int nameIndex, def_ptr& def, const yy::location& where)
         : mType(NoType), isParameter(false),
           isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
           mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
@@ -143,7 +143,7 @@ namespace AST {
           mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
         { }     // ctor for loop variables
         void init(const std::string& typeName, int nameIndex);
-        void init(int nameIndex, ASTdefine*  def);
+        void init(int nameIndex, def_ptr&  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
         bool operator!=(const ASTparameter& p) const;
         bool operator!=(const ASTexpression& e) const;

@@ -426,52 +426,53 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
     }
  
     int nameIndex = StringToShape(name, nameLoc, false);
-    ASTdefine* def = m_CFDG->findFunction(nameIndex);
+    ASTdefine* funcDef = m_CFDG->findFunction(nameIndex);
     yy::location defLoc = nameLoc + expLoc;
     if (isFunction) {
-        assert(def);
+        assert(funcDef);
         if (mCompilePhase == 1) return;
         
-        if (def->mExpression->isNatural && !e->isNatural) {
+        if (funcDef->mExpression->isNatural && !e->isNatural) {
             CfdgError::Error(expLoc, "Mismatch between declared natural and defined not-natural type of user function");
         }
         // Replace placeholder with actual expression
-        def->mExpression.reset(mWant2ndPass ? e.release() : e.release()->simplify());
-        def->isConstant = def->mExpression->isConstant;
-        def->mLocation = defLoc;
+        funcDef->mExpression.reset(mWant2ndPass ? e.release() : e.release()->simplify());
+        funcDef->isConstant = funcDef->mExpression->isConstant;
+        funcDef->mLocation = defLoc;
         
-        if (def->mExpression->mType != def->mType) {
+        if (funcDef->mExpression->mType != funcDef->mType) {
             CfdgError::Error(expLoc, "Mismatch between declared and defined type of user function");
         } else {
-            if (def->mType == AST::NumericType &&
-                def->mTuplesize != def->mExpression->evaluate(nullptr, 0))
+            if (funcDef->mType == AST::NumericType &&
+                funcDef->mTuplesize != funcDef->mExpression->evaluate(nullptr, 0))
             {
                 CfdgError::Error(expLoc, "Mismatch between declared and defined vector length of user function");
             }
         }
 
         return;
-    } else if (def) {
+    } else if (funcDef) {
         CfdgError::Error(nameLoc, "Definition with same name as user function");
-        CfdgError::Error(def->mLocation, "    user function definition is here.");
-        def = nullptr;
+        CfdgError::Error(funcDef->mLocation, "    user function definition is here.");
+        funcDef = nullptr;
     }
 
     CheckVariableName(nameIndex, nameLoc, false);
+    def_ptr def;
     if (ASTmodification* m = dynamic_cast<ASTmodification*> (e.get())) {
         mod_ptr mod(m); e.release();
-        def = new ASTdefine(name, std::move(mod), defLoc);
+        def.reset(new ASTdefine(name, std::move(mod), defLoc));
     } else {
-        def = new ASTdefine(name, std::move(e), defLoc);
+        def.reset(new ASTdefine(name, std::move(e), defLoc));
     }
     ASTrepContainer* top = mContainerStack.back();
     ASTparameter& b = top->addDefParameter(nameIndex, def, nameLoc, expLoc);
  
-    if (!b.mDefinition) { 
+    if (def) {
         b.mStackIndex = mLocalStackDepth;
         mContainerStack.back()->mStackCount += b.mTuplesize;
         mLocalStackDepth += b.mTuplesize;
-        push_rep(def);
+        push_rep(def.release());
     }
 } 
 
