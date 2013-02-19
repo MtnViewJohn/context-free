@@ -97,7 +97,7 @@ namespace AST {
         }
         void addParameter(const std::string& type, int index, 
                           const yy::location& typeLoc, const yy::location& nameLoc);
-        ASTparameter& addDefParameter(int index, ASTdefine* def,
+        ASTparameter& addDefParameter(int index, def_ptr& def,
                           const yy::location& nameLoc, const yy::location& expLoc);
         void addLoopParameter(int index, bool natural, bool local,
                               const yy::location& nameLoc);

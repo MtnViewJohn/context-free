@@ -35,7 +35,7 @@ namespace AST {
     bool ASTparameter::Impure = false;
     
     void
-    ASTparameter::init(int nameIndex, ASTdefine* def)
+    ASTparameter::init(int nameIndex, def_ptr& def)
     {
         mType = def->mType;
         isLocal = !def->mExpression || def->mExpression->isLocal;
@@ -49,7 +49,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        mDefinition = (def->isConstant || def->isFunction) ? def : nullptr;
+        mDefinition = (def->isConstant || def->isFunction) ? def.release() : nullptr;
     }
     
     void
