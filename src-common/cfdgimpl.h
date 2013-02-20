@@ -115,11 +115,11 @@ private:
         frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
         bool isSized(double* x = nullptr, double* y = nullptr) const;
         bool isTimed(agg::trans_affine_time* t = nullptr) const;
-        const agg::rgba& getBackgroundColor(Renderer* r);
-        void getSymmetry(AST::SymmList& syms, Renderer* r);
+        const agg::rgba& getBackgroundColor(RendererAST* r);
+        void getSymmetry(AST::SymmList& syms, RendererAST* r);
         const AST::ASTexpression* hasParameter(const char* name) const;
-        bool hasParameter(const char* name, double& value, Renderer* r) const;
-        bool hasParameter(const char* name, Modification& value, Renderer* r) const;
+        bool hasParameter(const char* name, double& value, RendererAST* r) const;
+        bool hasParameter(const char* name, Modification& value, RendererAST* r) const;
         bool hasParameter(const char* name, AST::expType t, 
                           yy::location& where) const;
 
@@ -127,7 +127,7 @@ private:
         AbstractSystem* system() { return m_system; }
         
         void  setInitialShape(AST::rep_ptr init, unsigned depth);
-        const Shape& getInitialShape(Renderer* r);
+        const Shape& getInitialShape(RendererAST* r);
     
         RGBA8 getColor(const HSBColor& hsb);
         

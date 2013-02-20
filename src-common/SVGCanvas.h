@@ -29,6 +29,7 @@
 #include "agg_trans_affine.h"
 #include "agg_color_rgba.h"
 #include "cfdg.h"
+#include "ast.h"
 #include <map>
 
 class SVGCanvas : public Canvas {
@@ -48,7 +49,7 @@ public:
     SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
 
 private:
-    typedef std::pair<AST::CommandInfo::UIDdatatype, unsigned> uniquePath;
+    typedef std::pair<AST::UIDdatatype, unsigned> uniquePath;
     
     int mPadding;
     char mEndline[82];

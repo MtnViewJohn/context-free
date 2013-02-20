@@ -25,6 +25,7 @@
 
 #include "astexpression.h"
 #include "builder.h"
+#include "rendererAST.h"
 
 #include <math.h>
 #include <typeinfo>
@@ -355,7 +356,7 @@ namespace AST {
     }
     
     const StackType*
-    ASTruleSpecifier::evalArgs(Renderer* rti, const StackType* parent) const
+    ASTruleSpecifier::evalArgs(RendererAST* rti, const StackType* parent) const
     {
         switch (argSource) {
         case NoArgs:
@@ -399,7 +400,7 @@ namespace AST {
     }
     
     const StackType*
-    ASTparen::evalArgs(Renderer* rti, const StackType* parent) const
+    ASTparen::evalArgs(RendererAST* rti, const StackType* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape expression in a shape context");
@@ -410,7 +411,7 @@ namespace AST {
     }
     
     const StackType*
-    ASTselect::evalArgs(Renderer* rti, const StackType* parent) const
+    ASTselect::evalArgs(RendererAST* rti, const StackType* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
@@ -421,7 +422,7 @@ namespace AST {
     }
     
     const StackType*
-    ASTuserFunction::evalArgs(Renderer* rti, const StackType* parent) const
+    ASTuserFunction::evalArgs(RendererAST* rti, const StackType* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Function does not evaluate to a shape");
@@ -898,7 +899,7 @@ namespace AST {
     // Evaluate a cons tree to see how many reals it has and optionally
     // copy them to an array
     int
-    ASTcons::evaluate(double* res, int length, Renderer* rti) const
+    ASTcons::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (((int)mType & (NumericType | FlagType)) == 0 || ((int)mType & (ModType | RuleType))) {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
@@ -921,7 +922,7 @@ namespace AST {
     }
     
     int
-    ASTreal::evaluate(double* res, int length, Renderer*) const
+    ASTreal::evaluate(double* res, int length, RendererAST*) const
     {
         if (res && length < 1)
             return -1;
@@ -931,7 +932,7 @@ namespace AST {
     }
     
     int
-    ASTvariable::evaluate(double* res, int length, Renderer* rti) const
+    ASTvariable::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Non-numeric variable in a numeric context");
@@ -951,7 +952,7 @@ namespace AST {
     }
     
     int
-    ASTuserFunction::evaluate(double* res, int length, Renderer* rti) const
+    ASTuserFunction::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Function does not evaluate to a number");
@@ -985,7 +986,7 @@ namespace AST {
     }
     
     int
-    ASToperator::evaluate(double* res, int length, Renderer* rti) const
+    ASToperator::evaluate(double* res, int length, RendererAST* rti) const
     {
         double l = 0.0;
         double r = 0.0;
@@ -1120,7 +1121,7 @@ namespace AST {
         return 1;
     }
     
-    static double MinMax(const ASTexpression* e, Renderer* rti, bool isMin)
+    static double MinMax(const ASTexpression* e, RendererAST* rti, bool isMin)
     {
         double res = 0.0;
         if ((*e)[0]->evaluate(&res, 1, rti) != 1)
@@ -1136,7 +1137,7 @@ namespace AST {
     }
     
     int 
-    ASTfunction::evaluate(double* res, int length, Renderer* rti) const
+    ASTfunction::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
@@ -1234,7 +1235,7 @@ namespace AST {
                 *res = a[0] == 0.0 ? 0.0 : 1.0;
                 break;
             case IsNatural:
-                *res = Renderer::isNatural(rti, a[0]);
+                *res = RendererAST::isNatural(rti, a[0]);
                 break;
             case BitNot:
                 *res = (double)(~(uint64_t)a[0] & 0xfffffffffffffull);
@@ -1306,7 +1307,7 @@ namespace AST {
     }
     
     int 
-    ASTselect::evaluate(double* res, int length, Renderer* rti) const
+    ASTselect::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Evaluation of a non-numeric select() in a numeric context");
@@ -1320,14 +1321,14 @@ namespace AST {
     }
     
     int
-    ASTruleSpecifier::evaluate(double* , int , Renderer* ) const
+    ASTruleSpecifier::evaluate(double* , int , RendererAST* ) const
     {
         CfdgError::Error(where, "Improper evaluation of a rule specifier");
         return -1;
     }
     
     int 
-    ASTparen::evaluate(double* res, int length, Renderer* rti) const
+    ASTparen::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Non-numeric/flag expression in a numeric/flag context");
@@ -1337,21 +1338,21 @@ namespace AST {
     }
     
     int
-    ASTmodTerm::evaluate(double* , int , Renderer* ) const
+    ASTmodTerm::evaluate(double* , int , RendererAST* ) const
     {
         CfdgError::Error(where, "Improper evaluation of an adjustment expression");
         return -1;
     }
     
     int
-    ASTmodification::evaluate(double* , int , Renderer* ) const
+    ASTmodification::evaluate(double* , int , RendererAST* ) const
     {
         CfdgError::Error(where, "Improper evaluation of an adjustment expression");
         return -1;
     }
     
     int
-    ASTarray::evaluate(double* res, int length, Renderer* rti) const
+    ASTarray::evaluate(double* res, int length, RendererAST* rti) const
     {
         if (mType != NumericType) {
             CfdgError::Error(where, "Non-numeric/flag expression in a numeric/flag context");
@@ -1389,7 +1390,7 @@ namespace AST {
     void
     ASTselect::evaluate(Modification& m, int* p, double* width, 
                         bool justCheck, int& seedIndex, bool shapeDest,
-                        Renderer* rti) const
+                        RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Evaluation of a non-adjustment select() in an adjustment context");
@@ -1402,7 +1403,7 @@ namespace AST {
     void
     ASTvariable::evaluate(Modification& m, int*, double*, 
                           bool justCheck, int&, bool shapeDest,
-                          Renderer* rti) const
+                          RendererAST* rti) const
     {
         if (mType != ModType)
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
@@ -1416,14 +1417,14 @@ namespace AST {
             m *= *smod;
         } else {
             if (m.merge(*smod))
-                Renderer::ColorConflict(rti, where);
+                RendererAST::ColorConflict(rti, where);
         }
     }
     
     void
     ASTcons::evaluate(Modification& m, int* p, double* width, 
                       bool justCheck, int& seedIndex, bool shapeDest,
-                      Renderer* rti) const
+                      RendererAST* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
             children[i]->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
@@ -1432,7 +1433,7 @@ namespace AST {
     void
     ASTuserFunction::evaluate(Modification &m, int *p, double *width, 
                               bool justCheck, int &seedIndex, bool shapeDest,
-                              Renderer* rti) const
+                              RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Function does not evaluate to an adjustment");
@@ -1464,13 +1465,13 @@ namespace AST {
     void
     ASTmodification::evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
-                              Renderer* rti) const
+                              RendererAST* rti) const
     {
         if (shapeDest) {
             m *= modData;
         } else {
             if (m.merge(modData))
-                Renderer::ColorConflict(rti, where);
+                RendererAST::ColorConflict(rti, where);
         }
         
         for (const term_ptr& term: modExp)
@@ -1480,7 +1481,7 @@ namespace AST {
     void
     ASTmodification::setVal(Modification& m, int* p, double* width, 
                             bool justCheck, int& seedIndex, 
-                            Renderer* rti) const
+                            RendererAST* rti) const
     {
         m = modData;
         for (const term_ptr& term: modExp)
@@ -1490,7 +1491,7 @@ namespace AST {
     void
     ASTparen::evaluate(Modification& m, int* p, double* width,
                        bool justCheck, int& seedIndex, bool shapeDest,
-                       Renderer* rti) const
+                       RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Expression does not evaluate to an adjustment");
@@ -1503,7 +1504,7 @@ namespace AST {
     void
     ASTmodTerm::evaluate(Modification& m, int* p, double* width, 
                         bool justCheck, int& seedIndex, bool shapeDest,
-                        Renderer* rti) const
+                        RendererAST* rti) const
     {
         double modArgs[6] = {0.0};
         int argcount = 0;
@@ -1664,7 +1665,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest)
                         m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, modArgs[0]);
@@ -1677,7 +1678,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
                         m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
@@ -1701,7 +1702,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest)
                         m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0]);
@@ -1714,7 +1715,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
                         m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0], 1, arg[1]);
@@ -1736,7 +1737,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest)
                         m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0]);
@@ -1749,7 +1750,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
                         m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0], 1, arg[1]);
@@ -1773,7 +1774,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest)
                         m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0]);
@@ -1786,7 +1787,7 @@ namespace AST {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
-                            Renderer::ColorConflict(rti, where);
+                            RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
                         m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0], 1, arg[1]);
@@ -1806,7 +1807,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest) {
                     m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
@@ -1826,7 +1827,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest) {
                     m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0], 1,
@@ -1845,7 +1846,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest) {
                     m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0], 1,
@@ -1866,7 +1867,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest) {
                     m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0], 1,
@@ -1888,7 +1889,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest)
                     m.m_ColorTarget.s = HSBColor::adjust(m.m_ColorTarget.s, arg[0]);
@@ -1902,7 +1903,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest)
                     m.m_ColorTarget.b = HSBColor::adjust(m.m_ColorTarget.b, arg[0]);
@@ -1916,7 +1917,7 @@ namespace AST {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
-                        Renderer::ColorConflict(rti, where);
+                        RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest)
                     m.m_ColorTarget.a = HSBColor::adjust(m.m_ColorTarget.a, arg[0]);
@@ -2329,7 +2330,7 @@ namespace AST {
     }
     
     unsigned
-    ASTselect::getIndex(Renderer* rti) const
+    ASTselect::getIndex(RendererAST* rti) const
     {
         if (indexCache)
             return indexCache;

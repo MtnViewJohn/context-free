@@ -42,6 +42,7 @@
 #include "agg_copy_rect.h"
 #include "primShape.h"
 #include "ast.h"
+#include "CmdInfo.h"
 #include "pathIterator.h"
 #include <set>
 #include <cassert>

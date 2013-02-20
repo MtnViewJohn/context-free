@@ -29,6 +29,7 @@
 #include "builder.h"
 #include <cmath>
 #include <cassert>
+#include "rendererAST.h"
 
 namespace AST {
 
@@ -979,7 +980,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    getTransforms(const ASTexpression* e, SymmList& syms, Renderer* r, 
+    getTransforms(const ASTexpression* e, SymmList& syms, RendererAST* r, 
                   bool tiled, agg::trans_affine& tile)
     {
         syms.clear();

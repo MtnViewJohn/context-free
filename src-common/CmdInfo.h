@@ -35,6 +35,7 @@
 #include <deque>
 #include <stdint.h>
 #include <atomic>
+#include "ast.h"
 
 #if defined(_MSC_VER) && (_MSC_VER <= 1700)
 #define noexcept throw()
@@ -45,7 +46,6 @@ namespace AST {
     class ASTcompiledPath;
     
     struct CommandInfo {
-        typedef uint_fast64_t UIDdatatype;
         typedef std::atomic<UIDdatatype>
                             UIDtype;
         

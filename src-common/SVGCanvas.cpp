@@ -32,6 +32,7 @@
 #include "primShape.h"
 #include "ast.h"
 #include <map>
+#include "CmdInfo.h"
 
 using namespace std;
 

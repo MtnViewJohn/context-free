@@ -36,7 +36,7 @@
 namespace AST { class ASTparameter; class ASTexpression; }
 
 union StackType;
-class Renderer;
+class RendererAST;
 
 struct StackRule {
     int16_t     mRuleName;
@@ -163,16 +163,16 @@ union StackType {
     static StackType*  alloc(int name, int size, const AST::ASTparameters* ti);
     void        release() const;
     void        release(const AST::ASTparameters* p) const;
-    void        retain(Renderer* r) const;
+    void        retain(RendererAST* r) const;
 
     void        read(std::istream& is);
     void        write(std::ostream& os) const;
     static StackType*  readHeader(std::istream& is);
     static void        writeHeader(std::ostream& os, const StackType* s);
     
-    void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
+    void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
                          const StackType* parent);
-    void        evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
+    void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
                          const AST::ASTparameters* p, bool sequential);
     
     iterator begin()
