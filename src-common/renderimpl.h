@@ -40,7 +40,7 @@
 #include "agg_trans_affine.h"
 #include "agg_trans_affine_time.h"
 #include "bounds.h"
-#include "cfdg.h"
+#include "rendererAST.h"
 #include "cfdgimpl.h"
 #include "shape.h"
 #include "tempfile.h"
@@ -57,7 +57,7 @@ namespace AST {
     class ASTcompiledPath;
 }
 
-class RendererImpl : public Renderer {
+class RendererImpl : public RendererAST {
     public:
         RendererImpl(CFDGImpl* cfdg,
                         int width, int height, double minSize,

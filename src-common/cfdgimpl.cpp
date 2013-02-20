@@ -110,7 +110,7 @@ CFDGImpl::setInitialShape(rep_ptr init, unsigned depth)
 }
 
 const Shape&
-CFDGImpl::getInitialShape(Renderer* r)
+CFDGImpl::getInitialShape(RendererAST* r)
 {
     if (mInitShape->mShapeSpec.argSize == 0 &&
         getShapeParamSize(mInitShape->mShapeSpec.shapeType))
@@ -129,7 +129,7 @@ CFDGImpl::getInitialShape(Renderer* r)
 }
 
 const agg::rgba&
-CFDGImpl::getBackgroundColor(Renderer* r)
+CFDGImpl::getBackgroundColor(RendererAST* r)
 {
     Modification white;
     white.m_Color = HSBColor(0.0, 0.0, 1.0, 1.0);
@@ -295,7 +295,7 @@ CFDGImpl::isTimed(agg::trans_affine_time* t) const
 }
 
 void
-CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
+CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
 {
     syms.clear();
     const ASTexpression* e = hasParameter("CF::Symmetry");
@@ -307,7 +307,7 @@ CFDGImpl::getSymmetry(SymmList& syms, Renderer* r)
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, double& value, Renderer* r) const
+CFDGImpl::hasParameter(const char* name, double& value, RendererAST* r) const
 {
     string n = name;
     int varNum = tryEncodeShapeName(n);
@@ -324,7 +324,7 @@ CFDGImpl::hasParameter(const char* name, double& value, Renderer* r) const
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, Modification& value, Renderer* r) const
+CFDGImpl::hasParameter(const char* name, Modification& value, RendererAST* r) const
 {
     string n = name;
     int varNum = tryEncodeShapeName(n);

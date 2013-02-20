@@ -29,6 +29,7 @@
 #include "pathIterator.h"
 #include <cassert>
 #include <atomic>
+#include "rendererAST.h"
 
 namespace AST {
     
@@ -190,7 +191,7 @@ namespace AST {
     
     void
     ASTloop::setupLoop(double& start, double& end, double& step, const ASTexpression* e,
-                       const yy::location& loc, Renderer* rti)
+                       const yy::location& loc, RendererAST* rti)
     {
         double data[3];
         switch (e->evaluate(data, 3, rti)) {
@@ -418,7 +419,7 @@ namespace AST {
     }
     
     void 
-    ASTreplacement::replaceShape(Shape& s, Renderer* r) const
+    ASTreplacement::replaceShape(Shape& s, RendererAST* r) const
     {
         if (mShapeSpec.argSource == ASTruleSpecifier::NoArgs) {
             s.mShapeType = mShapeSpec.shapeType;
@@ -435,7 +436,7 @@ namespace AST {
     }
     
     void 
-    ASTreplacement::replace(Shape& s, Renderer* r, double* width) const
+    ASTreplacement::replace(Shape& s, RendererAST* r, double* width) const
     {
         int dummy;
         replaceShape(s, r);
@@ -446,7 +447,7 @@ namespace AST {
     }
     
     void
-    ASTreplacement::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTreplacement::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         Shape child = parent;
         switch (mRepType) {
@@ -470,7 +471,7 @@ namespace AST {
     }
     
     void
-    ASTloop::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTloop::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         Shape loopChild = parent;
         bool opsOnly = (mLoopBody.mRepType | mFinallyBody.mRepType) == op;
@@ -513,7 +514,7 @@ namespace AST {
     }
     
     void
-    ASTtransform::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTtransform::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         Rand64 cloneSeed = r->mCurrentSeed;
         Shape transChild = parent;
@@ -551,7 +552,7 @@ namespace AST {
     }
     
     void
-    ASTif::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTif::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         double cond = 0.0;
         if (mCondition->evaluate(&cond, 1, r) != 1) {
@@ -563,7 +564,7 @@ namespace AST {
     }
     
     void
-    ASTswitch::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTswitch::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         double caseValue = 0.0;
         if (mSwitchExp->evaluate(&caseValue, 1, r) != 1) {
@@ -577,7 +578,7 @@ namespace AST {
     }
     
     void
-    ASTdefine::traverse(const Shape& p, bool, Renderer* r) const
+    ASTdefine::traverse(const Shape& p, bool, RendererAST* r) const
     {
         static const StackType zero = {0.0};
         int s = (int)r->mCFstack.size();
@@ -610,7 +611,7 @@ namespace AST {
     }
     
     void
-    ASTrule::traverse(const Shape& parent, bool tr, Renderer* r) const
+    ASTrule::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
         r->mCurrentSeed = parent.mWorldState.mRand64Seed;
         
@@ -623,12 +624,12 @@ namespace AST {
     }
     
     void
-    ASTshape::traverse(const Shape&, bool, Renderer*) const
+    ASTshape::traverse(const Shape&, bool, RendererAST*) const
     {
         CfdgError::Error(mLocation, "Tried to traverse ASTshape.");
     }
     
-    void ASTpathOp::traverse(const Shape& s, bool tr, Renderer* r) const
+    void ASTpathOp::traverse(const Shape& s, bool tr, RendererAST* r) const
     {
         if (r->mCurrentPath->mComplete) 
             return;
@@ -638,7 +639,7 @@ namespace AST {
     }
     
     void
-    ASTpathCommand::traverse(const Shape& s, bool, Renderer* r) const
+    ASTpathCommand::traverse(const Shape& s, bool, RendererAST* r) const
     {
         Shape child = s;
         double width = mChildChange.strokeWidth;
@@ -672,7 +673,7 @@ namespace AST {
     }
     
     void
-    ASTrule::traversePath(const Shape& parent, Renderer* r) const
+    ASTrule::traversePath(const Shape& parent, RendererAST* r) const
     {
         r->init();
         r->mCurrentSeed = parent.mWorldState.mRand64Seed;
@@ -712,7 +713,7 @@ namespace AST {
     
     void
     ASTcompiledPath::addPathOp(const ASTpathOp* pop, double data[6], const Shape& s, 
-                               bool tr, Renderer* r)
+                               bool tr, RendererAST* r)
     {
         // Process the parameters for ARCTO/ARCREL
         double radius_x = 0.0, radius_y = 0.0, angle = 0.0;
@@ -871,7 +872,7 @@ namespace AST {
     }
     
     void
-    ASTcompiledPath::finish(bool setAttr, Renderer* r)
+    ASTcompiledPath::finish(bool setAttr, RendererAST* r)
     {
         // Close and end the last path sequence if it wasn't already closed and ended
         if (!r->mClosed) {
@@ -895,7 +896,7 @@ namespace AST {
         }
     }
     
-    CommandInfo::UIDdatatype
+    UIDdatatype
     ASTcompiledPath::NextPathUID()
     {
         return ++GlobalPathUID;
@@ -909,7 +910,7 @@ namespace AST {
     }
     
     void
-    ASTpathOp::pathData(double* data, Renderer* rti) const
+    ASTpathOp::pathData(double* data, RendererAST* rti) const
     {
         if (mArguments) {
             if (mArguments->evaluate(data, 7, rti) < 0)

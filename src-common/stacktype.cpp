@@ -56,6 +56,7 @@
 
 #include "stacktype.h"
 #include "cfdg.h"
+#include "rendererAST.h"
 #include <cassert>
 #include "astexpression.h"
 #include <cstring>
@@ -109,7 +110,7 @@ StackType::release(const AST::ASTparameters* p) const
 }
 
 void
-StackType::retain(Renderer* r) const
+StackType::retain(RendererAST* r) const
 {
     if (ruleHeader.mRefCount == UINT32_MAX)
         return;
@@ -214,7 +215,7 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 }
 
 static void
-EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
+EvalArgs(RendererAST* rti, const StackType* parent, StackType::iterator& dest,
          StackType::iterator& end, const AST::ASTexpression* arguments,
          bool onStack)
 {
@@ -226,7 +227,7 @@ EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
         switch (arg->mType) {
             case AST::NumericType: {
                 int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
-                if (dest.type().isNatural && !Renderer::isNatural(rti, dest->number))
+                if (dest.type().isNatural && !RendererAST::isNatural(rti, dest->number))
                     throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
                 if (num != dest.type().mTuplesize)
                     throw CfdgError(arg->where, "Expression does not evaluate to the correct size");
@@ -253,7 +254,7 @@ EvalArgs(Renderer* rti, const StackType* parent, StackType::iterator& dest,
 
 // Evaluate arguments on the heap
 void
-StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments, 
+StackType::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
                     const StackType* parent)
 {
     iterator dest = begin();
@@ -263,7 +264,7 @@ StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
 
 // Evaluate arguments on the stack
 void
-StackType::evalArgs(Renderer* rti, const AST::ASTexpression* arguments,
+StackType::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
                     const AST::ASTparameters* p, bool sequential)
 {
     iterator dest = begin(p);

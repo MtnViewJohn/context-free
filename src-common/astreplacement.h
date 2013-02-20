@@ -30,6 +30,7 @@
 #include "astexpression.h"
 #include "location.hh"
 #include "cfdg.h"
+#include "rendererAST.h"
 #include "shape.h"
 #include "primShape.h"
 #include <string>
@@ -53,8 +54,8 @@ namespace AST {
         pathOpEnum mPathOp;
         ASTmodification mChildChange;
         yy::location mLocation;
-        void replace(Shape& s, Renderer* r, double* width = nullptr) const;
-        void replaceShape(Shape& s, Renderer* r) const;
+        void replace(Shape& s, RendererAST* r, double* width = nullptr) const;
+        void replaceShape(Shape& s, RendererAST* r) const;
         
         ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods, 
                        const yy::location& loc = CfdgError::Default,
@@ -63,7 +64,7 @@ namespace AST {
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
         virtual ~ASTreplacement();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     private:
         ASTreplacement(const ASTreplacement&);
     };
@@ -85,7 +86,7 @@ namespace AST {
         ASTrepContainer(ASTrepContainer&&) = delete;
 #endif
         ~ASTrepContainer();
-        void traverse(const Shape& parent, bool tr, Renderer* r,
+        void traverse(const Shape& parent, bool tr, RendererAST* r,
                       bool getParams = false) const
         {
             size_t s = r->mCFstack.size();
@@ -117,13 +118,13 @@ namespace AST {
         
         static void setupLoop(double& start, double& end, double& step, 
                               const ASTexpression* e, const yy::location& loc,
-                              Renderer* rti = nullptr);
+                              RendererAST* rti = nullptr);
         
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                 exp_ptr args, const yy::location& argsLoc,
                 mod_ptr mods);
         virtual ~ASTloop();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     };
     class ASTtransform: public ASTreplacement {
     public:
@@ -135,7 +136,7 @@ namespace AST {
         
         ASTtransform(const yy::location& loc, exp_ptr mods);
         virtual ~ASTtransform();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     private:
         static agg::trans_affine Dummy;
         
@@ -148,7 +149,7 @@ namespace AST {
         
         ASTif(exp_ptr ifCond, const yy::location& condLoc);
         virtual ~ASTif();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     };
     class ASTswitch: public ASTreplacement {
     public:
@@ -160,7 +161,7 @@ namespace AST {
         
         ASTswitch(exp_ptr switchExp, const yy::location& expLoc);
         virtual ~ASTswitch();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         
         void unify();
     };
@@ -177,7 +178,7 @@ namespace AST {
         
         ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc);
         ASTdefine(const std::string& name, mod_ptr m, const yy::location& loc);
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual ~ASTdefine() { }
     private:
         ASTdefine& operator=(const ASTdefine&);
@@ -203,8 +204,8 @@ namespace AST {
         : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         virtual ~ASTrule();
-        void traversePath(const Shape& parent, Renderer* r) const;
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        void traversePath(const Shape& parent, RendererAST* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     };
     class ASTshape : public ASTreplacement {
     public:
@@ -215,7 +216,7 @@ namespace AST {
         ASTshape(ASTruleSpecifier& r, bool path, const yy::location& loc) 
         : ASTreplacement(r, nullptr, loc, empty), isPath(path), mNameIndex(r.shapeType)
         { mRules.isGlobal = true; }
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     };
     class ASTpathOp : public ASTreplacement {
     public:
@@ -228,9 +229,9 @@ namespace AST {
         ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
         ~ASTpathOp();
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     private:
-        void pathData(double* data, Renderer* rti) const;
+        void pathData(double* data, RendererAST* rti) const;
         void pathDataConst();
         void makePositional(mod_ptr a);
         void checkArguments(exp_ptr a);
@@ -250,7 +251,7 @@ namespace AST {
         ASTpathCommand(const std::string& s, mod_ptr mods, exp_ptr params, 
                        const yy::location& loc);
         
-        virtual void traverse(const Shape& parent, bool tr, Renderer* r) const;
+        virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
     private:
         mutable CommandInfo mInfoCache;
         void    check4z() const;
@@ -265,12 +266,12 @@ namespace AST {
         const StackRule* mParameters;
         CommandInfo::UIDtype mPathUID;
         
-        void finish(bool setAttr, Renderer* r);
+        void finish(bool setAttr, RendererAST* r);
         void addPathOp(const ASTpathOp* pop, double data[6], const Shape& s, 
-                       bool tr, Renderer* r);
+                       bool tr, RendererAST* r);
         
         ASTcompiledPath();
-        static CommandInfo::UIDdatatype NextPathUID();
+        static UIDdatatype NextPathUID();
     private:
         static CommandInfo::UIDtype GlobalPathUID;
     };

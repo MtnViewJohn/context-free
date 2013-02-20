@@ -100,7 +100,7 @@ AbstractSystem::tempFileForRead(const string& path)
 
 Canvas::~Canvas() { }
 
-Renderer::~Renderer() { delete mCurrentPath; delete m_tiledCanvas; }
+Renderer::~Renderer() { delete m_tiledCanvas; }
 
 
 
@@ -180,73 +180,4 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
     system->message("%d rules loaded", pCfdg->numRules());
     
     return pCfdg;
-}
-
-void
-Renderer::init()
-{
-    mLastPoint.x = mLastPoint.y = 0.0;
-    mStop = false;
-    mClosed = false;
-    mWantMoveTo = true;
-    mWantCommand = true;
-    mIndex = mNextIndex = 0;
-}
-
-bool
-Renderer::isNatural(Renderer* r, double n)
-{
-    return n >= 0 && n <= (r ? r->mMaxNatural : Builder::MaxNatural) && n == floor(n);
-}
-
-void
-Renderer::ColorConflict(Renderer* r, const yy::location& w)
-{
-    if (r)
-        r->colorConflict(w);
-    else
-        CfdgError::Warning(w, "Conflicting color change");
-}
-
-void
-Renderer::initStack(const StackType* p)
-{
-    if (p && p->ruleHeader.mParamCount) {
-        for (StackType::const_iterator  it = p->begin(), eit = p->end();
-             it != eit; ++it)
-        {
-            for (int i = 0; i < it.type().mTuplesize; ++i)
-                mCFstack.push_back(*(&*it + i));
-            // Retain any shape params to balance the releases in unwindStack()
-            if (it.type().mType == AST::RuleType)
-                it->rule->retain(this);
-        }
-    }
-    if (!mCFstack.empty()) {
-        mLogicalStackTop = &(mCFstack.back()) + 1;
-    } else {
-        mLogicalStackTop = nullptr;
-    }
-}
-
-void
-Renderer::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params)
-{
-    if (oldsize == mCFstack.size())
-        return;
-
-    StackType* pos = &(mCFstack[oldsize]);
-    for (const AST::ASTparameter& param: params) {
-        if (param.isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()
-        if (param.mType == AST::RuleType)
-            pos->rule->release();
-        pos += param.mTuplesize;
-        if (pos > &(mCFstack.back()))
-            break;                      // no guarantee entire frame was computed
-    }
-    mCFstack.resize(oldsize, mCFstack.back());
-    if (oldsize)
-        mLogicalStackTop = &(mCFstack[0]) + oldsize;
-    else
-        mLogicalStackTop = nullptr;
 }

@@ -32,15 +32,17 @@
 #include "agg_math_stroke.h"
 #include "agg_trans_affine.h"
 #include "location.hh"
+#include <stdint.h>
 
 #if defined(_MSC_VER) && (_MSC_VER <= 1700)
 #define noexcept throw()
 #endif
 
-class Renderer;
+class RendererAST;
 
 namespace AST {
     typedef std::vector<agg::trans_affine> SymmList;
+    typedef uint_fast64_t UIDdatatype;
 
 #ifdef _WIN32
     inline double acosh(double x) 
@@ -209,7 +211,7 @@ namespace AST {
                          std::vector<double>& data, const yy::location& where);
     const ASTexpression* 
          getTransforms(const ASTexpression* e, SymmList& syms, 
-                       Renderer* r, bool tiled, agg::trans_affine& tile);
+                       RendererAST* r, bool tiled, agg::trans_affine& tile);
 }
 
 #endif // INCLUDE_AST_H

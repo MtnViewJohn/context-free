@@ -31,8 +31,7 @@
 namespace AST {
 
     const CommandInfo CommandInfo::Default(0, nullptr);
-    CommandInfo::UIDdatatype CommandInfo::PathUIDDefault =
-            std::numeric_limits<CommandInfo::UIDdatatype>::max();
+    UIDdatatype CommandInfo::PathUIDDefault = std::numeric_limits<UIDdatatype>::max();
 
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
     : mIndex(0), mPathUID(PathUIDDefault)

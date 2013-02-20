@@ -38,7 +38,6 @@
 #include "agg_color_rgba.h"
 #include "agg_path_storage.h"
 #include "location.hh"
-#include "CmdInfo.h"
 #include "stacktype.h"
 #include "Rand64.h"
 
@@ -46,10 +45,12 @@ typedef agg::rgba16 RGBA8;
 
 namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter; 
     typedef std::vector<agg::trans_affine> SymmList;
+    struct CommandInfo;
 }
 namespace agg { struct trans_affine_time; }
 class Shape;
 class tiledCanvas;
+class RendererAST;
 
 class DeferUntilRuntime {};
 class CfdgError {
@@ -158,8 +159,8 @@ class CFDG {
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
-        virtual const agg::rgba& getBackgroundColor(Renderer* r) = 0;
-        virtual void getSymmetry(AST::SymmList& syms, Renderer* r) = 0;
+        virtual const agg::rgba& getBackgroundColor(RendererAST* r) = 0;
+        virtual void getSymmetry(AST::SymmList& syms, RendererAST* r) = 0;
 
     protected:
         CFDG()
@@ -193,51 +194,13 @@ class Renderer {
         static double Infinity;
         static bool   AbortEverything;
         static unsigned ParamCount;
-    
-    // AST interface
-        std::vector<StackType>  mCFstack;
-        const StackType*  mLogicalStackTop;
-        void initStack(const StackType* p);
-        void unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params);
-        
-        Rand64      mCurrentSeed;
-        bool        mRandUsed;
-    
-        double      mMaxNatural;
-
-        double      mCurrentTime;
-        double      mCurrentFrame;
-        
-        agg::point_d mLastPoint;
-        bool         mStop;
-        bool         mClosed;
-        bool         mWantMoveTo;
-        bool         mWantCommand;
-        unsigned     mIndex;
-        unsigned     mNextIndex;
-        AST::ASTcompiledPath* mCurrentPath;
-        AST::InfoCache::iterator mCurrentCommand;
-    
-        void init();
-        static bool isNatural(Renderer* r, double n);
-        static void ColorConflict(Renderer* r, const yy::location& w);
-        virtual void storeParams(const StackType* p) = 0;
-        virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
-        virtual void processShape(const Shape& s) = 0;
-        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) = 0;
-        virtual void processSubpath(const Shape& s, bool tr, int) = 0;
-    
     protected:
         Renderer() 
         : requestStop(false),
           requestFinishUp(false),
           requestUpdate(false),
-          m_tiledCanvas(nullptr),
-          mMaxNatural(1000.0),
-          mCurrentTime(0.0), mCurrentFrame(0.0),
-          mCurrentPath(nullptr)
+          m_tiledCanvas(nullptr)
      { }
-        virtual void colorConflict(const yy::location& w) = 0;
 };
 
 #endif
