@@ -117,31 +117,24 @@ namespace AST {
         bool        isLocal;
         int         mName;
         yy::location mLocation;
-        ASTdefine*  mDefinition;
+        def_ptr     mDefinition;
         int         mStackIndex;
         int         mTuplesize;
         
         static bool Impure;
         
-        ASTparameter() :    mType(NoType), isParameter(false),
-        isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
-        mDefinition(nullptr), mStackIndex(-1), mTuplesize(1) {};
+        ASTparameter();
         ASTparameter(const std::string& typeName, int nameIndex,
-                     const yy::location& where)
-        : mType(NoType), isParameter(false),
-          isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
-          mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
-        { init(typeName, nameIndex); }
-        ASTparameter(int nameIndex, def_ptr& def, const yy::location& where)
-        : mType(NoType), isParameter(false),
-          isLoopIndex(false), isNatural(false), isLocal(false), mName(-1),
-          mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
-        { init(nameIndex, def); }
-        ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
-        : mType(NumericType), isParameter(false),
-          isLoopIndex(true), isNatural(natural), isLocal(local), mName(nameIndex),
-          mLocation(where), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
-        { }     // ctor for loop variables
+                     const yy::location& where);
+        ASTparameter(int nameIndex, def_ptr& def, const yy::location& where);
+        ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where);
+                // ctor for loop variables
+        ASTparameter(const ASTparameter&);
+                // ctor for copying parameter lists, never used after definitions are added
+        ASTparameter(ASTparameter&&) noexcept;
+        ASTparameter& operator=(const ASTparameter&);
+                // method for copying parameter lists, never used after definitions are added
+        ASTparameter& operator=(ASTparameter&&) noexcept;
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, def_ptr&  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
