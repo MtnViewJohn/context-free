@@ -74,7 +74,7 @@ namespace AST {
         }
     }
     
-    CommandInfo::CommandInfo(CommandInfo&& from)
+    CommandInfo::CommandInfo(CommandInfo&& from) noexcept
     : mFlags(from.mFlags), mMiterLimit(from.mMiterLimit),
       mStrokeWidth(from.mStrokeWidth), mIndex(from.mIndex), mPath(from.mPath),
       mPathUID(from.mPathUID.load())
@@ -86,5 +86,28 @@ namespace AST {
       mPathUID(from.mPathUID.load())
     { }
     
+    CommandInfo&
+    CommandInfo::operator=(CommandInfo&& from) noexcept
+    {
+        mFlags = from.mFlags;
+        mMiterLimit = from.mMiterLimit;
+        mStrokeWidth = from.mStrokeWidth;
+        mIndex = from.mIndex;
+        mPath = from.mPath;
+        mPathUID = from.mPathUID.load();
+        return *this;
+    }
+    
+    CommandInfo&
+    CommandInfo::operator=(const CommandInfo& from)
+    {
+        mFlags = from.mFlags;
+        mMiterLimit = from.mMiterLimit;
+        mStrokeWidth = from.mStrokeWidth;
+        mIndex = from.mIndex;
+        mPath = from.mPath;
+        mPathUID = from.mPathUID.load();
+        return *this;
+    }
     
 }

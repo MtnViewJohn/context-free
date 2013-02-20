@@ -60,8 +60,10 @@ namespace AST {
         : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(nullptr), 
           mPathUID(PathUIDDefault) {};
         CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
-        CommandInfo(CommandInfo&&);
+        CommandInfo(CommandInfo&&) noexcept;
         CommandInfo(const CommandInfo&);
+        CommandInfo& operator=(const CommandInfo&);
+        CommandInfo& operator=(CommandInfo&&) noexcept;
         void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     private:
         CommandInfo(unsigned i, agg::path_storage* p);
