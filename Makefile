@@ -32,7 +32,7 @@ LIB_DIRS = $(FFMPEG_DIR)/lib /usr/local/lib
 COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	cfdgimpl.cpp renderimpl.cpp builder.cpp shape.cpp \
 	variation.cpp tempfile.cpp commandLineSystem.cpp \
-	aggCanvas.cpp HSBColor.cpp SVGCanvas.cpp \
+	aggCanvas.cpp HSBColor.cpp SVGCanvas.cpp rendererAST.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
