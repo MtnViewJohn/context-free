@@ -42,13 +42,13 @@ public:
     int         number() { return mNum; }
     
     TempFile(AbstractSystem*, AbstractSystem::TempType t, const char* type, int num);
-    TempFile(TempFile&&);
+    TempFile(TempFile&&) noexcept;
 #ifndef _WIN32
     TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
     TempFile& operator=(TempFile&&) = default;
 #else
-    TempFile& operator=(TempFile&&);
+    TempFile& operator=(TempFile&&) noexcept;
 #endif
     virtual ~TempFile();
 
