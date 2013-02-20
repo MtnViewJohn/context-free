@@ -939,13 +939,6 @@ Builder::pop_repContainer(ASTreplacement* r)
         if (r->mPathOp == unknownPathop)
             r->mPathOp = lastContainer->mPathOp;
     }
-    for (ASTparameter& param: lastContainer->mParameters) {
-        // delete the constant definitions, but not functions
-        if (param.mDefinition && !param.mDefinition->isFunction) {
-            delete param.mDefinition;
-            param.mDefinition = nullptr;
-        }
-    }
     mContainerStack.pop_back();
 }
 
