@@ -33,6 +33,10 @@
 #include "agg_trans_affine.h"
 #include "location.hh"
 
+#if defined(_MSC_VER) && (_MSC_VER <= 1700)
+#define noexcept throw()
+#endif
+
 class Renderer;
 
 namespace AST {
