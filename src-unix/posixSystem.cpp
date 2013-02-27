@@ -110,6 +110,7 @@ PosixSystem::findTempFiles()
             ret.back().append(de.d_name);
         }
     }
+    (void)closedir(dirp);
     
     return ret;
 }
