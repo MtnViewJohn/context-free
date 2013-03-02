@@ -66,13 +66,12 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
     
     ofstream* f = nullptr;
     
-    char* b = strdup(t.c_str());
-    if (mktemp(b)) {
+    unique_ptr<char, decltype(&free)> b(strdup(t.c_str()), &free);
+    if (mktemp(b.get())) {
         f = new ofstream;
-        f->open(b, ios::binary | ios::trunc | ios::out);
-        nameOut.assign(b);
+        f->open(b.get(), ios::binary | ios::trunc | ios::out);
+        nameOut.assign(b.get());
     }
-    free(b);
     
     return f;
 }
@@ -95,22 +94,17 @@ vector<string>
 PosixSystem::findTempFiles()
 {
     vector<string> ret;
-    const char* dir = tempFileDirectory();
+    const char* dirname = tempFileDirectory();
     size_t len = strlen(TempPrefixAll);
-    DIR* dirp = opendir(dir);
-    dirent de;
-    dirent* der = nullptr;
-    for(;;) {
-        if (readdir_r(dirp, &de, &der) || der == nullptr)
-            break;
-        if (strncmp(TempPrefixAll, de.d_name, len) == 0) {
-            ret.emplace_back(dir);
+    unique_ptr<DIR, decltype(&closedir)> dirp(opendir(dirname), &closedir);
+    while (dirent* der = readdir(dirp.get())) {
+        if (strncmp(TempPrefixAll, der->d_name, len) == 0) {
+            ret.emplace_back(dirname);
             if (ret.back().back() != '/')
                 ret.back().push_back('/');
-            ret.back().append(de.d_name);
+            ret.back().append(der->d_name);
         }
     }
-    (void)closedir(dirp);
     
     return ret;
 }
