@@ -61,11 +61,11 @@ namespace {
     
     NSRect leftOld = [mLeftStatus frame];
     NSRect leftNew = leftOld;
-    float xSpace = leftOld.origin.x;
+    CGFloat xSpace = leftOld.origin.x;
     leftNew.size.width = midNew.origin.x - xSpace - leftNew.origin.x;
     moveView(self, mLeftStatus, leftOld, leftNew);
     
-    float rightEdge = size.width;
+    CGFloat rightEdge = size.width;
     
     if (![mProgressOne isHidden]) {
         NSRect progOld = [mProgressOne frame];
