@@ -158,9 +158,9 @@ CFDGImpl::findRule(int shapetype, double r)
 const ASTrule*
 CFDGImpl::findRule(int shapetype)
 {
-    for (vector<ASTrule*>::iterator i = mRules.begin(); i != mRules.end(); ++i)
-        if ((*i)->mNameIndex == shapetype)
-            return *i;
+    for (ASTrule* rule: mRules)
+        if (rule->mNameIndex == shapetype)
+            return rule;
     
     return nullptr;
 }

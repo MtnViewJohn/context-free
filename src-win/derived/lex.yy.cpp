@@ -1574,13 +1574,11 @@ YY_RULE_SETUP
     yylval->string = new std::string(yytext);
     size_t pos = std::string::npos;
     token_type tok = token::USER_STRING;
-    for (tokenMap::iterator it = utf8chars.begin(), eit = utf8chars.end(); 
-         it != eit; ++it)
-    {
-        size_t spos = yylval->string->find(it->second);
+    for (tokenMap::value_type& tokenEntry: utf8chars) {
+        size_t spos = yylval->string->find(tokenEntry.second);
         if (spos != std::string::npos && (spos < pos || pos == std::string::npos)) {
             pos = spos;
-            tok = it->first;
+            tok = tokenEntry.first;
         }
     }
     
@@ -1612,17 +1610,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 325 "../../src-common/cfdg.l"
+#line 323 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 326 "../../src-common/cfdg.l"
+#line 324 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 327 "../../src-common/cfdg.l"
+#line 325 "../../src-common/cfdg.l"
 {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
@@ -1632,18 +1630,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 333 "../../src-common/cfdg.l"
+#line 331 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 334 "../../src-common/cfdg.l"
+#line 332 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 	YY_BREAK
 /* gobble up white-spaces */
 case 86:
 YY_RULE_SETUP
-#line 337 "../../src-common/cfdg.l"
+#line 335 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1652,7 +1650,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 342 "../../src-common/cfdg.l"
+#line 340 "../../src-common/cfdg.l"
 {
     yylloc->lines(1); yylloc->step();
 }
@@ -1660,13 +1658,13 @@ YY_RULE_SETUP
 /* pass all other characters up to bison */
 case 88:
 YY_RULE_SETUP
-#line 347 "../../src-common/cfdg.l"
+#line 345 "../../src-common/cfdg.l"
 {
     return static_cast<int>(*yytext);
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 351 "../../src-common/cfdg.l"
+#line 349 "../../src-common/cfdg.l"
 {
     if (!YY_CURRENT_BUFFER)
         yyterminate();
@@ -1680,10 +1678,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 362 "../../src-common/cfdg.l"
+#line 360 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1687 "lex.yy.cpp"
+#line 1685 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2589,7 +2587,7 @@ void Cfdgfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 362 "../../src-common/cfdg.l"
+#line 360 "../../src-common/cfdg.l"
 
 
 
