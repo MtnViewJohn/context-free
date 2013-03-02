@@ -38,6 +38,7 @@
 #include "qtCanvas.h"
 #include "tiledCanvas.h"
 #include "Rand64.h"
+#include <tgmath.h>
 
 // Provide the forward-declarations of new 10.7 SDK symbols so they can be
 // called when building with the 10.5 SDK.
@@ -366,13 +367,13 @@ namespace {
     NSSize fSize = [self frame].size;
     NSSize rSize = mRenderedRect.size;
 
-    float scale;
+    CGFloat scale;
     if (rSize.width <= fSize.width  &&  rSize.height <= fSize.height) {
         // rendered area fits within frame, center it
-        scale = 1.0f;
+        scale = 1.0;
     } else {
-        float wScale = fSize.width / rSize.width;
-        float hScale = fSize.height / rSize.height;
+        CGFloat wScale = fSize.width / rSize.width;
+        CGFloat hScale = fSize.height / rSize.height;
         scale = (hScale < wScale) ? hScale : wScale;
     }
 
@@ -381,19 +382,16 @@ namespace {
     // center scaled image rectangle
     dRect.size.width = rSize.width * scale;
     dRect.size.height = rSize.height * scale;
-    float ox = dRect.origin.x = floorf((fSize.width - dRect.size.width) / 2.0f);
-    float oy = dRect.origin.y = floorf((fSize.height - dRect.size.height) / 2.0f);
+    CGFloat ox = dRect.origin.x = floor((fSize.width - dRect.size.width) * ((CGFloat)0.5));
+    CGFloat oy = dRect.origin.y = floor((fSize.height - dRect.size.height) * ((CGFloat)0.5));
 
-    if (mTiled && scale == 1.0f) {
+    if (mTiled && scale == 1.0) {
         tileList points;
         mRenderer->m_tiledCanvas->getTesselation(points, fSize.width, fSize.height, ox, oy);
         
-        for (tileList::reverse_iterator pt = points.rbegin(); 
-             pt != points.rend(); ++pt) {
-            NSPoint dPoint;
-            dPoint.x = (float)pt->x;
-            dPoint.y = (float)pt->y;
-
+        for (agg::point_i& pt: points) {
+            NSPoint dPoint = NSMakePoint(pt.x, pt.y);
+            
             if (backgroundColor.opacity() < 1.0) {
                 NSRect cRect = dRect;
                 cRect.origin = dPoint;
@@ -419,9 +417,10 @@ namespace {
             [self drawCheckerboardRect: NSIntersectionRect(dRect, rect)];
         }
         
-        [mDrawingImage drawInRect: dRect fromRect: NSZeroRect
-                         operation: NSCompositeSourceAtop
-                          fraction: 1.0];
+        [mDrawingImage drawInRect: dRect
+                         fromRect: NSZeroRect
+                        operation: NSCompositeSourceAtop
+                         fraction: 1.0];
     }
     
     [ctx setImageInterpolation: oldInterp];
@@ -637,13 +636,9 @@ namespace {
         
         [tileImage lockFocus];
         
-        for (tileList::iterator pt = points.begin(); 
-             pt != points.end(); ++pt)
-        {
-            NSPoint dPoint;
-            dPoint.x = (float)pt->x;
-            dPoint.y = (float)pt->y;
-            [mDrawingImage drawAtPoint: dPoint fromRect: NSZeroRect
+        for (agg::point_i& pt: points) {
+            [mDrawingImage drawAtPoint: NSMakePoint(pt.x, pt.y)
+                              fromRect: NSZeroRect
                              operation: NSCompositeCopy
                               fraction: 1.0];
         }
@@ -1004,7 +999,7 @@ namespace {
     }
     [gray set];
 
-    static const float u = 10.0;
+    static const CGFloat u = 10.0;
  
     NSRect box;
     box.size.width = u;
@@ -1060,8 +1055,8 @@ namespace {
     [mRenderBitmap release];
     mRenderBitmap = bm;
 
-    mRenderSize.width = (float)mRenderer->m_width;
-    mRenderSize.height = (float)mRenderer->m_height;
+    mRenderSize.width = (CGFloat)mRenderer->m_width;
+    mRenderSize.height = (CGFloat)mRenderer->m_height;
     mRenderedRect.origin.x = 0.0;
     mRenderedRect.origin.y = 0.0;
     mRenderedRect.size = mRenderSize;
