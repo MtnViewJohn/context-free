@@ -231,11 +231,9 @@ namespace AST {
     ASTswitch::unify()
     {
         if (mElseBody.mPathOp != mPathOp) mPathOp = unknownPathop;
-        for (switchMap::iterator it = mCaseStatements.begin();
-             it != mCaseStatements.end(); ++it)
-        {
-            if ((*it).second->mPathOp != mPathOp) mPathOp = unknownPathop;
-        }
+        for (switchMap::value_type& caseEntry: mCaseStatements)
+            if (caseEntry.second->mPathOp != mPathOp)
+                mPathOp = unknownPathop;
     }
 
     ASTrepContainer::~ASTrepContainer() 

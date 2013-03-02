@@ -287,13 +287,11 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
     yylval->string = new std::string(yytext);
     size_t pos = std::string::npos;
     token_type tok = token::USER_STRING;
-    for (tokenMap::iterator it = utf8chars.begin(), eit = utf8chars.end(); 
-         it != eit; ++it)
-    {
-        size_t spos = yylval->string->find(it->second);
+    for (tokenMap::value_type& tokenEntry: utf8chars) {
+        size_t spos = yylval->string->find(tokenEntry.second);
         if (spos != std::string::npos && (spos < pos || pos == std::string::npos)) {
             pos = spos;
-            tok = it->first;
+            tok = tokenEntry.first;
         }
     }
     
