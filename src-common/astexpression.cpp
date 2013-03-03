@@ -151,8 +151,6 @@ namespace AST {
     
     ASTruleSpecifier ASTruleSpecifier::Zero;
     
-    static const StackType StackZero = {0};
-    
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType), 
@@ -442,11 +440,11 @@ namespace AST {
             if (size + definition->mStackCount > rti->mCFstack.capacity())
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             ret = definition->mExpression->evalArgs(rti, parent);
-            rti->mCFstack.resize(size, StackZero);
+            rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
             ret = definition->mExpression->evalArgs(rti, parent);
@@ -973,11 +971,11 @@ namespace AST {
             if (size + definition->mStackCount > rti->mCFstack.capacity())
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(res, length, rti);
-            rti->mCFstack.resize(size, StackZero);
+            rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
             definition->mExpression->evaluate(res, length, rti);
@@ -1451,11 +1449,11 @@ namespace AST {
             if (size + definition->mStackCount > rti->mCFstack.capacity())
                 CfdgError::Error(where, "Maximum stack size exceeded");
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount, StackZero);
+            rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
             definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
-            rti->mCFstack.resize(size, StackZero);
+            rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
             definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);

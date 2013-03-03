@@ -502,7 +502,7 @@ OutputBounds::smooth(int window)
         accum.gather(*read++, factor);
     } 
     
-    mFrameBounds.resize(frames, Bounds());
+    mFrameBounds.resize(frames);
 }
 
 
