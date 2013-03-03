@@ -90,7 +90,7 @@ RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& p
         if (pos > &(mCFstack.back()))
             break;                      // no guarantee entire frame was computed
     }
-    mCFstack.resize(oldsize, mCFstack.back());
+    mCFstack.resize(oldsize);
     if (oldsize)
         mLogicalStackTop = &(mCFstack[0]) + oldsize;
     else

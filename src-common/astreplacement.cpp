@@ -578,9 +578,8 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool, RendererAST* r) const
     {
-        static const StackType zero = {0.0};
         int s = (int)r->mCFstack.size();
-        r->mCFstack.resize(s + mTuplesize, zero);
+        r->mCFstack.resize(s + mTuplesize);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         StackType* dest = &(r->mCFstack[s]);
         
