@@ -32,6 +32,7 @@
 #include <cassert>
 #include <cstddef>
 #include <utility>
+#include <stdexcept>
 
 #if defined(_MSC_VER) && !defined(noexcept)
 #define noexcept throw()
