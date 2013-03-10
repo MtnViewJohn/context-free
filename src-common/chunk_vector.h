@@ -33,6 +33,10 @@
 #include <cstddef>
 #include <utility>
 
+#if defined(_MSC_VER) && !defined(noexcept)
+#define noexcept throw()
+#endif
+
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
 {
@@ -155,73 +159,73 @@ struct chunk_vector_iterator
         return *_current;
     }
     
-    bool operator<(const chunk_vector_iterator& rhs)
+    bool operator<(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index < rhs._index;
     }
     
-    bool operator>(const chunk_vector_iterator& rhs)
+    bool operator>(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index > rhs._index;
     }
     
-    bool operator<=(const chunk_vector_iterator& rhs)
+    bool operator<=(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index <= rhs._index;
     }
     
-    bool operator>=(const chunk_vector_iterator& rhs)
+    bool operator>=(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index >= rhs._index;
     }
     
-    bool operator==(const chunk_vector_iterator& rhs)
+    bool operator==(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index == rhs._index;
     }
     
-    bool operator!=(const chunk_vector_iterator& rhs)
+    bool operator!=(const chunk_vector_iterator& rhs) const noexcept
     {
         return _index != rhs._index;
     }
 };
 
-template<typename _valType, unsigned _power2>
-inline bool operator==(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._chunksPtr == __y._chunksPtr && __x._index == __y._index; }
 
-template<typename _valType, unsigned _power2>
-inline bool operator!=(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._chunksPtr != __y._chunksPtr || __x._index != __y._index; }
 
-template<typename _valType, unsigned _power2>
-inline bool operator<(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._index < __y._index; }
 
-template<typename _valType, unsigned _power2>
-inline bool operator>(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._index > __y._index; }
 
-template<typename _valType, unsigned _power2>
-inline bool operator<=(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._index <= __y._index; }
 
-template<typename _valType, unsigned _power2>
-inline bool operator>=(chunk_vector_iterator<_valType, _power2>& __x,
-	                   chunk_vector_iterator<_valType, _power2>& __y)
+template<typename _valType1, typename _valType2, unsigned _power2>
+inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
 { return __x._index >= __y._index; }
 
 template<typename _valType, unsigned _power2>
 inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
-	                   chunk_vector_iterator<_valType, _power2>& __x)
+	                   const chunk_vector_iterator<_valType, _power2>& __x) noexcept
 { return __x + __n; }
 
-template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType> >
+template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>
 class chunk_vector {
 private:
     size_t _size;
@@ -251,7 +255,7 @@ public:
     {
         assert(_valAlloc.max_size() >= _chunk_size);
     }
-    ~chunk_vector() { clear(); }
+    ~chunk_vector() { clear(); _shrink_to_fit(); }
 
     void push_back(const_reference x)
     {
@@ -262,6 +266,7 @@ public:
         _valAlloc.construct(endVal, x);
         ++_size;
     }
+    
 #ifndef _WIN32
     template<typename... Args>
     void emplace_back(Args&&... args)
@@ -275,6 +280,7 @@ public:
         
     }
 #endif
+    
     void pop_back()
     {
         if (_size == 0) return;
@@ -282,27 +288,72 @@ public:
         _valType* endVal = _chunks[_size >> _power2] + (_size & _chunk_mask);
         _valAlloc.destroy(endVal);
     }
-    size_type size() const { return _size; }
-    bool empty() const { return _size == 0; }
-    void clear()
+    
+    size_type size() const noexcept { return _size; }
+    
+    bool empty() const noexcept { return _size == 0; }
+    
+    void clear() noexcept
     {
         for (size_t chunkNum = 0, num2delete = _size; num2delete; ++chunkNum) {
             size_t valCount = num2delete > _chunk_size ? _chunk_size : num2delete;
             _valType* chunk = _chunks[chunkNum];
             for (size_t valNum = 0; valNum < valCount; ++valNum)
                 _valAlloc.destroy(chunk + valNum);
-            _valAlloc.deallocate(chunk, _chunk_size);
             num2delete -= valCount;
         }
-        _chunks.clear();
         _size = 0;
     }
+    
+    void shrink_to_fit()
+    {
+        _shrink_to_fit();
+        _chunks.shrink_to_fit();
+    }
+    
     void resize(size_type newSize, const_reference x)
     {
+        reserve(newSize);
         while (newSize > _size)
             push_back(x);
         while (newSize < _size)
             pop_back();
+    }
+    
+    void resize(size_type newSize)
+    {
+        reserve(newSize);
+        while (newSize > _size)
+            push_back();
+        while (newSize < _size)
+            pop_back();
+    }
+    
+    void swap(chunk_vector<_valType, _power2, _Alloc>& with)
+    {
+        size_t tempsize = _size;
+        _Alloc tempalloc = _valAlloc;
+        _size = with._size;
+        _valAlloc = with._valAlloc;
+        with._size = tempsize;
+        with._valAlloc = tempalloc;
+        _chunks.swap(with._chunks);
+        _shrink_to_fit();   // no reallocation of _chunks, iterators stay valid
+    }
+    
+    void reserve(size_type n)
+    {
+        size_t chunksNeeded = _size ? (_size >> _power2) + 1 : 0;
+        if (_chunks.size() >= chunksNeeded)
+            return;
+        _chunks.reserve(chunksNeeded);
+        for (size_type num = chunksNeeded - _chunks.size(); num; --num)
+             _chunks.push_back(_valAlloc.allocate(_chunk_size));
+    }
+    
+    size_type capacity() const noexcept
+    {
+        return _chunks.size() << _power2;
     }
 
     reference operator[](size_t i)
@@ -315,27 +366,58 @@ public:
         _valType* chunk = _chunks[i >> _power2];
         return chunk[i & _chunk_mask];
     }
+    
+    reference at(size_t i)
+    {
+        if (i >= _size)
+            throw std::out_of_range("chunk_vector::at() range exceeded");
+        return (*this)[i];
+    }
+    const_reference at(size_t i) const
+    {
+        if (i >= _size)
+            throw std::out_of_range("chunk_vector::at() range exceeded");
+        return (*this)[i];
+    }
+    
     reference front() { return (*this)[0]; }
     const_reference front() const { return (*this)[0]; }
+    
     reference back() { return (*this)[_size - 1]; }
     const_reference back() const { return (*this)[_size - 1]; }
 
-    iterator begin()
-    { return iterator(&(_chunks[0]), _size, true); }
-    iterator end()
-    { return iterator(&(_chunks[0]), _size, false); }
-    const_iterator begin() const
-    { return const_iterator(&(_chunks[0]), _size, true); }
-    const_iterator end() const
-    { return const_iterator(&(_chunks[0]), _size, false); }
-    reverse_iterator rbegin()
-    { return reverse_iterator(&(_chunks[0]), _size, false); }
-    reverse_iterator rend()
-    { return reverse_iterator(&(_chunks[0]), _size, true); }
-    const_reverse_iterator rbegin() const
-    { return const_reverse_iterator(&(_chunks[0]), _size, false); }
-    const_reverse_iterator rend() const
-    { return const_reverse_iterator(&(_chunks[0]), _size, true); }
+    iterator begin() noexcept             { return iterator(_chunks.data(), _size, true); }
+    iterator end() noexcept               { return iterator(_chunks.data(), _size, false); }
+    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), _size, true); }
+    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _size, false); }
+    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), _size, true); }
+    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _size, false); }
+    
+    reverse_iterator rbegin() noexcept             { return reverse_iterator(end()); }
+    reverse_iterator rend() noexcept               { return reverse_iterator(begin()); }
+    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+    const_reverse_iterator rend() const noexcept   { return const_reverse_iterator(begin()); }
+    const_reverse_iterator crbegin() noexcept      { return const_reverse_iterator(cend()); }
+    const_reverse_iterator crend() noexcept        { return const_reverse_iterator(cbegin()); }
+    
+private:
+    void push_back()
+    {
+        size_t chunkNum = _size >> _power2;
+        if (_chunks.size() <= chunkNum)
+            _chunks.push_back(_valAlloc.allocate(_chunk_size));
+        _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
+        ::new((void*)endVal) value_type();
+        ++_size;
+    }
+    
+    void _shrink_to_fit()
+    {
+        size_t chunksNeeded = _size ? (_size >> _power2) + 1 : 0;
+        for (size_t chunkNum = chunksNeeded; chunkNum < _chunks.size(); ++chunkNum)
+            _valAlloc.deallocate(_chunks[chunkNum], _chunk_size);
+        _chunks.resize(chunksNeeded);
+    }
 };
 
 #endif  // INCLUDE_CHUNK_VECTOR_H
