@@ -41,17 +41,18 @@
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
 {
-    enum consts_e {
-        _chunk_size = 1 << _power2,
-        _chunk_mask = _chunk_size - 1
-    };
-    
     typedef std::random_access_iterator_tag iterator_category;
     typedef _valType                        value_type;
     typedef _valType*                       pointer;
     typedef _valType&                       reference;
     typedef size_t                          size_type;
     typedef ptrdiff_t                       difference_type;
+    
+private:
+    enum consts_e {
+        _chunk_size = 1 << _power2,
+        _chunk_mask = _chunk_size - 1
+    };
     
     pointer*    _chunksPtr;
     pointer     _current;
@@ -61,9 +62,41 @@ struct chunk_vector_iterator
     chunk_vector_iterator(_valType** vals, size_t size, bool begin)
         : _chunksPtr(vals), _size(size), _index(begin ? 0 : size)
     {
-        if (_index < size)
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        _set_current();
     }
+    
+    template <typename _vT, unsigned _p2, typename _Alloc>
+    friend class chunk_vector;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator==(const chunk_vector_iterator<_valType1, _p2>& __x,
+                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator!=(const chunk_vector_iterator<_valType1, _p2>& __x,
+                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator<(const chunk_vector_iterator<_valType1, _p2>& __x,
+                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator>(const chunk_vector_iterator<_valType1, _p2>& __x,
+                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator<=(const chunk_vector_iterator<_valType1, _p2>& __x,
+                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, typename _valType2, unsigned _p2>
+    friend bool operator>=(const chunk_vector_iterator<_valType1, _p2>& __x,
+                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    
+    template<typename _valType1, unsigned _p2>
+    friend chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
+                           const chunk_vector_iterator<_valType1, _p2>& __x) noexcept;
+    
+public:
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
         : _chunksPtr(cvi._chunksPtr), _current(cvi._current), _size(cvi._size), _index(cvi._index)
     { }
@@ -89,8 +122,7 @@ struct chunk_vector_iterator
     chunk_vector_iterator& operator++()
     {
         ++_index;
-        if (_index < _size)
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        _set_current();
         return *this;
     }
 
@@ -103,10 +135,8 @@ struct chunk_vector_iterator
 
     chunk_vector_iterator& operator--()
     {
-        if (_index) {
-            --_index;
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
-        }
+        --_index;
+        _set_current();
         return *this;
     }
 
@@ -120,8 +150,7 @@ struct chunk_vector_iterator
     chunk_vector_iterator& operator+=(difference_type n)
     {
         _index += n;
-        if (_index < _size)
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        _set_current();
         return *this;
     }
 
@@ -135,8 +164,7 @@ struct chunk_vector_iterator
     chunk_vector_iterator& operator-=(difference_type n)
     {
         _index -= n;
-        if (_index < _size)
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        _set_current();
         return *this;
     }
 
@@ -189,17 +217,24 @@ struct chunk_vector_iterator
     {
         return _index != rhs._index;
     }
+    
+private:
+    void _set_current()
+    {
+        if (_index < _size)
+            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+    }
 };
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._chunksPtr == __y._chunksPtr && __x._index == __y._index; }
+{ return __x._index == __y._index; }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._chunksPtr != __y._chunksPtr || __x._index != __y._index; }
+{ return __x._index != __y._index; }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
