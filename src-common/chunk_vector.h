@@ -92,10 +92,6 @@ private:
     friend bool operator>=(const chunk_vector_iterator<_valType1, _p2>& __x,
                            const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
     
-    template<typename _valType1, unsigned _p2>
-    friend chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
-                           const chunk_vector_iterator<_valType1, _p2>& __x) noexcept;
-    
 public:
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
         : _chunksPtr(cvi._chunksPtr), _current(cvi._current), _size(cvi._size), _index(cvi._index)
