@@ -33,6 +33,7 @@
 #include <cstddef>
 #include <utility>
 #include <stdexcept>
+#include <type_traits>
 
 #if defined(_MSC_VER) && !defined(noexcept)
 #define noexcept throw()
@@ -225,32 +226,68 @@ private:
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index == __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index == __y._index;
+}
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index != __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index != __y._index;
+}
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index < __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index < __y._index;
+}
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index > __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index > __y._index;
+}
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index <= __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index <= __y._index;
+}
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
 	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
-{ return __x._index >= __y._index; }
+{
+    static_assert(std::is_same<typename std::remove_const<_valType1>::type,
+                               typename std::remove_const<_valType2>::type>::value,
+                  "Types must match, modulo const");
+    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
+    return __x._index >= __y._index;
+}
 
 template<typename _valType, unsigned _power2>
 inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
