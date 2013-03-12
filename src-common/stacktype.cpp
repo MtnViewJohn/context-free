@@ -63,15 +63,10 @@
 #include <iostream>
 
 
-#define assert_static(e) \
-do { \
-enum { assert_static__ = 1/((int)(e)) }; \
-} while (0)
-
 StackType*
 StackType::alloc(int name, int size, const AST::ASTparameters* ti)
 {
-    assert_static(sizeof(StackType) == sizeof(double));
+    static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
     assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
