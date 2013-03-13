@@ -62,11 +62,12 @@
 #include <cstring>
 #include <iostream>
 
+static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
+static_assert(sizeof(StackRule) == sizeof(double), "StackRule must be 8 bytes");
 
 StackType*
 StackType::alloc(int name, int size, const AST::ASTparameters* ti)
 {
-    static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
     assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
@@ -83,7 +84,7 @@ void
 StackType::release() const
 {
     if (ruleHeader.mRefCount == 0) {
-        for (const_iterator it = begin(), e = end(); it != e; ++it)
+        for (const_iterator it = ruleHeader.begin(), e = ruleHeader.end(); it != e; ++it)
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
         --Renderer::ParamCount;
@@ -139,7 +140,7 @@ StackType::read(std::istream& is)
     if (ruleHeader.mParamCount == 0)
         return;
     is.read((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (iterator it = begin(), e = end(); it != e; ++it) {
+    for (iterator it = ruleHeader.begin(), e = ruleHeader.end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
@@ -165,7 +166,7 @@ StackType::write(std::ostream& os) const
     if (ruleHeader.mParamCount == 0)
         return;
     os.write((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (const_iterator it = begin(), e = end(); 
+    for (const_iterator it = ruleHeader.begin(), e = ruleHeader.end();
         it != e; ++it)
     {
         switch (it.type().mType) {
@@ -252,8 +253,8 @@ void
 StackType::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
                     const StackType* parent)
 {
-    iterator dest = begin();
-    iterator end_it = end();
+    iterator dest = ruleHeader.begin();
+    iterator end_it = ruleHeader.end();
     EvalArgs(rti, parent, dest, end_it, arguments, false);
 }
 

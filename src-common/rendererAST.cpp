@@ -58,7 +58,7 @@ void
 RendererAST::initStack(const StackType* p)
 {
     if (p && p->ruleHeader.mParamCount) {
-        for (StackType::const_iterator  it = p->begin(), eit = p->end();
+        for (StackType::const_iterator  it = p->ruleHeader.begin(), eit = p->ruleHeader.end();
              it != eit; ++it)
         {
             for (int i = 0; i < it.type().mTuplesize; ++i)
