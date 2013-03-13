@@ -33,6 +33,10 @@
 #include <iosfwd>
 #include "ast.h"
 
+#if defined(_MSC_VER) && !defined(noexcept)
+#define noexcept throw()
+#endif
+
 namespace AST { class ASTparameter; class ASTexpression; }
 
 union StackType;
@@ -46,6 +50,8 @@ public:
     AST::ASTparameters::const_iterator _End;
     
     StackTypeIterator() : _Ptr(nullptr) {}
+    StackTypeIterator(const StackTypeIterator& o)
+    : _Ptr(o._Ptr), _Iter(o._Iter), _End(o._End) {}
     StackTypeIterator(_stack* s, const AST::ASTparameters* p)
     : _Ptr(s)
     {
@@ -59,7 +65,8 @@ public:
     
     _stack& operator*() { return *_Ptr; }
     _stack* operator->() { return _Ptr; }
-    _stack& operator++()
+    
+    StackTypeIterator& operator++()
     {
         if (_Ptr) {
             _Ptr += _Iter->mTuplesize;
@@ -67,17 +74,27 @@ public:
             if (_Iter == _End)
                 _Ptr = nullptr;
         }
-        return *_Ptr;
+        return *this;
     }
     
-    StackType& operator++(int)
+    StackTypeIterator& operator++(int)
     {
-        StackType* tmp = _Ptr;
+        StackTypeIterator tmp = *this;
         ++(*this);
-        return *tmp;
+        return tmp;
     }
-    bool operator==(const StackTypeIterator& o) const { return _Ptr == o._Ptr; }
-    bool operator!=(const StackTypeIterator& o) const { return _Ptr != o._Ptr; }
+    
+    bool operator==(const StackTypeIterator& o) const noexcept { return _Ptr == o._Ptr; }
+    bool operator!=(const StackTypeIterator& o) const noexcept { return _Ptr != o._Ptr; }
+    
+    StackTypeIterator& operator=(const StackTypeIterator& o)
+    {
+        _Ptr = o._Ptr;
+        _Iter = o._Iter;
+        _End = o._End;
+        return *this;
+    }
+    
     const AST::ASTparameter& type() const { return *_Iter; }
 };
 
