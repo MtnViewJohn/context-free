@@ -92,33 +92,9 @@ struct StackRule {
     
     bool operator==(const StackRule& o) const;
     static bool Equal(const StackRule* a, const StackType* b);
-    iterator begin()
-    {
-        if (mParamCount) {
-            StackType* st = reinterpret_cast<StackType*>(this + 2);
-            const AST::ASTparameters** ti = reinterpret_cast<const AST::ASTparameters**>(this + 1);
-            return iterator(st, *ti);
-        }
-        return iterator();
-    }
-    const_iterator begin() const
-    {
-        if (mParamCount) {
-            const StackType* st = reinterpret_cast<const StackType*>(this + 2);
-            const AST::ASTparameters* const * ti = reinterpret_cast<const AST::ASTparameters* const *>(this + 1);
-            return const_iterator(st, *ti);
-        }
-        return const_iterator();
-    }
-    const_iterator cbegin()
-    {
-        if (mParamCount) {
-            const StackType* st = reinterpret_cast<const StackType*>(this + 2);
-            const AST::ASTparameters** ti = reinterpret_cast<const AST::ASTparameters**>(this + 1);
-            return const_iterator(st, *ti);
-        }
-        return const_iterator();
-    }
+    iterator begin();
+    const_iterator begin() const;
+    const_iterator cbegin();
     iterator end()
     { return iterator(); }
     const_iterator cend()
@@ -164,5 +140,35 @@ union StackType {
     const_iterator end() const
     { return const_iterator(); }
 };
+
+inline StackRule::iterator
+StackRule::begin()
+{
+    if (mParamCount) {
+        StackType* st = reinterpret_cast<StackType*>(this);
+        return iterator(st + 2, st[1].typeInfo);
+    }
+    return iterator();
+}
+
+inline StackRule::const_iterator
+StackRule::begin() const
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        return const_iterator(st + 2, st[1].typeInfo);
+    }
+    return const_iterator();
+}
+
+inline StackRule::const_iterator
+StackRule::cbegin()
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        return const_iterator(st + 2, st[1].typeInfo);
+    }
+    return const_iterator();
+}
 
 #endif // INCLUDE_STACKTYPE_H
