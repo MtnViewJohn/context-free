@@ -294,8 +294,8 @@ namespace AST {
         if (arguments && arguments->mType != AST::NoType) {
             arguments->entropy(entropyVal);
             if (arguments->isConstant) {
-                const StackType* simp = evalArgs();
-                simp[0].ruleHeader.mRefCount = UINT32_MAX;
+                const StackRule* simp = evalArgs();
+                simp->mRefCount = UINT32_MAX;
                 simpleRule = simp;
                 argSource = SimpleArgs;
             }
@@ -303,8 +303,8 @@ namespace AST {
             argSource = ParentArgs;
         } else {
             argSource = NoArgs;
-            simpleRule = StackType::alloc(shapeType, 0, types);
-            simpleRule[0].ruleHeader.mRefCount = UINT32_MAX;
+            simpleRule = StackRule::alloc(shapeType, 0, types);
+            simpleRule->mRefCount = UINT32_MAX;
         }
     }
     
@@ -324,8 +324,8 @@ namespace AST {
       typeSignature(r->typeSignature)
     {
         if (r->argSource == SimpleArgs) {
-            StackType* simp = StackType::alloc(shapeType, argSize, nullptr);
-            simp[0].ruleHeader.mRefCount = UINT32_MAX;
+            StackRule* simp = StackRule::alloc(shapeType, argSize, nullptr);
+            simp->mRefCount = UINT32_MAX;
             argSource = SimpleArgs;
             simpleRule = simp;
             if (argSize)
@@ -353,8 +353,8 @@ namespace AST {
         assert(arguments);
     }
     
-    const StackType*
-    ASTruleSpecifier::evalArgs(RendererAST* rti, const StackType* parent) const
+    const StackRule*
+    ASTruleSpecifier::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         switch (argSource) {
         case NoArgs:
@@ -369,11 +369,11 @@ namespace AST {
         case ParentArgs:
             assert(parent);
             assert(rti);
-            if (shapeType != parent->ruleHeader.mRuleName) {
+            if (shapeType != parent->mRuleName) {
                 // Child shape is different from parent, even though parameters are reused,
                 // and we can't finesse it in ASTreplacement::traverse(). Just
                 // copy the parameters with the correct shape type.
-                StackType* ret = StackType::alloc(shapeType, argSize, typeSignature);
+                StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
                 if (argSize)
                     for (int i = 1; i < argSize + 2; ++i)
                         ret[i] = parent[i];
@@ -385,7 +385,7 @@ namespace AST {
             parent->retain(rti);
             return parent;
         case DynamicArgs: {
-            StackType* ret = StackType::alloc(shapeType, argSize, typeSignature);
+            StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
             ret->evalArgs(rti, arguments.get(), parent);
             return ret;
         }
@@ -397,8 +397,8 @@ namespace AST {
         }
     }
     
-    const StackType*
-    ASTparen::evalArgs(RendererAST* rti, const StackType* parent) const
+    const StackRule*
+    ASTparen::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape expression in a shape context");
@@ -408,8 +408,8 @@ namespace AST {
         return e->evalArgs(rti, parent);
     }
     
-    const StackType*
-    ASTselect::evalArgs(RendererAST* rti, const StackType* parent) const
+    const StackRule*
+    ASTselect::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
@@ -419,8 +419,8 @@ namespace AST {
         return (*arguments)[getIndex(rti)]->evalArgs(rti, parent);
     }
     
-    const StackType*
-    ASTuserFunction::evalArgs(RendererAST* rti, const StackType* parent) const
+    const StackRule*
+    ASTuserFunction::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
             CfdgError::Error(where, "Function does not evaluate to a shape");
@@ -433,7 +433,7 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        const StackType* ret = nullptr;
+        const StackRule* ret = nullptr;
         
         if (definition->mStackCount) {
             size_t size = rti->mCFstack.size();

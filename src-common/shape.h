@@ -104,7 +104,7 @@ class Shape : public ShapeBase {
 public:
     Shape() : ShapeBase(), mParameters(nullptr) {}
     
-    const StackType* mParameters;
+    const StackRule* mParameters;
 
     Shape operator*(const Modification& m) const {
         Shape s = *this;

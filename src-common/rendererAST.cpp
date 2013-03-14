@@ -55,10 +55,10 @@ RendererAST::isNatural(RendererAST* r, double n)
 }
 
 void
-RendererAST::initStack(const StackType* p)
+RendererAST::initStack(const StackRule* p)
 {
-    if (p && p->ruleHeader.mParamCount) {
-        for (StackType::const_iterator  it = p->ruleHeader.begin(), eit = p->ruleHeader.end();
+    if (p && p->mParamCount) {
+        for (StackRule::const_iterator  it = p->begin(), eit = p->end();
              it != eit; ++it)
         {
             for (int i = 0; i < it.type().mTuplesize; ++i)

@@ -108,7 +108,18 @@ struct StackRule {
     mutable uint32_t    mRefCount;
     
     bool operator==(const StackRule& o) const;
-    static bool Equal(const StackRule* a, const StackType* b);
+    static bool Equal(const StackRule* a, const StackRule* b);
+    
+    static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
+    void        release() const;
+    void        retain(RendererAST* r) const;
+    
+    static StackRule*  Read(std::istream& is);
+    static void        Write(std::ostream& os, const StackRule* s);
+    
+    void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
+                         const StackRule* parent);
+
     iterator begin();
     const_iterator begin() const;
     const_iterator cbegin();
@@ -118,6 +129,10 @@ struct StackRule {
     { return const_iterator(); }
     const_iterator end() const
     { return const_iterator(); }
+
+private:
+    void        read(std::istream& is);
+    void        write(std::ostream& os) const;
 };
 
 union StackType {
@@ -125,22 +140,12 @@ union StackType {
     typedef StackTypeIterator<const StackType> const_iterator;
     
     double      number;
-    const StackType*  rule;
+    const StackRule*  rule;
     StackRule   ruleHeader;
     const AST::ASTparameters* typeInfo;
 
-    static StackType*  alloc(int name, int size, const AST::ASTparameters* ti);
-    void        release() const;
     void        release(const AST::ASTparameters* p) const;
-    void        retain(RendererAST* r) const;
 
-    void        read(std::istream& is);
-    void        write(std::ostream& os) const;
-    static StackType*  readHeader(std::istream& is);
-    static void        writeHeader(std::ostream& os, const StackType* s);
-    
-    void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
-                         const StackType* parent);
     void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
                          const AST::ASTparameters* p, bool sequential);
     

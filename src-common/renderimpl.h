@@ -64,7 +64,7 @@ class RendererImpl : public RendererAST {
                         int variation, double border);
         ~RendererImpl();
     
-        virtual void storeParams(const StackType* p);
+        virtual void storeParams(const StackRule* p);
     
         void setMaxShapes(int n);
         void resetBounds();
@@ -161,7 +161,7 @@ class RendererImpl : public RendererAST {
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;
     
-        std::deque<const StackType*> mLongLivedParams;
+        std::deque<const StackRule*> mLongLivedParams;
     
         AST::CommandInfo shapeMap[3];
         primShape        shape0;
