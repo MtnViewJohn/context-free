@@ -37,7 +37,7 @@
 #include <atomic>
 #include "ast.h"
 
-#if defined(_MSC_VER) && (_MSC_VER <= 1700)
+#if defined(_MSC_VER) && !defined(noexcept)
 #define noexcept throw()
 #endif
 
