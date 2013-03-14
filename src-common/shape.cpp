@@ -125,14 +125,14 @@ Shape::read(std::istream& is)
 void
 Shape::writeParams(std::ostream& os) const
 {
-    StackType::writeHeader(os, mParameters);
+    StackRule::Write(os, mParameters);
     releaseParams();
 }
 
 void
 Shape::readParams(std::istream& is)
 {
-    mParameters = StackType::readHeader(is);
+    mParameters = StackRule::Read(is);
 }
 
 void

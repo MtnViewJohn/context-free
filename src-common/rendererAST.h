@@ -34,7 +34,7 @@ public:
         ~RendererAST();
         std::vector<StackType>  mCFstack;
         const StackType*  mLogicalStackTop;
-        void initStack(const StackType* p);
+        void initStack(const StackRule* p);
         void unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params);
         
         Rand64      mCurrentSeed;
@@ -58,7 +58,7 @@ public:
         void init();
         static bool isNatural(RendererAST* r, double n);
         static void ColorConflict(RendererAST* r, const yy::location& w);
-        virtual void storeParams(const StackType* p) = 0;
+        virtual void storeParams(const StackRule* p) = 0;
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
         virtual void processShape(const Shape& s) = 0;
         virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) = 0;

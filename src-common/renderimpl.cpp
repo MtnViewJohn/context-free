@@ -222,9 +222,10 @@ RendererImpl::cleanup()
     } catch (Stopped) {
         return;
     }
-    for (const StackType* param: mLongLivedParams) {
+    for (const StackRule* param: mLongLivedParams) {
         --Renderer::ParamCount;
-        delete[] param;
+        const StackType* st = reinterpret_cast<const StackType*>(param);
+        delete[] st;
         if (AbortEverything) return;
     }
     mUnfinishedShapes.clear();
@@ -1130,7 +1131,7 @@ RendererImpl::processPathCommand(const Shape& s, const AST::CommandInfo* attr)
 }
 
 void
-RendererImpl::storeParams(const StackType* p)
+RendererImpl::storeParams(const StackRule* p)
 {
     mLongLivedParams.push_back(p);
 }

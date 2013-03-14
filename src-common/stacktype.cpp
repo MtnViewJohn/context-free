@@ -65,8 +65,8 @@
 static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
 static_assert(sizeof(StackRule) == sizeof(double), "StackRule must be 8 bytes");
 
-StackType*
-StackType::alloc(int name, int size, const AST::ASTparameters* ti)
+StackRule*
+StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
@@ -76,15 +76,15 @@ StackType::alloc(int name, int size, const AST::ASTparameters* ti)
     newrule[0].ruleHeader.mParamCount = (uint16_t)size;
     if (size)
         newrule[1].typeInfo = ti;
-    return newrule;
+    return &(newrule->ruleHeader);
 }
 
 // Release arguments on the heap
 void
-StackType::release() const
+StackRule::release() const
 {
-    if (ruleHeader.mRefCount == 0) {
-        for (const_iterator it = ruleHeader.begin(), e = ruleHeader.end(); it != e; ++it)
+    if (mRefCount == 0) {
+        for (const_iterator it = begin(), e = end(); it != e; ++it)
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
         --Renderer::ParamCount;
@@ -92,8 +92,8 @@ StackType::release() const
         return;
     }
     
-    if (ruleHeader.mRefCount < UINT32_MAX)
-        --(ruleHeader.mRefCount);
+    if (mRefCount < UINT32_MAX)
+        --mRefCount;
 }
 
 // Release arguments on the stack
@@ -106,13 +106,13 @@ StackType::release(const AST::ASTparameters* p) const
 }
 
 void
-StackType::retain(RendererAST* r) const
+StackRule::retain(RendererAST* r) const
 {
-    if (ruleHeader.mRefCount == UINT32_MAX)
+    if (mRefCount == UINT32_MAX)
         return;
     
-    ++(ruleHeader.mRefCount);
-    if (ruleHeader.mRefCount == UINT32_MAX) {
+    ++mRefCount;
+    if (mRefCount == UINT32_MAX) {
         r->storeParams(this);
     }
 }
@@ -127,27 +127,28 @@ StackRule::operator==(const StackRule& o) const
 }
 
 bool
-StackRule::Equal(const StackRule* a, const StackType* b)
+StackRule::Equal(const StackRule* a, const StackRule* b)
 {
     if (a == nullptr && b == nullptr) return true;
     if (a == nullptr || b == nullptr) return false;
-    return (*a) == (b->ruleHeader);
+    return (*a) == (*b);
 }
 
 void
-StackType::read(std::istream& is)
+StackRule::read(std::istream& is)
 {
-    if (ruleHeader.mParamCount == 0)
+    if (mParamCount == 0)
         return;
-    is.read((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (iterator it = ruleHeader.begin(), e = ruleHeader.end(); it != e; ++it) {
+    StackType* st = reinterpret_cast<StackType*>(this);
+    is.read((char*)(st[1].typeInfo), sizeof(AST::ASTparameters*));
+    for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
             is.read((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
-            it->rule = readHeader(is);
+            it->rule = Read(is);
             break;
         default:
             assert(false);
@@ -157,16 +158,17 @@ StackType::read(std::istream& is)
 }
 
 void
-StackType::write(std::ostream& os) const
+StackRule::write(std::ostream& os) const
 {
-    uint64_t head = ((uint64_t)(ruleHeader.mRuleName)) << 24 |
-                    ((uint64_t)(ruleHeader.mParamCount)) << 8 |
+    uint64_t head = ((uint64_t)mRuleName) << 24 |
+                    ((uint64_t)mParamCount) << 8 |
                     0xff;
     os.write((char*)(&head), sizeof(uint64_t));
-    if (ruleHeader.mParamCount == 0)
+    if (mParamCount == 0)
         return;
-    os.write((char*)(&((this+1)->typeInfo)), sizeof(AST::ASTparameters*));
-    for (const_iterator it = ruleHeader.begin(), e = ruleHeader.end();
+    const StackType* st = reinterpret_cast<const StackType*>(this);
+    os.write((char*)(st[1].typeInfo), sizeof(AST::ASTparameters*));
+    for (const_iterator it = begin(), e = end();
         it != e; ++it)
     {
         switch (it.type().mType) {
@@ -175,7 +177,7 @@ StackType::write(std::ostream& os) const
             os.write((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
-            writeHeader(os, it->rule);
+            Write(os, it->rule);
             break;
         default:
             assert(false);
@@ -184,25 +186,25 @@ StackType::write(std::ostream& os) const
     }
 }
 
-StackType*
-StackType::readHeader(std::istream& is)
+StackRule*
+StackRule::Read(std::istream& is)
 {
     uint64_t size = 0;
     is.read((char*)(&size), sizeof(uint64_t));
     if (size & 3) {
         // Don't know the typeInfo yet, get it during read
-        StackType* s = StackType::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
+        StackRule* s = StackRule::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
         s->read(is);
         return s;
     } else {
-        return (StackType*)size;
+        return (StackRule*)size;
     }
 }
 
 void
-StackType::writeHeader(std::ostream& os, const StackType* s)
+StackRule::Write(std::ostream& os, const StackRule* s)
 {
-    if (s == nullptr || s->ruleHeader.mRefCount == UINT32_MAX) {
+    if (s == nullptr || s->mRefCount == UINT32_MAX) {
         uint64_t p = (uint64_t)(s);
         os.write((char*)(&p), sizeof(uint64_t));
     } else {
@@ -211,7 +213,7 @@ StackType::writeHeader(std::ostream& os, const StackType* s)
 }
 
 static void
-EvalArgs(RendererAST* rti, const StackType* parent, StackType::iterator& dest,
+EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
          StackType::iterator& end, const AST::ASTexpression* arguments,
          bool onStack)
 {
@@ -250,11 +252,11 @@ EvalArgs(RendererAST* rti, const StackType* parent, StackType::iterator& dest,
 
 // Evaluate arguments on the heap
 void
-StackType::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
-                    const StackType* parent)
+StackRule::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments, 
+                    const StackRule* parent)
 {
-    iterator dest = ruleHeader.begin();
-    iterator end_it = ruleHeader.end();
+    iterator dest = begin();
+    iterator end_it = end();
     EvalArgs(rti, parent, dest, end_it, arguments, false);
 }
 

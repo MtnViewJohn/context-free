@@ -427,8 +427,8 @@ namespace AST {
             if (mShapeSpec.argSource == ASTruleSpecifier::SimpleParentArgs)
                 s.mShapeType = mShapeSpec.shapeType;
             else
-                s.mShapeType = s.mParameters->ruleHeader.mRuleName;
-            if (s.mParameters->ruleHeader.mParamCount == 0)
+                s.mShapeType = s.mParameters->mRuleName;
+            if (s.mParameters->mParamCount == 0)
                 s.mParameters = nullptr;
         }
     }
@@ -697,7 +697,7 @@ namespace AST {
                 mCachedPath.reset(r->mCurrentPath);
                 mCachedPath->mComplete = true;
                 if (parent.mParameters)
-                    mCachedPath->mParameters = &(parent.mParameters->ruleHeader);
+                    mCachedPath->mParameters = parent.mParameters;
                 r->mCurrentPath = new ASTcompiledPath();
             } else {
                 r->mCurrentPath->mPath.remove_all();

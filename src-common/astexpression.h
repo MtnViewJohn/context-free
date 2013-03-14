@@ -59,7 +59,7 @@ namespace AST {
                               bool , int& , bool ,
                               RendererAST*) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
-        virtual const StackType* evalArgs(RendererAST* = nullptr, const StackType* = nullptr) const
+        virtual const StackRule* evalArgs(RendererAST* = nullptr, const StackRule* = nullptr) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return nullptr; }
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
@@ -111,7 +111,7 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST* r) const;
-        virtual const StackType* evalArgs(RendererAST* rti = nullptr, const StackType* parent = nullptr) const;
+        virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
@@ -127,7 +127,7 @@ namespace AST {
         std::string entropyVal;
         ArgSource argSource;
         exp_ptr arguments;
-        const StackType* simpleRule;
+        const StackRule* simpleRule;
         int mStackIndex;
         const ASTparameters* typeSignature;
         
@@ -151,7 +151,7 @@ namespace AST {
             simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr) {};
         virtual ~ASTruleSpecifier();
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
-        virtual const StackType* evalArgs(RendererAST* = nullptr, const StackType* parent = nullptr) const;
+        virtual const StackRule* evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
 #ifdef _WIN32
@@ -232,7 +232,7 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST* r) const;
-        virtual const StackType* evalArgs(RendererAST* rti = nullptr, const StackType* parent = nullptr) const;
+        virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
     };
@@ -268,7 +268,7 @@ namespace AST {
         virtual void evaluate(Modification& m, int* p, double* width,
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST* r) const;
-        virtual const StackType* evalArgs(RendererAST* rti = nullptr, const StackType* parent = nullptr) const;
+        virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
     private:
