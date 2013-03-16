@@ -45,6 +45,7 @@ public:
     
     virtual std::string relativeFilePath(
         const std::string& base, const std::string& rel);
+    virtual size_t getPhysicalMemory();
 };
 
 #endif // INCLUDE_POSIX_SYSTEM

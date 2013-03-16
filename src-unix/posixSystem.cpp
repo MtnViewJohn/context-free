@@ -36,6 +36,10 @@
 #include <dirent.h>
 #include <string.h>
 
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 using namespace std;
 
 void
@@ -107,5 +111,37 @@ PosixSystem::findTempFiles()
     }
     
     return ret;
+}
+
+size_t
+PosixSystem::getPhysicalMemory()
+{
+#ifdef __linux
+#if defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
+    return sysconf(_SC_PHYS_PAGES) * (size_t)sysconf(_SC_PAGESIZE);
+#else
+    return 0;
+#endif
+#endif // __linux
+    
+    int mib[2];
+	mib[0] = CTL_HW;
+#if defined(HW_MEMSIZE)
+	mib[1] = HW_MEMSIZE;		// OSX
+	int64_t size = 0;		// 64-bit
+#elif defined(HW_PHYSMEM64)
+	mib[1] = HW_PHYSMEM64;  // NetBSD, OpenBSD
+	int64_t size = 0;		// 64-bit
+#elif defined(HW_REALMEM)
+	mib[1] = HW_REALMEM;		// FreeBSD
+	unsigned int size = 0;	// 32-bit
+#elif defined(HW_PHYSMEM)
+	mib[1] = HW_PHYSMEM;		// DragonFly BSD
+	unsigned int size = 0;	// 32-bit
+#endif
+	size_t len = sizeof(size);
+	if (sysctl(mib, 2, &size, &len, NULL, 0) == 0)
+		return (size_t)size;
+	return 0;
 }
 
