@@ -73,6 +73,10 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
         size_t mem = m_cfdg->system()->getPhysicalMemory();
+#if !defined(_WIN64) && !defined(__x86_64__)
+        if (mem > 2147483648UL)
+            mem = 2147483648UL;
+#endif
         if (mem == 0) {
             MoveFinishedAt = MoveUnfinishedAt = 2000000;
         } else {
