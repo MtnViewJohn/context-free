@@ -168,6 +168,10 @@ class RendererImpl : public RendererAST {
         primShape        shape1;
         primShape        shape2;
     
+        static unsigned int MoveFinishedAt;     // when this many, move to file
+        static unsigned int MoveUnfinishedAt;   // when this many, move to files
+        static unsigned int MaxMergeFiles;      // maximum number of files to merge at once
+    
     protected:
         virtual void colorConflict(const yy::location& w);
 };

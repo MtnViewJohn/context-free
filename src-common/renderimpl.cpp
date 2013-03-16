@@ -55,24 +55,12 @@ using namespace std;
 using namespace AST;
 
 //#define DEBUG_SIZES
-#ifndef DEBUG_SIZES
-#if defined(_WIN64) || defined(__x86_64__)
-const unsigned int MOVE_FINISHED_AT     = 10000000; // when this many, move to file
-const unsigned int MOVE_UNFINISHED_AT   = 10000000; // when this many, move to files
-#else
-const unsigned int MOVE_FINISHED_AT     =  2000000; // when this many, move to file
-const unsigned int MOVE_UNFINISHED_AT   =  2000000; // when this many, move to files
-#endif
-const unsigned int MAX_MERGE_FILES      =      200; // maximum number of files to merge at once
-#else
-const unsigned int MOVE_FINISHED_AT     =    1000; // when this many, move to file
-const unsigned int MOVE_UNFINISHED_AT   =     200; // when this many, move to files
-const unsigned int MAX_MERGE_FILES      =       4; // maximum number of files to merge at once
-#endif
+unsigned int RendererImpl::MoveFinishedAt = 0;     // when this many, move to file
+unsigned int RendererImpl::MoveUnfinishedAt = 0;   // when this many, move to files
+unsigned int RendererImpl::MaxMergeFiles = 0;      // maximum number of files to merge at once
+
 const double SHAPE_BORDER = 1.0; // multiplier of shape size when calculating bounding box
 const double FIXED_BORDER = 8.0; // fixed extra border, in pixels
-
-
 
 RendererImpl::RendererImpl(CFDGImpl* cfdg,
                             int width, int height, double minSize,
@@ -82,6 +70,22 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
       shape1(*primShape::shapeMap[1]),
       shape2(*primShape::shapeMap[2])
 {
+    if (MoveFinishedAt == 0) {
+#ifndef DEBUG_SIZES
+        size_t mem = m_cfdg->system()->getPhysicalMemory();
+        if (mem == 0) {
+            MoveFinishedAt = MoveUnfinishedAt = 2000000;
+        } else {
+            MoveFinishedAt = MoveUnfinishedAt = mem / (sizeof(FinishedShape) * 4);
+        }
+        MaxMergeFiles      =      200; // maximum number of files to merge at once
+#else
+        MoveFinishedAt     =    1000; // when this many, move to file
+        MoveUnfinishedAt   =     200; // when this many, move to files
+        MaxMergeFiles      =       4; // maximum number of files to merge at once
+#endif
+    }
+    
     m_width = width;
     m_height = height;
     mCFstack.reserve(8000);
@@ -745,10 +749,10 @@ RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
 void
 RendererImpl::fileIfNecessary()
 {
-    if (mFinishedShapes.size() > MOVE_FINISHED_AT)
+    if (mFinishedShapes.size() > MoveFinishedAt)
         moveFinishedToFile();
 
-    if (mUnfinishedShapes.size() > MOVE_UNFINISHED_AT) 
+    if (mUnfinishedShapes.size() > MoveUnfinishedAt)
         moveUnfinishedToTwoFiles();
     else if (mUnfinishedShapes.empty())
         getUnfinishedFromFile();
@@ -956,14 +960,14 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
     } else {
         deque<TempFile>::iterator begin, last, end;
         
-        while (m_finishedFiles.size() > MAX_MERGE_FILES) {
+        while (m_finishedFiles.size() > MaxMergeFiles) {
             TempFile t(system(), AbstractSystem::MergeTemp, "merge", ++mFinishedFileCount);
             
             {
                 OutputMerge merger;
                 
                 begin = m_finishedFiles.begin();
-                last = begin + (MAX_MERGE_FILES - 1);
+                last = begin + (MaxMergeFiles - 1);
                 end = last + 1;
                 
                 for_each(begin, end, [&](TempFile& t) {
