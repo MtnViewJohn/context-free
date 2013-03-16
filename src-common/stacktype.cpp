@@ -64,6 +64,7 @@
 
 static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
 static_assert(sizeof(StackRule) == sizeof(double), "StackRule must be 8 bytes");
+static_assert(offsetof(StackType, ruleHeader) == 0, "StackRule must align with StackType");
 
 StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
