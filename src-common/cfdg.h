@@ -79,6 +79,7 @@ class AbstractSystem {
         virtual const char* tempFileDirectory() = 0;
             // caller must delete returned streams when done
         virtual std::vector<std::string> findTempFiles() = 0;
+        virtual size_t getPhysicalMemory() = 0;
     
         virtual std::string relativeFilePath(
             const std::string& base, const std::string& rel) = 0;
