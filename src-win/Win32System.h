@@ -42,6 +42,7 @@ public:
     virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
     virtual std::vector<std::string> findTempFiles();
+    virtual size_t getPhysicalMemory();
 
     virtual std::string relativeFilePath(
         const std::string& base, const std::string& rel);

@@ -109,3 +109,12 @@ Win32System::findTempFiles()
     } while (::FindNextFileA(fff, &ffd));
     return ret;
 }
+
+size_t
+Win32System::getPhysicalMemory()
+{
+    MEMORYSTATUSEX status;
+	status.dwLength = sizeof(status);
+	GlobalMemoryStatusEx(&status);
+	return (size_t)status.ullTotalPhys;
+}
