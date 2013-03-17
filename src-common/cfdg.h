@@ -69,6 +69,13 @@ public:
 class AbstractSystem {
     public:
         enum TempType { ShapeTemp = 0, ExpensionTemp = 1, MergeTemp = 2, NumberofTempTypes = 3 };
+        enum SystemSize {
+#if defined(_WIN64) || defined(__x86_64__)
+            SystemIs64bit = 1
+#else
+            SystemIs64bit = 0
+#endif
+        };
         virtual void message(const char* fmt, ...) = 0;
         virtual void syntaxError(const CfdgError& err) = 0;
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
