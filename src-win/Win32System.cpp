@@ -90,15 +90,19 @@ vector<string>
 Win32System::findTempFiles()
 {
     vector<string> ret;
-    ::WIN32_FIND_DATAA ffd;
+
     std::string name(tempFileDirectory());
     if (name.back() != '\\')
         name.push_back('\\');
     name.append(TempPrefixAll);
     name.push_back('*');
-    HANDLE fff = ::FindFirstFileA(name.c_str(), &ffd);
-    if (fff == INVALID_HANDLE_VALUE)
-        return ret;
+
+    ::WIN32_FIND_DATAA ffd;
+    unique_ptr<void, decltype(&FindClose)> fff(::FindFirstFileA(name.c_str(), &ffd), &FindClose);
+    if (fff.get() == INVALID_HANDLE_VALUE) {
+        fff.release();  // Don't call FindClose() if invalid
+        return ret;     // Return empty
+    }
 
     do {
         std::string name(tempFileDirectory());
@@ -106,7 +110,7 @@ Win32System::findTempFiles()
             name.push_back('\\');
         name.append(ffd.cFileName);
         ret.push_back(std::move(name));
-    } while (::FindNextFileA(fff, &ffd));
+    } while (::FindNextFileA(fff.get(), &ffd));
     return ret;
 }
 
