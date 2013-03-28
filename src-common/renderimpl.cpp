@@ -347,7 +347,9 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             system()->syntaxError(e);
             break;
         } catch (exception e) {
+            requestStop = true;
             system()->catastrophicError(e.what());
+            break;
         }
         
         if (requestUpdate || (m_stats.shapeCount > reportAt)) {
