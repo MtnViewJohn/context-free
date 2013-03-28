@@ -52,7 +52,7 @@ PosixSystem::clearAndCR()
 void
 PosixSystem::catastrophicError(const char* what)
 {
-    cerr << what << endl;
+    cerr << "\n\nUnexpected error: " << what << endl;
 }
 
 const char*
