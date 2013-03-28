@@ -48,6 +48,7 @@ public:
     virtual void message(const char* fmt, ...);
     virtual void syntaxError(const CfdgError& err);
     virtual bool error(bool errorOccurred = true);
+    virtual void catastrophicError(const char* what);
 
     virtual std::istream* openFileForRead(const std::string& path);
     // caller must delete returned streams when done

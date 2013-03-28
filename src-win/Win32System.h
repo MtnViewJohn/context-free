@@ -39,6 +39,8 @@ public:
     Win32System() {};
     ~Win32System() {};
 
+    virtual void catastrophicError(const char* what);
+
     virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
     virtual std::vector<std::string> findTempFiles();
