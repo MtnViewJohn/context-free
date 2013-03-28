@@ -76,6 +76,7 @@ class AbstractSystem;
 - (NSData*)getContent;
 
 - (void)noteStatus:(NSString*)s;
+- (void)noteCatastrophicError:(NSString*)s;
 - (void)noteStats:(NSValue*)v;
 - (void)noteError:(CfdgErrorWrapper*)e;
 - (void)highlightChars:(CfdgErrorWrapper*)link;

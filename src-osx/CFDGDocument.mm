@@ -61,6 +61,7 @@ namespace {
         
         virtual void message(const char* fmt, ...);
         virtual void syntaxError(const CfdgError& err);
+        virtual void catastrophicError(const char* what);
         
         virtual istream* openFileForRead(const string& path);
         virtual const char* tempFileDirectory();
@@ -133,6 +134,14 @@ namespace {
                             waitUntilDone: NO];
     }
             
+    void
+    CocoaSystem::catastrophicError(const char* what)
+    {
+        [mDoc performSelectorOnMainThread: @selector(noteCatastrophicError:)
+                               withObject: [NSString stringWithUTF8String: what]
+                            waitUntilDone: YES];
+    }
+    
     istream*
     CocoaSystem::openFileForRead(const string& path)
     {
@@ -330,6 +339,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (mGView != nil) {
         [mGView noteStats: v];
     }
+}
+
+- (void)noteCatastrophicError:(NSString*)s
+{
+    (void)NSRunAlertPanel(@"A major error has occured", s, nil, nil, nil);
 }
 
 - (void)noteError:(CfdgErrorWrapper*)e
