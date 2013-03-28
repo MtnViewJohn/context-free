@@ -49,6 +49,12 @@ PosixSystem::clearAndCR()
     cerr << EraseEndofLine << '\r';
 }
 
+void
+PosixSystem::catastrophicError(const char* what)
+{
+    cerr << what << endl;
+}
+
 const char*
 PosixSystem::tempFileDirectory()
 {
