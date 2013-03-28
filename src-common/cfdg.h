@@ -79,7 +79,8 @@ class AbstractSystem {
         virtual void message(const char* fmt, ...) = 0;
         virtual void syntaxError(const CfdgError& err) = 0;
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
-        
+        virtual void catastrophicError(const char* what) = 0;
+    
         virtual std::istream* openFileForRead(const std::string& path) = 0;
         virtual std::istream* tempFileForRead(const std::string& path);
         virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) = 0;
