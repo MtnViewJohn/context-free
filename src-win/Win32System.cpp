@@ -48,6 +48,12 @@ Win32System::clearAndCR()
     ret = ::SetConsoleCursorPosition(cons, bufInfo.dwCursorPosition);
 }
 
+void
+Win32System::catastrophicError(const char* what)
+{
+    cerr << "\n\nUnexpected error: " << what << endl;
+}
+
 const char*
 Win32System::tempFileDirectory()
 {

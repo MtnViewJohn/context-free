@@ -102,6 +102,11 @@ bool WinSystem::error(bool errorOccurred)
     return mErrorMode;
 }
 
+void WinSystem::catastrophicError(const char* what)
+{
+    (void)::MessageBoxA(NULL, what, "Unexpected error", MB_OK);
+}
+
 std::istream* WinSystem::openFileForRead(const std::string& path)
 {
     map<const string, string>::iterator exText = ExampleMap.find(path);
