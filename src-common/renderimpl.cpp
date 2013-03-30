@@ -346,7 +346,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             requestStop = true;
             system()->syntaxError(e);
             break;
-        } catch (exception e) {
+        } catch (exception& e) {
             requestStop = true;
             system()->catastrophicError(e.what());
             break;
