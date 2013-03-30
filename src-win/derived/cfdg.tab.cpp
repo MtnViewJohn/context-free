@@ -2137,7 +2137,7 @@ namespace yy {
                         }
                     }
                 }
-                catch (DeferUntilRuntime) {
+                catch (DeferUntilRuntime&) {
                     driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not constant");
                 }
             }
