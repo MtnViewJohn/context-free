@@ -123,9 +123,9 @@ namespace ContextFreeNet {
 			this->label2->Size = System::Drawing::Size(130, 16);
 			this->label2->TabIndex = 2;
 #ifdef _WIN64
-			this->label2->Text = L"version 3.0.5 (v34) - 64-bit";
+			this->label2->Text = L"version 3.0.6 (v35) - 64-bit";
 #else
-			this->label2->Text = L"version 3.0.5 (v34) - 32-bit";
+			this->label2->Text = L"version 3.0.6 (v35) - 32-bit";
 #endif
 			// 
 			// label3
