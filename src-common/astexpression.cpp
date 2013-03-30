@@ -2309,7 +2309,7 @@ namespace AST {
             
             try {
                 mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, nullptr);
-            } catch (DeferUntilRuntime) {
+            } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }
             
