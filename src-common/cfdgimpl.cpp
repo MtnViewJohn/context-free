@@ -683,7 +683,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
             mTimeMod = timed;
         }
         r->initBounds();
-    } catch (CfdgError e) {
+    } catch (CfdgError& e) {
         m_system->syntaxError(e);
         delete r;   // deletes this
         return nullptr;

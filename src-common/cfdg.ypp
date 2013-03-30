@@ -1131,7 +1131,7 @@ caseHeader:
                         }
                     }
                 }
-                catch (DeferUntilRuntime) {
+                catch (DeferUntilRuntime&) {
                     driver.error(@2, "Case expression is not constant");
                 }
             }

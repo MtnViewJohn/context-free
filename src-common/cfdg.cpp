@@ -150,7 +150,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         int yyresult = 0;
         try {
             yyresult = parser.parse();
-        } catch (CfdgError err) {
+        } catch (CfdgError& err) {
             system->syntaxError(err);
             return nullptr;
         }

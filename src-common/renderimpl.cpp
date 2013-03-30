@@ -223,7 +223,10 @@ RendererImpl::cleanup()
         });
         for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaseParam);
         for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaseParam);
-    } catch (Stopped) {
+    } catch (Stopped&) {
+        return;
+    } catch (exception& e) {
+        system()->catastrophicError(e.what());
         return;
     }
     for (const StackRule* param: mLongLivedParams) {
@@ -316,7 +319,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     
     try {
         processShape(initShape);
-    } catch (CfdgError e) {
+    } catch (CfdgError& e) {
         requestStop = true;
         system()->syntaxError(e);
     }
@@ -342,7 +345,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         try {
             m_drawingMode = false;      // shouldn't matter
             rule->traverse(s, false, this);
-        } catch (CfdgError e) {
+        } catch (CfdgError& e) {
             requestStop = true;
             system()->syntaxError(e);
             break;
@@ -548,8 +551,11 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
             //outputBounds.finalAccumulate();
             outputBounds.backwardFilter(10.0);
             //outputBounds.smooth(3);
-        } catch (Stopped) {
+        } catch (Stopped&) {
             m_stats.animating = false;
+            return;
+        } catch (exception& e) {
+            system()->catastrophicError(e.what());
             return;
         }
     }
@@ -574,7 +580,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
             mCurrentFrame = (frameCount - 1.0)/(frames - 1.0);
             try {
                 init();
-            } catch (CfdgError err) {
+            } catch (CfdgError& err) {
                 system()->syntaxError(err);
                 cleanup();
                 mBounds = saveBounds;
@@ -1098,7 +1104,10 @@ void RendererImpl::output(bool final)
             this->drawShape(s);
         });
     }
-    catch (Stopped) { }
+    catch (Stopped&) { }
+    catch (exception& e) {
+        system()->catastrophicError(e.what());
+    }
 
     m_canvas->end();
     m_stats.inOutput = false;
