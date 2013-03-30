@@ -62,7 +62,8 @@ PosixSystem::tempFileDirectory()
     const char *                                              tmpenv = getenv("TMPDIR");
     if (!tmpenv || stat(tmpenv, &sb) || !S_ISDIR(sb.st_mode)) tmpenv = getenv("TEMP");
     if (!tmpenv || stat(tmpenv, &sb) || !S_ISDIR(sb.st_mode)) tmpenv = getenv("TMP");
-    return (!tmpenv || stat(tmpenv, &sb) || !S_ISDIR(sb.st_mode)) ? "/tmp/" : tmpenv;
+    if (!tmpenv || stat(tmpenv, &sb) || !S_ISDIR(sb.st_mode)) tmpenv = "/tmp/"; // give up
+    return tmpenv;
 }
 
 ostream*
