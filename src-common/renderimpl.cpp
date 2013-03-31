@@ -322,6 +322,9 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     } catch (CfdgError& e) {
         requestStop = true;
         system()->syntaxError(e);
+    } catch (exception& e) {
+        requestStop = true;
+        system()->catastrophicError(e.what());
     }
     
     for (;;) {
