@@ -64,7 +64,7 @@ qtCanvas::Impl::Impl(NSString* name, BitmapImageHolder* bits, int fps,
 : mFrameRate(fps), mDict(nil), mImageData([bits retain]), mError(nil)
 {
 #if !__LP64__
-    DataHandler = nil;
+    mDataHandler = nil;
 #endif
     mSize.width  = (CGFloat)[bits pixelsWide];
     mSize.height = (CGFloat)[bits pixelsHigh];
