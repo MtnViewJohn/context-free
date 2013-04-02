@@ -654,25 +654,18 @@ namespace agg
         // Create the Y-histogram (count the numbers of cells for each Y)
         cell_type** block_ptr = m_cells;
         cell_type*  cell_ptr;
-        unsigned nb = m_num_cells >> cell_block_shift;
+        unsigned nb = m_num_cells;
         unsigned i;
-        while(nb--)
+        while(nb)
         {
             cell_ptr = *block_ptr++;
-            i = cell_block_size;
+            i = (nb > cell_block_size) ? cell_block_size : nb;
+            nb -= i;
             while(i--) 
             {
                 m_sorted_y[cell_ptr->y - m_min_y].start++;
                 ++cell_ptr;
             }
-        }
-
-        cell_ptr = *block_ptr++;
-        i = m_num_cells & cell_block_mask;
-        while(i--) 
-        {
-            m_sorted_y[cell_ptr->y - m_min_y].start++;
-            ++cell_ptr;
         }
 
         // Convert the Y-histogram into the array of starting indexes
@@ -686,12 +679,13 @@ namespace agg
 
         // Fill the cell pointer array sorted by Y
         block_ptr = m_cells;
-        nb = m_num_cells >> cell_block_shift;
-        while(nb--)
+        nb = m_num_cells;
+        while(nb)
         {
             cell_ptr = *block_ptr++;
-            i = cell_block_size;
-            while(i--) 
+            i = (nb > cell_block_size) ? cell_block_size : nb;
+            nb -= i;
+            while(i--)
             {
                 sorted_y& curr_y = m_sorted_y[cell_ptr->y - m_min_y];
                 m_sorted_cells[curr_y.start + curr_y.num] = cell_ptr;
@@ -700,16 +694,6 @@ namespace agg
             }
         }
         
-        cell_ptr = *block_ptr++;
-        i = m_num_cells & cell_block_mask;
-        while(i--) 
-        {
-            sorted_y& curr_y = m_sorted_y[cell_ptr->y - m_min_y];
-            m_sorted_cells[curr_y.start + curr_y.num] = cell_ptr;
-            ++curr_y.num;
-            ++cell_ptr;
-        }
-
         // Finally arrange the X-arrays
         for(i = 0; i < m_sorted_y.size(); i++)
         {
