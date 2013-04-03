@@ -13,12 +13,5 @@
 //          http://www.antigrain.com
 //----------------------------------------------------------------------------
 
-#include "agg_color_rgba.h"
-#include "agg_color_gray.h"
-
-agg::rgba8::rgba8(const gray8& c) :
-r(c.v), g(c.v), b(c.v), a(c.a) {}
-
-agg::rgba16::rgba16(const gray16& c) :
-r(c.v), g(c.v), b(c.v), a(c.a) {}
-
+// rgbaN construction from grayN types is no longer required,
+// as grayN types now define their own conversions to rgbaN.

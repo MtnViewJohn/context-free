@@ -216,7 +216,6 @@ namespace agg
         private:
             const span_array_type& m_spans;
             unsigned               m_span_idx;
-            const_iterator& operator=(const const_iterator&);
         };
 
         //--------------------------------------------------------------------

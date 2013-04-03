@@ -53,7 +53,7 @@ namespace agg
     {
     public:
         static rgba16 f(const gray8& c)
-        { gray16 g16(c); return rgba16(g16); }
+        { gray16 g16(c); return rgba16(g16.v, g16.a, g16.v, g16.a); }
     };
     
     template<>
