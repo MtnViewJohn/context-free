@@ -252,8 +252,8 @@ namespace agg
         return m_scale;
     }
 
-    //------------------------------------------------------------------------
 #if defined(_MSC_VER) && _MSC_VER <= 1200
+    //------------------------------------------------------------------------
     static double MSC60_fix_ICE(double v) { return v; }
 #endif
 
