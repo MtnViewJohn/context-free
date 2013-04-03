@@ -249,7 +249,6 @@
 		523BFBBF0CE6C864004218B9 /* agg_bezier_arc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_bezier_arc.h; sourceTree = "<group>"; };
 		524464E509BAAD5C007E722B /* primShape.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = primShape.cpp; sourceTree = "<group>"; };
 		524464E609BAAD5C007E722B /* primShape.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = primShape.h; sourceTree = "<group>"; };
-		524955AD10B1248200BFB820 /* agg_renderer_fill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_renderer_fill.h; sourceTree = "<group>"; };
 		524D1FAF13AD0D7C002732C2 /* astexpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = astexpression.h; sourceTree = "<group>"; };
 		524D1FB013AD0D8A002732C2 /* astreplacement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = astreplacement.h; sourceTree = "<group>"; };
 		524D22A713B9FEBD002732C2 /* cfdg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cfdg; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -713,7 +712,6 @@
 				527107711027B79D00091D94 /* agg_trans_affine_time.h */,
 				FD4A7988086FA1AA0033B409 /* agg_fast_ellipse.h */,
 				FD68653709C858740005FCA4 /* agg_copy_rect.h */,
-				524955AD10B1248200BFB820 /* agg_renderer_fill.h */,
 			);
 			path = "agg-extras";
 			sourceTree = "<group>";
