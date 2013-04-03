@@ -33,7 +33,7 @@
 #include "agg_pixfmt_rgba.h"
 #include "agg_pixfmt_rgb.h"
 #include "agg_pixfmt_gray.h"
-#include "agg_renderer_fill.h"
+#include "agg_renderer_base.h"
 #include "agg_renderer_scanline.h"
 #include "agg_rasterizer_scanline_aa.h"
 #include "agg_scanline_p.h"
@@ -183,7 +183,7 @@ class aggCanvas::impl {
 
 template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
     public:
-        typedef agg::renderer_fill<pixel_fmt>                   renderer_base;
+        typedef agg::renderer_base<pixel_fmt>                   renderer_base;
         typedef agg::renderer_scanline_aa_solid<renderer_base>  renderer_solid;
 
         pixel_fmt               pixFmt;
