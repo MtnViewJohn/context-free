@@ -61,43 +61,43 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
     mSeed.seed((unsigned long long)variation); 
     if (FlagNames.empty()) {
-        FlagNames.insert(std::pair<std::string, int>("CF::None", AST::CF_NONE));
-        FlagNames.insert(std::pair<std::string, int>("CF::MiterJoin", AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::RoundJoin", AST::CF_ROUND_JOIN | AST::CF_JOIN_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::BevelJoin", AST::CF_BEVEL_JOIN | AST::CF_JOIN_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::ButtCap", AST::CF_BUTT_CAP | AST::CF_CAP_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::RoundCap", AST::CF_ROUND_CAP | AST::CF_CAP_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::SquareCap", AST::CF_SQUARE_CAP | AST::CF_CAP_PRESENT));
-        FlagNames.insert(std::pair<std::string, int>("CF::ArcCW", AST::CF_ARC_CW));
-        FlagNames.insert(std::pair<std::string, int>("CF::ArcLarge", AST::CF_ARC_LARGE));
-        FlagNames.insert(std::pair<std::string, int>("CF::Continuous", AST::CF_CONTINUOUS));
-        FlagNames.insert(std::pair<std::string, int>("CF::Align", AST::CF_ALIGN));
-        FlagNames.insert(std::pair<std::string, int>("CF::EvenOdd", AST::CF_EVEN_ODD));
-        FlagNames.insert(std::pair<std::string, int>("CF::IsoWidth", AST::CF_ISO_WIDTH));
-        FlagNames.insert(std::pair<std::string, int>("~~CF_FILL~~", AST::CF_FILL));
-        FlagNames.insert(std::pair<std::string, int>("CF::Cyclic", AST::CF_CYCLIC));
-        FlagNames.insert(std::pair<std::string, int>("CF::Dihedral", AST::CF_DIHEDRAL));
-        FlagNames.insert(std::pair<std::string, int>("CF::p11g", AST::CF_P11G));
-        FlagNames.insert(std::pair<std::string, int>("CF::p11m", AST::CF_P11M));
-        FlagNames.insert(std::pair<std::string, int>("CF::p1m1", AST::CF_P1M1));
-        FlagNames.insert(std::pair<std::string, int>("CF::p2", AST::CF_P2));
-        FlagNames.insert(std::pair<std::string, int>("CF::p2mg", AST::CF_P2MG));
-        FlagNames.insert(std::pair<std::string, int>("CF::p2mm", AST::CF_P2MM));
-        FlagNames.insert(std::pair<std::string, int>("CF::pm", AST::CF_PM));
-        FlagNames.insert(std::pair<std::string, int>("CF::pg", AST::CF_PG));
-        FlagNames.insert(std::pair<std::string, int>("CF::cm", AST::CF_CM));
-        FlagNames.insert(std::pair<std::string, int>("CF::pmm", AST::CF_PMM));
-        FlagNames.insert(std::pair<std::string, int>("CF::pmg", AST::CF_PMG));
-        FlagNames.insert(std::pair<std::string, int>("CF::pgg", AST::CF_PGG));
-        FlagNames.insert(std::pair<std::string, int>("CF::cmm", AST::CF_CMM));
-        FlagNames.insert(std::pair<std::string, int>("CF::p4", AST::CF_P4));
-        FlagNames.insert(std::pair<std::string, int>("CF::p4m", AST::CF_P4M));
-        FlagNames.insert(std::pair<std::string, int>("CF::p4g", AST::CF_P4G));
-        FlagNames.insert(std::pair<std::string, int>("CF::p3", AST::CF_P3));
-        FlagNames.insert(std::pair<std::string, int>("CF::p3m1", AST::CF_P3M1));
-        FlagNames.insert(std::pair<std::string, int>("CF::p31m", AST::CF_P31M));
-        FlagNames.insert(std::pair<std::string, int>("CF::p6", AST::CF_P6));
-        FlagNames.insert(std::pair<std::string, int>("CF::p6m", AST::CF_P6M));
+        FlagNames["CF::None"] = AST::CF_NONE;
+        FlagNames["CF::MiterJoin"] = AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT;
+        FlagNames["CF::RoundJoin"] = AST::CF_ROUND_JOIN | AST::CF_JOIN_PRESENT;
+        FlagNames["CF::BevelJoin"] = AST::CF_BEVEL_JOIN | AST::CF_JOIN_PRESENT;
+        FlagNames["CF::ButtCap"] = AST::CF_BUTT_CAP | AST::CF_CAP_PRESENT;
+        FlagNames["CF::RoundCap"] = AST::CF_ROUND_CAP | AST::CF_CAP_PRESENT;
+        FlagNames["CF::SquareCap"] = AST::CF_SQUARE_CAP | AST::CF_CAP_PRESENT;
+        FlagNames["CF::ArcCW"] = AST::CF_ARC_CW;
+        FlagNames["CF::ArcLarge"] = AST::CF_ARC_LARGE;
+        FlagNames["CF::Continuous"] = AST::CF_CONTINUOUS;
+        FlagNames["CF::Align"] = AST::CF_ALIGN;
+        FlagNames["CF::EvenOdd"] = AST::CF_EVEN_ODD;
+        FlagNames["CF::IsoWidth"] = AST::CF_ISO_WIDTH;
+        FlagNames["~~CF_FILL~~"] = AST::CF_FILL;
+        FlagNames["CF::Cyclic"] = AST::CF_CYCLIC;
+        FlagNames["CF::Dihedral"] = AST::CF_DIHEDRAL;
+        FlagNames["CF::p11g"] = AST::CF_P11G;
+        FlagNames["CF::p11m"] = AST::CF_P11M;
+        FlagNames["CF::p1m1"] = AST::CF_P1M1;
+        FlagNames["CF::p2"] = AST::CF_P2;
+        FlagNames["CF::p2mg"] = AST::CF_P2MG;
+        FlagNames["CF::p2mm"] = AST::CF_P2MM;
+        FlagNames["CF::pm"] = AST::CF_PM;
+        FlagNames["CF::pg"] = AST::CF_PG;
+        FlagNames["CF::cm"] = AST::CF_CM;
+        FlagNames["CF::pmm"] = AST::CF_PMM;
+        FlagNames["CF::pmg"] = AST::CF_PMG;
+        FlagNames["CF::pgg"] = AST::CF_PGG;
+        FlagNames["CF::cmm"] = AST::CF_CMM;
+        FlagNames["CF::p4"] = AST::CF_P4;
+        FlagNames["CF::p4m"] = AST::CF_P4M;
+        FlagNames["CF::p4g"] = AST::CF_P4G;
+        FlagNames["CF::p3"] = AST::CF_P3;
+        FlagNames["CF::p3m1"] = AST::CF_P3M1;
+        FlagNames["CF::p31m"] = AST::CF_P31M;
+        FlagNames["CF::p6"] = AST::CF_P6;
+        FlagNames["CF::p6m"] = AST::CF_P6M;
     }
     assert(Builder::CurrentBuilder == nullptr);    // ensure singleton
     Builder::CurrentBuilder = this;
@@ -479,7 +479,7 @@ Builder::NextParameter(const std::string& name, exp_ptr e,
 ASTexpression*
 Builder::MakeVariable(const std::string& name, const yy::location& loc)
 {
-    std::map<std::string,int>::iterator flagItem = FlagNames.find(name);
+    auto flagItem = FlagNames.find(name);
     if (flagItem != FlagNames.end()) {
         ASTreal* flag = new ASTreal((double)(flagItem->second), loc);
         flag->mType = AST::FlagType;

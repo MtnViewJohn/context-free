@@ -312,7 +312,7 @@ CFDGImpl::hasParameter(const char* name, double& value, RendererAST* r) const
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
+    auto elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
         elem->second.second->mType != AST::NumericType) return false;
     if (!elem->second.second->isConstant && !r) {
@@ -329,7 +329,7 @@ CFDGImpl::hasParameter(const char* name, Modification& value, RendererAST* r) co
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
+    auto elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
         elem->second.second->mType != AST::ModType) return false;
     if (!elem->second.second->isConstant && !r) {
@@ -346,7 +346,7 @@ CFDGImpl::hasParameter(const char* name, AST::expType t, yy::location& where) co
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return false;
-    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
+    auto elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end() || 
         elem->second.second->mType != t) return false;
     where = elem->second.second->where;
@@ -359,7 +359,7 @@ CFDGImpl::hasParameter(const char* name) const
     string n = name;
     int varNum = tryEncodeShapeName(n);
     if (varNum < 0) return nullptr;
-    std::map<int, ConfigParam>::const_iterator elem = m_ConfigParameters.find(varNum);
+    auto elem = m_ConfigParameters.find(varNum);
     if (elem == m_ConfigParameters.end()) return nullptr;
     return elem->second.second.get();
 }
@@ -395,7 +395,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         return false;
     ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
     int varNum = encodeShapeName(name);
-    std::map<int, ConfigParam>::iterator elem = m_ConfigParameters.find(varNum);
+    auto elem = m_ConfigParameters.find(varNum);
     exp_ptr newExp(e.release()->simplify());
     if (elem == m_ConfigParameters.end()) {
         ConfigParam newCfg(depth, std::move(newExp));
