@@ -202,8 +202,8 @@ struct options {
     int   widthMult;
     int   heightMult;
     int   maxShapes;
-    float minSize;
-    float borderSize;
+    double minSize;
+    double borderSize;
     
     int   variation;
     bool  crop;
@@ -282,13 +282,13 @@ intArg(char arg, const char* str)
             cerr << "Option -" << arg << " takes a positive integer argument" << endl;
         usage(true);
     }
-    return (int)v;
+    return static_cast<int>(v);
 }
 
-float
+double
 floatArg(char arg, const char* str)
 {
-    float v = (float)atof(str);
+    double v = atof(str);
     
     if (v < 0) {
         if (arg == '-')
@@ -316,7 +316,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     
     int i;
     while ((i = getopt(argc, argv, OPTCHARS)) != -1) {
-        char c = (char)i;
+        char c = static_cast<char>(i);
         switch(c) {
             case 'w':
                 opt.width = intArg(c, optarg);
@@ -337,7 +337,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 opt.minSize = floatArg(c, optarg);
                 break;
             case 'b':
-                opt.borderSize = (float)atof(optarg);
+                opt.borderSize = atof(optarg);
                 if (opt.borderSize < -1 || opt.borderSize > 2) usage(true);
                 break;
             case 'v':
