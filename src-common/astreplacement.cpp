@@ -630,7 +630,7 @@ namespace AST {
     {
         if (r->mCurrentPath->mComplete) 
             return;
-        double opData[6];
+        double opData[7];
         pathData(opData, r);
         r->mCurrentPath->addPathOp(this, opData, s, tr, r);
     }
@@ -913,9 +913,7 @@ namespace AST {
             if (mArguments->evaluate(data, 7, rti) < 0)
                 CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
         } else {
-            const double* cdata = reinterpret_cast<const double*> (&mChildChange);
-            for (int i = 0; i < mArgCount; ++i)
-                data[i] = cdata[i];
+            mChildChange.modData.m_transform.store_to(data);
         }
     }
     
@@ -923,10 +921,11 @@ namespace AST {
     ASTpathOp::pathDataConst()
     {
         if (mArguments && mArguments->isConstant) {
-            double* data = reinterpret_cast<double*> (&mChildChange);
+            double data[7];
             if (mArguments->evaluate(data, 7) < 0)
                 CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
             mArguments.reset();
+            mChildChange.modData.m_transform.load_from(data);
         }
     }
 
