@@ -42,7 +42,7 @@ string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
         return namestream.str();        // empty string becomes stdout
     
     if (frameCount)
-        numLength = (int)log10((double)frameCount) + 1;
+        numLength = static_cast<int>(log10(static_cast<double>(frameCount))) + 1;
 
     const char* p = fmt;
     while (*p) {

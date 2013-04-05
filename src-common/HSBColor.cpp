@@ -54,7 +54,7 @@ void HSBColor::getRGBA(agg::rgba& c) const
                 hue -= 6.0;
     }
     
-    int hextant = (int)(hex + 0.5); // guaranteed to be in 0..5
+    int hextant = static_cast<int>(hex + 0.5); // guaranteed to be in 0..5
     
     double p = b * (1 - s);
     double q = b * (1 - (s * remainder));
@@ -153,7 +153,7 @@ double HSBColor::delta(double to, double from, unsigned int steps)
     if (steps == 1)
         return to / from - 1.0;
 
-    return pow(to / from, 1.0 / ((double)steps)) - 1.0;
+    return pow(to / from, 1.0 / static_cast<double>(steps)) - 1.0;
 }
 
 double HSBColor::deltaHue(double to, double from, unsigned int steps)

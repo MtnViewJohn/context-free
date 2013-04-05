@@ -304,7 +304,7 @@ namespace AST {
         agg::trans_affine reg;
         agg::trans_affine_reflection mirror(angle);
         reg.translate(-x, -y);
-        int num = (int)order;
+        int num = static_cast<int>(order);
         order = 2.0 * M_PI / order;
         for (int i = 0; i < num; ++i) {
             agg::trans_affine tr(reg);
@@ -326,7 +326,7 @@ namespace AST {
                     std::vector<double>& data, const yy::location& where)
     {
         if (data.empty()) return;
-        AST::FlagTypes t = (AST::FlagTypes)((int)data[0]);
+        AST::FlagTypes t = static_cast<AST::FlagTypes>(static_cast<int>(data[0]));
         bool frieze = (tile.sx != 0.0 || tile.sy != 0.0) && (tile.sx * tile.sy == 0.0);
         bool rhombic = tiled && ((fabs(tile.shy) <= 0.0000001 && fabs(tile.shx/tile.sx - 0.5) < 0.0000001) ||
                                  (fabs(tile.shx) <= 0.0000001 && fabs(tile.shy/tile.sy - 0.5) < 0.0000001));
@@ -524,7 +524,7 @@ namespace AST {
                 }
                 agg::trans_affine tr;
                 addUnique(syms, tr);
-                int axis = (int)data[1];
+                int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pm symmetry mirror axis argument must be 0 or 1");
                 else if (axis < 2 || axis > 3)
@@ -573,7 +573,7 @@ namespace AST {
                 }
                 agg::trans_affine tr;
                 addUnique(syms, tr);
-                int axis = (int)data[1];
+                int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pg symmetry mirror axis argument must be 0 or 1");
                 else if (axis < 2 || axis > 3)
@@ -622,7 +622,7 @@ namespace AST {
                 }
                 agg::trans_affine tr;
                 addUnique(syms, tr);
-                int axis = (int)data[1];
+                int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "cm symmetry mirror axis argument must be 0 or 1");
                 else if (axis < 2 || axis > 3)
@@ -689,7 +689,7 @@ namespace AST {
                         CfdgError::Error(where, "pmg symmetry takes a mirror axis argument and an optional center of reflection");
                 }
                 agg::trans_affine tr, tr2;
-                int axis = (int)data[1];
+                int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pmg symmetry mirror axis argument must be 0 or 1");
                 else if (axis < 2 || axis > 3)

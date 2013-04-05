@@ -67,7 +67,7 @@ public:
             Sieve::iterator nextShape = mSieve.begin();
             
             op(nextShape->first);
-            int i = nextShape->second;
+            size_t i = nextShape->second;
         
             mSieve.erase(nextShape);
             insertNext(i);
@@ -89,12 +89,12 @@ private:
     ShapeIter   mShapesNext;
     ShapeIter   mShapesEnd;
 
-    typedef std::map<FinishedShape, int>    Sieve;
+    typedef std::map<FinishedShape, size_t> Sieve;
     typedef Sieve::value_type               SievePair;
     
     Sieve       mSieve;
     
-    void insertNext(int i);
+    void insertNext(size_t i);
     OutputMerge& operator=(const OutputMerge&) { return *this; }
 };
 

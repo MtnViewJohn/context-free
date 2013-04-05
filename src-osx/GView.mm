@@ -564,7 +564,7 @@ namespace {
         message = [message stringByAppendingString:
             [NSString localizedStringWithFormat:
                 @" in %.3f seconds",
-                (double)s.outputTime / CLOCKS_PER_SEC]];
+                static_cast<double>(s.outputTime) / CLOCKS_PER_SEC]];
     }
 #endif
     

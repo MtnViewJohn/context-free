@@ -116,7 +116,7 @@ int Variation::random(int letters)
         /* [AMS] 2/13/2007 -- Added seeding from /dev/urandom */
         std::ifstream urand("/dev/urandom", std::ios::in | std::ios::binary);
         if (urand.is_open()) {
-            urand.read((char*)(&randomSeed), sizeof(randomSeed));
+            urand.read(reinterpret_cast<char*>(&randomSeed), sizeof(randomSeed));
             urand.close();
         }
 #endif

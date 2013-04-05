@@ -46,7 +46,7 @@ void SVGCanvas::start(bool , const agg::rgba& , int width, int height)
     }
 
     agg::trans_affine_translation off((mWidth - width) / 2.0, (mHeight - height) / 2.0);
-    mOffset = off.premultiply(agg::trans_affine(1.0, 0.0, 0.0, -1.0, 0.0, (double)mHeight));
+    mOffset = off.premultiply(agg::trans_affine(1.0, 0.0, 0.0, -1.0, 0.0, static_cast<double>(mHeight)));
 
     mOutput << "<?xml version=\"1.0\" standalone=\"no\"?>" << mEndline;
     mOutput << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" " << mEndline;
@@ -261,7 +261,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
     mEndline[0] = '\n';
     mEndline[1] = '\0';
     if (mLength == -1 && mDescription)
-        mLength = (int)strlen(mDescription);
+        mLength = static_cast<int>(strlen(mDescription));
 }
 
 

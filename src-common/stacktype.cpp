@@ -72,9 +72,9 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
     assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
-    newrule[0].ruleHeader.mRuleName = (int16_t)name;
+    newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
-    newrule[0].ruleHeader.mParamCount = (uint16_t)size;
+    newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
     if (size)
         newrule[1].typeInfo = ti;
     return &(newrule->ruleHeader);
@@ -123,7 +123,7 @@ StackRule::operator==(const StackRule& o) const
 {
     if (this == &o) return true;
     if (mParamCount != o.mParamCount) return false;
-    return std::memcmp((const void*)(this + 2), (const void*)(&o + 2), 
+    return std::memcmp(reinterpret_cast<const void*>(this + 2), reinterpret_cast<const void*>(&o + 2),
                        sizeof(StackType)*(mParamCount)) == 0;
 }
 
@@ -146,7 +146,7 @@ StackRule::read(std::istream& is)
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
-            is.read((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
+            is.read(reinterpret_cast<char*>(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
             it->rule = Read(is);
@@ -161,10 +161,10 @@ StackRule::read(std::istream& is)
 void
 StackRule::write(std::ostream& os) const
 {
-    uint64_t head = ((uint64_t)mRuleName) << 24 |
-                    ((uint64_t)mParamCount) << 8 |
+    uint64_t head = static_cast<uint64_t>(mRuleName) << 24 |
+                    static_cast<uint64_t>(mParamCount) << 8 |
                     0xff;
-    os.write((char*)(&head), sizeof(uint64_t));
+    os.write(reinterpret_cast<char*>(&head), sizeof(uint64_t));
     if (mParamCount == 0)
         return;
     const StackType* st = reinterpret_cast<const StackType*>(this);
@@ -175,7 +175,7 @@ StackRule::write(std::ostream& os) const
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
-            os.write((char*)(&*it), it.type().mTuplesize * sizeof(StackType));
+            os.write(reinterpret_cast<const char*>(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
             Write(os, it->rule);
@@ -191,14 +191,14 @@ StackRule*
 StackRule::Read(std::istream& is)
 {
     uint64_t size = 0;
-    is.read((char*)(&size), sizeof(uint64_t));
+    is.read(reinterpret_cast<char*>(&size), sizeof(uint64_t));
     if (size & 3) {
         // Don't know the typeInfo yet, get it during read
         StackRule* s = StackRule::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
         s->read(is);
         return s;
     } else {
-        return (StackRule*)size;
+        return reinterpret_cast<StackRule*>(static_cast<uint64_t>(size));
     }
 }
 
@@ -206,8 +206,8 @@ void
 StackRule::Write(std::ostream& os, const StackRule* s)
 {
     if (s == nullptr || s->mRefCount == UINT32_MAX) {
-        uint64_t p = (uint64_t)(s);
-        os.write((char*)(&p), sizeof(uint64_t));
+        uint64_t p = static_cast<uint64_t>(reinterpret_cast<intptr_t>(s));
+        os.write(reinterpret_cast<const char*>(&p), sizeof(uint64_t));
     } else {
         s->write(os);
     }

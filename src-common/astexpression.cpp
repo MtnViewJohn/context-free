@@ -649,9 +649,9 @@ namespace AST {
             }
             switch (count) {
                 case 2:
-                    mStride = (int)data[1];  // fall through
+                    mStride = static_cast<int>(data[1]);  // fall through
                 case 1:
-                    mLength = (int)data[0];  // fall through
+                    mLength = static_cast<int>(data[0]);  // fall through
                 case 0:
                     break;
                     
@@ -663,10 +663,10 @@ namespace AST {
             double data[3];
             switch (args->evaluate(data, 3)) {
                 case 3:
-                    mStride = (int)data[2];
+                    mStride = static_cast<int>(data[2]);
                     // fall through
                 case 2:
-                    mLength = (int)data[1];
+                    mLength = static_cast<int>(data[1]);
                     // fall through
                 case 1:
                     mArgs.reset(new ASTreal(data[0], args->where));
@@ -899,7 +899,9 @@ namespace AST {
     int
     ASTcons::evaluate(double* res, int length, RendererAST* rti) const
     {
-        if (((int)mType & (NumericType | FlagType)) == 0 || ((int)mType & (ModType | RuleType))) {
+        if ((static_cast<int>(mType) & (NumericType | FlagType)) == 0 ||
+            (static_cast<int>(mType) & (ModType | RuleType)))
+        {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
             return -1;
         }
@@ -997,9 +999,9 @@ namespace AST {
                 return -1;
             if (!right || right->evaluate(res ? &r : nullptr, 1, rti) != 1)
                 return -1;
-            int f = (int)l | (int)r;
+            int f = static_cast<int>(l) | static_cast<int>(r);
             if (res)
-                *res = (double)f;
+                *res = static_cast<double>(f);
             return 1;
         }
         
@@ -1098,14 +1100,14 @@ namespace AST {
                     *res = pow(l, r);
                     if (isNatural && *res < 9007199254740992.) {
                         uint64_t pow = 1;
-                        uint64_t il = (uint64_t)l;
-                        uint64_t ir = (uint64_t)r;
+                        uint64_t il = static_cast<uint64_t>(l);
+                        uint64_t ir = static_cast<uint64_t>(r);
                         while (ir) {
                             if (ir & 1) pow *= il;
                             il *= il;
                             ir >>= 1;
                         }
-                        *res = (double)pow;
+                        *res = static_cast<double>(pow);
                     }
                     break;
                 default:
@@ -1236,37 +1238,37 @@ namespace AST {
                 *res = RendererAST::isNatural(rti, a[0]);
                 break;
             case BitNot:
-                *res = (double)(~(uint64_t)a[0] & 0xfffffffffffffull);
+                *res = static_cast<double>(~static_cast<uint64_t>(a[0]) & 0xfffffffffffffull);
                 break;
             case BitOr:
-                *res = (double)(((uint64_t)a[0] | (uint64_t)a[1]) & 0xfffffffffffffull);
+                *res = static_cast<double>((static_cast<uint64_t>(a[0]) | static_cast<uint64_t>(a[1])) & 0xfffffffffffffull);
                 break;
             case BitAnd:
-                *res = (double)(((uint64_t)a[0] & (uint64_t)a[1]) & 0xfffffffffffffull);
+                *res = static_cast<double>((static_cast<uint64_t>(a[0]) & static_cast<uint64_t>(a[1])) & 0xfffffffffffffull);
                 break;
             case BitXOR:
-                *res = (double)(((uint64_t)a[0] ^ (uint64_t)a[1]) & 0xfffffffffffffull);
+                *res = static_cast<double>((static_cast<uint64_t>(a[0]) ^ static_cast<uint64_t>(a[1])) & 0xfffffffffffffull);
                 break;
             case BitLeft:
-                *res = (double)(((uint64_t)a[0] << (uint64_t)a[1]) & 0xfffffffffffffull);
+                *res = static_cast<double>((static_cast<uint64_t>(a[0]) << static_cast<uint64_t>(a[1])) & 0xfffffffffffffull);
                 break;
             case BitRight:
-                *res = (double)(((uint64_t)a[0] >> (uint64_t)a[1]) & 0xfffffffffffffull);
+                *res = static_cast<double>((static_cast<uint64_t>(a[0]) >> static_cast<uint64_t>(a[1])) & 0xfffffffffffffull);
                 break;
             case Atan2: 
                 *res = atan2(a[0], a[1]) * 57.29577951308;
                 break;
             case Mod: 
                 if (arguments->isNatural)
-                    *res = (double)((uint64_t)a[0] % (uint64_t)a[1]);
+                    *res = static_cast<double>(static_cast<uint64_t>(a[0]) % static_cast<uint64_t>(a[1]));
                 else
                     *res = fmod(a[0], a[1]);
                 break;
             case Divides:
-                *res = ((uint64_t)a[0] % (uint64_t)a[1]) == (uint64_t)0 ? 1.0 : 0.0;
+                *res = (static_cast<uint64_t>(a[0]) % static_cast<uint64_t>(a[1]) == 0ULL) ? 1.0 : 0.0;
                 break;
             case Div:
-                *res = (double)((uint64_t)a[0] / (uint64_t)a[1]);
+                *res = static_cast<double>(static_cast<uint64_t>(a[0]) / static_cast<uint64_t>(a[1]));
                 break;
             case Floor:
                 *res = floor(a[0]);
@@ -1367,7 +1369,7 @@ namespace AST {
                 CfdgError::Error(mArgs->where, "Cannot evaluate array index");
                 return -1;
             }
-            int index = (int)i;
+            int index = static_cast<int>(i);
             if ((mLength - 1) * mStride + index >= mCount || index < 0) {
                 CfdgError::Error(where, "array index exceeds bounds");
                 return -1;
@@ -2267,7 +2269,7 @@ namespace AST {
             CfdgError::Error(mArgs->where, "Cannot evaluate array index");
             return this;
         }
-        int index = (int)i;
+        int index = static_cast<int>(i);
         if ((mLength - 1) * mStride + index >= mCount || index < 0) {
             CfdgError::Error(where, "Array index exceeds bounds");
             return this;
@@ -2339,7 +2341,7 @@ namespace AST {
         if (ifSelect)
             return select ? 1 : 2;
 
-        int i = (int)select + 1;
+        int i = static_cast<int>(select) + 1;
 
         if (i <= 0)
             return 1;

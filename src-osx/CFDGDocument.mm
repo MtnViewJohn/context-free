@@ -150,7 +150,7 @@ namespace {
         if (doc) {
             NSData* data = [doc getContent];
             basic_stringstream<char>* s = new stringstream;
-            s->write((const char*)[data bytes], [data length]);
+            s->write(reinterpret_cast<const char*>([data bytes]), [data length]);
             s->seekp(0, ios::beg);
             return s;
         }

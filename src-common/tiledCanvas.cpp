@@ -106,7 +106,7 @@ tiledCanvas::tileTransform(const Bounds& b)
     double dx = -centx, dy = -centy;
     mOffset.transform(&dx, &dy);
     mTileList.emplace_back(dx, dy);
-    agg::rect_d canvas(-5, -5, (double)(mWidth + 9), (double)(mHeight + 9));
+    agg::rect_d canvas(-5, -5, static_cast<double>(mWidth + 9), static_cast<double>(mHeight + 9));
     
     if (mFrieze) {
         centx += centy;
@@ -201,8 +201,8 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
                 double dx = offset * side;
                 double dy = dx;
                 tess.transform(&dx, &dy);
-                int px = (int)floor(dx + 0.5);
-                int py = (int)floor(dy + 0.5);
+                int px = static_cast<int>(floor(dx + 0.5));
+                int py = static_cast<int>(floor(dy + 0.5));
                 
                 // If the tile is visible then record it
                 agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
@@ -229,8 +229,8 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
                 double dx = x;
                 double dy = y;
                 tess.transform(&dx, &dy);
-                int px = (int)floor(dx + 0.5);
-                int py = (int)floor(dy + 0.5);
+                int px = static_cast<int>(floor(dx + 0.5));
+                int py = static_cast<int>(floor(dy + 0.5));
                 
                 // If the tile is visible then record it
                 agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);

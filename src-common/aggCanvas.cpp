@@ -266,7 +266,7 @@ void
 aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
                                  int stride, aggCanvas::PixelFormat format)
 {
-    agg::rendering_buffer srcBuffer((agg::int8u*)data, width, height, -stride);
+    agg::rendering_buffer srcBuffer(reinterpret_cast<agg::int8u*>(data), width, height, -stride);
     
     switch (format) {
         case aggCanvas::Gray8_Blend: {
@@ -413,7 +413,7 @@ aggCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr)
 void
 aggCanvas::attach(void* data, unsigned width, unsigned height, int stride, bool invert)
 {
-    m->buffer.attach((agg::int8u*)data, width, height, invert ? -stride : stride);
+    m->buffer.attach(reinterpret_cast<agg::int8u*>(data), width, height, invert ? -stride : stride);
     m->cropWidth = width;
     m->cropHeight = height;
     mWidth = width;

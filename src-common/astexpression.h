@@ -175,7 +175,7 @@ namespace AST {
         
         virtual ASTexpression* operator[](size_t i);
         virtual const ASTexpression* operator[](size_t i) const;
-        virtual int size() const { return (int)(children.size()); }
+        virtual int size() const { return static_cast<int>(children.size()); }
         virtual ASTexpression* append(ASTexpression* sib);
         virtual bool release(size_t i = std::numeric_limits<size_t>::max());
         

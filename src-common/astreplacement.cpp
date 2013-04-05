@@ -371,7 +371,7 @@ namespace AST {
             }
             flags.reset(flags.release()->simplify());
             if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
-                int f = (int)(r->value);
+                int f = static_cast<int>(r->value);
                 if (f & CF_JOIN_PRESENT)
                     mChildChange.flags &= ~CF_JOIN_MASK;
                 if (f & CF_CAP_PRESENT)
@@ -522,8 +522,8 @@ namespace AST {
         
         int dummy;
         
-        int modsLength = mModifications ? (int)mModifications->size() : 0;
-        int totalLength = modsLength + (int)mTransforms.size();
+        int modsLength = mModifications ? static_cast<int>(mModifications->size()) : 0;
+        int totalLength = modsLength + static_cast<int>(mTransforms.size());
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
@@ -570,7 +570,7 @@ namespace AST {
             return;
         }
         
-        switchMap::const_iterator it = mCaseStatements.find((int)floor(caseValue));
+        switchMap::const_iterator it = mCaseStatements.find(static_cast<int>(floor(caseValue)));
         if (it != mCaseStatements.end()) (*it).second->traverse(parent, tr, r);
         else mElseBody.traverse(parent, tr, r);
     }
@@ -578,7 +578,7 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool, RendererAST* r) const
     {
-        int s = (int)r->mCFstack.size();
+        size_t s = r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         StackType* dest = &(r->mCFstack[s]);
@@ -945,7 +945,7 @@ namespace AST {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
                     if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
-                        mFlags = (int)(rf->value);
+                        mFlags = static_cast<int>(rf->value);
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");
                     --mArgCount;
