@@ -101,12 +101,12 @@ CommandLineSystem::stats(const Stats& s)
     if (mQuiet || mErrorMode) return;
     
     if (s.inOutput || s.showProgress) {
-        double v = (double)s.outputDone / s.outputCount;
+        double v = static_cast<double>(s.outputDone) / s.outputCount;
         static const char prog[] = "**************************************************";
         static const char todo[] = "..................................................";
         if (v < 0.0) v = 0.0;
         if (v > 1.0) v = 1.0;
-        int progress = (int)(v * 50.0 + 0.5);
+        int progress = static_cast<int>(v * 50.0 + 0.5);
         cerr << '[';
         cerr << &(prog[50 - progress]);
         cerr << &(todo[progress]);

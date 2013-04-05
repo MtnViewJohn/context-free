@@ -249,7 +249,7 @@ intArg2(char arg, const char* str, int& x, int& y)
             cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
         usage(true);
     }
-    x = (int)v;
+    x = static_cast<int>(v);
     if (*end == 'x') {
         str = end + 1;
         v = strtol(str, &end, 10);
@@ -260,7 +260,7 @@ intArg2(char arg, const char* str, int& x, int& y)
                 cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
             usage(true);
         }
-        y = (int)v;
+        y = static_cast<int>(v);
     } else {
         y = x;
         return 1;
@@ -588,7 +588,7 @@ int main (int argc, char* argv[]) {
                                 pixfmt, opts.crop, opts.animationFrames, opts.variation,
                                 opts.format == options::BMPfile, TheRenderer, 
                                 opts.widthMult, opts.heightMult);
-            myCanvas = (Canvas*)png;
+            myCanvas = static_cast<Canvas*>(png);
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
                 TheRenderer->resetSize(png->mWidth, png->mHeight);
                 opts.width = TheRenderer->m_width;
@@ -599,7 +599,7 @@ int main (int argc, char* argv[]) {
         case options::SVGfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
             svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
-            myCanvas = (Canvas*)svg;
+            myCanvas = static_cast<Canvas*>(svg);
             break;
         }
         case options::MOVfile: {
@@ -610,7 +610,7 @@ int main (int argc, char* argv[]) {
                 cerr << "Failed to create movie file: " << mov->mError << endl;
                 exit(8);
             }
-            myCanvas = (Canvas*)mov;
+            myCanvas = static_cast<Canvas*>(mov);
             break;
         }
     }

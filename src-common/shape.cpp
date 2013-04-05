@@ -98,13 +98,13 @@ Modification::merge(const Modification& m)
 void
 ShapeBase::write(std::ostream& os) const
 {
-    os.write((const char*)(this), offsetof(ShapeBase, mAreaCache));
+    os.write(reinterpret_cast<const char*>(this), offsetof(ShapeBase, mAreaCache));
 }
 
 void
 ShapeBase::read(std::istream& is)
 {
-    is.read((char *)(this), offsetof(ShapeBase, mAreaCache));
+    is.read(reinterpret_cast<char *>(this), offsetof(ShapeBase, mAreaCache));
     mAreaCache = mWorldState.area();
 }
 
@@ -139,7 +139,7 @@ void
 FinishedShape::write(std::ostream& os) const
 {
     ShapeBase::write(os);
-    os.write((const char*)(&mBounds), sizeof(Bounds));
+    os.write(reinterpret_cast<const char*>(&mBounds), sizeof(Bounds));
     writeParams(os);
 }
 
@@ -147,7 +147,7 @@ void
 FinishedShape::read(std::istream& is)
 {
     ShapeBase::read(is);
-    is.read((char *)(&mBounds), sizeof(Bounds));
+    is.read(reinterpret_cast<char *>(&mBounds), sizeof(Bounds));
     readParams(is);
 }
 

@@ -476,7 +476,7 @@ private:
         if (_chunks.size() <= chunkNum)
             _chunks.push_back(_valAlloc.allocate(_chunk_size));
         _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
-        ::new((void*)endVal) value_type();
+        ::new(reinterpret_cast<void*>(endVal)) value_type();
         ++_size;
     }
     

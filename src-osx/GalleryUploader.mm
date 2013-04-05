@@ -44,7 +44,7 @@ namespace {
     std::string asString(NSString* ns)
     {
         NSData* d = [ns dataUsingEncoding: NSUTF8StringEncoding];
-        std::string s((const char*)[d bytes], [d length]);
+        std::string s(reinterpret_cast<const char*>([d bytes]), [d length]);
         return s;
     }
 
@@ -124,9 +124,9 @@ namespace {
     
     if (!imageData) return nil;
 
-    upload.mText        = (const char*)[textData bytes];
+    upload.mText        = reinterpret_cast<const char*>([textData bytes]);
     upload.mTextLen     = [textData length];
-    upload.mImage       = (const char*)[imageData bytes];
+    upload.mImage       = reinterpret_cast<const char*>([imageData bytes]);
     upload.mImageLen    = [imageData length];
 
     std::ostringstream payloadStream;
@@ -189,7 +189,7 @@ namespace {
                         documentAttributes: nil];
             
             int responseLength = [mResponseBody length];
-            char* rawHTML = (char*)[mResponseBody mutableBytes];
+            char* rawHTML = reinterpret_cast<char*>([mResponseBody mutableBytes]);
             
             // This UUID will only be found in the response body if the upload
             // failed. Give the user another chance if failure occured.

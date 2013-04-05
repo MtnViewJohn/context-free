@@ -437,7 +437,7 @@ CFDGImpl::rulesLoaded()
             weightsums[ r->mNameIndex ] += r->mWeight;
         }
         rulecounts[ r->mNameIndex ]++;
-        weightTypes[r->mNameIndex ] |= (int)(r->weightType);
+        weightTypes[r->mNameIndex ] |= static_cast<int>(r->weightType);
     }
 
     // second pass: normalize each weight by dividing by the
@@ -445,7 +445,7 @@ CFDGImpl::rulesLoaded()
     for ( i = 0; i < mRules.size(); i++ ) {
         ASTrule* r = mRules[i];
         double weight = r->mWeight / weightsums[ r->mNameIndex ];   // may be infinity or NaN
-        if (weightTypes[r->mNameIndex ] & (int)ASTrule::PercentWeight) {
+        if (weightTypes[r->mNameIndex ] & static_cast<int>(ASTrule::PercentWeight)) {
             if (r->weightType == ASTrule::PercentWeight)
                 weight = r->mWeight;
             else {
@@ -454,7 +454,7 @@ CFDGImpl::rulesLoaded()
                     CfdgError::Warning(r->mLocation, "Percentages sum to 100%, this rule has no weight");
             }
         }
-        if (weightTypes[r->mNameIndex] == (int)ASTrule::PercentWeight &&
+        if (weightTypes[r->mNameIndex] == static_cast<int>(ASTrule::PercentWeight) &&
             fabs(percentweightsums[ r->mNameIndex ] - 1.0) > 0.0001)
         {
             CfdgError::Warning(r->mLocation, "Percentages do not sum to 100%");
@@ -488,7 +488,7 @@ CFDGImpl::rulesLoaded()
 int
 CFDGImpl::numRules()
 {
-    return (int)mRules.size();
+    return static_cast<int>(mRules.size());
 }
 
 string
@@ -519,7 +519,7 @@ CFDGImpl::encodeShapeName(const string& s)
     if (i >= 0) return i;
 
     m_shapeTypes.emplace_back(s);
-    return (int)m_shapeTypes.size() - 1;
+    return static_cast<int>(m_shapeTypes.size()) - 1;
 }
 
 int

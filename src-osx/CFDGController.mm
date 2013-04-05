@@ -123,7 +123,7 @@ namespace {
             return;
         
         int index = [sender tag];
-        if (index < 0 || index >= (int)[filePaths count])
+        if (index < 0 || index >= static_cast<int>([filePaths count]))
             return;
             
         id path = [filePaths objectAtIndex: index];
@@ -168,7 +168,7 @@ namespace {
         return;
     
     int index = [sender tag];
-    if (index < 0 || index >= (int)[urls count])
+    if (index < 0 || index >= static_cast<int>([urls count]))
         return;
         
     NSURL* url = [NSURL URLWithString: [urls objectAtIndex: index]];

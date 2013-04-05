@@ -33,7 +33,7 @@ Rand64 Rand64::Common;
 double Rand64::getDouble(bool doBump)
 {
     if (doBump) bump();
-    return  ldexp((double) (mSeed & 0xffffffffffffULL), -48);
+    return  ldexp(static_cast<double>(mSeed & 0xffffffffffffULL), -48);
 }
 
 long Rand64::getLong(bool doBump)
@@ -66,7 +66,7 @@ void Rand64::init()
 
 void Rand64::xorChar(unsigned char c, unsigned i)
 {
-    mSeed ^= ((uint64_t)c) << (i * 8);
+    mSeed ^= (static_cast<uint64_t>(c)) << (i * 8);
 }
 
 void Rand64::xorString(const char* t, int& i)

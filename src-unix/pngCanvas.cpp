@@ -128,8 +128,8 @@ void pngCanvas::output(const char* outfilename, int frame)
         png_text comments[1];
         memset(comments, 0, sizeof(comments));
         comments[0].compression = PNG_TEXT_COMPRESSION_NONE;
-        comments[0].key = (char*)"Software";
-        comments[0].text = (char*)"Context Free";
+        comments[0].key = const_cast<char*>(reinterpret_cast<const char*>("Software"));
+        comments[0].text = const_cast<char*>(reinterpret_cast<const char*>("Context Free"));
         comments[0].text_length = strlen(comments[0].text);
         png_set_text(png_ptr, info_ptr,
             comments, sizeof(comments)/sizeof(comments[0]));

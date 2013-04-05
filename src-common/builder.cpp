@@ -481,7 +481,7 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
 {
     auto flagItem = FlagNames.find(name);
     if (flagItem != FlagNames.end()) {
-        ASTreal* flag = new ASTreal((double)(flagItem->second), loc);
+        ASTreal* flag = new ASTreal(static_cast<double>(flagItem->second), loc);
         flag->mType = AST::FlagType;
         return flag;
     }

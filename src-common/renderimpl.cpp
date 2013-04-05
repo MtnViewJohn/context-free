@@ -141,7 +141,7 @@ RendererImpl::init()
     
     m_cfdg->hasParameter("CF::BorderFixed", mFixedBorderX, this);
     m_cfdg->hasParameter("CF::BorderDynamic", mShapeBorder, this);
-    if (2 * (int)fabs(mFixedBorderX) >= min(m_width, m_height))
+    if (2 * static_cast<int>(fabs(mFixedBorderX)) >= min(m_width, m_height))
         mFixedBorderX = 0.0;
     if (mShapeBorder <= 0.0)
         mShapeBorder = 1.0;
@@ -427,7 +427,7 @@ OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds,
 : mTimeBounds(timeBounds), mScale(0.0),
   mWidth(width), mHeight(height), mFrames(frames), mRenderer(renderer)
 {
-    mFrameScale = (double)frames / (timeBounds.tend - timeBounds.tbegin);
+    mFrameScale = static_cast<double>(frames) / (timeBounds.tend - timeBounds.tbegin);
     mFrameBounds.resize(frames);
     mFrameCounts.resize(frames, 0);
 }
@@ -446,8 +446,8 @@ OutputBounds::apply(const FinishedShape& s)
     agg::trans_affine_time frameTime(s.mWorldState.m_time);
     frameTime.translate(-mTimeBounds.tbegin);
     frameTime.scale(mFrameScale);
-    int begin = (frameTime.tbegin < mFrames) ? (int)floor(frameTime.tbegin) : (mFrames - 1);
-    int end = (frameTime.tend < mFrames) ? (int)floor(frameTime.tend) : (mFrames - 1);
+    int begin = (frameTime.tbegin < mFrames) ? static_cast<int>(floor(frameTime.tbegin)) : (mFrames - 1);
+    int end = (frameTime.tend < mFrames) ? static_cast<int>(floor(frameTime.tend)) : (mFrames - 1);
     if (begin < 0) begin = 0;
     if (end < 0) end = 0;
     for (int frame = begin; frame <= end; ++frame) {
@@ -491,7 +491,7 @@ OutputBounds::backwardFilter(double framesToHalf)
 void
 OutputBounds::smooth(int window)
 {
-    int frames = (int)mFrameBounds.size();
+    size_t frames = mFrameBounds.size();
     if (frames == 0) return;
     
     mFrameBounds.resize(frames + window - 1, mFrameBounds.back());
@@ -655,11 +655,11 @@ RendererImpl::processShape(const Shape& s)
 void
 RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
 {
-    int num = (int)mSymmetryOps.size();
+    size_t num = (int)mSymmetryOps.size();
     if (num == 0 || s.mShapeType == primShape::fillType) {
         processPrimShapeSiblings(s, path);
     } else {
-        for (int i = 0; i < num; ++i) {
+        for (size_t i = 0; i < num; ++i) {
             Shape sym(s);
             sym.mWorldState.m_transform.multiply(mSymmetryOps[i]);
             processPrimShapeSiblings(sym, path);
@@ -750,7 +750,7 @@ RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
     } else {
         rule = m_cfdg->findRule(s.mShapeType, 0.0);
     }
-    if ((int)(rule->mRuleBody.mRepType) != expectedType)
+    if (static_cast<int>(rule->mRuleBody.mRepType) != expectedType)
         throw CfdgError(rule->mLocation, "Subpath is not of the expected type (path ops/commands)");
     rule->mRuleBody.traverse(s, tr, this, true);
 }
@@ -787,7 +787,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
     system()->message("Writing %s temp files %d & %d",
                       m_unfinishedFiles.back().type().c_str(), num1, num2);
 
-    int count = (int)mUnfinishedShapes.size() / 3;
+    size_t count = mUnfinishedShapes.size() / 3;
 
     UnfinishedContainer::iterator usi = mUnfinishedShapes.begin(),
                                   use = mUnfinishedShapes.end();
@@ -876,7 +876,7 @@ RendererImpl::fixupHeap()
         return;
 
     AbstractSystem::Stats outStats = m_stats;
-    outStats.outputCount = (int)n;
+    outStats.outputCount = static_cast<int>(n);
     outStats.outputDone = 0;
     outStats.showProgress = true;
     
@@ -910,7 +910,7 @@ RendererImpl::moveFinishedToFile()
             system()->message("Sorting shapes...");
         std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
         AbstractSystem::Stats outStats = m_stats;
-        outStats.outputCount = (int)mFinishedShapes.size();
+        outStats.outputCount = static_cast<int>(mFinishedShapes.size());
         outStats.outputDone = 0;
         outStats.showProgress = true;
         for (const FinishedShape& fs: mFinishedShapes) {
@@ -969,7 +969,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         if (!final)
             start += m_outputSoFar;
         for_each(start, last, op);
-        m_outputSoFar = (int)mFinishedShapes.size();
+        m_outputSoFar = static_cast<int>(mFinishedShapes.size());
     } else {
         deque<TempFile>::iterator begin, last, end;
         

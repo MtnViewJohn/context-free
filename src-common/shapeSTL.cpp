@@ -28,7 +28,7 @@
 
 
 #include "shapeSTL.h"
-
+#include <limits>
 using namespace std;
 
 
@@ -39,7 +39,7 @@ OutputMerge::addTempFile(TempFile& t)
     mStreams.emplace_back(f);
     mIters.push_back(FileIter(*f));
     
-    insertNext((int)mIters.size() - 1);
+    insertNext(mIters.size() - 1);
 }
 
 void
@@ -48,7 +48,7 @@ OutputMerge::addShapes(ShapeIter begin, ShapeIter end)
     mShapesNext = begin;
     mShapesEnd = end;
     
-    insertNext(-1);
+    insertNext(numeric_limits<size_t>::max());
 }
 
 OutputMerge::~OutputMerge()
@@ -56,9 +56,9 @@ OutputMerge::~OutputMerge()
 }
 
 void
-OutputMerge::insertNext(int i)
+OutputMerge::insertNext(size_t i)
 {
-    if (i < 0) {
+    if (i == numeric_limits<size_t>::max()) {
         if (mShapesNext != mShapesEnd) {
             mSieve.insert(SievePair(*mShapesNext++, i));
         }
