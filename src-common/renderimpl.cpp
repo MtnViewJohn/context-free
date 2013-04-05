@@ -119,7 +119,7 @@ RendererImpl::colorConflict(const yy::location& w)
 void
 RendererImpl::init()
 {
-    mCurrentSeed.seed((unsigned long long)mVariation);
+    mCurrentSeed.seed(static_cast<unsigned long long>(mVariation));
     mCurrentSeed.bump();
     
     mFinishedFileCount = 0;
@@ -655,7 +655,7 @@ RendererImpl::processShape(const Shape& s)
 void
 RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
 {
-    size_t num = (int)mSymmetryOps.size();
+    size_t num = mSymmetryOps.size();
     if (num == 0 || s.mShapeType == primShape::fillType) {
         processPrimShapeSiblings(s, path);
     } else {

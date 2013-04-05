@@ -39,19 +39,19 @@ double Rand64::getDouble(bool doBump)
 long Rand64::getLong(bool doBump)
 {
     if (doBump) bump();
-    return (long) (mSeed & ULONG_MAX);
+    return static_cast<long>(mSeed & ULONG_MAX);
 }
 
 long Rand64::getPositive(bool doBump)
 {
     if (doBump) bump();
-    return (long) (mSeed & LONG_MAX);
+    return static_cast<long>(mSeed & LONG_MAX);
 }
 
 unsigned long Rand64::getUnsigned(bool doBump)
 {
     if (doBump) bump();
-    return (unsigned long) (mSeed & ULONG_MAX);
+    return static_cast<unsigned long>(mSeed & ULONG_MAX);
 }
 
 void Rand64::seed(uint64_t seed)
@@ -72,7 +72,7 @@ void Rand64::xorChar(unsigned char c, unsigned i)
 void Rand64::xorString(const char* t, int& i)
 {
     for (; *t; ++t) {
-        xorChar((unsigned char)(*t), (unsigned)i);
+        xorChar(static_cast<unsigned char>(*t), static_cast<unsigned>(i));
         bump();
         i = (i + 1) & 7;
     }

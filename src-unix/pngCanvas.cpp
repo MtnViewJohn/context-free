@@ -153,7 +153,7 @@ void pngCanvas::output(const char* outfilename, int frame)
                 png_write_row(png_ptr, row);
             } else if (mPixelFormat == aggCanvas::RGBA16_Blend) {
                 // Ditto for rgba16
-                png_uint_16p rowPtr16 = (png_uint_16p)rowPtr;
+                png_uint_16p rowPtr16 = reinterpret_cast<png_uint_16p>(rowPtr);
                 for (int c = 0; c < width * 4; c += 4) {
                     agg::rgba16 pix(rowPtr16[c + 0], rowPtr16[c + 1], rowPtr16[c + 2], rowPtr16[c + 3]);
                     pix.demultiply();
@@ -162,13 +162,13 @@ void pngCanvas::output(const char* outfilename, int frame)
                     row16[c + 2] = htons(pix.b); 
                     row16[c + 3] = htons(pix.a);
                 }
-                png_write_row(png_ptr, (png_bytep)row16);
+                png_write_row(png_ptr, reinterpret_cast<png_bytep>(row16));
             } else if (mPixelFormat & Has_16bit_Color) {
                 // Convert rgb16/gray16 to network byte order
-                png_uint_16p rowPtr16 = (png_uint_16p)rowPtr;
+                png_uint_16p rowPtr16 = reinterpret_cast<png_uint_16p>(rowPtr);
                 for (int c = 0; c < width * (BytesPerPixel[mPixelFormat] >> 1); ++c) 
                     row16[c] = htons(rowPtr16[c]);
-                png_write_row(png_ptr, (png_bytep)row16);
+                png_write_row(png_ptr, reinterpret_cast<png_bytep>(row16));
             } else {
                 png_write_row(png_ptr, rowPtr);
             }

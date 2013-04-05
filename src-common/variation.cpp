@@ -48,8 +48,8 @@ fromString(T* str)
         offset += range;
         
         value *= 26;
-        if      ((T)'A' <= c && c <= (T)'Z') { value += c - (T)'A'; }
-        else if ((T)'a' <= c && c <= (T)'z') { value += c - (T)'a'; }
+        if      (static_cast<T>('A') <= c && c <= static_cast<T>('Z')) { value += c - static_cast<T>('A'); }
+        else if (static_cast<T>('a') <= c && c <= static_cast<T>('z')) { value += c - static_cast<T>('a'); }
         else return -1;
         
         range *= 26;
@@ -71,12 +71,12 @@ toString(int var, T* str, bool lowerCase)
         range *= 26;
     }
     
-    str[length--] = (T)'\0';
+    str[length--] = static_cast<T>('\0');
     while (length >= 0) {
-        T v = (T)(var % 26);
+        T v = static_cast<T>(var % 26);
         var = (var - v) / 26;
         
-        str[length--] = (T)(lowerCase ? 'a' : 'A') + v;
+        str[length--] = static_cast<T>(lowerCase ? 'a' : 'A') + v;
     }
 }
 
@@ -101,7 +101,7 @@ int Variation::random(int letters)
 {
     static bool seeded = false;
     if (!seeded) {
-        unsigned long long randomSeed = (unsigned long long)time(0);
+        unsigned long long randomSeed = static_cast<unsigned long long>(time(0));
 #ifdef WIN32
         HMODULE hLib = LoadLibrary(TEXT("ADVAPI32.DLL"));
         if (hLib) {
