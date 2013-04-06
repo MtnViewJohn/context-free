@@ -71,7 +71,7 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 2 : 1];
-    assert((((size_t)newrule) & 3) == 0);   // confirm 32-bit alignment
+    assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
     newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
     newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
@@ -141,7 +141,7 @@ StackRule::read(std::istream& is)
     if (mParamCount == 0)
         return;
     StackType* st = reinterpret_cast<StackType*>(this);
-    is.read((char*)(st[1].typeInfo), sizeof(AST::ASTparameters*));
+    is.read(reinterpret_cast<char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
@@ -168,7 +168,7 @@ StackRule::write(std::ostream& os) const
     if (mParamCount == 0)
         return;
     const StackType* st = reinterpret_cast<const StackType*>(this);
-    os.write((char*)(st[1].typeInfo), sizeof(AST::ASTparameters*));
+    os.write(reinterpret_cast<const char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (const_iterator it = begin(), e = end();
         it != e; ++it)
     {
