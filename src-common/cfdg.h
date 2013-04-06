@@ -50,7 +50,6 @@ namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter;
 namespace agg { struct trans_affine_time; }
 class Shape;
 class tiledCanvas;
-class RendererAST;
 
 class DeferUntilRuntime {};
 class CfdgError {
@@ -168,8 +167,7 @@ class CFDG {
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
-        virtual const agg::rgba& getBackgroundColor(RendererAST* r) = 0;
-        virtual void getSymmetry(AST::SymmList& syms, RendererAST* r) = 0;
+        virtual const agg::rgba& getBackgroundColor() = 0;
 
     protected:
         CFDG()

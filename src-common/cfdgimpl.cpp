@@ -129,6 +129,12 @@ CFDGImpl::getInitialShape(RendererAST* r)
 }
 
 const agg::rgba&
+CFDGImpl::getBackgroundColor()
+{
+    return m_backgroundColor;
+}
+
+const agg::rgba&
 CFDGImpl::getBackgroundColor(RendererAST* r)
 {
     Modification white;
