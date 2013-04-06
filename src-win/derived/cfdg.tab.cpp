@@ -2123,7 +2123,7 @@ namespace yy {
                     if (valExp->evaluate(&val, 1) != 1) {
                         driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not a single, numeric expression");
                     } else {
-                        int intval = (int)floor(val);
+                        int intval = static_cast<int>(floor(val));
                         ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
                         
                         if (caseMap.count(intval)) {
