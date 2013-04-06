@@ -116,7 +116,7 @@ private:
         bool isSized(double* x = nullptr, double* y = nullptr) const;
         bool isTimed(agg::trans_affine_time* t = nullptr) const;
         const agg::rgba& getBackgroundColor();
-        const agg::rgba& getBackgroundColor(RendererAST* r);
+        void setBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
         const AST::ASTexpression* hasParameter(const char* name) const;
         bool hasParameter(const char* name, double& value, RendererAST* r) const;

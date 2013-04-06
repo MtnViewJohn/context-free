@@ -119,6 +119,9 @@ RendererImpl::colorConflict(const yy::location& w)
 void
 RendererImpl::init()
 {
+    // Performs RendererImpl initializations that are needed before rendering
+    // and before each frame of an animation
+    
     mCurrentSeed.seed(static_cast<unsigned long long>(mVariation));
     mCurrentSeed.bump();
     
@@ -158,7 +161,7 @@ RendererImpl::init()
     mCurrentPath = new AST::ASTcompiledPath();
     
     m_cfdg->getSymmetry(mSymmetryOps, this);
-    m_cfdg->getBackgroundColor(this);
+    m_cfdg->setBackgroundColor(this);
 }
 
 void
@@ -537,7 +540,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     int curr_height = m_height;
     rescaleOutput(curr_width, curr_height, true);
     
-    m_canvas->start(true, m_cfdg->getBackgroundColor(nullptr),
+    m_canvas->start(true, m_cfdg->getBackgroundColor(),
         curr_width, curr_height);
     m_canvas->end();
 
@@ -1097,7 +1100,7 @@ void RendererImpl::output(bool final)
         std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
     }
     
-    m_canvas->start(m_outputSoFar == 0, m_cfdg->getBackgroundColor(0),
+    m_canvas->start(m_outputSoFar == 0, m_cfdg->getBackgroundColor(),
         curr_width, curr_height);
 
     m_drawingMode = true;

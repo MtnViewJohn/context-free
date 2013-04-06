@@ -134,17 +134,16 @@ CFDGImpl::getBackgroundColor()
     return m_backgroundColor;
 }
 
-const agg::rgba&
-CFDGImpl::getBackgroundColor(RendererAST* r)
+void
+CFDGImpl::setBackgroundColor(RendererAST* r)
 {
     Modification white;
     white.m_Color = HSBColor(0.0, 0.0, 1.0, 1.0);
-    if (r && hasParameter("CF::Background", white, r)) {
+    if (hasParameter("CF::Background", white, r)) {
         white.m_Color.getRGBA(m_backgroundColor);
         if (!usesAlpha)
             m_backgroundColor.a = 1.0;
     }
-    return m_backgroundColor;
 }
 
 const ASTrule*
