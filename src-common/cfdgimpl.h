@@ -115,6 +115,7 @@ private:
         frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
         bool isSized(double* x = nullptr, double* y = nullptr) const;
         bool isTimed(agg::trans_affine_time* t = nullptr) const;
+        const agg::rgba& getBackgroundColor();
         const agg::rgba& getBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
         const AST::ASTexpression* hasParameter(const char* name) const;

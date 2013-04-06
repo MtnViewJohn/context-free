@@ -1156,7 +1156,7 @@ void Document::setupCanvas(Renderer* r)
 
     if (!mCanvas) {
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine), 
-            renderParams->width, renderParams->height, mEngine->getBackgroundColor(nullptr));
+            renderParams->width, renderParams->height, mEngine->getBackgroundColor());
     }
 }
 
