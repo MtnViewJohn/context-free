@@ -294,6 +294,11 @@ namespace {
     return YES;
 }
 
+- (void)windowWillClose:(NSNotification *)notification
+{
+    [self deleteRenderer];
+}
+
 - (void)updateFullScreenMenu
 {
     NSUInteger masks = [[self window] styleMask];
