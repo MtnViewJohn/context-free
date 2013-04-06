@@ -345,7 +345,7 @@ namespace {
     
     agg::rgba backgroundColor(1.0, 1.0, 1.0, 1.0);
     if (mEngine && mRenderer)
-        backgroundColor = mEngine->getBackgroundColor(0);
+        backgroundColor = mEngine->getBackgroundColor();
     
     if (backgroundColor.opacity() < 1.0) {
         [self drawCheckerboardRect: rect];
