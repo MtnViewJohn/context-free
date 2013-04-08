@@ -24,6 +24,7 @@
 
 #include "rendererAST.h"
 #include "builder.h"
+#include <cassert>
 
 RendererAST::~RendererAST() { delete mCurrentPath; }
 
@@ -81,7 +82,8 @@ RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& p
     if (oldsize == mCFstack.size())
         return;
 
-    StackType* pos = &(mCFstack[oldsize]);
+    assert(!mCFstack.empty());
+    StackType* pos = mCFstack.data() + oldsize;
     for (const AST::ASTparameter& param: params) {
         if (param.isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()
         if (param.mType == AST::RuleType)
@@ -92,7 +94,7 @@ RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& p
     }
     mCFstack.resize(oldsize);
     if (oldsize)
-        mLogicalStackTop = &(mCFstack[0]) + oldsize;
+        mLogicalStackTop = mCFstack.data() + oldsize;
     else
         mLogicalStackTop = nullptr;
 }
