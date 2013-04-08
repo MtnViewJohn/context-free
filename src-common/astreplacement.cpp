@@ -581,7 +581,7 @@ namespace AST {
         size_t s = r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
-        StackType* dest = &(r->mCFstack[s]);
+        StackType* dest = r->mCFstack.data() + s;
         
         switch (mType) {
             case NumericType:
@@ -604,7 +604,7 @@ namespace AST {
         }
         
         if (!(r->mCFstack.empty()))
-            r->mLogicalStackTop = &(r->mCFstack.back()) + 1;
+            r->mLogicalStackTop = r->mCFstack.data() + r->mCFstack.size();
     }
     
     void

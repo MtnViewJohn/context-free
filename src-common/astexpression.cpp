@@ -442,7 +442,7 @@ namespace AST {
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
+            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
             ret = definition->mExpression->evalArgs(rti, parent);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
@@ -943,7 +943,7 @@ namespace AST {
         if (res) {
             if (rti == nullptr) throw DeferUntilRuntime();
             const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
-                &(rti->mCFstack[stackIndex]);
+                                                            rti->mCFstack.data() + stackIndex;
             for (int i = 0; i < count; ++i)
                 res[i] = stackItem[i].number;
         }
@@ -975,7 +975,7 @@ namespace AST {
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
+            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
             definition->mExpression->evaluate(res, length, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
@@ -1375,7 +1375,7 @@ namespace AST {
                 return -1;
             }
             
-            const double* source = &mData[0];
+            const double* source = mData;
             if (!mConstData)
                 source = (mStackIndex < 0) ? &(rti->mLogicalStackTop[mStackIndex].number) :
                                              &(rti->mCFstack[mStackIndex].number);
@@ -1411,7 +1411,7 @@ namespace AST {
         if (rti == nullptr) throw DeferUntilRuntime();
         if (justCheck) return;
         const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
-            &(rti->mCFstack[stackIndex]);
+                                                        rti->mCFstack.data() + stackIndex;
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
         if (shapeDest) {
             m *= *smod;
@@ -1453,7 +1453,7 @@ namespace AST {
             const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = &(rti->mCFstack.back()) + 1;
+            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
             definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;

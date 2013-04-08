@@ -70,7 +70,7 @@ RendererAST::initStack(const StackRule* p)
         }
     }
     if (!mCFstack.empty()) {
-        mLogicalStackTop = &(mCFstack.back()) + 1;
+        mLogicalStackTop = mCFstack.data() + mCFstack.size();
     } else {
         mLogicalStackTop = nullptr;
     }
