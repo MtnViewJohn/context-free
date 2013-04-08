@@ -1005,7 +1005,7 @@ namespace AST {
                     } else {
                         size_t oldsize = symmSpec.size();
                         symmSpec.resize(oldsize + sz);
-                        if (cit->evaluate(&(symmSpec[oldsize]), sz, r) != sz)
+                        if (cit->evaluate(symmSpec.data() + oldsize, sz, r) != sz)
                             CfdgError::Error(cit->where, "Could not evaluate this");
                     }
                     where = where + cit->where;

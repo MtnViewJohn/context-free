@@ -362,7 +362,7 @@ namespace AST {
             return simpleRule;
         case StackArgs: {
             const StackType* stackItem = (mStackIndex < 0) ? rti->mLogicalStackTop + mStackIndex :
-                &(rti->mCFstack[mStackIndex]);
+                                                             rti->mCFstack.data() + mStackIndex;
             stackItem->rule->retain(rti);
             return stackItem->rule;
         }
