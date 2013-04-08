@@ -83,14 +83,14 @@ RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& p
         return;
 
     assert(!mCFstack.empty());
-    StackType* pos = mCFstack.data() + oldsize;
+    size_t pos = oldsize;
     for (const AST::ASTparameter& param: params) {
+        if (pos >= mCFstack.size())
+            break;                        // no guarantee entire frame was computed
         if (param.isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()
         if (param.mType == AST::RuleType)
-            pos->rule->release();
+            mCFstack[pos].rule->release();
         pos += param.mTuplesize;
-        if (pos > &(mCFstack.back()))
-            break;                      // no guarantee entire frame was computed
     }
     mCFstack.resize(oldsize);
     if (oldsize)
