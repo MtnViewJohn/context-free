@@ -25,9 +25,6 @@
 
 #ifndef INCLUDE_RAND48_H
 #define INCLUDE_RAND48_H
-#define RAND64_MULT  0x5851F42D4C957F2DULL
-#define RAND64_ADD   0x14057B7EF767814FULL
-#define RAND64_SEED  0x3DF41234ABCD330EULL
 
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
@@ -38,6 +35,12 @@
 // This class  implements the 64-bit linear congruent PRNG from Knuth's MMIX architecture.
 class Rand64 {
 public:
+    enum e_consts : uint64_t {
+        RAND64_MULT = 0x5851F42D4C957F2DULL,
+        RAND64_ADD  = 0x14057B7EF767814FULL,
+        RAND64_SEED = 0x3DF41234ABCD330EULL
+    };
+    
     uint64_t mSeed;
     static Rand64   Common;
     
