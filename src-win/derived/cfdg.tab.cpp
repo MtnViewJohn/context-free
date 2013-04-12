@@ -2222,7 +2222,7 @@ namespace yy {
 #line 1192 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            (yyval.term) = new ASTmodTerm((ASTmodTerm::modTypeEnum)((yysemantic_stack_[(2) - (1)].modToken)), mod.release(), (yyloc));
+            (yyval.term) = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>((yysemantic_stack_[(2) - (1)].modToken)), mod.release(), (yyloc));
         }
     break;
 
@@ -2235,7 +2235,7 @@ namespace yy {
                 error((yyloc), "The target operator can only be applied to color adjustments");
                 (yyval.term) = nullptr;
             } else {
-                (yyval.term) = new ASTmodTerm((ASTmodTerm::modTypeEnum)((yysemantic_stack_[(3) - (1)].modToken) + 4), mod.release(), (yyloc));
+                (yyval.term) = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>((yysemantic_stack_[(3) - (1)].modToken) + 4), mod.release(), (yyloc));
             }
         }
     break;
