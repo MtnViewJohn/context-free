@@ -1191,7 +1191,7 @@ buncha_adjustments:
 adjustment:
         MODTYPE explist {
             exp_ptr mod($2); $2 = nullptr;
-            $$ = new ASTmodTerm((ASTmodTerm::modTypeEnum)($1), mod.release(), @$);
+            $$ = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>($1), mod.release(), @$);
         }
         |
         MODTYPE exp '|' {
@@ -1200,7 +1200,7 @@ adjustment:
                 error(@$, "The target operator can only be applied to color adjustments");
                 $$ = nullptr;
             } else {
-                $$ = new ASTmodTerm((ASTmodTerm::modTypeEnum)($1 + 4), mod.release(), @$);
+                $$ = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>($1 + 4), mod.release(), @$);
             }
         }
         |
