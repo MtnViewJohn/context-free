@@ -59,7 +59,7 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
   mErrorOccured(false)
 { 
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
-    mSeed.seed((unsigned long long)variation); 
+    mSeed.seed(static_cast<unsigned long long>(variation));
     if (FlagNames.empty()) {
         FlagNames["CF::None"] = AST::CF_NONE;
         FlagNames["CF::MiterJoin"] = AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT;
@@ -759,7 +759,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
         } else if (m_CFDG->getShapeType(r->shapeType) == CFDGImpl::pathType) {
             const ASTrule* rule = m_CFDG->findRule(r->shapeType);
             if (rule) {
-                t = (ASTreplacement::repElemListEnum)rule->mRuleBody.mRepType;
+                t = static_cast<ASTreplacement::repElemListEnum>(rule->mRuleBody.mRepType);
             } else {
                 error(loc, "Subpath references must be to previously declared paths");
             }
