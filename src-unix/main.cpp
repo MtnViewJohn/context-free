@@ -383,7 +383,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 opt.animationZoom = true;
                 break;
             case ':':
-                cerr << "Option -" << (char)optopt << " requires an argument" << endl;
+                cerr << "Option -" << static_cast<char>(optopt) << " requires an argument" << endl;
                 usage(true);
                 break;
             case '?':

@@ -128,7 +128,7 @@ PosixSystem::getPhysicalMemory()
     uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
     if (!SystemIs64bit && size > 2147483648ULL)
         size = 2147483648ULL;
-    return (size_t)size;
+    return static_cast<size_t>(size);
 #else
     return 0;
 #endif
@@ -152,7 +152,7 @@ PosixSystem::getPhysicalMemory()
 	if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
         if (!SystemIs64bit && len > 4 && size > 2147483648UL)
             size = 2147483648UL;
-		return (size_t)size;
+		return static_cast<size_t>(size);
     }
 	return 0;
 #endif // __linux

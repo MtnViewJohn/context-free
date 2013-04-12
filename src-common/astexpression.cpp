@@ -266,7 +266,7 @@ namespace AST {
     {
         for (int i = 0; i < LastOne; ++i)
             if (func.compare(FuncNames[i]) == 0) {
-                return (FuncType)i;
+                return static_cast<FuncType>(i);
             }
         
         return NotAFunction;
@@ -472,7 +472,7 @@ namespace AST {
     {
         isConstant = r ? r->isConstant && l->isConstant : l->isConstant;
         isLocal = r ? r->isLocal && l->isLocal : l->isLocal;
-        mType = r ? (expType)(l->mType | r->mType) : l->mType;
+        mType = r ? static_cast<expType>(l->mType | r->mType) : l->mType;
         if (strchr("+_*<>LG=n&|X^!", o))
             isNatural = r ? (l->isNatural && r->isNatural) : l->isNatural;
     }
@@ -831,7 +831,7 @@ namespace AST {
         isConstant = isConstant && sib->isConstant;
         isNatural = isNatural && sib->isNatural;
         isLocal = isLocal && sib->isLocal;
-        mType = (expType)(mType | sib->mType);
+        mType = static_cast<expType>(mType | sib->mType);
         
         // Cannot insert an ASTcons into children, it will be flattened away.
         // You must wrap the ASTcons in an ASTparen in order to insert it whole.

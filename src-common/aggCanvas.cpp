@@ -247,10 +247,10 @@ aggPixelPainter<pixel_fmt>::draw(RGBA8 col, agg::filling_rule_e fr)
     typedef agg::ColorConverter<RGBA8, color_type> Converter_type;
     if (pixelSet.size() < PNG8Limit) {
         agg::int64u pixel = 
-            (agg::int64u)col.r << 48 |
-            (agg::int64u)col.g << 32 |
-            (agg::int64u)col.b << 16 |
-            (agg::int64u)col.a;
+            static_cast<agg::int64u>(col.r) << 48 |
+            static_cast<agg::int64u>(col.g) << 32 |
+            static_cast<agg::int64u>(col.b) << 16 |
+            static_cast<agg::int64u>(col.a);
         pixelSet.insert(pixel);
     }
     
@@ -452,6 +452,6 @@ aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
     if (engine->uses16bitColor)
         ret += Has_16bit_Color;
     
-    return (PixelFormat)ret;
+    return static_cast<PixelFormat>(ret);
 }
 

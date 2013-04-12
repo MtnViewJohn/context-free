@@ -252,7 +252,7 @@ namespace AST {
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
-                mPathOp = (pathOpEnum)i;
+                mPathOp = static_cast<pathOpEnum>(i);
                 break;
             }
         }
@@ -270,7 +270,7 @@ namespace AST {
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
-                mPathOp = (pathOpEnum)i;
+                mPathOp = static_cast<pathOpEnum>(i);
                 break;
             }
         }
