@@ -178,6 +178,7 @@ class CFDG {
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
         virtual const agg::rgba& getBackgroundColor() = 0;
+        virtual const AST::ASTparameters* getShapeParams(int shapetype) const = 0;
 
     protected:
         CFDG()
