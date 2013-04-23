@@ -598,7 +598,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
 }
 
 const AST::ASTparameters* 
-CFDGImpl::getShapeParams(int shapetype)
+CFDGImpl::getShapeParams(int shapetype) const
 {
     if (shapetype < 0 || shapetype >= int(m_shapeTypes.size()) ||
         !m_shapeTypes[shapetype].isShape)

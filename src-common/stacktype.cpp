@@ -70,13 +70,11 @@ StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     ++Renderer::ParamCount;
-    StackType* newrule = new StackType[size ? size + 2 : 1];
+    StackType* newrule = new StackType[size ? size + 1 : 1];
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
     newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
     newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
-    if (size)
-        newrule[1].typeInfo = ti;
     return &(newrule->ruleHeader);
 }
 
@@ -85,9 +83,10 @@ void
 StackRule::release() const
 {
     if (mRefCount == 0) {
-        for (const_iterator it = begin(), e = end(); it != e; ++it)
+        for (const_iterator it = begin(), e = end(); it != e; ++it) {
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
+        }
         --Renderer::ParamCount;
         delete[] this;
         return;
@@ -123,7 +122,7 @@ StackRule::operator==(const StackRule& o) const
 {
     if (this == &o) return true;
     if (mParamCount != o.mParamCount) return false;
-    return std::memcmp(reinterpret_cast<const void*>(this + 2), reinterpret_cast<const void*>(&o + 2),
+    return std::memcmp(reinterpret_cast<const void*>(this + 1), reinterpret_cast<const void*>(&o + 1),
                        sizeof(StackType)*(mParamCount)) == 0;
 }
 
@@ -140,8 +139,6 @@ StackRule::read(std::istream& is)
 {
     if (mParamCount == 0)
         return;
-    StackType* st = reinterpret_cast<StackType*>(this);
-    is.read(reinterpret_cast<char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
@@ -167,11 +164,7 @@ StackRule::write(std::ostream& os) const
     os.write(reinterpret_cast<char*>(&head), sizeof(uint64_t));
     if (mParamCount == 0)
         return;
-    const StackType* st = reinterpret_cast<const StackType*>(this);
-    os.write(reinterpret_cast<const char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
-    for (const_iterator it = begin(), e = end();
-        it != e; ++it)
-    {
+    for (const_iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
         case AST::NumericType:
         case AST::ModType:
@@ -271,3 +264,36 @@ StackType::evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
     EvalArgs(rti, nullptr, dest, end_it, arguments, sequential);
 }
 
+
+StackRule::iterator
+StackRule::begin()
+{
+    if (mParamCount) {
+        StackType* st = reinterpret_cast<StackType*>(this);
+        const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        return iterator(st + 1, p);
+    }
+    return iterator();
+}
+
+StackRule::const_iterator
+StackRule::begin() const
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        return const_iterator(st + 1, p);
+    }
+    return const_iterator();
+}
+
+StackRule::const_iterator
+StackRule::cbegin()
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        return const_iterator(st + 1, p);
+    }
+    return const_iterator();
+}

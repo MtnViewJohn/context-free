@@ -55,7 +55,7 @@ public:
     StackTypeIterator(_stack* s, const AST::ASTparameters* p)
     : _Ptr(s)
     {
-        if (_Ptr) {
+        if (_Ptr && p) {
             _Iter = p->begin();
             _End = p->end();
             if (_Iter == _End)
@@ -142,7 +142,6 @@ union StackType {
     double      number;
     const StackRule*  rule;
     StackRule   ruleHeader;
-    const AST::ASTparameters* typeInfo;
 
     void        release(const AST::ASTparameters* p) const;
 
@@ -162,35 +161,5 @@ union StackType {
     const_iterator end() const
     { return const_iterator(); }
 };
-
-inline StackRule::iterator
-StackRule::begin()
-{
-    if (mParamCount) {
-        StackType* st = reinterpret_cast<StackType*>(this);
-        return iterator(st + 2, st[1].typeInfo);
-    }
-    return iterator();
-}
-
-inline StackRule::const_iterator
-StackRule::begin() const
-{
-    if (mParamCount) {
-        const StackType* st = reinterpret_cast<const StackType*>(this);
-        return const_iterator(st + 2, st[1].typeInfo);
-    }
-    return const_iterator();
-}
-
-inline StackRule::const_iterator
-StackRule::cbegin()
-{
-    if (mParamCount) {
-        const StackType* st = reinterpret_cast<const StackType*>(this);
-        return const_iterator(st + 2, st[1].typeInfo);
-    }
-    return const_iterator();
-}
 
 #endif // INCLUDE_STACKTYPE_H
