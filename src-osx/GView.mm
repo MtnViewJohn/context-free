@@ -842,6 +842,7 @@ namespace {
 #endif
 
     if (mEngine && mRenderer && mCanvas) {
+        CFDG::CurrentCFDG = mEngine;
         if (parameters.render) 
             mScale = mRenderer->run(mCanvas, parameters.periodicUpdate);
         else if (parameters.animate) {
