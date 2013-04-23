@@ -41,6 +41,15 @@
 #include "stacktype.h"
 #include "Rand64.h"
 
+#ifndef my_thread_local
+#ifdef _MSC_VER
+#define my_thread_local __declspec(thread)
+#else
+#define my_thread_local  __thread
+#endif  // _MSC_VER
+#endif // my_thread_local
+
+
 typedef agg::rgba16 RGBA8;
 
 namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter; 
@@ -150,6 +159,7 @@ class CFDG {
     public:
         enum frieze_t { no_frieze = 0, frieze_x, frieze_y };
         static CFDG* ParseFile(const char* fname, AbstractSystem*, int variation);
+        static my_thread_local CFDG* CurrentCFDG;
         virtual ~CFDG();
 
         virtual Renderer* renderer(
@@ -173,7 +183,7 @@ class CFDG {
         CFDG()
         : usesColor(false), usesAlpha(false), uses16bitColor(false), 
           usesTime(false), usesFrameTime(false)
-        { }
+        { CurrentCFDG = this; }
 };
 
 
