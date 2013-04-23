@@ -271,6 +271,7 @@ namespace AST {
                        bool tr, RendererAST* r);
         
         ASTcompiledPath();
+        ~ASTcompiledPath();
         static UIDdatatype NextPathUID();
     private:
         static CommandInfo::UIDtype GlobalPathUID;
