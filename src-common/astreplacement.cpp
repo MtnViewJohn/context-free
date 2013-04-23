@@ -405,6 +405,12 @@ namespace AST {
     {
     }
     
+    ASTcompiledPath::~ASTcompiledPath()
+    {
+        if (mParameters)
+            mParameters->release();
+    }
+    
     ASTtransform::~ASTtransform()
     {
         ASTexpression* m = const_cast<ASTexpression*>(mModifications);
@@ -696,8 +702,10 @@ namespace AST {
             if (!(r->mRandUsed) && !mCachedPath) {
                 mCachedPath.reset(r->mCurrentPath);
                 mCachedPath->mComplete = true;
-                if (parent.mParameters)
+                if (parent.mParameters) {
                     mCachedPath->mParameters = parent.mParameters;
+                    mCachedPath->mParameters->retain(r);
+                }
                 r->mCurrentPath = new ASTcompiledPath();
             } else {
                 r->mCurrentPath->mPath.remove_all();
