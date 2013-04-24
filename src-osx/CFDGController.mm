@@ -212,8 +212,7 @@ namespace {
     [self checkForUpdateInBackground];
     NSArray* tempFiles = [CFDGDocument checkForTempFiles];
     if (tempFiles) {
-        NSString* files = [tempFiles componentsJoinedByString: @"\n"];
-        NSInteger button = NSRunAlertPanel(@"Old temporary files found", files,
+        NSInteger button = NSRunAlertPanel(@"Old temporary files found", @"",
                                            @"Delete", @"Leave", nil);
         if (button == NSAlertDefaultReturn) {
             for (NSString* file in tempFiles) {
