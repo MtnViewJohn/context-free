@@ -64,8 +64,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-s 1000 -x 0.3 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
+            argument = "-d -v XPPMUX /Users/john/Documents/Context\ Free/tests/mod\ exp\ test.cfdg output/test.png"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-s 1000 -x 0.3 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-?"
