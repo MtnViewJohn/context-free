@@ -987,9 +987,8 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
                 last = begin + (MaxMergeFiles - 1);
                 end = last + 1;
                 
-                for_each(begin, end, [&](TempFile& t) {
-                    merger.addTempFile(t);
-                });
+                for (auto it = begin; it != end; ++it)
+                    merger.addTempFile(*it);
                 
                 std::unique_ptr<ostream> f(t.forWrite());
                 system()->message("Merging temp files %d through %d",
@@ -1000,7 +999,8 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
                 });
             }   // end scope for merger and f
             
-            m_finishedFiles.erase(begin, end);
+            for (unsigned i = 0; i < MaxMergeFiles; ++i)
+                m_finishedFiles.pop_front();
             m_finishedFiles.push_back(std::move(t));
         }
         
@@ -1009,9 +1009,8 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         begin = m_finishedFiles.begin();
         end = m_finishedFiles.end();
         
-        for_each(begin, end, [&](TempFile& t) {
-            merger.addTempFile(t);
-        });
+        for (auto it = begin; it != end; ++it)
+            merger.addTempFile(*it);
         
         merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
         merger.merge(op);

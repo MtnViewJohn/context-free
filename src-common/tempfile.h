@@ -43,12 +43,10 @@ public:
     
     TempFile(AbstractSystem*, AbstractSystem::TempType t, const char* type, int num);
     TempFile(TempFile&&) noexcept;
+    TempFile& operator=(TempFile&&) noexcept;
 #ifndef _WIN32
     TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
-    TempFile& operator=(TempFile&&) = default;
-#else
-    TempFile& operator=(TempFile&&) noexcept;
 #endif
     virtual ~TempFile();
 
@@ -59,6 +57,7 @@ private:
     std::string mTypeName;
     int         mNum;
     bool        mWritten;
+    void        erase();
 #ifdef _WIN32
     TempFile(const TempFile&) { };
     TempFile& operator=(const TempFile&) { return *this; };

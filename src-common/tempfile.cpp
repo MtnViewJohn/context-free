@@ -73,10 +73,11 @@ TempFile::TempFile(TempFile&& from) noexcept
     from.mPath.clear();
 }
 
-#ifdef _WIN32
 TempFile&
 TempFile::operator=(TempFile&& from) noexcept
 {
+    if (mWritten && mPath.length())
+        erase();
     mSystem = from.mSystem;
     mPath = std::move(from.mPath);
     mType = from.mType;
@@ -88,13 +89,18 @@ TempFile::operator=(TempFile&& from) noexcept
     from.mPath.clear();
     return *this;
 }
-#endif
 
 TempFile::~TempFile()
 {
-    if (mWritten && mPath.length()) {
-        mSystem->message("Deleting %s temp file %d", mTypeName.c_str(), mNum);
-        unlink(mPath.c_str());
-    }
+    if (mWritten && mPath.length())
+        erase();
+}
+        
+void
+TempFile::erase()
+{
+    mSystem->message("Deleting %s temp file %d", mTypeName.c_str(), mNum);
+    if (unlink(mPath.c_str()))
+        mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
 }
 
