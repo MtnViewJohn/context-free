@@ -318,18 +318,14 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     std::vector<std::string> temps = sys->findTempFiles();
     delete sys;
     if (!temps.empty()) {
-        System::Text::StringBuilder files(1024 * temps.size());
         cli::array<String^>^ names = gcnew  cli::array<String^>(temps.size());
         int i = 0;
         for (std::string& temp: temps) {
             String^ name = gcnew String(temp.c_str());
             names[i++] = name;
-            if (files.Length)
-                files.AppendLine();
-            files.Append(name);
         }
-        ::DialogResult dlgr = MessageBox::Show(this, files.ToString(), 
-            "Delete these old temporary files?", 
+        ::DialogResult dlgr = MessageBox::Show(this, "Should they be deleted?", 
+            "Old temporary files found", 
             MessageBoxButtons::YesNo, MessageBoxIcon::Question, 
             MessageBoxDefaultButton::Button1);
         if (dlgr == ::DialogResult::Yes) {
