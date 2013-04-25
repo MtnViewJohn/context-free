@@ -329,7 +329,7 @@ namespace AST {
             argSource = SimpleArgs;
             simpleRule = simp;
             if (argSize)
-                for (int i = 1; i < argSize + 2; ++i)
+                for (int i = 1; i < argSize + 1; ++i)
                     simp[i] = r->simpleRule[i];
             return;
         }
@@ -375,7 +375,7 @@ namespace AST {
                 // copy the parameters with the correct shape type.
                 StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
                 if (argSize)
-                    for (int i = 1; i < argSize + 2; ++i)
+                    for (int i = 1; i < argSize + 1; ++i)
                         ret[i] = parent[i];
                 return ret;
             }
