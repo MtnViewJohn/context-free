@@ -234,9 +234,8 @@ RendererImpl::cleanup()
         return;
     }
     for (const StackRule* param: mLongLivedParams) {
-        --Renderer::ParamCount;
-        const StackType* st = reinterpret_cast<const StackType*>(param);
-        delete[] st;
+        param->mRefCount = 0;
+        param->release();
         if (AbortEverything) return;
     }
     mUnfinishedShapes.clear();

@@ -45,16 +45,12 @@ class CFDGImpl : public CFDG {
         enum {newShape = 0, ruleType = 1, pathType = 2};
 private:
         Shape m_initialShape;
-        AST::rep_ptr mInitShape;
         unsigned mInitShapeDepth;
     
         agg::rgba m_backgroundColor;
     
         int mStackSize;
 
-        std::vector<AST::ASTrule*> mRules;
-        std::map<int, AST::def_ptr> mFunctions;
-    
         struct ShapeType {
             std::string  name;
             bool    hasRules;
@@ -87,6 +83,10 @@ private:
         
         std::vector<ShapeType> m_shapeTypes;
         
+        AST::rep_ptr mInitShape;
+        std::vector<AST::ASTrule*> mRules;
+        std::map<int, AST::def_ptr> mFunctions;
+    
         AbstractSystem* m_system;
     
         bool m_secondPass;

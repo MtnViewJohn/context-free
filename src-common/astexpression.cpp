@@ -692,8 +692,10 @@ namespace AST {
 
     ASTruleSpecifier::~ASTruleSpecifier()
     {
-        if (simpleRule) --Renderer::ParamCount;
-        delete[] simpleRule;
+        if (simpleRule) {
+            simpleRule->mRefCount = 0;
+            simpleRule->release();
+        }
     };
     
     ASTcons::~ASTcons()

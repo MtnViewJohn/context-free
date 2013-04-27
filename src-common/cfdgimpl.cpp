@@ -54,9 +54,9 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m) 
-: mInitShape(nullptr), mInitShapeDepth(std::numeric_limits<unsigned>::max()),
-  m_backgroundColor(1, 1, 1, 1),
-  mStackSize(0), m_system(m), m_secondPass(false), m_Parameters(0), 
+: mInitShapeDepth(std::numeric_limits<unsigned>::max()),
+  m_backgroundColor(1, 1, 1, 1), mStackSize(0), 
+  mInitShape(nullptr), m_system(m), m_secondPass(false), m_Parameters(0),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
     // These have to be encoded first so that their type number will fit
@@ -82,9 +82,9 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
 }
 
 CFDGImpl::CFDGImpl(CFDGImpl* c)
-: mInitShape(nullptr), mInitShapeDepth(std::numeric_limits<unsigned>::max()),
-  m_backgroundColor(1, 1, 1, 1),
-  mStackSize(0), m_system(c->m_system), m_secondPass(true), m_Parameters(0), 
+: mInitShapeDepth(std::numeric_limits<unsigned>::max()),
+  m_backgroundColor(1, 1, 1, 1), mStackSize(0),
+  mInitShape(nullptr), m_system(c->m_system), m_secondPass(true), m_Parameters(0),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 {
     m_shapeTypes.swap(c->m_shapeTypes);
