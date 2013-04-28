@@ -33,6 +33,12 @@
 #include <iosfwd>
 #include "ast.h"
 
+//#define EXTREME_PARAM_DEBUG
+
+#ifdef EXTREME_PARAM_DEBUG
+#include <map>
+#endif
+
 #if defined(_MSC_VER) && !defined(noexcept)
 #define noexcept throw()
 #endif
@@ -119,6 +125,10 @@ struct StackRule {
     
     void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
                          const StackRule* parent);
+    
+#ifdef EXTREME_PARAM_DEBUG
+    static std::map<const StackRule*, int> ParamMap;
+#endif
 
     iterator begin();
     const_iterator begin() const;

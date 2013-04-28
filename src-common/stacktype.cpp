@@ -66,6 +66,12 @@ static_assert(sizeof(StackType) == sizeof(double), "StackType must be 8 bytes");
 static_assert(sizeof(StackRule) == sizeof(double), "StackRule must be 8 bytes");
 static_assert(offsetof(StackType, ruleHeader) == 0, "StackRule must align with StackType");
 
+#ifdef EXTREME_PARAM_DEBUG
+std::map<const StackRule*, int> StackRule::ParamMap;
+#endif
+
+#define ParamOfInterest 2
+
 StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
@@ -75,6 +81,11 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
     newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
     newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
+#ifdef EXTREME_PARAM_DEBUG
+    ParamMap[&(newrule->ruleHeader)] = static_cast<int>(Renderer::ParamCount);
+    if (Renderer::ParamCount == ParamOfInterest)
+        ParamMap[&(newrule->ruleHeader)] = ParamOfInterest;
+#endif
     return &(newrule->ruleHeader);
 }
 
@@ -82,11 +93,22 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 void
 StackRule::release() const
 {
+#ifdef EXTREME_PARAM_DEBUG
+    auto f = ParamMap.find(this);
+    assert(f != ParamMap.end());
+    int n = (*f).second;
+    assert(n > 0);
+    if (n == ParamOfInterest)
+        (*f).second = ParamOfInterest;
+#endif
     if (mRefCount == 0) {
         for (const_iterator it = begin(), e = end(); it != e; ++it) {
             if (it.type().mType == AST::RuleType)
                 it->rule->release();
         }
+#ifdef EXTREME_PARAM_DEBUG
+        (*f).second = -n;
+#endif
         --Renderer::ParamCount;
         delete[] this;
         return;
@@ -108,6 +130,14 @@ StackType::release(const AST::ASTparameters* p) const
 void
 StackRule::retain(RendererAST* r) const
 {
+#ifdef EXTREME_PARAM_DEBUG
+    auto f = ParamMap.find(this);
+    assert(f != ParamMap.end());
+    int n = (*f).second;
+    assert(n > 0);
+    if (n == ParamOfInterest)
+        (*f).second = ParamOfInterest;
+#endif
     if (mRefCount == UINT32_MAX)
         return;
     
