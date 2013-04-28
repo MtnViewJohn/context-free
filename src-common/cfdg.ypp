@@ -565,10 +565,10 @@ path_header:
             ASTruleSpecifier r(driver.StringToShape(*name, @2, false), *name, std::move(dummy),
                                @$, &(driver.mParamDecls.mParameters),
                                &(driver.mParamDecls.mParameters));
-            ASTshape* s = new ASTshape(r, false, @1 + @2);
-            s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-            driver.SetShape(s, true);
-            s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : nullptr;
+            ASTshape s(r, false, @1 + @2);
+            s.mRules.mParameters.swap(driver.mParamDecls.mParameters);
+            driver.SetShape(&s, true);
+            s.mShapeSpec.typeSignature = hasParams ? &(s.mRules.mParameters) : nullptr;
             driver.mInPathContainer = true;
             if (driver.mCompilePhase == 2) {
                 rule_ptr newPath(new ASTrule(-1, @$));

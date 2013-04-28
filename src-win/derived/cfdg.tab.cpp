@@ -1382,10 +1382,10 @@ namespace yy {
             ASTruleSpecifier r(driver.StringToShape(*name, (yylocation_stack_[(3) - (2)]), false), *name, std::move(dummy),
                                (yyloc), &(driver.mParamDecls.mParameters),
                                &(driver.mParamDecls.mParameters));
-            ASTshape* s = new ASTshape(r, false, (yylocation_stack_[(3) - (1)]) + (yylocation_stack_[(3) - (2)]));
-            s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-            driver.SetShape(s, true);
-            s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : nullptr;
+            ASTshape s(r, false, (yylocation_stack_[(3) - (1)]) + (yylocation_stack_[(3) - (2)]));
+            s.mRules.mParameters.swap(driver.mParamDecls.mParameters);
+            driver.SetShape(&s, true);
+            s.mShapeSpec.typeSignature = hasParams ? &(s.mRules.mParameters) : nullptr;
             driver.mInPathContainer = true;
             if (driver.mCompilePhase == 2) {
                 rule_ptr newPath(new ASTrule(-1, (yyloc)));
