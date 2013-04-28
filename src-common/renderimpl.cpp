@@ -207,7 +207,16 @@ RendererImpl::~RendererImpl()
 {
     CFDG::CurrentCFDG = m_cfdg;
     cleanup();
+#ifdef EXTREME_PARAM_DEBUG
+    AbstractSystem* sys = system();
     delete m_cfdg;
+    for (auto &p: StackRule::ParamMap) {
+        if (p.second > 0)
+            sys->message("Parameter at %p is still alive, it is param number %d\n", p.first, p.second);
+    }
+#else
+    delete m_cfdg;
+#endif
 }
 
 class Stopped { };
