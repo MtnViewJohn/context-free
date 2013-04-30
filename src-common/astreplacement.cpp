@@ -435,7 +435,7 @@ namespace AST {
             else
                 s.mShapeType = s.mParameters->mRuleName;
             if (s.mParameters->mParamCount == 0)
-                s.mParameters = nullptr;
+                s.mParameters = nullptr;    // TODO: release?
         }
     }
     
@@ -702,16 +702,17 @@ namespace AST {
             if (!(r->mRandUsed) && !mCachedPath) {
                 mCachedPath.reset(r->mCurrentPath);
                 mCachedPath->mComplete = true;
-                if (parent.mParameters) {
-                    mCachedPath->mParameters = parent.mParameters;
-                    mCachedPath->mParameters->retain(r);
-                }
+                mCachedPath->mParameters = StackRule::alloc(parent.mParameters);
                 r->mCurrentPath = new ASTcompiledPath();
             } else {
                 r->mCurrentPath->mPath.remove_all();
                 r->mCurrentPath->mCommandInfo.clear();
                 r->mCurrentPath->mUseTerminal = false;
                 r->mCurrentPath->mPathUID = ASTcompiledPath::NextPathUID();
+                if (r->mCurrentPath->mParameters) {
+                    r->mCurrentPath->mParameters->release();
+                    r->mCurrentPath->mParameters = nullptr;
+                }
             }
         }
     }

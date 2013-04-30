@@ -294,17 +294,16 @@ namespace AST {
         if (arguments && arguments->mType != AST::NoType) {
             arguments->entropy(entropyVal);
             if (arguments->isConstant) {
-                const StackRule* simp = evalArgs();
-                simp->mRefCount = UINT32_MAX;
-                simpleRule = simp;
+                simpleRule = evalArgs();
                 argSource = SimpleArgs;
+                Builder::CurrentBuilder->storeParams(simpleRule);
             }
         } else if (arguments && arguments->mType == AST::NoType) {
             argSource = ParentArgs;
         } else {
             argSource = NoArgs;
-            simpleRule = StackRule::alloc(shapeType, 0, types);
-            simpleRule->mRefCount = UINT32_MAX;
+            simpleRule = StackRule::alloc(shapeType, 0);
+            Builder::CurrentBuilder->storeParams(simpleRule);
         }
     }
     
@@ -324,13 +323,9 @@ namespace AST {
       typeSignature(r->typeSignature)
     {
         if (r->argSource == SimpleArgs) {
-            StackRule* simp = StackRule::alloc(shapeType, argSize, nullptr);
-            simp->mRefCount = UINT32_MAX;
+            simpleRule = StackRule::alloc(r->simpleRule);
+            Builder::CurrentBuilder->storeParams(simpleRule);
             argSource = SimpleArgs;
-            simpleRule = simp;
-            if (argSize)
-                for (int i = 1; i < argSize + 1; ++i)
-                    simp[i] = r->simpleRule[i];
             return;
         }
         assert(r->argSource == NoArgs || Builder::CurrentBuilder->mWant2ndPass);   // only duplicate constant rule specs
@@ -373,10 +368,8 @@ namespace AST {
                 // Child shape is different from parent, even though parameters are reused,
                 // and we can't finesse it in ASTreplacement::traverse(). Just
                 // copy the parameters with the correct shape type.
-                StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
-                if (argSize)
-                    for (int i = 1; i < argSize + 1; ++i)
-                        ret[i] = parent[i];
+                StackRule* ret = StackRule::alloc(parent);
+                ret->mRuleName = shapeType;
                 return ret;
             }
         case SimpleParentArgs:
@@ -385,7 +378,7 @@ namespace AST {
             parent->retain(rti);
             return parent;
         case DynamicArgs: {
-            StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
+            StackRule* ret = StackRule::alloc(shapeType, argSize);
             ret->evalArgs(rti, arguments.get(), parent);
             return ret;
         }
@@ -692,10 +685,7 @@ namespace AST {
 
     ASTruleSpecifier::~ASTruleSpecifier()
     {
-        if (simpleRule) {
-            simpleRule->mRefCount = 0;
-            simpleRule->release();
-        }
+        // simpleRule is deleted along with the long-lived params
     };
     
     ASTcons::~ASTcons()

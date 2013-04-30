@@ -80,7 +80,7 @@ public:
     AST::ASTrepContainer mParamDecls;
     
     static std::map<std::string, int> FlagNames;
-    
+
     int mLocalStackDepth;
     
     unsigned    mIncludeDepth;
@@ -100,6 +100,8 @@ public:
     void                process_repContainer(AST::ASTrepContainer& c);
     
     std::stack<AST::ASTswitch*> switchStack;
+
+    void storeParams(const StackRule* p);
     
     yy::Scanner*    lexer;
     void    warning(const yy::location& errLoc, const std::string& msg);

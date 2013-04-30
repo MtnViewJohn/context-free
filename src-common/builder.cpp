@@ -1059,3 +1059,10 @@ Builder::timeWise()
 {
     m_CFDG->addParameter(CFDGImpl::Time);
 }
+
+void
+Builder::storeParams(const StackRule* p)
+{
+    p->mRefCount = StackRule::MaxRefCount;
+    m_CFDG->mLongLivedParams.push_back(p);
+}

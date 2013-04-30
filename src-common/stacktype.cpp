@@ -70,11 +70,13 @@ static_assert(offsetof(StackType, ruleHeader) == 0, "StackRule must align with S
 std::map<const StackRule*, int> StackRule::ParamMap;
 #endif
 
-#define ParamOfInterest 2
+#define ParamOfInterest 9
 
 StackRule*
-StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
+StackRule::alloc(int name, int size)
 {
+    static int ParamUID = 0;
+    
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + 1 : 1];
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
@@ -82,11 +84,24 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
     newrule[0].ruleHeader.mRefCount = 0;
     newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
 #ifdef EXTREME_PARAM_DEBUG
-    ParamMap[&(newrule->ruleHeader)] = static_cast<int>(Renderer::ParamCount);
-    if (Renderer::ParamCount == ParamOfInterest)
+    ParamMap[&(newrule->ruleHeader)] = ++ParamUID;
+    if (ParamUID == ParamOfInterest)
         ParamMap[&(newrule->ruleHeader)] = ParamOfInterest;
 #endif
     return &(newrule->ruleHeader);
+}
+
+StackRule*
+StackRule::alloc(const StackRule* from)
+{
+    if (from == nullptr)
+        return nullptr;
+    StackRule* ret = alloc(from->mRuleName, from->mParamCount);
+    StackType* data = reinterpret_cast<StackType*>(ret);
+    const StackType* src = reinterpret_cast<const StackType*>(from);
+    for (unsigned i = 0; i < from->mParamCount; ++i)
+        data[i + 1] = src[i + 1];
+    return ret;
 }
 
 // Release arguments on the heap
@@ -114,7 +129,7 @@ StackRule::release() const
         return;
     }
     
-    if (mRefCount < UINT32_MAX)
+    if (mRefCount < MaxRefCount)
         --mRefCount;
 }
 
@@ -138,11 +153,11 @@ StackRule::retain(RendererAST* r) const
     if (n == ParamOfInterest)
         (*f).second = ParamOfInterest;
 #endif
-    if (mRefCount == UINT32_MAX)
+    if (mRefCount == MaxRefCount)
         return;
     
     ++mRefCount;
-    if (mRefCount == UINT32_MAX) {
+    if (mRefCount == MaxRefCount) {
         r->storeParams(this);
     }
 }
@@ -217,7 +232,7 @@ StackRule::Read(std::istream& is)
     is.read(reinterpret_cast<char*>(&size), sizeof(uint64_t));
     if (size & 3) {
         // Don't know the typeInfo yet, get it during read
-        StackRule* s = StackRule::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
+        StackRule* s = StackRule::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff);
         s->read(is);
         return s;
     } else {
@@ -228,7 +243,7 @@ StackRule::Read(std::istream& is)
 void
 StackRule::Write(std::ostream& os, const StackRule* s)
 {
-    if (s == nullptr || s->mRefCount == UINT32_MAX) {
+    if (s == nullptr || s->mRefCount == MaxRefCount) {
         uint64_t p = static_cast<uint64_t>(reinterpret_cast<intptr_t>(s));
         os.write(reinterpret_cast<const char*>(&p), sizeof(uint64_t));
     } else {

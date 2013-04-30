@@ -34,6 +34,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <deque>
 
 #include "agg_color_rgba.h"
 #include "cfdg.h"
@@ -161,6 +162,7 @@ private:
 
         std::vector<AST::ASTparameterList*> mParamList;
         AST::ASTrepContainer    mCFDGcontents;
+        std::deque<const StackRule*> mLongLivedParams;
     
         std::list<std::string> fileNames;
 };

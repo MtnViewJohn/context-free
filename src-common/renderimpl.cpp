@@ -207,6 +207,8 @@ RendererImpl::~RendererImpl()
 {
     CFDG::CurrentCFDG = m_cfdg;
     cleanup();
+    if (AbortEverything)
+        return;
 #ifdef EXTREME_PARAM_DEBUG
     AbstractSystem* sys = system();
     delete m_cfdg;
@@ -242,14 +244,8 @@ RendererImpl::cleanup()
         system()->catastrophicError(e.what());
         return;
     }
-    for (const StackRule* param: mLongLivedParams) {
-        param->mRefCount = 0;
-        param->release();
-        if (AbortEverything) return;
-    }
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
-    mLongLivedParams.clear();
     
     unsigned i = 0;
     for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
@@ -1164,5 +1160,6 @@ RendererImpl::processPathCommand(const Shape& s, const AST::CommandInfo* attr)
 void
 RendererImpl::storeParams(const StackRule* p)
 {
-    mLongLivedParams.push_back(p);
+    p->mRefCount = StackRule::MaxRefCount;
+    m_cfdg->mLongLivedParams.push_back(p);
 }
