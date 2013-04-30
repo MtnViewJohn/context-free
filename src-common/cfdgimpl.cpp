@@ -97,6 +97,18 @@ CFDGImpl::CFDGImpl(CFDGImpl* c)
 
 CFDGImpl::~CFDGImpl()
 {
+    for (const StackRule* param: mLongLivedParams) {
+        for (auto it = param->begin(), e = param->end(); it != e; ++it) {
+            if (it.type().mType == AST::RuleType)
+                it->rule->release();
+        }
+        if (Renderer::AbortEverything) return;
+    }
+    for (const StackRule* param: mLongLivedParams) {
+        delete[] param;
+        --Renderer::ParamCount;
+        if (Renderer::AbortEverything) return;
+    }
 }
 
 void

@@ -106,6 +106,8 @@ public:
 
 
 struct StackRule {
+    enum const_t : uint32_t { MaxRefCount = UINT32_MAX };
+
     typedef StackTypeIterator<StackType> iterator;
     typedef StackTypeIterator<const StackType> const_iterator;
     
@@ -116,7 +118,8 @@ struct StackRule {
     bool operator==(const StackRule& o) const;
     static bool Equal(const StackRule* a, const StackRule* b);
     
-    static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
+    static StackRule*  alloc(int name, int size);
+    static StackRule*  alloc(const StackRule* from);
     void        release() const;
     void        retain(RendererAST* r) const;
     

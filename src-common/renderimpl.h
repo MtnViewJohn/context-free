@@ -161,8 +161,6 @@ class RendererImpl : public RendererAST {
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;
     
-        std::deque<const StackRule*> mLongLivedParams;
-    
         AST::CommandInfo shapeMap[3];
         primShape        shape0;
         primShape        shape1;
