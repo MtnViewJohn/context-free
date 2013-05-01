@@ -316,6 +316,7 @@ StackRule::begin()
     if (mParamCount) {
         StackType* st = reinterpret_cast<StackType*>(this);
         const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        assert(p);
         return iterator(st + 1, p);
     }
     return iterator();
@@ -327,6 +328,7 @@ StackRule::begin() const
     if (mParamCount) {
         const StackType* st = reinterpret_cast<const StackType*>(this);
         const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        assert(p);
         return const_iterator(st + 1, p);
     }
     return const_iterator();
@@ -338,6 +340,7 @@ StackRule::cbegin()
     if (mParamCount) {
         const StackType* st = reinterpret_cast<const StackType*>(this);
         const AST::ASTparameters* p = CFDG::CurrentCFDG->getShapeParams(mRuleName);
+        assert(p);
         return const_iterator(st + 1, p);
     }
     return const_iterator();
