@@ -205,7 +205,6 @@ RendererImpl::resetSize(int x, int y)
 
 RendererImpl::~RendererImpl()
 {
-    CFDG::CurrentCFDG = m_cfdg;
     cleanup();
     if (AbortEverything)
         return;

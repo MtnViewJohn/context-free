@@ -302,7 +302,7 @@ namespace AST {
             argSource = ParentArgs;
         } else {
             argSource = NoArgs;
-            simpleRule = StackRule::alloc(shapeType, 0);
+            simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
             Builder::CurrentBuilder->storeParams(simpleRule);
         }
     }
@@ -378,7 +378,7 @@ namespace AST {
             parent->retain(rti);
             return parent;
         case DynamicArgs: {
-            StackRule* ret = StackRule::alloc(shapeType, argSize);
+            StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
             ret->evalArgs(rti, arguments.get(), parent);
             return ret;
         }
