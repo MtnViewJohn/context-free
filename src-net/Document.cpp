@@ -1012,7 +1012,6 @@ bool Document::SyncToSystem()
 void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
 {
     mProgressDelay = 0;
-    CFDG::CurrentCFDG = mEngine;
     switch (renderParams->action) {
         case RenderParameters::RenderActions::Animate: 
             {
