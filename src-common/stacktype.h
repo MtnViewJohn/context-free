@@ -106,7 +106,7 @@ public:
 
 
 struct StackRule {
-    enum const_t : uint32_t { MaxRefCount = UINT32_MAX };
+    enum const_t : uint32_t { MaxRefCount = UINT32_MAX, HeaderSize = 2 };
 
     typedef StackTypeIterator<StackType> iterator;
     typedef StackTypeIterator<const StackType> const_iterator;
@@ -118,7 +118,7 @@ struct StackRule {
     bool operator==(const StackRule& o) const;
     static bool Equal(const StackRule* a, const StackRule* b);
     
-    static StackRule*  alloc(int name, int size);
+    static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
     static StackRule*  alloc(const StackRule* from);
     void        release() const;
     void        retain(RendererAST* r) const;
@@ -155,6 +155,7 @@ union StackType {
     double      number;
     const StackRule*  rule;
     StackRule   ruleHeader;
+    const AST::ASTparameters* typeInfo;
 
     void        release(const AST::ASTparameters* p) const;
 
@@ -174,5 +175,35 @@ union StackType {
     const_iterator end() const
     { return const_iterator(); }
 };
+
+inline StackRule::iterator
+StackRule::begin()
+{
+    if (mParamCount) {
+        StackType* st = reinterpret_cast<StackType*>(this);
+        return iterator(st + 2, st[1].typeInfo);
+    }
+    return iterator();
+}
+
+inline StackRule::const_iterator
+StackRule::begin() const
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        return const_iterator(st + 2, st[1].typeInfo);
+    }
+    return const_iterator();
+}
+
+inline StackRule::const_iterator
+StackRule::cbegin()
+{
+    if (mParamCount) {
+        const StackType* st = reinterpret_cast<const StackType*>(this);
+        return const_iterator(st + 2, st[1].typeInfo);
+    }
+    return const_iterator();
+}
 
 #endif // INCLUDE_STACKTYPE_H

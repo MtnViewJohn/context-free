@@ -148,7 +148,7 @@ private:
         const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size, bool isPath);
         void    setShapeHasNoParams(int shapetype, const AST::ASTexpression* args);
         bool    getShapeHasNoParams(int shapetype);
-        virtual const AST::ASTparameters* getShapeParams(int shapetype) const;
+        const AST::ASTparameters* getShapeParams(int shapetype) const;
         int getShapeParamSize(int shapetype);
         int reportStackDepth(int size = 0); 
         void resetCachedPaths();

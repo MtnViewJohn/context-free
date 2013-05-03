@@ -50,7 +50,6 @@ yy::location CfdgError::Default;
 double Renderer::Infinity = numeric_limits<double>::infinity();      // Ignore the gcc warning
 bool Renderer::AbortEverything = false;
 unsigned Renderer::ParamCount = 0;
-my_thread_local CFDG* CFDG::CurrentCFDG = nullptr;
 
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
 : what(msg), where(loc)
