@@ -181,7 +181,7 @@ StackRule::begin()
 {
     if (mParamCount) {
         StackType* st = reinterpret_cast<StackType*>(this);
-        return iterator(st + 2, st[1].typeInfo);
+        return iterator(st + HeaderSize, st[1].typeInfo);
     }
     return iterator();
 }
@@ -191,7 +191,7 @@ StackRule::begin() const
 {
     if (mParamCount) {
         const StackType* st = reinterpret_cast<const StackType*>(this);
-        return const_iterator(st + 2, st[1].typeInfo);
+        return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();
 }
@@ -201,7 +201,7 @@ StackRule::cbegin()
 {
     if (mParamCount) {
         const StackType* st = reinterpret_cast<const StackType*>(this);
-        return const_iterator(st + 2, st[1].typeInfo);
+        return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();
 }
