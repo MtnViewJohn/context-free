@@ -802,11 +802,11 @@ RendererImpl::moveUnfinishedToTwoFiles()
     
 	if (f1->good() && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
-        outStats.outputCount = count;
+        outStats.outputCount = static_cast<int>(count);
         outStats.outputDone = 0;
         *f1 << outStats.outputCount;
         *f2 << outStats.outputCount;
-        outStats.outputCount = count * 2;
+        outStats.outputCount = static_cast<int>(count * 2);
         outStats.showProgress = true;
 		// Split the bottom 2/3 of the heap between the two files
 		while (usi != use) {
