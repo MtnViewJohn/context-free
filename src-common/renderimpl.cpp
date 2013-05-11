@@ -76,7 +76,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
         if (mem == 0) {
             MoveFinishedAt = MoveUnfinishedAt = 2000000;
         } else {
-            MoveFinishedAt = MoveUnfinishedAt = mem / (sizeof(FinishedShape) * 4);
+            MoveFinishedAt = MoveUnfinishedAt = static_cast<unsigned int>(mem / (sizeof(FinishedShape) * 4));
         }
         MaxMergeFiles      =      200; // maximum number of files to merge at once
 #else
