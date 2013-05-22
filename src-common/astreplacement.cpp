@@ -56,6 +56,7 @@ namespace AST {
         mParameters.emplace_back(type, index, typeLoc + nameLoc);
         mParameters.back().isParameter = true;
         mParameters.back().checkParam(typeLoc, nameLoc);
+        mStackCount += mParameters.back().mTuplesize;
     }
     
     ASTparameter&
@@ -75,6 +76,7 @@ namespace AST {
     {
         mParameters.emplace_back(index, natural, local, nameLoc);
         mParameters.back().checkParam(nameLoc, nameLoc);
+        mStackCount += mParameters.back().mTuplesize;
     }
     
     void
