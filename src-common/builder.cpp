@@ -329,6 +329,8 @@ Builder::SetShape(std::string* name, const yy::location& nameLoc, bool isPath)
         mErrorOccured = true;
         warning(nameLoc, err);
     }
+    mParamDecls.mParameters.clear();
+    mParamDecls.mStackCount = 0;
 }
 
 void
@@ -405,6 +407,8 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
         def->mParameters = std::move(mParamDecls.mParameters);
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;
+        mParamDecls.mParameters.clear();
+        mParamDecls.mStackCount = 0;
         
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         assert(prev == def);    // since findFunction() didn't find it
