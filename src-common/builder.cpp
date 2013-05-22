@@ -350,8 +350,6 @@ Builder::AddRule(ASTrule* rule)
     if ((rule->isPath &&  type == CFDGImpl::ruleType) ||
         (!rule->isPath && type == CFDGImpl::pathType))
         CfdgError::Error(rule->mLocation, "Cannot mix rules and shapes with the same name.");
-    if (rule->isPath && type != CFDGImpl::newShape)
-        CfdgError::Error(rule->mLocation, "A given path can only be defined once");
     
     bool matchesShape = m_CFDG->addRule(rule);
     
@@ -687,7 +685,6 @@ Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
     }
     if (canonical)
         mod->makeCanonical();
-    //mod->evalConst();
     mod->isConstant = mod->modExp.empty();
     mod->where = loc;
     
