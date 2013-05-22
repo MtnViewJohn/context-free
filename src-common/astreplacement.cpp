@@ -121,7 +121,7 @@ namespace AST {
       mLoopArgs(std::move(args)), mLoopIndexName(nameIndex)
     {
         std::string ent(name);
-        args->entropy(ent);
+        mLoopArgs->entropy(ent);
         mChildChange.addEntropy(ent);
         mLoopBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
         mFinallyBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
