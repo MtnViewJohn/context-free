@@ -55,7 +55,7 @@ using namespace AST;
 
 CFDGImpl::CFDGImpl(AbstractSystem* m) 
 : m_backgroundColor(1, 1, 1, 1), mStackSize(0),
-  mInitShape(nullptr), m_system(m), m_secondPass(false), m_Parameters(0),
+  mInitShape(nullptr), m_system(m), m_Parameters(0),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
     // These have to be encoded first so that their type number will fit
@@ -77,19 +77,6 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     assert(triangle_num == primShape::triangleType);
     assert(fill_num == primShape::fillType);
     
-    mCFDGcontents.isGlobal = true;
-}
-
-CFDGImpl::CFDGImpl(CFDGImpl* c)
-: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
-  m_system(c->m_system), m_secondPass(true), m_Parameters(0),
-  mTileOffset(0, 0), needle(0, CfdgError::Default)
-{
-    m_shapeTypes.swap(c->m_shapeTypes);
-    mFunctions.swap(c->mFunctions);
-    fileNames.swap(c->fileNames);
-    for (ShapeType& sh: m_shapeTypes)
-        sh.shapeType = newShape;
     mCFDGcontents.isGlobal = true;
 }
 
@@ -573,8 +560,6 @@ CFDGImpl::getShapeHasNoParams(int shapetype)
 const char* 
 CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bool isPath)
 {
-    if (m_secondPass)
-        return nullptr;
     ShapeType& shape = m_shapeTypes[shapetype];
     if (shape.isShape) {
         // There has been a forward declaration, so this shape declaration
