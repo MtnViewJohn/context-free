@@ -2406,19 +2406,7 @@ namespace AST {
                     return this;
                 }
                 
-                argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
-                if (argSize < 0) {
-                    argSource = NoArgs;
-                    return this;
-                }
-                
-                if (arguments && arguments->mType != AST::NoType) {
-                    if (arguments->isConstant) {
-                        simpleRule = evalArgs();
-                        argSource = SimpleArgs;
-                        Builder::CurrentBuilder->storeParams(simpleRule);
-                    }
-                } else if (arguments && arguments->mType == AST::ReuseType) {
+                if (arguments && arguments->mType == AST::ReuseType) {
                     argSource = ParentArgs;
                     if (typeSignature != parentSignature) {
                         ASTparameters::const_iterator param_it = typeSignature->begin();
@@ -2441,6 +2429,21 @@ namespace AST {
                             CfdgError::Error(where, "Target shape has more parameters than source shape.");
                             CfdgError::Error(param_it->mLocation, "    extra target parameters start here");
                         }
+                    }
+                    return this;
+                }
+                
+                argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
+                if (argSize < 0) {
+                    argSource = NoArgs;
+                    return this;
+                }
+                
+                if (arguments && arguments->mType != AST::NoType) {
+                    if (arguments->isConstant) {
+                        simpleRule = evalArgs();
+                        argSource = SimpleArgs;
+                        Builder::CurrentBuilder->storeParams(simpleRule);
                     }
                 } else {
                     argSource = NoArgs;
