@@ -577,12 +577,6 @@ namespace AST {
             
             temp.clear();
             
-            // If x and y are provided then merge them into a single (x,y) modification
-            if (x && y && x->args->evaluate(nullptr, 0) == 1 && y->args->evaluate(nullptr, 0) == 1) {
-                x->args.reset(x->args.release()->append(y->args.release()));
-                y.reset();
-            }
-            
             if (    x) modExp.push_back(std::move(x));
             if (    y) modExp.push_back(std::move(y));
             if (    z) modExp.push_back(std::move(z));
