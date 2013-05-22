@@ -61,7 +61,6 @@ namespace AST {
         ASTmodification::GeomClass | ASTmodification::PathOpClass,  // rot
         ASTmodification::GeomClass,                                 // skew
         ASTmodification::GeomClass, ASTmodification::ZClass,        // flip, zsize
-        ASTmodification::NotAClass,                                 // Entropy
         ASTmodification::HueClass, ASTmodification::SatClass,       // hue, ...
         ASTmodification::BrightClass, ASTmodification::AlphaClass, 
         ASTmodification::HueClass, ASTmodification::SatClass,       // hue|, ...
@@ -89,7 +88,6 @@ namespace AST {
         "\x84\xB0\x92\x26\x59\xE2",                             // rot
         "\xFF\x2D\x84\x01\xA0\x0A",                             // skew
         "\x43\x5A\x17\xEA\x12\x05", "\x64\xEC\x5B\x4B\xEE\x2B", // flip, zsize
-        "",                                                     // Entropy
         "\x02\xDE\x2B\x2C\x25\xA1", "\x18\x4F\xCF\x04\x3F\xE5", // hue, ...
         "\x1F\x3F\xEB\xA2\xA2\x7E", "\xB4\xFF\x9E\x45\xEE\x7E",
         "\xAF\xE5\x58\x33\x20\xF8", "\x98\x80\xED\x44\x2F\xF2", // hue|, ...
@@ -151,113 +149,61 @@ namespace AST {
     
     ASTruleSpecifier ASTruleSpecifier::Zero;
     
+    ASTexpression*
+    ASTexpression::constCopy(const ASTparameter* bound, const std::string& entropy) const
+    {
+        switch (bound->mType) {
+            case AST::NumericType: {
+                double data[9];
+                bool natural = bound->isNatural;
+                int valCount = bound->mDefinition->mExpression->evaluate(data, 9);
+                if (valCount != bound->mTuplesize)
+                    CfdgError::Error(where, "Unexpected compile error.");                   // this also shouldn't happen
+                
+                // Create a new cons-list based on the evaluated variable's expression
+                ASTreal* top = new ASTreal(data[0], bound->mDefinition->mExpression->where);
+                top->text = entropy;                // use variable name for entropy
+                ASTexpression* list = top;
+                for (int i = 1; i < valCount; ++i) {
+                    ASTreal* next = new ASTreal(data[i],
+                                                bound->mDefinition->mExpression->where);
+                    list = list->append(next);
+                }
+                list->isNatural = natural;
+                return list;
+            }
+            case AST::ModType:
+                return new ASTmodification(bound->mDefinition->mChildChange, where);
+            case AST::RuleType: {
+                // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
+                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
+                    return new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
+                } else {
+                    CfdgError::Error(where, "Internal error computing bound rule specifier");
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return nullptr;
+    }
+    
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc)
-    : ASTexpression(nameLoc + argsLoc, true, false, NumericType), 
-      functype(NotAFunction), arguments(nullptr)
+    : ASTexpression(nameLoc + argsLoc, true, false, NumericType),
+      functype(NotAFunction), arguments(std::move(args))
     {
         if (&func == nullptr || func.empty()) {
             CfdgError::Error(nameLoc, "bad function call");
             return;
         }
         
-        isConstant = args ? args->isConstant : true;
-        isLocal = args ? args->isLocal : true;
-        int argcount = args ? args->evaluate(nullptr, 0) : 0;
-        
         functype = GetFuncType(func);
         
         if (functype == NotAFunction) {
             CfdgError::Error(nameLoc, "Unknown function");
             return;
-        }
-        
-        if (functype == ASTfunction::Infinity && argcount == 0) {
-            arguments.reset(new ASTreal(1.0, argsLoc));
-            return;
-        }
-        
-        if (functype == Ftime) {
-            if (args)
-                CfdgError::Error(argsLoc, "ftime() function takes no arguments");
-            isConstant = false;
-            isLocal = true;
-            arguments.reset(new ASTreal(1.0, argsLoc));
-            return;
-        }
-        
-        if (functype == Frame) {
-            if (args)
-                CfdgError::Error(argsLoc, "frame() functions takes no arguments");
-            isConstant = false;
-            isLocal = false;
-            arguments.reset(new ASTreal(1.0, argsLoc));
-            return;
-        }
-        
-        if (functype >= Rand_Static && functype <= RandInt) {
-            if (functype == Rand_Static) {
-                random = r.getDouble();
-            } else {
-                isConstant = false;
-            }
-            
-            switch (argcount) {
-                case 0:
-                    args.reset(new ASTcons(new ASTreal(0.0, argsLoc), 
-                                           new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc)));
-                    break;
-                case 1:
-                    args.reset(new ASTcons(new ASTreal(0.0, argsLoc), args.release()));
-                    break;
-                case 2:
-                    break;
-                default:
-                    CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
-                    break;
-            }
-            
-            if (!isConstant && functype == Rand_Static) {
-                CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
-            }
-
-            arguments = std::move(args);
-            if (functype == RandInt)
-                isNatural = arguments->isNatural;
-            return;
-        }
-        
-        if (functype == Abs) {
-            if (argcount < 1 || argcount > 2) {
-                CfdgError::Error(argsLoc, "function takes one or two arguments");
-            }
-        } else if (functype < BitOr) {
-            if (argcount != 1) {
-                CfdgError::Error(argsLoc, functype == ASTfunction::Infinity ? 
-                               "function takes zero or one arguments" : 
-                               "function takes one argument");
-            }
-        } else if (functype < Min) {
-            if (argcount != 2) {
-                CfdgError::Error(argsLoc, "function takes two arguments");
-            }
-        } else {
-            if (argcount < 2) {
-                CfdgError::Error(argsLoc, "function takes at least two arguments");
-            }
-        }
-        arguments = std::move(args);
-        if (functype == Mod || functype == Abs || functype == Min ||
-            functype == Max || (functype >= BitNot && functype <= BitRight))
-        {
-            isNatural = arguments->isNatural;
-        }
-        if (functype == Factorial || functype == Sg || functype == IsNatural ||
-            functype == Div || functype == Divides)
-        {
-            if (!arguments->isNatural)
-                CfdgError::Error(arguments->where, "function is defined over natural numbers only");
-            isNatural = true;
         }
     }
     
@@ -273,69 +219,42 @@ namespace AST {
     }
     
     ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, exp_ptr args, 
-                                       const yy::location& loc, const ASTparameters* types,
-                                       const ASTparameters* parent)
+                                       const yy::location& loc, const ASTparameters* parent)
     : ASTexpression(loc, !args || args->isConstant, false, RuleType),
       shapeType(t), entropyVal(name), argSource(DynamicArgs),
-      arguments(args.release()), simpleRule(nullptr), mStackIndex(0), typeSignature(types)
+      arguments(args.release()), simpleRule(nullptr), mStackIndex(0),
+      typeSignature(nullptr), parentSignature(parent), mSource(nullptr)
     {
-        if (types && types->empty()) {
-            types = nullptr;
-            typeSignature = nullptr;
-        }
-        if (parent && parent->empty())
-            parent = nullptr;
-        argSize = ASTparameter::CheckType(types, parent, arguments.get(), loc, true);
-        if (argSize < 0) {
-            argSource = NoArgs;
-            return;
-        }
-            
-        if (arguments && arguments->mType != AST::NoType) {
+        if (parentSignature && parentSignature->empty())
+            parentSignature = nullptr;
+        
+        if (arguments)
             arguments->entropy(entropyVal);
-            if (arguments->isConstant) {
-                simpleRule = evalArgs();
-                argSource = SimpleArgs;
-                Builder::CurrentBuilder->storeParams(simpleRule);
-            }
-        } else if (arguments && arguments->mType == AST::NoType) {
-            argSource = ParentArgs;
-        } else {
-            argSource = NoArgs;
-            simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
-            Builder::CurrentBuilder->storeParams(simpleRule);
-        }
     }
     
     ASTruleSpecifier::ASTruleSpecifier(const std::string& name, const yy::location& loc, 
                                        int stackIndex)
     : ASTexpression(loc, false, false, RuleType), shapeType(0), argSize(0), 
       entropyVal(name), argSource(StackArgs),
-      arguments(nullptr), simpleRule(nullptr), mStackIndex(stackIndex), typeSignature(nullptr)
+      arguments(nullptr), simpleRule(nullptr), mStackIndex(stackIndex), typeSignature(nullptr),
+      parentSignature(nullptr), mSource(nullptr)
     {
     }
     
     ASTruleSpecifier::ASTruleSpecifier(const ASTruleSpecifier* r, 
                                        const std::string& name, 
                                        const yy::location& loc)
-    : ASTexpression(loc, false, false, RuleType), shapeType(r->shapeType), argSize(r->argSize), 
+    : ASTexpression(loc, false, false, RuleType), shapeType(-1), argSize(-1),
       entropyVal(name), argSource(NoArgs), arguments(nullptr), simpleRule(nullptr), mStackIndex(0),
-      typeSignature(r->typeSignature)
+      typeSignature(nullptr), parentSignature(nullptr), mSource(r)
     {
-        if (r->argSource == SimpleArgs) {
-            simpleRule = StackRule::alloc(r->simpleRule);
-            Builder::CurrentBuilder->storeParams(simpleRule);
-            argSource = SimpleArgs;
-            return;
-        }
-        assert(r->argSource == NoArgs || Builder::CurrentBuilder->mWant2ndPass);   // only duplicate constant rule specs
     }
     
     ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r)
     : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
       argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
       arguments(std::move(r.arguments)), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
-      typeSignature(r.typeSignature)
+      typeSignature(r.typeSignature), parentSignature(r.parentSignature)
     {
         r.simpleRule = nullptr;    // move semantics
     }
@@ -343,7 +262,8 @@ namespace AST {
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
     : ASTexpression(loc, false, false, RuleType), shapeType(-1),
       argSize(0), argSource(ShapeArgs), arguments(std::move(args)),
-      simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr)
+      simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
+      parentSignature(nullptr)
     {
         assert(arguments);
     }
@@ -463,24 +383,23 @@ namespace AST {
     ASToperator::ASToperator(char o, ASTexpression* l, ASTexpression* r)
     : ASTexpression(r ? (l->where + r->where) : l->where), op(o), left(l), right(r) 
     {
-        isConstant = r ? r->isConstant && l->isConstant : l->isConstant;
-        isLocal = r ? r->isLocal && l->isLocal : l->isLocal;
-        mType = r ? static_cast<expType>(l->mType | r->mType) : l->mType;
-        if (strchr("+_*<>LG=n&|X^!", o))
-            isNatural = r ? (l->isNatural && r->isNatural) : l->isNatural;
-    }
-    
-    ASTmodTerm::ASTmodTerm(ASTmodTerm::modTypeEnum t, ASTexpression* a, const yy::location& loc)
-    : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a)
-    {
-        if (a->mType == AST::RuleType)
-            CfdgError::Error(loc, "Illegal expression in shape adjustment");
-        
-        if (a->mType == AST::ModType) {
-            if (t != ASTmodTerm::transform)
-                CfdgError::Error(loc, "Cannot accept a transform expression here");
+        static const std::string Ops("NP!+-*/^_<>LG=n&|X");
+        size_t pos = Ops.find(op);
 
-            modType = ASTmodTerm::modification;
+        switch (pos) {
+            case std::string::npos:
+                CfdgError::Error(where, "Unknown operator");
+                break;
+            case 0:
+            case 1:
+            case 2:
+                if (right)
+                    CfdgError::Error(where, "Operator takes only one operand");
+                break;
+            default:
+                if (!right)
+                    CfdgError::Error(where, "Operator takes two operands");
+                break;
         }
     }
     
@@ -527,160 +446,34 @@ namespace AST {
         arguments->entropy(ent);
         ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
         
-        if (arguments->size() < 3) {
+        if (!arguments || arguments->size() < 3) {
             CfdgError::Error(loc, "select()/if() function requires arguments");
             return;
         }
-        
-        if ((*arguments)[0]->mType != NumericType || 
-            (*arguments)[0]->evaluate(nullptr, 0) != 1)
-        {
-            CfdgError::Error((*arguments)[0]->where, "is()/select() selector must be a numeric scalar");
-            return;
-        }
-        
-        mType = (*arguments)[1]->mType;
-        isLocal = (*arguments)[0]->isLocal && (*arguments)[1]->isLocal;
-        isNatural = (*arguments)[1]->isNatural;
-        tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(nullptr, 0) : 1;
-        if (tupleSize > 1) isNatural = false;
-        if (tupleSize == -1)
-            CfdgError::Error((*arguments)[1]->where, "Error determining tuple size");
-        
-        for (int i = 2; i < arguments->size(); ++i) {
-            if (mType != (*arguments)[i]->mType) {
-                CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same type");
-            } else if (mType == NumericType && tupleSize != -1 && 
-                     (*arguments)[i]->evaluate(nullptr, 0) != tupleSize)
-            {
-                CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
-            }
-            isLocal = isLocal && (*arguments)[i]->isLocal;
-            isNatural = isLocal && (*arguments)[i]->isNatural;
-        }
-
-        if (ifSelect && arguments->size() != 3) {
-            CfdgError::Error(loc, "if() function requires two arguments");
-        }
-        
-        if ((*arguments)[0]->isConstant) {
-            indexCache = getIndex();
-            isConstant = (*arguments)[indexCache]->isConstant;
-            isLocal = (*arguments)[indexCache]->isLocal;
-            isNatural = (*arguments)[indexCache]->isNatural;
-        }
     }
     
-    ASTuserFunction::ASTuserFunction(ASTexpression* args, ASTdefine* func, 
+    ASTuserFunction::ASTuserFunction(int name, ASTexpression* args, ASTdefine* func,
                                      const yy::location& nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
-                    false, false, func->mType),
-      definition(func), arguments(args), isLet(false)
+                    false, false, NoType),
+      nameIndex(name), definition(func), arguments(args), isLet(false)
     {
-        if (definition->mExpression) {
-            isConstant = isConstant && definition->mExpression->isConstant;
-            isNatural = definition->mExpression->isNatural;
-        } else {
-            isConstant = isConstant && definition->mChildChange.modExp.empty();
-        }
-        isLocal = args ? args->isLocal : true;
-        if (args && !func->mStackCount)
-            CfdgError::Error(nameLoc + args->where, "Function does not take arguments");
-        if (!args && func->mStackCount)
-            CfdgError::Error(nameLoc, "Function takes arguments");
-        if (args && func->mStackCount)
-            ASTparameter::CheckType(&(func->mParameters), nullptr, args, args->where, false);
     }
     
-    ASTlet::ASTlet(ASTexpression* args, ASTdefine* func, const yy::location& letLoc,
+    ASTlet::ASTlet(ASTrepContainer* args, ASTdefine* func, const yy::location& letLoc,
                    const yy::location& defLoc)
-    : AST::ASTuserFunction(args, func, letLoc)
+    : AST::ASTuserFunction(-1, nullptr, func, letLoc), mDefinitions(args)
     {
         where = where + defLoc;
         isLet = true;
     }
     
-    ASTarray::ASTarray(const ASTparameter* bound, exp_ptr args, int stackOffset,
+    ASTarray::ASTarray(int nameIndex, exp_ptr args,
                        const yy::location& loc, const std::string& name)
-    : ASTexpression(loc, bound->mStackIndex == -1, bound->isNatural, bound->mType),
-      mConstData(bound->mStackIndex == -1), mArgs(nullptr), mLength(1), mStride(1),
-      mStackIndex(bound->mStackIndex - stackOffset), 
-      mCount(bound->mType == NumericType ? bound->mTuplesize : 1),
-      isParameter(bound->isParameter), entString(name)
+    : ASTexpression(loc, false, false, NumericType), mName(nameIndex),
+      mConstData(false), mArgs(std::move(args)), mLength(1), mStride(1),
+      mStackIndex(-1), mCount(0), isParameter(false), entString(name)
     {
-        if (!args || args->mType != AST::NumericType) {
-            CfdgError::Error(loc, "Array arguments must be numeric");
-            mArgs.reset(new ASTreal(0.0, loc));
-            isConstant = mConstData = false;
-            return;     // deleting args
-        }
-
-        isLocal = bound->isLocal;
-        args->entropy(entString);
-        if (mConstData) {
-            mConstData = bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
-        }
-        if ((*args)[0]->evaluate(nullptr, 0) == 1) {
-            mArgs.reset((*args)[0]);
-            if (!args->release(0)) {
-                args.release();
-                args.reset(new ASTexpression(mArgs->where)); // replace with dummy
-            }
-            double data[2];
-            int count = 0;
-            for (int i = 1; i < args->size(); ++i) {
-                if (!(*args)[i]->isConstant) {
-                    CfdgError::Error((*args)[i]->where, "Array argument is not constant");
-                    break;
-                }
-                int num = (*args)[i]->evaluate(data + count, 2 - count);
-                if (num <= 0) {
-                    CfdgError::Error((*args)[i]->where, "Error evaluating array arguments");
-                    break;
-                }
-                count += num;
-            }
-            switch (count) {
-                case 2:
-                    mStride = static_cast<int>(data[1]);  // fall through
-                case 1:
-                    mLength = static_cast<int>(data[0]);  // fall through
-                case 0:
-                    break;
-                    
-                default:
-                    CfdgError::Error(args->where, "Unexpected number of array arguments");
-                    break;
-            }
-        } else if (args->isConstant) {
-            double data[3];
-            switch (args->evaluate(data, 3)) {
-                case 3:
-                    mStride = static_cast<int>(data[2]);
-                    // fall through
-                case 2:
-                    mLength = static_cast<int>(data[1]);
-                    // fall through
-                case 1:
-                    mArgs.reset(new ASTreal(data[0], args->where));
-                    mArgs->isLocal = args->isLocal;
-                    break;
-                    
-                default:
-                    CfdgError::Error(args->where, "Error evaluating array arguments");
-                    break;
-            }
-        } else {
-            mArgs = std::move(args);
-            if (mArgs->evaluate(nullptr, 0) != 1)
-                CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
-        }
-        if (mStride < 0 || mLength < 0)
-            CfdgError::Error(mArgs->where, "Array length & stride arguments must be positive");
-        if (mStride * (mLength - 1) >= mCount)
-            CfdgError::Error(mArgs->where, "Array length & stride arguments too large for source");
-        isConstant = isConstant && mArgs->isConstant;
-        isLocal = isLocal && mArgs->isLocal;
     }
 
     ASTruleSpecifier::~ASTruleSpecifier()
@@ -1642,13 +1435,6 @@ namespace AST {
                 m.m_transform.premultiply(ref);
                 break;
             }
-            case ASTmodTerm::Entropy: {
-                //ent.append(mod->parameter);
-                minCount = maxCount = 0;
-                //if (justCheck) break;
-                m.mRand64Seed.xorString(entString.c_str(), seedIndex);
-                break;
-            }
             case ASTmodTerm::hue: {
                 maxCount = 2;
                 if (justCheck) break;
@@ -1924,26 +1710,26 @@ namespace AST {
                     break;
                 }
                 if (justCheck) break;
-                if (!entString.empty()) {
-                    if (entString.find("evenodd") != std::string::npos)
+                if (!paramString.empty()) {
+                    if (paramString.find("evenodd") != std::string::npos)
                         *p |= CF_EVEN_ODD;
-                    if (entString.find("iso") != std::string::npos)
+                    if (paramString.find("iso") != std::string::npos)
                         *p |= CF_ISO_WIDTH;
-                    if (entString.find("join") != std::string::npos)
+                    if (paramString.find("join") != std::string::npos)
                         *p &= ~CF_JOIN_MASK;
-                    if (entString.find("miterjoin") != std::string::npos)
+                    if (paramString.find("miterjoin") != std::string::npos)
                         *p |= CF_MITER_JOIN | CF_JOIN_PRESENT;
-                    if (entString.find("roundjoin") != std::string::npos)
+                    if (paramString.find("roundjoin") != std::string::npos)
                         *p |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
-                    if (entString.find("beveljoin") != std::string::npos)
+                    if (paramString.find("beveljoin") != std::string::npos)
                         *p |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
-                    if (entString.find("cap") != std::string::npos)
+                    if (paramString.find("cap") != std::string::npos)
                         *p &= ~CF_CAP_MASK;
-                    if (entString.find("buttcap") != std::string::npos)
+                    if (paramString.find("buttcap") != std::string::npos)
                         *p |= CF_BUTT_CAP | CF_CAP_PRESENT;
-                    if (entString.find("squarecap") != std::string::npos)
+                    if (paramString.find("squarecap") != std::string::npos)
                         *p |= CF_SQUARE_CAP | CF_CAP_PRESENT;
-                    if (entString.find("roundcap") != std::string::npos)
+                    if (paramString.find("roundcap") != std::string::npos)
                         *p |= CF_ROUND_CAP | CF_CAP_PRESENT;
                 }
                 break;
@@ -2005,6 +1791,14 @@ namespace AST {
     ASTruleSpecifier::entropy(std::string& ent) const
     {
         ent.append(entropyVal);
+    }
+    
+    void
+    ASTstartSpecifier::entropy(std::string& ent) const
+    {
+        ent.append(entropyVal);
+        if (mModification)
+            mModification->entropy(ent);
     }
     
     void
@@ -2173,6 +1967,17 @@ namespace AST {
     }
     
     ASTexpression*
+    ASTstartSpecifier::simplify()
+    {
+        ASTruleSpecifier::simplify();
+        if (mModification) {
+            ASTexpression* m = mModification->simplify();
+            assert(m == mModification.get());
+        }
+        return this;
+    }
+    
+    ASTexpression*
     ASTcons::simplify()
     {
         if (children.size() == 1) {
@@ -2200,6 +2005,24 @@ namespace AST {
             }
         }
         return this;
+    }
+    
+    ASTexpression*
+    ASTlet::simplify()
+    {
+        if (isConstant) {
+            std::string ent;
+            entropy(ent);
+            ASTparameter p(-1, definition, where);
+            ASTexpression* ret = definition->mExpression ?
+            definition->mExpression->constCopy(&p, ent) :
+            definition->mChildChange.constCopy(&p, ent);
+            if (ret) {
+                delete this;
+                return ret;
+            }
+        } // TODO: else can we replace with definiton->mExpression/mChildchange?
+        return ASTuserFunction::simplify();
     }
     
     ASTexpression*
@@ -2249,6 +2072,103 @@ namespace AST {
     }
     
     ASTexpression*
+    ASTmodification::simplify()
+    {
+        ASTtermArray temp;
+        temp.swap(modExp);
+        for (auto term = temp.begin(); term != temp.end(); ++term) {
+            if ((*term)->args->mType != NumericType)
+                break;
+            int argcount = (*term)->args->evaluate(nullptr, 0);
+            switch ((*term)->modType) {
+                // Try to merge consecutive x and y adjustments
+                case ASTmodTerm::x:
+                case ASTmodTerm::y: {
+                    auto next = term + 1;
+                    if (next == temp.end())
+                        break;
+                    if ((*term)->modType == ASTmodTerm::x &&
+                        (*next)->modType == ASTmodTerm::y &&
+                        argcount == 1)
+                    {
+                        (*term)->args.reset((*term)->args.release()->append((*next)->args.release()));
+                        modExp.emplace_back(std::move(*term));
+                        term = next;
+                        continue;
+                    }               // next stays in temp
+                    if ((*term)->modType == ASTmodTerm::y &&
+                        (*next)->modType == ASTmodTerm::x &&
+                        (*next)->args->evaluate(nullptr, 0) == 1)
+                    {
+                        (*next)->args.reset((*next)->args.release()->append((*term)->args.release()));
+                        modExp.emplace_back(std::move(*next));
+                        term = next;
+                        continue;   // term stays in temp
+                    }
+                    break;
+                }
+                // Try to split the XYZ term into an XY term and a Z term. Drop the XY term
+                // if it is the identity. First try an all-constant route, then try to tease
+                // apart the arguments.
+                case ASTmodTerm::xyz:
+                case ASTmodTerm::sizexyz: {
+                    double d[3];
+                    if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
+                        (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
+                        
+                        ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
+                            ASTmodTerm::zsize : ASTmodTerm::z;
+                        ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
+                        
+                        // Check if xy part is the identity transform and only save it if it is not
+                        if (d[0] != 1.0 || d[1] != 1.0 || (*term)->modType == ASTmodTerm::x)
+                            modExp.emplace_back(std::move(*term));
+                        modExp.emplace_back(zmod);
+                        continue;
+                    }
+                    
+                    if ((*term)->args->size() > 1) {
+                        ASTexpression* xyargs = nullptr;
+                        int i = 0;
+                        for (; i < (*term)->args->size(); ++i) {
+                            xyargs = ASTexpression::Append(xyargs, (*(*term)->args)[i]);
+                            if (xyargs->evaluate(nullptr, 0) >= 2)
+                                break;
+                        }
+                        if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == (*term)->args->size() - 1) {
+                            // We have successfully split the 3-tuple into a 2-tuple and a scalar
+                            ASTexpression* zargs = (*(*term)->args)[i];
+                            (*term)->args->release();
+                            
+                            (*term)->args.reset(xyargs);
+                            
+                            ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
+                                ASTmodTerm::zsize : ASTmodTerm::z;
+                            ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                            
+                            double d[2];
+                            if ((*term)->modType != ASTmodTerm::size || !xyargs->isConstant ||
+                                xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
+                            {
+                                // Check if xy part is the identity transform and only save it if it is not
+                                modExp.emplace_back(std::move(*term));
+                            }
+                            modExp.emplace_back(zmod);
+                            continue;
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+            modExp.emplace_back(std::move(*term));
+        }
+        evalConst();
+        return this;
+    }
+    
+    ASTexpression*
     ASTarray::simplify()
     {
         if (!isConstant) {
@@ -2278,6 +2198,709 @@ namespace AST {
         return list;
     }
 
+    ASTexpression*
+    ASTfunction::compile(AST::CompilePhase ph, Builder* b)
+    {
+        Compile(arguments, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                yy::location argsLoc = where;
+                isConstant = true;
+                isLocal = true;
+                int argcount = 0;
+                if (arguments) {
+                    argsLoc = arguments->where;
+                    isConstant = arguments->isConstant;
+                    isLocal = arguments->isLocal;
+                    if (arguments->mType == NumericType)
+                        argcount = arguments->evaluate(nullptr, 0);
+                    else
+                        CfdgError::Error(argsLoc, "function arguments must be numeric");
+                }
+                
+                if (functype == ASTfunction::Infinity && argcount == 0) {
+                    arguments.reset(new ASTreal(1.0, argsLoc));
+                    return this;
+                }
+                
+                if (functype == Ftime) {
+                    if (arguments)
+                        CfdgError::Error(argsLoc, "ftime() function takes no arguments");
+                    isConstant = false;
+                    isLocal = true;
+                    arguments.reset(new ASTreal(1.0, argsLoc));
+                    return this;
+                }
+                
+                if (functype == Frame) {
+                    if (arguments)
+                        CfdgError::Error(argsLoc, "frame() functions takes no arguments");
+                    isConstant = false;
+                    isLocal = false;
+                    arguments.reset(new ASTreal(1.0, argsLoc));
+                    return this;
+                }
+                
+                if (functype >= Rand_Static && functype <= RandInt) {
+                    if (functype == Rand_Static) {
+                        if (arguments && !arguments->isConstant)
+                            CfdgError::Error(argsLoc, "arguments to rand_static() must be constant");
+                    } else {
+                        isConstant = false;
+                    }
+                    
+                    switch (argcount) {
+                        case 0:
+                            arguments.reset(new ASTcons(new ASTreal(0.0, argsLoc),
+                                                        new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc)));
+                            break;
+                        case 1:
+                            arguments.reset(new ASTcons(new ASTreal(0.0, argsLoc), arguments.release()));
+                            break;
+                        case 2:
+                            break;
+                        default:
+                            CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
+                            break;
+                    }
+                    
+                    if (!isConstant && functype == Rand_Static) {
+                        CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
+                    }
+                    
+                    if (functype == RandInt && arguments)
+                        isNatural = arguments->isNatural;
+                    return this;
+                }
+                
+                if (functype == Abs) {
+                    if (argcount < 1 || argcount > 2) {
+                        CfdgError::Error(argsLoc, "function takes one or two arguments");
+                    }
+                } else if (functype < BitOr) {
+                    if (argcount != 1) {
+                        CfdgError::Error(argsLoc, functype == ASTfunction::Infinity ?
+                                         "function takes zero or one arguments" :
+                                         "function takes one argument");
+                    }
+                } else if (functype < Min) {
+                    if (argcount != 2) {
+                        CfdgError::Error(argsLoc, "function takes two arguments");
+                    }
+                } else {
+                    if (argcount < 2) {
+                        CfdgError::Error(argsLoc, "function takes at least two arguments");
+                    }
+                }
+
+                if (functype == Mod || functype == Abs || functype == Min ||
+                    functype == Max || (functype >= BitNot && functype <= BitRight))
+                {
+                    isNatural = arguments ? arguments->isNatural : true;
+                }
+                if (functype == Factorial || functype == Sg || functype == IsNatural ||
+                    functype == Div || functype == Divides)
+                {
+                    if (arguments && !arguments->isNatural)
+                        CfdgError::Error(arguments->where, "function is defined over natural numbers only");
+                    isNatural = true;
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTselect::compile(AST::CompilePhase ph, Builder* b)
+    {
+        if (!arguments)
+            return this;
+        Compile(arguments, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if ((*arguments)[0]->mType != NumericType ||
+                    (*arguments)[0]->evaluate(nullptr, 0) != 1)
+                {
+                    CfdgError::Error((*arguments)[0]->where, "is()/select() selector must be a numeric scalar");
+                    return this;
+                }
+                
+                mType = (*arguments)[1]->mType;
+                isLocal = (*arguments)[0]->isLocal && (*arguments)[1]->isLocal;
+                isNatural = (*arguments)[1]->isNatural;
+                tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(nullptr, 0) : 1;
+                if (tupleSize > 1) isNatural = false;
+                if (tupleSize == -1)
+                    CfdgError::Error((*arguments)[1]->where, "Error determining tuple size");
+                
+                for (int i = 2; i < arguments->size(); ++i) {
+                    if (mType != (*arguments)[i]->mType) {
+                        CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same type");
+                    } else if (mType == NumericType && tupleSize != -1 &&
+                               (*arguments)[i]->evaluate(nullptr, 0) != tupleSize)
+                    {
+                        CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
+                    }
+                    isLocal = isLocal && (*arguments)[i]->isLocal;
+                    isNatural = isLocal && (*arguments)[i]->isNatural;
+                }
+                
+                if (ifSelect && arguments->size() != 3) {
+                    CfdgError::Error(arguments->where, "if() function requires two arguments");
+                }
+                
+                if ((*arguments)[0]->isConstant) {
+                    indexCache = getIndex();
+                    isConstant = (*arguments)[indexCache]->isConstant;
+                    isLocal = (*arguments)[indexCache]->isLocal;
+                    isNatural = (*arguments)[indexCache]->isNatural;
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTruleSpecifier::compile(AST::CompilePhase ph, Builder* b)
+    {
+        Compile(arguments, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if (mSource) {
+                    // The source ASTruleSpec must already be type-checked
+                    // because it is lexically earlier
+                    shapeType = mSource->shapeType;
+                    argSize = mSource->argSize;
+                    argSource = mSource->argSource;
+                    if (mSource->simpleRule) {
+                        simpleRule = StackRule::alloc(mSource->simpleRule);
+                        b->storeParams(simpleRule);
+                        assert(argSource == SimpleArgs);
+                    }
+                    typeSignature = mSource->typeSignature;
+                    parentSignature = mSource->parentSignature;
+                    assert(argSource != DynamicArgs && argSource != ShapeArgs);
+                    return this;
+                }
+                if (argSource == ShapeArgs) {
+                    assert(arguments);
+                    if (arguments->mType != AST::RuleType)
+                        CfdgError::Error(arguments->where, "Expression does not return a shape");
+                    return this;
+                }
+                
+                ASTdefine* func = nullptr;
+                b->GetTypeInfo(shapeType, func, typeSignature);
+                if (typeSignature && typeSignature->empty())
+                    typeSignature = nullptr;
+                
+                if (func) {
+                    if (func->mType == RuleType) {
+                        argSource = ShapeArgs;
+                    } else {
+                        CfdgError::Error(arguments->where, "Function does not return a shape");
+                    }
+                    return this;
+                }
+                
+                argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
+                if (argSize < 0) {
+                    argSource = NoArgs;
+                    return this;
+                }
+                
+                if (arguments && arguments->mType != AST::NoType) {
+                    if (arguments->isConstant) {
+                        simpleRule = evalArgs();
+                        argSource = SimpleArgs;
+                        Builder::CurrentBuilder->storeParams(simpleRule);
+                    }
+                } else if (arguments && arguments->mType == AST::ReuseType) {
+                    argSource = ParentArgs;
+                    if (typeSignature != parentSignature) {
+                        ASTparameters::const_iterator param_it = typeSignature->begin();
+                        ASTparameters::const_iterator parent_it = parentSignature->begin();
+                        while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {
+                            if (*param_it != *parent_it) {
+                                CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
+                                CfdgError::Error(param_it->mLocation, "    target shape parameter type");
+                                CfdgError::Error(parent_it->mLocation, "    does not equal source shape parameter type");
+                                break;
+                            }
+                            ++param_it;
+                            ++parent_it;
+                        }
+                        if (param_it == typeSignature->end() && parent_it != parentSignature->end()) {
+                            CfdgError::Error(where, "Source shape has more parameters than target shape.");
+                            CfdgError::Error(parent_it->mLocation, "    extra source parameters start here");
+                        }
+                        if (param_it != typeSignature->end() && parent_it == parentSignature->end()) {
+                            CfdgError::Error(where, "Target shape has more parameters than source shape.");
+                            CfdgError::Error(param_it->mLocation, "    extra target parameters start here");
+                        }
+                    }
+                } else {
+                    argSource = NoArgs;
+                    simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
+                    Builder::CurrentBuilder->storeParams(simpleRule);
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTstartSpecifier::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTexpression* ret = ASTruleSpecifier::compile(ph, b);
+        assert(ret == this);
+        if (mModification) {
+            ret = mModification->compile(ph, b);
+            assert(ret == mModification.get());
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTcons::compile(AST::CompilePhase ph, Builder* b)
+    {
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                bool first = true;
+                for (auto& child : children) {
+                    Compile(child, ph, b);
+                    if (first) {
+                        isConstant = child->isConstant;
+                        isNatural = child->isNatural;
+                        isLocal = child->isLocal;
+                        mType = child->mType;
+                    } else {
+                        isConstant = isConstant && child->isConstant;
+                        isNatural = isNatural && child->isNatural;
+                        isLocal = isLocal && child->isLocal;
+                        mType = static_cast<expType>(mType | child->mType);
+                    }
+                    first = false;
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTreal::compile(AST::CompilePhase ph, Builder* b)
+    {
+        return this;
+    }
+    
+    ASTexpression*
+    ASTvariable::compile(AST::CompilePhase ph, Builder* b)
+    {
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                bool isGlobal = false;
+                const ASTparameter* bound = b->findExpression(stringIndex, isGlobal);
+                if (bound == nullptr) {
+                    CfdgError::Error(where, "internal error.");
+                    return this;
+                }
+                
+                std::string name = b->ShapeToString(stringIndex);
+
+                if (bound->mStackIndex == -1) {
+                    assert(bound->mDefinition);
+                    ASTexpression* ret = bound->mDefinition->mExpression ?
+                        bound->mDefinition->mExpression->constCopy(bound, name) :
+                        bound->mDefinition->mChildChange.constCopy(bound, name);
+                    if (ret) {
+                        ret->compile(ph, b);
+                        return ret;
+                    }
+                } else {
+                    if (bound->mType == AST::RuleType)
+                        return new ASTruleSpecifier(name, where, bound->mStackIndex - b->mLocalStackDepth);
+                    
+                    count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
+                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
+                    mType = bound->mType;
+                    isNatural = bound->isNatural;
+                    isLocal = bound->isLocal;
+                    isParameter = bound->isParameter;
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTuserFunction::compile(AST::CompilePhase ph, Builder* b)
+    {
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                // Function calls and shape specifications are ambisuous at parse
+                // time so the parser always chooses a function call. During
+                // type check we may need to convert to a shape spec.
+                ASTdefine* def = nullptr;
+                const ASTparameters* p = nullptr;
+                std::string name = b->GetTypeInfo(nameIndex, def, p);
+                
+                if (def && p) {
+                    CfdgError::Error(where, "Name matches both a function and a shape");
+                    return this;
+                }
+                if (!def && !p) {
+                    CfdgError::Error(where, "Name does not match shape name or function name");
+                    return this;
+                }
+                
+                if (def) {  // && !p
+                    Compile(arguments, ph, b);
+                    
+                    definition = def;
+                    ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false);
+                    isConstant = false;
+                    isNatural = def->isNatural;
+                    isLocal = (def->mExpression ? def->mExpression->isLocal : def->mChildChange.isLocal) &&
+                                (!arguments || arguments->isLocal);
+                    mType = def->mType;
+                    return this;
+                }
+                
+                // if (!def && p)
+                ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, name,
+                                                           std::move(arguments),
+                                                           where, nullptr);
+                return r->compile(CompilePhase::TypeCheck, b);
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTlet::compile(AST::CompilePhase ph, Builder* b)
+    {
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                // Delete all of the incomplete parameters inserted during parse
+                mDefinitions->mStackCount = 0;
+                mDefinitions->mParameters.clear();
+                
+                b->push_repContainer(*mDefinitions);
+                for (auto& rep: mDefinitions->mBody)
+                    rep->compile(ph, b);
+                definition->compile(ph, b);
+                b->pop_repContainer(nullptr);
+                
+                // transfer non-const definitions to arguments
+                ASTexpression* args = nullptr;
+                for (auto& rep: mDefinitions->mBody) {
+                    if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get()))
+                        if (!def->isConstant)
+                            args = ASTexpression::Append(args, def->mExpression.release());
+                }
+                mDefinitions.reset();   // we're done with these
+                arguments.reset(args);
+                
+                isConstant = !arguments && definition->isConstant;
+                isNatural = definition->isNatural;
+                isLocal = definition->mExpression ?
+                    definition->mExpression->isLocal :
+                    definition->mChildChange.isLocal;
+                mType = definition->mType;
+                
+                break;
+            }
+            case CompilePhase::Simplify:
+                assert(definition);
+                definition->compile(ph, b);
+                Compile(arguments, ph, b);
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASToperator::compile(AST::CompilePhase ph, Builder* b)
+    {
+        Compile(left, ph, b);
+        Compile(right, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                isConstant = left->isConstant && (right ? right->isConstant : true);
+                isLocal = left->isLocal && (right ? right->isLocal : true);
+                mType = right ? static_cast<expType>(left->mType | right->mType) : left->mType;
+                if (strchr("+_*<>LG=n&|X^!", op))
+                    isNatural = left->isNatural && (right ? right->isNatural : true);
+                
+                if (op == '+') {
+                    if (mType != FlagType && mType != NumericType)
+                        CfdgError::Error(where, "Operands must be numeric or flags");
+                } else {
+                    if (mType != NumericType)
+                        CfdgError::Error(where, "Operand(s) must be numeric");
+                }
+                if (op == '_' && !isNatural)
+                    CfdgError::Error(where, "Proper subtraction operands must be natural");
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTparen::compile(AST::CompilePhase ph, Builder* b)
+    {
+        if (!e) return this;
+        Compile(e, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                isConstant = e->isConstant;
+                isNatural = e->isNatural;
+                isLocal = e->isLocal;
+                mType = e->mType;
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTmodTerm::compile(AST::CompilePhase ph, Builder* b)
+    {
+        Compile(args, ph, b);
+        if (!args) {
+            CfdgError::Error(where, "Illegal expression in shape adjustment");
+            return this;
+        }
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                switch (args->mType) {
+                    case NumericType: {
+                        int argcount = args->evaluate(nullptr, 0);
+                        int minCount = 1;
+                        int maxCount = 1;
+                        
+                        if (argcount == 3 && modType == ASTmodTerm::x)
+                            modType = ASTmodTerm::xyz;
+                        if (argcount == 3 && modType == ASTmodTerm::size)
+                            modType = ASTmodTerm::sizexyz;
+                        
+                        switch (modType) {
+                            case ASTmodTerm::x:
+                            case ASTmodTerm::size:
+                            case ASTmodTerm::hue:
+                            case ASTmodTerm::sat:
+                            case ASTmodTerm::bright:
+                            case ASTmodTerm::alpha:
+                                maxCount = 2;
+                                break;
+                            case ASTmodTerm::y:
+                            case ASTmodTerm::z:
+                            case ASTmodTerm::timescale:
+                            case ASTmodTerm::zsize:
+                            case ASTmodTerm::rot:
+                            case ASTmodTerm::flip:
+                            case ASTmodTerm::hueTarg:
+                            case ASTmodTerm::satTarg:
+                            case ASTmodTerm::brightTarg:
+                            case ASTmodTerm::alphaTarg:
+                            case ASTmodTerm::targHue:
+                            case ASTmodTerm::targSat:
+                            case ASTmodTerm::targBright:
+                            case ASTmodTerm::targAlpha:
+                            case ASTmodTerm::stroke:
+                                break;
+                            case ASTmodTerm::xyz:
+                            case ASTmodTerm::sizexyz:
+                                minCount = maxCount = 3;
+                                break;
+                            case ASTmodTerm::time:
+                            case ASTmodTerm::skew:
+                                minCount = maxCount = 2;
+                                break;
+                            case ASTmodTerm::transform:
+                                maxCount = 6;
+                                if (argcount != 1 && argcount != 2 && argcount != 4 && argcount != 6)
+                                    CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters");
+                                break;
+                            case ASTmodTerm::param:
+                                minCount = maxCount = 0;
+                                break;
+                            case ASTmodTerm::modification:
+                            default:
+                                break;
+                        }
+                        
+                        if (argcount < minCount)
+                            CfdgError::Error(where, "Not enough adjustment parameters");
+                        if (argcount > maxCount)
+                            CfdgError::Error(where, "Too many adjustment parameters");
+                        break;
+                    }
+                    case ModType:
+                        if (modType != ASTmodTerm::transform)
+                            CfdgError::Error(args->where, "Cannot accept a transform expression here");
+                        else
+                            modType = ASTmodTerm::modification;
+                        break;
+                    default:
+                        CfdgError::Error(args->where, "Illegal expression in shape adjustment");
+                        break;
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTmodification::compile(AST::CompilePhase ph, Builder* b)
+    {
+        for (auto& term: modExp)
+            term->compile(ph, b);       // ASTterm always return this
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
+    ASTexpression*
+    ASTarray::compile(AST::CompilePhase ph, Builder* b)
+    {
+        Compile(mArgs, ph, b);
+        if (!mArgs) {
+            CfdgError::Error(where, "Illegal expression in array accessor");
+            return this;
+        }
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if (!mArgs || mArgs->mType != AST::NumericType) {
+                    CfdgError::Error(where, "Array arguments must be numeric");
+                    isConstant = mConstData = false;
+                    return this;
+                }
+                
+                bool isGlobal;
+                const ASTparameter* bound = b->findExpression(mName, isGlobal);
+                assert(bound);
+                
+                isConstant = bound->mStackIndex == -1;
+                isNatural = bound->isNatural;
+                mType = bound->mType;
+                mConstData = isConstant;
+                mStackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
+                mCount = mType == NumericType ? bound->mTuplesize : 1;
+                isParameter = bound->isParameter;
+                
+                isLocal = bound->isLocal;
+                mArgs->entropy(entString);
+                mConstData = mConstData && bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
+                
+                if ((*mArgs)[0]->evaluate(nullptr, 0) == 1) {
+                    exp_ptr args(std::move(mArgs));
+                    mArgs.reset((*args)[0]);
+                    if (!args->release(0)) {
+                        args.release();
+                        args.reset(new ASTexpression(mArgs->where)); // replace with dummy
+                    }
+                    double data[2];
+                    int count = 0;
+                    for (int i = 1; i < args->size(); ++i) {
+                        if (!(*args)[i]->isConstant) {
+                            CfdgError::Error((*args)[i]->where, "Array argument is not constant");
+                            break;
+                        }
+                        int num = (*args)[i]->evaluate(data + count, 2 - count);
+                        if (num <= 0) {
+                            CfdgError::Error((*args)[i]->where, "Error evaluating array arguments");
+                            break;
+                        }
+                        count += num;
+                    }
+                    switch (count) {
+                        case 2:
+                            mStride = static_cast<int>(data[1]);  // fall through
+                        case 1:
+                            mLength = static_cast<int>(data[0]);  // fall through
+                        case 0:
+                            break;
+                            
+                        default:
+                            CfdgError::Error(args->where, "Unexpected number of array arguments");
+                            break;
+                    }
+                } else if (mArgs->isConstant) {
+                    double data[3];
+                    switch (mArgs->evaluate(data, 3)) {
+                        case 3:
+                            mStride = static_cast<int>(data[2]);
+                            // fall through
+                        case 2:
+                            mLength = static_cast<int>(data[1]);
+                            // fall through
+                        case 1:
+                            mArgs.reset(new ASTreal(data[0], mArgs->where));
+                            break;
+                            
+                        default:
+                            CfdgError::Error(mArgs->where, "Error evaluating array arguments");
+                            break;
+                    }
+                } else {
+                    if (mArgs->evaluate(nullptr, 0) != 1)
+                        CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
+                }
+                if (mStride < 0 || mLength < 0)
+                    CfdgError::Error(mArgs->where, "Array length & stride arguments must be positive");
+                if (mStride * (mLength - 1) >= mCount)
+                    CfdgError::Error(mArgs->where, "Array length & stride arguments too large for source");
+                
+                isConstant = isConstant && mArgs->isConstant;
+                isLocal = isLocal && mArgs->isLocal;
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+        return this;
+    }
+    
     void
     ASTmodification::evalConst() 
     {

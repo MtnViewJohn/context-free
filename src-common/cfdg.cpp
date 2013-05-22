@@ -111,7 +111,7 @@ CFDG*
 CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
 {
     CFDGImpl* pCfdg = nullptr;
-    for (int version = 2; version <= 4; ++version) {
+    for (int version = 2; version <= 3; ++version) {
         if (pCfdg == nullptr)
             pCfdg = new CFDGImpl(system); 
         Builder b(pCfdg, variation);
@@ -121,8 +121,6 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         lexer.driver = &b;
         lexer.startToken = version == 2 ? yy::CfdgParser::token::CFDG2 : 
                                           yy::CfdgParser::token::CFDG3;
-        b.mCompilePhase = version < 4 ? 1 : 2;
-        b.mWant2ndPass = version == 3;
         
         yy::CfdgParser parser(b);
         istream* input = system->openFileForRead(fname);
@@ -161,11 +159,6 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             pCfdg->rulesLoaded();
             if (b.mErrorOccured)
                 return nullptr;
-            if (b.mWant2ndPass) {
-                pCfdg = new CFDGImpl(pCfdg);
-                system->message("Compiling 2nd phase");
-                continue;
-            }
             b.m_CFDG = nullptr;
             break;
         }

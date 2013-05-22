@@ -36,7 +36,7 @@ namespace AST {
     bool ASTparameter::Impure = false;
     
     void
-    ASTparameter::init(int nameIndex, def_ptr& def)
+    ASTparameter::init(int nameIndex, ASTdefine* def)
     {
         mType = def->mType;
         isLocal = !def->mExpression || def->mExpression->isLocal;
@@ -51,13 +51,17 @@ namespace AST {
         
         mName = nameIndex;
         if (def->isConstant)
-            mDefinition = std::move(def);
+            mDefinition = def;
     }
     
-    void
-    ASTparameter::init(const std::string& typeName, int nameIndex)
+    expType
+    decodeType(const std::string& typeName, int& mTuplesize,
+               bool& isNatural, const yy::location& mLocation)
     {
-        isLocal = false;
+        expType mType;
+        mTuplesize = 1;
+        isNatural = false;
+        
         if (typeName == "number") {
             mType = AST::NumericType;
         } else if (typeName == "natural") {
@@ -68,7 +72,6 @@ namespace AST {
             mType = AST::ModType;
         } else if (typeName == "shape") {
             mType = AST::RuleType;
-            mTuplesize = 1;
         } else if (strncmp(typeName.data(), "vector", 6) == 0 &&
                    typeName.length() == 7 &&
                    isdigit(typeName[6]))
@@ -79,6 +82,14 @@ namespace AST {
                 CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
         } else mType = AST::NoType;
         
+        return mType;
+    }
+    
+    void
+    ASTparameter::init(const std::string& typeName, int nameIndex)
+    {
+        isLocal = false;
+        mType = decodeType(typeName, mTuplesize, isNatural, mLocation);
         mName = nameIndex;
         mDefinition = nullptr;
     }
@@ -94,7 +105,7 @@ namespace AST {
       isLocal(false), mName(-1), mLocation(where), mStackIndex(-1), mTuplesize(1)
     { init(typeName, nameIndex); }
     
-    ASTparameter::ASTparameter(int nameIndex, def_ptr& def, const yy::location& where)
+    ASTparameter::ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where)
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
       isLocal(false), mName(-1), mLocation(where), mStackIndex(-1), mTuplesize(1)
     { init(nameIndex, def); }
@@ -130,7 +141,7 @@ namespace AST {
         assert(!from.mDefinition);          // only used with parameters
         mStackIndex = from.mStackIndex;
         mTuplesize = from.mTuplesize;
-        mDefinition.reset();
+        mDefinition = nullptr;
         return *this;
     }
     
@@ -144,10 +155,9 @@ namespace AST {
         isLocal = from.isLocal;
         mName = from.mName;
         mLocation = from.mLocation;
-        mDefinition = std::move(from.mDefinition);
+        mDefinition = from.mDefinition;
         mStackIndex = from.mStackIndex;
         mTuplesize = from.mTuplesize;
-        mDefinition.reset();
         return *this;
     }
     
@@ -180,17 +190,13 @@ namespace AST {
     }
     
     int
-    ASTparameter::CheckType(const ASTparameters* types, const ASTparameters* parent,
-                            const ASTexpression* args, const yy::location& where,
-                            bool checkNumber)
+    ASTparameter::CheckType(const ASTparameters* types, const ASTexpression* args,
+                            const yy::location& where, bool checkNumber)
     {
         // Walks down the right edge of an expression tree checking that the types
         // of the children match the specified argument types
         if ((types == nullptr || types->empty()) && (args == nullptr)) return 0;
-        if (types == nullptr && args && Builder::CurrentBuilder->mCompilePhase == 1) {
-            Builder::CurrentBuilder->mWant2ndPass = true;
-            return -1;
-        }
+
         if (types == nullptr || types->empty()) {
             CfdgError::Error(args->where, "Arguments are not expected.");
             return -1;
@@ -258,24 +264,7 @@ namespace AST {
             CfdgError::Error((*args)[count]->where, "Too many arguments.");
             return -1;
         }
-        
-        if (justCount && types != parent) {
-            if (parent == nullptr) {
-                CfdgError::Error(where, "Parameter reuse not allowed in this context.");
-                return -1;
-            }
-            param_it = types->begin();
-            ASTparameters::const_iterator parent_it = parent->begin();
-            while (param_it != types->end()) {
-                if (parent_it == parent->end() || *param_it != *parent_it) {
-                    CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
-                    return -1;
-                }
-                ++param_it;
-                ++parent_it;
-            }
-        }
-        
+
         return size;
     }
     

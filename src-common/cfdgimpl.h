@@ -46,7 +46,6 @@ class CFDGImpl : public CFDG {
         enum {newShape = 0, ruleType = 1, pathType = 2};
 private:
         Shape m_initialShape;
-        unsigned mInitShapeDepth;
     
         agg::rgba m_backgroundColor;
     
@@ -103,9 +102,9 @@ private:
     
         AST::ASTrule needle;
         
+    CFDGImpl(CFDGImpl* c);
     public:
         CFDGImpl(AbstractSystem*);
-        CFDGImpl(CFDGImpl* c);
         virtual ~CFDGImpl();
         
         virtual Renderer* renderer(
@@ -128,7 +127,6 @@ private:
     public:
         AbstractSystem* system() { return m_system; }
         
-        void  setInitialShape(AST::rep_ptr init, unsigned depth);
         const Shape& getInitialShape(RendererAST* r);
     
         RGBA8 getColor(const HSBColor& hsb);

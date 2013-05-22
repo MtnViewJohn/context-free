@@ -54,8 +54,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m) 
-: mInitShapeDepth(std::numeric_limits<unsigned>::max()),
-  m_backgroundColor(1, 1, 1, 1), mStackSize(0), 
+: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_secondPass(false), m_Parameters(0),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
@@ -82,9 +81,8 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
 }
 
 CFDGImpl::CFDGImpl(CFDGImpl* c)
-: mInitShapeDepth(std::numeric_limits<unsigned>::max()),
-  m_backgroundColor(1, 1, 1, 1), mStackSize(0),
-  mInitShape(nullptr), m_system(c->m_system), m_secondPass(true), m_Parameters(0),
+: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
+  m_system(c->m_system), m_secondPass(true), m_Parameters(0),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 {
     m_shapeTypes.swap(c->m_shapeTypes);
@@ -111,24 +109,10 @@ CFDGImpl::~CFDGImpl()
     }
 }
 
-void
-CFDGImpl::setInitialShape(rep_ptr init, unsigned depth)
-{
-    if (depth < mInitShapeDepth) {
-        mInitShape = std::move(init);
-        m_initialShape.mShapeType = mInitShape->mShapeSpec.shapeType;
-        mInitShapeDepth = depth;
-    }
-}
-
 const Shape&
 CFDGImpl::getInitialShape(RendererAST* r)
 {
-    if (mInitShape->mShapeSpec.argSize == 0 &&
-        getShapeParamSize(mInitShape->mShapeSpec.shapeType))
-    {
-        throw CfdgError(mInitShape->mLocation, "This shape takes parameters");
-    }
+    // TODO: check that providing the wrong params is caught
     Shape init;
     init.mWorldState.m_Color = HSBColor(0.0, 0.0, 0.0, 1.0);
     init.mWorldState.m_ColorTarget = HSBColor(0.0, 0.0, 0.0, 1.0);
@@ -403,6 +387,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         "CF::MaxNatural",
         "CF::MinimumSize",
         "CF::Size",
+        "CF::StartShape",
         "CF::Symmetry",
         "CF::Tile",
         "CF::Time"
@@ -500,6 +485,10 @@ CFDGImpl::rulesLoaded()
     
     if (hasParameter("CF::Alpha", value, nullptr))
         usesAlpha = value != 0.0;
+    
+    mCFDGcontents.compile(CompilePhase::TypeCheck, Builder::CurrentBuilder);
+    if (!Builder::CurrentBuilder->mErrorOccured)
+        mCFDGcontents.compile(CompilePhase::Simplify, Builder::CurrentBuilder);
 }
 
 int
@@ -665,19 +654,32 @@ Renderer*
 CFDGImpl::renderer(int width, int height, double minSize,
                     int variation, double border)
 {
-    if (mInitShape) {
-        if (mInitShape->mShapeSpec.argSize == 0 &&
-            getShapeParamSize(mInitShape->mShapeSpec.shapeType))
-        {
-            CfdgError e(mInitShape->mLocation, "This shape takes parameters");
-            m_system->syntaxError(e);
-            return nullptr;
+    static const string n("CF::StartShape");
+    std::unique_ptr<ASTstartSpecifier> startSpec;
+    ASTexpression* startExp = nullptr;
+    int varNum = tryEncodeShapeName(n);
+    if (varNum > 0) {
+        auto elem = m_ConfigParameters.find(varNum);
+        if (elem != m_ConfigParameters.end()) {
+            startExp = elem->second.second.release();
+            startSpec.reset(dynamic_cast<ASTstartSpecifier*>(startExp));
+            if (!startSpec)                             // if we fail to take ownership
+                elem->second.second.reset(startExp);    //  then put it back
         }
-    } else {
+    }
+
+    if (!startExp) {
         m_system->message("No startshape found");
         m_system->error();
         return nullptr;
     }
+    if (!startSpec) {
+        CfdgError(startExp->where, "Type error in startshape");
+        return nullptr;
+    }
+    
+    mInitShape.reset(new ASTreplacement(*startSpec, std::move(startSpec->mModification)));
+
     RendererImpl* r = nullptr;
     try {
         r = new RendererImpl(this, width, height, minSize, variation, border);

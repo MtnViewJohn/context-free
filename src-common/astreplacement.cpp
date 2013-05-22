@@ -30,6 +30,7 @@
 #include <cassert>
 #include <atomic>
 #include "rendererAST.h"
+#include "builder.h"
 
 namespace AST {
     
@@ -58,7 +59,7 @@ namespace AST {
     }
     
     ASTparameter&
-    ASTrepContainer::addDefParameter(int index, def_ptr& def,
+    ASTrepContainer::addDefParameter(int index, ASTdefine* def,
                                      const yy::location& nameLoc,
                                      const yy::location& expLoc)
     {
@@ -75,6 +76,28 @@ namespace AST {
         mParameters.emplace_back(index, natural, local, nameLoc);
         mParameters.back().checkParam(nameLoc, nameLoc);
     }
+    
+    void
+    ASTrepContainer::compile(CompilePhase ph, Builder* b)
+    {
+        // Delete all of the incomplete parameters inserted during parse
+        if (ph == CompilePhase::TypeCheck) {
+            mStackCount = 0;
+            for (size_t i = 0; i < mParameters.size(); ++i)
+                if (mParameters[i].isParameter  || mParameters[i].isLoopIndex) {
+                    mStackCount += mParameters[i].mTuplesize;
+                } else {
+                    mParameters.resize(i);
+                    break;
+                }
+        }
+        
+        b->push_repContainer(*this);
+        for (auto& rep: mBody)
+            rep->compile(ph, b);
+        b->pop_repContainer(nullptr);
+    }
+
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
@@ -95,64 +118,13 @@ namespace AST {
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
     : ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), nameLoc + argsLoc, empty),
-      mLoopArgs(nullptr)
+      mLoopArgs(std::move(args)), mLoopIndexName(nameIndex)
     {
         std::string ent(name);
         args->entropy(ent);
         mChildChange.addEntropy(ent);
-        bool bodyNatural = false;
-        bool finallyNatural = false;
-        bool local = args->isLocal;
-        
-        if (args->isConstant) {
-            setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], args.get(), argsLoc);
-            bodyNatural = mLoopData[0] == floor(mLoopData[0]) &&
-                          mLoopData[1] == floor(mLoopData[1]) &&
-                          mLoopData[2] == floor(mLoopData[2]) &&
-                          mLoopData[0] >= 0.0 && mLoopData[1] >= 0.0 &&
-                          mLoopData[0] < 9007199254740992. && 
-                          mLoopData[1] < 9007199254740992.;
-            finallyNatural = bodyNatural && mLoopData[1] + mLoopData[2] >= -1.0 &&
-                mLoopData[1] + mLoopData[2] < 9007199254740992.;
-        } else {
-            int c = args->evaluate(nullptr, 0);
-            if (c < 1 || c > 3) {
-                CfdgError::Error(argsLoc, "A loop must have one to three index parameters.");
-            }
-            
-            mLoopArgs.reset(args.release()->simplify());
-            
-            for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
-                int num = (*mLoopArgs)[i]->evaluate(nullptr, 0);
-                switch (count) {
-                    case 0:
-                        if ((*mLoopArgs)[i]->isNatural)
-                            bodyNatural = finallyNatural = true;
-                        break;
-                    case 2: {
-                        // Special case: if 1st & 2nd args are natural and 3rd
-                        // is -1 then that is ok
-                        double step;
-                        if ((*mLoopArgs)[i]->isConstant && 
-                            (*mLoopArgs)[i]->evaluate(&step, 1) == 1 &&
-                            step == -1.0)
-                        {
-                            break;
-                        }
-                    }   // else fall through
-                    case 1:
-                        if (!((*mLoopArgs)[i]->isNatural))
-                            bodyNatural = finallyNatural = false;
-                        break;
-                    default:
-                        break;
-                }
-                count += num;
-            }
-        }
-        
-        mLoopBody.addLoopParameter(nameIndex, bodyNatural, local, nameLoc);
-        mFinallyBody.addLoopParameter(nameIndex, finallyNatural, local, nameLoc);
+        mLoopBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
+        mFinallyBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
@@ -162,26 +134,10 @@ namespace AST {
     {
     }
     
-    ASTdefine::ASTdefine(const std::string& name, exp_ptr e, const yy::location& loc) 
+    ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty),
-      mType(e->mType), isConstant(e->isConstant), mStackCount(0), mName(name),
-      isFunction(false)
-    {
-        if (mType != NumericType && mType != ModType && mType != RuleType)
-            CfdgError::Error(e->where, "Unsupported expression type");
-        mTuplesize = e->mType == AST::NumericType ? e->evaluate(nullptr, 0) : 1;
-        mExpression.reset(e.release()->simplify());
-        // Set the Modification entropy to parameter name, not its own contents
-        int i = 0;
-        mChildChange.modData.mRand64Seed.init();
-        mChildChange.modData.mRand64Seed.xorString(name.c_str(), i);
-    }
-    
-    ASTdefine::ASTdefine(const std::string& name, mod_ptr e, const yy::location& loc) 
-    : ASTreplacement(ASTruleSpecifier::Zero, std::move(e), loc, empty), mExpression(nullptr),
-      mTuplesize(ModificationSize), mType(AST::ModType), 
-      isConstant(mChildChange.modExp.empty()), mStackCount(0), mName(name),
-      isFunction(false)
+      mType(NoType), isConstant(false), isNatural(false), mStackCount(0),
+      mName(std::move(name)), isFunction(false), mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -213,18 +169,14 @@ namespace AST {
     
     ASTif::ASTif(exp_ptr ifCond, const yy::location& condLoc)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, condLoc, empty),
-      mCondition(ifCond.release()->simplify())
+      mCondition(std::move(ifCond))
     {
-        if (mCondition->mType != NumericType || mCondition->evaluate(nullptr, 0) != 1)
-            CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
     }
 
     ASTswitch::ASTswitch(exp_ptr switchExp, const yy::location& expLoc)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, expLoc, empty),
-      mSwitchExp(switchExp.release()->simplify())
+      mSwitchExp(std::move(switchExp))
     {
-        if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(nullptr, 0) != 1)
-            CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
     }
     
     void
@@ -247,8 +199,8 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(nullptr),
-      mFlags(0), mArgCount(0)
+    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(std::move(a)),
+      mOldStyleArguments(nullptr), mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
@@ -259,14 +211,11 @@ namespace AST {
         if (mPathOp == unknownPathop) {
             CfdgError::Error(loc, "Unknown path operation type");
         }
-        
-        checkArguments(std::move(a));
-        pathDataConst();
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(nullptr),
-      mFlags(0), mArgCount(0)
+      mOldStyleArguments(std::move(a)), mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
@@ -277,32 +226,12 @@ namespace AST {
         if (mPathOp == unknownPathop) {
             CfdgError::Error(loc, "Unknown path operation type");
         }
-        
-        makePositional(std::move(a));
-        pathDataConst();
-    }
-    
-    ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), loc, command),
-        mMiterLimit(4.0)
-    {
-        mChildChange.addEntropy(s);
-        
-        if (!(s.compare("FILL"))) {
-            mChildChange.flags |= CF_FILL;
-        } else if (!s.compare("STROKE")) {
-            mChildChange.flags &= ~CF_FILL;
-        } else {
-            CfdgError::Error(loc, "Unknown path command/operation");
-        }
-        
-        check4z();
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
     :   ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), loc, command),
-        mMiterLimit(4.0)
+        mMiterLimit(4.0), mParameters(std::move(params))
     {
         mChildChange.addEntropy(s);
         
@@ -312,76 +241,6 @@ namespace AST {
             mChildChange.flags &= ~CF_FILL;
         } else {
             CfdgError::Error(loc, "Unknown path command/operation");
-        }
-        
-        check4z();
-        
-        if (!params)
-            return;
-
-        exp_ptr stroke, flags;
-        switch (params->size()) {
-        case 2:
-            stroke.reset((*params)[0]);
-            flags.reset((*params)[1]);
-            if (!params->release()) {
-                CfdgError::Error(params->where, "Path commands can have zero, one, or two parameters");
-                stroke.release();
-                flags.release();
-                return;
-            }
-            break;
-        case 1:
-            switch (params->mType) {
-                case NumericType:
-                    stroke = std::move(params);
-                    break;
-                case FlagType:
-                    flags = std::move(params);
-                    break;
-                default:
-                    CfdgError::Error(params->where, "Bad expression type in path command parameters");
-                    break;
-            }
-            break;
-        case 0:
-            return;
-        default:
-            CfdgError::Error(params->where, "Path commands can have zero, one, or two parameters");
-            return;
-        }
-        
-        if (stroke) {
-            if (mChildChange.flags & CF_FILL)
-                CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
-            if (stroke->mType != NumericType || stroke->evaluate(nullptr, 0) != 1) {
-                CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
-            } else if (!stroke->isConstant ||
-                       stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
-            {
-                ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, stroke.release()->simplify(), loc);
-                mChildChange.modExp.emplace_back(w);
-            }
-        }
-        
-        if (flags) {
-            if (flags->mType != FlagType) {
-                CfdgError::Error(flags->where, "Unexpected argument in path command");
-                return;
-            }
-            flags.reset(flags.release()->simplify());
-            if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
-                int f = static_cast<int>(r->value);
-                if (f & CF_JOIN_PRESENT)
-                    mChildChange.flags &= ~CF_JOIN_MASK;
-                if (f & CF_CAP_PRESENT)
-                    mChildChange.flags &= ~CF_CAP_MASK;
-                mChildChange.flags |= f;
-                if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
-                    CfdgError::Warning(flags->where, "Stroke flags only useful for STROKE commands");
-            } else {
-                CfdgError::Error(flags->where, "Flag expressions must be constant");
-            }
         }
     }
     
@@ -584,6 +443,8 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool, RendererAST* r) const
     {
+        if (isConstant || isFunction || mConfigDepth >= 0)
+            return;
         size_t s = r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
@@ -624,12 +485,6 @@ namespace AST {
             mRuleBody.traverse(parent, tr, r, true);
             parent.releaseParams();
         }
-    }
-    
-    void
-    ASTshape::traverse(const Shape&, bool, RendererAST*) const
-    {
-        CfdgError::Error(mLocation, "Tried to traverse ASTshape.");
     }
     
     void ASTpathOp::traverse(const Shape& s, bool tr, RendererAST* r) const
@@ -714,6 +569,314 @@ namespace AST {
                     r->mCurrentPath->mParameters = nullptr;
                 }
             }
+        }
+    }
+    
+    void
+    ASTreplacement::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTexpression* r;
+        r = mShapeSpec.compile(ph, b);          // always returns this
+        assert(r == &mShapeSpec);
+        r = mChildChange.compile(ph, b);        // ditto
+        assert(r == &mChildChange);
+    }
+    
+    void
+    ASTloop::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        Compile(mLoopArgs, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if (!mLoopArgs) {
+                    CfdgError::Error(mLocation, "A loop must have one to three index parameters.");
+                    return;
+                }
+                bool bodyNatural = false;
+                bool finallyNatural = false;
+                bool local = mLoopArgs->isLocal;
+                
+                if (mLoopArgs->isConstant) {
+                    setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get(), mLoopArgs->where);
+                    bodyNatural = mLoopData[0] == floor(mLoopData[0]) &&
+                    mLoopData[1] == floor(mLoopData[1]) &&
+                    mLoopData[2] == floor(mLoopData[2]) &&
+                    mLoopData[0] >= 0.0 && mLoopData[1] >= 0.0 &&
+                    mLoopData[0] < 9007199254740992. &&
+                    mLoopData[1] < 9007199254740992.;
+                    finallyNatural = bodyNatural && mLoopData[1] + mLoopData[2] >= -1.0 &&
+                    mLoopData[1] + mLoopData[2] < 9007199254740992.;
+                    mLoopArgs.reset();
+                } else {
+                    int c = mLoopArgs->evaluate(nullptr, 0);
+                    if (c < 1 || c > 3) {
+                        CfdgError::Error(mLoopArgs->where, "A loop must have one to three index parameters.");
+                    }
+                    
+                    for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
+                        int num = (*mLoopArgs)[i]->evaluate(nullptr, 0);
+                        switch (count) {
+                            case 0:
+                                if ((*mLoopArgs)[i]->isNatural)
+                                    bodyNatural = finallyNatural = true;
+                                break;
+                            case 2: {
+                                // Special case: if 1st & 2nd args are natural and 3rd
+                                // is -1 then that is ok
+                                double step;
+                                if ((*mLoopArgs)[i]->isConstant &&
+                                    (*mLoopArgs)[i]->evaluate(&step, 1) == 1 &&
+                                    step == -1.0)
+                                {
+                                    break;
+                                }
+                            }   // else fall through
+                            case 1:
+                                if (!((*mLoopArgs)[i]->isNatural))
+                                    bodyNatural = finallyNatural = false;
+                                break;
+                            default:
+                                break;
+                        }
+                        count += num;
+                    }
+                }
+                
+                mLoopBody.mParameters.front().isNatural = bodyNatural;
+                mLoopBody.mParameters.front().isLocal = local;
+                mLoopBody.compile(ph, b);
+                mFinallyBody.mParameters.front().isNatural = finallyNatural;
+                mFinallyBody.mParameters.front().isLocal = local;
+                mFinallyBody.compile(ph, b);
+                break;
+            }
+            case CompilePhase::Simplify:
+                if (mLoopArgs)
+                    mLoopArgs.reset(mLoopArgs.release()->simplify());
+                mLoopBody.compile(ph, b);
+                mFinallyBody.compile(ph, b);
+                break;
+        }
+    }
+    
+    void
+    ASTtransform::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        if (mExpHolder)
+            mExpHolder->compile(ph, b);     // always returns this
+        mBody.compile(ph, b);
+    }
+    
+    void
+    ASTif::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        Compile(mCondition, ph, b);
+        mThenBody.compile(ph, b);
+        mElseBody.compile(ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck:
+                if (mCondition->mType != NumericType || mCondition->evaluate(nullptr, 0) != 1)
+                    CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
+                break;
+            case CompilePhase::Simplify:
+                if (mCondition)
+                    mCondition.reset(mCondition.release()->simplify());
+                break;
+        }
+    }
+    
+    void
+    ASTswitch::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        Compile(mSwitchExp, ph, b);
+        for (auto& casepair: mCaseStatements)
+            casepair.second->compile(ph, b);
+        mElseBody.compile(ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck:
+                if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(nullptr, 0) != 1)
+                    CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
+                break;
+            case CompilePhase::Simplify:
+                if (mSwitchExp)
+                    mSwitchExp.reset(mSwitchExp.release()->simplify());
+                break;
+        }
+    }
+    
+    void
+    ASTdefine::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTrepContainer tempCont;
+        tempCont.mParameters = mParameters;     // copy
+        tempCont.mStackCount = mStackCount;
+        b->push_repContainer(tempCont);
+        ASTreplacement::compile(ph, b);
+        Compile(mExpression, ph, b);
+        b->pop_repContainer(nullptr);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if (mConfigDepth >= 0) {
+                    b->MakeConfig(this);
+                    return;
+                }
+                expType t = mExpression ? mExpression->mType : ModType;
+                int sz = 1;
+                if (t == NumericType)
+                    sz = mExpression->evaluate(nullptr, 0);
+                if (t == ModType)
+                    sz = ModificationSize;
+                if (isFunction) {
+                    if (t != mType)
+                        CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function");
+                    if (mType == NumericType && t == NumericType && sz != mTuplesize)
+                        CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function");
+                    if (isNatural && (!mExpression || !mExpression->isNatural))
+                        CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function");
+                    isConstant = false;
+                } else {
+                    // TODO: check that name doesn't collide with user function name
+                    mTuplesize = sz;
+                    mType = t;
+                    if (t != (t & (-t)) || !t)
+                        CfdgError::Error(mLocation, "Expression can only have one type");
+                    isConstant = mExpression ? mExpression->isConstant : mChildChange.modExp.empty();
+                    isNatural = mExpression && mExpression->isNatural && mType == NumericType;
+                    ASTparameter& param = b->mContainerStack.back()->addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
+                    if (param.isParameter || !param.mDefinition) {
+                        param.mStackIndex = b->mLocalStackDepth;
+                        b->mContainerStack.back()->mStackCount += param.mTuplesize;
+                        b->mLocalStackDepth += param.mTuplesize;
+                    }
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                break;
+        }
+    }
+    
+    void
+    ASTrule::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        mRuleBody.compile(ph, b);
+    }
+    
+    void
+    ASTpathOp::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        Compile(mArguments, ph, b);
+        if (mOldStyleArguments)
+            mOldStyleArguments->compile(ph, b);     // always return this
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                if (mOldStyleArguments)
+                    makePositional();
+                else
+                    checkArguments();
+                break;
+            }
+            case CompilePhase::Simplify:
+                pathDataConst();
+                if (mArguments)
+                    mArguments.reset(mArguments.release()->simplify());
+                break;
+        }
+    }
+    
+    void
+    ASTpathCommand::compile(AST::CompilePhase ph, Builder* b)
+    {
+        ASTreplacement::compile(ph, b);
+        Compile(mParameters, ph, b);
+        
+        switch (ph) {
+            case CompilePhase::TypeCheck: {
+                check4z();
+                if (!mParameters)
+                    return;
+                
+                exp_ptr stroke, flags;
+                switch (mParameters->size()) {
+                    case 2:
+                        stroke.reset((*mParameters)[0]);
+                        flags.reset((*mParameters)[1]);
+                        if (!mParameters->release()) {
+                            CfdgError::Error(mParameters->where, "Path commands can have zero, one, or two parameters");
+                            stroke.release();
+                            flags.release();
+                            return;
+                        }
+                        break;
+                    case 1:
+                        switch (mParameters->mType) {
+                            case NumericType:
+                                stroke = std::move(mParameters);
+                                break;
+                            case FlagType:
+                                flags = std::move(mParameters);
+                                break;
+                            default:
+                                CfdgError::Error(mParameters->where, "Bad expression type in path command parameters");
+                                break;
+                        }
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        CfdgError::Error(mParameters->where, "Path commands can have zero, one, or two parameters");
+                        return;
+                }
+                
+                if (stroke) {
+                    if (mChildChange.flags & CF_FILL)
+                        CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
+                    if (stroke->mType != NumericType || stroke->evaluate(nullptr, 0) != 1) {
+                        CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
+                    } else if (!stroke->isConstant ||
+                               stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
+                    {
+                        ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, stroke.release()->simplify(), mLocation);
+                        mChildChange.modExp.emplace_back(w);
+                    }
+                }
+                
+                if (flags) {
+                    if (flags->mType != FlagType) {
+                        CfdgError::Error(flags->where, "Unexpected argument in path command");
+                        return;
+                    }
+                    flags.reset(flags.release()->simplify());
+                    if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
+                        int f = static_cast<int>(r->value);
+                        if (f & CF_JOIN_PRESENT)
+                            mChildChange.flags &= ~CF_JOIN_MASK;
+                        if (f & CF_CAP_PRESENT)
+                            mChildChange.flags &= ~CF_CAP_MASK;
+                        mChildChange.flags |= f;
+                        if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
+                            CfdgError::Warning(flags->where, "Stroke flags only useful for STROKE commands");
+                    } else {
+                        CfdgError::Error(flags->where, "Flag expressions must be constant");
+                    }
+                }
+                break;
+            }
+            case CompilePhase::Simplify:
+                if (mParameters)
+                    mParameters.reset(mParameters.release()->simplify());
+                break;
         }
     }
     
@@ -939,12 +1102,10 @@ namespace AST {
     }
 
     void
-    ASTpathOp::checkArguments(exp_ptr a)
+    ASTpathOp::checkArguments()
     {
-        if (a) {
-            mArguments.reset(a.release()->simplify());
+        if (mArguments)
             mArgCount = mArguments->evaluate(nullptr, 0);
-        }
 
         for (int i = 0; mArguments && i < mArguments->size(); ++i) {
             ASTexpression* temp = (*mArguments)[i];
@@ -954,7 +1115,7 @@ namespace AST {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
                     if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
-                        mFlags = static_cast<int>(rf->value);
+                        mFlags = rf ? static_cast<int>(rf->value) : 0;
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");
                     --mArgCount;
@@ -1028,7 +1189,7 @@ namespace AST {
     }
     
     void
-    ASTpathOp::makePositional(mod_ptr a)
+    ASTpathOp::makePositional()
     {
         exp_ptr ax;
         exp_ptr ay;
@@ -1040,51 +1201,49 @@ namespace AST {
         exp_ptr ary;
         exp_ptr ar;
         
-        for (term_ptr& mod: a->modExp) {
+        for (term_ptr& mod: mOldStyleArguments->modExp) {
             switch (mod ? mod->modType : ASTmodTerm::unknownType) {
                 case ASTmodTerm::x:
-                    ax.reset(mod->args.release()->simplify());
+                    ax = std::move(mod->args);
                     break;
                 case ASTmodTerm::y:
-                    ay.reset(mod->args.release()->simplify());
+                    ay = std::move(mod->args);
                     break;
                 case ASTmodTerm::x1:
-                    ax1.reset(mod->args.release()->simplify());
+                    ax1 = std::move(mod->args);
                     break;
                 case ASTmodTerm::y1:
-                    ay1.reset(mod->args.release()->simplify());
+                    ay1 = std::move(mod->args);
                     break;
                 case ASTmodTerm::x2:
-                    ax2.reset(mod->args.release()->simplify());
+                    ax2 = std::move(mod->args);
                     break;
                 case ASTmodTerm::y2:
-                    ay2.reset(mod->args.release()->simplify());
+                    ay2 = std::move(mod->args);
                     break;
                 case ASTmodTerm::xrad:
-                    arx.reset(mod->args.release()->simplify());
+                    arx = std::move(mod->args);
                     break;
                 case ASTmodTerm::yrad:
-                    ary.reset(mod->args.release()->simplify());
+                    ary = std::move(mod->args);
                     break;
                 case ASTmodTerm::rot:
-                    ar.reset(mod->args.release()->simplify());
+                    ar = std::move(mod->args);
                     break;
                 case ASTmodTerm::param:
-                    if (mod->entString.find("large") != std::string::npos)  mFlags |= CF_ARC_LARGE;
-                    if (mod->entString.find("cw") != std::string::npos)     mFlags |= CF_ARC_CW;
-                    if (mod->entString.find("align") != std::string::npos)  mFlags |= CF_ALIGN;
-                    break;
-                case ASTmodTerm::Entropy:
+                    if (mod->paramString.find("large") != std::string::npos)  mFlags |= CF_ARC_LARGE;
+                    if (mod->paramString.find("cw") != std::string::npos)     mFlags |= CF_ARC_CW;
+                    if (mod->paramString.find("align") != std::string::npos)  mFlags |= CF_ALIGN;
                     break;
                 case ASTmodTerm::z:
                 case ASTmodTerm::zsize:
                     CfdgError::Error(mod->where, "Z changes are not permitted in paths");
                     break;
                 case ASTmodTerm::unknownType:
-                    CfdgError::Error(mod->where, "Unrecognized element in a path operation");
+                    CfdgError::Error(mLocation, "Unrecognized element in a path operation");
                     break;
                 default:
-                    CfdgError::Error(mod->where, "Unrecognized element in a path operation");
+                    CfdgError::Error(mLocation, "Unrecognized element in a path operation");
                     break;
             }
         }
@@ -1117,7 +1276,7 @@ namespace AST {
                 rejectTerm(std::move(ay2));
                 
                 if (arx || ary) {
-                    ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1, mLocation);
+                    ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1.0, mLocation);
                     ASTexpression* angle = ar.release();
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
@@ -1172,6 +1331,7 @@ namespace AST {
         } 
         
         mArgCount = mArguments ? mArguments->evaluate(nullptr, 0) : 0;
+        mOldStyleArguments.reset();
     }
     
     void
