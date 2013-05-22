@@ -89,8 +89,6 @@ private:
     
         AbstractSystem* m_system;
     
-        bool m_secondPass;
-
         int m_Parameters;
         typedef std::pair<unsigned, AST::exp_ptr> ConfigParam;
         std::map<int, ConfigParam> m_ConfigParameters;
@@ -102,7 +100,6 @@ private:
     
         AST::ASTrule needle;
         
-    CFDGImpl(CFDGImpl* c);
     public:
         CFDGImpl(AbstractSystem*);
         virtual ~CFDGImpl();
