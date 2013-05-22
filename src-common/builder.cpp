@@ -54,7 +54,6 @@ double Builder:: MaxNatural = 1000.0;
 Builder::Builder(CFDGImpl* cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(nullptr), m_basePath(nullptr), m_pathCount(1),
   mInPathContainer(false), mCurrentShape(-1),
-  mWant2ndPass(false), mCompilePhase(1),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)
 { 
@@ -185,7 +184,6 @@ getUniqueFile(const std::string* base, const std::string* file)
 void
 Builder::error(const yy::location& l, const std::string& msg)
 {
-    if (mWant2ndPass) return;
     mErrorOccured = true;
     warning(l, msg);
 }
@@ -252,6 +250,12 @@ Builder::StringToShape(const std::string& name, const yy::location& loc,
     }
 }
 
+std::string
+Builder::ShapeToString(int shape)
+{
+    return m_CFDG->decodeShapeName(shape);
+}
+
 // Switch parser input to a new file
 void
 Builder::IncludeFile(const std::string& fname)
@@ -307,29 +311,23 @@ Builder::EndInclude()
     return endOfInput;
 }
 
-// Store parsed contents of startshape lines
 void
-Builder::Initialize(rep_ptr init)
+Builder::SetShape(std::string* name, const yy::location& nameLoc, bool isPath)
 {
-    m_CFDG->setInitialShape(std::move(init), mIncludeDepth);
-}
-
-void
-Builder::SetShape(AST::ASTshape* s, bool isPath)
-{
-    if (s == nullptr) {
+    if (name == nullptr) {
         mCurrentShape = -1;
         return;
     }
-    if (m_CFDG->findFunction(s->mNameIndex))
-        CfdgError::Warning(s->mLocation, "There is a function with the same name as this shape");
-    mCurrentShape = s->mNameIndex;
-    if (s->mShapeSpec.argSize && m_CFDG->getShapeHasNoParams(mCurrentShape))
-        mWant2ndPass = true;
-    const char* err = m_CFDG->setShapeParams(mCurrentShape, s->mRules, s->mShapeSpec.argSize, isPath);
+    mCurrentShape = StringToShape(*name, nameLoc, false);
+    if (ASTdefine* def = m_CFDG->findFunction(mCurrentShape)) {
+        CfdgError::Error(nameLoc, "There is a function with the same name as this shape");
+        CfdgError::Error(def->mLocation, "    the function is here");
+        return;
+    }
+    const char* err = m_CFDG->setShapeParams(mCurrentShape, mParamDecls, mParamDecls.mStackCount, isPath);
     if (err) {
         mErrorOccured = true;
-        warning(s->mLocation, err);
+        warning(nameLoc, err);
     }
 }
 
@@ -370,111 +368,98 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
     mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
 }
 
-void
-Builder::NextParameter(const std::string& name, exp_ptr e,
-                       const yy::location& nameLoc, const yy::location& expLoc) 
+ASTdefine*
+Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
+                        bool isFunction)
 {
-    bool isFunction = false;
-    if (!mContainerStack.empty() && mContainerStack.back() == &mParamDecls) {
-        pop_repContainer(nullptr);         // pop mParamDecls
-        mParamDecls.mParameters.clear();
-        mParamDecls.mStackCount = 0;
-        isFunction = true;
-    }
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
-        if (isFunction)
+        if (isFunction) {
             CfdgError::Error(nameLoc, "Configuration parameters cannot be functions");
-        if (!mContainerStack.back()->isGlobal)
+            return nullptr;
+        }
+        if (!mContainerStack.back()->isGlobal) {
             CfdgError::Error(nameLoc, "Configuration parameters must be at global scope");
-        if (name == "CF::Impure") {
-            double v = 0.0;
-            if (!e->isConstant || e->evaluate(&v, 1) != 1) {
-                CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
-            } else {
-                ASTparameter::Impure = v != 0.0;
-            }
-            return;
+            return nullptr;
         }
-        if (name == "CF::AllowOverlap") {
-            double v = 0.0;
-            if (!e->isConstant || e->evaluate(&v, 1) != 1) {
-                CfdgError::Error(expLoc, "CF::AllowOverlap requires a constant numeric expression");
-            } else {
-                mAllowOverlap = v != 0.0;
-            }
-            return;
-        }
-        e.reset(e.release()->simplify());
-        if (!m_CFDG->addParameter(name, std::move(e), mIncludeDepth))
-            warning(nameLoc, "Unknown configuration parameter");
-        if (name == "CF::MaxNatural") {
-            const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
-            double v = -1.0;
-            if (!max || !max->isConstant ||
-                max->mType != AST::NumericType ||
-                max->evaluate(&v, 1) != 1)
-            {
-                CfdgError::Error(max->where, "CF::MaxNatural requires a constant numeric expression");
-            } else if (v < 1.0 || (v - 1.0) == v) {
-                error(max->where, (v < 1.0) ? "CF::MaxNatural must be >= 1" :
-                                              "CF::MaxNatural must be < 9007199254740992");
-            } else {
-                MaxNatural = v;
-            }
-        }
-        return;
+        ASTdefine* cfg = new ASTdefine(name, nameLoc);
+        cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
+        return cfg;
     }
- 
+    
+    if (ASTfunction::GetFuncType(name) != ASTfunction::NotAFunction) {
+        CfdgError::Error(nameLoc, "Internal function names are reserved");
+        return nullptr;
+    }
+    
     int nameIndex = StringToShape(name, nameLoc, false);
-    ASTdefine* funcDef = m_CFDG->findFunction(nameIndex);
-    yy::location defLoc = nameLoc + expLoc;
-    if (isFunction) {
-        assert(funcDef);
-        if (mCompilePhase == 1) return;
-        
-        if (funcDef->mExpression->isNatural && !e->isNatural) {
-            CfdgError::Error(expLoc, "Mismatch between declared natural and defined not-natural type of user function");
-        }
-        // Replace placeholder with actual expression
-        funcDef->mExpression.reset(mWant2ndPass ? e.release() : e.release()->simplify());
-        funcDef->isConstant = funcDef->mExpression->isConstant;
-        funcDef->mLocation = defLoc;
-        
-        if (funcDef->mExpression->mType != funcDef->mType) {
-            CfdgError::Error(expLoc, "Mismatch between declared and defined type of user function");
-        } else {
-            if (funcDef->mType == AST::NumericType &&
-                funcDef->mTuplesize != funcDef->mExpression->evaluate(nullptr, 0))
-            {
-                CfdgError::Error(expLoc, "Mismatch between declared and defined vector length of user function");
-            }
-        }
-
-        return;
-    } else if (funcDef) {
+    if (ASTdefine* funcDef = m_CFDG->findFunction(nameIndex)) {
         CfdgError::Error(nameLoc, "Definition with same name as user function");
         CfdgError::Error(funcDef->mLocation, "    user function definition is here.");
-        funcDef = nullptr;
+        return nullptr;
     }
 
     CheckVariableName(nameIndex, nameLoc, false);
-    def_ptr def;
-    if (ASTmodification* m = dynamic_cast<ASTmodification*> (e.get())) {
-        mod_ptr mod(m); e.release();
-        def.reset(new ASTdefine(name, std::move(mod), defLoc));
+    ASTdefine* def = new ASTdefine(name, nameLoc);
+    def->mShapeSpec.shapeType = nameIndex;
+    if (isFunction) {
+        for (ASTparameter& param: mParamDecls.mParameters)
+            param.isLocal = true;
+        def->mParameters = std::move(mParamDecls.mParameters);
+        def->mStackCount = mParamDecls.mStackCount;
+        def->isFunction = true;
+        
+        AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
+        assert(prev == def);    // since findFunction() didn't find it
     } else {
-        def.reset(new ASTdefine(name, std::move(e), defLoc));
+        // Add parameters during parse even though the type info is unknown. At least
+        // we know the name of parameters and we can use this info to help distinguish
+        // function applications from variables followed by an expression
+        mContainerStack.back()->addDefParameter(nameIndex, def, nameLoc, CfdgError::Default);
     }
-    ASTrepContainer* top = mContainerStack.back();
-    ASTparameter& b = top->addDefParameter(nameIndex, def, nameLoc, expLoc);
- 
-    if (def) {
-        b.mStackIndex = mLocalStackDepth;
-        mContainerStack.back()->mStackCount += b.mTuplesize;
-        mLocalStackDepth += b.mTuplesize;
-        push_rep(def.release());
+    return def;
+}
+
+void
+Builder::MakeConfig(ASTdefine* cfg)
+{
+    yy::location expLoc = cfg->mExpression ? cfg->mExpression->where : cfg->mLocation;
+    if (cfg->mName == "CF::Impure") {
+        double v = 0.0;
+        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
+            CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
+        } else {
+            ASTparameter::Impure = v != 0.0;
+        }
     }
-} 
+    if (cfg->mName == "CF::AllowOverlap") {
+        double v = 0.0;
+        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
+            CfdgError::Error(expLoc, "CF::AllowOverlap requires a constant numeric expression");
+        } else {
+            mAllowOverlap = v != 0.0;
+        }
+    }
+    ASTexpression* current = cfg->mExpression.get();
+    if (!m_CFDG->addParameter(cfg->mName, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth)))
+        warning(cfg->mLocation, "Unknown configuration parameter");
+    if (cfg->mName == "CF::MaxNatural") {
+        const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
+        if (max != current)
+            return;                             // only process if we are chaanging it
+        double v = -1.0;
+        if (!max || !max->isConstant ||
+            max->mType != AST::NumericType ||
+            max->evaluate(&v, 1) != 1)
+        {
+            CfdgError::Error(max->where, "CF::MaxNatural requires a constant numeric expression");
+        } else if (v < 1.0 || (v - 1.0) == v) {
+            error(max->where, (v < 1.0) ? "CF::MaxNatural must be >= 1" :
+                  "CF::MaxNatural must be < 9007199254740992");
+        } else {
+            MaxNatural = v;
+        }
+    }
+}
 
 ASTexpression*
 Builder::MakeVariable(const std::string& name, const yy::location& loc)
@@ -486,89 +471,44 @@ Builder::MakeVariable(const std::string& name, const yy::location& loc)
         return flag;
     }
     
-    if (strncmp(name.c_str(), "CF::", 4) == 0)
+    if (strncmp(name.c_str(), "CF::", 4) == 0) {
         CfdgError::Error(loc, "Configuration parameter names are reserved");
+        return new ASTexpression(loc);
+    }
+    
+    if (ASTfunction::GetFuncType(name) != ASTfunction::NotAFunction) {
+        CfdgError::Error(loc, "Internal function names are reserved");
+        return new ASTexpression(loc);
+    }
+    
     int varNum = StringToShape(name, loc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(varNum, isGlobal);
     if (bound == nullptr) {
         return new ASTruleSpecifier(varNum, name, nullptr, loc,
-                                    m_CFDG->getShapeParams(varNum),
                                     m_CFDG->getShapeParams(mCurrentShape));
     }
-    if (bound->mStackIndex == -1) {
-        assert(bound->mDefinition);
-        switch (bound->mType) {
-            case AST::NumericType: {
-                double data[9];
-                bool natural = bound->isNatural;
-                int valCount = bound->mDefinition->mExpression->evaluate(data, 9);
-                if (valCount != bound->mTuplesize)
-                    CfdgError::Error(loc, "Unexpected compile error.");                   // this also shouldn't happen
-                
-                // Create a new cons-list based on the evaluated variable's expression
-                ASTreal* top = new ASTreal(data[0], bound->mDefinition->mExpression->where);
-                top->text = name;                // use variable name for entropy
-                ASTexpression* list = top;
-                for (int i = 1; i < valCount; ++i) {
-                    ASTreal* next = new ASTreal(data[i], 
-                                                bound->mDefinition->mExpression->where);
-                    list = list->append(next);
-                }
-                list->isNatural = natural;
-                return list;
-            }
-            case AST::ModType:
-                return new ASTmodification(bound->mDefinition->mChildChange, loc);
-            case AST::RuleType: {
-                // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
-                    return new ASTruleSpecifier(r->shapeType, name, nullptr, loc, nullptr, nullptr);
-                } else {
-                    CfdgError::Error(loc, "Internal error computing bound rule specifier");
-                    return new ASTruleSpecifier(varNum, name, nullptr, loc, nullptr, nullptr);
-                }
-            }
-            default:
-                break;
-        }
-    } else {
-        if (bound->mType == AST::RuleType) {
-            return new ASTruleSpecifier(name, loc, bound->mStackIndex - mLocalStackDepth);
-        }
-        
-        ASTvariable* v = new ASTvariable(varNum, name, loc);
-        v->count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
-        v->stackIndex = bound->mStackIndex - (isGlobal ? 0 : mLocalStackDepth);
-        v->mType = bound->mType;
-        v->isNatural = bound->isNatural;
-        v->isLocal = bound->isLocal;
-        v->isParameter = bound->isParameter;
-        return v;
-    }
-    CfdgError::Error(loc, "Cannot determine what to do with this variable.");
-    return new ASTexpression(loc);
+    
+    ASTvariable* v = new ASTvariable(varNum, name, loc);
+    return v;
 }
 
 ASTexpression*
 Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
                    const yy::location& argsLoc)
 {
-    if (strncmp(name->c_str(), "CF::", 4) == 0)
+    if (strncmp(name->c_str(), "CF::", 4) == 0) {
         CfdgError::Error(nameLoc, "Configuration parameter names are reserved");
+        return args.release();
+    }
     int varNum = StringToShape(*name, nameLoc, true);
     bool isGlobal = false;
     const ASTparameter* bound = findExpression(varNum, isGlobal);
     if (bound == nullptr) {
         CfdgError::Error(nameLoc, "Cannot find variable or parameter with this name");
         return args.release();
-    } else if (bound->mType != AST::NumericType) {
-        CfdgError::Error(nameLoc, "This is not a numeric vector");
-        return args.release();
     }
-    ASTexpression* ret =  new ASTarray(bound, std::move(args), isGlobal ? 0 : mLocalStackDepth,
-                                       nameLoc + argsLoc, *name);
-    return mWant2ndPass ? ret : ret->simplify();
+    return new ASTarray(varNum, std::move(args), nameLoc + argsLoc, *name);
 }
 
 ASTexpression*
@@ -585,7 +525,8 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     
     static const std::string name("let");
     yy::location defLoc = exp->where;
-    ASTdefine* def = new ASTdefine(name, std::move(exp), defLoc);
+    ASTdefine* def = new ASTdefine(name, defLoc);
+    def->mExpression = std::move(exp);
     
     for (ASTparameter& param: lastContainer->mParameters) {
         // copy the non-constant definitions
@@ -595,46 +536,37 @@ Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
     def->mStackCount = lastContainer->mStackCount;
     def->isFunction = true;
     pop_repContainer(nullptr);
-    return new ASTlet(args, def, letLoc, defLoc);
+    return new ASTlet(lastContainer, def, letLoc, defLoc);
 }
 
 ASTruleSpecifier*  
-Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location& loc)
+Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
+                      const yy::location& loc, mod_ptr mod)
 {
     if (name == "if" || name == "let" || name == "select") {
-        if (args->mType != AST::RuleType)
-            CfdgError::Error(args->where, "Function does not return a shape");
         if (name == "select") {
             yy::location argsLoc = args->where;
             args.reset(new ASTselect(std::move(args), argsLoc, false));
         }
-        ASTruleSpecifier* spec = new ASTruleSpecifier(std::move(args), loc);
-        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
+        if (mod)
+            return new ASTstartSpecifier(std::move(args), loc, std::move(mod));
+        else
+            return new ASTruleSpecifier(std::move(args), loc);
     }
 
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
-    
-    ASTdefine* def = m_CFDG->findFunction(nameIndex);
-    if (def) {
-        if (def->mType != AST::RuleType) {
-            yy::location nameLoc = loc;
-            if (args.get()) nameLoc.end = args->where.begin;
-            CfdgError::Error(nameLoc, "Function does not return a shape");
-        } else {
-            args.reset(new ASTuserFunction(args.release(), def, loc));
-        }
-        ASTruleSpecifier* spec = new ASTruleSpecifier(std::move(args), loc);
-        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
-    }
-    
+
+    // TODO: check that a shape function replacement works
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == nullptr || bound->mType != AST::RuleType) {
+    if (bound == nullptr) {
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
-                                                      m_CFDG->getShapeParams(nameIndex),
-                                                      m_CFDG->getShapeParams(mCurrentShape));
-        return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
+        if (mod)
+            return new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
+                                         std::move(mod));
+        else
+            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
+                                        m_CFDG->getShapeParams(mCurrentShape));
     }
     
     if (args)
@@ -643,15 +575,23 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args, const yy::location&
     if (bound->mStackIndex == -1) {
         // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
         if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
-            return new ASTruleSpecifier(r, name, loc);
+            if (mod)
+                return new ASTstartSpecifier(r, name, loc, std::move(mod));
+            else
+                return new ASTruleSpecifier(r, name, loc);
         } else {
             CfdgError::Error(loc, "Internal error computing bound rule specifier");
-            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, nullptr, nullptr);
+            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, nullptr);
         }
     }
     
-    return new ASTruleSpecifier(name, loc, bound->mStackIndex - 
-                                (isGlobal ? 0 : mLocalStackDepth));
+    if (mod)
+        return new ASTstartSpecifier(name, loc, bound->mStackIndex -
+                                     (isGlobal ? 0 : mLocalStackDepth),
+                                     std::move(mod));
+    else
+        return new ASTruleSpecifier(name, loc, bound->mStackIndex -
+                                    (isGlobal ? 0 : mLocalStackDepth));
 }
 
 void
@@ -664,78 +604,10 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     if (t->modType == ASTmodTerm::sat || t->modType == ASTmodTerm::satTarg)
         inColor();
     
-    if (mCompilePhase == 2 && t->modType >= ASTmodTerm::hueTarg && t->modType <= ASTmodTerm::targAlpha)
+    if (lexer->startToken == yy::CfdgParser::token_type::CFDG3 &&
+        t->modType >= ASTmodTerm::hueTarg && t->modType <= ASTmodTerm::targAlpha)
         CfdgError::Error(t->where, "Color target feature unavailable in v3 syntax");
     
-    int argcount = 0;
-    if (t->args && t->args->mType == AST::NumericType)
-        argcount = t->args->evaluate(nullptr, 0);
-
-    // Try to merge consecutive x and y adjustments
-    if (argcount == 1 && t->modType == ASTmodTerm::y && !dest.empty()) {
-        ASTmodTerm* last = dest.back().get();
-        if (last->modType == ASTmodTerm::x && last->args->evaluate(nullptr, 0) == 1) {
-            last->args.reset(last->args.release()->append(t->args.release()));
-            return;     // delete ASTmodTerm t
-        }
-    }
-    
-    if (argcount != 3 || (t->modType != ASTmodTerm::size && t->modType != ASTmodTerm::x)) {
-        dest.push_back(std::move(t));
-        return;
-    }
-    
-    // Try to split the XYZ term into an XY term and a Z term. Drop the XY term
-    // if it is the identity. First try an all-constant route, then try to tease
-    // apart the arguments.
-    double d[3];
-    if (t->args->isConstant && t->args->evaluate(d, 3) == 3) {
-        t->args.reset(new ASTcons(new ASTreal(d[0], t->where), new ASTreal(d[1], t->where)));
-
-        ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
-                                                                         ASTmodTerm::z;
-        ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], t->where), t->where);
-        
-        // Check if xy part is the identity transform and only save it if it is not
-        if (d[0] != 1.0 || d[1] != 1.0 || t->modType == ASTmodTerm::x)
-            dest.push_back(std::move(t));
-        dest.emplace_back(zmod);
-        return;
-    }
-    
-    if (t->args->size() > 1) {
-        ASTexpression* xyargs = nullptr;
-        int i = 0;
-        for (; i < t->args->size(); ++i) {
-            xyargs = ASTexpression::Append(xyargs, (*t->args)[i]);
-            if (xyargs->evaluate(nullptr, 0) >= 2)
-                break;
-        }
-        if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == t->args->size() - 1) {
-            // We have successfully split the 3-tuple into a 2-tuple and a scalar
-            ASTexpression* zargs = (*t->args)[i];
-            t->args->release();
-            
-            t->args.reset(xyargs);
-            
-            ASTmodTerm::modTypeEnum ztype = t->modType == ASTmodTerm::size ? ASTmodTerm::zsize :
-                                                                             ASTmodTerm::z;
-            ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, t->where);
-            
-            double d[2];
-            if (t->modType != ASTmodTerm::size || !xyargs->isConstant || 
-                xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
-            {
-                // Check if xy part is the identity transform and only save it if it is not
-                dest.push_back(std::move(t));
-            }
-            dest.emplace_back(zmod);
-            return;
-        }
-    }
-    
-    t->modType = t->modType == ASTmodTerm::size ? ASTmodTerm::sizexyz :
-                                                  ASTmodTerm::xyz;
     dest.push_back(std::move(t));
 }
 
@@ -777,10 +649,6 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
                       const yy::location& argsLoc, bool consAllowed)
 {
     int nameIndex = StringToShape(*name, nameLoc, true);
-    AST::ASTdefine* func = m_CFDG->findFunction(nameIndex);
-    if (func) {
-        return new ASTuserFunction(args.release(), func, nameLoc);
-    }
 
     bool dummy;
     const ASTparameter* bound = findExpression(nameIndex, dummy);
@@ -791,10 +659,8 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
         return MakeVariable(*name, nameLoc)->append(args.release());
     }
     
-    if (*name == "select" || *name == "if") {
-        ASTselect* sel = new ASTselect(std::move(args), nameLoc + argsLoc, *name == "if");
-        return mWant2ndPass ? sel : sel->simplify();
-    }
+    if (*name == "select" || *name == "if")
+        return new ASTselect(std::move(args), nameLoc + argsLoc, *name == "if");
     
     ASTfunction::FuncType t = ASTfunction::GetFuncType(*name);
     if (t == ASTfunction::Ftime || t == ASTfunction::Frame)
@@ -802,35 +668,13 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     if (t != ASTfunction::NotAFunction)
         return new ASTfunction(*name, std::move(args), mSeed, nameLoc, argsLoc);
     
-    const ASTparameters* p = m_CFDG->getShapeParams(nameIndex);
-    if (p) {
-        if (!(p->empty())) {
-            ASTruleSpecifier* spec = new ASTruleSpecifier(nameIndex, *name, std::move(args), nameLoc + argsLoc, p,
-                                                          m_CFDG->getShapeParams(mCurrentShape));
-            return mWant2ndPass ? spec : static_cast<ASTruleSpecifier*>(spec->simplify());
-        }
-        
-        if (consAllowed) {
-            ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, *name, nullptr, nameLoc, 
-                                                       p, m_CFDG->getShapeParams(mCurrentShape));
-            ASTexpression* ret = r->append(args.release());
-            return mWant2ndPass ? ret : ret->simplify();
-        }
-        error(nameLoc + argsLoc, "Shape takes no arguments");
-    }
+    // If args are parameter reuse args then it must be a rule spec
+    if (args && args->mType == ReuseType)
+        return MakeRuleSpec(*name, std::move(args), nameLoc + argsLoc);
     
-    // At this point we don't know if this is a typo or a to-be-defined shape or 
-    // user function
-    
-    if (mCompilePhase == 1) {
-        mWant2ndPass = true;
-    } else {
-        error(nameLoc + argsLoc, "Doesn't match a known shape or user function");
-    }
-
-    // Just return this, it will get dropped eventually
-    return new ASTruleSpecifier(nameIndex, *name, std::move(args), nameLoc + argsLoc, p,
-                                m_CFDG->getShapeParams(mCurrentShape));
+    // At this point we don't know if this is a typo or a to-be-defined shape or
+    // user function. Return an ASTuserFunction and fix it up during type check.
+    return new ASTuserFunction(nameIndex, args.release(), nullptr, nameLoc);
 }
 
 AST::ASTmodification*
@@ -840,16 +684,22 @@ Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
         std::string ent;
         term->entropy(ent);
         mod->addEntropy(ent);
-        if (!mWant2ndPass)
-            term.reset(static_cast<ASTmodTerm*>(term.release()->simplify()));
     }
     if (canonical)
         mod->makeCanonical();
-    mod->evalConst();
+    //mod->evalConst();
     mod->isConstant = mod->modExp.empty();
     mod->where = loc;
     
     return mod.release();
+}
+
+std::string
+Builder::GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*& p)
+{
+    func = m_CFDG->findFunction(name);
+    p = m_CFDG->getShapeParams(name);
+    return m_CFDG->decodeShapeName(name);
 }
 
 void
@@ -860,69 +710,15 @@ Builder::push_repContainer(ASTrepContainer& c)
 }
 
 void
-Builder::push_paramDecls(const std::string& name, const yy::location& defLoc,
-                         const std::string& type)
-{
-    {
-        for (ASTparameter& param: mParamDecls.mParameters)
-            param.isLocal = true;
-        push_repContainer(mParamDecls);
-        if (mCompilePhase != 1) return;
-
-        // Create the ASTdefine before the expression is known so that the
-        // expression can use recursion. Create a placeholder expression
-        // that will be deleted when the real expression is parsed.
-        int nameIndex = StringToShape(name, defLoc, false);
-        ASTparameter p;
-        p.init(type, nameIndex);
-        exp_ptr r;
-        
-        switch (p.mType) {
-            case AST::NumericType: {
-                ASTexpression* num = new ASTreal(p.isNatural ? 1.0 : 1.5, defLoc);
-                num->isConstant = false;
-                for (int i = 1; i < p.mTuplesize; ++i)
-                    num = num->append(new ASTreal(1.5, defLoc));
-                r.reset(num);
-                break;
-            }
-            case AST::ModType:
-                r.reset(new ASTmodification(defLoc));
-                break;
-            case AST::NoType:
-            case AST::FlagType:
-                CfdgError::Warning(defLoc, "Unsupported function type");
-                // fall through
-            case AST::RuleType:
-                r.reset(new ASTruleSpecifier());
-                break;
-        }
-        
-        ASTdefine* def = new ASTdefine(name, std::move(r), defLoc);
-        def->mParameters = mParamDecls.mParameters;
-        def->mStackCount = mParamDecls.mStackCount;
-        def->isFunction = true;
-        AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
-        if (prev != def) {
-			assert(prev);
-            mErrorOccured = true;
-            warning(defLoc, "Redefinition of user functions is not allowed");
-            warning(prev->mLocation, "Previous user function definition is here");
-            delete def;
-        }
-        if (m_CFDG->getShapeParams(nameIndex))
-            CfdgError::Warning(defLoc, "User function name matches a shape name");
-    }
-}
-
-void
 Builder::process_repContainer(ASTrepContainer& c)
 {
     for (ASTparameter& param: c.mParameters) {
-        if (param.isParameter || !param.mDefinition) {
+        if (param.isParameter || param.isLoopIndex) {
             param.mStackIndex = mLocalStackDepth;
             c.mStackCount += param.mTuplesize;
             mLocalStackDepth += param.mTuplesize;
+        } else {
+            break;  // the parameters are all in front
         }
     }
 }

@@ -74,9 +74,6 @@ public:
     int             mCurrentShape;
     Rand64          mSeed;
     
-    bool            mWant2ndPass;
-    int             mCompilePhase;
-    
     AST::ASTrepContainer mParamDecls;
     
     static std::map<std::string, int> FlagNames;
@@ -91,9 +88,6 @@ public:
     ContainerStack_t    mContainerStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);
-    void                push_paramDecls(const std::string& name, 
-                                        const yy::location& defLoc,
-                                        const std::string & type);
     void                push_rep(AST::ASTreplacement* r, bool global = false);
     const char*         push_param();
     AST::ASTparameter*  findExpression(int nameIndex, bool& isGlobal);
@@ -114,6 +108,7 @@ public:
     
     int             StringToShape(const std::string& name, const yy::location& loc,
                                   bool colonsAllowed);
+    std::string     ShapeToString(int shape);
     void            PushNameSpace(AST::str_ptr n, const yy::location& loc);
     void            CheckName(const std::string& name, const yy::location& loc,
                               bool colonsAllowed);
@@ -121,17 +116,15 @@ public:
     void            PopNameSpace();
     void            IncludeFile(const std::string& fname);
     bool            EndInclude();
-    void            Initialize(AST::rep_ptr init);
-    void            SetShape(AST::ASTshape* s, bool isPath = false);
+    void            SetShape(std::string* name, const yy::location& nameLoc = CfdgError::Default, bool isPath = false);
     void            AddRule(AST::ASTrule* rule);
     void            NextParameterDecl(const std::string& type, const std::string& name,
                                       const yy::location& typeLoc, const yy::location& nameLoc);
-    void            NextParameter(const std::string& name, AST::exp_ptr e,
-                                  const yy::location& nameLoc, const yy::location& expLoc);
     AST::ASTexpression*  
                     MakeVariable(const std::string& name, const yy::location& loc);
     AST::ASTruleSpecifier*  
-                    MakeRuleSpec(const std::string& name, AST::exp_ptr a, const yy::location& loc);
+                    MakeRuleSpec(const std::string& name, AST::exp_ptr a,
+                                 const yy::location& loc, AST::mod_ptr mod = nullptr);
     void            MakeModTerm(AST::ASTtermArray& dest, AST::term_ptr t);
     AST::rep_ptr    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params, 
                                 const yy::location& loc, bool subPath);
@@ -146,6 +139,10 @@ public:
     AST::ASTmodification*
                     MakeModification(AST::mod_ptr modExp, const yy::location& loc,
                                      bool canonical);
+    AST::ASTdefine* MakeDefinition(const std::string& name, const yy::location& nameLoc,
+                                   bool isFunction);
+    std::string     GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*& p);
+    void            MakeConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();
 };

@@ -109,8 +109,15 @@ namespace AST {
     typedef std::vector<ASTparameter>         ASTparameters;
     
     enum expType {
-        NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8
+        NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8,
+        ReuseType = 16
     };
+    enum class CompilePhase {
+        TypeCheck, Simplify
+    };
+    
+    expType decodeType(const std::string& typeName, int& mTuplesize,
+                       bool& isNatural, const yy::location& mLocation);
     
     class ASTdefine;
     
@@ -123,7 +130,7 @@ namespace AST {
         bool        isLocal;
         int         mName;
         yy::location mLocation;
-        def_ptr     mDefinition;
+        ASTdefine*  mDefinition;        // weak pointer
         int         mStackIndex;
         int         mTuplesize;
         
@@ -132,7 +139,7 @@ namespace AST {
         ASTparameter();
         ASTparameter(const std::string& typeName, int nameIndex,
                      const yy::location& where);
-        ASTparameter(int nameIndex, def_ptr& def, const yy::location& where);
+        ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where);
         ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where);
                 // ctor for loop variables
         ASTparameter(const ASTparameter&);
@@ -142,14 +149,13 @@ namespace AST {
                 // method for copying parameter lists, never used after definitions are added
         ASTparameter& operator=(ASTparameter&&) noexcept;
         void init(const std::string& typeName, int nameIndex);
-        void init(int nameIndex, def_ptr&  def);
+        void init(int nameIndex, ASTdefine*  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
         bool operator!=(const ASTparameter& p) const;
         bool operator!=(const ASTexpression& e) const;
         
-        static int CheckType(const ASTparameters* types, const ASTparameters* parent,
-                             const ASTexpression* args, const yy::location& where,
-                             bool checkNumber);
+        static int CheckType(const ASTparameters* types, const ASTexpression* args,
+                            const yy::location& where, bool checkNumber);
     };
 
     enum FlagTypes {
