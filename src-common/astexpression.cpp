@@ -2384,6 +2384,11 @@ namespace AST {
                         CfdgError::Error(arguments->where, "Expression does not return a shape");
                     return this;
                 }
+                if (argSource == SimpleParentArgs) {
+                    assert(typeSignature == parentSignature);
+                    assert(arguments && arguments->mType == ReuseType);
+                    return this;
+                }
                 
                 ASTdefine* func = nullptr;
                 Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
