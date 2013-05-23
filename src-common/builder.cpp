@@ -605,12 +605,9 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     }
     
     if (mod)
-        return new ASTstartSpecifier(name, loc, bound->mStackIndex -
-                                     (isGlobal ? 0 : mLocalStackDepth),
-                                     std::move(mod));
+        return new ASTstartSpecifier(nameIndex, name, loc, std::move(mod));
     else
-        return new ASTruleSpecifier(name, loc, bound->mStackIndex -
-                                    (isGlobal ? 0 : mLocalStackDepth));
+        return new ASTruleSpecifier(nameIndex, name, loc);
 }
 
 void
