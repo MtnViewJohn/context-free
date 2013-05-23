@@ -98,7 +98,7 @@ namespace AST {
                 rep->traverse(parent, tr, r);
             r->unwindStack(s, mParameters);
         }
-        void compile(CompilePhase ph);
+        void compile(CompilePhase ph, ASTloop* loop = nullptr, ASTdefine* def = nullptr);
         void addParameter(const std::string& type, int index,
                           const yy::location& typeLoc, const yy::location& nameLoc);
         ASTparameter& addDefParameter(int index, ASTdefine* def,
@@ -130,6 +130,7 @@ namespace AST {
         virtual ~ASTloop();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
+        void compileBase(CompilePhase ph) { ASTreplacement::compile(ph); }
     };
     class ASTtransform: public ASTreplacement {
     public:

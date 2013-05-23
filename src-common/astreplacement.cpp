@@ -80,7 +80,7 @@ namespace AST {
     }
     
     void
-    ASTrepContainer::compile(CompilePhase ph)
+    ASTrepContainer::compile(CompilePhase ph, ASTloop* loop, ASTdefine* def)
     {
         // Delete all of the incomplete parameters inserted during parse
         if (ph == CompilePhase::TypeCheck) {
@@ -95,8 +95,12 @@ namespace AST {
         }
         
         Builder::CurrentBuilder->push_repContainer(*this);
+        if (loop)
+            loop->compileBase(ph);
         for (auto& rep: mBody)
             rep->compile(ph);
+        if (def)
+            def->compile(ph);
         Builder::CurrentBuilder->pop_repContainer(nullptr);
     }
 
@@ -587,7 +591,6 @@ namespace AST {
     void
     ASTloop::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph);
         Compile(mLoopArgs, ph);
         
         switch (ph) {
@@ -648,7 +651,7 @@ namespace AST {
                 
                 mLoopBody.mParameters.front().isNatural = bodyNatural;
                 mLoopBody.mParameters.front().isLocal = local;
-                mLoopBody.compile(ph);
+                mLoopBody.compile(ph, this, nullptr);
                 mFinallyBody.mParameters.front().isNatural = finallyNatural;
                 mFinallyBody.mParameters.front().isLocal = local;
                 mFinallyBody.compile(ph);
