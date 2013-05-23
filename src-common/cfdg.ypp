@@ -330,7 +330,7 @@ initialization:
             static const std::string cfgName("CF::StartShape");
             ASTdefine* cfg = driver.MakeDefinition(cfgName, @$, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @2, std::move(mod)));
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @2, std::move(mod)));
             $$ = cfg;
         }
         ;
