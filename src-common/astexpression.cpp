@@ -533,16 +533,9 @@ namespace AST {
             for (term_ptr& mod: temp) {
                 assert(mod);
                 
-                int argcount = 0;
-                if (mod->args && mod->args->mType == NumericType)
-                    argcount = mod->args->evaluate(nullptr, 0);
-                
                 switch (mod->modType) {
                     case ASTmodTerm::x:
                         Setmod(x, mod);
-                        if (argcount > 1) {
-                            y.reset();
-                        }
                         break;
                     case ASTmodTerm::y:
                         Setmod(y, mod);
