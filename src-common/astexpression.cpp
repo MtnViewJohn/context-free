@@ -2604,11 +2604,7 @@ namespace AST {
                 mDefinitions->mStackCount = 0;
                 mDefinitions->mParameters.clear();
                 
-                Builder::CurrentBuilder->push_repContainer(*mDefinitions);
-                for (auto& rep: mDefinitions->mBody)
-                    rep->compile(ph);
-                definition->compile(ph);
-                Builder::CurrentBuilder->pop_repContainer(nullptr);
+                mDefinitions->compile(ph, nullptr, definition);
                 
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
