@@ -567,7 +567,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
         if (!(p.mParameters.empty()))
             return  "Shape has already been declared. "
                     "Parameter declaration must be on the first shape declaration only.";
-        if (shape.shapeType != newShape)
+        if (shape.shapeType == pathType && !isPath)
             return "Shape name already in use by another rule or path";
         if (isPath)
             return "Path name already in use by another rule or path";
