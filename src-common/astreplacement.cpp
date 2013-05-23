@@ -80,7 +80,7 @@ namespace AST {
     }
     
     void
-    ASTrepContainer::compile(CompilePhase ph, Builder* b)
+    ASTrepContainer::compile(CompilePhase ph)
     {
         // Delete all of the incomplete parameters inserted during parse
         if (ph == CompilePhase::TypeCheck) {
@@ -94,10 +94,10 @@ namespace AST {
                 }
         }
         
-        b->push_repContainer(*this);
+        Builder::CurrentBuilder->push_repContainer(*this);
         for (auto& rep: mBody)
-            rep->compile(ph, b);
-        b->pop_repContainer(nullptr);
+            rep->compile(ph);
+        Builder::CurrentBuilder->pop_repContainer(nullptr);
     }
 
     
@@ -575,20 +575,20 @@ namespace AST {
     }
     
     void
-    ASTreplacement::compile(AST::CompilePhase ph, Builder* b)
+    ASTreplacement::compile(AST::CompilePhase ph)
     {
         ASTexpression* r;
-        r = mShapeSpec.compile(ph, b);          // always returns this
+        r = mShapeSpec.compile(ph);             // always returns this
         assert(r == &mShapeSpec);
-        r = mChildChange.compile(ph, b);        // ditto
+        r = mChildChange.compile(ph);           // ditto
         assert(r == &mChildChange);
     }
     
     void
-    ASTloop::compile(AST::CompilePhase ph, Builder* b)
+    ASTloop::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        Compile(mLoopArgs, ph, b);
+        ASTreplacement::compile(ph);
+        Compile(mLoopArgs, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -648,37 +648,37 @@ namespace AST {
                 
                 mLoopBody.mParameters.front().isNatural = bodyNatural;
                 mLoopBody.mParameters.front().isLocal = local;
-                mLoopBody.compile(ph, b);
+                mLoopBody.compile(ph);
                 mFinallyBody.mParameters.front().isNatural = finallyNatural;
                 mFinallyBody.mParameters.front().isLocal = local;
-                mFinallyBody.compile(ph, b);
+                mFinallyBody.compile(ph);
                 break;
             }
             case CompilePhase::Simplify:
                 if (mLoopArgs)
                     mLoopArgs.reset(mLoopArgs.release()->simplify());
-                mLoopBody.compile(ph, b);
-                mFinallyBody.compile(ph, b);
+                mLoopBody.compile(ph);
+                mFinallyBody.compile(ph);
                 break;
         }
     }
     
     void
-    ASTtransform::compile(AST::CompilePhase ph, Builder* b)
+    ASTtransform::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
+        ASTreplacement::compile(ph);
         if (mExpHolder)
-            mExpHolder->compile(ph, b);     // always returns this
-        mBody.compile(ph, b);
+            mExpHolder->compile(ph);        // always returns this
+        mBody.compile(ph);
     }
     
     void
-    ASTif::compile(AST::CompilePhase ph, Builder* b)
+    ASTif::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        Compile(mCondition, ph, b);
-        mThenBody.compile(ph, b);
-        mElseBody.compile(ph, b);
+        ASTreplacement::compile(ph);
+        Compile(mCondition, ph);
+        mThenBody.compile(ph);
+        mElseBody.compile(ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck:
@@ -693,13 +693,13 @@ namespace AST {
     }
     
     void
-    ASTswitch::compile(AST::CompilePhase ph, Builder* b)
+    ASTswitch::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        Compile(mSwitchExp, ph, b);
+        ASTreplacement::compile(ph);
+        Compile(mSwitchExp, ph);
         for (auto& casepair: mCaseStatements)
-            casepair.second->compile(ph, b);
-        mElseBody.compile(ph, b);
+            casepair.second->compile(ph);
+        mElseBody.compile(ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck:
@@ -714,20 +714,20 @@ namespace AST {
     }
     
     void
-    ASTdefine::compile(AST::CompilePhase ph, Builder* b)
+    ASTdefine::compile(AST::CompilePhase ph)
     {
         ASTrepContainer tempCont;
         tempCont.mParameters = mParameters;     // copy
         tempCont.mStackCount = mStackCount;
-        b->push_repContainer(tempCont);
-        ASTreplacement::compile(ph, b);
-        Compile(mExpression, ph, b);
-        b->pop_repContainer(nullptr);
+        Builder::CurrentBuilder->push_repContainer(tempCont);
+        ASTreplacement::compile(ph);
+        Compile(mExpression, ph);
+        Builder::CurrentBuilder->pop_repContainer(nullptr);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mConfigDepth >= 0) {
-                    b->MakeConfig(this);
+                    Builder::CurrentBuilder->MakeConfig(this);
                     return;
                 }
                 expType t = mExpression ? mExpression->mType : ModType;
@@ -752,11 +752,13 @@ namespace AST {
                         CfdgError::Error(mLocation, "Expression can only have one type");
                     isConstant = mExpression ? mExpression->isConstant : mChildChange.modExp.empty();
                     isNatural = mExpression && mExpression->isNatural && mType == NumericType;
-                    ASTparameter& param = b->mContainerStack.back()->addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
+                    ASTparameter& param = Builder::CurrentBuilder->
+                        mContainerStack.back()->
+                        addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
                     if (param.isParameter || !param.mDefinition) {
-                        param.mStackIndex = b->mLocalStackDepth;
-                        b->mContainerStack.back()->mStackCount += param.mTuplesize;
-                        b->mLocalStackDepth += param.mTuplesize;
+                        param.mStackIndex = Builder::CurrentBuilder->mLocalStackDepth;
+                        Builder::CurrentBuilder->mContainerStack.back()->mStackCount += param.mTuplesize;
+                        Builder::CurrentBuilder->mLocalStackDepth += param.mTuplesize;
                     }
                 }
                 break;
@@ -767,19 +769,19 @@ namespace AST {
     }
     
     void
-    ASTrule::compile(AST::CompilePhase ph, Builder* b)
+    ASTrule::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        mRuleBody.compile(ph, b);
+        ASTreplacement::compile(ph);
+        mRuleBody.compile(ph);
     }
     
     void
-    ASTpathOp::compile(AST::CompilePhase ph, Builder* b)
+    ASTpathOp::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        Compile(mArguments, ph, b);
+        ASTreplacement::compile(ph);
+        Compile(mArguments, ph);
         if (mOldStyleArguments)
-            mOldStyleArguments->compile(ph, b);     // always return this
+            mOldStyleArguments->compile(ph);        // always return this
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -798,10 +800,10 @@ namespace AST {
     }
     
     void
-    ASTpathCommand::compile(AST::CompilePhase ph, Builder* b)
+    ASTpathCommand::compile(AST::CompilePhase ph)
     {
-        ASTreplacement::compile(ph, b);
-        Compile(mParameters, ph, b);
+        ASTreplacement::compile(ph);
+        Compile(mParameters, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
