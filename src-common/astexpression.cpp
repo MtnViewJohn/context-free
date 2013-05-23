@@ -232,11 +232,10 @@ namespace AST {
             arguments->entropy(entropyVal);
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(const std::string& name, const yy::location& loc, 
-                                       int stackIndex)
-    : ASTexpression(loc, false, false, RuleType), shapeType(0), argSize(0), 
+    ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, const yy::location& loc)
+    : ASTexpression(loc, false, false, RuleType), shapeType(t), argSize(0),
       entropyVal(name), argSource(StackArgs),
-      arguments(nullptr), simpleRule(nullptr), mStackIndex(stackIndex), typeSignature(nullptr),
+      arguments(nullptr), simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
       parentSignature(nullptr), mSource(nullptr)
     {
     }
@@ -2389,6 +2388,18 @@ namespace AST {
                     assert(arguments && arguments->mType == ReuseType);
                     return this;
                 }
+                if (argSource == StackArgs) {
+                    bool isGlobal;
+                    const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                    assert(bound);
+                    mStackIndex = bound->mStackIndex -
+                        (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                    if (bound->mType != RuleType) {
+                        CfdgError::Error(where, "Shape name does not bind to a rule variable");
+                        CfdgError::Error(bound->mLocation, "   this is what it binds to");
+                    }
+                    return this;
+                }
                 
                 ASTdefine* func = nullptr;
                 Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
@@ -2527,9 +2538,10 @@ namespace AST {
                         return ret;
                     }
                 } else {
-                    if (bound->mType == AST::RuleType)
-                        return new ASTruleSpecifier(name, where, bound->mStackIndex - Builder::CurrentBuilder->mLocalStackDepth);
-                        // TODO: how is this compiled?
+                    if (bound->mType == AST::RuleType) {
+                        ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
+                        return ret->compile(ph);
+                    }
                     
                     count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
                     stackIndex = bound->mStackIndex - (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);

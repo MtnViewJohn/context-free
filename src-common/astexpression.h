@@ -143,8 +143,7 @@ namespace AST {
         
         ASTruleSpecifier(int t, const std::string& name, exp_ptr args, const yy::location& loc, 
                          const ASTparameters* parent);
-        ASTruleSpecifier(const std::string& name, const yy::location& loc, 
-                         int stackIndex);
+        ASTruleSpecifier(int t, const std::string& name, const yy::location& loc);
         ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name,
                          const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
@@ -178,9 +177,9 @@ namespace AST {
                           const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(t, name, std::move(args), loc, nullptr),
           mModification(std::move(mod)) { };
-        ASTstartSpecifier(const std::string& name, const yy::location& loc,
-                         int stackIndex, mod_ptr mod)
-        : ASTruleSpecifier(name, loc, stackIndex), mModification(std::move(mod)) { };
+        ASTstartSpecifier(int nameIndex, const std::string& name,
+                          const yy::location& loc, mod_ptr mod)
+        : ASTruleSpecifier(nameIndex, name, loc), mModification(std::move(mod)) { };
         ASTstartSpecifier(const ASTruleSpecifier* r, const std::string& name,
                          const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(r, name, loc), mModification(std::move(mod)) { };
