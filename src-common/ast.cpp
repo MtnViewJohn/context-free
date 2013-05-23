@@ -165,8 +165,6 @@ namespace AST {
     void
     ASTparameter::checkParam(const yy::location& typeLoc, const yy::location& nameLoc)
     {
-        if (mType == AST::NoType)
-            CfdgError::Error(typeLoc, "Unknown parameter type");
         if (mName == -1)
             CfdgError::Error(nameLoc, "Reserved keyword used for parameter name");
     }
