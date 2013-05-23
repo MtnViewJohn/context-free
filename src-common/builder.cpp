@@ -562,13 +562,30 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     // TODO: check that a shape function replacement works
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
     if (bound == nullptr) {
+        ASTruleSpecifier* ret = nullptr;
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         if (mod)
-            return new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
-                                         std::move(mod));
+            ret = new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
+                                        std::move(mod));
         else
-            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
-                                        m_CFDG->getShapeParams(mCurrentShape));
+            ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
+                                       m_CFDG->getShapeParams(mCurrentShape));
+        if (args && args->mType == ReuseType) {
+            if (mod)
+                CfdgError::Error(loc, "Startshape cannot reuse parameters");
+            else if (nameIndex == mCurrentShape) {
+                ret->argSource = ASTruleSpecifier::SimpleParentArgs;
+                ret->typeSignature = ret->parentSignature;
+            }
+        }
+        return ret;
+    }
+    
+    if (args && args->mType == ReuseType && !mod && isGlobal && nameIndex == mCurrentShape) {
+        warning(loc, "Shape name binds to global variable and current shape, using current shape");
+        m_CFDG->setShapeHasNoParams(nameIndex, args.get());
+        return new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
+                                    m_CFDG->getShapeParams(mCurrentShape));
     }
     
     if (args)
