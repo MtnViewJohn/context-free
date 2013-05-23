@@ -71,7 +71,7 @@ namespace AST {
         virtual int size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
         virtual bool release(size_t = std::numeric_limits<size_t>::max()) { return false; }
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b) { return this; }
+        virtual ASTexpression* compile(CompilePhase ph) { return this; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
         ASTexpression* constCopy(const ASTparameter* bound, const std::string& entropy) const;
     };
@@ -97,7 +97,7 @@ namespace AST {
         virtual ~ASTfunction() { };
         virtual int evaluate(double* r, int size, RendererAST* rti = nullptr) const;
         virtual void entropy(std::string& e) const;
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
         virtual ASTexpression* simplify();
     private:
         ASTfunction() : ASTexpression(CfdgError::Default) {};
@@ -119,7 +119,7 @@ namespace AST {
         virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     private:
         ASTselect(const yy::location& loc)
         : ASTexpression(loc), tupleSize(-1), indexCache(0) {}
@@ -163,7 +163,7 @@ namespace AST {
         virtual const StackRule* evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
 #ifdef _WIN32
     private:
         ASTruleSpecifier(const ASTruleSpecifier&) :
@@ -188,7 +188,7 @@ namespace AST {
         : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     };
     class ASTcons : public ASTexpression {
     public:
@@ -201,7 +201,7 @@ namespace AST {
                               RendererAST* r) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
         
         virtual ASTexpression* operator[](size_t i);
         virtual const ASTexpression* operator[](size_t i) const;
@@ -230,7 +230,7 @@ namespace AST {
         virtual ~ASTreal() {};
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     private:
         ASTreal() : ASTexpression(CfdgError::Default) {};
     };
@@ -248,7 +248,7 @@ namespace AST {
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST* r) const;
         virtual void entropy(std::string& e) const;
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     private:
         ASTvariable() : ASTexpression(CfdgError::Default) {};
     };
@@ -268,7 +268,7 @@ namespace AST {
         virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     };
     class ASTlet : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
@@ -277,7 +277,7 @@ namespace AST {
                const yy::location& defLoc);
         virtual ~ASTlet();          // inherited definition ptr owns ASTdefine
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     };
     class ASToperator : public ASTexpression {
     public:
@@ -289,7 +289,7 @@ namespace AST {
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
         static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
     private:
         ASToperator() : ASTexpression(CfdgError::Default) {};
@@ -309,7 +309,7 @@ namespace AST {
         virtual const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     private:
         ASTparen() : ASTexpression(CfdgError::Default) {};
     };
@@ -346,7 +346,7 @@ namespace AST {
                               RendererAST*) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     };
     class ASTmodification : public ASTexpression {
     public:
@@ -377,7 +377,7 @@ namespace AST {
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST*) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
         void setVal(Modification& m, int* p, double* width,
                     bool justCheck, int& seedIndex, 
                     RendererAST* = nullptr) const;
@@ -404,13 +404,13 @@ namespace AST {
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
-        virtual ASTexpression* compile(CompilePhase ph, Builder* b);
+        virtual ASTexpression* compile(CompilePhase ph);
     };
     
-    inline void Compile(exp_ptr& exp, CompilePhase ph, Builder* b)
+    inline void Compile(exp_ptr& exp, CompilePhase ph)
     {
         if (!exp) return;
-        ASTexpression* r = exp->compile(ph, b);
+        ASTexpression* r = exp->compile(ph);
         if (r != exp.get())
             exp.reset(r);
     }

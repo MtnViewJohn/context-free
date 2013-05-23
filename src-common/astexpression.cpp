@@ -2193,9 +2193,9 @@ namespace AST {
     }
 
     ASTexpression*
-    ASTfunction::compile(AST::CompilePhase ph, Builder* b)
+    ASTfunction::compile(AST::CompilePhase ph)
     {
-        Compile(arguments, ph, b);
+        Compile(arguments, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2309,11 +2309,11 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTselect::compile(AST::CompilePhase ph, Builder* b)
+    ASTselect::compile(AST::CompilePhase ph)
     {
         if (!arguments)
             return this;
-        Compile(arguments, ph, b);
+        Compile(arguments, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2363,9 +2363,9 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTruleSpecifier::compile(AST::CompilePhase ph, Builder* b)
+    ASTruleSpecifier::compile(AST::CompilePhase ph)
     {
-        Compile(arguments, ph, b);
+        Compile(arguments, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2377,7 +2377,7 @@ namespace AST {
                     argSource = mSource->argSource;
                     if (mSource->simpleRule) {
                         simpleRule = StackRule::alloc(mSource->simpleRule);
-                        b->storeParams(simpleRule);
+                        Builder::CurrentBuilder->storeParams(simpleRule);
                         assert(argSource == SimpleArgs);
                     }
                     typeSignature = mSource->typeSignature;
@@ -2393,7 +2393,7 @@ namespace AST {
                 }
                 
                 ASTdefine* func = nullptr;
-                b->GetTypeInfo(shapeType, func, typeSignature);
+                Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
                 if (typeSignature && typeSignature->empty())
                     typeSignature = nullptr;
                 
@@ -2459,25 +2459,25 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTstartSpecifier::compile(AST::CompilePhase ph, Builder* b)
+    ASTstartSpecifier::compile(AST::CompilePhase ph)
     {
-        ASTexpression* ret = ASTruleSpecifier::compile(ph, b);
+        ASTexpression* ret = ASTruleSpecifier::compile(ph);
         assert(ret == this);
         if (mModification) {
-            ret = mModification->compile(ph, b);
+            ret = mModification->compile(ph);
             assert(ret == mModification.get());
         }
         return this;
     }
     
     ASTexpression*
-    ASTcons::compile(AST::CompilePhase ph, Builder* b)
+    ASTcons::compile(AST::CompilePhase ph)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool first = true;
                 for (auto& child : children) {
-                    Compile(child, ph, b);
+                    Compile(child, ph);
                     if (first) {
                         isConstant = child->isConstant;
                         isNatural = child->isNatural;
@@ -2500,24 +2500,24 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTreal::compile(AST::CompilePhase ph, Builder* b)
+    ASTreal::compile(AST::CompilePhase ph)
     {
         return this;
     }
     
     ASTexpression*
-    ASTvariable::compile(AST::CompilePhase ph, Builder* b)
+    ASTvariable::compile(AST::CompilePhase ph)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool isGlobal = false;
-                const ASTparameter* bound = b->findExpression(stringIndex, isGlobal);
+                const ASTparameter* bound = Builder::CurrentBuilder->findExpression(stringIndex, isGlobal);
                 if (bound == nullptr) {
                     CfdgError::Error(where, "internal error.");
                     return this;
                 }
                 
-                std::string name = b->ShapeToString(stringIndex);
+                std::string name = Builder::CurrentBuilder->ShapeToString(stringIndex);
 
                 if (bound->mStackIndex == -1) {
                     assert(bound->mDefinition);
@@ -2525,15 +2525,16 @@ namespace AST {
                         bound->mDefinition->mExpression->constCopy(bound, name) :
                         bound->mDefinition->mChildChange.constCopy(bound, name);
                     if (ret) {
-                        ret->compile(ph, b);
+                        ret->compile(ph);
                         return ret;
                     }
                 } else {
                     if (bound->mType == AST::RuleType)
-                        return new ASTruleSpecifier(name, where, bound->mStackIndex - b->mLocalStackDepth);
+                        return new ASTruleSpecifier(name, where, bound->mStackIndex - Builder::CurrentBuilder->mLocalStackDepth);
+                        // TODO: how is this compiled?
                     
                     count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
-                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
+                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                     mType = bound->mType;
                     isNatural = bound->isNatural;
                     isLocal = bound->isLocal;
@@ -2548,7 +2549,7 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTuserFunction::compile(AST::CompilePhase ph, Builder* b)
+    ASTuserFunction::compile(AST::CompilePhase ph)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2557,7 +2558,7 @@ namespace AST {
                 // type check we may need to convert to a shape spec.
                 ASTdefine* def = nullptr;
                 const ASTparameters* p = nullptr;
-                std::string name = b->GetTypeInfo(nameIndex, def, p);
+                std::string name = Builder::CurrentBuilder->GetTypeInfo(nameIndex, def, p);
                 
                 if (def && p) {
                     CfdgError::Error(where, "Name matches both a function and a shape");
@@ -2569,7 +2570,7 @@ namespace AST {
                 }
                 
                 if (def) {  // && !p
-                    Compile(arguments, ph, b);
+                    Compile(arguments, ph);
                     
                     definition = def;
                     ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false);
@@ -2585,7 +2586,7 @@ namespace AST {
                 ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, name,
                                                            std::move(arguments),
                                                            where, nullptr);
-                return r->compile(CompilePhase::TypeCheck, b);
+                return r->compile(CompilePhase::TypeCheck);
                 break;
             }
             case CompilePhase::Simplify:
@@ -2595,7 +2596,7 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTlet::compile(AST::CompilePhase ph, Builder* b)
+    ASTlet::compile(AST::CompilePhase ph)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2603,11 +2604,11 @@ namespace AST {
                 mDefinitions->mStackCount = 0;
                 mDefinitions->mParameters.clear();
                 
-                b->push_repContainer(*mDefinitions);
+                Builder::CurrentBuilder->push_repContainer(*mDefinitions);
                 for (auto& rep: mDefinitions->mBody)
-                    rep->compile(ph, b);
-                definition->compile(ph, b);
-                b->pop_repContainer(nullptr);
+                    rep->compile(ph);
+                definition->compile(ph);
+                Builder::CurrentBuilder->pop_repContainer(nullptr);
                 
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
@@ -2630,18 +2631,18 @@ namespace AST {
             }
             case CompilePhase::Simplify:
                 assert(definition);
-                definition->compile(ph, b);
-                Compile(arguments, ph, b);
+                definition->compile(ph);
+                Compile(arguments, ph);
                 break;
         }
         return this;
     }
     
     ASTexpression*
-    ASToperator::compile(AST::CompilePhase ph, Builder* b)
+    ASToperator::compile(AST::CompilePhase ph)
     {
-        Compile(left, ph, b);
-        Compile(right, ph, b);
+        Compile(left, ph);
+        Compile(right, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2669,10 +2670,10 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTparen::compile(AST::CompilePhase ph, Builder* b)
+    ASTparen::compile(AST::CompilePhase ph)
     {
         if (!e) return this;
-        Compile(e, ph, b);
+        Compile(e, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2689,9 +2690,9 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTmodTerm::compile(AST::CompilePhase ph, Builder* b)
+    ASTmodTerm::compile(AST::CompilePhase ph)
     {
-        Compile(args, ph, b);
+        Compile(args, ph);
         if (!args) {
             CfdgError::Error(where, "Illegal expression in shape adjustment");
             return this;
@@ -2781,10 +2782,10 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTmodification::compile(AST::CompilePhase ph, Builder* b)
+    ASTmodification::compile(AST::CompilePhase ph)
     {
         for (auto& term: modExp)
-            term->compile(ph, b);       // ASTterm always return this
+            term->compile(ph);          // ASTterm always return this
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2797,9 +2798,9 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTarray::compile(AST::CompilePhase ph, Builder* b)
+    ASTarray::compile(AST::CompilePhase ph)
     {
-        Compile(mArgs, ph, b);
+        Compile(mArgs, ph);
         if (!mArgs) {
             CfdgError::Error(where, "Illegal expression in array accessor");
             return this;
@@ -2814,14 +2815,15 @@ namespace AST {
                 }
                 
                 bool isGlobal;
-                const ASTparameter* bound = b->findExpression(mName, isGlobal);
+                const ASTparameter* bound = Builder::CurrentBuilder->findExpression(mName, isGlobal);
                 assert(bound);
                 
                 isConstant = bound->mStackIndex == -1;
                 isNatural = bound->isNatural;
                 mType = bound->mType;
                 mConstData = isConstant;
-                mStackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
+                mStackIndex = bound->mStackIndex -
+                    (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                 mCount = mType == NumericType ? bound->mTuplesize : 1;
                 isParameter = bound->isParameter;
                 
