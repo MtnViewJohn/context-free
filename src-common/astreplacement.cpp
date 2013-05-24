@@ -126,9 +126,7 @@ namespace AST {
     : ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), nameLoc + argsLoc, empty),
       mLoopArgs(std::move(args)), mLoopIndexName(nameIndex)
     {
-        std::string ent(name);
-        mLoopArgs->entropy(ent);
-        mChildChange.addEntropy(ent);
+        mChildChange.addEntropy(name);
         mLoopBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
         mFinallyBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
     }
@@ -599,6 +597,11 @@ namespace AST {
                     CfdgError::Error(mLocation, "A loop must have one to three index parameters.");
                     return;
                 }
+                
+                std::string ent;
+                mLoopArgs->entropy(ent);
+                mChildChange.addEntropy(ent);
+                
                 bool bodyNatural = false;
                 bool finallyNatural = false;
                 bool local = mLoopArgs->isLocal;
