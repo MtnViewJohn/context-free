@@ -486,13 +486,17 @@ definition:
         definition_header exp2 {
             def_ptr var($1);  $1 = nullptr;
             exp_ptr exp($2);  $2 = nullptr;
-            if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
-                mod->modData.mRand64Seed.seed(0);
-                var->mChildChange.grab(mod);
+            if (var) {
+                if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
+                    mod->modData.mRand64Seed.seed(0);
+                    var->mChildChange.grab(mod);
+                } else {
+                    var->mExpression = std::move(exp);
+                }
+                $$ = var.release();
             } else {
-                var->mExpression = std::move(exp);
+                $$ = nullptr;
             }
-            $$ = var.release();
         }
         ;
 
