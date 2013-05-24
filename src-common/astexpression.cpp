@@ -227,9 +227,6 @@ namespace AST {
     {
         if (parentSignature && parentSignature->empty())
             parentSignature = nullptr;
-        
-        if (arguments)
-            arguments->entropy(entropyVal);
     }
     
     ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, const yy::location& loc)
@@ -433,8 +430,6 @@ namespace AST {
       ifSelect(asIf)
     {
         isConstant = false;
-        arguments->entropy(ent);
-        ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
         
         if (!arguments || arguments->size() < 3) {
             CfdgError::Error(loc, "select()/if() function requires arguments");
@@ -2300,6 +2295,9 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                arguments->entropy(ent);
+                ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
+                
                 if ((*arguments)[0]->mType != NumericType ||
                     (*arguments)[0]->evaluate(nullptr, 0) != 1)
                 {
@@ -2359,6 +2357,7 @@ namespace AST {
                             CfdgError::Error(arguments->where, "Expression does not return a shape");
                         isConstant = false;
                         isLocal = arguments->isLocal;
+                        arguments->entropy(entropyVal);
                         return this;
                     case SimpleParentArgs:
                         assert(typeSignature == parentSignature);
@@ -2400,6 +2399,10 @@ namespace AST {
                             } else {
                                 CfdgError::Error(arguments->where, "Function does not return a shape");
                             }
+                            
+                            if (arguments)
+                                arguments->entropy(entropyVal);
+                            
                             return this;
                         }
                         
@@ -2484,6 +2487,7 @@ namespace AST {
                                 isConstant = false;
                                 isLocal = arguments->isLocal;
                             }
+                            arguments->entropy(entropyVal);
                         } else {
                             argSource = NoArgs;
                             simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
@@ -2825,8 +2829,12 @@ namespace AST {
     ASTexpression*
     ASTmodification::compile(AST::CompilePhase ph)
     {
-        for (auto& term: modExp)
+        for (auto& term: modExp) {
             term->compile(ph);          // ASTterm always return this
+            std::string ent;
+            term->entropy(ent);
+            addEntropy(ent);
+        }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
