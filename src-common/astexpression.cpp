@@ -223,7 +223,7 @@ namespace AST {
     : ASTexpression(loc, !args || args->isConstant, false, RuleType),
       shapeType(t), entropyVal(name), argSource(DynamicArgs),
       arguments(args.release()), simpleRule(nullptr), mStackIndex(0),
-      typeSignature(nullptr), parentSignature(parent), mSource(nullptr)
+      typeSignature(nullptr), parentSignature(parent)
     {
         if (parentSignature && parentSignature->empty())
             parentSignature = nullptr;
@@ -236,16 +236,7 @@ namespace AST {
     : ASTexpression(loc, false, false, RuleType), shapeType(t), argSize(0),
       entropyVal(name), argSource(StackArgs),
       arguments(nullptr), simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
-      parentSignature(nullptr), mSource(nullptr)
-    {
-    }
-    
-    ASTruleSpecifier::ASTruleSpecifier(const ASTruleSpecifier* r, 
-                                       const std::string& name, 
-                                       const yy::location& loc)
-    : ASTexpression(loc, false, false, RuleType), shapeType(-1), argSize(-1),
-      entropyVal(name), argSource(NoArgs), arguments(nullptr), simpleRule(nullptr), mStackIndex(0),
-      typeSignature(nullptr), parentSignature(nullptr), mSource(r)
+      parentSignature(nullptr)
     {
     }
     
@@ -2361,103 +2352,147 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                if (mSource) {
-                    // The source ASTruleSpec must already be type-checked
-                    // because it is lexically earlier
-                    shapeType = mSource->shapeType;
-                    argSize = mSource->argSize;
-                    argSource = mSource->argSource;
-                    if (mSource->simpleRule) {
-                        simpleRule = StackRule::alloc(mSource->simpleRule);
-                        Builder::CurrentBuilder->storeParams(simpleRule);
-                        assert(argSource == SimpleArgs);
+                switch (argSource) {
+                    case ShapeArgs:
+                        assert(arguments);
+                        if (arguments->mType != AST::RuleType)
+                            CfdgError::Error(arguments->where, "Expression does not return a shape");
+                        isConstant = false;
+                        isLocal = arguments->isLocal;
+                        return this;
+                    case SimpleParentArgs:
+                        assert(typeSignature == parentSignature);
+                        assert(arguments && arguments->mType == ReuseType);
+                        isConstant = true;
+                        isLocal = true;
+                        return this;
+                    case StackArgs: {
+                        bool isGlobal;
+                        const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                        assert(bound);
+                        mStackIndex = bound->mStackIndex -
+                            (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                        if (bound->mType != RuleType) {
+                            CfdgError::Error(where, "Shape name does not bind to a rule variable");
+                            CfdgError::Error(bound->mLocation, "   this is what it binds to");
+                        }
+                        isConstant = false;
+                        isLocal = bound->isLocal;
+                        return this;
                     }
-                    typeSignature = mSource->typeSignature;
-                    parentSignature = mSource->parentSignature;
-                    assert(argSource != DynamicArgs && argSource != ShapeArgs);
-                    return this;
-                }
-                if (argSource == ShapeArgs) {
-                    assert(arguments);
-                    if (arguments->mType != AST::RuleType)
-                        CfdgError::Error(arguments->where, "Expression does not return a shape");
-                    return this;
-                }
-                if (argSource == SimpleParentArgs) {
-                    assert(typeSignature == parentSignature);
-                    assert(arguments && arguments->mType == ReuseType);
-                    return this;
-                }
-                if (argSource == StackArgs) {
-                    bool isGlobal;
-                    const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
-                    assert(bound);
-                    mStackIndex = bound->mStackIndex -
-                        (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
-                    if (bound->mType != RuleType) {
-                        CfdgError::Error(where, "Shape name does not bind to a rule variable");
-                        CfdgError::Error(bound->mLocation, "   this is what it binds to");
-                    }
-                    return this;
-                }
-                
-                ASTdefine* func = nullptr;
-                Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
-                if (typeSignature && typeSignature->empty())
-                    typeSignature = nullptr;
-                
-                if (func) {
-                    if (func->mType == RuleType) {
-                        argSource = ShapeArgs;
-                    } else {
-                        CfdgError::Error(arguments->where, "Function does not return a shape");
-                    }
-                    return this;
-                }
-                
-                if (arguments && arguments->mType == AST::ReuseType) {
-                    argSource = ParentArgs;
-                    if (typeSignature != parentSignature) {
-                        ASTparameters::const_iterator param_it = typeSignature->begin();
-                        ASTparameters::const_iterator parent_it = parentSignature->begin();
-                        while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {
-                            if (*param_it != *parent_it) {
-                                CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
-                                CfdgError::Error(param_it->mLocation, "    target shape parameter type");
-                                CfdgError::Error(parent_it->mLocation, "    does not equal source shape parameter type");
-                                break;
+                    case NoArgs:
+                        assert(!arguments || arguments->mType == NoType);
+                        isConstant = isLocal = true;
+                        break;
+                    case ParentArgs:
+                    case SimpleArgs:
+                        assert(false);
+                        break;
+                    case DynamicArgs: {
+                        ASTdefine* func = nullptr;
+                        Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
+                        if (typeSignature && typeSignature->empty())
+                            typeSignature = nullptr;
+                        
+                        if (func) {
+                            if (func->mType == RuleType) {
+                                argSource = ShapeArgs;
+                            } else {
+                                CfdgError::Error(arguments->where, "Function does not return a shape");
                             }
-                            ++param_it;
-                            ++parent_it;
+                            return this;
                         }
-                        if (param_it == typeSignature->end() && parent_it != parentSignature->end()) {
-                            CfdgError::Error(where, "Source shape has more parameters than target shape.");
-                            CfdgError::Error(parent_it->mLocation, "    extra source parameters start here");
+                        
+                        bool isGlobal;
+                        const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                        if (bound) {
+                            if (bound->mStackIndex == -1) {
+                                if (!bound->mDefinition) {
+                                    CfdgError::Error(where, "Error processing shape variable.");
+                                    return this;
+                                }
+                                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
+                                    // The source ASTruleSpec must already be type-checked
+                                    // because it is lexically earlier
+                                    shapeType = r->shapeType;
+                                    argSize = r->argSize;
+                                    argSource = r->argSource;
+                                    if (r->simpleRule) {
+                                        simpleRule = StackRule::alloc(r->simpleRule);
+                                        Builder::CurrentBuilder->storeParams(simpleRule);
+                                        assert(argSource == SimpleArgs);
+                                    }
+                                    typeSignature = r->typeSignature;
+                                    parentSignature = r->parentSignature;
+                                    isConstant = true;
+                                    isLocal = true;
+                                    assert(argSource != DynamicArgs && argSource != ShapeArgs);
+                                    return this;
+                                } else {
+                                    CfdgError::Error(where, "Error processing shape variable.");
+                                    return this;
+                                }
+                            } else {
+                                argSource = StackArgs;
+                                return compile(ph);
+                            }
                         }
-                        if (param_it != typeSignature->end() && parent_it == parentSignature->end()) {
-                            CfdgError::Error(where, "Target shape has more parameters than source shape.");
-                            CfdgError::Error(param_it->mLocation, "    extra target parameters start here");
+                        
+                        if (arguments && arguments->mType == AST::ReuseType) {
+                            argSource = ParentArgs;
+                            if (typeSignature != parentSignature) {
+                                ASTparameters::const_iterator param_it = typeSignature->begin();
+                                ASTparameters::const_iterator parent_it = parentSignature->begin();
+                                while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {
+                                    if (*param_it != *parent_it) {
+                                        CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
+                                        CfdgError::Error(param_it->mLocation, "    target shape parameter type");
+                                        CfdgError::Error(parent_it->mLocation, "    does not equal source shape parameter type");
+                                        break;
+                                    }
+                                    ++param_it;
+                                    ++parent_it;
+                                }
+                                if (param_it == typeSignature->end() && parent_it != parentSignature->end()) {
+                                    CfdgError::Error(where, "Source shape has more parameters than target shape.");
+                                    CfdgError::Error(parent_it->mLocation, "    extra source parameters start here");
+                                }
+                                if (param_it != typeSignature->end() && parent_it == parentSignature->end()) {
+                                    CfdgError::Error(where, "Target shape has more parameters than source shape.");
+                                    CfdgError::Error(param_it->mLocation, "    extra target parameters start here");
+                                }
+                            }
+                            isConstant = true;
+                            isLocal = true;
+                            return this;
                         }
+                        
+                        argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
+                        if (argSize < 0) {
+                            argSource = NoArgs;
+                            return this;
+                        }
+                        
+                        if (arguments && arguments->mType != AST::NoType) {
+                            if (arguments->isConstant) {
+                                simpleRule = evalArgs();
+                                argSource = SimpleArgs;
+                                Builder::CurrentBuilder->storeParams(simpleRule);
+                                isConstant = true;
+                                isLocal = true;
+                            } else {
+                                isConstant = false;
+                                isLocal = arguments->isLocal;
+                            }
+                        } else {
+                            argSource = NoArgs;
+                            simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
+                            isConstant = true;
+                            isLocal = true;
+                            Builder::CurrentBuilder->storeParams(simpleRule);
+                        }
+                        break;
                     }
-                    return this;
-                }
-                
-                argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
-                if (argSize < 0) {
-                    argSource = NoArgs;
-                    return this;
-                }
-                
-                if (arguments && arguments->mType != AST::NoType) {
-                    if (arguments->isConstant) {
-                        simpleRule = evalArgs();
-                        argSource = SimpleArgs;
-                        Builder::CurrentBuilder->storeParams(simpleRule);
-                    }
-                } else {
-                    argSource = NoArgs;
-                    simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
-                    Builder::CurrentBuilder->storeParams(simpleRule);
                 }
                 break;
             }

@@ -591,19 +591,6 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     if (args)
         CfdgError::Error(loc, "Cannot bind parameters twice");
     
-    if (bound->mStackIndex == -1) {
-        // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-        if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
-            if (mod)
-                return new ASTstartSpecifier(r, name, loc, std::move(mod));
-            else
-                return new ASTruleSpecifier(r, name, loc);
-        } else {
-            CfdgError::Error(loc, "Internal error computing bound rule specifier");
-            return new ASTruleSpecifier(nameIndex, name, std::move(args), loc, nullptr);
-        }
-    }
-    
     if (mod)
         return new ASTstartSpecifier(nameIndex, name, loc, std::move(mod));
     else

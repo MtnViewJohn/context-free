@@ -137,15 +137,12 @@ namespace AST {
         int mStackIndex;
         const ASTparameters* typeSignature;
         const ASTparameters* parentSignature;
-        const ASTruleSpecifier* mSource;      // weak copy
         
         static ASTruleSpecifier Zero;
         
         ASTruleSpecifier(int t, const std::string& name, exp_ptr args, const yy::location& loc, 
                          const ASTparameters* parent);
         ASTruleSpecifier(int t, const std::string& name, const yy::location& loc);
-        ASTruleSpecifier(const ASTruleSpecifier* r, const std::string& name,
-                         const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier&& r);
 #ifndef _WIN32
@@ -180,9 +177,6 @@ namespace AST {
         ASTstartSpecifier(int nameIndex, const std::string& name,
                           const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(nameIndex, name, loc), mModification(std::move(mod)) { };
-        ASTstartSpecifier(const ASTruleSpecifier* r, const std::string& name,
-                         const yy::location& loc, mod_ptr mod)
-        : ASTruleSpecifier(r, name, loc), mModification(std::move(mod)) { };
         ASTstartSpecifier(exp_ptr args, const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
         virtual void entropy(std::string& e) const;
