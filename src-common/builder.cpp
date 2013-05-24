@@ -570,7 +570,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
         else
             ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
                                        m_CFDG->getShapeParams(mCurrentShape));
-        if (args && args->mType == ReuseType) {
+        if (ret->arguments && ret->arguments->mType == ReuseType) {
             if (mod)
                 CfdgError::Error(loc, "Startshape cannot reuse parameters");
             else if (nameIndex == mCurrentShape) {
