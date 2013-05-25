@@ -99,29 +99,33 @@ namespace AST {
     
     ASTparameter::ASTparameter()
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mStackIndex(-1), mTuplesize(1)
+      isLocal(false), mName(-1), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
     { }
     
     ASTparameter::ASTparameter(const std::string& typeName, int nameIndex,
                  const yy::location& where)
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mLocation(where), mStackIndex(-1), mTuplesize(1)
+      isLocal(false), mName(-1), mLocation(where), mDefinition(nullptr), mStackIndex(-1),
+      mTuplesize(1)
     { init(typeName, nameIndex); }
     
     ASTparameter::ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where)
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mLocation(where), mStackIndex(-1), mTuplesize(1)
+      isLocal(false), mName(-1), mLocation(where), mDefinition(nullptr), mStackIndex(-1),
+      mTuplesize(1)
     { init(nameIndex, def); }
     
     ASTparameter::ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
     : mType(NumericType), isParameter(false), isLoopIndex(true), isNatural(natural),
-      isLocal(local), mName(nameIndex), mLocation(where), mStackIndex(-1), mTuplesize(1)
+      isLocal(local), mName(nameIndex), mLocation(where), mDefinition(nullptr),
+      mStackIndex(-1), mTuplesize(1)
     { }     // ctor for loop variables
     
     ASTparameter::ASTparameter(const ASTparameter& from)
     : mType(from.mType), isParameter(from.isParameter), isLoopIndex(from.isLoopIndex),
       isNatural(from.isNatural), isLocal(from.isLocal), mName(from.mName),
-      mLocation(from.mLocation), mStackIndex(from.mStackIndex), mTuplesize(from.mTuplesize)
+      mLocation(from.mLocation), mDefinition(nullptr), mStackIndex(from.mStackIndex),
+      mTuplesize(from.mTuplesize)
     { assert(!from.mDefinition); }          // only used with parameters
     
     ASTparameter::ASTparameter(ASTparameter&& from) noexcept
