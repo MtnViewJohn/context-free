@@ -2745,6 +2745,8 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                isConstant = args->isConstant;
+                isLocal = true;
                 switch (args->mType) {
                     case NumericType: {
                         int argcount = args->evaluate(nullptr, 0);
@@ -2838,6 +2840,9 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                isConstant = true;
+                for (auto& term : modExp)
+                    isConstant = isConstant && term->isConstant;
                 break;
             }
             case CompilePhase::Simplify:
