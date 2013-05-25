@@ -85,7 +85,7 @@ private:
         
         AST::rep_ptr mInitShape;
         std::vector<AST::ASTrule*> mRules;
-        std::map<int, AST::def_ptr> mFunctions;
+        std::map<int, AST::ASTdefine*> mFunctions;
     
         AbstractSystem* m_system;
     
