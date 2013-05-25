@@ -622,16 +622,16 @@ CFDGImpl::declareFunction(int nameIndex, AST::ASTdefine* def)
     if (prev)
         return prev;
 
-    mFunctions[nameIndex].reset(def);
+    mFunctions[nameIndex] = def;
     return def;
 }
 
 AST::ASTdefine*
 CFDGImpl::findFunction(int nameIndex)
 {
-    map<int,AST::def_ptr>::iterator fi = mFunctions.find(nameIndex);
+    auto fi = mFunctions.find(nameIndex);
     if (fi != mFunctions.end())
-        return fi->second.get();
+        return fi->second;
     return nullptr;
 }
 
