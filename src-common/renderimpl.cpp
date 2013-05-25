@@ -250,6 +250,8 @@ RendererImpl::cleanup()
     for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
         if (AbortEverything) return;
         if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get())) {
+            if (def->isFunction)
+                continue;
             if (def->mType == AST::RuleType)
                 mCFstack[i].rule->release();
             i += def->mTuplesize;
