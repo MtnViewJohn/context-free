@@ -407,11 +407,10 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
     if (isFunction) {
         for (ASTparameter& param: mParamDecls.mParameters)
             param.isLocal = true;
-        def->mParameters = std::move(mParamDecls.mParameters);
+        def->mParameters = mParamDecls.mParameters;     // copy
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;
         mLocalStackDepth -= mParamDecls.mStackCount;
-        mParamDecls.mParameters.clear();
         mParamDecls.mStackCount = 0;
         
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);

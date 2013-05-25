@@ -396,6 +396,10 @@ global_definition:
             def_ptr var($1);  $1 = nullptr;
             exp_ptr exp($2);  $2 = nullptr;
             if (var) {
+                if (var->isFunction) {
+                    driver.pop_repContainer(nullptr);
+                    driver.mParamDecls.mParameters.clear();
+                }
                 if (var->mConfigDepth >= 0) {
                     var->mExpression = std::move(exp);
                 } else {
@@ -435,8 +439,8 @@ function_definition_header:
         }
         |
         USER_STRING USER_STRING function_parameter_list BECOMES {
-            str_ptr name($1); $1 = nullptr;
-            str_ptr type($2); $2 = nullptr;
+            str_ptr type($1); $1 = nullptr;
+            str_ptr name($2); $2 = nullptr;
             ASTdefine* def = driver.MakeDefinition(*name, @$, true);
             if (def)
                 def->mType = AST::decodeType(*type, def->mTuplesize, def->isNatural, @1);
@@ -462,8 +466,7 @@ function_definition_header:
 
 global_definition_header:
         function_definition_header {
-            driver.mParamDecls.mParameters.clear();
-            driver.mParamDecls.mStackCount = 0;
+            driver.push_repContainer(driver.mParamDecls);
             $$ = $1;
         }
         |
