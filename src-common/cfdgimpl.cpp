@@ -473,6 +473,7 @@ CFDGImpl::rulesLoaded()
     if (hasParameter("CF::Alpha", value, nullptr))
         usesAlpha = value != 0.0;
     
+    Builder::CurrentBuilder->mLocalStackDepth = 0;
     mCFDGcontents.compile(CompilePhase::TypeCheck);
     if (!Builder::CurrentBuilder->mErrorOccured)
         mCFDGcontents.compile(CompilePhase::Simplify);
