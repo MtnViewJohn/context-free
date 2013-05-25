@@ -185,6 +185,7 @@ namespace AST {
         unsigned mStackCount;
         std::string mName;
         bool isFunction;
+        bool isLetFunction;
         int mConfigDepth;
         
         ASTdefine(const std::string& name, const yy::location& loc);

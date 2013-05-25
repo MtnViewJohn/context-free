@@ -266,7 +266,7 @@ namespace AST {
     class ASTlet : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
     public:
-        ASTlet(ASTrepContainer* args, ASTdefine* func, const yy::location& letLoc,
+        ASTlet(cont_ptr args, def_ptr func, const yy::location& letLoc,
                const yy::location& defLoc);
         virtual ~ASTlet();          // inherited definition ptr owns ASTdefine
         virtual ASTexpression* simplify();

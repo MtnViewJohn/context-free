@@ -517,31 +517,16 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
 }
 
 ASTexpression*
-Builder::MakeLet(const yy::location& letLoc, exp_ptr exp)
+Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
 {
-    ASTexpression* args = nullptr;
-    ASTrepContainer* lastContainer = mContainerStack.back();
-    for (rep_ptr& rep: lastContainer->mBody) {
-        if (const ASTdefine* cdef = dynamic_cast<const ASTdefine*>(rep.get())) {
-            ASTdefine* def = const_cast<ASTdefine*>(cdef);
-            args = ASTexpression::Append(args, def->mExpression.release());
-        }
-    }
-    
     static const std::string name("let");
+    int nameIndex = StringToShape(name, letLoc, false);
     yy::location defLoc = exp->where;
-    ASTdefine* def = new ASTdefine(name, defLoc);
+    def_ptr def(new ASTdefine(name, defLoc));
+    def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
-    
-    for (ASTparameter& param: lastContainer->mParameters) {
-        // copy the non-constant definitions
-        if (!(param.mDefinition))
-            def->mParameters.push_back(param);
-    }
-    def->mStackCount = lastContainer->mStackCount;
-    def->isFunction = true;
-    pop_repContainer(nullptr);
-    return new ASTlet(lastContainer, def, letLoc, defLoc);
+    def->isFunction = def->isLetFunction = true;
+    return new ASTlet(std::move(vars), std::move(def), letLoc, defLoc);
 }
 
 ASTruleSpecifier*  
