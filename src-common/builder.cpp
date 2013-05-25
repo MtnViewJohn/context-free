@@ -102,7 +102,6 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
     Builder::CurrentBuilder = this;
     MaxNatural = 1000.0;
     ASTparameter::Impure = false;
-    mContainerStack.push_back(&(cfdg->mCFDGcontents));
     
     if (ASTrule::PrimitivePaths[primShape::circleType] == nullptr) {
         for (unsigned i = 0; i < primShape::numTypes; ++i) {
@@ -157,7 +156,6 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 
 Builder::~Builder()
 {
-    pop_repContainer(nullptr);
     delete m_CFDG;
     Builder::CurrentBuilder = nullptr;
     while (!m_streamsToLoad.empty()) {
@@ -329,6 +327,7 @@ Builder::SetShape(std::string* name, const yy::location& nameLoc, bool isPath)
         mErrorOccured = true;
         warning(nameLoc, err);
     }
+    mLocalStackDepth -= mParamDecls.mStackCount;
     mParamDecls.mParameters.clear();
     mParamDecls.mStackCount = 0;
 }
@@ -366,6 +365,10 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
     int nameIndex = StringToShape(name, nameLoc, false);
     CheckVariableName(nameIndex, nameLoc, true);
     mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
+    ASTparameter& param = mParamDecls.mParameters.back();
+    param.mStackIndex = mLocalStackDepth;
+    mParamDecls.mStackCount += param.mTuplesize;
+    mLocalStackDepth += param.mTuplesize;
 }
 
 ASTdefine*
@@ -407,6 +410,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
         def->mParameters = std::move(mParamDecls.mParameters);
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;
+        mLocalStackDepth -= mParamDecls.mStackCount;
         mParamDecls.mParameters.clear();
         mParamDecls.mStackCount = 0;
         
@@ -709,6 +713,7 @@ Builder::push_repContainer(ASTrepContainer& c)
 void
 Builder::process_repContainer(ASTrepContainer& c)
 {
+    c.mStackCount = 0;
     for (ASTparameter& param: c.mParameters) {
         if (param.isParameter || param.isLoopIndex) {
             param.mStackIndex = mLocalStackDepth;

@@ -54,9 +54,9 @@ namespace AST {
                                   const yy::location& typeLoc, const yy::location& nameLoc) 
     {
         mParameters.emplace_back(type, index, typeLoc + nameLoc);
-        mParameters.back().isParameter = true;
-        mParameters.back().checkParam(typeLoc, nameLoc);
-        mStackCount += mParameters.back().mTuplesize;
+        ASTparameter& param = mParameters.back();
+        param.isParameter = true;
+        param.checkParam(typeLoc, nameLoc);
     }
     
     ASTparameter&

@@ -138,6 +138,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         b.m_filesToLoad.push(b.m_currentPath);
         b.m_streamsToLoad.push(input);
         b.m_includeNamespace.push(false);
+        b.push_repContainer(pCfdg->mCFDGcontents);
         
         if (version == 2)
             system->message("Reading rules file %s", fname);
@@ -152,6 +153,8 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             system->syntaxError(err);
             return nullptr;
         }
+        
+        b.pop_repContainer(nullptr);    // pCfdg->mCFDGcontents
 
         if (b.mErrorOccured)
             return nullptr;
