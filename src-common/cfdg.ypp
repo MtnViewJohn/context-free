@@ -399,8 +399,9 @@ global_definition:
                 if (var->isFunction) {
                     driver.pop_repContainer(nullptr);
                     driver.mParamDecls.mParameters.clear();
+                    driver.mParamDecls.mStackCount = 0;
                 }
-                if (var->mConfigDepth >= 0) {
+                if (var->mConfigDepth >= 0 || var->isFunction) {
                     var->mExpression = std::move(exp);
                 } else {
                     if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
@@ -749,10 +750,11 @@ element_simple:
         }
         |
         letHeader letBody modification {
-            cont_ptr vars($1);
+            driver.pop_repContainer(nullptr);
+            cont_ptr vars($1); $1 = nullptr;
             exp_ptr exp($2); $2 = nullptr;
             mod_ptr mod($3); $3 = nullptr;
-            exp.reset(driver.MakeLet(@1, std::move(exp)));     // must do unconditionally
+            exp.reset(driver.MakeLet(@1, std::move(vars), std::move(exp)));      // must do unconditionally
             static const std::string letstr("let");
             rep_ptr item = driver.MakeElement(letstr, std::move(mod), std::move(exp), @$, false);
             $$ = item.release();
@@ -1024,8 +1026,6 @@ transHeader:
         }
         | CLONE exp2 {
             exp_ptr mods($2); $2 = nullptr;
-            if (!ASTparameter::Impure)
-                error(@1, "shape cloning only permitted in impure mode");
             ASTtransform* trans = new ASTtransform(@$, std::move(mods));
             trans->mClone = true;
             driver.push_repContainer(trans->mBody);
@@ -1360,9 +1360,10 @@ expfunc:
         }
         |
         letHeader letBody {
-            exp_ptr exp($2); $2 = nullptr;
+            driver.pop_repContainer(nullptr);
             cont_ptr vars($1); $1 = nullptr;
-            $$ = driver.MakeLet(@1, std::move(exp));
+            exp_ptr exp($2); $2 = nullptr;
+            $$ = driver.MakeLet(@1, std::move(vars), std::move(exp));
         }
         |
         USER_STRING { 
@@ -1402,9 +1403,10 @@ exp2func:
         }
         |
         letHeader letBody {
+            driver.pop_repContainer(nullptr);
+            cont_ptr vars($1); $1 = nullptr;
             exp_ptr exp($2); $2 = nullptr;
-            cont_ptr vars($1);
-            $$ = driver.MakeLet(@1, std::move(exp));
+            $$ = driver.MakeLet(@1, std::move(vars), std::move(exp));
         }
         |
         USER_STRING { 

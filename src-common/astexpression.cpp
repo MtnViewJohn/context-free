@@ -445,9 +445,9 @@ namespace AST {
     {
     }
     
-    ASTlet::ASTlet(ASTrepContainer* args, ASTdefine* func, const yy::location& letLoc,
+    ASTlet::ASTlet(cont_ptr args, def_ptr func, const yy::location& letLoc,
                    const yy::location& defLoc)
-    : AST::ASTuserFunction(-1, nullptr, func, letLoc), mDefinitions(args)
+    : AST::ASTuserFunction(-1, nullptr, func.release(), letLoc), mDefinitions(std::move(args))
     {
         where = where + defLoc;
         isLet = true;
@@ -1993,7 +1993,11 @@ namespace AST {
                 delete this;
                 return ret;
             }
-        } // TODO: else can we replace with definiton->mExpression/mChildchange?
+        } else if (!arguments) {
+            ASTexpression* ret = definition->mExpression.release();
+            delete this;
+            return ret;
+        }
         return ASTuserFunction::simplify();
     }
     
@@ -2389,13 +2393,17 @@ namespace AST {
                         break;
                     case DynamicArgs: {
                         ASTdefine* func = nullptr;
-                        Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
+                        std::string name = Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
                         if (typeSignature && typeSignature->empty())
                             typeSignature = nullptr;
                         
                         if (func) {
                             if (func->mType == RuleType) {
                                 argSource = ShapeArgs;
+                                arguments.reset(new ASTuserFunction(shapeType, arguments.release(), func, where));
+                                Compile(arguments, ph);
+                                isConstant = false;
+                                isLocal = arguments->isLocal;
                             } else {
                                 CfdgError::Error(arguments->where, "Function does not return a shape");
                             }

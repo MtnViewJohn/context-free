@@ -141,7 +141,7 @@ namespace AST {
     ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
     : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty),
       mType(NoType), isConstant(false), isNatural(false), mStackCount(0),
-      mName(std::move(name)), isFunction(false), mConfigDepth(-1)
+      mName(std::move(name)), isFunction(false), isLetFunction(false), mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -676,6 +676,8 @@ namespace AST {
         if (mExpHolder)
             mExpHolder->compile(ph);        // always returns this
         mBody.compile(ph);
+        if (ph == CompilePhase::TypeCheck && mClone && !ASTparameter::Impure)
+            CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
     }
     
     void
@@ -742,7 +744,7 @@ namespace AST {
                     sz = mExpression->evaluate(nullptr, 0);
                 if (t == ModType)
                     sz = ModificationSize;
-                if (isFunction) {
+                if (isFunction && !isLetFunction) {
                     if (t != mType)
                         CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function");
                     if (mType == NumericType && t == NumericType && sz != mTuplesize)

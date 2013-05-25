@@ -135,7 +135,7 @@ public:
                     MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
                                 const yy::location& argsLoc);
     AST::ASTexpression*
-                    MakeLet(const yy::location& letLoc, AST::exp_ptr exp);
+    MakeLet(const yy::location& letLoc, AST::cont_ptr vars, AST::exp_ptr exp);
     AST::ASTmodification*
                     MakeModification(AST::mod_ptr modExp, const yy::location& loc,
                                      bool canonical);
