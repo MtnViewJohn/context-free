@@ -58,31 +58,34 @@ namespace AST {
     decodeType(const std::string& typeName, int& mTuplesize,
                bool& isNatural, const yy::location& mLocation)
     {
-        expType mType;
+        expType type;
         mTuplesize = 1;
         isNatural = false;
         
         if (typeName == "number") {
-            mType = AST::NumericType;
+            type = AST::NumericType;
         } else if (typeName == "natural") {
-            mType = AST::NumericType;
+            type = AST::NumericType;
             isNatural = true;
         } else if (typeName == "adjustment") {
             mTuplesize = ModificationSize;
-            mType = AST::ModType;
+            type = AST::ModType;
         } else if (typeName == "shape") {
-            mType = AST::RuleType;
+            type = AST::RuleType;
         } else if (strncmp(typeName.data(), "vector", 6) == 0 &&
                    typeName.length() == 7 &&
                    isdigit(typeName[6]))
         {
-            mType = AST::NumericType;
+            type = AST::NumericType;
             mTuplesize = typeName[6] - '0';
             if (mTuplesize < 1 || mTuplesize > 9)
                 CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
-        } else mType = AST::NoType;
+        } else {
+            type = AST::NoType;
+            CfdgError::Error(mLocation, "Unrecognized type name");
+        }
         
-        return mType;
+        return type;
     }
     
     void
