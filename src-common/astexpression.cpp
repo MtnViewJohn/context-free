@@ -2086,8 +2086,10 @@ namespace AST {
         ASTtermArray temp;
         temp.swap(modExp);
         for (auto term = temp.begin(); term != temp.end(); ++term) {
-            if ((*term)->args->mType != NumericType)
-                break;
+            if (!(*term)->args || (*term)->args->mType != NumericType) {
+                modExp.emplace_back(std::move(*term));
+                continue;
+            }
             int argcount = (*term)->args->evaluate(nullptr, 0);
             switch ((*term)->modType) {
                 // Try to merge consecutive x and y adjustments
@@ -2760,7 +2762,8 @@ namespace AST {
     {
         Compile(args, ph);
         if (!args) {
-            CfdgError::Error(where, "Illegal expression in shape adjustment");
+            if (modType != param)
+                CfdgError::Error(where, "Illegal expression in shape adjustment");
             return this;
         }
         
@@ -2852,18 +2855,18 @@ namespace AST {
     ASTexpression*
     ASTmodification::compile(AST::CompilePhase ph)
     {
-        for (auto& term: modExp) {
+        for (auto& term: modExp)
             term->compile(ph);          // ASTterm always return this
-            std::string ent;
-            term->entropy(ent);
-            addEntropy(ent);
-        }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 isConstant = true;
-                for (auto& term : modExp)
+                for (auto& term : modExp) {
                     isConstant = isConstant && term->isConstant;
+                    std::string ent;
+                    term->entropy(ent);
+                    addEntropy(ent);
+                }
                 break;
             }
             case CompilePhase::Simplify:
@@ -3005,6 +3008,7 @@ namespace AST {
             }
             
             if (justCheck || keepThisOne) {
+                assert(mod->modType != ASTmodTerm::param);
                 Simplify(mod->args);
                 modExp.push_back(std::move(mod));
             }

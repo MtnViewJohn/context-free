@@ -584,6 +584,12 @@ namespace AST {
         assert(r == &mShapeSpec);
         r = mChildChange.compile(ph);           // ditto
         assert(r == &mChildChange);
+        if (ph == CompilePhase::Simplify) {
+            r = mShapeSpec.simplify();          // always returns this
+            assert(r == &mShapeSpec);
+            r = mChildChange.simplify();        // ditto
+            assert(r == &mChildChange);
+        }
     }
     
     void
