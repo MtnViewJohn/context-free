@@ -1951,13 +1951,7 @@ namespace AST {
                     argSource = r->argSource;
                     arguments.reset();
                     assert(!r->arguments || r->arguments->isConstant);
-                    if (r->simpleRule) {
-                        simpleRule = StackRule::alloc(r->simpleRule);
-                        Builder::CurrentBuilder->storeParams(simpleRule);
-                        assert(argSource == SimpleArgs);
-                    } else {
-                        simpleRule = nullptr;
-                    }
+                    simpleRule = r->simpleRule;
                     typeSignature = r->typeSignature;
                     parentSignature = r->parentSignature;
                     isConstant = true;
