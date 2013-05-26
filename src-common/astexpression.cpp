@@ -2120,6 +2120,8 @@ namespace AST {
                     double d[3];
                     if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
                         (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
+                        (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
+                            ASTmodTerm::x : ASTmodTerm::size;
                         
                         ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                             ASTmodTerm::zsize : ASTmodTerm::z;
@@ -2146,6 +2148,8 @@ namespace AST {
                             (*term)->args->release();
                             
                             (*term)->args.reset(xyargs);
+                            (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
+                                ASTmodTerm::x : ASTmodTerm::size;
                             
                             ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                                 ASTmodTerm::zsize : ASTmodTerm::z;
