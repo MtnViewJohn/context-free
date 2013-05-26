@@ -74,13 +74,13 @@ namespace yy {
     AST::ASTmodTerm* term;
     AST::ASTmodification* mod;
     AST::ASTreplacement* component;
-    AST::ASTshape* shapeObj;
     AST::ASTloop* loopObj;
     AST::ASTif* ifObj;
     AST::ASTswitch* switchObj;
     AST::ASTruleSpecifier* ruleSpec;
     AST::ASTrule* ruleObj;
     AST::ASTrepContainer* bodyObj;
+    AST::ASTdefine* defObj;
 
 
 /* Line 266 of lalr1.cc  */
