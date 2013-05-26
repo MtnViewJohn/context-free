@@ -45,7 +45,6 @@ namespace AST {
     class ASTpath;
     class ASTreplacement;
     class ASTbodyContainer;
-    class ASTshape;
     class ASTloop;
     class ASTif;
     class ASTswitch;
@@ -53,6 +52,7 @@ namespace AST {
     class ASTpathLoop;
     class ASTruleSpecifier;
     class ASTrule;
+    class ASTdefine;
 }
 
 /* Line 279 of lalr1.cc  */
@@ -277,14 +277,14 @@ namespace yy {
         break;
       case 72: /* statement */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 284 "cfdg.tab.cpp"
         break;
       case 73: /* statement_v2 */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 291 "cfdg.tab.cpp"
@@ -305,318 +305,332 @@ namespace yy {
         break;
       case 81: /* initialization */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 312 "cfdg.tab.cpp"
         break;
       case 82: /* initialization_v2 */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 319 "cfdg.tab.cpp"
         break;
       case 83: /* background */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 326 "cfdg.tab.cpp"
         break;
       case 84: /* tile */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 333 "cfdg.tab.cpp"
         break;
       case 85: /* size */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 340 "cfdg.tab.cpp"
         break;
-      case 87: /* global_definition_header */
+      case 86: /* global_definition */
 /* Line 455 of lalr1.cc  */
-#line 160 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).string); };
+#line 161 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).defObj); };
 /* Line 455 of lalr1.cc  */
 #line 347 "cfdg.tab.cpp"
         break;
-      case 88: /* definition_header */
+      case 87: /* function_definition_header */
 /* Line 455 of lalr1.cc  */
-#line 160 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).string); };
+#line 161 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).defObj); };
 /* Line 455 of lalr1.cc  */
 #line 354 "cfdg.tab.cpp"
         break;
-      case 90: /* shape */
+      case 88: /* global_definition_header */
 /* Line 455 of lalr1.cc  */
-#line 173 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).shapeObj); };
+#line 161 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).defObj); };
 /* Line 455 of lalr1.cc  */
 #line 361 "cfdg.tab.cpp"
         break;
-      case 91: /* shape_singleton_header */
+      case 89: /* definition_header */
 /* Line 455 of lalr1.cc  */
-#line 167 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
+#line 161 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).defObj); };
 /* Line 455 of lalr1.cc  */
 #line 368 "cfdg.tab.cpp"
         break;
-      case 92: /* shape_singleton */
+      case 90: /* definition */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
+#line 161 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).defObj); };
 /* Line 455 of lalr1.cc  */
 #line 375 "cfdg.tab.cpp"
         break;
-      case 93: /* rule_header_v2 */
+      case 92: /* shape_singleton_header */
 /* Line 455 of lalr1.cc  */
-#line 170 "../../src-common/cfdg.ypp"
+#line 168 "../../src-common/cfdg.ypp"
         { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
 /* Line 455 of lalr1.cc  */
 #line 382 "cfdg.tab.cpp"
         break;
-      case 95: /* rule_header */
+      case 93: /* shape_singleton */
 /* Line 455 of lalr1.cc  */
-#line 169 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
+#line 167 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 389 "cfdg.tab.cpp"
         break;
-      case 96: /* path_header */
+      case 94: /* rule_header_v2 */
 /* Line 455 of lalr1.cc  */
-#line 169 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
+#line 171 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
 /* Line 455 of lalr1.cc  */
 #line 396 "cfdg.tab.cpp"
         break;
-      case 97: /* rule */
-/* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
-/* Line 455 of lalr1.cc  */
-#line 403 "cfdg.tab.cpp"
-        break;
-      case 98: /* path */
-/* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
-/* Line 455 of lalr1.cc  */
-#line 410 "cfdg.tab.cpp"
-        break;
-      case 99: /* path_header_v2 */
+      case 96: /* rule_header */
 /* Line 455 of lalr1.cc  */
 #line 170 "../../src-common/cfdg.ypp"
         { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
 /* Line 455 of lalr1.cc  */
+#line 403 "cfdg.tab.cpp"
+        break;
+      case 97: /* path_header */
+/* Line 455 of lalr1.cc  */
+#line 170 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
+/* Line 455 of lalr1.cc  */
+#line 410 "cfdg.tab.cpp"
+        break;
+      case 98: /* rule */
+/* Line 455 of lalr1.cc  */
+#line 167 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
+/* Line 455 of lalr1.cc  */
 #line 417 "cfdg.tab.cpp"
         break;
-      case 105: /* parameter_spec */
+      case 99: /* path */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).expression); };
+#line 167 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 424 "cfdg.tab.cpp"
         break;
-      case 108: /* pathOp_simple_v2 */
+      case 100: /* path_header_v2 */
 /* Line 455 of lalr1.cc  */
-#line 168 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
+#line 171 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ruleObj); };
 /* Line 455 of lalr1.cc  */
 #line 431 "cfdg.tab.cpp"
         break;
-      case 109: /* element_simple */
+      case 106: /* parameter_spec */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
+#line 162 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 438 "cfdg.tab.cpp"
         break;
-      case 114: /* element */
+      case 109: /* pathOp_simple_v2 */
 /* Line 455 of lalr1.cc  */
-#line 166 "../../src-common/cfdg.ypp"
+#line 169 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 445 "cfdg.tab.cpp"
         break;
-      case 117: /* pathOp_v2 */
+      case 110: /* element_simple */
 /* Line 455 of lalr1.cc  */
-#line 168 "../../src-common/cfdg.ypp"
+#line 167 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 452 "cfdg.tab.cpp"
         break;
-      case 119: /* element_loop */
+      case 115: /* element */
 /* Line 455 of lalr1.cc  */
-#line 165 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
+#line 167 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 459 "cfdg.tab.cpp"
         break;
-      case 122: /* replacement_simple_v2 */
+      case 118: /* pathOp_v2 */
 /* Line 455 of lalr1.cc  */
-#line 168 "../../src-common/cfdg.ypp"
+#line 169 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 466 "cfdg.tab.cpp"
         break;
-      case 123: /* replacement_v2 */
+      case 120: /* element_loop */
 /* Line 455 of lalr1.cc  */
-#line 168 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).component); };
+#line 166 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
 /* Line 455 of lalr1.cc  */
 #line 473 "cfdg.tab.cpp"
         break;
-      case 124: /* loopHeader_v2 */
+      case 123: /* replacement_simple_v2 */
 /* Line 455 of lalr1.cc  */
-#line 164 "../../src-common/cfdg.ypp"
-        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
+#line 169 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 480 "cfdg.tab.cpp"
         break;
-      case 126: /* loopHeader */
+      case 124: /* replacement_v2 */
 /* Line 455 of lalr1.cc  */
-#line 165 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
+#line 169 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 487 "cfdg.tab.cpp"
         break;
-      case 127: /* ifHeader */
+      case 125: /* loopHeader_v2 */
 /* Line 455 of lalr1.cc  */
-#line 171 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).ifObj); };
+#line 165 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
 /* Line 455 of lalr1.cc  */
 #line 494 "cfdg.tab.cpp"
         break;
-      case 128: /* ifElseHeader */
+      case 127: /* loopHeader */
 /* Line 455 of lalr1.cc  */
-#line 171 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).ifObj); };
+#line 166 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).loopObj); };
 /* Line 455 of lalr1.cc  */
 #line 501 "cfdg.tab.cpp"
         break;
-      case 129: /* transHeader */
+      case 128: /* ifHeader */
 /* Line 455 of lalr1.cc  */
-#line 167 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); delete ((*yyvaluep).component); };
+#line 172 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ifObj); };
 /* Line 455 of lalr1.cc  */
 #line 508 "cfdg.tab.cpp"
         break;
-      case 130: /* switchHeader */
+      case 129: /* ifElseHeader */
 /* Line 455 of lalr1.cc  */
 #line 172 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).switchObj); };
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).ifObj); };
 /* Line 455 of lalr1.cc  */
 #line 515 "cfdg.tab.cpp"
         break;
-      case 131: /* caseHeader */
+      case 130: /* transHeader */
 /* Line 455 of lalr1.cc  */
-#line 174 "../../src-common/cfdg.ypp"
-        { if (driver.mCompilePhase == 2) driver.pop_repContainer(nullptr); };
+#line 168 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); delete ((*yyvaluep).component); };
 /* Line 455 of lalr1.cc  */
 #line 522 "cfdg.tab.cpp"
         break;
-      case 132: /* modification_v2 */
+      case 131: /* switchHeader */
 /* Line 455 of lalr1.cc  */
-#line 163 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).mod); };
+#line 173 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).switchObj); };
 /* Line 455 of lalr1.cc  */
 #line 529 "cfdg.tab.cpp"
         break;
-      case 133: /* modification */
+      case 132: /* caseHeader */
 /* Line 455 of lalr1.cc  */
-#line 163 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).mod); };
+#line 174 "../../src-common/cfdg.ypp"
+        { driver.pop_repContainer(nullptr); };
 /* Line 455 of lalr1.cc  */
 #line 536 "cfdg.tab.cpp"
         break;
-      case 134: /* buncha_adjustments */
+      case 133: /* modification_v2 */
 /* Line 455 of lalr1.cc  */
-#line 163 "../../src-common/cfdg.ypp"
+#line 164 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).mod); };
 /* Line 455 of lalr1.cc  */
 #line 543 "cfdg.tab.cpp"
         break;
-      case 135: /* adjustment */
+      case 134: /* modification */
 /* Line 455 of lalr1.cc  */
-#line 162 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).term); };
+#line 164 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).mod); };
 /* Line 455 of lalr1.cc  */
 #line 550 "cfdg.tab.cpp"
         break;
-      case 136: /* letHeader */
+      case 135: /* buncha_adjustments */
+/* Line 455 of lalr1.cc  */
+#line 164 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).mod); };
+/* Line 455 of lalr1.cc  */
+#line 557 "cfdg.tab.cpp"
+        break;
+      case 136: /* adjustment */
+/* Line 455 of lalr1.cc  */
+#line 163 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).term); };
+/* Line 455 of lalr1.cc  */
+#line 564 "cfdg.tab.cpp"
+        break;
+      case 137: /* letHeader */
 /* Line 455 of lalr1.cc  */
 #line 175 "../../src-common/cfdg.ypp"
         { driver.pop_repContainer(nullptr); delete ((*yyvaluep).bodyObj); };
 /* Line 455 of lalr1.cc  */
-#line 557 "cfdg.tab.cpp"
-        break;
-      case 137: /* letBody */
-/* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).expression); };
-/* Line 455 of lalr1.cc  */
-#line 564 "cfdg.tab.cpp"
-        break;
-      case 140: /* explist */
-/* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
-        { delete ((*yyvaluep).expression); };
-/* Line 455 of lalr1.cc  */
 #line 571 "cfdg.tab.cpp"
         break;
-      case 141: /* arglist */
+      case 138: /* letBody */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 578 "cfdg.tab.cpp"
         break;
-      case 142: /* exp */
+      case 141: /* explist */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 585 "cfdg.tab.cpp"
         break;
-      case 143: /* exp2 */
+      case 142: /* arglist */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 592 "cfdg.tab.cpp"
         break;
-      case 144: /* exp3 */
+      case 143: /* exp */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 599 "cfdg.tab.cpp"
         break;
-      case 145: /* expfunc */
+      case 144: /* exp2 */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 606 "cfdg.tab.cpp"
         break;
-      case 146: /* exp2func */
+      case 145: /* exp3 */
 /* Line 455 of lalr1.cc  */
-#line 161 "../../src-common/cfdg.ypp"
+#line 162 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).expression); };
 /* Line 455 of lalr1.cc  */
 #line 613 "cfdg.tab.cpp"
         break;
-      case 147: /* shapeName */
+      case 146: /* expfunc */
+/* Line 455 of lalr1.cc  */
+#line 162 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).expression); };
+/* Line 455 of lalr1.cc  */
+#line 620 "cfdg.tab.cpp"
+        break;
+      case 147: /* exp2func */
+/* Line 455 of lalr1.cc  */
+#line 162 "../../src-common/cfdg.ypp"
+        { delete ((*yyvaluep).expression); };
+/* Line 455 of lalr1.cc  */
+#line 627 "cfdg.tab.cpp"
+        break;
+      case 148: /* shapeName */
 /* Line 455 of lalr1.cc  */
 #line 160 "../../src-common/cfdg.ypp"
         { delete ((*yyvaluep).string); };
 /* Line 455 of lalr1.cc  */
-#line 620 "cfdg.tab.cpp"
+#line 634 "cfdg.tab.cpp"
         break;
 
 	default:
@@ -860,13 +874,13 @@ namespace yy {
   case 13:
 /* Line 670 of lalr1.cc  */
 #line 215 "../../src-common/cfdg.ypp"
-    { (yyval.component) = (yysemantic_stack_[(1) - (1)].shapeObj); }
+    { (yyval.component) = nullptr; }
     break;
 
   case 15:
 /* Line 670 of lalr1.cc  */
 #line 217 "../../src-common/cfdg.ypp"
-    { (yyval.component) = nullptr; }
+    { (yyval.component) = (yysemantic_stack_[(1) - (1)].defObj); }
     break;
 
   case 16:
@@ -1041,57 +1055,57 @@ namespace yy {
             exp_ptr p((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
             mod_ptr mod((yysemantic_stack_[(4) - (4)].mod)); (yysemantic_stack_[(4) - (4)].mod) = nullptr;
             driver.SetShape(nullptr);
-            if (driver.mCompilePhase == 2) {
-                ruleSpec_ptr r(driver.MakeRuleSpec(*name, std::move(p), (yylocation_stack_[(4) - (2)])));
-                rep_ptr start(new ASTreplacement(*r, *name, std::move(mod), (yyloc)));
-                driver.Initialize(std::move(start));
-            }
-            (yyval.component) = nullptr;
+            static const std::string cfgName("CF::StartShape");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), (yylocation_stack_[(4) - (2)]), std::move(mod)));
+            (yyval.component) = cfg;
         }
     break;
 
   case 50:
 /* Line 670 of lalr1.cc  */
-#line 315 "../../src-common/cfdg.ypp"
+#line 314 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(3) - (2)].string)); (yysemantic_stack_[(3) - (2)].string) = nullptr;
             mod_ptr mod((yysemantic_stack_[(3) - (3)].mod)); (yysemantic_stack_[(3) - (3)].mod) = nullptr;
             driver.SetShape(nullptr);
-            if (driver.mCompilePhase == 2) {
-                ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, (yylocation_stack_[(3) - (2)])));
-                rep_ptr start(new ASTreplacement(*r, *name, std::move(mod), (yyloc)));
-                driver.Initialize(std::move(start));
-            }
-            (yyval.component) = nullptr;
+            static const std::string cfgName("CF::StartShape");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, (yylocation_stack_[(3) - (2)]), std::move(mod)));
+            (yyval.component) = cfg;
         }
     break;
 
   case 51:
 /* Line 670 of lalr1.cc  */
-#line 327 "../../src-common/cfdg.ypp"
+#line 325 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(3) - (2)].string)); (yysemantic_stack_[(3) - (2)].string) = nullptr;
             exp_ptr p((yysemantic_stack_[(3) - (3)].expression)); (yysemantic_stack_[(3) - (3)].expression) = nullptr;
+            mod_ptr mod(new ASTmodification((yyloc)));
             driver.SetShape(nullptr);
-            if (driver.mCompilePhase == 2) {
-                ruleSpec_ptr r(driver.MakeRuleSpec(*name, std::move(p), (yylocation_stack_[(3) - (2)])));
-                rep_ptr start(new ASTreplacement(*r, *name, nullptr, (yyloc)));
-                driver.Initialize(std::move(start));
-            }
-            (yyval.component) = nullptr;
+            static const std::string cfgName("CF::StartShape");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), (yylocation_stack_[(3) - (2)]), std::move(mod)));
+            (yyval.component) = cfg;
         }
     break;
 
   case 52:
 /* Line 670 of lalr1.cc  */
-#line 341 "../../src-common/cfdg.ypp"
+#line 339 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
+            mod_ptr mod(new ASTmodification((yyloc)));
             driver.SetShape(nullptr);
-            ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, (yylocation_stack_[(2) - (2)])));
-            rep_ptr start(new ASTreplacement(*r, *name, nullptr, (yyloc)));
-            driver.Initialize(std::move(start));
-            (yyval.component) = nullptr;
+            static const std::string cfgName("CF::StartShape");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, (yylocation_stack_[(2) - (2)]), std::move(mod)));
+            (yyval.component) = cfg;
         }
     break;
 
@@ -1100,206 +1114,236 @@ namespace yy {
 #line 352 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(2) - (2)].mod)); (yysemantic_stack_[(2) - (2)].mod) = nullptr;
-            static const std::string backVar("CF::Background");
+            static const std::string cfgName("CF::Background");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression = std::move(mod);
             driver.lexer->maybeVersion = token::CFDG2;
-            driver.NextParameter(backVar, std::move(mod), (yylocation_stack_[(2) - (1)]), (yylocation_stack_[(2) - (2)]));
-            (yyval.component) = nullptr;
+            (yyval.component) = cfg;
         }
     break;
 
   case 54:
 /* Line 670 of lalr1.cc  */
-#line 362 "../../src-common/cfdg.ypp"
+#line 364 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(2) - (2)].mod)); (yysemantic_stack_[(2) - (2)].mod) = nullptr;
-            static const std::string tileVar("CF::Tile");
+            static const std::string cfgName("CF::Tile");
+            ASTdefine* cfg = driver.MakeDefinition(cfgName, (yyloc), false);
+            if (cfg)
+                cfg->mExpression = std::move(mod);
             driver.lexer->maybeVersion = token::CFDG2;
-            driver.NextParameter(tileVar, std::move(mod), (yylocation_stack_[(2) - (1)]), (yylocation_stack_[(2) - (2)]));
-            (yyval.component) = nullptr;
+            (yyval.component) = cfg;
         }
     break;
 
   case 55:
 /* Line 670 of lalr1.cc  */
-#line 372 "../../src-common/cfdg.ypp"
+#line 376 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(2) - (2)].mod)); (yysemantic_stack_[(2) - (2)].mod) = nullptr;
+            ASTdefine* cfg = nullptr;
             driver.lexer->maybeVersion = token::CFDG2;
             if ((yysemantic_stack_[(2) - (1)].modToken) != ASTmodTerm::size && (yysemantic_stack_[(2) - (1)].modToken) != ASTmodTerm::time) {
                 error((yylocation_stack_[(2) - (1)]), "Syntax error");
             } else {
-                static const std::string sizeVar("CF::Size");
-                static const std::string timeVar("CF::Time");
-                driver.NextParameter((yysemantic_stack_[(2) - (1)].modToken) == ASTmodTerm::size ? sizeVar : timeVar,
-                                     std::move(mod), (yylocation_stack_[(2) - (1)]), (yylocation_stack_[(2) - (2)]));
+                static const std::string sizeName("CF::Size");
+                static const std::string timeName("CF::Time");
+                cfg = driver.MakeDefinition(*((yysemantic_stack_[(2) - (1)].modToken) == ASTmodTerm::size ? &sizeName : &timeName), (yyloc), false);
+                if (cfg)
+                    cfg->mExpression = std::move(mod);
+                driver.lexer->maybeVersion = token::CFDG2;
             }
-            (yyval.component) = nullptr;
+            (yyval.component) = cfg;
         }
     break;
 
   case 56:
 /* Line 670 of lalr1.cc  */
-#line 388 "../../src-common/cfdg.ypp"
-    { 
-            str_ptr var((yysemantic_stack_[(2) - (1)].string)); (yysemantic_stack_[(2) - (1)].string) = nullptr;
-            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            if (var)
-                driver.NextParameter(*var, std::move(exp), (yylocation_stack_[(2) - (1)]), (yylocation_stack_[(2) - (2)]));
+#line 395 "../../src-common/cfdg.ypp"
+    {
+            def_ptr var((yysemantic_stack_[(2) - (1)].defObj));  (yysemantic_stack_[(2) - (1)].defObj) = nullptr;
+            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression));  (yysemantic_stack_[(2) - (2)].expression) = nullptr;
+            if (var) {
+                if (var->isFunction) {
+                    driver.pop_repContainer(nullptr);
+                    driver.mParamDecls.mParameters.clear();
+                    driver.mParamDecls.mStackCount = 0;
+                }
+                if (var->mConfigDepth >= 0 || var->isFunction) {
+                    var->mExpression = std::move(exp);
+                } else {
+                    if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
+                        mod->modData.mRand64Seed.seed(0);
+                        var->mChildChange.grab(mod);
+                    } else {
+                        var->mExpression = std::move(exp);
+                    }
+                }
+                (yyval.defObj) = var.release();
+            } else {
+                (yyval.defObj) = nullptr;
+            }
         }
     break;
 
   case 57:
 /* Line 670 of lalr1.cc  */
-#line 397 "../../src-common/cfdg.ypp"
+#line 422 "../../src-common/cfdg.ypp"
     {
-            static const std::string numtype("shape");
-            driver.push_paramDecls(*(yysemantic_stack_[(4) - (2)].string), (yyloc), numtype);
-            (yyval.string) = (yysemantic_stack_[(4) - (2)].string);
+            str_ptr name((yysemantic_stack_[(4) - (2)].string)); (yysemantic_stack_[(4) - (2)].string) = nullptr;
+            ASTdefine* def = driver.MakeDefinition(*name, (yyloc), true);
+            if (def) {
+                def->mType = RuleType;
+                def->mTuplesize = 1;
+            }
+            (yyval.defObj) = def;
         }
     break;
 
   case 58:
 /* Line 670 of lalr1.cc  */
-#line 403 "../../src-common/cfdg.ypp"
+#line 432 "../../src-common/cfdg.ypp"
     {
-            static const std::string numtype("number");
-            driver.push_paramDecls(*(yysemantic_stack_[(3) - (1)].string), (yyloc), numtype);
-            (yyval.string) = (yysemantic_stack_[(3) - (1)].string);
+            str_ptr name((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
+            ASTdefine* def = driver.MakeDefinition(*name, (yyloc), true);
+            if (def) {
+                def->mType = NumericType;
+                def->mTuplesize = 1;
+            }
+            (yyval.defObj) = def;
         }
     break;
 
   case 59:
 /* Line 670 of lalr1.cc  */
-#line 409 "../../src-common/cfdg.ypp"
+#line 442 "../../src-common/cfdg.ypp"
     {
             str_ptr type((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
-            driver.push_paramDecls(*(yysemantic_stack_[(4) - (2)].string), (yyloc), *type);
-            (yyval.string) = (yysemantic_stack_[(4) - (2)].string);
+            str_ptr name((yysemantic_stack_[(4) - (2)].string)); (yysemantic_stack_[(4) - (2)].string) = nullptr;
+            ASTdefine* def = driver.MakeDefinition(*name, (yyloc), true);
+            if (def)
+                def->mType = AST::decodeType(*type, def->mTuplesize, def->isNatural, (yylocation_stack_[(4) - (1)]));
+            (yyval.defObj) = def;
         }
     break;
 
   case 60:
 /* Line 670 of lalr1.cc  */
-#line 415 "../../src-common/cfdg.ypp"
+#line 451 "../../src-common/cfdg.ypp"
     {
-            (yyval.string) = (yysemantic_stack_[(2) - (1)].string);
+            error((yylocation_stack_[(4) - (2)]), "Reserved keyword: adjustment");
+            (yyval.defObj) = nullptr;
         }
     break;
 
   case 61:
 /* Line 670 of lalr1.cc  */
-#line 419 "../../src-common/cfdg.ypp"
+#line 456 "../../src-common/cfdg.ypp"
     {
-            error((yylocation_stack_[(4) - (2)]), "Reserved keyword: adjustment");
-            (yyval.string) = nullptr;
+            error((yylocation_stack_[(3) - (1)]), "Reserved keyword: adjustment");
+            (yyval.defObj) = nullptr;
         }
     break;
 
   case 62:
 /* Line 670 of lalr1.cc  */
-#line 424 "../../src-common/cfdg.ypp"
+#line 461 "../../src-common/cfdg.ypp"
     {
-            error((yylocation_stack_[(3) - (1)]), "Reserved keyword: adjustment");
-            (yyval.string) = nullptr;
+            str_ptr type((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
+            error((yylocation_stack_[(4) - (2)]), "Reserved keyword: adjustment");
+            (yyval.defObj) = nullptr;
         }
     break;
 
   case 63:
 /* Line 670 of lalr1.cc  */
-#line 429 "../../src-common/cfdg.ypp"
+#line 469 "../../src-common/cfdg.ypp"
     {
-            str_ptr type((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
-            error((yylocation_stack_[(4) - (2)]), "Reserved keyword: adjustment");
-            (yyval.string) = nullptr;
+            driver.push_repContainer(driver.mParamDecls);
+            (yyval.defObj) = (yysemantic_stack_[(1) - (1)].defObj);
         }
     break;
 
   case 64:
 /* Line 670 of lalr1.cc  */
-#line 435 "../../src-common/cfdg.ypp"
+#line 474 "../../src-common/cfdg.ypp"
     {
-            error((yylocation_stack_[(2) - (1)]), "Reserved keyword: adjustment");
-            (yyval.string) = nullptr;
+            (yyval.defObj) = (yysemantic_stack_[(1) - (1)].defObj);
         }
     break;
 
   case 65:
 /* Line 670 of lalr1.cc  */
-#line 442 "../../src-common/cfdg.ypp"
+#line 480 "../../src-common/cfdg.ypp"
     {
-            (yyval.string) = (yysemantic_stack_[(2) - (1)].string);
+            (yyval.defObj) = driver.MakeDefinition(*(yysemantic_stack_[(2) - (1)].string), (yyloc), false);
         }
     break;
 
   case 66:
 /* Line 670 of lalr1.cc  */
-#line 445 "../../src-common/cfdg.ypp"
+#line 483 "../../src-common/cfdg.ypp"
     {
             error((yylocation_stack_[(2) - (1)]), "Reserved keyword: adjustment");
-            (yyval.string) = nullptr;
+            (yyval.defObj) = nullptr;
         }
     break;
 
   case 67:
 /* Line 670 of lalr1.cc  */
-#line 452 "../../src-common/cfdg.ypp"
-    { 
-            str_ptr var((yysemantic_stack_[(2) - (1)].string)); (yysemantic_stack_[(2) - (1)].string) = nullptr;
+#line 490 "../../src-common/cfdg.ypp"
+    {
+            def_ptr var((yysemantic_stack_[(2) - (1)].defObj));  (yysemantic_stack_[(2) - (1)].defObj) = nullptr;
             exp_ptr exp((yysemantic_stack_[(2) - (2)].expression));  (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            if (var.get() && driver.mCompilePhase == 2)
-                driver.NextParameter(*var, std::move(exp), (yylocation_stack_[(2) - (1)]), (yylocation_stack_[(2) - (2)]));
+            if (var) {
+                if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
+                    mod->modData.mRand64Seed.seed(0);
+                    var->mChildChange.grab(mod);
+                } else {
+                    var->mExpression = std::move(exp);
+                }
+                (yyval.defObj) = var.release();
+            } else {
+                (yyval.defObj) = nullptr;
+            }
         }
     break;
 
   case 68:
 /* Line 670 of lalr1.cc  */
-#line 461 "../../src-common/cfdg.ypp"
+#line 508 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(3) - (2)].string)); (yysemantic_stack_[(3) - (2)].string) = nullptr;
-            bool hasParams = !driver.mParamDecls.mParameters.empty();
-            exp_ptr dummy(hasParams ? new ASTexpression((yylocation_stack_[(3) - (2)])) : nullptr);
-            ASTruleSpecifier r(driver.StringToShape(*name, (yylocation_stack_[(3) - (2)]), false), *name, std::move(dummy),
-                               (yyloc), &(driver.mParamDecls.mParameters),
-                               &(driver.mParamDecls.mParameters));
-            ASTshape* s = new ASTshape(r, false, (yylocation_stack_[(3) - (1)]) + (yylocation_stack_[(3) - (2)]));
-            s->mRules.mParameters.swap(driver.mParamDecls.mParameters);
-            driver.SetShape(s);
-            s->mShapeSpec.typeSignature = hasParams ? &(s->mRules.mParameters) : nullptr;
-            (yyval.shapeObj) = s;
+            driver.SetShape(name.get(), (yylocation_stack_[(3) - (2)]));
         }
     break;
 
   case 69:
 /* Line 670 of lalr1.cc  */
-#line 477 "../../src-common/cfdg.ypp"
+#line 515 "../../src-common/cfdg.ypp"
     {
-            driver.push_rep((yysemantic_stack_[(2) - (1)].shapeObj), true);
-            if (driver.mCompilePhase == 2) {
-                driver.mInPathContainer = false;
-                rule_ptr rule(new ASTrule(-1, (yylocation_stack_[(2) - (1)])));
-                driver.AddRule(rule.get());
-                driver.push_repContainer(rule->mRuleBody);
-                (yyval.ruleObj) = rule.release();
-            } else {
-                (yyval.ruleObj) = nullptr;
-            }
+            driver.mInPathContainer = false;
+            rule_ptr rule(new ASTrule(-1, (yylocation_stack_[(2) - (1)])));
+            driver.AddRule(rule.get());
+            driver.push_repContainer(rule->mRuleBody);
+            (yyval.ruleObj) = rule.release();
         }
     break;
 
   case 70:
 /* Line 670 of lalr1.cc  */
-#line 491 "../../src-common/cfdg.ypp"
+#line 524 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(3) - (1)].ruleObj);
-            if (driver.mCompilePhase == 2)
-                driver.pop_repContainer((yysemantic_stack_[(3) - (1)].ruleObj));
+            driver.pop_repContainer((yysemantic_stack_[(3) - (1)].ruleObj));
             driver.mInPathContainer = false;
         }
     break;
 
   case 71:
 /* Line 670 of lalr1.cc  */
-#line 500 "../../src-common/cfdg.ypp"
+#line 532 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
             driver.SetShape(nullptr);
@@ -1312,7 +1356,7 @@ namespace yy {
 
   case 72:
 /* Line 670 of lalr1.cc  */
-#line 509 "../../src-common/cfdg.ypp"
+#line 541 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(3) - (2)].string)); (yysemantic_stack_[(3) - (2)].string) = nullptr;
             str_ptr weight((yysemantic_stack_[(3) - (3)].string)); (yysemantic_stack_[(3) - (3)].string) = nullptr;
@@ -1329,7 +1373,7 @@ namespace yy {
 
   case 73:
 /* Line 670 of lalr1.cc  */
-#line 524 "../../src-common/cfdg.ypp"
+#line 556 "../../src-common/cfdg.ypp"
     {
             driver.lexer->maybeVersion = token::CFDG2;
             (yyval.component) = (yysemantic_stack_[(4) - (1)].ruleObj);
@@ -1339,84 +1383,62 @@ namespace yy {
 
   case 74:
 /* Line 670 of lalr1.cc  */
-#line 532 "../../src-common/cfdg.ypp"
+#line 564 "../../src-common/cfdg.ypp"
     {
             driver.mInPathContainer = false;
-            if (driver.mCompilePhase == 2) {
-                rule_ptr rule(new ASTrule(-1, (yylocation_stack_[(1) - (1)])));
-                driver.AddRule(rule.get());
-                driver.push_repContainer(rule->mRuleBody);
-                (yyval.ruleObj) = rule.release();
-            } else {
-                (yyval.ruleObj) = nullptr;
-            }
+            rule_ptr rule(new ASTrule(-1, (yylocation_stack_[(1) - (1)])));
+            driver.AddRule(rule.get());
+            driver.push_repContainer(rule->mRuleBody);
+            (yyval.ruleObj) = rule.release();
         }
     break;
 
   case 75:
 /* Line 670 of lalr1.cc  */
-#line 544 "../../src-common/cfdg.ypp"
+#line 572 "../../src-common/cfdg.ypp"
     {
             driver.mInPathContainer = false;
             str_ptr weight((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                rule_ptr rule(new ASTrule(-1, CFatof(weight->c_str()), 
-                                          weight->find_first_of('%')  != std::string::npos,
-                                          (yyloc)));
-                driver.AddRule(rule.get());
-                driver.push_repContainer(rule->mRuleBody);
-                (yyval.ruleObj) = rule.release();
-            } else {
-                (yyval.ruleObj) = nullptr;
-            }
+            rule_ptr rule(new ASTrule(-1, CFatof(weight->c_str()),
+                                      weight->find_first_of('%')  != std::string::npos,
+                                      (yyloc)));
+            driver.AddRule(rule.get());
+            driver.push_repContainer(rule->mRuleBody);
+            (yyval.ruleObj) = rule.release();
         }
     break;
 
   case 76:
 /* Line 670 of lalr1.cc  */
-#line 561 "../../src-common/cfdg.ypp"
+#line 585 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(3) - (2)].string)); (yysemantic_stack_[(3) - (2)].string) = nullptr;
-            bool hasParams = !driver.mParamDecls.mParameters.empty();
-            exp_ptr dummy(hasParams ? new ASTexpression((yylocation_stack_[(3) - (2)])) : nullptr);
-            ASTruleSpecifier r(driver.StringToShape(*name, (yylocation_stack_[(3) - (2)]), false), *name, std::move(dummy),
-                               (yyloc), &(driver.mParamDecls.mParameters),
-                               &(driver.mParamDecls.mParameters));
-            ASTshape s(r, false, (yylocation_stack_[(3) - (1)]) + (yylocation_stack_[(3) - (2)]));
-            s.mRules.mParameters.swap(driver.mParamDecls.mParameters);
-            driver.SetShape(&s, true);
-            s.mShapeSpec.typeSignature = hasParams ? &(s.mRules.mParameters) : nullptr;
+            driver.SetShape(name.get(), (yylocation_stack_[(3) - (2)]), true);
             driver.mInPathContainer = true;
-            if (driver.mCompilePhase == 2) {
-                rule_ptr newPath(new ASTrule(-1, (yyloc)));
-                newPath->isPath = true;
-                driver.AddRule(newPath.get());
-                driver.push_repContainer(newPath->mRuleBody);
-                (yyval.ruleObj) = newPath.release();
-            } else {
-                (yyval.ruleObj) = nullptr;
-            }
+            rule_ptr newPath(new ASTrule(-1, (yyloc)));
+            newPath->isPath = true;
+            driver.AddRule(newPath.get());
+            driver.push_repContainer(newPath->mRuleBody);
+            (yyval.ruleObj) = newPath.release();
         }
     break;
 
   case 77:
 /* Line 670 of lalr1.cc  */
-#line 586 "../../src-common/cfdg.ypp"
+#line 598 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(4) - (1)].ruleObj);
-            if (driver.mCompilePhase == 2)
-                driver.pop_repContainer((yysemantic_stack_[(4) - (1)].ruleObj));
+            driver.pop_repContainer((yysemantic_stack_[(4) - (1)].ruleObj));
             driver.mInPathContainer = false;
         }
     break;
 
   case 78:
 /* Line 670 of lalr1.cc  */
-#line 595 "../../src-common/cfdg.ypp"
+#line 606 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(4) - (1)].ruleObj);
-            if (driver.mCompilePhase == 2)
-                driver.pop_repContainer((yysemantic_stack_[(4) - (1)].ruleObj));
+            driver.pop_repContainer((yysemantic_stack_[(4) - (1)].ruleObj));
             driver.mInPathContainer = false;
             driver.SetShape(nullptr);
         }
@@ -1424,7 +1446,7 @@ namespace yy {
 
   case 79:
 /* Line 670 of lalr1.cc  */
-#line 605 "../../src-common/cfdg.ypp"
+#line 615 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
             driver.SetShape(nullptr);
@@ -1439,7 +1461,7 @@ namespace yy {
 
   case 80:
 /* Line 670 of lalr1.cc  */
-#line 618 "../../src-common/cfdg.ypp"
+#line 628 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(4) - (1)].ruleObj);
             driver.pop_repContainer((yysemantic_stack_[(4) - (1)].ruleObj));
@@ -1448,7 +1470,7 @@ namespace yy {
 
   case 81:
 /* Line 670 of lalr1.cc  */
-#line 625 "../../src-common/cfdg.ypp"
+#line 635 "../../src-common/cfdg.ypp"
     {
             str_ptr type((yysemantic_stack_[(2) - (1)].string)); (yysemantic_stack_[(2) - (1)].string) = nullptr;
             str_ptr var((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
@@ -1458,7 +1480,7 @@ namespace yy {
 
   case 82:
 /* Line 670 of lalr1.cc  */
-#line 631 "../../src-common/cfdg.ypp"
+#line 641 "../../src-common/cfdg.ypp"
     {
             static std::string shapeStr("shape");
             str_ptr var((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
@@ -1468,7 +1490,7 @@ namespace yy {
 
   case 83:
 /* Line 670 of lalr1.cc  */
-#line 637 "../../src-common/cfdg.ypp"
+#line 647 "../../src-common/cfdg.ypp"
     {
             delete (yysemantic_stack_[(2) - (1)].string);
             error((yylocation_stack_[(2) - (2)]), "Reserved keyword: adjustment");
@@ -1477,7 +1499,7 @@ namespace yy {
 
   case 84:
 /* Line 670 of lalr1.cc  */
-#line 642 "../../src-common/cfdg.ypp"
+#line 652 "../../src-common/cfdg.ypp"
     {
             error((yylocation_stack_[(2) - (2)]), "Reserved keyword: adjustment");
         }
@@ -1485,7 +1507,7 @@ namespace yy {
 
   case 85:
 /* Line 670 of lalr1.cc  */
-#line 646 "../../src-common/cfdg.ypp"
+#line 656 "../../src-common/cfdg.ypp"
     {
             static const std::string numtype("number");
             str_ptr var((yysemantic_stack_[(1) - (1)].string)); (yysemantic_stack_[(1) - (1)].string) = nullptr;
@@ -1495,7 +1517,7 @@ namespace yy {
 
   case 86:
 /* Line 670 of lalr1.cc  */
-#line 652 "../../src-common/cfdg.ypp"
+#line 662 "../../src-common/cfdg.ypp"
     {
             error((yylocation_stack_[(1) - (1)]), "Reserved keyword: adjustment");
         }
@@ -1503,41 +1525,39 @@ namespace yy {
 
   case 93:
 /* Line 670 of lalr1.cc  */
-#line 673 "../../src-common/cfdg.ypp"
+#line 683 "../../src-common/cfdg.ypp"
     { (yyval.expression) = (yysemantic_stack_[(3) - (2)].expression);}
     break;
 
   case 94:
 /* Line 670 of lalr1.cc  */
-#line 674 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTexpression((yyloc)); }
+#line 684 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTexpression((yyloc), false, false, AST::ReuseType); }
     break;
 
   case 95:
 /* Line 670 of lalr1.cc  */
-#line 675 "../../src-common/cfdg.ypp"
+#line 685 "../../src-common/cfdg.ypp"
     { (yyval.expression) = nullptr; }
     break;
 
   case 96:
 /* Line 670 of lalr1.cc  */
-#line 676 "../../src-common/cfdg.ypp"
+#line 686 "../../src-common/cfdg.ypp"
     { (yyval.expression) = nullptr; }
     break;
 
   case 97:
 /* Line 670 of lalr1.cc  */
-#line 680 "../../src-common/cfdg.ypp"
+#line 690 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 1)
-                assert ((yysemantic_stack_[(2) - (2)].component) == nullptr);
             driver.push_rep((yysemantic_stack_[(2) - (2)].component));
         }
     break;
 
   case 99:
 /* Line 670 of lalr1.cc  */
-#line 689 "../../src-common/cfdg.ypp"
+#line 697 "../../src-common/cfdg.ypp"
     {
             driver.push_rep((yysemantic_stack_[(2) - (2)].component));
         }
@@ -1545,7 +1565,7 @@ namespace yy {
 
   case 101:
 /* Line 670 of lalr1.cc  */
-#line 696 "../../src-common/cfdg.ypp"
+#line 704 "../../src-common/cfdg.ypp"
     {
             str_ptr pop((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             mod_ptr mod((yysemantic_stack_[(4) - (3)].mod)); (yysemantic_stack_[(4) - (3)].mod) = nullptr;
@@ -1556,136 +1576,113 @@ namespace yy {
 
   case 102:
 /* Line 670 of lalr1.cc  */
-#line 703 "../../src-common/cfdg.ypp"
+#line 711 "../../src-common/cfdg.ypp"
     {
             str_ptr cmd((yysemantic_stack_[(2) - (1)].string)); (yysemantic_stack_[(2) - (1)].string) = nullptr;
             mod_ptr mod((yysemantic_stack_[(2) - (2)].mod)); (yysemantic_stack_[(2) - (2)].mod) = nullptr;
             driver.lexer->maybeVersion = token::CFDG2;
-            rep_ptr item(new ASTpathCommand(*cmd, std::move(mod), (yyloc)));
+            rep_ptr item(new ASTpathCommand(*cmd, std::move(mod), nullptr, (yyloc)));
             (yyval.component) = item.release();
         }
     break;
 
   case 103:
 /* Line 670 of lalr1.cc  */
-#line 713 "../../src-common/cfdg.ypp"
+#line 721 "../../src-common/cfdg.ypp"
     {
             str_ptr pop((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr mod((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
-            if (driver.mCompilePhase == 2)
-                (yyval.component) = new ASTpathOp(*pop, std::move(mod), (yyloc));
-            else
-                (yyval.component) = nullptr;
+            (yyval.component) = new ASTpathOp(*pop, std::move(mod), (yyloc));
         }
     break;
 
   case 104:
 /* Line 670 of lalr1.cc  */
-#line 722 "../../src-common/cfdg.ypp"
+#line 727 "../../src-common/cfdg.ypp"
     {
             str_ptr pop((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
             exp_ptr mod;
-            if (driver.mCompilePhase == 2)
-                (yyval.component) = new ASTpathOp(*pop, std::move(mod), (yyloc));
-            else
-                (yyval.component) = nullptr;
+            (yyval.component) = new ASTpathOp(*pop, std::move(mod), (yyloc));
         }
     break;
 
   case 105:
 /* Line 670 of lalr1.cc  */
-#line 731 "../../src-common/cfdg.ypp"
+#line 733 "../../src-common/cfdg.ypp"
     {
             str_ptr cmd((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
             exp_ptr p((yysemantic_stack_[(3) - (2)].expression)); (yysemantic_stack_[(3) - (2)].expression) = nullptr;
             mod_ptr mod((yysemantic_stack_[(3) - (3)].mod)); (yysemantic_stack_[(3) - (3)].mod) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                rep_ptr item = driver.MakeElement(*cmd, std::move(mod),
-                                                  std::move(p), (yyloc), false);
-                (yyval.component) = item.release();
-            } else {
-                (yyval.component) = nullptr;
-            }
+            rep_ptr item = driver.MakeElement(*cmd, std::move(mod),
+                                              std::move(p), (yyloc), false);
+            (yyval.component) = item.release();
         }
     break;
 
   case 106:
 /* Line 670 of lalr1.cc  */
-#line 744 "../../src-common/cfdg.ypp"
+#line 742 "../../src-common/cfdg.ypp"
     { 
             exp_ptr args((yysemantic_stack_[(5) - (3)].expression)); (yysemantic_stack_[(5) - (3)].expression) = nullptr;
             mod_ptr mod((yysemantic_stack_[(5) - (5)].mod)); (yysemantic_stack_[(5) - (5)].mod) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                str_ptr func(new std::string("if"));
-                args.reset(driver.MakeFunction(std::move(func), std::move(args), (yylocation_stack_[(5) - (1)]), (yylocation_stack_[(5) - (3)]), false));
-                static const std::string ifstr("if");
-                rep_ptr item = driver.MakeElement(ifstr, std::move(mod), std::move(args), (yyloc), false);
-                (yyval.component) = item.release();
-            } else {
-                (yyval.component) = nullptr;
-            }
+            str_ptr func(new std::string("if"));
+            args.reset(driver.MakeFunction(std::move(func), std::move(args), (yylocation_stack_[(5) - (1)]), (yylocation_stack_[(5) - (3)]), false));
+            static const std::string ifstr("if");
+            rep_ptr item = driver.MakeElement(ifstr, std::move(mod), std::move(args), (yyloc), false);
+            (yyval.component) = item.release();
         }
     break;
 
   case 107:
 /* Line 670 of lalr1.cc  */
-#line 758 "../../src-common/cfdg.ypp"
+#line 752 "../../src-common/cfdg.ypp"
     {
-            cont_ptr vars((yysemantic_stack_[(3) - (1)].bodyObj));
+            driver.pop_repContainer(nullptr);
+            cont_ptr vars((yysemantic_stack_[(3) - (1)].bodyObj)); (yysemantic_stack_[(3) - (1)].bodyObj) = nullptr;
             exp_ptr exp((yysemantic_stack_[(3) - (2)].expression)); (yysemantic_stack_[(3) - (2)].expression) = nullptr;
             mod_ptr mod((yysemantic_stack_[(3) - (3)].mod)); (yysemantic_stack_[(3) - (3)].mod) = nullptr;
-            exp.reset(driver.MakeLet((yylocation_stack_[(3) - (1)]), std::move(exp)));     // must do unconditionally
-            if (driver.mCompilePhase == 2) {
-                static const std::string letstr("let");
-                rep_ptr item = driver.MakeElement(letstr, std::move(mod), std::move(exp), (yyloc), false);
-                (yyval.component) = item.release();
-            } else {
-                (yyval.component) = nullptr;
-            }
+            exp.reset(driver.MakeLet((yylocation_stack_[(3) - (1)]), std::move(vars), std::move(exp)));      // must do unconditionally
+            static const std::string letstr("let");
+            rep_ptr item = driver.MakeElement(letstr, std::move(mod), std::move(exp), (yyloc), false);
+            (yyval.component) = item.release();
         }
     break;
 
   case 108:
 /* Line 670 of lalr1.cc  */
-#line 772 "../../src-common/cfdg.ypp"
+#line 763 "../../src-common/cfdg.ypp"
     {
             str_ptr cmd((yysemantic_stack_[(4) - (2)].string)); (yysemantic_stack_[(4) - (2)].string) = nullptr;
             exp_ptr p((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
             mod_ptr mod((yysemantic_stack_[(4) - (4)].mod)); (yysemantic_stack_[(4) - (4)].mod) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                rep_ptr item = driver.MakeElement(*cmd, std::move(mod), std::move(p), (yyloc), true);
-                (yyval.component) = item.release();
-            } else {
-                (yyval.component) = nullptr;
-            }
+            rep_ptr item = driver.MakeElement(*cmd, std::move(mod), std::move(p), (yyloc), true);
+            (yyval.component) = item.release();
         }
     break;
 
   case 109:
 /* Line 670 of lalr1.cc  */
-#line 786 "../../src-common/cfdg.ypp"
+#line 773 "../../src-common/cfdg.ypp"
     { }
     break;
 
   case 110:
 /* Line 670 of lalr1.cc  */
-#line 788 "../../src-common/cfdg.ypp"
+#line 775 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 1)
-                assert((yysemantic_stack_[(1) - (1)].component) == nullptr);
             driver.push_rep((yysemantic_stack_[(1) - (1)].component));
         }
     break;
 
   case 111:
 /* Line 670 of lalr1.cc  */
-#line 796 "../../src-common/cfdg.ypp"
+#line 781 "../../src-common/cfdg.ypp"
     { }
     break;
 
   case 112:
 /* Line 670 of lalr1.cc  */
-#line 798 "../../src-common/cfdg.ypp"
+#line 783 "../../src-common/cfdg.ypp"
     {
             driver.push_rep((yysemantic_stack_[(1) - (1)].component));
         }
@@ -1693,16 +1690,15 @@ namespace yy {
 
   case 113:
 /* Line 670 of lalr1.cc  */
-#line 804 "../../src-common/cfdg.ypp"
+#line 789 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 2)
-                driver.pop_repContainer(driver.switchStack.top());
+            driver.pop_repContainer(driver.switchStack.top());
         }
     break;
 
   case 116:
 /* Line 670 of lalr1.cc  */
-#line 816 "../../src-common/cfdg.ypp"
+#line 800 "../../src-common/cfdg.ypp"
     { 
             (yyval.component) = (yysemantic_stack_[(1) - (1)].component); 
         }
@@ -1710,50 +1706,42 @@ namespace yy {
 
   case 117:
 /* Line 670 of lalr1.cc  */
-#line 820 "../../src-common/cfdg.ypp"
+#line 804 "../../src-common/cfdg.ypp"
     { 
-            (yyval.component) = nullptr;
+            (yyval.component) = (yysemantic_stack_[(1) - (1)].defObj);
         }
     break;
 
   case 118:
 /* Line 670 of lalr1.cc  */
-#line 824 "../../src-common/cfdg.ypp"
+#line 808 "../../src-common/cfdg.ypp"
     { 
-            (yyval.component) = (yysemantic_stack_[(1) - (1)].loopObj); 
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(1) - (1)].loopObj));
-                if ((yysemantic_stack_[(1) - (1)].loopObj)->mRepType == 0) {
-                    delete (yysemantic_stack_[(1) - (1)].loopObj);
-                    (yyval.component) = nullptr;
-                }
+            (yyval.component) = (yysemantic_stack_[(1) - (1)].loopObj);
+            driver.pop_repContainer((yysemantic_stack_[(1) - (1)].loopObj));
+            if ((yysemantic_stack_[(1) - (1)].loopObj)->mRepType == 0) {
+                delete (yysemantic_stack_[(1) - (1)].loopObj);
+                (yyval.component) = nullptr;
             }
         }
     break;
 
   case 119:
 /* Line 670 of lalr1.cc  */
-#line 835 "../../src-common/cfdg.ypp"
+#line 817 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(2) - (1)].loopObj));
-                driver.push_repContainer((yysemantic_stack_[(2) - (1)].loopObj)->mFinallyBody);
-            }
+            driver.pop_repContainer((yysemantic_stack_[(2) - (1)].loopObj));
+            driver.push_repContainer((yysemantic_stack_[(2) - (1)].loopObj)->mFinallyBody);
         }
     break;
 
   case 120:
 /* Line 670 of lalr1.cc  */
-#line 840 "../../src-common/cfdg.ypp"
+#line 820 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(4) - (1)].loopObj));
-                (yyval.component) = (yysemantic_stack_[(4) - (1)].loopObj);
-                if ((yysemantic_stack_[(4) - (1)].loopObj)->mRepType == 0) {
-                    delete (yysemantic_stack_[(4) - (1)].loopObj);
-                    (yyval.component) = nullptr;
-                }
-            } else {
+            driver.pop_repContainer((yysemantic_stack_[(4) - (1)].loopObj));
+            (yyval.component) = (yysemantic_stack_[(4) - (1)].loopObj);
+            if ((yysemantic_stack_[(4) - (1)].loopObj)->mRepType == 0) {
+                delete (yysemantic_stack_[(4) - (1)].loopObj);
                 (yyval.component) = nullptr;
             }
         }
@@ -1761,64 +1749,56 @@ namespace yy {
 
   case 121:
 /* Line 670 of lalr1.cc  */
-#line 853 "../../src-common/cfdg.ypp"
+#line 829 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(2) - (1)].ifObj);
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(2) - (1)].ifObj));
-                if ((yysemantic_stack_[(2) - (1)].ifObj)->mRepType == 0) {
-                    delete (yysemantic_stack_[(2) - (1)].ifObj);
-                    (yyval.component) = nullptr;
-                }
+            driver.pop_repContainer((yysemantic_stack_[(2) - (1)].ifObj));
+            if ((yysemantic_stack_[(2) - (1)].ifObj)->mRepType == 0) {
+                delete (yysemantic_stack_[(2) - (1)].ifObj);
+                (yyval.component) = nullptr;
             }
         }
     break;
 
   case 122:
 /* Line 670 of lalr1.cc  */
-#line 864 "../../src-common/cfdg.ypp"
+#line 838 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(2) - (1)].ifObj);
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(2) - (1)].ifObj));
-                if ((yysemantic_stack_[(2) - (1)].ifObj)->mRepType == 0) {
-                    delete (yysemantic_stack_[(2) - (1)].ifObj);
-                    (yyval.component) = nullptr;
-                }
+            driver.pop_repContainer((yysemantic_stack_[(2) - (1)].ifObj));
+            if ((yysemantic_stack_[(2) - (1)].ifObj)->mRepType == 0) {
+                delete (yysemantic_stack_[(2) - (1)].ifObj);
+                (yyval.component) = nullptr;
             }
         }
     break;
 
   case 123:
 /* Line 670 of lalr1.cc  */
-#line 875 "../../src-common/cfdg.ypp"
+#line 847 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(2) - (1)].component);
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(2) - (1)].component));
-                if ((yysemantic_stack_[(2) - (1)].component)->mRepType == 0) {
-                    delete (yysemantic_stack_[(2) - (1)].component);
-                    (yyval.component) = nullptr;
-                }
+            driver.pop_repContainer((yysemantic_stack_[(2) - (1)].component));
+            if ((yysemantic_stack_[(2) - (1)].component)->mRepType == 0) {
+                delete (yysemantic_stack_[(2) - (1)].component);
+                (yyval.component) = nullptr;
             }
         }
     break;
 
   case 124:
 /* Line 670 of lalr1.cc  */
-#line 887 "../../src-common/cfdg.ypp"
+#line 857 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(4) - (1)].switchObj);
-            if (driver.mCompilePhase == 2) {
-                (yysemantic_stack_[(4) - (1)].switchObj)->unify();
-                driver.switchStack.pop();
-            }
+            (yysemantic_stack_[(4) - (1)].switchObj)->unify();
+            driver.switchStack.pop();
         }
     break;
 
   case 125:
 /* Line 670 of lalr1.cc  */
-#line 895 "../../src-common/cfdg.ypp"
+#line 863 "../../src-common/cfdg.ypp"
     {
             error((yylocation_stack_[(1) - (1)]), "Illegal mixture of old and new elements");
             (yyval.component) = nullptr;
@@ -1827,31 +1807,31 @@ namespace yy {
 
   case 126:
 /* Line 670 of lalr1.cc  */
-#line 902 "../../src-common/cfdg.ypp"
+#line 870 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 127:
 /* Line 670 of lalr1.cc  */
-#line 903 "../../src-common/cfdg.ypp"
+#line 871 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 128:
 /* Line 670 of lalr1.cc  */
-#line 904 "../../src-common/cfdg.ypp"
+#line 872 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 129:
 /* Line 670 of lalr1.cc  */
-#line 908 "../../src-common/cfdg.ypp"
+#line 876 "../../src-common/cfdg.ypp"
     { (yyval.component) = (yysemantic_stack_[(1) - (1)].component); }
     break;
 
   case 130:
 /* Line 670 of lalr1.cc  */
-#line 910 "../../src-common/cfdg.ypp"
+#line 878 "../../src-common/cfdg.ypp"
     { 
             (yyval.component) = (yysemantic_stack_[(2) - (1)].loopObj);
             driver.pop_repContainer((yysemantic_stack_[(2) - (1)].loopObj));
@@ -1864,7 +1844,7 @@ namespace yy {
 
   case 131:
 /* Line 670 of lalr1.cc  */
-#line 918 "../../src-common/cfdg.ypp"
+#line 886 "../../src-common/cfdg.ypp"
     {
             if (driver.lexer->maybeVersion == token::CFDG2) {
                 error((yylocation_stack_[(1) - (1)]), "Illegal mixture of old and new elements");
@@ -1878,30 +1858,29 @@ namespace yy {
 
   case 132:
 /* Line 670 of lalr1.cc  */
-#line 930 "../../src-common/cfdg.ypp"
+#line 898 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 133:
 /* Line 670 of lalr1.cc  */
-#line 931 "../../src-common/cfdg.ypp"
+#line 899 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 136:
 /* Line 670 of lalr1.cc  */
-#line 934 "../../src-common/cfdg.ypp"
+#line 902 "../../src-common/cfdg.ypp"
     { delete (yysemantic_stack_[(2) - (1)].string); }
     break;
 
   case 141:
 /* Line 670 of lalr1.cc  */
-#line 942 "../../src-common/cfdg.ypp"
+#line 910 "../../src-common/cfdg.ypp"
     {
             // parse loop mod and loop body with loop index in scope
             mod_ptr loopmod((yysemantic_stack_[(3) - (2)].mod)); (yysemantic_stack_[(3) - (2)].mod) = nullptr;
-            if (driver.mCompilePhase == 2)
-                (yysemantic_stack_[(3) - (1)].loopObj)->mChildChange.grab(loopmod.get());
+            (yysemantic_stack_[(3) - (1)].loopObj)->mChildChange.grab(loopmod.get());
             (yyval.loopObj) = (yysemantic_stack_[(3) - (1)].loopObj);
             // loopmod gets deleted
         }
@@ -1909,7 +1888,7 @@ namespace yy {
 
   case 142:
 /* Line 670 of lalr1.cc  */
-#line 953 "../../src-common/cfdg.ypp"
+#line 920 "../../src-common/cfdg.ypp"
     {
             driver.push_rep((yysemantic_stack_[(2) - (2)].component));
         }
@@ -1917,13 +1896,13 @@ namespace yy {
 
   case 144:
 /* Line 670 of lalr1.cc  */
-#line 960 "../../src-common/cfdg.ypp"
+#line 927 "../../src-common/cfdg.ypp"
     { }
     break;
 
   case 145:
 /* Line 670 of lalr1.cc  */
-#line 962 "../../src-common/cfdg.ypp"
+#line 929 "../../src-common/cfdg.ypp"
     {
             driver.push_rep((yysemantic_stack_[(1) - (1)].component));
         }
@@ -1931,7 +1910,7 @@ namespace yy {
 
   case 146:
 /* Line 670 of lalr1.cc  */
-#line 968 "../../src-common/cfdg.ypp"
+#line 935 "../../src-common/cfdg.ypp"
     {
             str_ptr name((yysemantic_stack_[(2) - (1)].string)); (yysemantic_stack_[(2) - (1)].string) = nullptr;
             mod_ptr mod((yysemantic_stack_[(2) - (2)].mod)); (yysemantic_stack_[(2) - (2)].mod) = nullptr;
@@ -1942,13 +1921,13 @@ namespace yy {
 
   case 147:
 /* Line 670 of lalr1.cc  */
-#line 977 "../../src-common/cfdg.ypp"
+#line 944 "../../src-common/cfdg.ypp"
     { (yyval.component) = (yysemantic_stack_[(1) - (1)].component); }
     break;
 
   case 148:
 /* Line 670 of lalr1.cc  */
-#line 979 "../../src-common/cfdg.ypp"
+#line 946 "../../src-common/cfdg.ypp"
     {
             (yyval.component) = (yysemantic_stack_[(2) - (1)].loopObj);
             driver.pop_repContainer((yysemantic_stack_[(2) - (1)].loopObj));
@@ -1961,13 +1940,13 @@ namespace yy {
 
   case 149:
 /* Line 670 of lalr1.cc  */
-#line 990 "../../src-common/cfdg.ypp"
+#line 957 "../../src-common/cfdg.ypp"
     { ++driver.mLocalStackDepth; }
     break;
 
   case 150:
 /* Line 670 of lalr1.cc  */
-#line 990 "../../src-common/cfdg.ypp"
+#line 957 "../../src-common/cfdg.ypp"
     {
             str_ptr cstr((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr count(new ASTreal(*cstr, (yylocation_stack_[(4) - (1)])));
@@ -1984,162 +1963,128 @@ namespace yy {
 
   case 151:
 /* Line 670 of lalr1.cc  */
-#line 1005 "../../src-common/cfdg.ypp"
+#line 972 "../../src-common/cfdg.ypp"
     {
             str_ptr var((yysemantic_stack_[(4) - (2)].string)); (yysemantic_stack_[(4) - (2)].string) = nullptr;
             exp_ptr index((yysemantic_stack_[(4) - (4)].expression)); (yysemantic_stack_[(4) - (4)].expression) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                int nameIndex = driver.StringToShape(*var, (yylocation_stack_[(4) - (2)]), false);
-                loop_ptr loop(new ASTloop(nameIndex, *var, (yylocation_stack_[(4) - (2)]), std::move(index), (yylocation_stack_[(4) - (4)]), nullptr));
-                driver.push_repContainer(loop->mLoopBody);
-                (yyval.loopObj) = loop.release();
-            } else {
-                (yyval.loopObj) = nullptr;
-            }
+            int nameIndex = driver.StringToShape(*var, (yylocation_stack_[(4) - (2)]), false);
+            loop_ptr loop(new ASTloop(nameIndex, *var, (yylocation_stack_[(4) - (2)]), std::move(index), (yylocation_stack_[(4) - (4)]), nullptr));
+            driver.push_repContainer(loop->mLoopBody);
+            (yyval.loopObj) = loop.release();
         }
     break;
 
   case 152:
 /* Line 670 of lalr1.cc  */
-#line 1018 "../../src-common/cfdg.ypp"
+#line 981 "../../src-common/cfdg.ypp"
     {
             exp_ptr index((yysemantic_stack_[(4) - (4)].expression)); (yysemantic_stack_[(4) - (4)].expression) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                static const std::string dummyvar("~~inaccessiblevar~~");
-                loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, (yylocation_stack_[(4) - (1)]), false), 
-                                          dummyvar, (yylocation_stack_[(4) - (2)]), std::move(index), (yylocation_stack_[(4) - (4)]), nullptr));
-                driver.push_repContainer(loop->mLoopBody);
-                (yyval.loopObj) = loop.release();
-            } else {
-                (yyval.loopObj) = nullptr;
-            }
+            static const std::string dummyvar("~~inaccessiblevar~~");
+            loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, (yylocation_stack_[(4) - (1)]), false), 
+                                      dummyvar, (yylocation_stack_[(4) - (2)]), std::move(index), (yylocation_stack_[(4) - (4)]), nullptr));
+            driver.push_repContainer(loop->mLoopBody);
+            (yyval.loopObj) = loop.release();
             error((yylocation_stack_[(4) - (2)]), "Reserved keyword: adjustment");
         }
     break;
 
   case 153:
 /* Line 670 of lalr1.cc  */
-#line 1032 "../../src-common/cfdg.ypp"
+#line 991 "../../src-common/cfdg.ypp"
     {
             exp_ptr count((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                static const std::string dummyvar("~~inaccessiblevar~~");
-                loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, (yylocation_stack_[(2) - (1)]), false), 
-                                          dummyvar, (yylocation_stack_[(2) - (1)]), std::move(count), (yylocation_stack_[(2) - (2)]), nullptr));
-                driver.push_repContainer(loop->mLoopBody);
-                (yyval.loopObj) = loop.release();
-            } else {
-                (yyval.loopObj) = nullptr;
-            }
+            static const std::string dummyvar("~~inaccessiblevar~~");
+            loop_ptr loop(new ASTloop(driver.StringToShape(dummyvar, (yylocation_stack_[(2) - (1)]), false), 
+                                      dummyvar, (yylocation_stack_[(2) - (1)]), std::move(count), (yylocation_stack_[(2) - (2)]), nullptr));
+            driver.push_repContainer(loop->mLoopBody);
+            (yyval.loopObj) = loop.release();
         }
     break;
 
   case 154:
 /* Line 670 of lalr1.cc  */
-#line 1047 "../../src-common/cfdg.ypp"
+#line 1002 "../../src-common/cfdg.ypp"
     {
             exp_ptr cond((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                if_ptr ifHeader(new ASTif(std::move(cond), (yylocation_stack_[(4) - (3)])));
-                driver.push_repContainer(ifHeader->mThenBody);
-                (yyval.ifObj) = ifHeader.release();
-            } else {
-                (yyval.ifObj) = nullptr;
-            }
+            if_ptr ifHeader(new ASTif(std::move(cond), (yylocation_stack_[(4) - (3)])));
+            driver.push_repContainer(ifHeader->mThenBody);
+            (yyval.ifObj) = ifHeader.release();
         }
     break;
 
   case 155:
 /* Line 670 of lalr1.cc  */
-#line 1060 "../../src-common/cfdg.ypp"
+#line 1011 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 2) {
-                driver.pop_repContainer((yysemantic_stack_[(3) - (1)].ifObj));
-                driver.push_repContainer((yysemantic_stack_[(3) - (1)].ifObj)->mElseBody);
-            }
+            driver.pop_repContainer((yysemantic_stack_[(3) - (1)].ifObj));
+            driver.push_repContainer((yysemantic_stack_[(3) - (1)].ifObj)->mElseBody);
             (yyval.ifObj) = (yysemantic_stack_[(3) - (1)].ifObj);
         }
     break;
 
   case 156:
 /* Line 670 of lalr1.cc  */
-#line 1070 "../../src-common/cfdg.ypp"
+#line 1019 "../../src-common/cfdg.ypp"
     {
             exp_ptr mods((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
             if ((yysemantic_stack_[(2) - (1)].modToken) != ASTmodTerm::transform)
                 error((yylocation_stack_[(2) - (1)]), "Syntax error");
-            if (driver.mCompilePhase == 2) {
-                ASTtransform* trans = new ASTtransform((yyloc), std::move(mods));
-                driver.push_repContainer(trans->mBody);
-                (yyval.component) = trans;
-            } else {
-                (yyval.component) = nullptr;
-            }
+            ASTtransform* trans = new ASTtransform((yyloc), std::move(mods));
+            driver.push_repContainer(trans->mBody);
+            (yyval.component) = trans;
         }
     break;
 
   case 157:
 /* Line 670 of lalr1.cc  */
-#line 1082 "../../src-common/cfdg.ypp"
+#line 1027 "../../src-common/cfdg.ypp"
     {
             exp_ptr mods((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            if (!ASTparameter::Impure)
-                error((yylocation_stack_[(2) - (1)]), "shape cloning only permitted in impure mode");
-            if (driver.mCompilePhase == 2) {
-                ASTtransform* trans = new ASTtransform((yyloc), std::move(mods));
-                trans->mClone = true;
-                driver.push_repContainer(trans->mBody);
-                (yyval.component) = trans;
-            } else {
-                (yyval.component) = nullptr;
-            }
+            ASTtransform* trans = new ASTtransform((yyloc), std::move(mods));
+            trans->mClone = true;
+            driver.push_repContainer(trans->mBody);
+            (yyval.component) = trans;
         }
     break;
 
   case 158:
 /* Line 670 of lalr1.cc  */
-#line 1098 "../../src-common/cfdg.ypp"
+#line 1037 "../../src-common/cfdg.ypp"
     {
             exp_ptr caseVal((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
-            if (driver.mCompilePhase == 2) {
-                switch_ptr switchHeader(new ASTswitch(std::move(caseVal), (yylocation_stack_[(4) - (3)])));
-                driver.switchStack.push(switchHeader.get());
-                (yyval.switchObj) = switchHeader.release();
-            } else {
-                (yyval.switchObj) = nullptr;
-            }
+            switch_ptr switchHeader(new ASTswitch(std::move(caseVal), (yylocation_stack_[(4) - (3)])));
+            driver.switchStack.push(switchHeader.get());
+            (yyval.switchObj) = switchHeader.release();
         }
     break;
 
   case 159:
 /* Line 670 of lalr1.cc  */
-#line 1111 "../../src-common/cfdg.ypp"
+#line 1046 "../../src-common/cfdg.ypp"
     {
             exp_ptr valExp((yysemantic_stack_[(3) - (2)].expression)); (yysemantic_stack_[(3) - (2)].expression) = nullptr;
             
-            if (driver.mCompilePhase == 2) {
-                double val = 0.0;
-                try {
-                    if (valExp->evaluate(&val, 1) != 1) {
-                        driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not a single, numeric expression");
+            double val = 0.0;
+            try {
+                if (valExp->evaluate(&val, 1) != 1) {
+                    driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not a single, numeric expression");
+                } else {
+                    int intval = static_cast<int>(floor(val));
+                    ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
+                    
+                    if (caseMap.count(intval)) {
+                        driver.error((yylocation_stack_[(3) - (2)]), "Case value already in use");
+                        driver.push_repContainer(*(caseMap[intval]));
                     } else {
-                        int intval = static_cast<int>(floor(val));
-                        ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
-                        
-                        if (caseMap.count(intval)) {
-                            driver.error((yylocation_stack_[(3) - (2)]), "Case value already in use");
-                            driver.push_repContainer(*(caseMap[intval]));
-                        } else {
-                            cont_ptr caseBody(new ASTrepContainer());
-                            driver.push_repContainer(*(caseBody.get()));
-                            std::pair<int, cont_ptr> p(intval, std::move(caseBody));
-                            caseMap.insert(std::move(p));
-                        }
+                        cont_ptr caseBody(new ASTrepContainer());
+                        driver.push_repContainer(*(caseBody.get()));
+                        std::pair<int, cont_ptr> p(intval, std::move(caseBody));
+                        caseMap.insert(std::move(p));
                     }
                 }
-                catch (DeferUntilRuntime&) {
-                    driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not constant");
-                }
+            }
+            catch (DeferUntilRuntime&) {
+                driver.error((yylocation_stack_[(3) - (2)]), "Case expression is not constant");
             }
             (yyval.modToken) = 0;
         }
@@ -2147,14 +2092,12 @@ namespace yy {
 
   case 160:
 /* Line 670 of lalr1.cc  */
-#line 1141 "../../src-common/cfdg.ypp"
+#line 1074 "../../src-common/cfdg.ypp"
     {
-            if (driver.mCompilePhase == 2) {
-                if (!driver.switchStack.top()->mElseBody.mBody.empty()) {
-                    driver.error((yyloc), "There can only be one 'else:' clause");
-                } else {
-                    driver.push_repContainer(driver.switchStack.top()->mElseBody);
-                }
+            if (!driver.switchStack.top()->mElseBody.mBody.empty()) {
+                driver.error((yyloc), "There can only be one 'else:' clause");
+            } else {
+                driver.push_repContainer(driver.switchStack.top()->mElseBody);
             }
             (yyval.modToken) = 0;
         }
@@ -2162,7 +2105,7 @@ namespace yy {
 
   case 161:
 /* Line 670 of lalr1.cc  */
-#line 1154 "../../src-common/cfdg.ypp"
+#line 1085 "../../src-common/cfdg.ypp"
     {
             mod_ptr mod((yysemantic_stack_[(3) - (2)].mod)); (yysemantic_stack_[(3) - (2)].mod) = nullptr;
             (yyval.mod) = driver.MakeModification(std::move(mod), (yyloc), true);
@@ -2171,7 +2114,7 @@ namespace yy {
 
   case 162:
 /* Line 670 of lalr1.cc  */
-#line 1159 "../../src-common/cfdg.ypp"
+#line 1090 "../../src-common/cfdg.ypp"
     {
             mod_ptr mod((yysemantic_stack_[(3) - (2)].mod)); (yysemantic_stack_[(3) - (2)].mod) = nullptr;
             (yyval.mod) = driver.MakeModification(std::move(mod), (yyloc), false);
@@ -2180,7 +2123,7 @@ namespace yy {
 
   case 163:
 /* Line 670 of lalr1.cc  */
-#line 1166 "../../src-common/cfdg.ypp"
+#line 1097 "../../src-common/cfdg.ypp"
     {
             mod_ptr mod((yysemantic_stack_[(3) - (2)].mod)); (yysemantic_stack_[(3) - (2)].mod) = nullptr;
             (yyval.mod) = driver.MakeModification(std::move(mod), (yyloc), true);
@@ -2189,7 +2132,7 @@ namespace yy {
 
   case 164:
 /* Line 670 of lalr1.cc  */
-#line 1171 "../../src-common/cfdg.ypp"
+#line 1102 "../../src-common/cfdg.ypp"
     {
             mod_ptr mod((yysemantic_stack_[(5) - (3)].mod)); (yysemantic_stack_[(5) - (3)].mod) = nullptr;
             (yyval.mod) = driver.MakeModification(std::move(mod), (yyloc), false);
@@ -2198,7 +2141,7 @@ namespace yy {
 
   case 165:
 /* Line 670 of lalr1.cc  */
-#line 1178 "../../src-common/cfdg.ypp"
+#line 1109 "../../src-common/cfdg.ypp"
     {
             term_ptr mod((yysemantic_stack_[(2) - (2)].term)); (yysemantic_stack_[(2) - (2)].term) = nullptr;
             driver.MakeModTerm((yysemantic_stack_[(2) - (1)].mod)->modExp, std::move(mod));
@@ -2208,7 +2151,7 @@ namespace yy {
 
   case 166:
 /* Line 670 of lalr1.cc  */
-#line 1183 "../../src-common/cfdg.ypp"
+#line 1114 "../../src-common/cfdg.ypp"
     {
             static const yy::location def;
             ASTmodification* m = new ASTmodification(def);
@@ -2219,7 +2162,7 @@ namespace yy {
 
   case 167:
 /* Line 670 of lalr1.cc  */
-#line 1192 "../../src-common/cfdg.ypp"
+#line 1123 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
             (yyval.term) = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>((yysemantic_stack_[(2) - (1)].modToken)), mod.release(), (yyloc));
@@ -2228,7 +2171,7 @@ namespace yy {
 
   case 168:
 /* Line 670 of lalr1.cc  */
-#line 1197 "../../src-common/cfdg.ypp"
+#line 1128 "../../src-common/cfdg.ypp"
     {
             exp_ptr mod((yysemantic_stack_[(3) - (2)].expression)); (yysemantic_stack_[(3) - (2)].expression) = nullptr;
             if ((yysemantic_stack_[(3) - (1)].modToken) < ASTmodTerm::hue || (yysemantic_stack_[(3) - (1)].modToken) > ASTmodTerm::alpha) {
@@ -2242,7 +2185,7 @@ namespace yy {
 
   case 169:
 /* Line 670 of lalr1.cc  */
-#line 1207 "../../src-common/cfdg.ypp"
+#line 1138 "../../src-common/cfdg.ypp"
     {
             str_ptr p((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
             (yyval.term) = new ASTmodTerm(ASTmodTerm::param, *p, (yyloc));
@@ -2251,7 +2194,7 @@ namespace yy {
 
   case 170:
 /* Line 670 of lalr1.cc  */
-#line 1212 "../../src-common/cfdg.ypp"
+#line 1143 "../../src-common/cfdg.ypp"
     {
             str_ptr p((yysemantic_stack_[(2) - (2)].string)); (yysemantic_stack_[(2) - (2)].string) = nullptr;
             (yyval.term) = new ASTmodTerm(ASTmodTerm::param, *p, (yyloc));
@@ -2260,7 +2203,7 @@ namespace yy {
 
   case 171:
 /* Line 670 of lalr1.cc  */
-#line 1219 "../../src-common/cfdg.ypp"
+#line 1150 "../../src-common/cfdg.ypp"
     {
             ASTrepContainer* tempHolder = new ASTrepContainer();
             driver.push_repContainer(*tempHolder);
@@ -2270,7 +2213,7 @@ namespace yy {
 
   case 172:
 /* Line 670 of lalr1.cc  */
-#line 1227 "../../src-common/cfdg.ypp"
+#line 1158 "../../src-common/cfdg.ypp"
     {
             (yyval.expression) = (yysemantic_stack_[(5) - (4)].expression);
         }
@@ -2278,439 +2221,428 @@ namespace yy {
 
   case 175:
 /* Line 670 of lalr1.cc  */
-#line 1239 "../../src-common/cfdg.ypp"
+#line 1170 "../../src-common/cfdg.ypp"
     {
-            str_ptr var((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
-            exp_ptr exp((yysemantic_stack_[(3) - (3)].expression)); (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            driver.NextParameter(*var, std::move(exp), (yylocation_stack_[(3) - (1)]), (yylocation_stack_[(3) - (3)]));
+            driver.push_rep((yysemantic_stack_[(1) - (1)].defObj));
         }
     break;
 
   case 176:
 /* Line 670 of lalr1.cc  */
-#line 1245 "../../src-common/cfdg.ypp"
-    {
-            exp_ptr exp((yysemantic_stack_[(3) - (3)].expression)); (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            error((yylocation_stack_[(3) - (1)]), "Reserved keyword: adjustment");
-        }
-    break;
-
-  case 177:
-/* Line 670 of lalr1.cc  */
-#line 1252 "../../src-common/cfdg.ypp"
+#line 1176 "../../src-common/cfdg.ypp"
     {
             (yyval.expression) = ASTexpression::Append((yysemantic_stack_[(2) - (1)].expression), (yysemantic_stack_[(2) - (2)].expression));
         }
     break;
 
-  case 178:
+  case 177:
 /* Line 670 of lalr1.cc  */
-#line 1256 "../../src-common/cfdg.ypp"
+#line 1180 "../../src-common/cfdg.ypp"
     { 
             (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); 
         }
     break;
 
-  case 179:
+  case 178:
 /* Line 670 of lalr1.cc  */
-#line 1263 "../../src-common/cfdg.ypp"
+#line 1187 "../../src-common/cfdg.ypp"
     {
             (yyval.expression) = (yysemantic_stack_[(3) - (1)].expression)->append(new ASTparen((yysemantic_stack_[(3) - (3)].expression)));
         }
     break;
 
-  case 180:
+  case 179:
 /* Line 670 of lalr1.cc  */
-#line 1267 "../../src-common/cfdg.ypp"
+#line 1191 "../../src-common/cfdg.ypp"
     {
             (yyval.expression) = new ASTcons(new ASTparen((yysemantic_stack_[(1) - (1)].expression)), nullptr);
         }
     break;
 
+  case 180:
+/* Line 670 of lalr1.cc  */
+#line 1197 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); }
+    break;
+
   case 181:
 /* Line 670 of lalr1.cc  */
-#line 1273 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); }
+#line 1199 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
     break;
 
   case 182:
 /* Line 670 of lalr1.cc  */
-#line 1275 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
+#line 1201 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
     break;
 
   case 183:
 /* Line 670 of lalr1.cc  */
-#line 1277 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
+#line 1203 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
     break;
 
   case 184:
 /* Line 670 of lalr1.cc  */
-#line 1279 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
+#line 1205 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr);; }
     break;
 
   case 185:
 /* Line 670 of lalr1.cc  */
-#line 1281 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr);; }
+#line 1207 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr);; }
     break;
 
   case 186:
 /* Line 670 of lalr1.cc  */
-#line 1283 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr);; }
+#line 1209 "../../src-common/cfdg.ypp"
+    {
+            exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
+            (yyval.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
+        }
     break;
 
   case 187:
 /* Line 670 of lalr1.cc  */
-#line 1285 "../../src-common/cfdg.ypp"
+#line 1214 "../../src-common/cfdg.ypp"
     {
             exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            (yyval.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
+            (yyval.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
         }
     break;
 
   case 188:
 /* Line 670 of lalr1.cc  */
-#line 1290 "../../src-common/cfdg.ypp"
-    {
-            exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            (yyval.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
-        }
+#line 1221 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); (yysemantic_stack_[(1) - (1)].string) = nullptr; }
     break;
 
   case 189:
 /* Line 670 of lalr1.cc  */
-#line 1297 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); (yysemantic_stack_[(1) - (1)].string) = nullptr; }
+#line 1223 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
     break;
 
   case 190:
 /* Line 670 of lalr1.cc  */
-#line 1299 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
+#line 1225 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
     break;
 
   case 191:
 /* Line 670 of lalr1.cc  */
-#line 1301 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
+#line 1227 "../../src-common/cfdg.ypp"
+    {
+            exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
+            (yyval.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
+        }
     break;
 
   case 192:
 /* Line 670 of lalr1.cc  */
-#line 1303 "../../src-common/cfdg.ypp"
+#line 1232 "../../src-common/cfdg.ypp"
     {
             exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            (yyval.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
+            (yyval.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
         }
     break;
 
   case 193:
 /* Line 670 of lalr1.cc  */
-#line 1308 "../../src-common/cfdg.ypp"
-    {
-            exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
-            (yyval.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
-        }
+#line 1237 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression));   }
     break;
 
   case 194:
 /* Line 670 of lalr1.cc  */
-#line 1313 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression));   }
+#line 1239 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('+', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 195:
 /* Line 670 of lalr1.cc  */
-#line 1315 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('+', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1241 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('-', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 196:
 /* Line 670 of lalr1.cc  */
-#line 1317 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('-', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1243 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('_', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 197:
 /* Line 670 of lalr1.cc  */
-#line 1319 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('_', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1245 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('*', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 198:
 /* Line 670 of lalr1.cc  */
-#line 1321 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('*', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1247 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('/', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 199:
 /* Line 670 of lalr1.cc  */
-#line 1323 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('/', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1249 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 200:
 /* Line 670 of lalr1.cc  */
-#line 1325 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1251 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 201:
 /* Line 670 of lalr1.cc  */
-#line 1327 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1253 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('!', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 202:
 /* Line 670 of lalr1.cc  */
-#line 1329 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('!', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1255 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('^', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 203:
 /* Line 670 of lalr1.cc  */
-#line 1331 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('^', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1257 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('<', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 204:
 /* Line 670 of lalr1.cc  */
-#line 1333 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('<', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1259 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('L', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 205:
 /* Line 670 of lalr1.cc  */
-#line 1335 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('L', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1261 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('>', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 206:
 /* Line 670 of lalr1.cc  */
-#line 1337 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('>', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1263 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('G', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 207:
 /* Line 670 of lalr1.cc  */
-#line 1339 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('G', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1265 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('=', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 208:
 /* Line 670 of lalr1.cc  */
-#line 1341 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('=', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1267 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('n', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 209:
 /* Line 670 of lalr1.cc  */
-#line 1343 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('n', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1269 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('&', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 210:
 /* Line 670 of lalr1.cc  */
-#line 1345 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('&', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1271 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('|', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 211:
 /* Line 670 of lalr1.cc  */
-#line 1347 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('|', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1273 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('X', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 212:
 /* Line 670 of lalr1.cc  */
-#line 1349 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('X', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1275 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
     break;
 
   case 213:
 /* Line 670 of lalr1.cc  */
-#line 1351 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
+#line 1277 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].mod); }
     break;
 
   case 214:
 /* Line 670 of lalr1.cc  */
-#line 1353 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].mod); }
+#line 1281 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); }
     break;
 
   case 215:
 /* Line 670 of lalr1.cc  */
-#line 1357 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(*(yysemantic_stack_[(1) - (1)].string), (yyloc)); delete (yysemantic_stack_[(1) - (1)].string); }
+#line 1283 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
     break;
 
   case 216:
 /* Line 670 of lalr1.cc  */
-#line 1359 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTreal(Renderer::Infinity, (yyloc)); }
+#line 1285 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
     break;
 
   case 217:
 /* Line 670 of lalr1.cc  */
-#line 1361 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].expression); }
-    break;
-
-  case 218:
-/* Line 670 of lalr1.cc  */
-#line 1363 "../../src-common/cfdg.ypp"
+#line 1287 "../../src-common/cfdg.ypp"
     {
             exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
             (yyval.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
         }
     break;
 
-  case 219:
+  case 218:
 /* Line 670 of lalr1.cc  */
-#line 1368 "../../src-common/cfdg.ypp"
+#line 1292 "../../src-common/cfdg.ypp"
     {
             exp_ptr pair((yysemantic_stack_[(3) - (1)].expression)->append((yysemantic_stack_[(3) - (3)].expression))); (yysemantic_stack_[(3) - (1)].expression) = nullptr; (yysemantic_stack_[(3) - (3)].expression) = nullptr;
             (yyval.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, (yylocation_stack_[(3) - (1)]), (yyloc));
         }
     break;
 
+  case 219:
+/* Line 670 of lalr1.cc  */
+#line 1297 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('+', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+    break;
+
   case 220:
 /* Line 670 of lalr1.cc  */
-#line 1373 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('+', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1299 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('-', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 221:
 /* Line 670 of lalr1.cc  */
-#line 1375 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('-', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1301 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('_', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 222:
 /* Line 670 of lalr1.cc  */
-#line 1377 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('_', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1303 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('*', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 223:
 /* Line 670 of lalr1.cc  */
-#line 1379 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('*', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1305 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('/', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 224:
 /* Line 670 of lalr1.cc  */
-#line 1381 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('/', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1307 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 225:
 /* Line 670 of lalr1.cc  */
-#line 1383 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('N', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1309 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 226:
 /* Line 670 of lalr1.cc  */
-#line 1385 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('P', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1311 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('!', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
     break;
 
   case 227:
 /* Line 670 of lalr1.cc  */
-#line 1387 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('!', (yysemantic_stack_[(2) - (2)].expression), nullptr); }
+#line 1313 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('^', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 228:
 /* Line 670 of lalr1.cc  */
-#line 1389 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('^', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1315 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('<', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 229:
 /* Line 670 of lalr1.cc  */
-#line 1391 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('<', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1317 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('L', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 230:
 /* Line 670 of lalr1.cc  */
-#line 1393 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('L', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1319 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('>', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 231:
 /* Line 670 of lalr1.cc  */
-#line 1395 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('>', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1321 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('G', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 232:
 /* Line 670 of lalr1.cc  */
-#line 1397 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('G', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1323 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('=', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 233:
 /* Line 670 of lalr1.cc  */
-#line 1399 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('=', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1325 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('n', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 234:
 /* Line 670 of lalr1.cc  */
-#line 1401 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('n', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1327 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('&', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 235:
 /* Line 670 of lalr1.cc  */
-#line 1403 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('&', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1329 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('|', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 236:
 /* Line 670 of lalr1.cc  */
-#line 1405 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('|', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1331 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASToperator('X', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
     break;
 
   case 237:
 /* Line 670 of lalr1.cc  */
-#line 1407 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASToperator('X', (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression)); }
+#line 1333 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
     break;
 
   case 238:
 /* Line 670 of lalr1.cc  */
-#line 1409 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = new ASTparen((yysemantic_stack_[(3) - (2)].expression)); }
+#line 1335 "../../src-common/cfdg.ypp"
+    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].mod); }
     break;
 
   case 239:
 /* Line 670 of lalr1.cc  */
-#line 1411 "../../src-common/cfdg.ypp"
-    { (yyval.expression) = (yysemantic_stack_[(1) - (1)].mod); }
-    break;
-
-  case 240:
-/* Line 670 of lalr1.cc  */
-#line 1415 "../../src-common/cfdg.ypp"
+#line 1339 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
             (yyval.expression) = driver.MakeFunction(std::move(func), nullptr, (yylocation_stack_[(3) - (1)]), (yylocation_stack_[(3) - (2)]) + (yylocation_stack_[(3) - (3)]), false);
         }
     break;
 
-  case 241:
+  case 240:
 /* Line 670 of lalr1.cc  */
-#line 1420 "../../src-common/cfdg.ypp"
+#line 1344 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2718,9 +2650,9 @@ namespace yy {
         }
     break;
 
-  case 242:
+  case 241:
 /* Line 670 of lalr1.cc  */
-#line 1426 "../../src-common/cfdg.ypp"
+#line 1350 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2728,9 +2660,9 @@ namespace yy {
         }
     break;
 
-  case 243:
+  case 242:
 /* Line 670 of lalr1.cc  */
-#line 1432 "../../src-common/cfdg.ypp"
+#line 1356 "../../src-common/cfdg.ypp"
     { 
             str_ptr func(new std::string("if"));
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2738,37 +2670,38 @@ namespace yy {
         }
     break;
 
-  case 244:
+  case 243:
 /* Line 670 of lalr1.cc  */
-#line 1438 "../../src-common/cfdg.ypp"
+#line 1362 "../../src-common/cfdg.ypp"
     {
-            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
+            driver.pop_repContainer(nullptr);
             cont_ptr vars((yysemantic_stack_[(2) - (1)].bodyObj)); (yysemantic_stack_[(2) - (1)].bodyObj) = nullptr;
-            (yyval.expression) = driver.MakeLet((yylocation_stack_[(2) - (1)]), std::move(exp));
+            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
+            (yyval.expression) = driver.MakeLet((yylocation_stack_[(2) - (1)]), std::move(vars), std::move(exp));
         }
     break;
 
-  case 245:
+  case 244:
 /* Line 670 of lalr1.cc  */
-#line 1444 "../../src-common/cfdg.ypp"
+#line 1369 "../../src-common/cfdg.ypp"
     { 
             str_ptr var((yysemantic_stack_[(1) - (1)].string)); (yysemantic_stack_[(1) - (1)].string) = nullptr;
             (yyval.expression) = driver.MakeVariable(*var, (yylocation_stack_[(1) - (1)]));
         }
     break;
 
-  case 246:
+  case 245:
 /* Line 670 of lalr1.cc  */
-#line 1451 "../../src-common/cfdg.ypp"
+#line 1376 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(3) - (1)].string)); (yysemantic_stack_[(3) - (1)].string) = nullptr;
             (yyval.expression) = driver.MakeFunction(std::move(func), nullptr, (yylocation_stack_[(3) - (1)]), (yylocation_stack_[(3) - (2)]) + (yylocation_stack_[(3) - (3)]), false);
         }
     break;
 
-  case 247:
+  case 246:
 /* Line 670 of lalr1.cc  */
-#line 1456 "../../src-common/cfdg.ypp"
+#line 1381 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2776,9 +2709,9 @@ namespace yy {
         }
     break;
 
-  case 248:
+  case 247:
 /* Line 670 of lalr1.cc  */
-#line 1462 "../../src-common/cfdg.ypp"
+#line 1387 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2786,9 +2719,9 @@ namespace yy {
         }
     break;
 
-  case 249:
+  case 248:
 /* Line 670 of lalr1.cc  */
-#line 1468 "../../src-common/cfdg.ypp"
+#line 1393 "../../src-common/cfdg.ypp"
     { 
             str_ptr func(new std::string("if"));
             exp_ptr args((yysemantic_stack_[(4) - (3)].expression)); (yysemantic_stack_[(4) - (3)].expression) = nullptr;
@@ -2796,50 +2729,51 @@ namespace yy {
         }
     break;
 
-  case 250:
+  case 249:
 /* Line 670 of lalr1.cc  */
-#line 1474 "../../src-common/cfdg.ypp"
+#line 1399 "../../src-common/cfdg.ypp"
     { 
             str_ptr func((yysemantic_stack_[(4) - (1)].string)); (yysemantic_stack_[(4) - (1)].string) = nullptr;
-            exp_ptr args(new ASTexpression((yylocation_stack_[(4) - (1)]) + (yylocation_stack_[(4) - (4)])));
+            exp_ptr args(new ASTexpression((yyloc), false, false, AST::ReuseType));
             (yyval.expression) = driver.MakeFunction(std::move(func), std::move(args), (yylocation_stack_[(4) - (1)]), (yylocation_stack_[(4) - (3)]), false);
+        }
+    break;
+
+  case 250:
+/* Line 670 of lalr1.cc  */
+#line 1405 "../../src-common/cfdg.ypp"
+    {
+            driver.pop_repContainer(nullptr);
+            cont_ptr vars((yysemantic_stack_[(2) - (1)].bodyObj)); (yysemantic_stack_[(2) - (1)].bodyObj) = nullptr;
+            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
+            (yyval.expression) = driver.MakeLet((yylocation_stack_[(2) - (1)]), std::move(vars), std::move(exp));
         }
     break;
 
   case 251:
 /* Line 670 of lalr1.cc  */
-#line 1480 "../../src-common/cfdg.ypp"
-    {
-            exp_ptr exp((yysemantic_stack_[(2) - (2)].expression)); (yysemantic_stack_[(2) - (2)].expression) = nullptr;
-            cont_ptr vars((yysemantic_stack_[(2) - (1)].bodyObj));
-            (yyval.expression) = driver.MakeLet((yylocation_stack_[(2) - (1)]), std::move(exp));
-        }
-    break;
-
-  case 252:
-/* Line 670 of lalr1.cc  */
-#line 1486 "../../src-common/cfdg.ypp"
+#line 1412 "../../src-common/cfdg.ypp"
     { 
             str_ptr var((yysemantic_stack_[(1) - (1)].string)); (yysemantic_stack_[(1) - (1)].string) = nullptr;
             (yyval.expression) = driver.MakeVariable(*var, (yylocation_stack_[(1) - (1)]));
         }
     break;
 
+  case 252:
+/* Line 670 of lalr1.cc  */
+#line 1419 "../../src-common/cfdg.ypp"
+    { (yyval.string) = (yysemantic_stack_[(1) - (1)].string); }
+    break;
+
   case 253:
 /* Line 670 of lalr1.cc  */
-#line 1493 "../../src-common/cfdg.ypp"
-    { (yyval.string) = (yysemantic_stack_[(1) - (1)].string); }
-    break;
-
-  case 254:
-/* Line 670 of lalr1.cc  */
-#line 1495 "../../src-common/cfdg.ypp"
+#line 1421 "../../src-common/cfdg.ypp"
     { (yyval.string) = (yysemantic_stack_[(1) - (1)].string); }
     break;
 
 
 /* Line 670 of lalr1.cc  */
-#line 2843 "cfdg.tab.cpp"
+#line 2777 "cfdg.tab.cpp"
       default:
         break;
       }
@@ -3051,56 +2985,56 @@ namespace yy {
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const short int CfdgParser::yypact_ninf_ = -257;
+  const short int CfdgParser::yypact_ninf_ = -267;
   const short int
   CfdgParser::yypact_[] =
   {
-       328,  -257,  -257,    26,  1276,  1297,  -257,     6,  -257,    45,
-      79,     3,   123,   118,  -257,    42,   318,  -257,   118,  -257,
-    -257,  -257,  -257,  -257,  -257,  -257,  -257,    87,  -257,   120,
-    -257,   187,    17,   168,   181,    -1,   118,    97,   318,   166,
-     118,  -257,  -257,  -257,  -257,  -257,  -257,   617,   172,  -257,
-    -257,  -257,   178,   182,  -257,  -257,   314,   237,   270,   242,
-    -257,  -257,  -257,  -257,  -257,  -257,  -257,   244,  -257,  -257,
-    -257,  -257,  -257,  -257,  -257,   246,   250,   261,   266,  -257,
-     272,  -257,    27,   331,  -257,  -257,  -257,   272,   261,   333,
-    -257,   311,   318,  -257,   296,  -257,   320,  -257,   302,   617,
-    -257,   617,   617,   617,   325,  -257,   330,  1032,  -257,  -257,
-     167,  -257,  -257,  -257,  -257,  -257,  -257,  -257,   111,   274,
-    -257,   161,   368,   406,   250,  -257,   376,    27,  -257,   388,
-       9,  -257,    84,  -257,   131,  -257,  -257,   -32,  -257,   390,
-     392,  -257,  -257,  -257,   617,   435,   617,   346,   346,   346,
-     753,  -257,   201,   164,  -257,   617,   617,   617,   617,   617,
-     617,   617,   617,   617,   617,   617,   617,   617,   617,   617,
-     617,   617,   617,   214,   575,   347,   348,   617,   541,     4,
-     354,  -257,   -11,  -257,   617,  -257,  -257,  -257,  -257,   397,
-     250,   484,   484,   484,   351,   330,   246,   303,   327,   186,
-     116,  -257,  -257,  -257,  -257,   361,  -257,  -257,  -257,     8,
-     118,  -257,  -257,  -257,  -257,   405,    44,    64,  -257,  -257,
-    -257,  -257,   180,   118,   357,  -257,   638,  -257,   638,   638,
-     617,  -257,  -257,   -25,  1063,  -257,  -257,  -257,    77,  -257,
-      80,  -257,  -257,  -257,  -257,     9,  -257,  -257,  -257,   784,
-     358,  -257,   156,   660,  -257,   286,  -257,   407,   412,   356,
-    -257,   389,   389,   669,   669,   669,   669,  1217,  1217,  1177,
-    1133,  1087,  1032,    67,    67,    67,   346,   346,   346,   246,
-     415,    86,  1032,   617,   617,  1032,  -257,  1032,  -257,  -257,
-    -257,   478,  -257,  1032,  -257,   484,  -257,   413,  -257,  -257,
-    -257,  -257,   250,   250,  -257,  -257,   370,   371,  -257,   372,
-    -257,   186,   186,   617,   330,   186,   283,  -257,  -257,  -257,
-    -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,
-     365,  -257,  -257,  -257,  -257,  -257,   378,   378,   378,   815,
-     638,  -257,   638,   638,   638,   638,   638,   638,   638,   638,
-     638,   638,   638,   638,   638,   638,   638,   638,   638,   423,
-    -257,  -257,  -257,  -257,  -257,  -257,   373,   617,   617,   596,
-     250,   617,   617,   846,   877,  -257,   908,   484,  -257,   349,
-    -257,    83,  -257,  -257,   617,   512,   617,  -257,  -257,   939,
-    -257,   367,   186,   186,  -257,   118,   297,   307,   382,  -257,
-    1063,   420,   420,   730,   730,   730,   730,  1237,  1237,  1197,
-    1155,  1110,   317,   317,   317,   378,   378,   378,  -257,  1032,
-    1032,    94,  -257,   970,  -257,  1032,  1032,   250,  -257,  -257,
-    -257,  -257,   383,   617,  -257,  -257,   484,  1001,  -257,   175,
-     691,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,
-    -257,   722,  -257,  -257,  -257,  -257,  -257
+       116,  -267,  -267,    26,  1256,  1277,  -267,     6,  -267,    67,
+     104,    46,    23,    10,  -267,    90,   276,  -267,    10,  -267,
+    -267,  -267,  -267,  -267,  -267,  -267,  -267,   122,  -267,   132,
+    -267,   150,     5,   216,   123,   119,    10,    80,   276,   140,
+      10,  -267,  -267,  -267,  -267,  -267,  -267,  -267,   597,  -267,
+     143,  -267,  -267,  -267,   145,   154,  -267,  -267,   265,   166,
+     237,   241,  -267,  -267,  -267,  -267,  -267,  -267,  -267,   245,
+    -267,  -267,  -267,  -267,  -267,  -267,  -267,   258,   262,   269,
+     280,  -267,   284,  -267,    33,   285,  -267,  -267,  -267,   269,
+     269,   319,  -267,   308,   276,  -267,   297,  -267,   302,  -267,
+     293,   597,  -267,   597,   597,   597,   310,  -267,   312,  1012,
+    -267,  -267,   177,  -267,  -267,  -267,  -267,  -267,  -267,  -267,
+      38,   120,  -267,   294,   360,   399,   262,  -267,   333,    33,
+    -267,   366,     9,  -267,    17,  -267,    34,  -267,  -267,    61,
+    -267,   368,   373,  -267,  -267,  -267,   597,   435,   597,   328,
+     328,   328,   733,  -267,   124,   126,  -267,   597,   597,   597,
+     597,   597,   597,   597,   597,   597,   597,   597,   597,   597,
+     597,   597,   597,   597,   597,   206,   555,   331,   335,   597,
+     534,     7,   344,  -267,   175,  -267,   597,  -267,  -267,  -267,
+    -267,   383,   262,   456,   456,   456,   338,   312,   258,   300,
+     322,   388,     8,  -267,  -267,  -267,  -267,   347,  -267,  -267,
+    -267,   271,    10,  -267,  -267,  -267,  -267,   392,     4,   243,
+    -267,  -267,  -267,  -267,   185,    10,   340,  -267,   618,  -267,
+     618,   618,   597,  -267,  -267,    73,  1043,  -267,  -267,  -267,
+      74,  -267,    93,  -267,  -267,  -267,  -267,     9,  -267,  -267,
+    -267,   764,   341,  -267,   160,   640,  -267,   155,  -267,   401,
+     403,  -267,   351,  -267,   480,   480,   649,   649,   649,   649,
+    1197,  1197,  1157,  1113,  1067,  1012,   165,   165,   165,   328,
+     328,   328,   258,   410,    88,  1012,   597,   597,  1012,  1012,
+    -267,  -267,   477,  -267,  1012,  -267,   456,  -267,   407,  -267,
+    -267,  -267,  -267,   262,   262,  -267,  -267,   365,   370,  -267,
+     367,  -267,   388,   388,   597,   312,   388,   162,  -267,  -267,
+    -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,
+    -267,   363,  -267,  -267,  -267,  -267,  -267,   372,   372,   372,
+     795,   618,  -267,   618,   618,   618,   618,   618,   618,   618,
+     618,   618,   618,   618,   618,   618,   618,   618,   618,   618,
+     421,  -267,  -267,  -267,  -267,  -267,  -267,   369,   576,   262,
+     597,   597,   826,   857,  -267,   888,   456,  -267,   346,  -267,
+     117,  -267,  -267,   597,   498,   597,  -267,  -267,   919,  -267,
+     342,   388,   388,  -267,    10,   318,   178,   379,  -267,  1043,
+     600,   600,   710,   710,   710,   710,  1217,  1217,  1177,  1135,
+    1090,   236,   236,   236,   372,   372,   372,  -267,    92,  -267,
+     950,  -267,  1012,  1012,   262,  -267,  -267,  -267,  -267,   371,
+     597,  -267,  -267,   456,   981,  -267,   161,   671,  -267,  -267,
+    -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,   702,  -267,
+    -267,  -267,  -267,  -267
   };
 
   /* YYDEFACT[S] -- default reduction number in state S.  Performed when
@@ -3113,62 +3047,63 @@ namespace yy {
        0,     0,     0,     0,    44,     0,     0,    31,     0,     4,
       25,    19,    20,    17,    18,    21,    22,     0,    23,     0,
       24,     0,     0,    74,     0,     0,     0,     0,     0,    48,
-       0,     6,    16,     9,    10,     8,    15,     0,    13,    98,
-      14,    41,     0,     0,    11,    12,    52,     0,    71,    79,
-      27,   166,   166,    55,    28,    53,    26,     0,    29,    45,
-      46,    42,    54,   143,   100,    96,     0,     0,    90,    75,
-      90,    64,     0,     0,    39,    37,    60,    90,     0,     0,
-      40,     0,     0,    38,     0,   171,   252,   189,     0,     0,
-     190,     0,     0,     0,   166,   214,     0,    56,   191,    69,
-       0,    98,    98,    34,    35,    36,    72,    33,     0,     0,
-      30,     0,     0,     0,    51,    50,     0,     0,    68,     0,
-       0,    76,     0,    86,    85,    92,    88,     0,    62,     0,
-       0,    58,    47,    43,     0,     0,     0,   202,   200,   201,
-       0,   166,     0,     0,   251,     0,     0,     0,     0,     0,
+       0,     6,    16,     9,    10,     8,    15,    63,     0,    64,
+      13,    98,    14,    41,     0,     0,    11,    12,    52,     0,
+      71,    79,    27,   166,   166,    55,    28,    53,    26,     0,
+      29,    45,    46,    42,    54,   143,   100,    96,     0,     0,
+      90,    75,    90,    66,     0,     0,    39,    37,    65,     0,
+       0,     0,    40,     0,     0,    38,     0,   171,   251,   188,
+       0,     0,   189,     0,     0,     0,   166,   213,     0,    56,
+     190,    69,     0,    98,    98,    34,    35,    36,    72,    33,
+       0,     0,    30,     0,     0,     0,    51,    50,     0,     0,
+      68,     0,     0,    76,     0,    86,    85,    92,    88,     0,
+      61,     0,     0,    58,    47,    43,     0,     0,     0,   201,
+     199,   200,     0,   166,     0,     0,   250,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   253,
-       0,   254,     0,    70,     0,   117,   116,    97,   125,   118,
-       0,     0,     0,     0,     0,     0,    96,     0,     0,     0,
-       0,   162,   165,   161,   253,     0,    73,   147,   142,     0,
-       0,   134,   135,   138,   140,   139,   253,     0,    80,   129,
-      99,   131,     0,     0,     0,   215,     0,   216,     0,     0,
-       0,    95,   239,     0,   180,   217,    49,    61,     0,    57,
-       0,    84,    82,    83,    81,     0,    91,    63,    59,     0,
-       0,   246,     0,     0,   213,     0,   163,     0,     0,     0,
-     174,   192,   193,   205,   204,   207,   206,   208,   209,   210,
-     211,   212,   194,   196,   195,   197,   198,   199,   203,    96,
-       0,   252,   153,     0,     0,   157,    66,   156,    65,   127,
-     126,     0,   128,    67,   119,     0,    98,   121,   110,   122,
-     123,   114,     0,     0,    77,    78,     0,   245,   181,     0,
-     182,     0,     0,     0,     0,   167,   178,   184,   169,   170,
-     149,   143,   148,   145,   146,   137,   136,   133,   132,   166,
-       0,   100,   112,   130,   102,    94,   227,   225,   226,     0,
-       0,    93,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    89,
-      89,    87,   249,   250,   247,   248,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   104,     0,     0,   141,     0,
-     155,     0,   107,   105,     0,     0,     0,   185,   186,     0,
-     244,   177,     0,     0,   168,     0,     0,     0,     0,   238,
-     179,   218,   219,   230,   229,   232,   231,   233,   234,   235,
-     236,   237,   221,   220,   222,   223,   224,   228,   164,   176,
-     175,   252,   173,     0,   108,   152,   151,   154,   158,   103,
-     120,   109,     0,     0,   124,   113,     0,     0,   240,     0,
-       0,   183,   187,   188,   150,   144,   101,   111,   172,   106,
-     160,     0,   115,   243,   241,   242,   159
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   252,     0,   253,     0,    70,     0,   117,   116,    97,
+     125,   118,     0,     0,     0,     0,     0,     0,    96,     0,
+       0,     0,     0,   162,   165,   161,   252,     0,    73,   147,
+     142,     0,     0,   134,   135,   138,   140,   139,   252,     0,
+      80,   129,    99,   131,     0,     0,     0,   214,     0,   215,
+       0,     0,     0,    95,   238,     0,   179,   216,    49,    60,
+       0,    57,     0,    84,    82,    83,    81,     0,    91,    62,
+      59,     0,     0,   245,     0,     0,   212,     0,   163,     0,
+       0,   175,     0,   174,   191,   192,   204,   203,   206,   205,
+     207,   208,   209,   210,   211,   193,   195,   194,   196,   197,
+     198,   202,    96,     0,   251,   153,     0,     0,   157,   156,
+     127,   126,     0,   128,    67,   119,     0,    98,   121,   110,
+     122,   123,   114,     0,     0,    77,    78,     0,   244,   180,
+       0,   181,     0,     0,     0,     0,   167,   177,   183,   169,
+     170,   149,   143,   148,   145,   146,   137,   136,   133,   132,
+     166,     0,   100,   112,   130,   102,    94,   226,   224,   225,
+       0,     0,    93,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      89,    89,    87,   248,   249,   246,   247,     0,     0,     0,
+       0,     0,     0,     0,   104,     0,     0,   141,     0,   155,
+       0,   107,   105,     0,     0,     0,   184,   185,     0,   243,
+     176,     0,     0,   168,     0,     0,     0,     0,   237,   178,
+     217,   218,   229,   228,   231,   230,   232,   233,   234,   235,
+     236,   220,   219,   221,   222,   223,   227,   164,   251,   173,
+       0,   108,   152,   151,   154,   158,   103,   120,   109,     0,
+       0,   124,   113,     0,     0,   239,     0,     0,   182,   186,
+     187,   150,   144,   101,   111,   172,   106,   160,     0,   115,
+     242,   240,   241,   159
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const short int
   CfdgParser::yypgoto_[] =
   {
-      -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,
-     431,   -26,  -257,  -257,  -257,  -257,  -257,  -257,  -257,  -257,
-    -257,  -257,  -257,  -257,  -257,   444,  -257,  -257,  -257,  -257,
-    -257,  -257,  -257,   206,    95,   122,    61,  -186,  -105,   121,
-     233,  -257,  -189,  -257,  -257,  -257,   -89,  -257,  -257,  -257,
-    -257,  -257,   137,  -257,   251,  -257,  -111,  -257,  -257,  -257,
-    -257,  -257,  -257,  -257,   -13,   -75,   -37,  -257,   -80,  -187,
-    -257,    90,  -257,  -143,  -256,   -83,  -184,  -257,   -94,   -81
+      -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,
+     427,   -28,  -267,  -267,  -267,  -267,  -267,  -267,  -267,  -267,
+    -267,   428,  -151,  -267,  -267,  -267,   432,  -267,  -267,  -267,
+    -267,  -267,  -267,  -267,   193,   106,   362,   -25,  -185,  -106,
+     110,   227,  -267,  -192,  -267,  -267,  -267,   -91,  -267,  -267,
+    -267,  -267,  -267,   130,  -267,   244,  -267,  -113,  -267,  -267,
+    -267,  -267,  -267,  -267,  -267,   -13,   -77,   -39,  -267,   -82,
+    -188,  -267,    86,  -267,  -141,  -266,   -85,  -186,  -267,   -96,
+     -83
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -3176,13 +3111,14 @@ namespace yy {
   CfdgParser::yydefgoto_[] =
   {
         -1,     3,     4,     5,    41,    19,    20,    42,    21,    43,
-      22,    71,    92,    45,    23,    24,    25,    26,    46,    47,
-     184,   185,    48,    49,    50,    27,    28,    52,    53,    54,
-      55,    29,    30,   136,   137,   128,    83,   124,   110,   122,
-     219,   186,   297,   333,   381,   435,   298,   377,   188,   220,
-     221,   189,   121,   322,   207,   208,   209,   395,   190,   191,
-     192,   193,   194,   436,    63,   105,   118,   202,   106,   154,
-     259,   260,   315,   233,   316,   107,   234,   317,   108,   196
+      22,    73,    94,    45,    23,    24,    25,    26,    46,    47,
+      48,   186,   187,    50,    51,    52,    27,    28,    54,    55,
+      56,    57,    29,    30,   138,   139,   130,    85,   126,   112,
+     124,   221,   188,   298,   334,   380,   432,   299,   376,   190,
+     222,   223,   191,   123,   323,   209,   210,   211,   394,   192,
+     193,   194,   195,   196,   433,    65,   107,   120,   204,   108,
+     156,   262,   263,   316,   235,   317,   109,   236,   318,   110,
+     198
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -3192,136 +3128,134 @@ namespace yy {
   const short int
   CfdgParser::yytable_[] =
   {
-        65,   125,   252,   299,   300,    72,   197,   198,   302,    81,
-     303,   222,    90,    60,   288,   132,   147,   245,   148,   149,
-     150,   187,    84,    85,   340,   119,     6,    93,   133,   235,
-     195,   246,    56,   132,   204,   134,    77,    57,   341,   181,
-     210,   223,   336,    78,   337,   338,   133,   291,   232,   236,
-     292,   235,    66,   134,   326,   387,   388,    82,    61,   391,
-      62,   249,    61,   253,    62,   289,   143,   152,    67,   321,
-     232,    58,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     135,   282,   279,   370,   285,   287,   372,   432,    89,   433,
-      68,   293,   327,   241,   368,    59,   378,    86,   187,   187,
-     242,   195,   195,   195,   255,   295,    87,   195,   195,   314,
-     170,   171,   328,    88,   172,   329,   245,   390,   210,   245,
-     199,   200,   235,    64,   235,   235,   442,   443,   126,   129,
-     359,   223,   318,   360,   145,   434,   319,   339,    73,   140,
-     243,   232,   145,   232,   232,    82,   400,   244,   401,   402,
+        67,   127,   300,   301,   261,    74,   254,   199,   200,   303,
+      92,   224,    91,   304,   327,   134,   149,    88,   150,   151,
+     152,   189,    86,    87,    79,   121,     6,    95,   135,   237,
+     197,    80,    58,    66,   319,   136,   243,    59,   320,   134,
+     212,   225,   337,   244,   338,   339,   386,   387,   234,   238,
+     390,   237,   135,   245,   128,   131,    62,   201,   202,   136,
+     246,   251,   328,   255,   141,   142,   145,   154,   290,    63,
+     234,    64,   264,   265,   266,   267,   268,   269,   270,   271,
+     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
+      88,   285,   282,    60,   288,   289,   137,   369,   371,    89,
+      68,   294,    88,   203,   377,    63,    90,    64,   189,   189,
+     247,   197,   197,   197,   257,   296,    69,   197,   197,   315,
+       1,     2,   341,   247,   248,   439,   440,   389,   212,    83,
+      61,   429,   237,   430,   237,   237,   342,   360,    84,   201,
+     202,   225,   247,   201,   202,   259,   147,   340,    70,    82,
+     147,   234,   260,   234,   234,   399,   361,   400,   401,   402,
      403,   404,   405,   406,   407,   408,   409,   410,   411,   412,
-     413,   414,   415,   416,   417,   173,   201,    61,   174,    62,
-     175,    74,   176,   257,   177,    95,   178,   204,   430,   205,
-     258,   379,   181,   179,    58,   180,    79,   324,   181,   306,
-     373,   374,   131,   182,    95,   340,   204,    80,   376,   139,
-     334,   181,   307,    75,   308,   195,   330,   309,    76,   364,
-     199,   200,   238,   206,   340,   240,    91,   382,   383,   183,
-     389,   314,   314,   109,   310,   314,   311,   312,   454,   111,
-     204,   331,   439,   112,   313,   181,   235,   452,   235,   235,
-     235,   235,   235,   235,   235,   235,   235,   235,   235,   235,
-     235,   235,   235,   235,   235,   232,   256,   232,   232,   232,
-     232,   232,   232,   232,   232,   232,   232,   232,   232,   232,
-     232,   232,   232,   232,   419,   420,   423,   222,   425,   426,
-     187,   235,   397,   199,   200,   424,   115,   195,   116,   195,
-     117,   437,   120,   440,   123,   199,   200,   392,   393,   104,
-     232,   173,   314,   314,   174,   210,   175,   223,   176,    82,
-     177,    95,   178,   204,   127,   205,   199,   200,   181,   179,
-     130,   180,     1,     2,   181,   173,   203,   142,   174,   182,
-     175,   138,   176,   141,   177,    95,   178,    69,    70,   394,
-     451,   366,   449,   179,   144,   180,   195,   173,   181,   445,
-     174,   146,   175,   182,   176,   304,   177,    95,   178,   446,
-     356,   357,   113,   114,   358,   179,   211,   180,   145,   212,
-     181,   213,   444,   214,   151,   182,   237,   215,   153,   305,
-     211,   392,   393,   212,   216,   213,   205,   214,   239,   181,
-     247,   215,   248,   172,   217,   283,   284,   290,   216,   294,
-     205,   431,   301,   181,   320,   325,   224,   367,   217,    94,
-     335,   363,   368,   369,    95,   371,   329,   380,   384,   385,
-     218,   386,    96,   -91,   225,   358,    44,    98,   418,   167,
-     168,   169,   170,   171,   447,   250,   172,   450,    94,    51,
-     226,   361,   398,    95,   227,   332,   228,   229,   396,   422,
-     323,    96,     0,   225,   230,   104,    98,     0,     0,   231,
-     353,   354,   355,   356,   357,     0,     0,   358,     0,   226,
-       0,     0,     0,   227,     0,   228,   229,     0,     0,     0,
-       0,    94,   173,   230,   104,   174,    95,   175,   251,   176,
-       0,   177,    95,   178,    96,     0,    97,     0,     0,    98,
-     179,     0,   180,     0,     0,   181,     0,     0,     0,     0,
-     182,     0,    99,     0,     0,    94,   100,     0,   101,   102,
-      95,     0,     0,     0,     0,     0,   103,   104,    96,     0,
-     225,   375,     0,    98,     0,   296,     0,     0,     0,     0,
-       0,   286,     0,     0,    94,     0,   226,     0,     0,    95,
-     227,     0,   228,   229,     0,     0,     0,    96,     0,    97,
-     230,   104,    98,     0,     0,   438,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    99,     0,     0,    94,   100,
-       0,   101,   102,    95,   280,     0,     0,     0,     0,   103,
-     104,   281,     0,    97,     0,     0,    98,     0,     0,    94,
-       0,     0,     0,     0,    95,   257,     0,     0,     0,    99,
-       0,     0,   421,   100,    97,   101,   102,    98,     0,     0,
-      94,     0,     0,   103,   104,    95,     0,     0,     0,     0,
-      99,     0,     0,    96,   100,    97,   101,   102,    98,     0,
-       0,    94,     0,     0,   103,   104,    95,     0,     0,     0,
-       0,    99,     0,     0,    96,   100,   225,   101,   102,    98,
-       0,     0,     0,     0,     0,   103,   104,     0,     0,     0,
-       0,     0,   226,     0,   155,   156,   227,     0,   228,   229,
-       0,     0,     0,   155,   156,     0,   230,   104,   157,   158,
-     159,   160,   161,   162,     0,   163,   164,   165,     0,   166,
-     167,   168,   169,   170,   171,   155,   156,   172,     0,   167,
-     168,   169,   170,   171,     0,   365,   172,     0,     0,   157,
-     158,   159,   160,   161,   162,     0,   163,   164,   165,     0,
-     166,   167,   168,   169,   170,   171,   155,   156,   172,     0,
-       0,     0,     0,     0,   342,   343,   455,     0,     0,     0,
-     157,   158,   159,   160,   161,   162,     0,   163,   164,   165,
-       0,   166,   167,   168,   169,   170,   171,   155,   156,   172,
-     353,   354,   355,   356,   357,     0,   456,   358,     0,     0,
-       0,   157,   158,   159,   160,   161,   162,     0,   163,   164,
-     165,     0,   166,   167,   168,   169,   170,   171,   155,   156,
-     172,     0,     0,     0,     0,     0,   254,     0,     0,     0,
-       0,     0,   157,   158,   159,   160,   161,   162,     0,   163,
-     164,   165,     0,   166,   167,   168,   169,   170,   171,   155,
-     156,   172,     0,     0,     0,     0,     0,   362,     0,     0,
-       0,     0,     0,   157,   158,   159,   160,   161,   162,     0,
-     163,   164,   165,     0,   166,   167,   168,   169,   170,   171,
-     155,   156,   172,     0,     0,     0,     0,     0,   399,     0,
-       0,     0,     0,     0,   157,   158,   159,   160,   161,   162,
-       0,   163,   164,   165,     0,   166,   167,   168,   169,   170,
-     171,   155,   156,   172,     0,     0,     0,     0,     0,   427,
-       0,     0,     0,     0,     0,   157,   158,   159,   160,   161,
-     162,     0,   163,   164,   165,     0,   166,   167,   168,   169,
-     170,   171,   155,   156,   172,     0,     0,     0,     0,     0,
-     428,     0,     0,     0,     0,     0,   157,   158,   159,   160,
-     161,   162,     0,   163,   164,   165,     0,   166,   167,   168,
-     169,   170,   171,   155,   156,   172,     0,     0,     0,     0,
-       0,   429,     0,     0,     0,     0,     0,   157,   158,   159,
-     160,   161,   162,     0,   163,   164,   165,     0,   166,   167,
-     168,   169,   170,   171,   155,   156,   172,     0,     0,     0,
-       0,     0,   441,     0,     0,     0,     0,     0,   157,   158,
-     159,   160,   161,   162,     0,   163,   164,   165,     0,   166,
-     167,   168,   169,   170,   171,   155,   156,   172,     0,     0,
-       0,     0,     0,   448,     0,     0,     0,     0,     0,   157,
-     158,   159,   160,   161,   162,     0,   163,   164,   165,     0,
-     166,   167,   168,   169,   170,   171,   155,   156,   172,     0,
-       0,     0,     0,     0,   453,     0,     0,     0,     0,     0,
-     157,   158,   159,   160,   161,   162,     0,   163,   164,   165,
-       0,   166,   167,   168,   169,   170,   171,   342,   343,   172,
+     413,   414,   415,   416,   201,   202,    77,    84,    63,   431,
+      64,    78,   205,    75,   427,   175,   391,   392,   176,   258,
+     177,   378,   178,    76,   179,    97,   180,   201,   202,   325,
+      93,   372,   373,   181,   111,   182,   113,   375,   183,   341,
+     341,   206,   335,   184,   197,   114,   183,   261,   172,   173,
+     367,   331,   174,   365,   451,   117,   381,   382,   393,   388,
+     315,   315,   206,   292,   315,   240,   293,   183,   242,   185,
+     443,   449,    60,   436,    81,   237,   332,   237,   237,   237,
+     237,   237,   237,   237,   237,   237,   237,   237,   237,   237,
+     237,   237,   237,   237,   234,   118,   234,   234,   234,   234,
+     234,   234,   234,   234,   234,   234,   234,   234,   234,   234,
+     234,   234,   234,   420,   224,   422,   423,   189,   237,   357,
+     358,   396,   421,   359,   197,   140,   197,   206,   434,   119,
+     437,   329,   183,   122,   330,    71,    72,   234,   175,   315,
+     315,   176,   212,   177,   225,   178,   125,   179,    97,   180,
+     206,   106,   207,   115,   116,   183,   181,    84,   182,   143,
+     175,   183,   322,   176,   144,   177,   184,   178,   129,   179,
+      97,   180,   132,   239,   206,   448,   207,   446,   181,   183,
+     182,   197,   148,   183,   175,   146,   208,   176,   184,   177,
+     147,   178,   305,   179,    97,   180,   391,   392,   213,   153,
+     155,   214,   181,   215,   182,   216,   241,   183,   249,   217,
+     442,   441,   184,   250,   306,   174,   218,   213,   207,   286,
+     214,   183,   215,   287,   216,   295,   219,   291,   217,   302,
+     321,   307,   326,   336,   364,   218,    97,   207,   428,   226,
+     183,    83,    96,    88,   308,   219,   309,    97,   368,   310,
+     370,   379,   220,   383,   330,    98,   385,   227,   384,   359,
+     100,   -91,    44,    49,   417,   447,   311,    53,   312,   313,
+     362,   444,   397,   228,   133,   252,   314,   229,    96,   230,
+     231,   333,   395,    97,   419,   324,     0,   232,   106,     0,
+       0,    98,   233,   227,   175,     0,   100,   176,     0,   177,
+       0,   178,     0,   179,    97,   180,     0,     0,     0,   228,
+       0,     0,   181,   229,   182,   230,   231,   183,     0,     0,
+      96,     0,   184,   232,   106,    97,     0,     0,   253,     0,
+       0,     0,     0,    98,     0,    99,     0,     0,   100,     0,
+       0,    96,     0,     0,     0,     0,    97,   297,     0,     0,
+       0,   101,     0,     0,    98,   102,   227,   103,   104,   100,
+     169,   170,   171,   172,   173,   105,   106,   174,     0,     0,
+     374,     0,   228,     0,    83,     0,   229,    96,   230,   231,
+       0,     0,    97,     0,     0,     0,   232,   106,     0,     0,
+      98,   435,    99,     0,     0,   100,     0,     0,    96,     0,
+       0,     0,     0,    97,   283,     0,     0,     0,   101,     0,
+       0,   284,   102,    99,   103,   104,   100,     0,     0,    96,
+       0,     0,   105,   106,    97,   259,     0,     0,     0,   101,
+       0,     0,   418,   102,    99,   103,   104,   100,     0,     0,
+      96,     0,     0,   105,   106,    97,     0,     0,     0,     0,
+     101,     0,     0,    98,   102,    99,   103,   104,   100,     0,
+       0,    96,     0,     0,   105,   106,    97,     0,     0,     0,
+       0,   101,     0,     0,    98,   102,   227,   103,   104,   100,
+     354,   355,   356,   357,   358,   105,   106,   359,     0,     0,
+       0,     0,   228,     0,   157,   158,   229,     0,   230,   231,
+       0,     0,     0,   157,   158,     0,   232,   106,   159,   160,
+     161,   162,   163,   164,     0,   165,   166,   167,     0,   168,
+     169,   170,   171,   172,   173,   157,   158,   174,     0,   169,
+     170,   171,   172,   173,     0,   366,   174,     0,     0,   159,
+     160,   161,   162,   163,   164,     0,   165,   166,   167,     0,
+     168,   169,   170,   171,   172,   173,   157,   158,   174,     0,
+       0,     0,     0,     0,   343,   344,   452,     0,     0,     0,
+     159,   160,   161,   162,   163,   164,     0,   165,   166,   167,
+       0,   168,   169,   170,   171,   172,   173,   157,   158,   174,
+     354,   355,   356,   357,   358,     0,   453,   359,     0,     0,
+       0,   159,   160,   161,   162,   163,   164,     0,   165,   166,
+     167,     0,   168,   169,   170,   171,   172,   173,   157,   158,
+     174,     0,     0,     0,     0,     0,   256,     0,     0,     0,
+       0,     0,   159,   160,   161,   162,   163,   164,     0,   165,
+     166,   167,     0,   168,   169,   170,   171,   172,   173,   157,
+     158,   174,     0,     0,     0,     0,     0,   363,     0,     0,
+       0,     0,     0,   159,   160,   161,   162,   163,   164,     0,
+     165,   166,   167,     0,   168,   169,   170,   171,   172,   173,
+     157,   158,   174,     0,     0,     0,     0,     0,   398,     0,
+       0,     0,     0,     0,   159,   160,   161,   162,   163,   164,
+       0,   165,   166,   167,     0,   168,   169,   170,   171,   172,
+     173,   157,   158,   174,     0,     0,     0,     0,     0,   424,
+       0,     0,     0,     0,     0,   159,   160,   161,   162,   163,
+     164,     0,   165,   166,   167,     0,   168,   169,   170,   171,
+     172,   173,   157,   158,   174,     0,     0,     0,     0,     0,
+     425,     0,     0,     0,     0,     0,   159,   160,   161,   162,
+     163,   164,     0,   165,   166,   167,     0,   168,   169,   170,
+     171,   172,   173,   157,   158,   174,     0,     0,     0,     0,
+       0,   426,     0,     0,     0,     0,     0,   159,   160,   161,
+     162,   163,   164,     0,   165,   166,   167,     0,   168,   169,
+     170,   171,   172,   173,   157,   158,   174,     0,     0,     0,
+       0,     0,   438,     0,     0,     0,     0,     0,   159,   160,
+     161,   162,   163,   164,     0,   165,   166,   167,     0,   168,
+     169,   170,   171,   172,   173,   157,   158,   174,     0,     0,
+       0,     0,     0,   445,     0,     0,     0,     0,     0,   159,
+     160,   161,   162,   163,   164,     0,   165,   166,   167,     0,
+     168,   169,   170,   171,   172,   173,   157,   158,   174,     0,
+       0,     0,     0,     0,   450,     0,     0,     0,     0,     0,
+     159,   160,   161,   162,   163,   164,     0,   165,   166,   167,
+       0,   168,   169,   170,   171,   172,   173,   343,   344,   174,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   344,   345,   346,   347,   348,   349,     0,   350,   351,
-     352,   155,   156,   353,   354,   355,   356,   357,     0,     0,
-     358,     0,     0,     0,     0,   157,   158,   159,   160,   161,
-     162,     0,   163,   164,   342,   343,     0,   167,   168,   169,
-     170,   171,     0,     0,   172,     0,     0,     0,   344,   345,
-     346,   347,   348,   349,     0,   350,   351,   155,   156,     0,
-     353,   354,   355,   356,   357,     0,     0,   358,     0,     0,
-       0,   157,   158,   159,   160,   161,   162,     0,   163,   342,
-     343,     0,     0,   167,   168,   169,   170,   171,     0,     0,
-     172,     0,     0,   344,   345,   346,   347,   348,   349,     0,
-     350,   155,   156,     0,     0,   353,   354,   355,   356,   357,
-       0,     0,   358,     0,     0,   157,   158,   159,   160,   161,
-     162,   342,   343,     0,     0,     0,     0,   167,   168,   169,
-     170,   171,     0,     0,   172,   344,   345,   346,   347,   348,
-     349,   155,   156,     0,     0,     0,     0,   353,   354,   355,
-     356,   357,     0,     0,   358,   157,   158,   159,   160,     0,
-       0,   342,   343,     0,     0,     0,     0,   167,   168,   169,
-     170,   171,     0,     0,   172,   344,   345,   346,   347,     7,
-       0,     0,     8,     9,    10,     0,     0,   353,   354,   355,
-     356,   357,     0,     0,   358,    11,    12,    13,     0,    14,
+       0,   345,   346,   347,   348,   349,   350,     0,   351,   352,
+     353,   157,   158,   354,   355,   356,   357,   358,     0,     0,
+     359,     0,     0,     0,     0,   159,   160,   161,   162,   163,
+     164,     0,   165,   166,   343,   344,     0,   169,   170,   171,
+     172,   173,     0,     0,   174,     0,     0,     0,   345,   346,
+     347,   348,   349,   350,     0,   351,   352,   157,   158,     0,
+     354,   355,   356,   357,   358,     0,     0,   359,     0,     0,
+       0,   159,   160,   161,   162,   163,   164,     0,   165,   343,
+     344,     0,     0,   169,   170,   171,   172,   173,     0,     0,
+     174,     0,     0,   345,   346,   347,   348,   349,   350,     0,
+     351,   157,   158,     0,     0,   354,   355,   356,   357,   358,
+       0,     0,   359,     0,     0,   159,   160,   161,   162,   163,
+     164,   343,   344,     0,     0,     0,     0,   169,   170,   171,
+     172,   173,     0,     0,   174,   345,   346,   347,   348,   349,
+     350,   157,   158,     0,     0,     0,     0,   354,   355,   356,
+     357,   358,     0,     0,   359,   159,   160,   161,   162,     0,
+       0,   343,   344,     0,     0,     0,     0,   169,   170,   171,
+     172,   173,     0,     0,   174,   345,   346,   347,   348,     7,
+       0,     0,     8,     9,    10,     0,     0,   354,   355,   356,
+     357,   358,     0,     0,   359,    11,    12,    13,     0,    14,
       31,     0,    15,    32,    33,    34,     0,     0,    16,    17,
       18,     0,     0,     0,     0,     0,    35,     0,    36,     0,
       14,     0,     0,    37,     0,     0,     0,     0,     0,    38,
@@ -3332,74 +3266,72 @@ namespace yy {
   const short int
   CfdgParser::yycheck_[] =
   {
-        13,    76,   145,   192,   193,    18,   111,   112,   195,    10,
-     196,   122,    38,    10,    10,     6,    99,    49,   101,   102,
-     103,   110,    35,    36,    49,    62,     0,    40,    19,   123,
-     110,    63,    26,     6,    26,    26,    19,    31,    63,    31,
-     121,   122,   226,    26,   228,   229,    19,    58,   123,   124,
-      61,   145,    10,    26,    10,   311,   312,    58,    59,   315,
-      61,   144,    59,   146,    61,    61,    92,   104,    26,    61,
-     145,    26,   155,   156,   157,   158,   159,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
-      63,   174,   173,   279,   177,   178,    10,    14,    37,    16,
-      58,   184,    58,    19,    10,    26,   295,    10,   197,   198,
-      26,   191,   192,   193,   151,   190,    19,   197,   198,   199,
-      53,    54,    58,    26,    57,    61,    49,   314,   209,    49,
-      19,    20,   226,    10,   228,   229,   392,   393,    77,    78,
-      63,   222,    26,    63,    58,    62,    30,   230,    61,    88,
-      19,   226,    58,   228,   229,    58,   340,    26,   342,   343,
-     344,   345,   346,   347,   348,   349,   350,   351,   352,   353,
-     354,   355,   356,   357,   358,     8,    65,    59,    11,    61,
-      13,    61,    15,    19,    17,    18,    19,    26,   377,    28,
-      26,   296,    31,    26,    26,    28,    28,   210,    31,    13,
-     283,   284,    80,    36,    18,    49,    26,    26,   291,    87,
-     223,    31,    26,    26,    28,   295,    36,    31,    31,    63,
-      19,    20,   127,    62,    49,   130,    60,   302,   303,    62,
-     313,   311,   312,    61,    48,   315,    50,    51,    63,    61,
-      26,    61,   385,    61,    58,    31,   340,   436,   342,   343,
-     344,   345,   346,   347,   348,   349,   350,   351,   352,   353,
-     354,   355,   356,   357,   358,   340,    65,   342,   343,   344,
-     345,   346,   347,   348,   349,   350,   351,   352,   353,   354,
-     355,   356,   357,   358,   367,   368,   369,   398,   371,   372,
-     379,   385,   329,    19,    20,   370,    59,   377,    28,   379,
-      58,   384,    58,   386,    58,    19,    20,    24,    25,    59,
-     385,     8,   392,   393,    11,   396,    13,   398,    15,    58,
-      17,    18,    19,    26,    58,    28,    19,    20,    31,    26,
-      58,    28,     4,     5,    31,     8,    62,    26,    11,    36,
-      13,    10,    15,    10,    17,    18,    19,    29,    30,    66,
-     433,    65,   427,    26,    58,    28,   436,     8,    31,    62,
-      11,    59,    13,    36,    15,    62,    17,    18,    19,    62,
-      53,    54,    58,    59,    57,    26,     8,    28,    58,    11,
-      31,    13,   395,    15,    59,    36,    10,    19,    58,    62,
-       8,    24,    25,    11,    26,    13,    28,    15,    10,    31,
-      10,    19,    10,    57,    36,    58,    58,    53,    26,    12,
-      28,    62,    61,    31,    53,    10,    10,    10,    36,    13,
-      63,    63,    10,    67,    18,    10,    61,    14,    58,    58,
-      62,    59,    26,    10,    28,    57,     5,    31,    65,    50,
-      51,    52,    53,    54,    62,    10,    57,    64,    13,     5,
-      44,   245,   331,    18,    48,   222,    50,    51,   321,   369,
-     209,    26,    -1,    28,    58,    59,    31,    -1,    -1,    63,
-      50,    51,    52,    53,    54,    -1,    -1,    57,    -1,    44,
-      -1,    -1,    -1,    48,    -1,    50,    51,    -1,    -1,    -1,
-      -1,    13,     8,    58,    59,    11,    18,    13,    63,    15,
-      -1,    17,    18,    19,    26,    -1,    28,    -1,    -1,    31,
-      26,    -1,    28,    -1,    -1,    31,    -1,    -1,    -1,    -1,
-      36,    -1,    44,    -1,    -1,    13,    48,    -1,    50,    51,
-      18,    -1,    -1,    -1,    -1,    -1,    58,    59,    26,    -1,
-      28,    63,    -1,    31,    -1,    61,    -1,    -1,    -1,    -1,
-      -1,    10,    -1,    -1,    13,    -1,    44,    -1,    -1,    18,
-      48,    -1,    50,    51,    -1,    -1,    -1,    26,    -1,    28,
-      58,    59,    31,    -1,    -1,    63,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    44,    -1,    -1,    13,    48,
-      -1,    50,    51,    18,    19,    -1,    -1,    -1,    -1,    58,
-      59,    26,    -1,    28,    -1,    -1,    31,    -1,    -1,    13,
-      -1,    -1,    -1,    -1,    18,    19,    -1,    -1,    -1,    44,
+        13,    78,   194,   195,   155,    18,   147,   113,   114,   197,
+      38,   124,    37,   198,    10,     6,   101,    10,   103,   104,
+     105,   112,    35,    36,    19,    64,     0,    40,    19,   125,
+     112,    26,    26,    10,    26,    26,    19,    31,    30,     6,
+     123,   124,   228,    26,   230,   231,   312,   313,   125,   126,
+     316,   147,    19,    19,    79,    80,    10,    19,    20,    26,
+      26,   146,    58,   148,    89,    90,    94,   106,    61,    59,
+     147,    61,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+      10,   176,   175,    26,   179,   180,    63,   282,    10,    19,
+      10,   186,    10,    65,   296,    59,    26,    61,   199,   200,
+      49,   193,   194,   195,   153,   192,    26,   199,   200,   201,
+       4,     5,    49,    49,    63,   391,   392,   315,   211,    10,
+      26,    14,   228,    16,   230,   231,    63,    63,    58,    19,
+      20,   224,    49,    19,    20,    19,    58,   232,    58,    26,
+      58,   228,    26,   230,   231,   341,    63,   343,   344,   345,
+     346,   347,   348,   349,   350,   351,   352,   353,   354,   355,
+     356,   357,   358,   359,    19,    20,    26,    58,    59,    62,
+      61,    31,    62,    61,   376,     8,    24,    25,    11,    65,
+      13,   297,    15,    61,    17,    18,    19,    19,    20,   212,
+      60,   286,   287,    26,    61,    28,    61,   292,    31,    49,
+      49,    26,   225,    36,   296,    61,    31,   368,    53,    54,
+      65,    36,    57,    63,    63,    59,   303,   304,    66,   314,
+     312,   313,    26,    58,   316,   129,    61,    31,   132,    62,
+      62,   433,    26,   384,    28,   341,    61,   343,   344,   345,
+     346,   347,   348,   349,   350,   351,   352,   353,   354,   355,
+     356,   357,   358,   359,   341,    28,   343,   344,   345,   346,
+     347,   348,   349,   350,   351,   352,   353,   354,   355,   356,
+     357,   358,   359,   368,   397,   370,   371,   378,   384,    53,
+      54,   330,   369,    57,   376,    10,   378,    26,   383,    58,
+     385,    58,    31,    58,    61,    29,    30,   384,     8,   391,
+     392,    11,   395,    13,   397,    15,    58,    17,    18,    19,
+      26,    59,    28,    58,    59,    31,    26,    58,    28,    10,
+       8,    31,    61,    11,    26,    13,    36,    15,    58,    17,
+      18,    19,    58,    10,    26,   430,    28,   424,    26,    31,
+      28,   433,    59,    31,     8,    58,    62,    11,    36,    13,
+      58,    15,    62,    17,    18,    19,    24,    25,     8,    59,
+      58,    11,    26,    13,    28,    15,    10,    31,    10,    19,
+      62,   394,    36,    10,    62,    57,    26,     8,    28,    58,
+      11,    31,    13,    58,    15,    12,    36,    53,    19,    61,
+      53,    13,    10,    63,    63,    26,    18,    28,    62,    10,
+      31,    10,    13,    10,    26,    36,    28,    18,    67,    31,
+      10,    14,    62,    58,    61,    26,    59,    28,    58,    57,
+      31,    10,     5,     5,    65,    64,    48,     5,    50,    51,
+     247,    62,   332,    44,    82,    10,    58,    48,    13,    50,
+      51,   224,   322,    18,   368,   211,    -1,    58,    59,    -1,
+      -1,    26,    63,    28,     8,    -1,    31,    11,    -1,    13,
+      -1,    15,    -1,    17,    18,    19,    -1,    -1,    -1,    44,
+      -1,    -1,    26,    48,    28,    50,    51,    31,    -1,    -1,
+      13,    -1,    36,    58,    59,    18,    -1,    -1,    63,    -1,
+      -1,    -1,    -1,    26,    -1,    28,    -1,    -1,    31,    -1,
+      -1,    13,    -1,    -1,    -1,    -1,    18,    61,    -1,    -1,
+      -1,    44,    -1,    -1,    26,    48,    28,    50,    51,    31,
+      50,    51,    52,    53,    54,    58,    59,    57,    -1,    -1,
+      63,    -1,    44,    -1,    10,    -1,    48,    13,    50,    51,
+      -1,    -1,    18,    -1,    -1,    -1,    58,    59,    -1,    -1,
+      26,    63,    28,    -1,    -1,    31,    -1,    -1,    13,    -1,
+      -1,    -1,    -1,    18,    19,    -1,    -1,    -1,    44,    -1,
+      -1,    26,    48,    28,    50,    51,    31,    -1,    -1,    13,
+      -1,    -1,    58,    59,    18,    19,    -1,    -1,    -1,    44,
       -1,    -1,    26,    48,    28,    50,    51,    31,    -1,    -1,
       13,    -1,    -1,    58,    59,    18,    -1,    -1,    -1,    -1,
       44,    -1,    -1,    26,    48,    28,    50,    51,    31,    -1,
       -1,    13,    -1,    -1,    58,    59,    18,    -1,    -1,    -1,
       -1,    44,    -1,    -1,    26,    48,    28,    50,    51,    31,
-      -1,    -1,    -1,    -1,    -1,    58,    59,    -1,    -1,    -1,
+      50,    51,    52,    53,    54,    58,    59,    57,    -1,    -1,
       -1,    -1,    44,    -1,    24,    25,    48,    -1,    50,    51,
       -1,    -1,    -1,    24,    25,    -1,    58,    59,    38,    39,
       40,    41,    42,    43,    -1,    45,    46,    47,    -1,    49,
@@ -3475,50 +3407,50 @@ namespace yy {
   {
          0,     4,     5,    69,    70,    71,     0,     3,     6,     7,
        8,    19,    20,    21,    23,    26,    32,    33,    34,    73,
-      74,    76,    78,    82,    83,    84,    85,    93,    94,    99,
-     100,     3,     6,     7,     8,    19,    21,    26,    32,    33,
-      34,    72,    75,    77,    78,    81,    86,    87,    90,    91,
-      92,    93,    95,    96,    97,    98,    26,    31,    26,    26,
-      10,    59,    61,   132,    10,   132,    10,    26,    58,    29,
-      30,    79,   132,    61,    61,    26,    31,    19,    26,    28,
-      26,    10,    58,   104,   132,   132,    10,    19,    26,   104,
-      79,    60,    80,   132,    13,    18,    26,    28,    31,    44,
-      48,    50,    51,    58,    59,   133,   136,   143,   146,    61,
-     106,    61,    61,    58,    59,    59,    28,    58,   134,   134,
-      58,   120,   107,    58,   105,   133,   104,    58,   103,   104,
-      58,   103,     6,    19,    26,    63,   101,   102,    10,   103,
-     104,    10,    26,    79,    58,    58,    59,   143,   143,   143,
-     143,    59,   134,    58,   137,    24,    25,    38,    39,    40,
-      41,    42,    43,    45,    46,    47,    49,    50,    51,    52,
-      53,    54,    57,     8,    11,    13,    15,    17,    19,    26,
-      28,    31,    36,    62,    88,    89,   109,   114,   116,   119,
-     126,   127,   128,   129,   130,   136,   147,   106,   106,    19,
-      20,    65,   135,    62,    26,    28,    62,   122,   123,   124,
-     147,     8,    11,    13,    15,    19,    26,    36,    62,   108,
-     117,   118,   124,   147,    10,    28,    44,    48,    50,    51,
-      58,    63,   133,   141,   144,   146,   133,    10,   102,    10,
-     102,    19,    26,    19,    26,    49,    63,    10,    10,   143,
-      10,    63,   141,   143,    63,   134,    65,    19,    26,   138,
-     139,   143,   143,   143,   143,   143,   143,   143,   143,   143,
-     143,   143,   143,   143,   143,   143,   143,   143,   143,   147,
-      19,    26,   143,    58,    58,   143,    10,   143,    10,    61,
-      53,    58,    61,   143,    12,   133,    61,   110,   114,   110,
-     110,    61,   137,   105,    62,    62,    13,    26,    28,    31,
-      48,    50,    51,    58,   136,   140,   142,   145,    26,    30,
-      53,    61,   121,   122,   132,    10,    10,    58,    58,    61,
-      36,    61,   108,   111,   132,    63,   144,   144,   144,   143,
-      49,    63,    24,    25,    38,    39,    40,    41,    42,    43,
-      45,    46,    47,    50,    51,    52,    53,    54,    57,    63,
-      63,   101,    63,    63,    63,    65,    65,    10,    10,    67,
-     105,    10,    10,   143,   143,    63,   143,   115,   110,   106,
-      14,   112,   133,   133,    58,    58,    59,   142,   142,   143,
-     137,   142,    24,    25,    66,   125,   120,   134,   107,    63,
+      74,    76,    78,    82,    83,    84,    85,    94,    95,   100,
+     101,     3,     6,     7,     8,    19,    21,    26,    32,    33,
+      34,    72,    75,    77,    78,    81,    86,    87,    88,    89,
+      91,    92,    93,    94,    96,    97,    98,    99,    26,    31,
+      26,    26,    10,    59,    61,   133,    10,   133,    10,    26,
+      58,    29,    30,    79,   133,    61,    61,    26,    31,    19,
+      26,    28,    26,    10,    58,   105,   133,   133,    10,    19,
+      26,   105,    79,    60,    80,   133,    13,    18,    26,    28,
+      31,    44,    48,    50,    51,    58,    59,   134,   137,   144,
+     147,    61,   107,    61,    61,    58,    59,    59,    28,    58,
+     135,   135,    58,   121,   108,    58,   106,   134,   105,    58,
+     104,   105,    58,   104,     6,    19,    26,    63,   102,   103,
+      10,   105,   105,    10,    26,    79,    58,    58,    59,   144,
+     144,   144,   144,    59,   135,    58,   138,    24,    25,    38,
+      39,    40,    41,    42,    43,    45,    46,    47,    49,    50,
+      51,    52,    53,    54,    57,     8,    11,    13,    15,    17,
+      19,    26,    28,    31,    36,    62,    89,    90,   110,   115,
+     117,   120,   127,   128,   129,   130,   131,   137,   148,   107,
+     107,    19,    20,    65,   136,    62,    26,    28,    62,   123,
+     124,   125,   148,     8,    11,    13,    15,    19,    26,    36,
+      62,   109,   118,   119,   125,   148,    10,    28,    44,    48,
+      50,    51,    58,    63,   134,   142,   145,   147,   134,    10,
+     103,    10,   103,    19,    26,    19,    26,    49,    63,    10,
+      10,   144,    10,    63,   142,   144,    63,   135,    65,    19,
+      26,    90,   139,   140,   144,   144,   144,   144,   144,   144,
      144,   144,   144,   144,   144,   144,   144,   144,   144,   144,
-     144,   144,   144,   144,   144,   144,   144,   144,    65,   143,
-     143,    26,   139,   143,   133,   143,   143,    63,    63,    63,
-     110,    62,    14,    16,    62,   113,   131,   143,    63,   141,
-     143,    63,   142,   142,   132,    62,    62,    62,    63,   133,
-      64,   143,   110,    63,    63,    65,    64
+     144,   144,   148,    19,    26,   144,    58,    58,   144,   144,
+      61,    53,    58,    61,   144,    12,   134,    61,   111,   115,
+     111,   111,    61,   138,   106,    62,    62,    13,    26,    28,
+      31,    48,    50,    51,    58,   137,   141,   143,   146,    26,
+      30,    53,    61,   122,   123,   133,    10,    10,    58,    58,
+      61,    36,    61,   109,   112,   133,    63,   145,   145,   145,
+     144,    49,    63,    24,    25,    38,    39,    40,    41,    42,
+      43,    45,    46,    47,    50,    51,    52,    53,    54,    57,
+      63,    63,   102,    63,    63,    63,    65,    65,    67,   106,
+      10,    10,   144,   144,    63,   144,   116,   111,   107,    14,
+     113,   134,   134,    58,    58,    59,   143,   143,   144,   138,
+     143,    24,    25,    66,   126,   121,   135,   108,    63,   145,
+     145,   145,   145,   145,   145,   145,   145,   145,   145,   145,
+     145,   145,   145,   145,   145,   145,   145,    65,    26,   140,
+     144,   134,   144,   144,    63,    63,    63,   111,    62,    14,
+      16,    62,   114,   132,   144,    63,   142,   144,    63,   143,
+     143,   133,    62,    62,    62,    63,   134,    64,   144,   111,
+      63,    63,    65,    64
   };
 
 #if YYDEBUG
@@ -3547,26 +3479,26 @@ namespace yy {
       74,    74,    74,    74,    74,    74,    74,    75,    75,    75,
       75,    75,    76,    77,    78,    79,    79,    80,    80,    81,
       81,    81,    82,    83,    84,    85,    86,    87,    87,    87,
-      87,    87,    87,    87,    87,    88,    88,    89,    90,    91,
-      92,    93,    93,    94,    95,    95,    96,    97,    98,    99,
-     100,   101,   101,   101,   101,   101,   101,   102,   102,   103,
-     103,   104,   104,   105,   105,   105,   105,   106,   106,   107,
-     107,   108,   108,   109,   109,   109,   109,   109,   109,   110,
-     110,   111,   111,   112,   112,   113,   114,   114,   114,   115,
-     114,   114,   114,   114,   114,   114,   116,   116,   116,   117,
-     117,   117,   118,   118,   118,   118,   118,   118,   118,   118,
-     118,   119,   120,   120,   121,   121,   122,   123,   123,   125,
-     124,   126,   126,   126,   127,   128,   129,   129,   130,   131,
-     131,   132,   132,   133,   133,   134,   134,   135,   135,   135,
-     135,   136,   137,   138,   138,   139,   139,   140,   140,   141,
-     141,   142,   142,   142,   142,   142,   142,   142,   142,   143,
-     143,   143,   143,   143,   143,   143,   143,   143,   143,   143,
-     143,   143,   143,   143,   143,   143,   143,   143,   143,   143,
-     143,   143,   143,   143,   143,   144,   144,   144,   144,   144,
+      87,    87,    87,    88,    88,    89,    89,    90,    91,    92,
+      93,    94,    94,    95,    96,    96,    97,    98,    99,   100,
+     101,   102,   102,   102,   102,   102,   102,   103,   103,   104,
+     104,   105,   105,   106,   106,   106,   106,   107,   107,   108,
+     108,   109,   109,   110,   110,   110,   110,   110,   110,   111,
+     111,   112,   112,   113,   113,   114,   115,   115,   115,   116,
+     115,   115,   115,   115,   115,   115,   117,   117,   117,   118,
+     118,   118,   119,   119,   119,   119,   119,   119,   119,   119,
+     119,   120,   121,   121,   122,   122,   123,   124,   124,   126,
+     125,   127,   127,   127,   128,   129,   130,   130,   131,   132,
+     132,   133,   133,   134,   134,   135,   135,   136,   136,   136,
+     136,   137,   138,   139,   139,   140,   141,   141,   142,   142,
+     143,   143,   143,   143,   143,   143,   143,   143,   144,   144,
      144,   144,   144,   144,   144,   144,   144,   144,   144,   144,
      144,   144,   144,   144,   144,   144,   144,   144,   144,   144,
-     145,   145,   145,   145,   145,   145,   146,   146,   146,   146,
-     146,   146,   146,   147,   147
+     144,   144,   144,   144,   145,   145,   145,   145,   145,   145,
+     145,   145,   145,   145,   145,   145,   145,   145,   145,   145,
+     145,   145,   145,   145,   145,   145,   145,   145,   145,   146,
+     146,   146,   146,   146,   146,   147,   147,   147,   147,   147,
+     147,   147,   148,   148
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -3579,7 +3511,7 @@ namespace yy {
        3,     1,     1,     3,     3,     3,     3,     2,     2,     2,
        2,     1,     2,     3,     1,     1,     1,     2,     0,     4,
        3,     3,     2,     2,     2,     2,     2,     4,     3,     4,
-       2,     4,     3,     4,     2,     2,     2,     2,     3,     2,
+       4,     3,     4,     1,     1,     2,     2,     2,     3,     2,
        3,     2,     3,     4,     1,     2,     3,     4,     4,     2,
        4,     2,     2,     2,     2,     1,     1,     3,     1,     3,
        0,     3,     2,     3,     3,     2,     0,     2,     0,     2,
@@ -3590,15 +3522,15 @@ namespace yy {
        1,     3,     2,     0,     3,     1,     2,     1,     2,     0,
        4,     4,     4,     2,     4,     3,     2,     2,     4,     3,
        2,     3,     3,     3,     5,     2,     0,     2,     3,     2,
-       2,     1,     5,     3,     1,     3,     3,     2,     1,     3,
-       1,     1,     1,     3,     1,     2,     2,     3,     3,     1,
-       1,     1,     3,     3,     3,     3,     3,     3,     3,     3,
-       2,     2,     2,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     1,     1,     1,     1,     3,     3,
-       3,     3,     3,     3,     3,     2,     2,     2,     3,     3,
-       3,     3,     3,     3,     3,     3,     3,     3,     3,     1,
-       3,     4,     4,     4,     2,     1,     3,     4,     4,     4,
-       4,     2,     1,     1,     1
+       2,     1,     5,     3,     1,     1,     2,     1,     3,     1,
+       1,     1,     3,     1,     2,     2,     3,     3,     1,     1,
+       1,     3,     3,     3,     3,     3,     3,     3,     3,     2,
+       2,     2,     3,     3,     3,     3,     3,     3,     3,     3,
+       3,     3,     3,     1,     1,     1,     1,     3,     3,     3,
+       3,     3,     3,     3,     2,     2,     2,     3,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     1,     3,
+       4,     4,     4,     2,     1,     3,     4,     4,     4,     4,
+       2,     1,     1,     1
   };
 
 #if YYDEBUG
@@ -3620,21 +3552,22 @@ namespace yy {
   "statement", "statement_v2", "v3clues", "v2stuff", "inclusion", "import",
   "eof", "fileString", "fileNameSpace", "initialization",
   "initialization_v2", "background", "tile", "size", "global_definition",
-  "global_definition_header", "definition_header", "definition", "shape",
-  "shape_singleton_header", "shape_singleton", "rule_header_v2", "rule_v2",
-  "rule_header", "path_header", "rule", "path", "path_header_v2",
-  "path_v2", "parameter", "buncha_parameters", "parameter_list",
-  "function_parameter_list", "parameter_spec", "buncha_elements",
-  "buncha_pathOps_v2", "pathOp_simple_v2", "element_simple",
-  "one_or_more_elements", "one_or_more_pathOp_v2", "caseBody",
-  "caseBody_element", "element", "$@1", "element_v2clue", "pathOp_v2",
-  "pathOp_v3clues", "element_loop", "buncha_replacements_v2",
-  "one_or_more_replacements_v2", "replacement_simple_v2", "replacement_v2",
-  "loopHeader_v2", "$@2", "loopHeader", "ifHeader", "ifElseHeader",
-  "transHeader", "switchHeader", "caseHeader", "modification_v2",
-  "modification", "buncha_adjustments", "adjustment", "letHeader",
-  "letBody", "letVariables", "letVariable", "explist", "arglist", "exp",
-  "exp2", "exp3", "expfunc", "exp2func", "shapeName", YY_NULL
+  "function_definition_header", "global_definition_header",
+  "definition_header", "definition", "shape", "shape_singleton_header",
+  "shape_singleton", "rule_header_v2", "rule_v2", "rule_header",
+  "path_header", "rule", "path", "path_header_v2", "path_v2", "parameter",
+  "buncha_parameters", "parameter_list", "function_parameter_list",
+  "parameter_spec", "buncha_elements", "buncha_pathOps_v2",
+  "pathOp_simple_v2", "element_simple", "one_or_more_elements",
+  "one_or_more_pathOp_v2", "caseBody", "caseBody_element", "element",
+  "$@1", "element_v2clue", "pathOp_v2", "pathOp_v3clues", "element_loop",
+  "buncha_replacements_v2", "one_or_more_replacements_v2",
+  "replacement_simple_v2", "replacement_v2", "loopHeader_v2", "$@2",
+  "loopHeader", "ifHeader", "ifElseHeader", "transHeader", "switchHeader",
+  "caseHeader", "modification_v2", "modification", "buncha_adjustments",
+  "adjustment", "letHeader", "letBody", "letVariables", "letVariable",
+  "explist", "arglist", "exp", "exp2", "exp3", "expfunc", "exp2func",
+  "shapeName", YY_NULL
   };
 
 
@@ -3644,86 +3577,85 @@ namespace yy {
   {
         69,     0,    -1,     4,    70,    -1,     5,    71,    -1,    70,
       73,    -1,    -1,    71,    72,    -1,    -1,    81,    -1,    77,
-      -1,    78,    -1,    97,    -1,    98,    -1,    90,    -1,    92,
+      -1,    78,    -1,    98,    -1,    99,    -1,    91,    -1,    93,
       -1,    86,    -1,    75,    -1,    82,    -1,    83,    -1,    76,
-      -1,    78,    -1,    84,    -1,    85,    -1,    94,    -1,   100,
+      -1,    78,    -1,    84,    -1,    85,    -1,    95,    -1,   101,
       -1,    74,    -1,    26,    10,    -1,    19,    10,    -1,    20,
       10,    -1,    26,    58,    -1,    26,    26,    58,    -1,    33,
       -1,     6,    -1,     8,    26,    58,    -1,     3,    26,    58,
       -1,     3,    26,    59,    -1,     3,    31,    59,    -1,    21,
-     132,    -1,    34,   132,    -1,    19,   132,    -1,    32,    79,
-      -1,    93,    -1,    32,    79,    -1,    33,    80,    79,    -1,
+     133,    -1,    34,   133,    -1,    19,   133,    -1,    32,    79,
+      -1,    94,    -1,    32,    79,    -1,    33,    80,    79,    -1,
       23,    -1,    29,    -1,    30,    -1,    60,    26,    -1,    -1,
-       3,    26,   105,   133,    -1,     3,    31,   133,    -1,     3,
-      26,   105,    -1,     3,    26,    -1,    21,   132,    -1,    34,
-     132,    -1,    19,   132,    -1,    87,   143,    -1,     6,    26,
-     104,    10,    -1,    26,   104,    10,    -1,    26,    26,   104,
-      10,    -1,    26,    10,    -1,     6,    19,   104,    10,    -1,
-      19,   104,    10,    -1,    26,    19,   103,    10,    -1,    19,
-      10,    -1,    26,    10,    -1,    19,    10,    -1,    88,   143,
-      -1,     6,    26,   103,    -1,    90,    61,    -1,    91,   106,
-      62,    -1,     7,    26,    -1,     7,    26,    28,    -1,    93,
-      61,   120,    62,    -1,     7,    -1,     7,    28,    -1,     8,
-      26,   103,    -1,    95,    61,   106,    62,    -1,    96,    61,
-     106,    62,    -1,     8,    26,    -1,    99,    61,   107,    62,
-      -1,    26,    26,    -1,     6,    26,    -1,    26,    19,    -1,
-       6,    19,    -1,    26,    -1,    19,    -1,   102,    49,   101,
-      -1,   101,    -1,    58,   102,    63,    -1,    -1,    58,   102,
-      63,    -1,    58,    63,    -1,    58,   141,    63,    -1,    58,
-      10,    63,    -1,    58,    63,    -1,    -1,   106,   114,    -1,
-      -1,   107,   117,    -1,    -1,    36,    61,   134,    62,    -1,
-     147,   132,    -1,    36,    58,   143,    63,    -1,    36,    58,
-      63,    -1,   147,   105,   133,    -1,    13,    58,   143,    63,
-     133,    -1,   136,   137,   133,    -1,     8,   147,   105,   133,
-      -1,    61,   106,    62,    -1,   114,    -1,    61,   107,    62,
-      -1,   108,    -1,   112,   113,    -1,    -1,   131,   110,    -1,
-     109,    -1,    89,    -1,   119,    -1,    -1,   119,    12,   115,
-     110,    -1,   127,   110,    -1,   128,   110,    -1,   129,   110,
-      -1,   130,    61,   112,    62,    -1,   116,    -1,    28,    53,
-      -1,    26,    61,    -1,    36,    61,    -1,   108,    -1,   124,
-     111,    -1,   118,    -1,    36,    58,    -1,    26,    58,    -1,
-       8,    -1,    11,    -1,    26,    10,    -1,    19,    10,    -1,
-      13,    -1,    19,    -1,    15,    -1,   126,   133,   110,    -1,
-     120,   123,    -1,    -1,    61,   120,    62,    -1,   122,    -1,
-     147,   132,    -1,   122,    -1,   124,   121,    -1,    -1,    28,
-      53,   125,   132,    -1,    11,    26,    10,   143,    -1,    11,
-      19,    10,   143,    -1,    11,   143,    -1,    13,    58,   143,
-      63,    -1,   127,   110,    14,    -1,    19,   143,    -1,    17,
-     143,    -1,    15,    58,   143,    63,    -1,    16,   143,    64,
-      -1,    14,    64,    -1,    61,   134,    62,    -1,    59,   134,
-      65,    -1,    59,   134,    65,    -1,    59,    59,   134,    65,
-      65,    -1,   134,   135,    -1,    -1,    19,   140,    -1,    19,
-     142,    66,    -1,    20,    26,    -1,    20,    30,    -1,    18,
-      -1,    58,   138,    67,   143,    63,    -1,   138,    67,   139,
-      -1,   139,    -1,    26,    10,   143,    -1,    19,    10,   143,
-      -1,   140,   142,    -1,   142,    -1,   141,    49,   144,    -1,
-     144,    -1,    28,    -1,    48,    -1,    58,   143,    63,    -1,
-     145,    -1,    50,   142,    -1,    51,   142,    -1,   142,    24,
-     142,    -1,   142,    25,   142,    -1,    28,    -1,    48,    -1,
-     146,    -1,   143,    24,   143,    -1,   143,    25,   143,    -1,
-     143,    49,   143,    -1,   143,    51,   143,    -1,   143,    50,
-     143,    -1,   143,    52,   143,    -1,   143,    53,   143,    -1,
-     143,    54,   143,    -1,    50,   143,    -1,    51,   143,    -1,
-      44,   143,    -1,   143,    57,   143,    -1,   143,    39,   143,
-      -1,   143,    38,   143,    -1,   143,    41,   143,    -1,   143,
-      40,   143,    -1,   143,    42,   143,    -1,   143,    43,   143,
-      -1,   143,    45,   143,    -1,   143,    46,   143,    -1,   143,
-      47,   143,    -1,    58,   143,    63,    -1,   133,    -1,    28,
-      -1,    48,    -1,   146,    -1,   144,    24,   144,    -1,   144,
-      25,   144,    -1,   144,    51,   144,    -1,   144,    50,   144,
-      -1,   144,    52,   144,    -1,   144,    53,   144,    -1,   144,
-      54,   144,    -1,    50,   144,    -1,    51,   144,    -1,    44,
-     144,    -1,   144,    57,   144,    -1,   144,    39,   144,    -1,
-     144,    38,   144,    -1,   144,    41,   144,    -1,   144,    40,
-     144,    -1,   144,    42,   144,    -1,   144,    43,   144,    -1,
-     144,    45,   144,    -1,   144,    46,   144,    -1,   144,    47,
-     144,    -1,    58,   143,    63,    -1,   133,    -1,    26,    58,
-      63,    -1,    26,    58,   141,    63,    -1,    31,    59,   143,
-      65,    -1,    13,    58,   143,    63,    -1,   136,   137,    -1,
-      26,    -1,    26,    58,    63,    -1,    26,    58,   141,    63,
-      -1,    31,    59,   143,    65,    -1,    13,    58,   143,    63,
-      -1,    26,    58,    10,    63,    -1,   136,   137,    -1,    26,
-      -1,    26,    -1,    31,    -1
+       3,    26,   106,   134,    -1,     3,    31,   134,    -1,     3,
+      26,   106,    -1,     3,    26,    -1,    21,   133,    -1,    34,
+     133,    -1,    19,   133,    -1,    88,   144,    -1,     6,    26,
+     105,    10,    -1,    26,   105,    10,    -1,    26,    26,   105,
+      10,    -1,     6,    19,   105,    10,    -1,    19,   105,    10,
+      -1,    26,    19,   105,    10,    -1,    87,    -1,    89,    -1,
+      26,    10,    -1,    19,    10,    -1,    89,   144,    -1,     6,
+      26,   104,    -1,    91,    61,    -1,    92,   107,    62,    -1,
+       7,    26,    -1,     7,    26,    28,    -1,    94,    61,   121,
+      62,    -1,     7,    -1,     7,    28,    -1,     8,    26,   104,
+      -1,    96,    61,   107,    62,    -1,    97,    61,   107,    62,
+      -1,     8,    26,    -1,   100,    61,   108,    62,    -1,    26,
+      26,    -1,     6,    26,    -1,    26,    19,    -1,     6,    19,
+      -1,    26,    -1,    19,    -1,   103,    49,   102,    -1,   102,
+      -1,    58,   103,    63,    -1,    -1,    58,   103,    63,    -1,
+      58,    63,    -1,    58,   142,    63,    -1,    58,    10,    63,
+      -1,    58,    63,    -1,    -1,   107,   115,    -1,    -1,   108,
+     118,    -1,    -1,    36,    61,   135,    62,    -1,   148,   133,
+      -1,    36,    58,   144,    63,    -1,    36,    58,    63,    -1,
+     148,   106,   134,    -1,    13,    58,   144,    63,   134,    -1,
+     137,   138,   134,    -1,     8,   148,   106,   134,    -1,    61,
+     107,    62,    -1,   115,    -1,    61,   108,    62,    -1,   109,
+      -1,   113,   114,    -1,    -1,   132,   111,    -1,   110,    -1,
+      90,    -1,   120,    -1,    -1,   120,    12,   116,   111,    -1,
+     128,   111,    -1,   129,   111,    -1,   130,   111,    -1,   131,
+      61,   113,    62,    -1,   117,    -1,    28,    53,    -1,    26,
+      61,    -1,    36,    61,    -1,   109,    -1,   125,   112,    -1,
+     119,    -1,    36,    58,    -1,    26,    58,    -1,     8,    -1,
+      11,    -1,    26,    10,    -1,    19,    10,    -1,    13,    -1,
+      19,    -1,    15,    -1,   127,   134,   111,    -1,   121,   124,
+      -1,    -1,    61,   121,    62,    -1,   123,    -1,   148,   133,
+      -1,   123,    -1,   125,   122,    -1,    -1,    28,    53,   126,
+     133,    -1,    11,    26,    10,   144,    -1,    11,    19,    10,
+     144,    -1,    11,   144,    -1,    13,    58,   144,    63,    -1,
+     128,   111,    14,    -1,    19,   144,    -1,    17,   144,    -1,
+      15,    58,   144,    63,    -1,    16,   144,    64,    -1,    14,
+      64,    -1,    61,   135,    62,    -1,    59,   135,    65,    -1,
+      59,   135,    65,    -1,    59,    59,   135,    65,    65,    -1,
+     135,   136,    -1,    -1,    19,   141,    -1,    19,   143,    66,
+      -1,    20,    26,    -1,    20,    30,    -1,    18,    -1,    58,
+     139,    67,   144,    63,    -1,   139,    67,   140,    -1,   140,
+      -1,    90,    -1,   141,   143,    -1,   143,    -1,   142,    49,
+     145,    -1,   145,    -1,    28,    -1,    48,    -1,    58,   144,
+      63,    -1,   146,    -1,    50,   143,    -1,    51,   143,    -1,
+     143,    24,   143,    -1,   143,    25,   143,    -1,    28,    -1,
+      48,    -1,   147,    -1,   144,    24,   144,    -1,   144,    25,
+     144,    -1,   144,    49,   144,    -1,   144,    51,   144,    -1,
+     144,    50,   144,    -1,   144,    52,   144,    -1,   144,    53,
+     144,    -1,   144,    54,   144,    -1,    50,   144,    -1,    51,
+     144,    -1,    44,   144,    -1,   144,    57,   144,    -1,   144,
+      39,   144,    -1,   144,    38,   144,    -1,   144,    41,   144,
+      -1,   144,    40,   144,    -1,   144,    42,   144,    -1,   144,
+      43,   144,    -1,   144,    45,   144,    -1,   144,    46,   144,
+      -1,   144,    47,   144,    -1,    58,   144,    63,    -1,   134,
+      -1,    28,    -1,    48,    -1,   147,    -1,   145,    24,   145,
+      -1,   145,    25,   145,    -1,   145,    51,   145,    -1,   145,
+      50,   145,    -1,   145,    52,   145,    -1,   145,    53,   145,
+      -1,   145,    54,   145,    -1,    50,   145,    -1,    51,   145,
+      -1,    44,   145,    -1,   145,    57,   145,    -1,   145,    39,
+     145,    -1,   145,    38,   145,    -1,   145,    41,   145,    -1,
+     145,    40,   145,    -1,   145,    42,   145,    -1,   145,    43,
+     145,    -1,   145,    45,   145,    -1,   145,    46,   145,    -1,
+     145,    47,   145,    -1,    58,   144,    63,    -1,   134,    -1,
+      26,    58,    63,    -1,    26,    58,   142,    63,    -1,    31,
+      59,   144,    65,    -1,    13,    58,   144,    63,    -1,   137,
+     138,    -1,    26,    -1,    26,    58,    63,    -1,    26,    58,
+     142,    63,    -1,    31,    59,   144,    65,    -1,    13,    58,
+     144,    63,    -1,    26,    58,    10,    63,    -1,   137,   138,
+      -1,    26,    -1,    26,    -1,    31,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -3737,26 +3669,26 @@ namespace yy {
       65,    69,    71,    73,    77,    81,    85,    89,    92,    95,
       98,   101,   103,   106,   110,   112,   114,   116,   119,   120,
      125,   129,   133,   136,   139,   142,   145,   148,   153,   157,
-     162,   165,   170,   174,   179,   182,   185,   188,   191,   195,
-     198,   202,   205,   209,   214,   216,   219,   223,   228,   233,
-     236,   241,   244,   247,   250,   253,   255,   257,   261,   263,
-     267,   268,   272,   275,   279,   283,   286,   287,   290,   291,
-     294,   295,   300,   303,   308,   312,   316,   322,   326,   331,
-     335,   337,   341,   343,   346,   347,   350,   352,   354,   356,
-     357,   362,   365,   368,   371,   376,   378,   381,   384,   387,
-     389,   392,   394,   397,   400,   402,   404,   407,   410,   412,
-     414,   416,   420,   423,   424,   428,   430,   433,   435,   438,
-     439,   444,   449,   454,   457,   462,   466,   469,   472,   477,
-     481,   484,   488,   492,   496,   502,   505,   506,   509,   513,
-     516,   519,   521,   527,   531,   533,   537,   541,   544,   546,
-     550,   552,   554,   556,   560,   562,   565,   568,   572,   576,
-     578,   580,   582,   586,   590,   594,   598,   602,   606,   610,
-     614,   617,   620,   623,   627,   631,   635,   639,   643,   647,
-     651,   655,   659,   663,   667,   669,   671,   673,   675,   679,
-     683,   687,   691,   695,   699,   703,   706,   709,   712,   716,
-     720,   724,   728,   732,   736,   740,   744,   748,   752,   756,
-     758,   762,   767,   772,   777,   780,   782,   786,   791,   796,
-     801,   806,   809,   811,   813
+     162,   167,   171,   176,   178,   180,   183,   186,   189,   193,
+     196,   200,   203,   207,   212,   214,   217,   221,   226,   231,
+     234,   239,   242,   245,   248,   251,   253,   255,   259,   261,
+     265,   266,   270,   273,   277,   281,   284,   285,   288,   289,
+     292,   293,   298,   301,   306,   310,   314,   320,   324,   329,
+     333,   335,   339,   341,   344,   345,   348,   350,   352,   354,
+     355,   360,   363,   366,   369,   374,   376,   379,   382,   385,
+     387,   390,   392,   395,   398,   400,   402,   405,   408,   410,
+     412,   414,   418,   421,   422,   426,   428,   431,   433,   436,
+     437,   442,   447,   452,   455,   460,   464,   467,   470,   475,
+     479,   482,   486,   490,   494,   500,   503,   504,   507,   511,
+     514,   517,   519,   525,   529,   531,   533,   536,   538,   542,
+     544,   546,   548,   552,   554,   557,   560,   564,   568,   570,
+     572,   574,   578,   582,   586,   590,   594,   598,   602,   606,
+     609,   612,   615,   619,   623,   627,   631,   635,   639,   643,
+     647,   651,   655,   659,   661,   663,   665,   667,   671,   675,
+     679,   683,   687,   691,   695,   698,   701,   704,   708,   712,
+     716,   720,   724,   728,   732,   736,   740,   744,   748,   750,
+     754,   759,   764,   769,   772,   774,   778,   783,   788,   793,
+     798,   801,   803,   805
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
@@ -3768,27 +3700,27 @@ namespace yy {
      228,   229,   230,   231,   232,   233,   245,   246,   247,   248,
      249,   250,   251,   252,   253,   254,   255,   259,   260,   261,
      262,   263,   267,   276,   287,   294,   294,   297,   298,   302,
-     315,   327,   341,   352,   362,   372,   388,   397,   403,   409,
-     415,   419,   424,   429,   435,   442,   445,   452,   461,   477,
-     491,   500,   509,   524,   532,   544,   561,   586,   595,   605,
-     618,   625,   631,   637,   642,   646,   652,   658,   659,   663,
-     664,   668,   669,   673,   674,   675,   676,   680,   685,   689,
-     692,   696,   703,   713,   722,   731,   744,   758,   772,   786,
-     788,   796,   798,   804,   808,   812,   816,   820,   824,   835,
-     835,   853,   864,   875,   886,   895,   902,   903,   904,   908,
-     910,   918,   930,   931,   932,   933,   934,   935,   936,   937,
-     938,   942,   953,   956,   960,   962,   968,   977,   979,   990,
-     990,  1005,  1018,  1032,  1047,  1060,  1070,  1082,  1098,  1111,
-    1141,  1154,  1159,  1166,  1171,  1178,  1183,  1192,  1197,  1207,
-    1212,  1219,  1227,  1233,  1235,  1239,  1245,  1252,  1256,  1263,
-    1267,  1273,  1275,  1277,  1279,  1281,  1283,  1285,  1290,  1297,
-    1299,  1301,  1303,  1308,  1313,  1315,  1317,  1319,  1321,  1323,
-    1325,  1327,  1329,  1331,  1333,  1335,  1337,  1339,  1341,  1343,
-    1345,  1347,  1349,  1351,  1353,  1357,  1359,  1361,  1363,  1368,
-    1373,  1375,  1377,  1379,  1381,  1383,  1385,  1387,  1389,  1391,
-    1393,  1395,  1397,  1399,  1401,  1403,  1405,  1407,  1409,  1411,
-    1415,  1420,  1426,  1432,  1438,  1444,  1451,  1456,  1462,  1468,
-    1474,  1480,  1486,  1493,  1495
+     314,   325,   339,   352,   364,   376,   395,   422,   432,   442,
+     451,   456,   461,   469,   474,   480,   483,   490,   508,   515,
+     524,   532,   541,   556,   564,   572,   585,   598,   606,   615,
+     628,   635,   641,   647,   652,   656,   662,   668,   669,   673,
+     674,   678,   679,   683,   684,   685,   686,   690,   693,   697,
+     700,   704,   711,   721,   727,   733,   742,   752,   763,   773,
+     775,   781,   783,   789,   792,   796,   800,   804,   808,   817,
+     817,   829,   838,   847,   856,   863,   870,   871,   872,   876,
+     878,   886,   898,   899,   900,   901,   902,   903,   904,   905,
+     906,   910,   920,   923,   927,   929,   935,   944,   946,   957,
+     957,   972,   981,   991,  1002,  1011,  1019,  1027,  1037,  1046,
+    1074,  1085,  1090,  1097,  1102,  1109,  1114,  1123,  1128,  1138,
+    1143,  1150,  1158,  1164,  1166,  1170,  1176,  1180,  1187,  1191,
+    1197,  1199,  1201,  1203,  1205,  1207,  1209,  1214,  1221,  1223,
+    1225,  1227,  1232,  1237,  1239,  1241,  1243,  1245,  1247,  1249,
+    1251,  1253,  1255,  1257,  1259,  1261,  1263,  1265,  1267,  1269,
+    1271,  1273,  1275,  1277,  1281,  1283,  1285,  1287,  1292,  1297,
+    1299,  1301,  1303,  1305,  1307,  1309,  1311,  1313,  1315,  1317,
+    1319,  1321,  1323,  1325,  1327,  1329,  1331,  1333,  1335,  1339,
+    1344,  1350,  1356,  1362,  1369,  1376,  1381,  1387,  1393,  1399,
+    1405,  1412,  1419,  1421
   };
 
   // Print the state stack on the debug stream.
@@ -3867,8 +3799,8 @@ namespace yy {
   }
 
   const int CfdgParser::yyeof_ = 0;
-  const int CfdgParser::yylast_ = 1331;
-  const int CfdgParser::yynnts_ = 80;
+  const int CfdgParser::yylast_ = 1311;
+  const int CfdgParser::yynnts_ = 81;
   const int CfdgParser::yyempty_ = -2;
   const int CfdgParser::yyfinal_ = 6;
   const int CfdgParser::yyterror_ = 1;
@@ -3881,13 +3813,12 @@ namespace yy {
 
 } // yy
 /* Line 1141 of lalr1.cc  */
-#line 3885 "cfdg.tab.cpp"
+#line 3817 "cfdg.tab.cpp"
 /* Line 1142 of lalr1.cc  */
-#line 1498 "../../src-common/cfdg.ypp"
+#line 1424 "../../src-common/cfdg.ypp"
 
 
 void yy::CfdgParser::error(const CfdgParser::location_type& l, const std::string& m)
 {
-    driver.mWant2ndPass = false;
     driver.error(l, m);
 }
