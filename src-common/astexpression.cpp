@@ -1935,6 +1935,39 @@ namespace AST {
                 Simplify(arguments);
             }
         }
+        if (argSource == StackArgs) {
+            bool isGlobal;
+            const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+            assert(bound);
+            if (bound->mType != RuleType)
+                return this;
+            if (bound->mStackIndex == -1) {
+                assert(bound->mDefinition);
+                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
+                    // The source ASTruleSpec must already be type-checked
+                    // because it is lexically earlier
+                    shapeType = r->shapeType;
+                    argSize = r->argSize;
+                    argSource = r->argSource;
+                    arguments.reset();
+                    assert(!r->arguments || r->arguments->isConstant);
+                    if (r->simpleRule) {
+                        simpleRule = StackRule::alloc(r->simpleRule);
+                        Builder::CurrentBuilder->storeParams(simpleRule);
+                        assert(argSource == SimpleArgs);
+                    } else {
+                        simpleRule = nullptr;
+                    }
+                    typeSignature = r->typeSignature;
+                    parentSignature = r->parentSignature;
+                    isConstant = true;
+                    isLocal = true;
+                    assert(argSource != DynamicArgs && argSource != ShapeArgs);
+                } else {
+                    CfdgError::Error(where, "Error processing shape variable.");
+                }
+            }
+        }
         return this;
     }
     
@@ -1982,13 +2015,15 @@ namespace AST {
     ASTexpression*
     ASTlet::simplify()
     {
+        assert(definition);
+        definition->compile(CompilePhase::Simplify);
         if (isConstant) {
             std::string ent;
             entropy(ent);
             ASTparameter p(-1, definition, where);
             ASTexpression* ret = definition->mExpression ?
-            definition->mExpression->constCopy(&p, ent) :
-            definition->mChildChange.constCopy(&p, ent);
+                definition->mExpression->constCopy(&p, ent) :
+                definition->mChildChange.constCopy(&p, ent);
             if (ret) {
                 delete this;
                 return ret;
@@ -2486,41 +2521,6 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify: {
-                if (argSource == StackArgs) {
-                    bool isGlobal;
-                    const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
-                    assert(bound);
-                    if (bound->mType != RuleType)
-                        return this;
-                    if (bound->mStackIndex == -1) {
-                        assert(bound->mDefinition);
-                        if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
-                            // The source ASTruleSpec must already be type-checked
-                            // because it is lexically earlier
-                            shapeType = r->shapeType;
-                            argSize = r->argSize;
-                            argSource = r->argSource;
-                            arguments.reset();
-                            assert(!r->arguments || r->arguments->isConstant);
-                            if (r->simpleRule) {
-                                simpleRule = StackRule::alloc(r->simpleRule);
-                                Builder::CurrentBuilder->storeParams(simpleRule);
-                                assert(argSource == SimpleArgs);
-                            } else {
-                                simpleRule = nullptr;
-                            }
-                            typeSignature = r->typeSignature;
-                            parentSignature = r->parentSignature;
-                            isConstant = true;
-                            isLocal = true;
-                            assert(argSource != DynamicArgs && argSource != ShapeArgs);
-                        } else {
-                            CfdgError::Error(where, "Error processing shape variable.");
-                        }
-                    }
-                } else {
-                    Simplify(arguments);
-                }
                 break;
             }
         }
@@ -2696,9 +2696,6 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify:
-                assert(definition);
-                definition->compile(ph);
-                Compile(arguments, ph);
                 break;
         }
         return this;
