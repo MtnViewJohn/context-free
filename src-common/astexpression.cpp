@@ -2373,14 +2373,21 @@ namespace AST {
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
                         assert(bound);
-                        mStackIndex = bound->mStackIndex -
-                            (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                         if (bound->mType != RuleType) {
                             CfdgError::Error(where, "Shape name does not bind to a rule variable");
                             CfdgError::Error(bound->mLocation, "   this is what it binds to");
                         }
-                        isConstant = false;
-                        isLocal = bound->isLocal;
+                        if (bound->mStackIndex == -1) {
+                            if (!bound->mDefinition) {
+                                CfdgError::Error(where, "Error processing shape variable.");
+                                return this;
+                            }
+                        } else {
+                            mStackIndex = bound->mStackIndex -
+                                (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                            isConstant = false;
+                            isLocal = bound->isLocal;
+                        }
                         return this;
                     }
                     case NoArgs:
@@ -2417,36 +2424,8 @@ namespace AST {
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
                         if (bound) {
-                            if (bound->mStackIndex == -1) {
-                                if (!bound->mDefinition) {
-                                    CfdgError::Error(where, "Error processing shape variable.");
-                                    return this;
-                                }
-                                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
-                                    // The source ASTruleSpec must already be type-checked
-                                    // because it is lexically earlier
-                                    shapeType = r->shapeType;
-                                    argSize = r->argSize;
-                                    argSource = r->argSource;
-                                    if (r->simpleRule) {
-                                        simpleRule = StackRule::alloc(r->simpleRule);
-                                        Builder::CurrentBuilder->storeParams(simpleRule);
-                                        assert(argSource == SimpleArgs);
-                                    }
-                                    typeSignature = r->typeSignature;
-                                    parentSignature = r->parentSignature;
-                                    isConstant = true;
-                                    isLocal = true;
-                                    assert(argSource != DynamicArgs && argSource != ShapeArgs);
-                                    return this;
-                                } else {
-                                    CfdgError::Error(where, "Error processing shape variable.");
-                                    return this;
-                                }
-                            } else {
-                                argSource = StackArgs;
-                                return compile(ph);
-                            }
+                            argSource = StackArgs;
+                            return compile(ph);
                         }
                         
                         if (arguments && arguments->mType == AST::ReuseType) {
@@ -2508,8 +2487,45 @@ namespace AST {
                 }
                 break;
             }
-            case CompilePhase::Simplify:
+            case CompilePhase::Simplify: {
+                if (argSource == StackArgs) {
+                    bool isGlobal;
+                    const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                    assert(bound);
+                    if (bound->mType != RuleType)
+                        return this;
+                    if (bound->mStackIndex == -1) {
+                        assert(bound->mDefinition);
+                        if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
+                            // The source ASTruleSpec must already be type-checked
+                            // because it is lexically earlier
+                            shapeType = r->shapeType;
+                            argSize = r->argSize;
+                            argSource = r->argSource;
+                            arguments.reset();
+                            assert(!r->arguments || r->arguments->isConstant);
+                            if (r->simpleRule) {
+                                simpleRule = StackRule::alloc(r->simpleRule);
+                                Builder::CurrentBuilder->storeParams(simpleRule);
+                                assert(argSource == SimpleArgs);
+                            } else {
+                                simpleRule = nullptr;
+                            }
+                            typeSignature = r->typeSignature;
+                            parentSignature = r->parentSignature;
+                            isConstant = true;
+                            isLocal = true;
+                            assert(argSource != DynamicArgs && argSource != ShapeArgs);
+                        } else {
+                            CfdgError::Error(where, "Error processing shape variable.");
+                        }
+                    }
+                } else {
+                    if (arguments)
+                        arguments.reset(arguments.release()->simplify());
+                }
                 break;
+            }
         }
         return this;
     }
