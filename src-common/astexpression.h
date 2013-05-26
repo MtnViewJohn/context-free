@@ -319,6 +319,7 @@ namespace AST {
         
         modTypeEnum modType;
         exp_ptr args;
+        int argCount;
         std::string paramString;
         
         static const char* Entropies[lastModType];
@@ -327,11 +328,11 @@ namespace AST {
                          double* width = nullptr, Renderer* r = nullptr);
         
         ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc)
-        : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a) {};
+        : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a), argCount(0) {};
         ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), paramString(ent) {};
+        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0), paramString(ent) {};
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr) {};
+        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0) {};
         virtual ~ASTmodTerm() { }
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width, 

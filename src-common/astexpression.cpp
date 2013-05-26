@@ -1278,15 +1278,17 @@ namespace AST {
             }
         }
         
-        int minCount = 1;
-        int maxCount = 1;
+        if (argcount != argCount) {
+            CfdgError::Error(where, "Error evaluating arguments");
+            return;
+        }
+        
 		double arg[6] = {0.0};
         for (int i = 0; i < argcount; ++i)
             arg[i] = fmax(-1.0, fmin(1.0, modArgs[i]));
         
         switch (modType) {
             case ASTmodTerm::x: {
-                maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) 
                     modArgs[1] = 0.0;
@@ -1307,7 +1309,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::xyz: {
-                minCount = maxCount = 3;
                 if (justCheck) break;
                 agg::trans_affine_translation trx(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(trx);
@@ -1316,7 +1317,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::time: {
-                minCount = maxCount = 2;
                 if (justCheck) break;
                 agg::trans_affine_time_translation tr(modArgs[0], modArgs[1]);
                 m.m_time.premultiply(tr);
@@ -1329,7 +1329,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::transform: {
-                maxCount = 6;
                 if (argcount != 1 && argcount != 2 && argcount != 4 && argcount != 6)
                     CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters");
                 if (justCheck) break;
@@ -1364,7 +1363,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::size: {
-                maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) 
                     modArgs[1] = modArgs[0];
@@ -1373,7 +1371,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::sizexyz: {
-                minCount = maxCount = 3;
                 if (justCheck) break;
                 agg::trans_affine_scaling sc(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(sc);
@@ -1394,7 +1391,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::skew: {
-                minCount = maxCount = 2;
                 if (justCheck) break;
                 agg::trans_affine_skewing sk(modArgs[0] * MY_PI / 180.0, 
                                              modArgs[1] * MY_PI / 180.0);
@@ -1408,7 +1404,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::hue: {
-                maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
                     if (m.m_ColorAssignment & HSBColor::HueMask) {
@@ -1443,7 +1438,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::sat: {
-                maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
@@ -1478,7 +1472,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::bright: {
-                maxCount = 2;
                 if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::BrightnessMask ||
@@ -1513,7 +1506,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alpha: {
-                maxCount = 2;
                 if (p)
                     *p |= CF_USES_ALPHA;
                 if (justCheck) break;
@@ -1676,7 +1668,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::param: {
-                minCount = maxCount = 0;
                 if (!p) {
                     CfdgError::Error(where, "Cannot provide a parameter in this context");
                     break;
@@ -1716,7 +1707,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::modification: {
-                minCount = maxCount = 0;
                 if (rti == nullptr) {
                     const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
                     if (!mod || (mod->modClass & (ASTmodification::HueClass |
@@ -1737,11 +1727,6 @@ namespace AST {
             default:
                 break;
         }
-        
-        if (argcount < minCount)
-            CfdgError::Error(where, "Not enough adjustment parameters");
-        if (argcount > maxCount)
-            CfdgError::Error(where, "Too many adjustment parameters");
     }
     
     void
@@ -2097,6 +2082,7 @@ namespace AST {
                         argcount == 1)
                     {
                         (*term)->args.reset((*term)->args.release()->append((*next)->args.release()));
+                        (*term)->argCount = 2;
                         modExp.emplace_back(std::move(*term));
                         term = next;
                         continue;
@@ -2106,6 +2092,7 @@ namespace AST {
                         (*next)->args->evaluate(nullptr, 0) == 1)
                     {
                         (*next)->args.reset((*next)->args.release()->append((*term)->args.release()));
+                        (*term)->argCount = 2;
                         modExp.emplace_back(std::move(*next));
                         term = next;
                         continue;   // term stays in temp
@@ -2122,10 +2109,12 @@ namespace AST {
                         (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
                         (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
                             ASTmodTerm::x : ASTmodTerm::size;
+                        (*term)->argCount = 2;
                         
                         ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                             ASTmodTerm::zsize : ASTmodTerm::z;
                         ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
+                        zmod->argCount = 1;
                         
                         // Check if xy part is the identity transform and only save it if it is not
                         if (d[0] != 1.0 || d[1] != 1.0 || (*term)->modType == ASTmodTerm::x)
@@ -2150,10 +2139,12 @@ namespace AST {
                             (*term)->args.reset(xyargs);
                             (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
                                 ASTmodTerm::x : ASTmodTerm::size;
+                            (*term)->argCount = 2;
                             
                             ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                                 ASTmodTerm::zsize : ASTmodTerm::z;
                             ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                            zmod->argCount = 1;
                             
                             double d[2];
                             if ((*term)->modType != ASTmodTerm::size || !xyargs->isConstant ||
@@ -2771,13 +2762,13 @@ namespace AST {
                 isLocal = true;
                 switch (args->mType) {
                     case NumericType: {
-                        int argcount = args->evaluate(nullptr, 0);
+                        argCount = args->evaluate(nullptr, 0);
                         int minCount = 1;
                         int maxCount = 1;
                         
-                        if (argcount == 3 && modType == ASTmodTerm::x)
+                        if (argCount == 3 && modType == ASTmodTerm::x)
                             modType = ASTmodTerm::xyz;
-                        if (argcount == 3 && modType == ASTmodTerm::size)
+                        if (argCount == 3 && modType == ASTmodTerm::size)
                             modType = ASTmodTerm::sizexyz;
                         
                         switch (modType) {
@@ -2815,7 +2806,7 @@ namespace AST {
                                 break;
                             case ASTmodTerm::transform:
                                 maxCount = 6;
-                                if (argcount != 1 && argcount != 2 && argcount != 4 && argcount != 6)
+                                if (argCount != 1 && argCount != 2 && argCount != 4 && argCount != 6)
                                     CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters");
                                 break;
                             case ASTmodTerm::param:
@@ -2826,9 +2817,9 @@ namespace AST {
                                 break;
                         }
                         
-                        if (argcount < minCount)
+                        if (argCount < minCount)
                             CfdgError::Error(where, "Not enough adjustment parameters");
-                        if (argcount > maxCount)
+                        if (argCount > maxCount)
                             CfdgError::Error(where, "Too many adjustment parameters");
                         break;
                     }

@@ -862,6 +862,7 @@ namespace AST {
                                stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
                     {
                         ASTmodTerm* w = new ASTmodTerm(ASTmodTerm::stroke, stroke.release()->simplify(), mLocation);
+                        w->argCount = 1;
                         mChildChange.modExp.emplace_back(w);
                     }
                 }
