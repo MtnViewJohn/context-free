@@ -2670,18 +2670,21 @@ namespace AST {
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                // Delete all of the incomplete parameters inserted during parse
-                mDefinitions->mStackCount = 0;
-                mDefinitions->mParameters.clear();
-                
                 mDefinitions->compile(ph, nullptr, definition);
                 
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
                 for (auto& rep: mDefinitions->mBody) {
                     if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get()))
-                        if (!def->isConstant)
+                        if (!def->isConstant) {
+                            definition->mStackCount += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
+                        }
+                }
+                mDefinitions->mParameters.pop_back();       // remove the definition parameter
+                for (auto& param: mDefinitions->mParameters) {
+                    if (!param.mDefinition)
+                        definition->mParameters.push_back(param);
                 }
                 mDefinitions.reset();   // we're done with these
                 arguments.reset(args);
