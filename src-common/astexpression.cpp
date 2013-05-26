@@ -373,20 +373,14 @@ namespace AST {
         static const std::string Ops("NP!+-*/^_<>LG=n&|X");
         size_t pos = Ops.find(op);
 
-        switch (pos) {
-            case std::string::npos:
-                CfdgError::Error(where, "Unknown operator");
-                break;
-            case 0:
-            case 1:
-            case 2:
-                if (right)
-                    CfdgError::Error(where, "Operator takes only one operand");
-                break;
-            default:
-                if (!right)
-                    CfdgError::Error(where, "Operator takes two operands");
-                break;
+        if (pos == std::string::npos) {
+            CfdgError::Error(where, "Unknown operator");
+        } else if (pos < 3) {
+            if (right)
+                CfdgError::Error(where, "Operator takes only one operand");
+        } else {
+            if (!right)
+                CfdgError::Error(where, "Operator takes two operands");
         }
     }
     
