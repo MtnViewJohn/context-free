@@ -661,8 +661,7 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify:
-                if (mLoopArgs)
-                    mLoopArgs.reset(mLoopArgs.release()->simplify());
+                Simplify(mLoopArgs);
                 mLoopBody.compile(ph);
                 mFinallyBody.compile(ph);
                 break;
@@ -694,8 +693,7 @@ namespace AST {
                     CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
                 break;
             case CompilePhase::Simplify:
-                if (mCondition)
-                    mCondition.reset(mCondition.release()->simplify());
+                Simplify(mCondition);
                 break;
         }
     }
@@ -715,8 +713,7 @@ namespace AST {
                     CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
                 break;
             case CompilePhase::Simplify:
-                if (mSwitchExp)
-                    mSwitchExp.reset(mSwitchExp.release()->simplify());
+                Simplify(mSwitchExp);
                 break;
         }
     }
@@ -801,8 +798,7 @@ namespace AST {
             }
             case CompilePhase::Simplify:
                 pathDataConst();
-                if (mArguments)
-                    mArguments.reset(mArguments.release()->simplify());
+                Simplify(mArguments);
                 break;
         }
     }
@@ -869,7 +865,7 @@ namespace AST {
                         CfdgError::Error(flags->where, "Unexpected argument in path command");
                         return;
                     }
-                    flags.reset(flags.release()->simplify());
+                    Simplify(flags);
                     if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
                         int f = static_cast<int>(r->value);
                         if (f & CF_JOIN_PRESENT)
@@ -886,8 +882,7 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify:
-                if (mParameters)
-                    mParameters.reset(mParameters.release()->simplify());
+                Simplify(mParameters);
                 break;
         }
     }

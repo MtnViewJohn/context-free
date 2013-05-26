@@ -407,6 +407,13 @@ namespace AST {
         if (r != exp.get())
             exp.reset(r);
     }
+    
+    inline void Simplify(exp_ptr& exp)
+    {
+        if (!exp) return;
+        ASTexpression* r = exp.release()->simplify();
+        exp.reset(r);
+    }
 }
 
 #endif //INCLUDE_ASTEXPRESSION_H

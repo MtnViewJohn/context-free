@@ -1902,7 +1902,7 @@ namespace AST {
             delete this;
             return r;
         } else {
-            arguments.reset(arguments.release()->simplify());
+            Simplify(arguments);
         }
         
         return this;
@@ -1912,7 +1912,7 @@ namespace AST {
     ASTselect::simplify()
     {
         if (!indexCache) {
-            arguments.reset(arguments.release()->simplify());
+            Simplify(arguments);
             return this;
         }
         
@@ -1930,9 +1930,9 @@ namespace AST {
         if (arguments) {
             if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
                 for (size_t i = 0; i < carg->children.size(); ++i)
-                    carg->children[i].reset(carg->children[i].release()->simplify());
+                    Simplify(carg->children[i]);
             } else {
-                arguments.reset(arguments.release()->simplify());
+                Simplify(arguments);
             }
         }
         return this;
@@ -1958,7 +1958,7 @@ namespace AST {
             return ret;
         }
         for (size_t i = 0; i < children.size(); ++i)
-            children[i].reset(children[i].release()->simplify());
+            Simplify(children[i]);
         return this;
     }
     
@@ -1971,9 +1971,9 @@ namespace AST {
                 // ASTcons if it only has one child and that will break the
                 // function arguments.
                 for (size_t i = 0; i < carg->children.size(); ++i)
-                    carg->children[i].reset(carg->children[i].release()->simplify());
+                    Simplify(carg->children[i]);
             } else {
-                arguments.reset(arguments.release()->simplify());
+                Simplify(arguments);
             }
         }
         return this;
@@ -2004,8 +2004,8 @@ namespace AST {
     ASTexpression*
     ASToperator::simplify()
     {
-        left.reset(left.release()->simplify());
-        if (right) right.reset(right.release()->simplify());
+        Simplify(left);
+        Simplify(right);
         
         if (isConstant && (mType == NumericType || mType == FlagType)) {
             double result;
@@ -2041,9 +2041,7 @@ namespace AST {
     ASTexpression*
     ASTmodTerm::simplify()
     {
-        if (args) {
-            args.reset(args.release()->simplify());
-        }
+        Simplify(args);
         return this;
     }
     
@@ -2148,7 +2146,7 @@ namespace AST {
     ASTarray::simplify()
     {
         if (!isConstant) {
-            mArgs.reset(mArgs.release()->simplify());
+            Simplify(mArgs);
             return this;
         }
         
@@ -2521,8 +2519,7 @@ namespace AST {
                         }
                     }
                 } else {
-                    if (arguments)
-                        arguments.reset(arguments.release()->simplify());
+                    Simplify(arguments);
                 }
                 break;
             }
@@ -3008,8 +3005,7 @@ namespace AST {
             }
             
             if (justCheck || keepThisOne) {
-                if (mod->args)
-                    mod->args.reset(mod->args.release()->simplify());
+                Simplify(mod->args);
                 modExp.push_back(std::move(mod));
             }
         }
