@@ -298,7 +298,7 @@ namespace AST {
             else
                 s.mShapeType = s.mParameters->mRuleName;
             if (s.mParameters->mParamCount == 0)
-                s.mParameters = nullptr;    // TODO: release?
+                s.mParameters = nullptr;
         }
     }
     

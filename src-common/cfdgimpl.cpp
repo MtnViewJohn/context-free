@@ -99,7 +99,6 @@ CFDGImpl::~CFDGImpl()
 const Shape&
 CFDGImpl::getInitialShape(RendererAST* r)
 {
-    // TODO: check that providing the wrong params is caught
     Shape init;
     init.mWorldState.m_Color = HSBColor(0.0, 0.0, 0.0, 1.0);
     init.mWorldState.m_ColorTarget = HSBColor(0.0, 0.0, 0.0, 1.0);

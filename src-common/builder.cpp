@@ -547,7 +547,6 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
 
-    // TODO: check that a shape function replacement works
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
     if (bound == nullptr) {
         ASTruleSpecifier* ret = nullptr;
