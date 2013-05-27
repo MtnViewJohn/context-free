@@ -610,7 +610,7 @@ namespace AST {
                 
                 bool bodyNatural = false;
                 bool finallyNatural = false;
-                bool local = mLoopArgs->isLocal;
+                Locality_t locality = mLoopArgs->mLocality;
                 
                 if (mLoopArgs->isConstant) {
                     setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get(), mLoopArgs->where);
@@ -659,10 +659,10 @@ namespace AST {
                 }
                 
                 mLoopBody.mParameters.front().isNatural = bodyNatural;
-                mLoopBody.mParameters.front().isLocal = local;
+                mLoopBody.mParameters.front().mLocality = locality;
                 mLoopBody.compile(ph, this, nullptr);
                 mFinallyBody.mParameters.front().isNatural = finallyNatural;
-                mFinallyBody.mParameters.front().isLocal = local;
+                mFinallyBody.mParameters.front().mLocality = locality;
                 mFinallyBody.compile(ph);
                 break;
             }

@@ -406,7 +406,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
     def->mShapeSpec.shapeType = nameIndex;
     if (isFunction) {
         for (ASTparameter& param: mParamDecls.mParameters)
-            param.isLocal = true;
+            param.mLocality = PureNonlocal;
         def->mParameters = mParamDecls.mParameters;     // copy
         def->mStackCount = mParamDecls.mStackCount;
         def->isFunction = true;

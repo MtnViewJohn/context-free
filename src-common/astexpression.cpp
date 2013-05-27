@@ -355,7 +355,7 @@ namespace AST {
     ASTcons::ASTcons(ASTexpression* l, ASTexpression* r)
     : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
     {
-        isLocal = l->isLocal;
+        mLocality = l->mLocality;
         children.emplace_back(l);
         append(r);
     };
@@ -581,7 +581,7 @@ namespace AST {
         where = where + sib->where;
         isConstant = isConstant && sib->isConstant;
         isNatural = isNatural && sib->isNatural;
-        isLocal = isLocal && sib->isLocal;
+        mLocality = CombineLocality(mLocality, sib->mLocality);
         mType = static_cast<expType>(mType | sib->mType);
         
         // Cannot insert an ASTcons into children, it will be flattened away.
@@ -1876,7 +1876,6 @@ namespace AST {
             
             ASTreal* r = new ASTreal(result, where);
             r->isNatural = isNatural;
-            r->isLocal = isLocal;
             
             delete this;
             return r;
@@ -1934,7 +1933,7 @@ namespace AST {
                     typeSignature = r->typeSignature;
                     parentSignature = r->parentSignature;
                     isConstant = true;
-                    isLocal = true;
+                    mLocality = PureLocal;
                     assert(argSource != DynamicArgs && argSource != ShapeArgs);
                 } else {
                     CfdgError::Error(where, "Error processing shape variable.");
@@ -2024,7 +2023,6 @@ namespace AST {
             ASTreal* r = new ASTreal(result, where);
             r->mType = mType;
             r->isNatural = isNatural;
-            r->isLocal = isLocal;
             
             delete this;
             return r;
@@ -2201,12 +2199,14 @@ namespace AST {
             case CompilePhase::TypeCheck: {
                 yy::location argsLoc = where;
                 isConstant = true;
-                isLocal = true;
+                mLocality = PureLocal;
                 int argcount = 0;
                 if (arguments) {
                     argsLoc = arguments->where;
                     isConstant = arguments->isConstant;
-                    isLocal = arguments->isLocal;
+                    mLocality = arguments->mLocality;
+                    if (mLocality == PureNonlocal)
+                        mLocality = ImpureNonlocal;
                     if (arguments->mType == NumericType)
                         argcount = arguments->evaluate(nullptr, 0);
                     else
@@ -2222,7 +2222,6 @@ namespace AST {
                     if (arguments)
                         CfdgError::Error(argsLoc, "ftime() function takes no arguments");
                     isConstant = false;
-                    isLocal = true;
                     arguments.reset(new ASTreal(1.0, argsLoc));
                     return this;
                 }
@@ -2231,7 +2230,6 @@ namespace AST {
                     if (arguments)
                         CfdgError::Error(argsLoc, "frame() functions takes no arguments");
                     isConstant = false;
-                    isLocal = false;
                     arguments.reset(new ASTreal(1.0, argsLoc));
                     return this;
                 }
@@ -2328,7 +2326,7 @@ namespace AST {
                 }
                 
                 mType = (*arguments)[1]->mType;
-                isLocal = (*arguments)[0]->isLocal && (*arguments)[1]->isLocal;
+                mLocality = arguments->mLocality;
                 isNatural = (*arguments)[1]->isNatural;
                 tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(nullptr, 0) : 1;
                 if (tupleSize > 1) isNatural = false;
@@ -2343,8 +2341,7 @@ namespace AST {
                     {
                         CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
                     }
-                    isLocal = isLocal && (*arguments)[i]->isLocal;
-                    isNatural = isLocal && (*arguments)[i]->isNatural;
+                    isNatural = isNatural && (*arguments)[i]->isNatural;
                 }
                 
                 if (ifSelect && arguments->size() != 3) {
@@ -2354,7 +2351,7 @@ namespace AST {
                 if ((*arguments)[0]->isConstant) {
                     indexCache = getIndex();
                     isConstant = (*arguments)[indexCache]->isConstant;
-                    isLocal = (*arguments)[indexCache]->isLocal;
+                    mLocality = (*arguments)[indexCache]->mLocality;
                     isNatural = (*arguments)[indexCache]->isNatural;
                 }
                 break;
@@ -2378,14 +2375,14 @@ namespace AST {
                         if (arguments->mType != AST::RuleType)
                             CfdgError::Error(arguments->where, "Expression does not return a shape");
                         isConstant = false;
-                        isLocal = arguments->isLocal;
+                        mLocality = arguments->mLocality;
                         arguments->entropy(entropyVal);
                         return this;
                     case SimpleParentArgs:
                         assert(typeSignature == parentSignature);
                         assert(arguments && arguments->mType == ReuseType);
                         isConstant = true;
-                        isLocal = true;
+                        mLocality = PureLocal;
                         return this;
                     case StackArgs: {
                         bool isGlobal;
@@ -2400,17 +2397,19 @@ namespace AST {
                                 CfdgError::Error(where, "Error processing shape variable.");
                                 return this;
                             }
+                            mLocality = PureLocal;
                         } else {
                             mStackIndex = bound->mStackIndex -
                                 (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                             isConstant = false;
-                            isLocal = bound->isLocal;
+                            mLocality = bound->mLocality;
                         }
                         return this;
                     }
                     case NoArgs:
                         assert(!arguments || arguments->mType == NoType);
-                        isConstant = isLocal = true;
+                        isConstant = true;
+                        mLocality = PureLocal;
                         break;
                     case ParentArgs:
                     case SimpleArgs:
@@ -2428,7 +2427,7 @@ namespace AST {
                                 arguments.reset(new ASTuserFunction(shapeType, arguments.release(), func, where));
                                 Compile(arguments, ph);
                                 isConstant = false;
-                                isLocal = arguments->isLocal;
+                                mLocality = arguments->mLocality;
                             } else {
                                 CfdgError::Error(arguments->where, "Function does not return a shape");
                             }
@@ -2471,7 +2470,7 @@ namespace AST {
                                 }
                             }
                             isConstant = true;
-                            isLocal = true;
+                            mLocality = PureNonlocal;
                             return this;
                         }
                         
@@ -2487,17 +2486,17 @@ namespace AST {
                                 argSource = SimpleArgs;
                                 Builder::CurrentBuilder->storeParams(simpleRule);
                                 isConstant = true;
-                                isLocal = true;
+                                mLocality = PureLocal;
                             } else {
                                 isConstant = false;
-                                isLocal = arguments->isLocal;
+                                mLocality = arguments->mLocality;
                             }
                             arguments->entropy(entropyVal);
                         } else {
                             argSource = NoArgs;
                             simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
                             isConstant = true;
-                            isLocal = true;
+                            mLocality = PureLocal;
                             Builder::CurrentBuilder->storeParams(simpleRule);
                         }
                         break;
@@ -2535,12 +2534,12 @@ namespace AST {
                     if (first) {
                         isConstant = child->isConstant;
                         isNatural = child->isNatural;
-                        isLocal = child->isLocal;
+                        mLocality = child->mLocality;
                         mType = child->mType;
                     } else {
                         isConstant = isConstant && child->isConstant;
                         isNatural = isNatural && child->isNatural;
-                        isLocal = isLocal && child->isLocal;
+                        mLocality = CombineLocality(mLocality, child->mLocality);
                         mType = static_cast<expType>(mType | child->mType);
                     }
                     first = false;
@@ -2581,6 +2580,8 @@ namespace AST {
                     if (ret) {
                         ret->compile(ph);
                         return ret;
+                    } else {
+                        CfdgError::Error(where, "internal error.");
                     }
                 } else {
                     if (bound->mType == AST::RuleType) {
@@ -2592,7 +2593,7 @@ namespace AST {
                     stackIndex = bound->mStackIndex - (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                     mType = bound->mType;
                     isNatural = bound->isNatural;
-                    isLocal = bound->isLocal;
+                    mLocality = bound->mLocality;
                     isParameter = bound->isParameter;
                 }
                 break;
@@ -2608,7 +2609,7 @@ namespace AST {
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                // Function calls and shape specifications are ambisuous at parse
+                // Function calls and shape specifications are ambiguous at parse
                 // time so the parser always chooses a function call. During
                 // type check we may need to convert to a shape spec.
                 ASTdefine* def = nullptr;
@@ -2631,9 +2632,13 @@ namespace AST {
                     ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false);
                     isConstant = false;
                     isNatural = def->isNatural;
-                    isLocal = (def->mExpression ? def->mExpression->isLocal : def->mChildChange.isLocal) &&
-                                (!arguments || arguments->isLocal);
                     mType = def->mType;
+                    mLocality = arguments ? arguments->mLocality : PureLocal;
+                    if (def->mExpression && def->mExpression->mLocality == ImpureNonlocal &&
+                        mLocality == PureNonlocal)
+                    {
+                        mLocality = ImpureNonlocal;
+                    }
                     return this;
                 }
                 
@@ -2676,9 +2681,9 @@ namespace AST {
                 
                 isConstant = !arguments && definition->isConstant;
                 isNatural = definition->isNatural;
-                isLocal = definition->mExpression ?
-                    definition->mExpression->isLocal :
-                    definition->mChildChange.isLocal;
+                mLocality = definition->mExpression ?
+                    definition->mExpression->mLocality :
+                    definition->mChildChange.mLocality;
                 mType = definition->mType;
                 
                 break;
@@ -2698,7 +2703,9 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 isConstant = left->isConstant && (right ? right->isConstant : true);
-                isLocal = left->isLocal && (right ? right->isLocal : true);
+                mLocality = right ? CombineLocality(left->mLocality, right->mLocality) : left->mLocality;
+                if (mLocality == PureNonlocal)
+                    mLocality = ImpureNonlocal;
                 mType = right ? static_cast<expType>(left->mType | right->mType) : left->mType;
                 if (strchr("+_*<>LG=n&|X^!", op))
                     isNatural = left->isNatural && (right ? right->isNatural : true);
@@ -2730,7 +2737,7 @@ namespace AST {
             case CompilePhase::TypeCheck: {
                 isConstant = e->isConstant;
                 isNatural = e->isNatural;
-                isLocal = e->isLocal;
+                mLocality = e->mLocality;
                 mType = e->mType;
                 break;
             }
@@ -2753,7 +2760,7 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 isConstant = args->isConstant;
-                isLocal = true;
+                mLocality = args->mLocality;
                 switch (args->mType) {
                     case NumericType: {
                         argCount = args->evaluate(nullptr, 0);
@@ -2844,8 +2851,10 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 isConstant = true;
+                mLocality = modExp.empty() ? PureLocal : modExp.front()->mLocality;
                 for (auto& term : modExp) {
                     isConstant = isConstant && term->isConstant;
+                    mLocality = CombineLocality(mLocality, term->mLocality);
                     std::string ent;
                     term->entropy(ent);
                     addEntropy(ent);
@@ -2888,7 +2897,7 @@ namespace AST {
                 mCount = mType == NumericType ? bound->mTuplesize : 1;
                 isParameter = bound->isParameter;
                 
-                isLocal = bound->isLocal;
+                mLocality = CombineLocality(bound->mLocality, mArgs->mLocality);
                 mArgs->entropy(entString);
                 mConstData = mConstData && bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
                 
@@ -2952,7 +2961,7 @@ namespace AST {
                     CfdgError::Error(mArgs->where, "Array length & stride arguments too large for source");
                 
                 isConstant = isConstant && mArgs->isConstant;
-                isLocal = isLocal && mArgs->isLocal;
+                mLocality = CombineLocality(mLocality, mArgs->mLocality);
                 break;
             }
             case CompilePhase::Simplify:

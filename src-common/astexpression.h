@@ -46,14 +46,14 @@ namespace AST {
     public:
         bool isConstant;
         bool isNatural;
-        bool isLocal;   // TODO: replace with tri-state: local, pureParam, impureParam
+        Locality_t mLocality;
         expType mType;
         yy::location where;
         
         ASTexpression(const yy::location& loc) : isConstant(false), isNatural(false),
-        isLocal(true), mType(NoType), where(loc) {};
+        mLocality(UnknownLocal), mType(NoType), where(loc) {};
         ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
-        : isConstant(c), isNatural(n), isLocal(true), mType(t), where(loc) {};
+        : isConstant(c), isNatural(n), mLocality(UnknownLocal), mType(t), where(loc) {};
         virtual ~ASTexpression() {};
         virtual int evaluate(double* , int, RendererAST* = nullptr) const
         { return 0; }
@@ -215,11 +215,12 @@ namespace AST {
             if (negative) text.insert(0, 1, '-');
             value = CFatof(text.c_str()); 
             isNatural = floor(value) == value && value >= 0.0 && value < 9007199254740992.;
+            mLocality = PureLocal;
         };
         ASTreal(double v, const yy::location& loc) 
         : ASTexpression(loc, true, 
                         floor(v) == v && v >= 0.0 && v < 9007199254740992.,
-                        NumericType), value(v) {};
+                        NumericType), value(v) { mLocality = PureLocal; };
         virtual ~ASTreal() {};
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
@@ -293,7 +294,7 @@ namespace AST {
         ASTparen(ASTexpression* e1) : ASTexpression(e1->where, e1->isConstant, 
                                                     e1->isNatural,
                                                     e1->mType), e(e1)
-        { isLocal = e1->isLocal; };
+        { };
         virtual ~ASTparen() { }
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void evaluate(Modification& m, int* p, double* width,

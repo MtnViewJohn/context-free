@@ -39,7 +39,7 @@ namespace AST {
     ASTparameter::init(int nameIndex, ASTdefine* def)
     {
         mType = def->mType;
-        isLocal = !def->mExpression || def->mExpression->isLocal;
+        mLocality = def->mExpression ? def->mExpression->mLocality : PureLocal;
         mTuplesize = def->mTuplesize;
         
         if (mType == AST::NumericType) {
@@ -91,7 +91,7 @@ namespace AST {
     void
     ASTparameter::init(const std::string& typeName, int nameIndex)
     {
-        isLocal = false;
+        mLocality = PureNonlocal;
         mType = decodeType(typeName, mTuplesize, isNatural, mLocation);
         mName = nameIndex;
         mDefinition = nullptr;
@@ -99,38 +99,39 @@ namespace AST {
     
     ASTparameter::ASTparameter()
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mDefinition(nullptr), mStackIndex(-1), mTuplesize(1)
+      mLocality(UnknownLocal), mName(-1), mDefinition(nullptr), mStackIndex(-1),
+      mTuplesize(1)
     { }
     
     ASTparameter::ASTparameter(const std::string& typeName, int nameIndex,
                  const yy::location& where)
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mLocation(where), mDefinition(nullptr), mStackIndex(-1),
-      mTuplesize(1)
+      mLocality(PureNonlocal), mName(-1), mLocation(where), mDefinition(nullptr),
+      mStackIndex(-1), mTuplesize(1)
     { init(typeName, nameIndex); }
     
     ASTparameter::ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where)
     : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      isLocal(false), mName(-1), mLocation(where), mDefinition(nullptr), mStackIndex(-1),
-      mTuplesize(1)
+      mLocality(UnknownLocal), mName(-1), mLocation(where), mDefinition(nullptr),
+      mStackIndex(-1), mTuplesize(1)
     { init(nameIndex, def); }
     
     ASTparameter::ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
     : mType(NumericType), isParameter(false), isLoopIndex(true), isNatural(natural),
-      isLocal(local), mName(nameIndex), mLocation(where), mDefinition(nullptr),
+      mLocality(UnknownLocal), mName(nameIndex), mLocation(where), mDefinition(nullptr),
       mStackIndex(-1), mTuplesize(1)
     { }     // ctor for loop variables
     
     ASTparameter::ASTparameter(const ASTparameter& from)
     : mType(from.mType), isParameter(from.isParameter), isLoopIndex(from.isLoopIndex),
-      isNatural(from.isNatural), isLocal(from.isLocal), mName(from.mName),
+      isNatural(from.isNatural), mLocality(from.mLocality), mName(from.mName),
       mLocation(from.mLocation), mDefinition(nullptr), mStackIndex(from.mStackIndex),
       mTuplesize(from.mTuplesize)
     { assert(!from.mDefinition); }          // only used with parameters
     
     ASTparameter::ASTparameter(ASTparameter&& from) noexcept
     : mType(from.mType), isParameter(from.isParameter), isLoopIndex(from.isLoopIndex),
-      isNatural(from.isNatural), isLocal(from.isLocal), mName(from.mName),
+      isNatural(from.isNatural), mLocality(from.mLocality), mName(from.mName),
       mLocation(from.mLocation), mDefinition(std::move(from.mDefinition)),
       mStackIndex(from.mStackIndex), mTuplesize(from.mTuplesize)
     { }
@@ -142,7 +143,7 @@ namespace AST {
         isParameter = from.isParameter;
         isLoopIndex = from.isLoopIndex;
         isNatural = from.isNatural;
-        isLocal = from.isLocal;
+        mLocality = from.mLocality;
         mName = from.mName;
         mLocation = from.mLocation;
         assert(!from.mDefinition);          // only used with parameters
@@ -159,7 +160,7 @@ namespace AST {
         isParameter = from.isParameter;
         isLoopIndex = from.isLoopIndex;
         isNatural = from.isNatural;
-        isLocal = from.isLocal;
+        mLocality = from.mLocality;
         mName = from.mName;
         mLocation = from.mLocation;
         mDefinition = from.mDefinition;
@@ -249,19 +250,12 @@ namespace AST {
                 CfdgError::Error(param_it->mLocation, "This is the expected type.");
                 return -1;
             }
-            if (!arg->isLocal && param_it->mType == AST::NumericType &&
-                !param_it->isNatural && !ASTparameter::Impure && checkNumber)
+            if (arg->mLocality != PureLocal && arg->mLocality != PureNonlocal &&
+                param_it->mType == AST::NumericType && !param_it->isNatural &&
+                !ASTparameter::Impure && checkNumber)
             {
-                // Unwrap any parentheses and check if the non-local expression
-                // is actually an unmodified parameter. If so then accept it.
-                while (const ASTparen* p = dynamic_cast<const ASTparen*> (arg))
-                    arg = p->e.get();
-				assert(arg);
-                const ASTvariable* v = dynamic_cast<const ASTvariable*> (arg);
-                if (!v || !v->isParameter) {
-                    CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
-                    return -1;
-                }
+                CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
+                return -1;
             }
         }
         
@@ -273,6 +267,12 @@ namespace AST {
         return size;
     }
     
+    Locality_t
+    CombineLocality(Locality_t first, Locality_t second)
+    {
+        return static_cast<Locality_t>(first & second);
+    }
+
     double
     CFatof(const char* s)
     {
