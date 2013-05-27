@@ -756,7 +756,18 @@ namespace AST {
                         CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function");
                     isConstant = false;
                 } else {
-                    // TODO: check that name doesn't collide with user function name
+                    if (mShapeSpec.shapeType >= 0) {
+                        ASTdefine* func = nullptr;
+                        const ASTparameters* shapeParams = nullptr;
+                        Builder::CurrentBuilder->GetTypeInfo(mShapeSpec.shapeType, func, shapeParams);
+                        if (func) {
+                            CfdgError::Error(mLocation, "Variable name is also the name of a function");
+                            CfdgError::Error(func->mLocation, "   function definition is here");
+                        }
+                        if (shapeParams)
+                            CfdgError::Error(mLocation, "Variable name is also the name of a shape");
+                    }
+                    
                     mTuplesize = sz;
                     mType = t;
                     if (t != (t & (-t)) || !t)
