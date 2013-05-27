@@ -112,6 +112,7 @@ namespace AST {
         NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8,
         ReuseType = 16
     };
+    enum Locality_t { UnknownLocal = 0, ImpureNonlocal = 1, PureNonlocal = 3, PureLocal = 7 };
     enum class CompilePhase {
         TypeCheck, Simplify
     };
@@ -127,7 +128,7 @@ namespace AST {
         bool        isParameter;
         bool        isLoopIndex;
         bool        isNatural;
-        bool        isLocal;
+        Locality_t  mLocality;
         int         mName;
         yy::location mLocation;
         ASTdefine*  mDefinition;        // weak pointer
@@ -204,6 +205,8 @@ namespace AST {
     };
     
     double CFatof(const char* s);
+    
+    Locality_t CombineLocality(Locality_t first, Locality_t second);
 
     enum pathOpEnum { 
         unknownPathop = -1, MOVETO = 0, MOVEREL, LINETO, LINEREL, 
