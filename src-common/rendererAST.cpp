@@ -87,7 +87,10 @@ RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& p
     for (const AST::ASTparameter& param: params) {
         if (pos >= mCFstack.size())
             break;                        // no guarantee entire frame was computed
-        if (param.isLoopIndex) continue;  // loop indices are unwound in ASTloop::traverse()
+        if (param.isLoopIndex || param.mStackIndex < 0) continue;
+            // loop indices are unwound in ASTloop::traverse()
+            // and <0 stack index indicates that the param isn't on the stack
+            // (i.e., function, constant, or config var)
         if (param.mType == AST::RuleType)
             mCFstack[pos].rule->release();
         pos += param.mTuplesize;
