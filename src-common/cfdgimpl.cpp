@@ -659,7 +659,8 @@ CFDGImpl::renderer(int width, int height, double minSize,
         return nullptr;
     }
     if (!startSpec) {
-        CfdgError(startExp->where, "Type error in startshape");
+        CfdgError err(startExp->where, "Type error in startshape");
+        m_system->syntaxError(err);
         return nullptr;
     }
     
