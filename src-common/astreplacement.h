@@ -58,11 +58,13 @@ namespace AST {
         void replace(Shape& s, RendererAST* r, double* width = nullptr) const;
         void replaceShape(Shape& s, RendererAST* r) const;
         
-        ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods, 
+        ASTreplacement(ASTruleSpecifier&& shapeSpec, const std::string& name, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
-        ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
+        ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
+                       repElemListEnum t = replacement);
+        ASTreplacement(mod_ptr mods, const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
@@ -209,11 +211,11 @@ namespace AST {
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(nullptr),
+        : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
           weightType(percent ? PercentWeight : ExplicitWeight) { };
         ASTrule(int ruleIndex, const yy::location& loc)
-        : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, rule), mCachedPath(nullptr),
+        : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         virtual ~ASTrule();
         void traversePath(const Shape& parent, RendererAST* r) const;
@@ -247,7 +249,7 @@ namespace AST {
         
         // Empty constructor
         ASTpathCommand() :
-        ASTreplacement(ASTruleSpecifier::Zero, nullptr),
+        ASTreplacement(nullptr),
         mMiterLimit(4.0), mParameters(nullptr)
         {
         }

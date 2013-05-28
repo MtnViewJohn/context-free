@@ -663,7 +663,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         return nullptr;
     }
     
-    mInitShape.reset(new ASTreplacement(*startSpec, std::move(startSpec->mModification)));
+    mInitShape.reset(new ASTreplacement(std::move(*startSpec), std::move(startSpec->mModification)));
 
     RendererImpl* r = nullptr;
     try {

@@ -626,7 +626,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
         return rep_ptr(new ASTpathCommand(s, std::move(mods), std::move(params), loc));
     
-    ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc));
+    ASTruleSpecifier* r = MakeRuleSpec(s, std::move(params), loc);
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;
@@ -649,7 +649,8 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             error(loc, "Subpath references must be to previously declared paths");
         }
     }
-    return rep_ptr(new ASTreplacement(*r, r->entropyVal, std::move(mods), loc, t));
+    std::string name(r->entropyVal);
+    return rep_ptr(new ASTreplacement(std::move(*r), name, std::move(mods), loc, t));
 }
 
 AST::ASTexpression*
