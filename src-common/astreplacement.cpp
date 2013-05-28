@@ -105,7 +105,7 @@ namespace AST {
     }
 
     
-    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, const std::string& name, mod_ptr mods,
+    ASTreplacement::ASTreplacement(ASTruleSpecifier&& shapeSpec, const std::string& name, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)
@@ -113,9 +113,16 @@ namespace AST {
         mChildChange.addEntropy(name);
     }
     
-    ASTreplacement::ASTreplacement(ASTruleSpecifier& shapeSpec, mod_ptr mods, 
+    ASTreplacement::ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t)
     : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
+      mChildChange(std::move(mods), loc), mLocation(loc)
+    {
+    }
+    
+    ASTreplacement::ASTreplacement(mod_ptr mods, const yy::location& loc,
+                                   repElemListEnum t)
+    : mShapeSpec(), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)
     {
     }
@@ -123,7 +130,7 @@ namespace AST {
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
-    : ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), nameLoc + argsLoc, empty),
+    : ASTreplacement(std::move(mods), nameLoc + argsLoc, empty),
       mLoopArgs(std::move(args)), mLoopIndexName(nameIndex)
     {
         mChildChange.addEntropy(name);
@@ -132,14 +139,14 @@ namespace AST {
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty), mTransforms(),
+    : ASTreplacement(nullptr, loc, empty), mTransforms(),
       mModifications(getTransforms(mods.get(), mTransforms, nullptr, false, Dummy)),
       mExpHolder(std::move(mods)), mClone(false)
     {
     }
     
     ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, empty),
+    : ASTreplacement(nullptr, loc, empty),
       mType(NoType), isConstant(false), isNatural(false), mStackCount(0),
       mName(std::move(name)), isFunction(false), isLetFunction(false), mConfigDepth(-1)
     {
@@ -172,13 +179,13 @@ namespace AST {
     }
     
     ASTif::ASTif(exp_ptr ifCond, const yy::location& condLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, condLoc, empty),
+    : ASTreplacement(nullptr, condLoc, empty),
       mCondition(std::move(ifCond))
     {
     }
 
     ASTswitch::ASTswitch(exp_ptr switchExp, const yy::location& expLoc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, expLoc, empty),
+    : ASTreplacement(nullptr, expLoc, empty),
       mSwitchExp(std::move(switchExp))
     {
     }
@@ -203,7 +210,7 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(std::move(a)),
+    : ASTreplacement(nullptr, loc, op), mArguments(std::move(a)),
       mOldStyleArguments(nullptr), mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -218,7 +225,7 @@ namespace AST {
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
-    : ASTreplacement(ASTruleSpecifier::Zero, nullptr, loc, op), mArguments(nullptr),
+    : ASTreplacement(nullptr, loc, op), mArguments(nullptr),
       mOldStyleArguments(std::move(a)), mFlags(0), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
@@ -234,7 +241,7 @@ namespace AST {
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
-    :   ASTreplacement(ASTruleSpecifier::Zero, std::move(mods), loc, command),
+    :   ASTreplacement(std::move(mods), loc, command),
         mMiterLimit(4.0), mParameters(std::move(params))
     {
         mChildChange.addEntropy(s);

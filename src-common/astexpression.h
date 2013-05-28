@@ -138,8 +138,6 @@ namespace AST {
         const ASTparameters* typeSignature;
         const ASTparameters* parentSignature;
         
-        static ASTruleSpecifier Zero;
-        
         ASTruleSpecifier(int t, const std::string& name, exp_ptr args, const yy::location& loc, 
                          const ASTparameters* parent);
         ASTruleSpecifier(int t, const std::string& name, const yy::location& loc);

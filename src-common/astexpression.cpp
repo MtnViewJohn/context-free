@@ -147,8 +147,6 @@ namespace AST {
         "\x48\x14\x4E\x27\x35\x2E"      // RandInt
     };
     
-    ASTruleSpecifier ASTruleSpecifier::Zero;
-    
     ASTexpression*
     ASTexpression::constCopy(const ASTparameter* bound, const std::string& entropy) const
     {
