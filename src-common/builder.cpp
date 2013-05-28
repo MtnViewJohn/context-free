@@ -448,19 +448,24 @@ Builder::MakeConfig(ASTdefine* cfg)
         !dynamic_cast<ASTstartSpecifier*>(cfg->mExpression.get()))
     {
         ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>((*cfg->mExpression)[0]);
-        mod_ptr m;
+        ASTmodification* m = nullptr;
+        bool deleteM = false;
         if (cfg->mExpression->size() == 2) {
-            m.reset(dynamic_cast<ASTmodification*>((*cfg->mExpression)[1]));
+            m = dynamic_cast<ASTmodification*>((*cfg->mExpression)[1]);
         } else {
-            m.reset(new ASTmodification(expLoc));
+            m = new ASTmodification(expLoc);
+            deleteM = true;
         }
         if (r && m) {
             if (cfg->mExpression->size() == 2)
                 cfg->mExpression->release(1);
             if (!cfg->mExpression->release(0))
                 cfg->mExpression.release();
-            cfg->mExpression.reset(new ASTstartSpecifier(std::move(*r), std::move(m)));
+            mod_ptr mod(m); m = nullptr;
+            cfg->mExpression.reset(new ASTstartSpecifier(std::move(*r), std::move(mod)));
         }
+        if (deleteM)
+            delete m;
     }
     ASTexpression* current = cfg->mExpression.get();
     if (!m_CFDG->addParameter(cfg->mName, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth)))
