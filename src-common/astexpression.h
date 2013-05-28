@@ -179,6 +179,8 @@ namespace AST {
         : ASTruleSpecifier(nameIndex, name, loc), mModification(std::move(mod)) { };
         ASTstartSpecifier(exp_ptr args, const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
+        ASTstartSpecifier(ASTruleSpecifier&& r, mod_ptr m)
+        : ASTruleSpecifier(std::move(r)), mModification(std::move(m)) { };
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
