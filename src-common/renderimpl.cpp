@@ -246,18 +246,7 @@ RendererImpl::cleanup()
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
     
-    unsigned i = 0;
-    for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
-        if (AbortEverything) return;
-        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get())) {
-            if (def->isFunction || def->isConstant || def->mConfigDepth >= 0)
-                continue;
-            if (def->mType == AST::RuleType)
-                mCFstack[i].rule->release();
-            i += def->mTuplesize;
-        }
-    }
-    mCFstack.clear();
+    unwindStack(0, m_cfdg->mCFDGcontents.mParameters);
     
     delete mCurrentPath; mCurrentPath = nullptr;
     m_cfdg->resetCachedPaths();
