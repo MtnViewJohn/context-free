@@ -222,6 +222,12 @@ void Builder::error(int line, const char* msg)
     }
 }
 
+AbstractSystem*
+Builder::system()
+{
+    return m_CFDG->system();
+}
+
 static bool
 stringcompare(const char *lhs, const char *rhs) {
     return std::strcmp(lhs, rhs) < 0;
@@ -554,14 +560,14 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
 
 ASTruleSpecifier*  
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
-                      const yy::location& loc, mod_ptr mod)
+                      const yy::location& loc, mod_ptr mod, bool makeStart)
 {
     if (name == "if" || name == "let" || name == "select") {
         if (name == "select") {
             yy::location argsLoc = args->where;
             args.reset(new ASTselect(std::move(args), argsLoc, false));
         }
-        if (mod)
+        if (makeStart)
             return new ASTstartSpecifier(std::move(args), loc, std::move(mod));
         else
             return new ASTruleSpecifier(std::move(args), loc);
@@ -574,14 +580,14 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     if (bound == nullptr) {
         ASTruleSpecifier* ret = nullptr;
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        if (mod)
+        if (makeStart)
             ret = new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
                                         std::move(mod));
         else
             ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
                                        m_CFDG->getShapeParams(mCurrentShape));
         if (ret->arguments && ret->arguments->mType == ReuseType) {
-            if (mod)
+            if (makeStart)
                 CfdgError::Error(loc, "Startshape cannot reuse parameters");
             else if (nameIndex == mCurrentShape) {
                 ret->argSource = ASTruleSpecifier::SimpleParentArgs;
@@ -591,7 +597,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
         return ret;
     }
     
-    if (args && args->mType == ReuseType && !mod && isGlobal && nameIndex == mCurrentShape) {
+    if (args && args->mType == ReuseType && !makeStart && isGlobal && nameIndex == mCurrentShape) {
         warning(loc, "Shape name binds to global variable and current shape, using current shape");
         m_CFDG->setShapeHasNoParams(nameIndex, args.get());
         return new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
@@ -601,7 +607,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
     if (args)
         CfdgError::Error(loc, "Cannot bind parameters twice");
     
-    if (mod)
+    if (makeStart)
         return new ASTstartSpecifier(nameIndex, name, loc, std::move(mod));
     else
         return new ASTruleSpecifier(nameIndex, name, loc);
@@ -694,6 +700,11 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 AST::ASTmodification*
 Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
+    for (term_ptr& term: mod->modExp) {
+        std::string ent;
+        term->entropy(ent);
+        mod->addEntropy(ent);
+    }
     if (canonical)
         mod->makeCanonical();
     mod->isConstant = mod->modExp.empty();
