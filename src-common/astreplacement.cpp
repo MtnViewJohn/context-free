@@ -740,6 +740,8 @@ namespace AST {
         Builder::CurrentBuilder->push_repContainer(tempCont);
         ASTreplacement::compile(ph);
         Compile(mExpression, ph);
+        if (ph == CompilePhase::Simplify)
+            Simplify(mExpression);
         Builder::CurrentBuilder->pop_repContainer(nullptr);
         
         switch (ph) {
