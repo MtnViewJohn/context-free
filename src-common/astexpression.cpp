@@ -2853,9 +2853,6 @@ namespace AST {
                 for (auto& term : modExp) {
                     isConstant = isConstant && term->isConstant;
                     mLocality = CombineLocality(mLocality, term->mLocality);
-                    std::string ent;
-                    term->entropy(ent);
-                    addEntropy(ent);
                 }
                 break;
             }

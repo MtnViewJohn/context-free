@@ -92,6 +92,7 @@ public:
     const char*         push_param();
     AST::ASTparameter*  findExpression(int nameIndex, bool& isGlobal);
     void                process_repContainer(AST::ASTrepContainer& c);
+    AbstractSystem*     system();
     
     std::stack<AST::ASTswitch*> switchStack;
 
@@ -124,7 +125,8 @@ public:
                     MakeVariable(const std::string& name, const yy::location& loc);
     AST::ASTruleSpecifier*  
                     MakeRuleSpec(const std::string& name, AST::exp_ptr a,
-                                 const yy::location& loc, AST::mod_ptr mod = nullptr);
+                                 const yy::location& loc, AST::mod_ptr mod = nullptr,
+                                 bool makeStart = false);
     void            MakeModTerm(AST::ASTtermArray& dest, AST::term_ptr t);
     AST::rep_ptr    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params, 
                                 const yy::location& loc, bool subPath);

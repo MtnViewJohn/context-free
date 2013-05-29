@@ -307,7 +307,7 @@ initialization:
             static const std::string cfgName("CF::StartShape");
             ASTdefine* cfg = driver.MakeDefinition(cfgName, @$, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @2, std::move(mod)));
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @2, std::move(mod), true));
             $$ = cfg;
         }
         |
@@ -318,19 +318,18 @@ initialization:
             static const std::string cfgName("CF::StartShape");
             ASTdefine* cfg = driver.MakeDefinition(cfgName, @$, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @2, std::move(mod)));
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @2, std::move(mod), true));
             $$ = cfg;
         }
         |
         STARTSHAPE USER_STRING parameter_spec {
             str_ptr name($2); $2 = nullptr;
             exp_ptr p($3); $3 = nullptr;
-            mod_ptr mod(new ASTmodification(@$));
             driver.SetShape(nullptr);
             static const std::string cfgName("CF::StartShape");
             ASTdefine* cfg = driver.MakeDefinition(cfgName, @$, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @2, std::move(mod)));
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @2, nullptr, true));
             $$ = cfg;
         }
         ;
@@ -338,12 +337,11 @@ initialization:
 initialization_v2:
         STARTSHAPE USER_STRING {
             str_ptr name($2); $2 = nullptr;
-            mod_ptr mod(new ASTmodification(@$));
             driver.SetShape(nullptr);
             static const std::string cfgName("CF::StartShape");
             ASTdefine* cfg = driver.MakeDefinition(cfgName, @$, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @2, std::move(mod)));
+                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @2, nullptr, true));
             $$ = cfg;
         }
         ;
