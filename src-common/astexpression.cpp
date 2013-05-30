@@ -203,6 +203,9 @@ namespace AST {
             CfdgError::Error(nameLoc, "Unknown function");
             return;
         }
+        
+        if (functype == Rand_Static)
+            random = r.getDouble();
     }
     
     ASTfunction::FuncType
@@ -2234,12 +2237,8 @@ namespace AST {
                 }
                 
                 if (functype >= Rand_Static && functype <= RandInt) {
-                    if (functype == Rand_Static) {
-                        if (arguments && !arguments->isConstant)
-                            CfdgError::Error(argsLoc, "arguments to rand_static() must be constant");
-                    } else {
+                    if (functype != Rand_Static)
                         isConstant = false;
-                    }
                     
                     switch (argcount) {
                         case 0:
