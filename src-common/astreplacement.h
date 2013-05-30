@@ -51,6 +51,7 @@ namespace AST {
     public:
         enum repElemListEnum { rule = 8, replacement = 4, mixed = 3, command = 2, op = 1, empty = 0 };
         ASTruleSpecifier mShapeSpec;
+        std::string mName;
         int mRepType;
         pathOpEnum mPathOp;
         ASTmodification mChildChange;
@@ -146,8 +147,6 @@ namespace AST {
         virtual ~ASTtransform();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
-    private:
-        static agg::trans_affine Dummy;
         
     };
     class ASTif: public ASTreplacement {
