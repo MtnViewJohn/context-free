@@ -46,8 +46,6 @@ namespace AST {
     
     const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { nullptr };
     
-    agg::trans_affine ASTtransform::Dummy;
-
     
     void
     ASTrepContainer::addParameter(const std::string& type, int index,
@@ -110,7 +108,6 @@ namespace AST {
     : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)
     {
-        mChildChange.addEntropy(name);
     }
     
     ASTreplacement::ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
@@ -140,8 +137,7 @@ namespace AST {
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
     : ASTreplacement(nullptr, loc, empty), mTransforms(),
-      mModifications(getTransforms(mods.get(), mTransforms, nullptr, false, Dummy)),
-      mExpHolder(std::move(mods)), mClone(false)
+      mModifications(nullptr), mExpHolder(std::move(mods)), mClone(false)
     {
     }
     
@@ -591,11 +587,17 @@ namespace AST {
         assert(r == &mShapeSpec);
         r = mChildChange.compile(ph);           // ditto
         assert(r == &mChildChange);
-        if (ph == CompilePhase::Simplify) {
-            r = mShapeSpec.simplify();          // always returns this
-            assert(r == &mShapeSpec);
-            r = mChildChange.simplify();        // ditto
-            assert(r == &mChildChange);
+
+        switch (ph) {
+            case CompilePhase::TypeCheck:
+                mChildChange.addEntropy(mShapeSpec.entropyVal);
+                break;
+            case CompilePhase::Simplify:
+                r = mShapeSpec.simplify();          // always returns this
+                assert(r == &mShapeSpec);
+                r = mChildChange.simplify();        // ditto
+                assert(r == &mChildChange);
+                break;
         }
     }
     
@@ -685,11 +687,24 @@ namespace AST {
     ASTtransform::compile(AST::CompilePhase ph)
     {
         ASTreplacement::compile(ph);
+        ASTexpression* ret = nullptr;
         if (mExpHolder)
-            mExpHolder->compile(ph);        // always returns this
+            ret = mExpHolder->compile(ph);        // always returns this
+        if (ret != mExpHolder.get())
+            CfdgError::Error(mLocation, "Error analyzing transform list");
         mBody.compile(ph);
-        if (ph == CompilePhase::TypeCheck && mClone && !ASTparameter::Impure)
-            CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
+
+        switch (ph) {
+            case CompilePhase::TypeCheck:
+                if (mClone && !ASTparameter::Impure)
+                    CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
+                break;
+            case CompilePhase::Simplify:
+                static agg::trans_affine Dummy;
+                Simplify(mExpHolder);
+                getTransforms(mExpHolder.get(), mTransforms, nullptr, false, Dummy);
+                break;
+        }
     }
     
     void

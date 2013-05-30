@@ -700,15 +700,9 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 AST::ASTmodification*
 Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
-    for (term_ptr& term: mod->modExp) {
-        std::string ent;
-        term->entropy(ent);
-        mod->addEntropy(ent);
-    }
-    if (canonical)
-        mod->makeCanonical();
     mod->isConstant = mod->modExp.empty();
     mod->where = loc;
+    mod->canonical = canonical;
     
     return mod.release();
 }

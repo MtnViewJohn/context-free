@@ -385,13 +385,13 @@ namespace AST {
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), modData(m.modData), 
       modClass(m.modClass), strokeWidth(m.strokeWidth), flags(m.flags), 
-      entropyIndex(m.entropyIndex)
+      entropyIndex(m.entropyIndex), canonical(m.canonical)
     {
         assert(m.modExp.empty());
     }
     
     ASTmodification::ASTmodification(mod_ptr m, const yy::location& loc)
-    : ASTexpression(loc, true, false, ModType), entropyIndex(0)
+    : ASTexpression(loc, true, false, ModType), entropyIndex(0), canonical(true)
     {
         if (m) {
             modData.mRand64Seed.seed(0);
@@ -415,6 +415,7 @@ namespace AST {
         flags = m->flags;
         entropyIndex = (entropyIndex + m->entropyIndex) & 7;
         isConstant = modExp.empty();
+        canonical = m->canonical;
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
@@ -2853,7 +2854,12 @@ namespace AST {
                 for (auto& term : modExp) {
                     isConstant = isConstant && term->isConstant;
                     mLocality = CombineLocality(mLocality, term->mLocality);
+                    std::string ent;
+                    term->entropy(ent);
+                    addEntropy(ent);
                 }
+                if (canonical)
+                    makeCanonical();
                 break;
             }
             case CompilePhase::Simplify:

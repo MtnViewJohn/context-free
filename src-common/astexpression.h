@@ -357,13 +357,14 @@ namespace AST {
         double          strokeWidth;
         int             flags;
         int             entropyIndex;
+        bool            canonical;
         
         static int ModClass[ASTmodTerm::lastModType];
         
         ASTmodification(const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modClass(NotAClass),
           strokeWidth(0.1), flags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), 
-          entropyIndex(0) {}
+          entropyIndex(0), canonical(true) {}
         ASTmodification(const ASTmodification& m, const yy::location& loc);
         ASTmodification(mod_ptr m, const yy::location& loc);
         virtual ~ASTmodification();
