@@ -664,8 +664,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         return nullptr;
     }
     
-    std::string name(startSpec->entropyVal);
-    mInitShape.reset(new ASTreplacement(std::move(*startSpec), name, std::move(startSpec->mModification)));
+    mInitShape.reset(new ASTreplacement(std::move(*startSpec), std::move(startSpec->mModification)));
     mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
 
     RendererImpl* r = nullptr;

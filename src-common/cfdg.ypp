@@ -933,8 +933,7 @@ replacement_simple_v2:
             str_ptr name($1); $1 = nullptr;
             mod_ptr mod($2); $2 = nullptr;
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, @1));
-            std::string ent(r->entropyVal);
-            $$ = new ASTreplacement(std::move(*r), ent, std::move(mod), @$);
+            $$ = new ASTreplacement(std::move(*r), std::move(mod), @$);
         }
         ;
 

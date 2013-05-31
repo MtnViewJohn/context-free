@@ -660,8 +660,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             error(loc, "Subpath references must be to previously declared paths");
         }
     }
-    std::string name(r->entropyVal);
-    return rep_ptr(new ASTreplacement(std::move(*r), name, std::move(mods), loc, t));
+    return rep_ptr(new ASTreplacement(std::move(*r), std::move(mods), loc, t));
 }
 
 AST::ASTexpression*

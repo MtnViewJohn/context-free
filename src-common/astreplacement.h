@@ -51,7 +51,6 @@ namespace AST {
     public:
         enum repElemListEnum { rule = 8, replacement = 4, mixed = 3, command = 2, op = 1, empty = 0 };
         ASTruleSpecifier mShapeSpec;
-        std::string mName;
         int mRepType;
         pathOpEnum mPathOp;
         ASTmodification mChildChange;
@@ -59,9 +58,6 @@ namespace AST {
         void replace(Shape& s, RendererAST* r, double* width = nullptr) const;
         void replaceShape(Shape& s, RendererAST* r) const;
         
-        ASTreplacement(ASTruleSpecifier&& shapeSpec, const std::string& name, mod_ptr mods,
-                       const yy::location& loc = CfdgError::Default,
-                       repElemListEnum t = replacement);
         ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
