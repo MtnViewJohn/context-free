@@ -907,8 +907,7 @@ pathOp_v3clues:
 element_loop:
         loopHeader modification one_or_more_elements {
             // parse loop mod and loop body with loop index in scope
-            mod_ptr loopmod($2); $2 = nullptr;
-            $1->mChildChange.grab(loopmod.get());
+            $1->mLoopModHolder.reset($2); $2 = nullptr;
             $$ = $1;
             // loopmod gets deleted
         }
