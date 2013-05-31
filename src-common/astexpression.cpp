@@ -2056,108 +2056,6 @@ namespace AST {
     ASTexpression*
     ASTmodification::simplify()
     {
-        ASTtermArray temp;
-        temp.swap(modExp);
-        for (auto term = temp.begin(); term != temp.end(); ++term) {
-            if (!(*term)->args || (*term)->args->mType != NumericType) {
-                modExp.emplace_back(std::move(*term));
-                continue;
-            }
-            int argcount = (*term)->args->evaluate(nullptr, 0);
-            switch ((*term)->modType) {
-                // Try to merge consecutive x and y adjustments
-                case ASTmodTerm::x:
-                case ASTmodTerm::y: {
-                    auto next = term + 1;
-                    if (next == temp.end())
-                        break;
-                    if ((*term)->modType == ASTmodTerm::x &&
-                        (*next)->modType == ASTmodTerm::y &&
-                        argcount == 1)
-                    {
-                        (*term)->args.reset((*term)->args.release()->append((*next)->args.release()));
-                        (*term)->argCount = 2;
-                        modExp.emplace_back(std::move(*term));
-                        term = next;
-                        continue;
-                    }               // next stays in temp
-                    if ((*term)->modType == ASTmodTerm::y &&
-                        (*next)->modType == ASTmodTerm::x &&
-                        (*next)->args->evaluate(nullptr, 0) == 1)
-                    {
-                        (*next)->args.reset((*next)->args.release()->append((*term)->args.release()));
-                        (*term)->argCount = 2;
-                        modExp.emplace_back(std::move(*next));
-                        term = next;
-                        continue;   // term stays in temp
-                    }
-                    break;
-                }
-                // Try to split the XYZ term into an XY term and a Z term. Drop the XY term
-                // if it is the identity. First try an all-constant route, then try to tease
-                // apart the arguments.
-                case ASTmodTerm::xyz:
-                case ASTmodTerm::sizexyz: {
-                    double d[3];
-                    if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
-                        (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
-                        (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
-                            ASTmodTerm::x : ASTmodTerm::size;
-                        (*term)->argCount = 2;
-                        
-                        ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
-                            ASTmodTerm::zsize : ASTmodTerm::z;
-                        ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
-                        zmod->argCount = 1;
-                        
-                        // Check if xy part is the identity transform and only save it if it is not
-                        if (d[0] != 1.0 || d[1] != 1.0 || (*term)->modType == ASTmodTerm::x)
-                            modExp.emplace_back(std::move(*term));
-                        modExp.emplace_back(zmod);
-                        continue;
-                    }
-                    
-                    if ((*term)->args->size() > 1) {
-                        ASTexpression* xyargs = nullptr;
-                        int i = 0;
-                        for (; i < (*term)->args->size(); ++i) {
-                            xyargs = ASTexpression::Append(xyargs, (*(*term)->args)[i]);
-                            if (xyargs->evaluate(nullptr, 0) >= 2)
-                                break;
-                        }
-                        if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == (*term)->args->size() - 1) {
-                            // We have successfully split the 3-tuple into a 2-tuple and a scalar
-                            ASTexpression* zargs = (*(*term)->args)[i];
-                            (*term)->args->release();
-                            
-                            (*term)->args.reset(xyargs);
-                            (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
-                                ASTmodTerm::x : ASTmodTerm::size;
-                            (*term)->argCount = 2;
-                            
-                            ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
-                                ASTmodTerm::zsize : ASTmodTerm::z;
-                            ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
-                            zmod->argCount = 1;
-                            
-                            double d[2];
-                            if ((*term)->modType != ASTmodTerm::size || !xyargs->isConstant ||
-                                xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
-                            {
-                                // Check if xy part is the identity transform and only save it if it is not
-                                modExp.emplace_back(std::move(*term));
-                            }
-                            modExp.emplace_back(zmod);
-                            continue;
-                        }
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-            modExp.emplace_back(std::move(*term));
-        }
         evalConst();
         return this;
     }
@@ -2848,6 +2746,109 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                ASTtermArray temp;
+                temp.swap(modExp);
+                for (auto term = temp.begin(); term != temp.end(); ++term) {
+                    if (!(*term)->args || (*term)->args->mType != NumericType) {
+                        modExp.emplace_back(std::move(*term));
+                        continue;
+                    }
+                    int argcount = (*term)->args->evaluate(nullptr, 0);
+                    switch ((*term)->modType) {
+                            // Try to merge consecutive x and y adjustments
+                        case ASTmodTerm::x:
+                        case ASTmodTerm::y: {
+                            auto next = term + 1;
+                            if (next == temp.end())
+                                break;
+                            if ((*term)->modType == ASTmodTerm::x &&
+                                (*next)->modType == ASTmodTerm::y &&
+                                argcount == 1)
+                            {
+                                (*term)->args.reset((*term)->args.release()->append((*next)->args.release()));
+                                (*term)->argCount = 2;
+                                modExp.emplace_back(std::move(*term));
+                                term = next;
+                                continue;
+                            }               // next stays in temp
+                            /* if ((*term)->modType == ASTmodTerm::y &&
+                                (*next)->modType == ASTmodTerm::x &&
+                                (*next)->args->evaluate(nullptr, 0) == 1)
+                            {
+                                (*next)->args.reset((*next)->args.release()->append((*term)->args.release()));
+                                (*term)->argCount = 2;
+                                modExp.emplace_back(std::move(*next));
+                                term = next;
+                                continue;   // term stays in temp
+                            } Don't merge y & x because 3.0.5 didn't and it changes variations */
+                            break;
+                        }
+                            // Try to split the XYZ term into an XY term and a Z term. Drop the XY term
+                            // if it is the identity. First try an all-constant route, then try to tease
+                            // apart the arguments.
+                        case ASTmodTerm::xyz:
+                        case ASTmodTerm::sizexyz: {
+                            double d[3];
+                            if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
+                                (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
+                                (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
+                                ASTmodTerm::x : ASTmodTerm::size;
+                                (*term)->argCount = 2;
+                                
+                                ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
+                                ASTmodTerm::zsize : ASTmodTerm::z;
+                                ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
+                                zmod->argCount = 1;
+                                
+                                // Check if xy part is the identity transform and only save it if it is not
+                                if (d[0] != 1.0 || d[1] != 1.0 || (*term)->modType == ASTmodTerm::x)
+                                    modExp.emplace_back(std::move(*term));
+                                modExp.emplace_back(zmod);
+                                continue;
+                            }
+                            
+                            if ((*term)->args->size() > 1) {
+                                ASTexpression* xyargs = nullptr;
+                                int i = 0;
+                                for (; i < (*term)->args->size(); ++i) {
+                                    xyargs = ASTexpression::Append(xyargs, (*(*term)->args)[i]);
+                                    if (xyargs->evaluate(nullptr, 0) >= 2)
+                                        break;
+                                }
+                                if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == (*term)->args->size() - 1) {
+                                    // We have successfully split the 3-tuple into a 2-tuple and a scalar
+                                    ASTexpression* zargs = (*(*term)->args)[i];
+                                    (*term)->args->release();
+                                    
+                                    (*term)->args.reset(xyargs);
+                                    (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
+                                    ASTmodTerm::x : ASTmodTerm::size;
+                                    (*term)->argCount = 2;
+                                    
+                                    ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
+                                    ASTmodTerm::zsize : ASTmodTerm::z;
+                                    ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                                    zmod->argCount = 1;
+                                    
+                                    double d[2];
+                                    if ((*term)->modType != ASTmodTerm::size || !xyargs->isConstant ||
+                                        xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
+                                    {
+                                        // Check if xy part is the identity transform and only save it if it is not
+                                        modExp.emplace_back(std::move(*term));
+                                    }
+                                    modExp.emplace_back(zmod);
+                                    continue;
+                                }
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                    modExp.emplace_back(std::move(*term));
+                }
+
                 isConstant = true;
                 mLocality = modExp.empty() ? PureLocal : modExp.front()->mLocality;
                 for (auto& term : modExp) {
