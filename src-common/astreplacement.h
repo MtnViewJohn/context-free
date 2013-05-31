@@ -118,10 +118,12 @@ namespace AST {
     class ASTloop: public ASTreplacement {
     public:
         exp_ptr mLoopArgs;
+        mod_ptr mLoopModHolder;
         double  mLoopData[3];
         ASTrepContainer mLoopBody;
         ASTrepContainer mFinallyBody;
         int mLoopIndexName;
+        std::string mLoopName;
         
         static void setupLoop(double& start, double& end, double& step, 
                               const ASTexpression* e, const yy::location& loc,
@@ -133,7 +135,7 @@ namespace AST {
         virtual ~ASTloop();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
-        void compileBase(CompilePhase ph) { ASTreplacement::compile(ph); }
+        void compileLoopMod();
     };
     class ASTtransform: public ASTreplacement {
     public:

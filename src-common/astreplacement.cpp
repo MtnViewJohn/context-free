@@ -94,7 +94,7 @@ namespace AST {
         
         Builder::CurrentBuilder->push_repContainer(*this);
         if (loop)
-            loop->compileBase(ph);
+            loop->compileLoopMod();
         for (auto& rep: mBody)
             rep->compile(ph);
         if (def)
@@ -127,10 +127,9 @@ namespace AST {
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
-    : ASTreplacement(std::move(mods), nameLoc + argsLoc, empty),
-      mLoopArgs(std::move(args)), mLoopIndexName(nameIndex)
+    : ASTreplacement(std::move(mods), nameLoc + argsLoc, empty), mLoopArgs(std::move(args)),
+      mLoopModHolder(nullptr), mLoopIndexName(nameIndex), mLoopName(name)
     {
-        mChildChange.addEntropy(name);
         mLoopBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
         mFinallyBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
     }
@@ -613,9 +612,10 @@ namespace AST {
                     return;
                 }
                 
-                std::string ent;
+                std::string ent(mLoopName);
                 mLoopArgs->entropy(ent);
-                mChildChange.addEntropy(ent);
+                if (mLoopModHolder)
+                    mChildChange.addEntropy(ent);
                 
                 bool bodyNatural = false;
                 bool finallyNatural = false;
@@ -673,6 +673,9 @@ namespace AST {
                 mFinallyBody.mParameters.front().isNatural = finallyNatural;
                 mFinallyBody.mParameters.front().mLocality = locality;
                 mFinallyBody.compile(ph);
+                
+                if (!mLoopModHolder)
+                    mChildChange.addEntropy(ent);
                 break;
             }
             case CompilePhase::Simplify:
@@ -680,6 +683,17 @@ namespace AST {
                 mLoopBody.compile(ph);
                 mFinallyBody.compile(ph);
                 break;
+        }
+    }
+    
+    void
+    ASTloop::compileLoopMod()
+    {
+        if (mLoopModHolder) {
+            mLoopModHolder->compile(CompilePhase::TypeCheck);
+            mChildChange.grab(mLoopModHolder.get());
+        } else {
+            mChildChange.compile(CompilePhase::TypeCheck);
         }
     }
     
