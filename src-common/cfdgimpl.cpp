@@ -461,6 +461,11 @@ CFDGImpl::rulesLoaded()
     // with respect to rules of the same shape type
     sort(mRules.begin(), mRules.end(), ASTrule::compareLT);
     
+    Builder::CurrentBuilder->mLocalStackDepth = 0;
+    mCFDGcontents.compile(CompilePhase::TypeCheck);
+    if (!Builder::CurrentBuilder->mErrorOccured)
+        mCFDGcontents.compile(CompilePhase::Simplify);
+    
     // Wait until done and then update these members
     double value;
     uses16bitColor = hasParameter("CF::ColorDepth", value, nullptr) &&
@@ -471,11 +476,6 @@ CFDGImpl::rulesLoaded()
     
     if (hasParameter("CF::Alpha", value, nullptr))
         usesAlpha = value != 0.0;
-    
-    Builder::CurrentBuilder->mLocalStackDepth = 0;
-    mCFDGcontents.compile(CompilePhase::TypeCheck);
-    if (!Builder::CurrentBuilder->mErrorOccured)
-        mCFDGcontents.compile(CompilePhase::Simplify);
 }
 
 int
