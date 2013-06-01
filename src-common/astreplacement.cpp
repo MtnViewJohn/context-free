@@ -232,8 +232,6 @@ namespace AST {
     :   ASTreplacement(std::move(mods), loc, command),
         mMiterLimit(4.0), mParameters(std::move(params))
     {
-        mChildChange.addEntropy(s);
-        
         if (!(s.compare("FILL"))) {
             mChildChange.flags |= CF_FILL;
         } else if (!s.compare("STROKE")) {
@@ -859,6 +857,8 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                mChildChange.addEntropy((mChildChange.flags & CF_FILL) ? "FILL" : "STROKE");
+                
                 check4z();
                 if (!mParameters)
                     return;
