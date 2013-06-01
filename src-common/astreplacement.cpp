@@ -707,7 +707,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 static agg::trans_affine Dummy;
                 Simplify(mExpHolder);
-                getTransforms(mExpHolder.get(), mTransforms, nullptr, false, Dummy);
+                mModifications = getTransforms(mExpHolder.get(), mTransforms, nullptr, false, Dummy);
                 break;
         }
     }
