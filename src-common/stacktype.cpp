@@ -278,9 +278,9 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
             case AST::NumericType: {
                 int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
                 if (dest.type().isNatural && !RendererAST::isNatural(rti, dest->number))
-                    throw CfdgError(arg->where, "Expression does not evaluate to a legal natural number");
+                    CfdgError::Error(arg->where, "Expression does not evaluate to a legal natural number");
                 if (num != dest.type().mTuplesize)
-                    throw CfdgError(arg->where, "Expression does not evaluate to the correct size");
+                    CfdgError::Error(arg->where, "Expression does not evaluate to the correct size");
                 break;
             }
             case AST::ModType: {
