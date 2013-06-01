@@ -2410,7 +2410,9 @@ namespace AST {
     ASTexpression*
     ASTstartSpecifier::compile(AST::CompilePhase ph)
     {
+        std::string name(entropyVal);
         ASTexpression* ret = ASTruleSpecifier::compile(ph);
+        entropyVal = std::move(name);   // StartShape only uses name for entropy (grrr)
         assert(ret == this);
         if (mModification) {
             ret = mModification->compile(ph);
