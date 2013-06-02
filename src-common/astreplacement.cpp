@@ -754,15 +754,22 @@ namespace AST {
     void
     ASTdefine::compile(AST::CompilePhase ph)
     {
-        ASTrepContainer tempCont;
-        tempCont.mParameters = mParameters;     // copy
-        tempCont.mStackCount = mStackCount;
-        Builder::CurrentBuilder->push_repContainer(tempCont);
-        ASTreplacement::compile(ph);
-        Compile(mExpression, ph);
-        if (ph == CompilePhase::Simplify)
-            Simplify(mExpression);
-        Builder::CurrentBuilder->pop_repContainer(nullptr);
+        if (isFunction) {
+            ASTrepContainer tempCont;
+            tempCont.mParameters = mParameters;     // copy
+            tempCont.mStackCount = mStackCount;
+            Builder::CurrentBuilder->push_repContainer(tempCont);
+            ASTreplacement::compile(ph);
+            Compile(mExpression, ph);
+            if (ph == CompilePhase::Simplify)
+                Simplify(mExpression);
+            Builder::CurrentBuilder->pop_repContainer(nullptr);
+        } else {
+            ASTreplacement::compile(ph);
+            Compile(mExpression, ph);
+            if (ph == CompilePhase::Simplify)
+                Simplify(mExpression);
+        }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
