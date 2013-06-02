@@ -127,7 +127,15 @@ namespace AST {
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
-        enum ArgSource { NoArgs, DynamicArgs, StackArgs, SimpleArgs, ParentArgs, SimpleParentArgs, ShapeArgs };
+        enum ArgSource {
+            NoArgs,             // shapeType has no arguments
+            DynamicArgs,        // shapeType has non-constant arguments
+            StackArgs,          // not shapeType, StackRule* pointer to shape
+            SimpleArgs,         // shapeType has constant arguments
+            ParentArgs,         // reusing parent args, child shape may be different
+            SimpleParentArgs,   // reusing shape args, child shape same as parent
+            ShapeArgs           // not shapeType, evalArgs arguments (non-constant) to get shape
+        };
         int shapeType;
         int argSize;
         std::string entropyVal;

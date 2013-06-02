@@ -112,7 +112,12 @@ namespace AST {
         NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8,
         ReuseType = 16
     };
-    enum Locality_t { UnknownLocal = 0, ImpureNonlocal = 1, PureNonlocal = 3, PureLocal = 7 };
+    enum Locality_t {
+        UnknownLocal = 0,       // not known if dependent on parameters
+        ImpureNonlocal = 1,     // dependent on parameters that have been modified
+        PureNonlocal = 3,       // dependent on parameters that have not been modified
+        PureLocal = 7           // not dependent on parameters
+    };
     enum class CompilePhase {
         TypeCheck, Simplify
     };
