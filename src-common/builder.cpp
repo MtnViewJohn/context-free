@@ -575,42 +575,31 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
 
     int nameIndex = StringToShape(name, loc, true);
     bool isGlobal = false;
-
     const ASTparameter* bound = findExpression(nameIndex, isGlobal);
-    if (bound == nullptr) {
-        ASTruleSpecifier* ret = nullptr;
-        m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        if (makeStart)
-            ret = new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
-                                        std::move(mod));
-        else
-            ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
-                                       m_CFDG->getShapeParams(mCurrentShape));
-        if (ret->arguments && ret->arguments->mType == ReuseType) {
-            if (makeStart)
-                CfdgError::Error(loc, "Startshape cannot reuse parameters");
-            else if (nameIndex == mCurrentShape) {
-                ret->argSource = ASTruleSpecifier::SimpleParentArgs;
-                ret->typeSignature = ret->parentSignature;
-            }
-        }
-        return ret;
-    }
     
-    if (args && args->mType == ReuseType && !makeStart && isGlobal && nameIndex == mCurrentShape) {
+    if (bound && args && args->mType == ReuseType && !makeStart && isGlobal && nameIndex == mCurrentShape)
         warning(loc, "Shape name binds to global variable and current shape, using current shape");
-        m_CFDG->setShapeHasNoParams(nameIndex, args.get());
-        return new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
-                                    m_CFDG->getShapeParams(mCurrentShape));
-    }
     
-    if (args)
-        CfdgError::Error(loc, "Cannot bind parameters twice");
-    
-    if (makeStart)
-        return new ASTstartSpecifier(nameIndex, name, loc, std::move(mod));
-    else
+    if (bound && bound->isParameter && bound->mType == RuleType)
         return new ASTruleSpecifier(nameIndex, name, loc);
+    
+    ASTruleSpecifier* ret = nullptr;
+    m_CFDG->setShapeHasNoParams(nameIndex, args.get());
+    if (makeStart)
+        ret = new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
+                                    std::move(mod));
+    else
+        ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
+                                   m_CFDG->getShapeParams(mCurrentShape));
+    if (ret->arguments && ret->arguments->mType == ReuseType) {
+        if (makeStart)
+            CfdgError::Error(loc, "Startshape cannot reuse parameters");
+        else if (nameIndex == mCurrentShape) {
+            ret->argSource = ASTruleSpecifier::SimpleParentArgs;
+            ret->typeSignature = ret->parentSignature;
+        }
+    }
+    return ret;
 }
 
 void
@@ -642,9 +631,14 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;
     if (mInPathContainer) {
+        bool isGlobal = false;
+        const ASTparameter* bound = findExpression(r->shapeType, isGlobal);
+        
         if (!subPath) {
             error(loc, "Replacements are not allowed in paths");
-        } else if (r->argSource == ASTruleSpecifier::StackArgs) {
+        } else if (r->argSource == ASTruleSpecifier::StackArgs ||
+                   r->argSource == ASTruleSpecifier::ShapeArgs)
+        {
             // Parameter subpaths must be all ops, but we must check at runtime
             t = ASTreplacement::op;
         } else if (m_CFDG->getShapeType(r->shapeType) == CFDGImpl::pathType) {
@@ -654,6 +648,9 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             } else {
                 error(loc, "Subpath references must be to previously declared paths");
             }
+        } else if (bound) {
+            // Variable subpaths must be all ops, but we must check at runtime
+            t = ASTreplacement::op;
         } else if (primShape::isPrimShape(r->shapeType)){
             t = ASTreplacement::op;
         } else {
@@ -712,6 +709,12 @@ Builder::GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*&
     func = m_CFDG->findFunction(name);
     p = m_CFDG->getShapeParams(name);
     return m_CFDG->decodeShapeName(name);
+}
+
+const AST::ASTrule*
+Builder::GetRule(int name)
+{
+    return m_CFDG->findRule(name);
 }
 
 void

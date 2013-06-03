@@ -144,6 +144,8 @@ public:
     AST::ASTdefine* MakeDefinition(const std::string& name, const yy::location& nameLoc,
                                    bool isFunction);
     std::string     GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*& p);
+    const AST::ASTrule*
+                    GetRule(int name);
     void            MakeConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();
