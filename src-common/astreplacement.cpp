@@ -581,6 +581,22 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck:
                 mChildChange.addEntropy(mShapeSpec.entropyVal);
+                if (typeid(ASTreplacement) == typeid(*this) && Builder::CurrentBuilder->mInPathContainer) {
+                    // This is a subpath
+                    if (mShapeSpec.argSource == ASTruleSpecifier::ShapeArgs ||
+                        mShapeSpec.argSource == ASTruleSpecifier::StackArgs ||
+                        primShape::isPrimShape(mShapeSpec.shapeType))
+                    {
+                        if (mRepType != op)
+                            CfdgError::Error(mShapeSpec.where, "Error in subpath specification");
+                    } else {
+                        const ASTrule* rule = Builder::CurrentBuilder->GetRule(mShapeSpec.shapeType);
+                        if (!rule || !rule->isPath)
+                            CfdgError::Error(mShapeSpec.where, "Subpath can only refer to a path");
+                        else if (rule->mRuleBody.mRepType != mRepType)
+                            CfdgError::Error(mShapeSpec.where, "Subpath type mismatch error");
+                    }
+                }
                 break;
             case CompilePhase::Simplify:
                 r = mShapeSpec.simplify();          // always returns this
@@ -829,6 +845,7 @@ namespace AST {
     void
     ASTrule::compile(AST::CompilePhase ph)
     {
+        Builder::CurrentBuilder->mInPathContainer = isPath;
         ASTreplacement::compile(ph);
         mRuleBody.compile(ph);
     }
