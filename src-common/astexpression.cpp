@@ -2300,6 +2300,8 @@ namespace AST {
                             isConstant = false;
                             mLocality = bound->mLocality;
                         }
+                        if (arguments && arguments->mType != AST::NoType)
+                            CfdgError::Error(arguments->where, "Cannot bind parameters twice");
                         return this;
                     }
                     case NoArgs:
@@ -2336,7 +2338,7 @@ namespace AST {
                         
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
-                        if (bound) {
+                        if (bound && bound->mType == RuleType) {
                             argSource = StackArgs;
                             return compile(ph);
                         }
