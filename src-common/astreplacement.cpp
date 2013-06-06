@@ -793,6 +793,12 @@ namespace AST {
                     Builder::CurrentBuilder->MakeConfig(this);
                     return;
                 }
+
+                // Set the Modification entropy to parameter name, not its own contents
+                mChildChange.modData.mRand64Seed.init();
+                mChildChange.entropyIndex = 0;
+                mChildChange.addEntropy(mName);
+                
                 expType t = mExpression ? mExpression->mType : ModType;
                 int sz = 1;
                 if (t == NumericType)
