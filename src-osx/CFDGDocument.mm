@@ -37,6 +37,8 @@
 #include "posixSystem.h"
 #include "location.hh"
 
+#include "variation.h"
+
 @interface CfdgErrorWrapper : NSObject
 {
 @private
@@ -341,6 +343,12 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
 }
 
+- (void) setVariation:(int)var
+{
+    if (mGView)
+        [mGView setVariation: var];
+}
+
 - (void)noteCatastrophicError:(NSString*)s
 {
     (void)NSRunAlertPanel(@"A major error has occured", s, nil, nil, nil);
@@ -569,12 +577,18 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)readFromExample:(NSString*)path
 {
-    [self readFromData: [NSData dataWithContentsOfFile: path]
-                ofType: CFDGDocumentType error: nil];
+    [self readDesign: [[path lastPathComponent] stringByDeletingPathExtension]
+            cfdgText: [NSData dataWithContentsOfFile: path]];
+}
 
-    [mDisplayName release];
-    mDisplayName = [[[path lastPathComponent]
-                            stringByDeletingPathExtension] retain];
+- (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg
+{
+    [self readFromData: cfdg ofType: CFDGDocumentType error: nil];
+    
+    if (name) {
+        [mDisplayName release];
+        mDisplayName = [name retain];
+    }
 }
 
 - (NSString*)displayName

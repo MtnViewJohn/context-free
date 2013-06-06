@@ -28,6 +28,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class GalleryDownloader;
 
 @interface CFDGController : NSObject {
     NSDictionary*           mUpdateInfo;
@@ -46,4 +47,7 @@
 
 - (IBAction) setEditorFont:(id)sender;
 - (void)changeFont:(id)sender;
+
+-(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error;
+-(void)downloadDone:(GalleryDownloader*)downloader;
 @end

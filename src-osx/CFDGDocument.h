@@ -37,7 +37,7 @@ class CFDG;
 class AbstractSystem;
 
 @interface CFDGDocument : NSDocument {
-    AbstractSystem*                 mSystem;
+    AbstractSystem*         mSystem;
     NSData*                 mContent;
     
     IBOutlet NSTextView*    mEditor;
@@ -78,9 +78,11 @@ class AbstractSystem;
 - (void)noteStatus:(NSString*)s;
 - (void)noteCatastrophicError:(NSString*)s;
 - (void)noteStats:(NSValue*)v;
+- (void) setVariation:(int)var;
 - (void)noteError:(CfdgErrorWrapper*)e;
 - (void)highlightChars:(CfdgErrorWrapper*)link;
 - (void)readFromExample:(NSString*)path;
+- (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg;
 
 + (NSString*)documentType;
 + (BOOL)autosavesInPlace;

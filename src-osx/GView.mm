@@ -957,6 +957,14 @@ namespace {
         NSLocalizedString(@"next variation:", @"")];
 }
 
+- (void) setVariation:(int)var
+{
+    mCurrentVariation = var;
+    [mVariationStepper setIntValue: mCurrentVariation];
+    [mVariationField setIntValue: mCurrentVariation];
+    [self reuseVariation];
+}
+
 - (IBAction) adjustVariation:(id)sender
 {
     if ([mVariationField currentEditor]) {

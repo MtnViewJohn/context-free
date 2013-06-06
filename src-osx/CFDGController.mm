@@ -28,6 +28,7 @@
 
 #import "CFDGController.h"
 #import "CFDGDocument.h"
+#import "GalleryDownloader.h"
 #include "SystemConfiguration/SCNetwork.h"
 #include <SystemConfiguration/SCNetworkReachability.h>
 #include "cfdg.h"
@@ -209,6 +210,7 @@ namespace {
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [NSApp setServicesProvider: self];
     [self checkForUpdateInBackground];
     NSArray* tempFiles = [CFDGDocument checkForTempFiles];
     if (tempFiles) {
@@ -268,7 +270,42 @@ namespace {
     }
 }
 
+-(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
+    NSString * pboardString = [pboard stringForType:NSStringPboardType];
+    
+    if ([pboardString hasPrefix: @"file://"]) {
+        [[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: pboardString]];
+    } else if ([pboardString hasPrefix: @"http://www.contextfreeart.org/gallery/"]) {
+        NSRange idLoc = [pboardString rangeOfString: @"id="];
+        if (idLoc.location != NSNotFound) {
+            int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
+            [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
+        }
+    } else {
+        NSError* err = nil;
+        id doc = [[NSDocumentController sharedDocumentController]
+                  openUntitledDocumentOfType: [CFDGDocument documentType]
+                  display: NO];
+        [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding] ofType: [CFDGDocument documentType] error: &err];
+        [doc showWindows];
+    }
+}
 
+- (void)downloadDone:(GalleryDownloader*)downloader
+{
+    if (!downloader || !downloader->cfdgContents || downloader->DLerror)
+        return;
+    
+    id doc = [[NSDocumentController sharedDocumentController]
+              openUntitledDocumentOfType: [CFDGDocument documentType]
+              display: NO];
+    
+    [doc readDesign: downloader->fileName
+           cfdgText: downloader->cfdgContents];
+    [doc showWindows];
+    [doc setVariation: downloader->variation];
+    [downloader release];
+}
 @end
 
 @implementation CFDGController (setup)

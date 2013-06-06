@@ -129,6 +129,7 @@ class qtCanvas;
 - (void) updateVariation:(BOOL)incrementIfNeeded;
 - (void) useVariation;
 - (void) reuseVariation;
+- (void) setVariation:(int)var;
 - (IBAction) adjustVariation:(id)sender;    // sent by stepper
 - (IBAction) editVariation:(id)sender;      // sent by text field
 @end
