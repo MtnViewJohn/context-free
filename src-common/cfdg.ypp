@@ -402,12 +402,10 @@ global_definition:
                 if (var->mConfigDepth >= 0 || var->isFunction) {
                     var->mExpression = std::move(exp);
                 } else {
-                    if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
-                        mod->modData.mRand64Seed.seed(0);
-                        var->mChildChange.grab(mod);
-                    } else {
+                    if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get()))
+                        var->mChildChange.grab(mod);        // emptied ASTmod gets deleted
+                    else
                         var->mExpression = std::move(exp);
-                    }
                 }
                 $$ = var.release();
             } else {
