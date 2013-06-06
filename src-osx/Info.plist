@@ -33,15 +33,39 @@
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.0.6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$CURRENT_PROJECT_VERSION</string>
-	<key>CFBundleShortVersionString</key>
-	<string>3.0.6</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSPortName</key>
+			<string>Context Free</string>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+				<string>NSURLPboardType</string>
+			</array>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Display CFDG Gallery Item</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>displayGalleryCfdg</string>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>public.url</string>
+				<string>public.utf8-plain-text</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
