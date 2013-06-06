@@ -371,6 +371,7 @@ CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
         "CF::FrameTime",
         "CF::Impure",
         "CF::MaxNatural",
+        "CF::MaxShapes",
         "CF::MinimumSize",
         "CF::Size",
         "CF::StartShape",
@@ -673,6 +674,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         Modification tiled;
         Modification sized;
         Modification timed;
+        double       maxShape;
         if (hasParameter("CF::Tile", tiled, nullptr)) {
             mTileMod = tiled;
             mTileOffset.x = mTileMod.m_transform.tx;
@@ -687,6 +689,10 @@ CFDGImpl::renderer(int width, int height, double minSize,
         }
         if (hasParameter("CF::Time", timed, nullptr)) {
             mTimeMod = timed;
+        }
+        if (hasParameter("CF::MaxShapes", maxShape, r)) {
+            if (maxShape > 1)
+                r->setMaxShapes(static_cast<int>(maxShape));
         }
         r->initBounds();
     } catch (CfdgError& e) {
