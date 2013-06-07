@@ -169,7 +169,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFColorDepthToolStripMenuIt
 private: System::Windows::Forms::ToolStripMenuItem^  cFFrameToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFFrametimeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFImpureToolStripMenuItem;
-private: System::Windows::Forms::ToolStripMenuItem^  cFMaxNaturalToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  cFMaxShapesToolStripMenuItem;
+
 private: System::Windows::Forms::ToolStripMenuItem^  cFMinimumSizeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFSizeToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFSymmetryToolStripMenuItem;
@@ -187,6 +188,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFContinuousToolStripMenuIt
 private: System::Windows::Forms::ToolStripMenuItem^  cFAlignToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFEvenOddToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem1;
     public: 
 
 
@@ -372,7 +374,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cFFrameToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFFrametimeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFImpureToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->cFMaxNaturalToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->cFMaxShapesToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFMinimumSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFSizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFSymmetryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -401,6 +403,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->menuRImage = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRMovie = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRUpload = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStrip1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->documentSplitter))->BeginInit();
             this->documentSplitter->Panel1->SuspendLayout();
@@ -420,7 +423,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(9) {this->toolStripRenderButton, 
                 this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar, 
                 this->toolStripNextVar, this->toolStripSeparator2, this->toolStripStatus});
-            this->toolStrip1->Location = System::Drawing::Point(0, 0);
+            this->toolStrip1->Location = System::Drawing::Point(0, 24);
             this->toolStrip1->Name = L"toolStrip1";
             this->toolStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::System;
             this->toolStrip1->Size = System::Drawing::Size(820, 25);
@@ -509,7 +512,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             // documentSplitter
             // 
             this->documentSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
-            this->documentSplitter->Location = System::Drawing::Point(0, 25);
+            this->documentSplitter->Location = System::Drawing::Point(0, 49);
             this->documentSplitter->Name = L"documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -520,7 +523,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             // 
             this->documentSplitter->Panel2->BackColor = System::Drawing::SystemColors::Window;
             this->documentSplitter->Panel2->Controls->Add(this->renderBox);
-            this->documentSplitter->Size = System::Drawing::Size(820, 379);
+            this->documentSplitter->Size = System::Drawing::Size(820, 355);
             this->documentSplitter->SplitterDistance = 273;
             this->documentSplitter->TabIndex = 1;
             // 
@@ -538,8 +541,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             // editorSplitter.Panel2
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
-            this->editorSplitter->Size = System::Drawing::Size(273, 379);
-            this->editorSplitter->SplitterDistance = 298;
+            this->editorSplitter->Size = System::Drawing::Size(273, 355);
+            this->editorSplitter->SplitterDistance = 279;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -549,7 +552,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(273, 298);
+            this->cfdgText->Size = System::Drawing::Size(273, 279);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -562,7 +565,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cfdgMessage->Location = System::Drawing::Point(0, 0);
             this->cfdgMessage->MinimumSize = System::Drawing::Size(20, 20);
             this->cfdgMessage->Name = L"cfdgMessage";
-            this->cfdgMessage->Size = System::Drawing::Size(273, 77);
+            this->cfdgMessage->Size = System::Drawing::Size(273, 72);
             this->cfdgMessage->TabIndex = 0;
             // 
             // renderBox
@@ -571,7 +574,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->renderBox->InitialImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"renderBox.InitialImage")));
             this->renderBox->Location = System::Drawing::Point(0, 0);
             this->renderBox->Name = L"renderBox";
-            this->renderBox->Size = System::Drawing::Size(543, 379);
+            this->renderBox->Size = System::Drawing::Size(543, 355);
             this->renderBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
             this->renderBox->TabIndex = 0;
             this->renderBox->TabStop = false;
@@ -962,11 +965,11 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             // 
             // insertVariableToolStripMenuItem
             // 
-            this->insertVariableToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(16) {this->cFAllowOverlapToolStripMenuItem, 
+            this->insertVariableToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(17) {this->cFAllowOverlapToolStripMenuItem, 
                 this->cFAlphaToolStripMenuItem, this->cFBackgroundToolStripMenuItem, this->cFBorderDynamicToolStripMenuItem, this->cFBorderFixedToolStripMenuItem, 
                 this->cFColorToolStripMenuItem, this->cFColorDepthToolStripMenuItem, this->cFFrameToolStripMenuItem, this->cFFrametimeToolStripMenuItem, 
-                this->cFImpureToolStripMenuItem, this->cFMaxNaturalToolStripMenuItem, this->cFMinimumSizeToolStripMenuItem, this->cFSizeToolStripMenuItem, 
-                this->cFSymmetryToolStripMenuItem, this->cFTileToolStripMenuItem, this->cFTimeToolStripMenuItem});
+                this->cFImpureToolStripMenuItem, this->toolStripMenuItem1, this->cFMaxShapesToolStripMenuItem, this->cFMinimumSizeToolStripMenuItem, 
+                this->cFSizeToolStripMenuItem, this->cFSymmetryToolStripMenuItem, this->cFTileToolStripMenuItem, this->cFTimeToolStripMenuItem});
             this->insertVariableToolStripMenuItem->Name = L"insertVariableToolStripMenuItem";
             this->insertVariableToolStripMenuItem->Size = System::Drawing::Size(189, 22);
             this->insertVariableToolStripMenuItem->Text = L"Insert Variable";
@@ -1041,12 +1044,12 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->cFImpureToolStripMenuItem->Text = L"CF::Impure";
             this->cFImpureToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // cFMaxNaturalToolStripMenuItem
+            // cFMaxShapesToolStripMenuItem
             // 
-            this->cFMaxNaturalToolStripMenuItem->Name = L"cFMaxNaturalToolStripMenuItem";
-            this->cFMaxNaturalToolStripMenuItem->Size = System::Drawing::Size(176, 22);
-            this->cFMaxNaturalToolStripMenuItem->Text = L"CF::MaxNatural";
-            this->cFMaxNaturalToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            this->cFMaxShapesToolStripMenuItem->Name = L"cFMaxShapesToolStripMenuItem";
+            this->cFMaxShapesToolStripMenuItem->Size = System::Drawing::Size(176, 22);
+            this->cFMaxShapesToolStripMenuItem->Text = L"CF::MaxShapes";
+            this->cFMaxShapesToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
             // cFMinimumSizeToolStripMenuItem
             // 
@@ -1271,6 +1274,12 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
             this->menuRUpload->Size = System::Drawing::Size(220, 22);
             this->menuRUpload->Text = L"&Upload to gallery...";
             this->menuRUpload->Click += gcnew System::EventHandler(this, &Document::menuRUpload_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this->toolStripMenuItem1->Name = L"toolStripMenuItem1";
+            this->toolStripMenuItem1->Size = System::Drawing::Size(176, 22);
+            this->toolStripMenuItem1->Text = L"CF::MaxNatural";
             // 
             // Document
             // 
