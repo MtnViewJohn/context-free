@@ -40,6 +40,7 @@
 #include "cfdg.h"
 #include "shape.h"
 #include "astreplacement.h"
+#include "config.h"
 
 class CFDGImpl : public CFDG {
     public:
@@ -90,8 +91,12 @@ private:
         AbstractSystem* m_system;
     
         int m_Parameters;
-        typedef std::pair<unsigned, AST::exp_ptr> ConfigParam;
-        std::map<int, ConfigParam> m_ConfigParameters;
+    
+        static const CfgArray<const char*>  ParamNames;
+        CfgArray<unsigned>                  ParamDepth;
+        CfgArray<AST::exp_ptr>              ParamExp;
+    
+    
 
         Modification mTileMod;
         Modification mSizeMod;
@@ -115,11 +120,11 @@ private:
         const agg::rgba& getBackgroundColor();
         void setBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
-        const AST::ASTexpression* hasParameter(const char* name) const;
-        bool hasParameter(const char* name, double& value, RendererAST* r) const;
-        bool hasParameter(const char* name, Modification& value, RendererAST* r) const;
-        bool hasParameter(const char* name, AST::expType t, 
-                          yy::location& where) const;
+    
+        const AST::ASTexpression* hasParameter(CFG name) const;
+        bool hasParameter(CFG name, double& value, RendererAST* r) const;
+        bool hasParameter(CFG name, Modification& value, RendererAST* r) const;
+        bool hasParameter(CFG name, AST::expType t, yy::location& where) const;
 
     public:
         AbstractSystem* system() { return m_system; }
