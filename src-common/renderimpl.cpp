@@ -103,8 +103,8 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     shapeMap[1].mPath = &shape1;
     shapeMap[2].mPath = &shape2;
     
-    m_cfdg->hasParameter("CF::FrameTime", mCurrentTime, nullptr);
-    m_cfdg->hasParameter("CF::Frame", mCurrentFrame, nullptr);
+    m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
+    m_cfdg->hasParameter(CFG::Frame, mCurrentFrame, nullptr);
 }
 
 void
@@ -135,24 +135,24 @@ RendererImpl::init()
     m_minArea = 0.3; 
     m_outputSoFar = m_stats.shapeCount = m_stats.toDoCount = 0;
     double minSize = m_minSize;
-    m_cfdg->hasParameter("CF::MinimumSize", minSize, this);
+    m_cfdg->hasParameter(CFG::MinimumSize, minSize, this);
     minSize = (minSize <= 0.0) ? 0.3 : minSize;
     m_minArea = minSize * minSize;
 
     mFixedBorderX = FIXED_BORDER * ((m_border <= 1.0) ? m_border : 1.0);
     mShapeBorder = SHAPE_BORDER * ((m_border <= 1.0) ? 1.0 : m_border);
     
-    m_cfdg->hasParameter("CF::BorderFixed", mFixedBorderX, this);
-    m_cfdg->hasParameter("CF::BorderDynamic", mShapeBorder, this);
+    m_cfdg->hasParameter(CFG::BorderFixed, mFixedBorderX, this);
+    m_cfdg->hasParameter(CFG::BorderDynamic, mShapeBorder, this);
     if (2 * static_cast<int>(fabs(mFixedBorderX)) >= min(m_width, m_height))
         mFixedBorderX = 0.0;
     if (mShapeBorder <= 0.0)
         mShapeBorder = 1.0;
     
-    if (m_cfdg->hasParameter("CF::MaxNatural", mMaxNatural, this) &&
+    if (m_cfdg->hasParameter(CFG::MaxNatural, mMaxNatural, this) &&
         (mMaxNatural < 1.0 || (mMaxNatural - 1.0) == mMaxNatural))
     {
-        const ASTexpression* max = m_cfdg->hasParameter("CF::MaxNatural");
+        const ASTexpression* max = m_cfdg->hasParameter(CFG::MaxNatural);
         throw CfdgError(max->where, (mMaxNatural < 1.0) ?
                             "CF::MaxNatural must be >= 1" :
                             "CF::MaxNatural must be < 9007199254740992");

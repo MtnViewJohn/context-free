@@ -477,7 +477,7 @@ Builder::MakeConfig(ASTdefine* cfg)
     if (!m_CFDG->addParameter(cfg->mName, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth)))
         warning(cfg->mLocation, "Unknown configuration parameter");
     if (cfg->mName == "CF::MaxNatural") {
-        const ASTexpression* max = m_CFDG->hasParameter("CF::MaxNatural");
+        const ASTexpression* max = m_CFDG->hasParameter(CFG::MaxNatural);
         if (max != current)
             return;                             // only process if we are chaanging it
         double v = -1.0;

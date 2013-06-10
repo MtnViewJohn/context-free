@@ -52,10 +52,32 @@
 using namespace std;
 using namespace AST;
 
+const CfgArray<const char*> CFDGImpl::ParamNames({
+    "CF::AllowOverlap",
+    "CF::Alpha",
+    "CF::Background",
+    "CF::BorderDynamic",
+    "CF::BorderFixed",
+    "CF::Color",
+    "CF::ColorDepth",
+    "CF::Frame",
+    "CF::FrameTime",
+    "CF::Impure",
+    "CF::MaxNatural",
+    "CF::MaxShapes",
+    "CF::MinimumSize",
+    "CF::Size",
+    "CF::StartShape",
+    "CF::Symmetry",
+    "CF::Tile",
+    "CF::Time"
+});
 
-CFDGImpl::CFDGImpl(AbstractSystem* m) 
+
+CFDGImpl::CFDGImpl(AbstractSystem* m)
 : m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
+  ParamDepth({std::numeric_limits<unsigned>::max()}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
     // These have to be encoded first so that their type number will fit
@@ -121,7 +143,7 @@ CFDGImpl::setBackgroundColor(RendererAST* r)
 {
     Modification white;
     white.m_Color = HSBColor(0.0, 0.0, 1.0, 1.0);
-    if (hasParameter("CF::Background", white, r)) {
+    if (hasParameter(CFG::Background, white, r)) {
         white.m_Color.getRGBA(m_backgroundColor);
         if (!usesAlpha)
             m_backgroundColor.a = 1.0;
@@ -195,7 +217,7 @@ bool
 CFDGImpl::isTiled(agg::trans_affine* tr, double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Tile", AST::ModType, loc)) return false;
+    if (!hasParameter(CFG::Tile, AST::ModType, loc)) return false;
     if (mTileMod.m_transform.sx == 0.0 || mTileMod.m_transform.sy == 0.0) return false;
     if (tr) {
         *tr = mTileMod.m_transform;
@@ -228,7 +250,7 @@ CFDG::frieze_t
 CFDGImpl::isFrieze(agg::trans_affine* tr, double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Tile", AST::ModType, loc)) return no_frieze;
+    if (!hasParameter(CFG::Tile, AST::ModType, loc)) return no_frieze;
     if (mTileMod.m_transform.sx != 0.0 && mTileMod.m_transform.sy != 0.0) return no_frieze;
     if (mTileMod.m_transform.sx == 0.0 && mTileMod.m_transform.sy == 0.0) return no_frieze;
     if (tr) {
@@ -262,7 +284,7 @@ bool
 CFDGImpl::isSized(double* x, double* y) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Size", AST::ModType, loc)) return false;
+    if (!hasParameter(CFG::Size, AST::ModType, loc)) return false;
     if (x) *x = mSizeMod.m_transform.sx;
     if (y) *y = mSizeMod.m_transform.sy;
     if (mSizeMod.m_transform.shx != 0.0 || mSizeMod.m_transform.shy != 0.0)
@@ -274,7 +296,7 @@ bool
 CFDGImpl::isTimed(agg::trans_affine_time* t) const
 {
     yy::location loc;
-    if (!hasParameter("CF::Time", AST::ModType, loc)) return false;
+    if (!hasParameter(CFG::Time, AST::ModType, loc)) return false;
     if (t) *t = mTimeMod.m_time;
     if (mTimeMod.m_time.tbegin >= mTimeMod.m_time.tend)
         CfdgError::Error(loc, "Time specification must have positive duration.");
@@ -285,7 +307,7 @@ void
 CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
 {
     syms.clear();
-    const ASTexpression* e = hasParameter("CF::Symmetry");
+    const ASTexpression* e = hasParameter(CFG::Symmetry);
     const ASTexpression* left = getTransforms(e, syms, r, isTiled(), mTileMod.m_transform);
     
     if (left) {
@@ -294,113 +316,76 @@ CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, double& value, RendererAST* r) const
+CFDGImpl::hasParameter(CFG name, double& value, RendererAST* r) const
 {
-    string n = name;
-    int varNum = tryEncodeShapeName(n);
-    if (varNum < 0) return false;
-    auto elem = m_ConfigParameters.find(varNum);
-    if (elem == m_ConfigParameters.end() || 
-        elem->second.second->mType != AST::NumericType) return false;
-    if (!elem->second.second->isConstant && !r) {
-        CfdgError::Error(elem->second.second->where, "This expression must be constant");
+    const ASTexpression* exp = hasParameter(name);
+    if (!exp || exp->mType != AST::NumericType)
+        return false;
+    
+    if (!exp->isConstant && !r) {
+        CfdgError::Error(exp->where, "This expression must be constant");
+        return false;
     } else {
-        elem->second.second->evaluate(&value, 1, r);
+        exp->evaluate(&value, 1, r);
     }
     return true;
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, Modification& value, RendererAST* r) const
+CFDGImpl::hasParameter(CFG name, Modification& value, RendererAST* r) const
 {
-    string n = name;
-    int varNum = tryEncodeShapeName(n);
-    if (varNum < 0) return false;
-    auto elem = m_ConfigParameters.find(varNum);
-    if (elem == m_ConfigParameters.end() || 
-        elem->second.second->mType != AST::ModType) return false;
-    if (!elem->second.second->isConstant && !r) {
-        CfdgError::Error(elem->second.second->where, "This expression must be constant");
+    const ASTexpression* exp = hasParameter(name);
+    if (!exp || exp->mType != AST::ModType)
+        return false;
+    
+    if (!exp->isConstant && !r) {
+        CfdgError::Error(exp->where, "This expression must be constant");
+        return false;
     } else {
-        elem->second.second->evaluate(value, nullptr, nullptr, false, varNum, true, r);
+        int dummy;
+        exp->evaluate(value, nullptr, nullptr, false, dummy, true, r);
     }
     return true;
 }
 
 bool
-CFDGImpl::hasParameter(const char* name, AST::expType t, yy::location& where) const
+CFDGImpl::hasParameter(CFG name, AST::expType t, yy::location& where) const
 {
-    string n = name;
-    int varNum = tryEncodeShapeName(n);
-    if (varNum < 0) return false;
-    auto elem = m_ConfigParameters.find(varNum);
-    if (elem == m_ConfigParameters.end() || 
-        elem->second.second->mType != t) return false;
-    where = elem->second.second->where;
+    const ASTexpression* exp = hasParameter(name);
+    if (!exp || exp->mType != t)
+        return false;
+
+    where = exp->where;
     return true;
 }
 
 const ASTexpression*
-CFDGImpl::hasParameter(const char* name) const
+CFDGImpl::hasParameter(CFG name) const
 {
-    string n = name;
-    int varNum = tryEncodeShapeName(n);
-    if (varNum < 0) return nullptr;
-    auto elem = m_ConfigParameters.find(varNum);
-    if (elem == m_ConfigParameters.end()) return nullptr;
-    return elem->second.second.get();
-}
-
-static bool
-stringcompare(const char *lhs, const char *rhs) {
-    return std::strcmp(lhs, rhs) < 0;
+    assert(static_cast<size_t>(name) < static_cast<size_t>(CFG::_NumberOf));
+    
+    if (ParamDepth[name] == std::numeric_limits<unsigned>::max())
+        return nullptr;
+    
+    return ParamExp[name].get();
 }
 
 bool
 CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
 {
-    static const char* const KnownParams[] = {
-        "CF::AllowOverlap",
-        "CF::Alpha",
-        "CF::Background",
-        "CF::BorderDynamic",
-        "CF::BorderFixed",
-        "CF::Color",
-        "CF::ColorDepth",
-        "CF::Frame",
-        "CF::FrameTime",
-        "CF::Impure",
-        "CF::MaxNatural",
-        "CF::MaxShapes",
-        "CF::MinimumSize",
-        "CF::Size",
-        "CF::StartShape",
-        "CF::Symmetry",
-        "CF::Tile",
-        "CF::Time"
-    };
-    
-    if (!std::binary_search(KnownParams, KnownParams + sizeof(KnownParams)/sizeof(KnownParams[0]), name.c_str(), stringcompare))
+    size_t varNum = 0;
+    for (; varNum < ParamNames.size(); ++varNum)
+        if (name == ParamNames[varNum])
+            break;
+    if (varNum >= ParamNames.size())
         return false;
-    ASTmodification* m = dynamic_cast<ASTmodification*> (e.get());
-    int varNum = encodeShapeName(name);
-    auto elem = m_ConfigParameters.find(varNum);
-    exp_ptr newExp(e.release()->simplify());
-    if (elem == m_ConfigParameters.end()) {
-        ConfigParam newCfg(depth, std::move(newExp));
-        std::pair<int, ConfigParam> newCfgParam(varNum, std::move(newCfg));
-        m_ConfigParameters.insert(std::move(newCfgParam));
-    } else {
-        if (depth < elem->second.first) {
-            elem->second.first = depth;
-            elem->second.second = std::move(newExp);
-        } else {
-            return true;
-        }
+    
+    CFG var = static_cast<CFG>(varNum);
 
+    if (depth < ParamDepth[var]) {
+        ParamDepth[var] = depth;
+        ParamExp[var] = std::move(e);
     }
-    if (name == "CF::Background" && m)
-        usesAlpha = m->flags & CF_USES_ALPHA;
     return true;
 }
 
@@ -469,14 +454,18 @@ CFDGImpl::rulesLoaded()
     
     // Wait until done and then update these members
     double value;
-    uses16bitColor = hasParameter("CF::ColorDepth", value, nullptr) &&
+    uses16bitColor = hasParameter(CFG::ColorDepth, value, nullptr) &&
         floor(value) == 16.0;
     
-    if (hasParameter("CF::Color", value, nullptr))
+    if (hasParameter(CFG::Color, value, nullptr))
         usesColor = value != 0.0;
     
-    if (hasParameter("CF::Alpha", value, nullptr))
+    if (hasParameter(CFG::Alpha, value, nullptr))
         usesAlpha = value != 0.0;
+    
+    if (const ASTexpression* e = hasParameter(CFG::Background))
+        if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(e))
+            usesAlpha = m->flags & CF_USES_ALPHA;
 }
 
 int
@@ -640,33 +629,23 @@ Renderer*
 CFDGImpl::renderer(int width, int height, double minSize,
                     int variation, double border)
 {
-    static const string n("CF::StartShape");
-    std::unique_ptr<ASTstartSpecifier> startSpec;
-    ASTexpression* startExp = nullptr;
-    int varNum = tryEncodeShapeName(n);
-    if (varNum > 0) {
-        auto elem = m_ConfigParameters.find(varNum);
-        if (elem != m_ConfigParameters.end()) {
-            startExp = elem->second.second.release();
-            startSpec.reset(dynamic_cast<ASTstartSpecifier*>(startExp));
-            if (!startSpec)                             // if we fail to take ownership
-                elem->second.second.reset(startExp);    //  then put it back
-        }
-    }
-
+    ASTexpression* startExp = ParamExp[CFG::StartShape].get();
+    
     if (!startExp) {
         m_system->message("No startshape found");
         m_system->error();
         return nullptr;
     }
-    if (!startSpec) {
+
+    if (ASTstartSpecifier* startSpec = dynamic_cast<ASTstartSpecifier*>(startExp)) {
+        ParamExp[CFG::StartShape].release();
+        mInitShape.reset(new ASTreplacement(std::move(*startSpec), std::move(startSpec->mModification)));
+        mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
+    } else {
         CfdgError err(startExp->where, "Type error in startshape");
         m_system->syntaxError(err);
         return nullptr;
     }
-    
-    mInitShape.reset(new ASTreplacement(std::move(*startSpec), std::move(startSpec->mModification)));
-    mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
 
     RendererImpl* r = nullptr;
     try {
@@ -675,22 +654,22 @@ CFDGImpl::renderer(int width, int height, double minSize,
         Modification sized;
         Modification timed;
         double       maxShape;
-        if (hasParameter("CF::Tile", tiled, nullptr)) {
+        if (hasParameter(CFG::Tile, tiled, nullptr)) {
             mTileMod = tiled;
             mTileOffset.x = mTileMod.m_transform.tx;
             mTileOffset.y = mTileMod.m_transform.ty;
             mTileMod.m_transform.tx = mTileMod.m_transform.ty = 0.0;
         }
-        if (hasParameter("CF::Size", sized, nullptr)) {
+        if (hasParameter(CFG::Size, sized, nullptr)) {
             mSizeMod = sized;
             mTileOffset.x = mSizeMod.m_transform.tx;
             mTileOffset.y = mSizeMod.m_transform.ty;
             mSizeMod.m_transform.tx = mSizeMod.m_transform.ty = 0.0;
         }
-        if (hasParameter("CF::Time", timed, nullptr)) {
+        if (hasParameter(CFG::Time, timed, nullptr)) {
             mTimeMod = timed;
         }
-        if (hasParameter("CF::MaxShapes", maxShape, r)) {
+        if (hasParameter(CFG::MaxShapes, maxShape, r)) {
             if (maxShape > 1)
                 r->setMaxShapes(static_cast<int>(maxShape));
         }
