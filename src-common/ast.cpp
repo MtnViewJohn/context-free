@@ -1018,7 +1018,7 @@ namespace AST {
                     } else {
                         Modification mod;
                         int dummy;
-                        cit->evaluate(mod, nullptr, nullptr, false, dummy, false, r);
+                        cit->evaluate(mod, nullptr, false, dummy, false, r);
                         addUnique(syms, mod.m_transform);
                     }
                     break;
