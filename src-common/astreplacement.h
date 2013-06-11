@@ -223,7 +223,6 @@ namespace AST {
     public:
         exp_ptr mArguments;
         mod_ptr mOldStyleArguments;
-        int mFlags;
         int mArgCount;
         
         static const char*  PathOpNames[9];

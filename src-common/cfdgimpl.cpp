@@ -343,7 +343,7 @@ CFDGImpl::hasParameter(CFG name, Modification& value, RendererAST* r) const
         return false;
     } else {
         int dummy;
-        exp->evaluate(value, nullptr, nullptr, false, dummy, true, r);
+        exp->evaluate(value, nullptr, false, dummy, true, r);
     }
     return true;
 }

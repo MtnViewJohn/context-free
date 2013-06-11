@@ -199,7 +199,7 @@ namespace AST {
     
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
     : ASTreplacement(nullptr, loc, op), mArguments(std::move(a)),
-      mOldStyleArguments(nullptr), mFlags(0), mArgCount(0)
+      mOldStyleArguments(nullptr), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
@@ -214,7 +214,7 @@ namespace AST {
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
     : ASTreplacement(nullptr, loc, op), mArguments(nullptr),
-      mOldStyleArguments(std::move(a)), mFlags(0), mArgCount(0)
+      mOldStyleArguments(std::move(a)), mArgCount(0)
     {
         for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
             if (!(s.compare(PathOpNames[i]))) {
@@ -302,7 +302,7 @@ namespace AST {
         replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
-        mChildChange.evaluate(s.mWorldState, nullptr, width, false, dummy, true, r);
+        mChildChange.evaluate(s.mWorldState, width, false, dummy, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
     
@@ -365,7 +365,7 @@ namespace AST {
                     break;
             }
             mLoopBody.traverse(loopChild, tr || opsOnly, r);
-            mChildChange.evaluate(loopChild.mWorldState, nullptr, nullptr, false, dummy, true, r);
+            mChildChange.evaluate(loopChild.mWorldState, nullptr, false, dummy, true, r);
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
@@ -391,7 +391,7 @@ namespace AST {
             if (i < modsLength) {
                 if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i])) {
                     r->mCurrentSeed ^= m->modData.mRand64Seed;
-                    m->evaluate(child.mWorldState, nullptr, nullptr, false, dummy, true, r);
+                    m->evaluate(child.mWorldState, nullptr, false, dummy, true, r);
                 } else {
                     continue;
                 }
@@ -456,7 +456,7 @@ namespace AST {
             case ModType: {
                 int dummy;
                 Modification* smod = reinterpret_cast<Modification*> (dest);
-                mChildChange.setVal(*smod, nullptr, nullptr, false, dummy, r);
+                mChildChange.setVal(*smod, nullptr, false, dummy, r);
                 break;
             }
             case RuleType:
@@ -972,8 +972,8 @@ namespace AST {
     {
         // Process the parameters for ARCTO/ARCREL
         double radius_x = 0.0, radius_y = 0.0, angle = 0.0;
-        bool sweep = (pop->mFlags & CF_ARC_CW) == 0;
-        bool largeArc = (pop->mFlags & CF_ARC_LARGE) != 0;
+        bool sweep = (pop->mChildChange.flags & CF_ARC_CW) == 0;
+        bool largeArc = (pop->mChildChange.flags & CF_ARC_LARGE) != 0;
         if (pop->mPathOp == ARCTO || pop->mPathOp == ARCREL) {
             if (pop->mArgCount == 5) {
                 // If the radii are specified then use the ellipse ARCxx form
@@ -1035,10 +1035,10 @@ namespace AST {
                 
                 // If this is an aligning CLOSEPOLY then change the last vertex to
                 // exactly match the first vertex in the path sequence
-                if (pop->mFlags & CF_ALIGN) {
+                if (pop->mChildChange.flags & CF_ALIGN) {
                     mPath.modify_vertex(last, r->mLastPoint.x, r->mLastPoint.y);
                 }
-            } else if (pop->mFlags & CF_ALIGN) {
+            } else if (pop->mChildChange.flags & CF_ALIGN) {
                 CfdgError::Error(pop->mLocation, "Nothing to align to.");
             }
             mPath.close_polygon();
@@ -1096,7 +1096,7 @@ namespace AST {
                 mPath.rel_to_abs(data + 2, data + 3);
                 mPath.rel_to_abs(data + 4, data + 5);
             case CURVETO:
-                if ((pop->mFlags & CF_CONTINUOUS) &&
+                if ((pop->mChildChange.flags & CF_CONTINUOUS) &&
                     !agg::is_curve(mPath.last_vertex(data + 4, data + 5)))
                 {
                     CfdgError::Error(pop->mLocation, "Smooth curve operations must be preceded by another curve operation.");
@@ -1107,7 +1107,7 @@ namespace AST {
                         mPath.curve3(data[0], data[1]);
                         break;
                     case 4:
-                        if (pop->mFlags & CF_CONTINUOUS)
+                        if (pop->mChildChange.flags & CF_CONTINUOUS)
                             mPath.curve4(data[2], data[3], data[0], data[1]);
                         else
                             mPath.curve3(data[2], data[3], data[0], data[1]);
@@ -1201,7 +1201,7 @@ namespace AST {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
                     if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
-                        mFlags = rf ? static_cast<int>(rf->value) : 0;
+                        mChildChange.flags |= rf ? static_cast<int>(rf->value) : 0;
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");
                     --mArgCount;
@@ -1230,7 +1230,7 @@ namespace AST {
                 break;
             case CURVETO:
             case CURVEREL:
-                if (mFlags & CF_CONTINUOUS) {
+                if (mChildChange.flags & CF_CONTINUOUS) {
                     if (mArgCount != 2 && mArgCount != 4)
                         CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments");
                 } else {
@@ -1277,6 +1277,8 @@ namespace AST {
     void
     ASTpathOp::makePositional()
     {
+        mChildChange.flags |= mOldStyleArguments->flags;
+        
         exp_ptr ax;
         exp_ptr ay;
         exp_ptr ax1;
@@ -1315,11 +1317,6 @@ namespace AST {
                     break;
                 case ASTmodTerm::rot:
                     ar = std::move(mod->args);
-                    break;
-                case ASTmodTerm::param:
-                    if (mod->paramString.find("large") != std::string::npos)  mFlags |= CF_ARC_LARGE;
-                    if (mod->paramString.find("cw") != std::string::npos)     mFlags |= CF_ARC_CW;
-                    if (mod->paramString.find("align") != std::string::npos)  mFlags |= CF_ALIGN;
                     break;
                 case ASTmodTerm::z:
                 case ASTmodTerm::zsize:
@@ -1392,7 +1389,7 @@ namespace AST {
                 if (ax1 || ay1) {
                     xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
                 } else {
-                    mFlags |= CF_CONTINUOUS;
+                    mChildChange.flags |= CF_CONTINUOUS;
                 }
                 if (ax2 || ay2) {
                     xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);

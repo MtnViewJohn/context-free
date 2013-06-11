@@ -1141,7 +1141,7 @@ namespace AST {
     }
     
     void
-    ASTselect::evaluate(Modification& m, int* p, double* width, 
+    ASTselect::evaluate(Modification& m, double* width, 
                         bool justCheck, int& seedIndex, bool shapeDest,
                         RendererAST* rti) const
     {
@@ -1150,11 +1150,11 @@ namespace AST {
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
-    ASTvariable::evaluate(Modification& m, int*, double*, 
+    ASTvariable::evaluate(Modification& m, double*, 
                           bool justCheck, int&, bool shapeDest,
                           RendererAST* rti) const
     {
@@ -1175,16 +1175,16 @@ namespace AST {
     }
     
     void
-    ASTcons::evaluate(Modification& m, int* p, double* width, 
+    ASTcons::evaluate(Modification& m, double* width, 
                       bool justCheck, int& seedIndex, bool shapeDest,
                       RendererAST* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+            children[i]->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
-    ASTuserFunction::evaluate(Modification &m, int *p, double *width, 
+    ASTuserFunction::evaluate(Modification &m, double *width, 
                               bool justCheck, int &seedIndex, bool shapeDest,
                               RendererAST* rti) const
     {
@@ -1207,16 +1207,16 @@ namespace AST {
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
-            definition->mExpression->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
         }
     }
     
     void
-    ASTmodification::evaluate(Modification& m, int* p, double* width, 
+    ASTmodification::evaluate(Modification& m, double* width, 
                               bool justCheck, int& seedIndex, bool shapeDest,
                               RendererAST* rti) const
     {
@@ -1228,21 +1228,21 @@ namespace AST {
         }
         
         for (const term_ptr& term: modExp)
-            term->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+            term->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
-    ASTmodification::setVal(Modification& m, int* p, double* width, 
+    ASTmodification::setVal(Modification& m, double* width, 
                             bool justCheck, int& seedIndex, 
                             RendererAST* rti) const
     {
         m = modData;
         for (const term_ptr& term: modExp)
-            term->evaluate(m, p, width, justCheck, seedIndex, false, rti);
+            term->evaluate(m, width, justCheck, seedIndex, false, rti);
     }
     
     void
-    ASTparen::evaluate(Modification& m, int* p, double* width,
+    ASTparen::evaluate(Modification& m, double* width,
                        bool justCheck, int& seedIndex, bool shapeDest,
                        RendererAST* rti) const
     {
@@ -1251,11 +1251,11 @@ namespace AST {
             return;
         }
         
-        e->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+        e->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
     }
     
     void
-    ASTmodTerm::evaluate(Modification& m, int* p, double* width, 
+    ASTmodTerm::evaluate(Modification& m, double* width,
                         bool justCheck, int& seedIndex, bool shapeDest,
                         RendererAST* rti) const
     {
@@ -1502,8 +1502,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alpha: {
-                if (p)
-                    *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::AlphaMask ||
@@ -1596,8 +1594,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alphaTarg: {
-                if (p)
-                    *p |= CF_USES_ALPHA;
                 if (justCheck) break;
                 if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                      m.m_Color.a != 0.0)
@@ -1663,36 +1659,6 @@ namespace AST {
                     m.m_ColorTarget.a = arg[0];
                 break;
             }
-            case ASTmodTerm::param: {
-                if (!p) {
-                    CfdgError::Error(where, "Cannot provide a parameter in this context");
-                    break;
-                }
-                if (justCheck) break;
-                if (!paramString.empty()) {
-                    if (paramString.find("evenodd") != std::string::npos)
-                        *p |= CF_EVEN_ODD;
-                    if (paramString.find("iso") != std::string::npos)
-                        *p |= CF_ISO_WIDTH;
-                    if (paramString.find("join") != std::string::npos)
-                        *p &= ~CF_JOIN_MASK;
-                    if (paramString.find("miterjoin") != std::string::npos)
-                        *p |= CF_MITER_JOIN | CF_JOIN_PRESENT;
-                    if (paramString.find("roundjoin") != std::string::npos)
-                        *p |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
-                    if (paramString.find("beveljoin") != std::string::npos)
-                        *p |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
-                    if (paramString.find("cap") != std::string::npos)
-                        *p &= ~CF_CAP_MASK;
-                    if (paramString.find("buttcap") != std::string::npos)
-                        *p |= CF_BUTT_CAP | CF_CAP_PRESENT;
-                    if (paramString.find("squarecap") != std::string::npos)
-                        *p |= CF_SQUARE_CAP | CF_CAP_PRESENT;
-                    if (paramString.find("roundcap") != std::string::npos)
-                        *p |= CF_ROUND_CAP | CF_CAP_PRESENT;
-                }
-                break;
-            }
             case ASTmodTerm::stroke: {
                 if (!width) {
                     CfdgError::Error(where, "Cannot provide a stroke width in this context");
@@ -1717,7 +1683,7 @@ namespace AST {
                         throw DeferUntilRuntime();
                     }
                 }
-                args->evaluate(m, p, width, justCheck, seedIndex, shapeDest, rti);
+                args->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
                 break;
             }
             default:
@@ -2753,6 +2719,40 @@ namespace AST {
                 ASTtermArray temp;
                 temp.swap(modExp);
                 for (auto term = temp.begin(); term != temp.end(); ++term) {
+                    if ((*term)->modType == ASTmodTerm::alpha ||
+                        (*term)->modType == ASTmodTerm::alphaTarg)
+                    {
+                        flags |= CF_USES_ALPHA;
+                    }
+                    if ((*term)->modType == ASTmodTerm::param) {
+                        if ((*term)->paramString.find("evenodd") != std::string::npos)
+                            flags |= CF_EVEN_ODD;
+                        if ((*term)->paramString.find("iso") != std::string::npos)
+                            flags |= CF_ISO_WIDTH;
+                        if ((*term)->paramString.find("join") != std::string::npos)
+                            flags &= ~CF_JOIN_MASK;
+                        if ((*term)->paramString.find("miterjoin") != std::string::npos)
+                            flags |= CF_MITER_JOIN | CF_JOIN_PRESENT;
+                        if ((*term)->paramString.find("roundjoin") != std::string::npos)
+                            flags |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
+                        if ((*term)->paramString.find("beveljoin") != std::string::npos)
+                            flags |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
+                        if ((*term)->paramString.find("cap") != std::string::npos)
+                            flags &= ~CF_CAP_MASK;
+                        if ((*term)->paramString.find("buttcap") != std::string::npos)
+                            flags |= CF_BUTT_CAP | CF_CAP_PRESENT;
+                        if ((*term)->paramString.find("squarecap") != std::string::npos)
+                            flags |= CF_SQUARE_CAP | CF_CAP_PRESENT;
+                        if ((*term)->paramString.find("roundcap") != std::string::npos)
+                            flags |= CF_ROUND_CAP | CF_CAP_PRESENT;
+                        if ((*term)->paramString.find("large") != std::string::npos)
+                            flags |= CF_ARC_LARGE;
+                        if ((*term)->paramString.find("cw") != std::string::npos)
+                            flags |= CF_ARC_CW;
+                        if ((*term)->paramString.find("align") != std::string::npos)
+                            flags |= CF_ALIGN;
+                        continue;
+                    }
                     if (!(*term)->args || (*term)->args->mType != NumericType) {
                         modExp.emplace_back(std::move(*term));
                         continue;
@@ -2999,7 +2999,7 @@ namespace AST {
             bool justCheck = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, &flags, &strokeWidth, justCheck, entropyIndex, false, nullptr);
+                mod->evaluate(modData, &strokeWidth, justCheck, entropyIndex, false, nullptr);
             } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }
