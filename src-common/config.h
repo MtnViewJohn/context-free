@@ -52,10 +52,9 @@ enum class CFG {
 };
 
 template <typename _T>
-class CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
+struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
 {
     typedef std::array<_T, static_cast<size_t>(CFG::_NumberOf)> base_t;
-public:
     CfgArray() : base_t() {}
     
     CfgArray(std::initializer_list<_T> l) : base_t()
@@ -68,10 +67,9 @@ public:
         }
     }
     
-    _T& operator[](CFG c) { return base_t::operator[](static_cast<size_t>(c)); }
-    const _T& operator[](CFG c) const { return base_t::operator[](static_cast<size_t>(c)); }
-    _T& operator[](size_t i) { return base_t::operator[](i); }
-    const _T& operator[](size_t i) const { return base_t::operator[](i); }
+    using base_t::operator[];
+    _T& operator[](CFG c) { return operator[](static_cast<size_t>(c)); }
+    const _T& operator[](CFG c) const { return operator[](static_cast<size_t>(c)); }
 };
 
 #endif      // INCLUDE_CONFIG_H
