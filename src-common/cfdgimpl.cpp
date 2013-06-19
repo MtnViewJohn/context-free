@@ -52,27 +52,6 @@
 using namespace std;
 using namespace AST;
 
-const CfgArray<const char*> CFDGImpl::ParamNames({
-    "CF::AllowOverlap",
-    "CF::Alpha",
-    "CF::Background",
-    "CF::BorderDynamic",
-    "CF::BorderFixed",
-    "CF::Color",
-    "CF::ColorDepth",
-    "CF::Frame",
-    "CF::FrameTime",
-    "CF::Impure",
-    "CF::MaxNatural",
-    "CF::MaxShapes",
-    "CF::MinimumSize",
-    "CF::Size",
-    "CF::StartShape",
-    "CF::Symmetry",
-    "CF::Tile",
-    "CF::Time"
-});
-
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
 : m_backgroundColor(1, 1, 1, 1), mStackSize(0),
