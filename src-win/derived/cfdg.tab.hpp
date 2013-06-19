@@ -70,6 +70,7 @@ namespace yy {
 
     int modToken;
     std::string*  string;
+    const std::string*  cstring;
     AST::ASTexpression* expression;
     AST::ASTmodTerm* term;
     AST::ASTmodification* mod;
@@ -84,7 +85,7 @@ namespace yy {
 
 
 /* Line 266 of lalr1.cc  */
-#line 88 "cfdg.tab.hpp"
+#line 89 "cfdg.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -318,7 +319,7 @@ namespace yy {
 
 } // yy
 /* Line 266 of lalr1.cc  */
-#line 322 "cfdg.tab.hpp"
+#line 323 "cfdg.tab.hpp"
 
 
 
