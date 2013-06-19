@@ -50,6 +50,27 @@ yy::location CfdgError::Default;
 double Renderer::Infinity = numeric_limits<double>::infinity();      // Ignore the gcc warning
 bool Renderer::AbortEverything = false;
 unsigned Renderer::ParamCount = 0;
+const CfgArray<const char*> CFDG::ParamNames({
+    "CF::AllowOverlap",
+    "CF::Alpha",
+    "CF::Background",
+    "CF::BorderDynamic",
+    "CF::BorderFixed",
+    "CF::Color",
+    "CF::ColorDepth",
+    "CF::Frame",
+    "CF::FrameTime",
+    "CF::Impure",
+    "CF::MaxNatural",
+    "CF::MaxShapes",
+    "CF::MinimumSize",
+    "CF::Size",
+    "CF::StartShape",
+    "CF::Symmetry",
+    "CF::Tile",
+    "CF::Time"
+});
+
 
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
 : what(msg), where(loc)

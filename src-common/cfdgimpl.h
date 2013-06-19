@@ -92,7 +92,6 @@ private:
     
         int m_Parameters;
     
-        static const CfgArray<const char*>  ParamNames;
         CfgArray<unsigned>                  ParamDepth;
         CfgArray<AST::exp_ptr>              ParamExp;
     
