@@ -50,7 +50,7 @@ yy::location CfdgError::Default;
 double Renderer::Infinity = numeric_limits<double>::infinity();      // Ignore the gcc warning
 bool Renderer::AbortEverything = false;
 unsigned Renderer::ParamCount = 0;
-const CfgArray<const char*> CFDG::ParamNames({
+const CfgArray<std::string> CFDG::ParamNames({
     "CF::AllowOverlap",
     "CF::Alpha",
     "CF::Background",

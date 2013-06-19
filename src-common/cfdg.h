@@ -164,7 +164,7 @@ class CFDG {
         bool uses16bitColor;
         bool usesTime;
         bool usesFrameTime;
-        static const CfgArray<const char*>  ParamNames;
+        static const CfgArray<std::string>  ParamNames;
         virtual bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
