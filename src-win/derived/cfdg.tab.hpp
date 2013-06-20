@@ -66,7 +66,7 @@ namespace yy {
     union semantic_type
     {
 /* Line 266 of lalr1.cc  */
-#line 64 "../../src-common/cfdg.ypp"
+#line 65 "../../src-common/cfdg.ypp"
 
     int modToken;
     std::string*  string;
