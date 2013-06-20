@@ -58,6 +58,7 @@ namespace AST {
     class ASTrule;
     class ASTdefine;
 }
+#define USE(VALUE) /*empty*/
 %}
 
 %union
@@ -768,14 +769,15 @@ one_or_more_pathOp_v2:
         ;
 
 caseBody:
-        caseBody caseBody_element {
-            driver.pop_repContainer(driver.switchStack.top());
-        }
+        caseBody caseBody_element
         |
         ;
 
 caseBody_element:
-        caseHeader one_or_more_elements
+        caseHeader one_or_more_elements {
+            driver.pop_repContainer(driver.switchStack.top());
+            USE($1);
+        }
         ;
 
 element:
