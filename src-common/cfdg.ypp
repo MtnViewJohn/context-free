@@ -140,7 +140,7 @@ namespace AST {
 %left RANGEOP PLUSMINUSOP
 %left '-' '+' '_'
 %left '*' '/'
-%precedence NOT NEG POS    /* negation--unary minus, unary identity */
+%left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
 %type <expression> exp exp2 exp3 expfunc exp2func explist arglist parameter_spec letBody
 %type <mod> modification modification_v2 buncha_adjustments
