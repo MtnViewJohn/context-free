@@ -128,7 +128,8 @@ public:
                                  const yy::location& loc, AST::mod_ptr mod = nullptr,
                                  bool makeStart = false);
     void            MakeModTerm(AST::ASTtermArray& dest, AST::term_ptr t);
-    AST::rep_ptr    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params, 
+    AST::ASTreplacement*
+                    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params,
                                 const yy::location& loc, bool subPath);
     AST::ASTexpression*
                     MakeFunction(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 

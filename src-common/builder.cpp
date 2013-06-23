@@ -619,12 +619,12 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
     dest.push_back(std::move(t));
 }
 
-rep_ptr
+ASTreplacement*
 Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params, 
                      const yy::location& loc, bool subPath)
 {
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
-        return rep_ptr(new ASTpathCommand(s, std::move(mods), std::move(params), loc));
+        return new ASTpathCommand(s, std::move(mods), std::move(params), loc);
     
     ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc));
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
@@ -657,7 +657,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             error(loc, "Subpath references must be to previously declared paths");
         }
     }
-    return rep_ptr(new ASTreplacement(std::move(*r), std::move(mods), loc, t));
+    return new ASTreplacement(std::move(*r), std::move(mods), loc, t);
 }
 
 AST::ASTexpression*
