@@ -72,7 +72,7 @@ const CfgArray<std::string> CFDG::ParamNames({
     "CF::Time"
 });
 #else
-static const std::string nameArray[CFG::_NumberOf] = {
+static const std::string nameArray[static_cast<size_t>(CFG::_NumberOf)] = {
     "CF::AllowOverlap",
     "CF::Alpha",
     "CF::Background",
