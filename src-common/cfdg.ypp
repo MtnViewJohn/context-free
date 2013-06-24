@@ -404,31 +404,29 @@ global_definition:
 function_definition_header:
         SHAPE USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr name($funcName); $funcName = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, @function_definition_header, true);
-            if (def) {
-                def->mType = RuleType;
-                def->mTuplesize = 1;
+            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            if ($function_definition_header) {
+                $function_definition_header->mType = RuleType;
+                $function_definition_header->mTuplesize = 1;
             }
-            $function_definition_header = def;
         }
         |
         USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr name($funcName); $funcName = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, @function_definition_header, true);
-            if (def) {
-                def->mType = NumericType;
-                def->mTuplesize = 1;
+            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            if ($function_definition_header) {
+                $function_definition_header->mType = NumericType;
+                $function_definition_header->mTuplesize = 1;
             }
-            $function_definition_header = def;
         }
         |
         USER_STRING[funcType] USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr type($funcType); $funcType = nullptr;
             str_ptr name($funcName); $funcName = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, @function_definition_header, true);
-            if (def)
-                def->mType = AST::decodeType(*type, def->mTuplesize, def->isNatural, @funcType);
-            $function_definition_header = def;
+            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            if ($function_definition_header)
+                $function_definition_header->mType = AST::decodeType(*type, $function_definition_header->mTuplesize, 
+                                                                     $function_definition_header->isNatural, @funcType);
         }
         |
         SHAPE MODTYPE function_parameter_list BECOMES {
@@ -1004,9 +1002,8 @@ transHeader:
 switchHeader:
         SWITCH '(' exp2 ')' {
             exp_ptr caseVal($exp2); $exp2 = nullptr;
-            ASTswitch* switchH = new ASTswitch(std::move(caseVal), @exp2);
-            driver.switchStack.push(switchH);
-            $switchHeader = switchH;
+            $switchHeader = new ASTswitch(std::move(caseVal), @exp2);
+            driver.switchStack.push($switchHeader);
         }
         ;
 
@@ -1115,9 +1112,8 @@ adjustment:
         
 letHeader:
         LET {
-            ASTrepContainer* tempHolder = new ASTrepContainer();
-            driver.push_repContainer(*tempHolder);
-            $letHeader = tempHolder;
+            $letHeader = new ASTrepContainer();
+            driver.push_repContainer(*$letHeader);
         }
         ;
         
