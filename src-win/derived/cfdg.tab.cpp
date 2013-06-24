@@ -1280,108 +1280,106 @@ namespace yy {
 #line 405 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, yylhs.location, true);
-            if (def) {
-                def->mType = RuleType;
-                def->mTuplesize = 1;
+            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            if ((yylhs.value.defObj)) {
+                (yylhs.value.defObj)->mType = RuleType;
+                (yylhs.value.defObj)->mTuplesize = 1;
             }
-            (yylhs.value.defObj) = def;
         }
-#line 1291 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1290 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 57:
-#line 415 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 414 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, yylhs.location, true);
-            if (def) {
-                def->mType = NumericType;
-                def->mTuplesize = 1;
+            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            if ((yylhs.value.defObj)) {
+                (yylhs.value.defObj)->mType = NumericType;
+                (yylhs.value.defObj)->mTuplesize = 1;
             }
-            (yylhs.value.defObj) = def;
         }
-#line 1305 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1303 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 58:
-#line 425 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 423 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr type((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            ASTdefine* def = driver.MakeDefinition(*name, yylhs.location, true);
-            if (def)
-                def->mType = AST::decodeType(*type, def->mTuplesize, def->isNatural, yystack_[3].location);
-            (yylhs.value.defObj) = def;
+            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            if ((yylhs.value.defObj))
+                (yylhs.value.defObj)->mType = AST::decodeType(*type, (yylhs.value.defObj)->mTuplesize, 
+                                                                     (yylhs.value.defObj)->isNatural, yystack_[3].location);
         }
-#line 1318 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1316 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 59:
-#line 434 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 432 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[2].location, "Reserved keyword: adjustment");
             (yylhs.value.defObj) = nullptr;
         }
-#line 1327 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1325 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 60:
-#line 439 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 437 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[2].location, "Reserved keyword: adjustment");
             (yylhs.value.defObj) = nullptr;
         }
-#line 1336 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1334 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 61:
-#line 444 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 442 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr type((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             error(yystack_[2].location, "Reserved keyword: adjustment");
             (yylhs.value.defObj) = nullptr;
         }
-#line 1346 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1344 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 62:
-#line 452 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 450 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_repContainer(driver.mParamDecls);
             (yylhs.value.defObj) = (yystack_[0].value.defObj);
         }
-#line 1355 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1353 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 63:
-#line 457 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 455 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.defObj) = (yystack_[0].value.defObj);
         }
-#line 1363 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1361 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 64:
-#line 463 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 461 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, false);
         }
-#line 1372 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1370 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 65:
-#line 467 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 465 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[1].location, "Reserved keyword: adjustment");
             (yylhs.value.defObj) = nullptr;
         }
-#line 1381 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1379 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 66:
-#line 474 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 472 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             def_ptr var((yystack_[1].value.defObj));  (yystack_[1].value.defObj) = nullptr;
             exp_ptr exp((yystack_[0].value.expression));               (yystack_[0].value.expression) = nullptr;
@@ -1397,41 +1395,41 @@ namespace yy {
                 (yylhs.value.defObj) = nullptr;
             }
         }
-#line 1401 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1399 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 67:
-#line 492 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 490 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             driver.SetShape(name.get(), yystack_[1].location);
         }
-#line 1410 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1408 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 68:
-#line 499 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 497 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.mInPathContainer = false;
             (yylhs.value.ruleObj) = new ASTrule(-1, yystack_[1].location);
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1421 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1419 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 69:
-#line 507 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 505 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[2].value.ruleObj);
             driver.pop_repContainer((yystack_[2].value.ruleObj));
             driver.mInPathContainer = false;
         }
-#line 1431 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1429 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 70:
-#line 515 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 513 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             driver.SetShape(nullptr);
@@ -1439,11 +1437,11 @@ namespace yy {
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1443 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1441 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 71:
-#line 523 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 521 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[1].value.string));    (yystack_[1].value.string) = nullptr;
             str_ptr weight((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
@@ -1455,32 +1453,32 @@ namespace yy {
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1459 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1457 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 72:
-#line 537 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 535 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.lexer->maybeVersion = token::CFDG2;
             (yylhs.value.component) = (yystack_[3].value.ruleObj);
             driver.pop_repContainer((yystack_[3].value.ruleObj));
         }
-#line 1469 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1467 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 73:
-#line 545 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 543 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.mInPathContainer = false;
             (yylhs.value.ruleObj) = new ASTrule(-1, yystack_[0].location);
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1480 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1478 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 74:
-#line 552 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 550 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.mInPathContainer = false;
             str_ptr weight((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
@@ -1490,11 +1488,11 @@ namespace yy {
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1494 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1492 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 75:
-#line 564 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 562 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             driver.SetShape(name.get(), yystack_[1].location, true);
@@ -1504,32 +1502,32 @@ namespace yy {
             driver.AddRule((yylhs.value.ruleObj));
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
         }
-#line 1508 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1506 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 76:
-#line 576 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 574 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[3].value.ruleObj);
             driver.pop_repContainer((yystack_[3].value.ruleObj));
             driver.mInPathContainer = false;
         }
-#line 1518 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1516 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 77:
-#line 584 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 582 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[3].value.ruleObj);
             driver.pop_repContainer((yystack_[3].value.ruleObj));
             driver.mInPathContainer = false;
             driver.SetShape(nullptr);
         }
-#line 1529 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1527 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 78:
-#line 593 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 591 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             driver.SetShape(nullptr);
@@ -1539,157 +1537,157 @@ namespace yy {
             driver.push_repContainer((yylhs.value.ruleObj)->mRuleBody);
             driver.mInPathContainer = true;
         }
-#line 1543 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1541 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 79:
-#line 605 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 603 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[3].value.ruleObj);
             driver.pop_repContainer((yystack_[3].value.ruleObj));
         }
-#line 1552 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1550 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 80:
-#line 612 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 610 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr type((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             str_ptr var((yystack_[0].value.string));  (yystack_[0].value.string) = nullptr;
             driver.NextParameterDecl(*type, *var, yystack_[1].location, yystack_[0].location);
         }
-#line 1562 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1560 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 81:
-#line 618 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 616 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             static std::string shapeStr("shape");
             str_ptr var((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             driver.NextParameterDecl(shapeStr, *var, yystack_[1].location, yystack_[0].location);
         }
-#line 1572 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1570 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 82:
-#line 624 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 622 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             delete (yystack_[1].value.string);
             error(yystack_[0].location, "Reserved keyword: adjustment");
         }
-#line 1581 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1579 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 83:
-#line 629 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 627 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[0].location, "Reserved keyword: adjustment");
         }
-#line 1589 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1587 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 84:
-#line 633 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 631 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             static const std::string numtype("number");
             str_ptr var((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             driver.NextParameterDecl(numtype, *var, yystack_[0].location, yystack_[0].location);
         }
-#line 1599 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1597 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 85:
-#line 639 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 637 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[0].location, "Reserved keyword: adjustment");
         }
-#line 1607 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1605 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 92:
-#line 660 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 658 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[1].value.expression);}
-#line 1613 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1611 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 93:
-#line 661 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 659 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTexpression(yylhs.location, false, false, AST::ReuseType); }
-#line 1619 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1617 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 94:
-#line 662 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 660 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = nullptr; }
-#line 1625 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1623 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 95:
-#line 663 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 661 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = nullptr; }
-#line 1631 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1629 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 96:
-#line 667 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 665 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1639 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1637 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 98:
-#line 674 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 672 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1647 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1645 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 100:
-#line 681 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 679 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr pop((yystack_[3].value.string));        (yystack_[3].value.string) = nullptr;
             mod_ptr mod((yystack_[1].value.mod)); (yystack_[1].value.mod) = nullptr;
             driver.lexer->maybeVersion = token::CFDG2;
             (yylhs.value.component) = new ASTpathOp(*pop, std::move(mod), yylhs.location);
         }
-#line 1658 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1656 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 101:
-#line 688 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 686 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr cmd((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             driver.lexer->maybeVersion = token::CFDG2;
             (yylhs.value.component) = new ASTpathCommand(*cmd, std::move(mod), nullptr, yylhs.location);
         }
-#line 1669 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1667 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 102:
-#line 697 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 695 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr pop((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr mod((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             (yylhs.value.component) = new ASTpathOp(*pop, std::move(mod), yylhs.location);
         }
-#line 1679 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1677 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 103:
-#line 703 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 701 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr pop((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
             exp_ptr mod;
             (yylhs.value.component) = new ASTpathOp(*pop, std::move(mod), yylhs.location);
         }
-#line 1689 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1687 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 104:
-#line 709 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 707 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr cmd((yystack_[2].value.string));    (yystack_[2].value.string) = nullptr;
             exp_ptr p((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
@@ -1697,11 +1695,11 @@ namespace yy {
             (yylhs.value.component) = driver.MakeElement(*cmd, std::move(mod),
                                                  std::move(p), yylhs.location, false);
         }
-#line 1701 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1699 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 105:
-#line 717 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 715 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             exp_ptr args((yystack_[2].value.expression));        (yystack_[2].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
@@ -1710,11 +1708,11 @@ namespace yy {
             static const std::string ifstr("if");
             (yylhs.value.component) = driver.MakeElement(ifstr, std::move(mod), std::move(args), yylhs.location, false);
         }
-#line 1714 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1712 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 106:
-#line 726 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 724 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer(nullptr);
             cont_ptr vars((yystack_[2].value.bodyObj));  (yystack_[2].value.bodyObj) = nullptr;
@@ -1724,75 +1722,75 @@ namespace yy {
             static const std::string letstr("let");
             (yylhs.value.component) = driver.MakeElement(letstr, std::move(mod), std::move(exp), yylhs.location, false);
         }
-#line 1728 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1726 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 107:
-#line 736 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 734 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr cmd((yystack_[2].value.string));    (yystack_[2].value.string) = nullptr;
             exp_ptr p((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             (yylhs.value.component) = driver.MakeElement(*cmd, std::move(mod), std::move(p), yylhs.location, true);
         }
-#line 1739 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1737 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 108:
-#line 745 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 743 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { }
-#line 1745 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1743 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 109:
-#line 747 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 745 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1753 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1751 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 110:
-#line 753 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 751 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { }
-#line 1759 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1757 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 111:
-#line 755 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 753 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1767 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1765 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 114:
-#line 766 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 764 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer(driver.switchStack.top());
             USE((yystack_[1].value.modToken));
         }
-#line 1776 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1774 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 115:
-#line 773 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 771 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             (yylhs.value.component) = (yystack_[0].value.component);
         }
-#line 1784 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1782 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 116:
-#line 777 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 775 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[0].value.defObj);
         }
-#line 1792 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1790 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 117:
-#line 781 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 779 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[0].value.loopObj);
             driver.pop_repContainer((yystack_[0].value.loopObj));
@@ -1801,20 +1799,20 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1805 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1803 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 118:
-#line 790 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 788 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer((yystack_[1].value.loopObj));
             driver.push_repContainer((yystack_[1].value.loopObj)->mFinallyBody);
         }
-#line 1814 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1812 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 119:
-#line 793 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 791 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer((yystack_[3].value.loopObj));
             (yylhs.value.component) = (yystack_[3].value.loopObj);
@@ -1823,11 +1821,11 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1827 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1825 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 120:
-#line 802 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 800 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[1].value.ifObj);
             driver.pop_repContainer((yystack_[1].value.ifObj));
@@ -1836,11 +1834,11 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1840 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1838 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 121:
-#line 811 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 809 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[1].value.ifObj);
             driver.pop_repContainer((yystack_[1].value.ifObj));
@@ -1849,11 +1847,11 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1853 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1851 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 122:
-#line 820 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 818 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[1].value.component);
             driver.pop_repContainer((yystack_[1].value.component));
@@ -1862,54 +1860,54 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1866 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1864 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 123:
-#line 830 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 828 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[3].value.switchObj);
             (yystack_[3].value.switchObj)->unify();
             driver.switchStack.pop();
         }
-#line 1876 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1874 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 124:
-#line 836 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 834 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             error(yystack_[0].location, "Illegal mixture of old and new elements");
             (yylhs.value.component) = nullptr;
         }
-#line 1885 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1883 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 125:
-#line 843 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 841 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1891 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1889 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 126:
-#line 844 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 842 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1897 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1895 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 127:
-#line 845 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 843 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1903 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1901 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 128:
-#line 849 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 847 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.component) = (yystack_[0].value.component); }
-#line 1909 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1907 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 129:
-#line 851 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 849 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[1].value.loopObj);
             driver.pop_repContainer((yystack_[1].value.loopObj));
@@ -1918,11 +1916,11 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 1922 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1920 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 130:
-#line 859 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 857 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             if (driver.lexer->maybeVersion == token::CFDG2) {
                 error(yystack_[0].location, "Illegal mixture of old and new elements");
@@ -1932,79 +1930,79 @@ namespace yy {
             (yylhs.value.component) = nullptr;
             YYABORT;
         }
-#line 1936 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1934 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 131:
-#line 871 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 869 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1942 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1940 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 132:
-#line 872 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 870 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1948 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1946 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 135:
-#line 875 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 873 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { delete (yystack_[1].value.string); }
-#line 1954 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1952 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 140:
-#line 883 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 881 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             // parse loop mod and loop body with loop index in scope
             (yystack_[2].value.loopObj)->mLoopModHolder.reset((yystack_[1].value.mod)); (yystack_[1].value.mod) = nullptr;
             (yylhs.value.loopObj) = (yystack_[2].value.loopObj);
             // loopmod gets deleted
         }
-#line 1965 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1963 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 141:
-#line 892 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 890 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1973 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1971 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 143:
-#line 899 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 897 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { }
-#line 1979 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1977 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 144:
-#line 901 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 899 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.component));
         }
-#line 1987 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1985 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 145:
-#line 907 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 905 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, yystack_[1].location));
             (yylhs.value.component) = new ASTreplacement(std::move(*r), std::move(mod), yylhs.location);
         }
-#line 1998 "cfdg.tab.cpp" // lalr1.cc:846
+#line 1996 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 146:
-#line 916 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 914 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.component) = (yystack_[0].value.component); }
-#line 2004 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2002 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 147:
-#line 918 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 916 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.component) = (yystack_[1].value.loopObj);
             driver.pop_repContainer((yystack_[1].value.loopObj));
@@ -2013,17 +2011,17 @@ namespace yy {
                 (yylhs.value.component) = nullptr;
             }
         }
-#line 2017 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2015 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 148:
-#line 929 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 927 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { ++driver.mLocalStackDepth; }
-#line 2023 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2021 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 149:
-#line 929 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 927 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr cstr((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr count(new ASTreal(*cstr, yystack_[3].location));
@@ -2036,11 +2034,11 @@ namespace yy {
                                          yylhs.location, std::move(mod));
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
         }
-#line 2040 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2038 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 150:
-#line 944 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 942 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr var((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
             exp_ptr index((yystack_[0].value.expression));   (yystack_[0].value.expression) = nullptr;
@@ -2048,11 +2046,11 @@ namespace yy {
             (yylhs.value.loopObj) = new ASTloop(nameIndex, *var, yystack_[2].location, std::move(index), yystack_[0].location, nullptr);
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
         }
-#line 2052 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2050 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 151:
-#line 952 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 950 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr index((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             static const std::string dummyvar("~~inaccessiblevar~~");
@@ -2061,11 +2059,11 @@ namespace yy {
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
             error(yystack_[2].location, "Reserved keyword: adjustment");
         }
-#line 2065 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2063 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 152:
-#line 961 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 959 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr count((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             static const std::string dummyvar("~~inaccessiblevar~~");
@@ -2073,31 +2071,31 @@ namespace yy {
                                       dummyvar, yystack_[1].location, std::move(count), yystack_[0].location, nullptr);
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
         }
-#line 2077 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2075 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 153:
-#line 971 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 969 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr cond((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             (yylhs.value.ifObj) = new ASTif(std::move(cond), yystack_[1].location);
             driver.push_repContainer((yylhs.value.ifObj)->mThenBody);
         }
-#line 2087 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2085 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 154:
-#line 979 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 977 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer((yystack_[2].value.ifObj));
             driver.push_repContainer((yystack_[2].value.ifObj)->mElseBody);
             (yylhs.value.ifObj) = (yystack_[2].value.ifObj);
         }
-#line 2097 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2095 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 155:
-#line 987 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 985 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr mods((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             if ((yystack_[1].value.modToken) != ASTmodTerm::transform)
@@ -2106,11 +2104,11 @@ namespace yy {
             driver.push_repContainer(trans->mBody);
             (yylhs.value.component) = trans;
         }
-#line 2110 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2108 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 156:
-#line 995 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 993 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr mods((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             ASTtransform* trans = new ASTtransform(yylhs.location, std::move(mods));
@@ -2118,22 +2116,21 @@ namespace yy {
             trans->mClone = true;
             (yylhs.value.component) = trans;
         }
-#line 2122 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2120 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 157:
-#line 1005 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1003 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr caseVal((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
-            ASTswitch* switchH = new ASTswitch(std::move(caseVal), yystack_[1].location);
-            driver.switchStack.push(switchH);
-            (yylhs.value.switchObj) = switchH;
+            (yylhs.value.switchObj) = new ASTswitch(std::move(caseVal), yystack_[1].location);
+            driver.switchStack.push((yylhs.value.switchObj));
         }
-#line 2133 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2130 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 158:
-#line 1014 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1011 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr valExp((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             
@@ -2161,11 +2158,11 @@ namespace yy {
             }
             (yylhs.value.modToken) = 0;
         }
-#line 2165 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2162 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 159:
-#line 1042 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1039 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             if (!driver.switchStack.top()->mElseBody.mBody.empty()) {
                 driver.error(yylhs.location, "There can only be one 'else:' clause");
@@ -2174,76 +2171,76 @@ namespace yy {
             }
             (yylhs.value.modToken) = 0;
         }
-#line 2178 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2175 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 160:
-#line 1053 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1050 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             mod_ptr mod((yystack_[1].value.mod)); (yystack_[1].value.mod) = nullptr;
             (yylhs.value.mod) = driver.MakeModification(std::move(mod), yylhs.location, true);
         }
-#line 2187 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2184 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 161:
-#line 1058 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1055 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             mod_ptr mod((yystack_[1].value.mod)); (yystack_[1].value.mod) = nullptr;
             (yylhs.value.mod) = driver.MakeModification(std::move(mod), yylhs.location, false);
         }
-#line 2196 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2193 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 162:
-#line 1065 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1062 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             mod_ptr mod((yystack_[1].value.mod)); (yystack_[1].value.mod) = nullptr;
             (yylhs.value.mod) = driver.MakeModification(std::move(mod), yylhs.location, true);
         }
-#line 2205 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2202 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 163:
-#line 1070 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1067 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             mod_ptr mod((yystack_[2].value.mod)); (yystack_[2].value.mod) = nullptr;
             (yylhs.value.mod) = driver.MakeModification(std::move(mod), yylhs.location, false);
         }
-#line 2214 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2211 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 164:
-#line 1077 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1074 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             term_ptr mod((yystack_[0].value.term)); (yystack_[0].value.term) = nullptr;
             driver.MakeModTerm((yystack_[1].value.mod)->modExp, std::move(mod));
             (yylhs.value.mod) = (yystack_[1].value.mod);
         }
-#line 2224 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2221 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 165:
-#line 1082 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1079 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             static const yy::location def;
             ASTmodification* m = new ASTmodification(def);
             m->flags = 0;
             (yylhs.value.mod) = m;
         }
-#line 2235 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2232 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 166:
-#line 1091 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1088 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.term) = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>((yystack_[1].value.modToken)), (yystack_[0].value.expression), yylhs.location);
         }
-#line 2243 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2240 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 167:
-#line 1095 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1092 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr mod((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             if ((yystack_[2].value.modToken) < ASTmodTerm::hue || (yystack_[2].value.modToken) > ASTmodTerm::alpha) {
@@ -2253,599 +2250,598 @@ namespace yy {
                 (yylhs.value.term) = new ASTmodTerm(static_cast<ASTmodTerm::modTypeEnum>((yystack_[2].value.modToken) + 4), mod.release(), yylhs.location);
             }
         }
-#line 2257 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2254 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 168:
-#line 1105 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1102 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr p((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             (yylhs.value.term) = new ASTmodTerm(ASTmodTerm::param, *p, yylhs.location);
         }
-#line 2266 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2263 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 169:
-#line 1110 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1107 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr p((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             (yylhs.value.term) = new ASTmodTerm(ASTmodTerm::param, *p, yylhs.location);
         }
-#line 2275 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2272 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 170:
-#line 1117 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1114 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
-            ASTrepContainer* tempHolder = new ASTrepContainer();
-            driver.push_repContainer(*tempHolder);
-            (yylhs.value.bodyObj) = tempHolder;
+            (yylhs.value.bodyObj) = new ASTrepContainer();
+            driver.push_repContainer(*(yylhs.value.bodyObj));
         }
-#line 2285 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2281 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 171:
-#line 1125 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1121 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.expression) = (yystack_[1].value.expression);
         }
-#line 2293 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2289 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 174:
-#line 1137 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1133 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.push_rep((yystack_[0].value.defObj));
         }
-#line 2301 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2297 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 175:
-#line 1143 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1139 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.expression) = ASTexpression::Append((yystack_[1].value.expression), (yystack_[0].value.expression));
         }
-#line 2309 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2305 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 176:
-#line 1147 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1143 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             (yylhs.value.expression) = (yystack_[0].value.expression);
         }
-#line 2317 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2313 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 177:
-#line 1154 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1150 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.expression) = (yystack_[2].value.expression)->append(new ASTparen((yystack_[0].value.expression)));
         }
-#line 2325 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2321 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 178:
-#line 1158 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1154 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             (yylhs.value.expression) = new ASTcons(new ASTparen((yystack_[0].value.expression)), nullptr);
         }
-#line 2333 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2329 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 179:
-#line 1164 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1160 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(*(yystack_[0].value.string), yylhs.location); delete (yystack_[0].value.string); (yystack_[0].value.string) = nullptr; }
-#line 2339 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2335 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 180:
-#line 1166 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1162 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(Renderer::Infinity, yylhs.location); }
-#line 2345 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2341 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 181:
-#line 1168 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1164 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTparen((yystack_[1].value.expression)); }
-#line 2351 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2347 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 182:
-#line 1170 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1166 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[0].value.expression); }
-#line 2357 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2353 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 183:
-#line 1172 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1168 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('N', (yystack_[0].value.expression), nullptr);; }
-#line 2363 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2359 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 184:
-#line 1174 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1170 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('P', (yystack_[0].value.expression), nullptr);; }
-#line 2369 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2365 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 185:
-#line 1176 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1172 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2378 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2374 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 186:
-#line 1181 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1177 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2387 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2383 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 187:
-#line 1188 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1184 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(*(yystack_[0].value.string), yylhs.location); delete (yystack_[0].value.string); (yystack_[0].value.string) = nullptr; }
-#line 2393 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2389 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 188:
-#line 1190 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1186 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(Renderer::Infinity, yylhs.location); }
-#line 2399 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2395 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 189:
-#line 1192 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1188 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[0].value.expression); }
-#line 2405 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2401 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 190:
-#line 1194 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1190 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2414 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2410 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 191:
-#line 1199 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1195 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2423 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2419 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 192:
-#line 1204 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1200 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[2].value.expression)->append((yystack_[0].value.expression));   }
-#line 2429 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2425 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 193:
-#line 1206 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1202 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('+', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2435 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2431 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 194:
-#line 1208 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1204 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('-', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2441 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2437 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 195:
-#line 1210 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1206 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('_', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2447 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2443 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 196:
-#line 1212 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1208 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('*', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2453 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2449 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 197:
-#line 1214 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1210 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('/', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2459 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2455 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 198:
-#line 1216 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1212 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('N', (yystack_[0].value.expression), nullptr); }
-#line 2465 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2461 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 199:
-#line 1218 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1214 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('P', (yystack_[0].value.expression), nullptr); }
-#line 2471 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2467 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 200:
-#line 1220 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1216 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('!', (yystack_[0].value.expression), nullptr); }
-#line 2477 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2473 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 201:
-#line 1222 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1218 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('^', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2483 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2479 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 202:
-#line 1224 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1220 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('<', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2489 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2485 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 203:
-#line 1226 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1222 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('L', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2495 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2491 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 204:
-#line 1228 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1224 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('>', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2501 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2497 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 205:
-#line 1230 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1226 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('G', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2507 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2503 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 206:
-#line 1232 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1228 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('=', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2513 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2509 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 207:
-#line 1234 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1230 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('n', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2519 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2515 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 208:
-#line 1236 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1232 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('&', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2525 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2521 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 209:
-#line 1238 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1234 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('|', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2531 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2527 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 210:
-#line 1240 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1236 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('X', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2537 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2533 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 211:
-#line 1242 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1238 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTparen((yystack_[1].value.expression)); }
-#line 2543 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2539 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 212:
-#line 1244 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1240 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[0].value.mod); }
-#line 2549 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2545 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 213:
-#line 1248 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1244 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(*(yystack_[0].value.string), yylhs.location); delete (yystack_[0].value.string); (yystack_[0].value.string) = nullptr; }
-#line 2555 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2551 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 214:
-#line 1250 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1246 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTreal(Renderer::Infinity, yylhs.location); }
-#line 2561 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2557 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 215:
-#line 1252 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1248 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[0].value.expression); }
-#line 2567 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2563 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 216:
-#line 1254 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1250 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2576 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2572 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 217:
-#line 1259 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1255 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
         }
-#line 2585 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2581 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 218:
-#line 1264 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1260 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('+', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2591 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2587 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 219:
-#line 1266 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1262 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('-', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2597 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2593 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 220:
-#line 1268 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1264 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('_', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2603 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2599 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 221:
-#line 1270 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1266 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('*', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2609 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2605 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 222:
-#line 1272 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1268 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('/', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2615 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2611 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 223:
-#line 1274 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1270 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('N', (yystack_[0].value.expression), nullptr); }
-#line 2621 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2617 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 224:
-#line 1276 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1272 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('P', (yystack_[0].value.expression), nullptr); }
-#line 2627 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2623 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 225:
-#line 1278 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1274 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('!', (yystack_[0].value.expression), nullptr); }
-#line 2633 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2629 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 226:
-#line 1280 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1276 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('^', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2639 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2635 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 227:
-#line 1282 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1278 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('<', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2645 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2641 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 228:
-#line 1284 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1280 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('L', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2651 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2647 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 229:
-#line 1286 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1282 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('>', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2657 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2653 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 230:
-#line 1288 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1284 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('G', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2663 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2659 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 231:
-#line 1290 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1286 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('=', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2669 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2665 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 232:
-#line 1292 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1288 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('n', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2675 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2671 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 233:
-#line 1294 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1290 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('&', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2681 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2677 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 234:
-#line 1296 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1292 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('|', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2687 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2683 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 235:
-#line 1298 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1294 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASToperator('X', (yystack_[2].value.expression), (yystack_[0].value.expression)); }
-#line 2693 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2689 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 236:
-#line 1300 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1296 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = new ASTparen((yystack_[1].value.expression)); }
-#line 2699 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2695 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 237:
-#line 1302 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1298 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.expression) = (yystack_[0].value.mod); }
-#line 2705 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2701 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 238:
-#line 1306 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1302 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), nullptr, yystack_[2].location, yystack_[1].location + yystack_[0].location, false);
         }
-#line 2714 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2710 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 239:
-#line 1311 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1307 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));  (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, true);
         }
-#line 2724 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2720 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 240:
-#line 1317 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1313 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));           (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeArray(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location);
         }
-#line 2734 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2730 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 241:
-#line 1323 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1319 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func(new std::string("if"));
             exp_ptr args((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
         }
-#line 2744 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2740 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 242:
-#line 1329 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1325 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer(nullptr);
             cont_ptr vars((yystack_[1].value.bodyObj)); (yystack_[1].value.bodyObj) = nullptr;
             exp_ptr exp((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeLet(yystack_[1].location, std::move(vars), std::move(exp));
         }
-#line 2755 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2751 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 243:
-#line 1336 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1332 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr var((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             (yylhs.value.expression) = driver.MakeVariable(*var, yystack_[0].location);
         }
-#line 2764 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2760 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 244:
-#line 1343 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1339 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), nullptr, yystack_[2].location, yystack_[1].location + yystack_[0].location, false);
         }
-#line 2773 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2769 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 245:
-#line 1348 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1344 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));  (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
         }
-#line 2783 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2779 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 246:
-#line 1354 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1350 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));           (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeArray(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location);
         }
-#line 2793 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2789 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 247:
-#line 1360 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1356 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func(new std::string("if"));
             exp_ptr args((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
         }
-#line 2803 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2799 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 248:
-#line 1366 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1362 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args(new ASTexpression(yylhs.location, false, false, AST::ReuseType));
             (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
         }
-#line 2813 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2809 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 249:
-#line 1372 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1368 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
             driver.pop_repContainer(nullptr);
             cont_ptr vars((yystack_[1].value.bodyObj)); (yystack_[1].value.bodyObj) = nullptr;
             exp_ptr exp((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
             (yylhs.value.expression) = driver.MakeLet(yystack_[1].location, std::move(vars), std::move(exp));
         }
-#line 2824 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2820 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 250:
-#line 1379 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1375 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { 
             str_ptr var((yystack_[0].value.string)); (yystack_[0].value.string) = nullptr;
             (yylhs.value.expression) = driver.MakeVariable(*var, yystack_[0].location);
         }
-#line 2833 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2829 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 251:
-#line 1386 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1382 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.string) = (yystack_[0].value.string); }
-#line 2839 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2835 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
   case 252:
-#line 1388 "../../src-common/cfdg.ypp" // lalr1.cc:846
+#line 1384 "../../src-common/cfdg.ypp" // lalr1.cc:846
     { (yylhs.value.string) = (yystack_[0].value.string); }
-#line 2845 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2841 "cfdg.tab.cpp" // lalr1.cc:846
     break;
 
 
-#line 2849 "cfdg.tab.cpp" // lalr1.cc:846
+#line 2845 "cfdg.tab.cpp" // lalr1.cc:846
           default:
             break;
           }
@@ -3577,27 +3573,27 @@ namespace yy {
      232,   233,   234,   235,   247,   248,   249,   250,   251,   252,
      253,   254,   255,   256,   257,   261,   262,   263,   264,   265,
      269,   278,   289,   296,   296,   299,   300,   304,   315,   325,
-     337,   348,   359,   361,   363,   380,   405,   415,   425,   434,
-     439,   444,   452,   457,   463,   467,   474,   492,   499,   507,
-     515,   523,   537,   545,   552,   564,   576,   584,   593,   605,
-     612,   618,   624,   629,   633,   639,   645,   646,   650,   651,
-     655,   656,   660,   661,   662,   663,   667,   670,   674,   677,
-     681,   688,   697,   703,   709,   717,   726,   736,   745,   747,
-     753,   755,   761,   762,   766,   773,   777,   781,   790,   790,
-     802,   811,   820,   829,   836,   843,   844,   845,   849,   851,
-     859,   871,   872,   873,   874,   875,   876,   877,   878,   879,
-     883,   892,   895,   899,   901,   907,   916,   918,   929,   929,
-     944,   952,   961,   971,   979,   987,   995,  1005,  1014,  1042,
-    1053,  1058,  1065,  1070,  1077,  1082,  1091,  1095,  1105,  1110,
-    1117,  1125,  1131,  1133,  1137,  1143,  1147,  1154,  1158,  1164,
-    1166,  1168,  1170,  1172,  1174,  1176,  1181,  1188,  1190,  1192,
-    1194,  1199,  1204,  1206,  1208,  1210,  1212,  1214,  1216,  1218,
-    1220,  1222,  1224,  1226,  1228,  1230,  1232,  1234,  1236,  1238,
-    1240,  1242,  1244,  1248,  1250,  1252,  1254,  1259,  1264,  1266,
-    1268,  1270,  1272,  1274,  1276,  1278,  1280,  1282,  1284,  1286,
-    1288,  1290,  1292,  1294,  1296,  1298,  1300,  1302,  1306,  1311,
-    1317,  1323,  1329,  1336,  1343,  1348,  1354,  1360,  1366,  1372,
-    1379,  1386,  1388
+     337,   348,   359,   361,   363,   380,   405,   414,   423,   432,
+     437,   442,   450,   455,   461,   465,   472,   490,   497,   505,
+     513,   521,   535,   543,   550,   562,   574,   582,   591,   603,
+     610,   616,   622,   627,   631,   637,   643,   644,   648,   649,
+     653,   654,   658,   659,   660,   661,   665,   668,   672,   675,
+     679,   686,   695,   701,   707,   715,   724,   734,   743,   745,
+     751,   753,   759,   760,   764,   771,   775,   779,   788,   788,
+     800,   809,   818,   827,   834,   841,   842,   843,   847,   849,
+     857,   869,   870,   871,   872,   873,   874,   875,   876,   877,
+     881,   890,   893,   897,   899,   905,   914,   916,   927,   927,
+     942,   950,   959,   969,   977,   985,   993,  1003,  1011,  1039,
+    1050,  1055,  1062,  1067,  1074,  1079,  1088,  1092,  1102,  1107,
+    1114,  1121,  1127,  1129,  1133,  1139,  1143,  1150,  1154,  1160,
+    1162,  1164,  1166,  1168,  1170,  1172,  1177,  1184,  1186,  1188,
+    1190,  1195,  1200,  1202,  1204,  1206,  1208,  1210,  1212,  1214,
+    1216,  1218,  1220,  1222,  1224,  1226,  1228,  1230,  1232,  1234,
+    1236,  1238,  1240,  1244,  1246,  1248,  1250,  1255,  1260,  1262,
+    1264,  1266,  1268,  1270,  1272,  1274,  1276,  1278,  1280,  1282,
+    1284,  1286,  1288,  1290,  1292,  1294,  1296,  1298,  1302,  1307,
+    1313,  1319,  1325,  1332,  1339,  1344,  1350,  1356,  1362,  1368,
+    1375,  1382,  1384
   };
 
   // Print the state stack on the debug stream.
@@ -3683,8 +3679,8 @@ namespace yy {
 
 
 } // yy
-#line 3687 "cfdg.tab.cpp" // lalr1.cc:1156
-#line 1391 "../../src-common/cfdg.ypp" // lalr1.cc:1157
+#line 3683 "cfdg.tab.cpp" // lalr1.cc:1156
+#line 1387 "../../src-common/cfdg.ypp" // lalr1.cc:1157
 
 
 void yy::CfdgParser::error(const CfdgParser::location_type& l, const std::string& m)
