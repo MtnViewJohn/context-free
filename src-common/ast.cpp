@@ -973,13 +973,13 @@ namespace AST {
         data.clear();
     }
     
-    const ASTexpression*
+    std::vector<const ASTmodification*>
     getTransforms(const ASTexpression* e, SymmList& syms, RendererAST* r, 
                   bool tiled, agg::trans_affine& tile)
     {
+        std::vector<const ASTmodification*> ret;
         syms.clear();
-        if (e == nullptr) return nullptr;
-        ASTexpression* ret = nullptr;
+        if (e == nullptr) return ret;
         
         std::vector<double> symmSpec;
         yy::location where;
@@ -1008,18 +1008,20 @@ namespace AST {
                 case ModType: {
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
                     const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit);
-                    if ((!r && !cit->isConstant) || !m || 
-                        (m->modClass & (ASTmodification::GeomClass | ASTmodification::PathOpClass)) != 
-                         m->modClass)
+                    if (!m) {
+                        CfdgError::Error(cit->where, "Wrong type");
+                        break;
+                    }
+                    if ((m->modClass &
+                         (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
+                        m->modClass && (r || m->isConstant))
                     {
-                        // const_cast is a little sleazy, but we never never modify
-                        // it and we return it as const
-                        ret = ASTexpression::Append(ret, const_cast<ASTexpression*>(cit));
-                    } else {
                         Modification mod;
                         int dummy;
                         cit->evaluate(mod, nullptr, false, dummy, false, r);
                         addUnique(syms, mod.m_transform);
+                    } else {
+                        ret.push_back(m);
                     }
                     break;
                 }
