@@ -128,8 +128,7 @@ namespace AST {
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
-    : ASTreplacement(nullptr, loc, empty), mTransforms(),
-      mModifications(nullptr), mExpHolder(std::move(mods)), mClone(false)
+    : ASTreplacement(nullptr, loc, empty), mExpHolder(std::move(mods)), mClone(false)
     {
     }
     
@@ -269,9 +268,6 @@ namespace AST {
     
     ASTtransform::~ASTtransform()
     {
-        ASTexpression* m = const_cast<ASTexpression*>(mModifications);
-        if (m && m->release())
-            delete mModifications;
     }
     
     ASTpathOp::~ASTpathOp()
@@ -376,6 +372,10 @@ namespace AST {
     void
     ASTtransform::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
+        static agg::trans_affine Dummy;
+        SymmList transforms;
+        std::unique_ptr<const ASTexpression> mods(getTransforms(mExpHolder.get(), transforms, r, false, Dummy));
+        
         Rand64 cloneSeed = r->mCurrentSeed;
         Shape transChild = parent;
         bool opsOnly = mBody.mRepType == op;
@@ -384,19 +384,19 @@ namespace AST {
         
         int dummy;
         
-        int modsLength = mModifications ? static_cast<int>(mModifications->size()) : 0;
-        int totalLength = modsLength + static_cast<int>(mTransforms.size());
+        int modsLength = mods ? static_cast<int>(mods->size()) : 0;
+        int totalLength = modsLength + static_cast<int>(transforms.size());
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
-                if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mModifications)[i])) {
+                if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mods)[i])) {
                     r->mCurrentSeed ^= m->modData.mRand64Seed;
                     m->evaluate(child.mWorldState, nullptr, false, dummy, true, r);
                 } else {
                     continue;
                 }
             } else {
-                child.mWorldState.m_transform.premultiply(mTransforms[i - modsLength]);
+                child.mWorldState.m_transform.premultiply(transforms[i - modsLength]);
             }
             r->mCurrentSeed.bump();
 
@@ -409,6 +409,9 @@ namespace AST {
             }
             r->unwindStack(s, mBody.mParameters);
         }
+        
+        if (mods)
+            const_cast<ASTexpression*>(mods.get())->release();
     }
     
     void
@@ -721,9 +724,7 @@ namespace AST {
                     CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
                 break;
             case CompilePhase::Simplify:
-                static agg::trans_affine Dummy;
                 Simplify(mExpHolder);
-                mModifications = getTransforms(mExpHolder.get(), mTransforms, nullptr, false, Dummy);
                 break;
         }
     }
