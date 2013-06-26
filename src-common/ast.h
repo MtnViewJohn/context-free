@@ -223,7 +223,7 @@ namespace AST {
                          bool dihedral, double angle, const yy::location& where);
     void processSymmSpec(SymmList& syms, agg::trans_affine& tile, bool tiled,
                          std::vector<double>& data, const yy::location& where);
-    const ASTexpression* 
+    std::vector<const ASTmodification*>
          getTransforms(const ASTexpression* e, SymmList& syms, 
                        RendererAST* r, bool tiled, agg::trans_affine& tile);
 }

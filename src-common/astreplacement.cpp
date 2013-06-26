@@ -374,7 +374,7 @@ namespace AST {
     {
         static agg::trans_affine Dummy;
         SymmList transforms;
-        std::unique_ptr<const ASTexpression> mods(getTransforms(mExpHolder.get(), transforms, r, false, Dummy));
+        std::vector<const ASTmodification*> mods = getTransforms(mExpHolder.get(), transforms, r, false, Dummy);
         
         Rand64 cloneSeed = r->mCurrentSeed;
         Shape transChild = parent;
@@ -384,17 +384,12 @@ namespace AST {
         
         int dummy;
         
-        int modsLength = mods ? static_cast<int>(mods->size()) : 0;
+        int modsLength = mods.size();
         int totalLength = modsLength + static_cast<int>(transforms.size());
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
-                if (const ASTmodification* m = dynamic_cast<const ASTmodification*>((*mods)[i])) {
-                    r->mCurrentSeed ^= m->modData.mRand64Seed;
-                    m->evaluate(child.mWorldState, nullptr, false, dummy, true, r);
-                } else {
-                    continue;
-                }
+                mods[i]->evaluate(child.mWorldState, nullptr, false, dummy, true, r);
             } else {
                 child.mWorldState.m_transform.premultiply(transforms[i - modsLength]);
             }
@@ -409,9 +404,6 @@ namespace AST {
             }
             r->unwindStack(s, mBody.mParameters);
         }
-        
-        if (mods)
-            const_cast<ASTexpression*>(mods.get())->release();
     }
     
     void

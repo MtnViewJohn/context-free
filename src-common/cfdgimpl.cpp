@@ -293,10 +293,10 @@ CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
 {
     syms.clear();
     const ASTexpression* e = hasParameter(CFG::Symmetry);
-    const ASTexpression* left = getTransforms(e, syms, r, isTiled(), mTileMod.m_transform);
+    std::vector<const ASTmodification*> left = getTransforms(e, syms, r, isTiled(), mTileMod.m_transform);
     
-    if (left) {
-        CfdgError((*left)[0]->where, "At least one term was invalid");
+    if (!left.empty()) {
+        CfdgError(left.front()->where, "At least one term was invalid");
     }
 }
 
