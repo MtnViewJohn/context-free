@@ -136,8 +136,6 @@ namespace AST {
     class ASTtransform: public ASTreplacement {
     public:
         ASTrepContainer mBody;
-        SymmList       mTransforms;
-        const ASTexpression* mModifications;    // weak pointer
         exp_ptr mExpHolder;              // strong pointer
         bool mClone;
         
