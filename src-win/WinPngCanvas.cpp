@@ -136,7 +136,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     // and output that. GDI+ doesn't really support 16-bit modes.
     unsigned char* data = mData;
     int stride = mStride;
-    int bpp = BytesPerPixel[mPixelFormat];
+    int bpp = BytesPerPixel.at(mPixelFormat);
     unsigned char* data8 = 0;
     PixelFormat pf = mPixelFormat;
     if (pf & Has_16bit_Color) {
@@ -160,7 +160,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     if (mCrop) {
         width = cropWidth();
         height = cropHeight();
-        data += cropY() * stride + cropX() * BytesPerPixel[pf];
+        data += cropY() * stride + cropX() * BytesPerPixel.at(pf);
     }
 
     WCHAR wpath[MAX_PATH];
