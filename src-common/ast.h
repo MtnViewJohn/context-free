@@ -44,35 +44,6 @@ namespace AST {
     typedef std::vector<agg::trans_affine> SymmList;
     typedef uint_fast64_t UIDdatatype;
 
-#ifdef _WIN32
-    inline double acosh(double x) 
-    {
-        return log(x + sqrt(x * x - 1));
-    }
-    
-    inline double asinh(double x) 
-    {
-        return log(x + sqrt(x * x + 1));
-    }
-    
-    inline double atanh(double x) 
-    {
-        return log((1 + x) / (1 - x)) / 2;
-    }
-    
-    inline double fmin(const double& x, const double& y)
-    {
-        return x < y ? x : y;
-    }
-    
-    inline double fmax(const double& x, const double& y)
-    {
-        return x > y ? x : y;
-    }
-
-#pragma warning( disable : 4521 )
-#endif
-
     class ASTpath;
     class ASTreplacement;
     class ASTparameterList;
