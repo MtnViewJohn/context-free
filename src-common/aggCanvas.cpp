@@ -77,7 +77,18 @@ typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
 #define ADJ_SQUARE_SIZE     0.80
 #define ADJ_TRIANGLE_SIZE   0.90
 
-int aggCanvas::BytesPerPixel[13] = {4, 1, 4, 3, 4, 3, 4, 0, 0, 2, 8, 6, 0};
+const std::map<aggCanvas::PixelFormat, int> aggCanvas::BytesPerPixel = {
+	{UnknownPixelFormat, 4},
+	{ Gray8_Blend, 1 },
+	{ RGBA8_Blend, 4 },
+	{ RGB8_Blend, 3 },
+	{ FF_Blend, 4 },
+	{ FF24_Blend, 3 },
+	{ QT_Blend, 4 },
+	{ Gray16_Blend, 2 },
+	{ RGBA16_Blend, 8 },
+	{ RGB16_Blend, 6 }
+};
 
 namespace {
     inline double
