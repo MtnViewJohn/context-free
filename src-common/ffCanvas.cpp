@@ -242,7 +242,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int
     width &= ~3;
     height &= ~3;
     
-    int stride = width * aggCanvas::BytesPerPixel[mapPixFmt(fmt)];
+    int stride = width * aggCanvas::BytesPerPixel.at(mapPixFmt(fmt));
     
     char* bits = new char[stride * height];
     aggCanvas::attach((void*)bits, width, height, stride);

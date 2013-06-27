@@ -33,6 +33,7 @@
 #include "cfdg.h"
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
+#include <map>
 
 class aggCanvas : public Canvas {
     public:
@@ -49,7 +50,7 @@ class aggCanvas : public Canvas {
             RGBA16_Blend = RGBA8_Blend | Has_16bit_Color, 
             RGB16_Blend = RGB8_Blend | Has_16bit_Color
         };
-        static int BytesPerPixel[13];
+		static const std::map<PixelFormat, int> BytesPerPixel;
         void start(bool clear, const agg::rgba& bk, int width, int height);
         void end();
 
