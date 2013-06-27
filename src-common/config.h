@@ -27,7 +27,7 @@
 #define INCLUDE_CONFIG_H
 
 #include <array>
-//#include <initializer_list>
+#include <initializer_list>
 
 enum class CFG {
     AllowOverlap,
@@ -57,7 +57,6 @@ struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
     typedef std::array<_T, static_cast<size_t>(CFG::_NumberOf)> base_t;
     CfgArray() : base_t() {}
    
-#if 0
     CfgArray(std::initializer_list<_T> l) : base_t()
     {
         if (l.size() >= base_t::size()) {
@@ -67,12 +66,11 @@ struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
             std::fill(base_t::begin() + l.size(), base_t::end(), *(l.begin() + l.size() - 1));
         }
     }
-#else
-    CfgArray(const _T* l) : base_t()
+
+	CfgArray(const _T* l) : base_t()
     {
         std::copy(l, l + base_t::size(), base_t::begin());
     }
-#endif
 
     using base_t::operator[];
     _T& operator[](CFG c) { return operator[](static_cast<size_t>(c)); }

@@ -56,15 +56,9 @@ using namespace AST;
 CFDGImpl::CFDGImpl(AbstractSystem* m)
 : m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
-#if 0
   ParamDepth({std::numeric_limits<unsigned>::max()}),
-#endif
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
-#if 0
-#else
-    std::fill(ParamDepth.begin(), ParamDepth.end(), std::numeric_limits<unsigned>::max());
-#endif
     // These have to be encoded first so that their type number will fit
     // within an unsigned char
     string circle_name = "CIRCLE";
