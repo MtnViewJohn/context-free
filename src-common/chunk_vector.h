@@ -336,7 +336,6 @@ public:
         ++_size;
     }
     
-#ifndef _WIN32
     template<typename... Args>
     void emplace_back(Args&&... args)
     {
@@ -348,7 +347,6 @@ public:
         ++_size;
         
     }
-#endif
     
     void pop_back()
     {
