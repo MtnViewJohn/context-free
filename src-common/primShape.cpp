@@ -79,3 +79,26 @@ bool primShape::isPrimShape(agg::path_storage* p)
     return (p == &circle) || (p == &square) || (p == &triangle);
 }
 
+unsigned
+primIter::vertex(double* x, double* y)
+{
+    if (mData && mIndex < mData->total_vertices()) {
+        return mData->vertex(mIndex++, x, y);
+    } else {
+        *x = *y = 0.0;
+        return agg::path_cmd_stop;
+    }
+}
+
+void
+primIter::rewind(unsigned i)
+{
+    mIndex = i;
+}
+
+void
+primIter::init(const primShape* shape)
+{
+    mData = shape;
+    mIndex = 0;
+}
