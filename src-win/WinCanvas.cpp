@@ -50,7 +50,7 @@ WinCanvas::WinCanvas(WinSystem* sys, aggCanvas::PixelFormat pixfmt,
 {
     mWidth = width;
     mHeight = abs(height);
-    mStride = mWidth * aggCanvas::BytesPerPixel[mPixelFormat];
+    mStride = mWidth * aggCanvas::BytesPerPixel.at(mPixelFormat);
 
     // pad row stride to DWORD boundary
     mStride += ((-mStride) & 3);
