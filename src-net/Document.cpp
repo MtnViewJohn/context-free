@@ -1116,7 +1116,7 @@ Bitmap^ Document::MakeBitmap(bool cropped, WinCanvas *canvas)
         width = canvas->cropWidth();
         height = canvas->cropHeight();
         data += canvas->mStride * canvas->cropY() + 
-                aggCanvas::BytesPerPixel[canvas->mPixelFormat] * canvas->cropX();
+                aggCanvas::BytesPerPixel.at(canvas->mPixelFormat) * canvas->cropX();
     }
 
     IntPtr pixelStore = IntPtr((void*)data);
