@@ -33,6 +33,7 @@
 #include <string>
 #include <limits>
 #include "Rand64.h"
+#include <map>
 
 class RendererAST;
 class Builder;
@@ -86,8 +87,6 @@ namespace AST {
             Min, Max, Ftime, Frame,
             Rand_Static, Rand, Rand2, RandInt, LastOne
         };
-        static const char* FuncNames[LastOne];
-        static const char* Entropies[LastOne];
         static FuncType GetFuncType(const std::string& func);
         FuncType functype;
         exp_ptr arguments;
@@ -101,7 +100,9 @@ namespace AST {
         virtual ASTexpression* simplify();
     private:
         ASTfunction() : ASTexpression(CfdgError::Default) {};
-    };
+		static const std::map<std::string, FuncType> NameMap;
+		static const std::map<FuncType, const char*> EntropyMap;
+	};
     class ASTselect : public ASTexpression {
     public:
         int              tupleSize;
@@ -331,8 +332,6 @@ namespace AST {
         int argCount;
         std::string paramString;
         
-        static const char* Entropies[lastModType];
-        
         static void Eval(ASTexpression* mod, Modification& m, std::string* p = nullptr,
                          double* width = nullptr, Renderer* r = nullptr);
         
@@ -350,7 +349,9 @@ namespace AST {
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
-    };
+	private:
+		static const std::map<modTypeEnum, const char*> EntropyMap;
+	};
     class ASTmodification : public ASTexpression {
     public:
         enum modClassEnum {
@@ -366,8 +367,6 @@ namespace AST {
         int             flags;
         int             entropyIndex;
         bool            canonical;
-        
-        static int ModClass[ASTmodTerm::lastModType];
         
         ASTmodification(const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modClass(NotAClass),
@@ -389,7 +388,9 @@ namespace AST {
         void evalConst();
         void makeCanonical();
         void grab(ASTmodification* m);
-    };
+	private:
+		static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap;
+	};
     class ASTarray : public ASTexpression {
     public:
         int     mName;
