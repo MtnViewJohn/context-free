@@ -44,9 +44,6 @@ namespace AST {
     
     CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID(1);
     
-    const ASTrule* ASTrule::PrimitivePaths[primShape::numTypes] = { nullptr };
-    
-    
     void
     ASTrepContainer::addParameter(const std::string& type, int index,
                                   const yy::location& typeLoc, const yy::location& nameLoc) 
@@ -184,6 +181,51 @@ namespace AST {
         for (switchMap::value_type& caseEntry: mCaseStatements)
             if (caseEntry.second->mPathOp != mPathOp)
                 mPathOp = unknownPathop;
+    }
+
+    ASTrule::ASTrule(int i)
+    : ASTreplacement(nullptr, CfdgError::Default, rule), mCachedPath(nullptr),
+      mWeight(1.0), isPath(true), mNameIndex(i), weightType(NoWeight)
+    {
+        if (primShape::shapeMap[i]) {
+            static const std::string  move_op("MOVETO");
+            static const std::string  line_op("LINETO");
+            static const std::string   arc_op("ARCTO");
+            static const std::string close_op("CLOSEPOLY");
+            if (i != primShape::circleType) {
+                primIter shape(primShape::shapeMap[i]);
+                double x = 0, y = 0;
+                unsigned cmd;
+                while (!agg::is_stop(cmd = shape.vertex(&x, &y))) {
+                    if (agg::is_vertex(cmd)) {
+                        exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default),
+                            new ASTreal(y, CfdgError::Default)));
+                        ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
+                            std::move(a), CfdgError::Default);
+                        mRuleBody.mBody.emplace_back(op);
+                    }
+                }
+            } else {
+                exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default),
+                    new ASTreal(0.0, CfdgError::Default)));
+                ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(op);
+                a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default),
+                    new ASTreal(0.0, CfdgError::Default)));
+                a.get()->append(new ASTreal(0.5, CfdgError::Default));
+                op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(op);
+                a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default),
+                    new ASTreal(0.0, CfdgError::Default)));
+                a.get()->append(new ASTreal(0.5, CfdgError::Default));
+                op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(op);
+            }
+            mRuleBody.mBody.emplace_back(new ASTpathOp(close_op, exp_ptr(),
+                CfdgError::Default));
+            mRuleBody.mRepType = ASTreplacement::op;
+            mRuleBody.mPathOp = AST::MOVETO;
+        }
     }
 
     ASTrepContainer::~ASTrepContainer() 

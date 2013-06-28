@@ -76,7 +76,7 @@ public:
     
     AST::ASTrepContainer mParamDecls;
     
-    static std::map<std::string, int> FlagNames;
+    static const std::map<std::string, int> FlagNames;
 
     int mLocalStackDepth;
     

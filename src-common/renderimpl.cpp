@@ -744,7 +744,8 @@ RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
     if (m_cfdg->getShapeType(s.mShapeType) != CFDGImpl::pathType && 
         primShape::isPrimShape(s.mShapeType) && expectedType == ASTreplacement::op)
     {
-        rule = ASTrule::PrimitivePaths[s.mShapeType];
+        static const ASTrule PrimitivePaths[primShape::numTypes] = { { 0 }, { 1 }, { 2 }, { 3 } };
+        rule = &PrimitivePaths[s.mShapeType];
     } else {
         rule = m_cfdg->findRule(s.mShapeType, 0.0);
     }
