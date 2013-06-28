@@ -39,6 +39,7 @@ ImageCanvas::ImageCanvas(GView* view, BitmapImageHolder* bitmap,
 {
     attach([bitmap bitmapData], [bitmap pixelsWide], [bitmap pixelsHigh],
         [bitmap bytesPerRow]);
+    assert([bitmap bitsPerPixel] == BytesPerPixel.at(format) * 8);
 }
 
 ImageCanvas::~ImageCanvas()
