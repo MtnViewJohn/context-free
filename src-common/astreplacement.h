@@ -202,7 +202,6 @@ namespace AST {
         int mNameIndex;
         WeightTypes weightType;
         
-        static const ASTrule* PrimitivePaths[primShape::numTypes];
         static bool compareLT(const ASTrule* a, const ASTrule* b);
         
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
@@ -212,6 +211,7 @@ namespace AST {
         ASTrule(int ruleIndex, const yy::location& loc)
         : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
+        ASTrule(int i);
         virtual ~ASTrule();
         void traversePath(const Shape& parent, RendererAST* r) const;
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;

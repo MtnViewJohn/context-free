@@ -47,7 +47,45 @@
 
 using namespace AST;
 
-std::map<std::string, int> Builder::FlagNames;
+const std::map<std::string, int> Builder::FlagNames = {
+	{"CF::None",        AST::CF_NONE},
+	{"CF::MiterJoin",   AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT},
+	{"CF::RoundJoin",   AST::CF_ROUND_JOIN | AST::CF_JOIN_PRESENT},
+	{"CF::BevelJoin",   AST::CF_BEVEL_JOIN | AST::CF_JOIN_PRESENT},
+	{"CF::ButtCap",     AST::CF_BUTT_CAP | AST::CF_CAP_PRESENT},
+	{"CF::RoundCap",    AST::CF_ROUND_CAP | AST::CF_CAP_PRESENT},
+	{"CF::SquareCap",   AST::CF_SQUARE_CAP | AST::CF_CAP_PRESENT},
+	{"CF::ArcCW",       AST::CF_ARC_CW},
+	{"CF::ArcLarge",    AST::CF_ARC_LARGE},
+	{"CF::Continuous",  AST::CF_CONTINUOUS},
+	{"CF::Align",       AST::CF_ALIGN},
+	{"CF::EvenOdd",     AST::CF_EVEN_ODD},
+	{"CF::IsoWidth",    AST::CF_ISO_WIDTH},
+	{"~~CF_FILL~~",     AST::CF_FILL},
+	{"CF::Cyclic",      AST::CF_CYCLIC},
+	{"CF::Dihedral",    AST::CF_DIHEDRAL},
+	{"CF::p11g",        AST::CF_P11G},
+	{"CF::p11m",        AST::CF_P11M},
+	{"CF::p1m1",        AST::CF_P1M1},
+	{"CF::p2",          AST::CF_P2},
+	{"CF::p2mg",        AST::CF_P2MG},
+	{"CF::p2mm",        AST::CF_P2MM},
+	{"CF::pm",          AST::CF_PM},
+	{"CF::pg",          AST::CF_PG},
+	{"CF::cm",          AST::CF_CM},
+	{"CF::pmm",         AST::CF_PMM},
+	{"CF::pmg",         AST::CF_PMG},
+	{"CF::pgg",         AST::CF_PGG},
+	{"CF::cmm",         AST::CF_CMM},
+	{"CF::p4",          AST::CF_P4},
+	{"CF::p4m",         AST::CF_P4M},
+	{"CF::p4g",         AST::CF_P4G},
+	{"CF::p3",          AST::CF_P3},
+	{"CF::p3m1",        AST::CF_P3M1},
+	{"CF::p31m",        AST::CF_P31M},
+	{"CF::p6",          AST::CF_P6},
+	{"CF::p6m",         AST::CF_P6M}
+};
 Builder* Builder::CurrentBuilder = nullptr;
 double Builder:: MaxNatural = 1000.0;
 
@@ -59,97 +97,10 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 { 
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
     mSeed.seed(static_cast<unsigned long long>(variation));
-    if (FlagNames.empty()) {
-        FlagNames["CF::None"] = AST::CF_NONE;
-        FlagNames["CF::MiterJoin"] = AST::CF_MITER_JOIN | AST::CF_JOIN_PRESENT;
-        FlagNames["CF::RoundJoin"] = AST::CF_ROUND_JOIN | AST::CF_JOIN_PRESENT;
-        FlagNames["CF::BevelJoin"] = AST::CF_BEVEL_JOIN | AST::CF_JOIN_PRESENT;
-        FlagNames["CF::ButtCap"] = AST::CF_BUTT_CAP | AST::CF_CAP_PRESENT;
-        FlagNames["CF::RoundCap"] = AST::CF_ROUND_CAP | AST::CF_CAP_PRESENT;
-        FlagNames["CF::SquareCap"] = AST::CF_SQUARE_CAP | AST::CF_CAP_PRESENT;
-        FlagNames["CF::ArcCW"] = AST::CF_ARC_CW;
-        FlagNames["CF::ArcLarge"] = AST::CF_ARC_LARGE;
-        FlagNames["CF::Continuous"] = AST::CF_CONTINUOUS;
-        FlagNames["CF::Align"] = AST::CF_ALIGN;
-        FlagNames["CF::EvenOdd"] = AST::CF_EVEN_ODD;
-        FlagNames["CF::IsoWidth"] = AST::CF_ISO_WIDTH;
-        FlagNames["~~CF_FILL~~"] = AST::CF_FILL;
-        FlagNames["CF::Cyclic"] = AST::CF_CYCLIC;
-        FlagNames["CF::Dihedral"] = AST::CF_DIHEDRAL;
-        FlagNames["CF::p11g"] = AST::CF_P11G;
-        FlagNames["CF::p11m"] = AST::CF_P11M;
-        FlagNames["CF::p1m1"] = AST::CF_P1M1;
-        FlagNames["CF::p2"] = AST::CF_P2;
-        FlagNames["CF::p2mg"] = AST::CF_P2MG;
-        FlagNames["CF::p2mm"] = AST::CF_P2MM;
-        FlagNames["CF::pm"] = AST::CF_PM;
-        FlagNames["CF::pg"] = AST::CF_PG;
-        FlagNames["CF::cm"] = AST::CF_CM;
-        FlagNames["CF::pmm"] = AST::CF_PMM;
-        FlagNames["CF::pmg"] = AST::CF_PMG;
-        FlagNames["CF::pgg"] = AST::CF_PGG;
-        FlagNames["CF::cmm"] = AST::CF_CMM;
-        FlagNames["CF::p4"] = AST::CF_P4;
-        FlagNames["CF::p4m"] = AST::CF_P4M;
-        FlagNames["CF::p4g"] = AST::CF_P4G;
-        FlagNames["CF::p3"] = AST::CF_P3;
-        FlagNames["CF::p3m1"] = AST::CF_P3M1;
-        FlagNames["CF::p31m"] = AST::CF_P31M;
-        FlagNames["CF::p6"] = AST::CF_P6;
-        FlagNames["CF::p6m"] = AST::CF_P6M;
-    }
     assert(Builder::CurrentBuilder == nullptr);    // ensure singleton
     Builder::CurrentBuilder = this;
     MaxNatural = 1000.0;
     ASTparameter::Impure = false;
-    
-    if (ASTrule::PrimitivePaths[primShape::circleType] == nullptr) {
-        primIter shape;
-        
-        for (unsigned i = 0; i < primShape::numTypes; ++i) {
-            if (primShape::shapeMap[i]) {
-                ASTrule* r = new ASTrule(i, CfdgError::Default);
-                ASTrule::PrimitivePaths[i] = r;
-                static const std::string  move_op("MOVETO");
-                static const std::string  line_op("LINETO");
-                static const std::string   arc_op("ARCTO");
-                static const std::string close_op("CLOSEPOLY");
-                if (i != primShape::circleType) {
-                    shape.init(primShape::shapeMap[i]);
-                    double x = 0, y = 0;
-                    unsigned cmd;
-                    while (!agg::is_stop(cmd = shape.vertex(&x, &y))) {
-                        if (agg::is_vertex(cmd)) {
-                            exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default), 
-                                                  new ASTreal(y, CfdgError::Default)));
-                            ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
-                                                          std::move(a), CfdgError::Default);
-                            r->mRuleBody.mBody.emplace_back(op);
-                        }
-                    }
-                } else {
-                    exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
-                                          new ASTreal(0.0, CfdgError::Default)));
-                    ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.emplace_back(op);
-                    a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default), 
-                                        new ASTreal(0.0, CfdgError::Default)));
-                    a.get()->append(new ASTreal(0.5, CfdgError::Default));
-                    op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.emplace_back(op);
-                    a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default), 
-                                        new ASTreal(0.0, CfdgError::Default)));
-                    a.get()->append(new ASTreal(0.5, CfdgError::Default));
-                    op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                    r->mRuleBody.mBody.emplace_back(op);
-                }
-                r->mRuleBody.mBody.emplace_back(new ASTpathOp(close_op, exp_ptr(),
-                                                           CfdgError::Default));
-                r->mRuleBody.mRepType = ASTreplacement::op;
-                r->mRuleBody.mPathOp = AST::MOVETO;
-            }
-        }
-    }
 }
 
 Builder::~Builder()
