@@ -138,7 +138,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         png_write_info(png_ptr, info_ptr);
 
-        png_bytep rowPtr = mData + srcy * mStride + srcx * aggCanvas::BytesPerPixel[mPixelFormat];
+        png_bytep rowPtr = mData + srcy * mStride + srcx * aggCanvas::BytesPerPixel.at(mPixelFormat);
         for (int r = 0; r < height; ++r) {
             if (mPixelFormat == aggCanvas::RGBA8_Blend) {
                 // Convert each row to non-premultiplied alpha as per PNG spec
@@ -168,7 +168,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             } else if (mPixelFormat & Has_16bit_Color) {
                 // Convert rgb16/gray16 to network byte order
                 png_uint_16p rowPtr16 = reinterpret_cast<png_uint_16p>(rowPtr);
-                for (int c = 0; c < width * (BytesPerPixel[mPixelFormat] >> 1); ++c) 
+                for (int c = 0; c < width * (BytesPerPixel.at(mPixelFormat) >> 1); ++c) 
                     row16[c] = htons(rowPtr16[c]);
                 png_write_row(png_ptr, reinterpret_cast<png_bytep>(row16));
             } else {
