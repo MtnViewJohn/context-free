@@ -42,7 +42,7 @@ class RendererAST;
 
 namespace AST {
     typedef std::vector<agg::trans_affine> SymmList;
-    typedef uint_fast64_t UIDdatatype;
+    typedef uint_fast32_t UIDdatatype;
 
     class ASTpath;
     class ASTreplacement;
