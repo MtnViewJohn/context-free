@@ -34,14 +34,6 @@
 
 namespace AST {
     
-    const char* ASTpathOp::PathOpNames[9] = {
-        "MOVETO",  "MOVEREL", 
-        "LINETO",  "LINEREL", 
-        "ARCTO",   "ARCREL", 
-        "CURVETO", "CURVEREL", 
-        "CLOSEPOLY"
-    };
-    
     CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID(1);
     
     void
@@ -238,34 +230,41 @@ namespace AST {
         mPathUID = NextPathUID();
     }
     
-    ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(nullptr, loc, op), mArguments(std::move(a)),
+    ASTpathOp::ASTpathOp(const std::string& s, const yy::location& loc)
+    : ASTreplacement(nullptr, loc, op), mArguments(nullptr), 
       mOldStyleArguments(nullptr), mArgCount(0)
     {
-        for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
-            if (!(s.compare(PathOpNames[i]))) {
-                mPathOp = static_cast<pathOpEnum>(i);
-                break;
-            }
-        }
-        if (mPathOp == unknownPathop) {
+        const std::map<std::string, pathOpEnum> PathOpNames = {
+            { "MOVETO",     MOVETO },
+            { "MOVEREL",    MOVEREL },
+            { "LINETO",     LINETO },
+            { "LINEREL",    LINEREL },
+            { "ARCTO",      ARCTO },
+            { "ARCREL",     ARCREL },
+            { "CURVETO",    CURVETO },
+            { "CURVEREL",   CURVEREL },
+            { "CLOSEPOLY",  CLOSEPOLY }
+        };
+
+        auto opname = PathOpNames.find(s);
+        if (opname == PathOpNames.end()) {
+            mPathOp = unknownPathop;
             CfdgError::Error(loc, "Unknown path operation type");
+        } else {
+            mPathOp = opname->second;
         }
+    }
+
+    ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
+    : ASTpathOp(s, loc)
+    {
+        mArguments = std::move(a);
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
-    : ASTreplacement(nullptr, loc, op), mArguments(nullptr),
-      mOldStyleArguments(std::move(a)), mArgCount(0)
+    : ASTpathOp(s, loc)
     {
-        for (int i = MOVETO; i <= CLOSEPOLY; ++i) {
-            if (!(s.compare(PathOpNames[i]))) {
-                mPathOp = static_cast<pathOpEnum>(i);
-                break;
-            }
-        }
-        if (mPathOp == unknownPathop) {
-            CfdgError::Error(loc, "Unknown path operation type");
-        }
+        mOldStyleArguments = std::move(a);
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
