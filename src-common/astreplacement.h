@@ -223,14 +223,13 @@ namespace AST {
         mod_ptr mOldStyleArguments;
         int mArgCount;
         
-        static const char*  PathOpNames[9];
-        
         ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
         ~ASTpathOp();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
     private:
+        ASTpathOp(const std::string& s, const yy::location& loc);
         void pathData(double* data, RendererAST* rti) const;
         void pathDataConst();
         void makePositional();
