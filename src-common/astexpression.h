@@ -100,8 +100,6 @@ namespace AST {
         virtual ASTexpression* simplify();
     private:
         ASTfunction() : ASTexpression(CfdgError::Default) {};
-		static const std::map<std::string, FuncType> NameMap;
-		static const std::map<FuncType, const char*> EntropyMap;
 	};
     class ASTselect : public ASTexpression {
     public:
@@ -349,8 +347,6 @@ namespace AST {
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
-	private:
-		static const std::map<modTypeEnum, const char*> EntropyMap;
 	};
     class ASTmodification : public ASTexpression {
     public:
@@ -388,8 +384,6 @@ namespace AST {
         void evalConst();
         void makeCanonical();
         void grab(ASTmodification* m);
-	private:
-		static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap;
 	};
     class ASTarray : public ASTexpression {
     public:
