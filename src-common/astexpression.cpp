@@ -33,175 +33,6 @@
 
 namespace AST {
     
-    
-    
-	const std::map<std::string, ASTfunction::FuncType> ASTfunction::NameMap = {
-		{ "cos",        ASTfunction::Cos},
-		{ "sin",        ASTfunction::Sin },
-		{ "tan",        ASTfunction::Tan },
-		{ "cot",        ASTfunction::Cot },
-		{ "acos",       ASTfunction::Acos },
-		{ "asin",       ASTfunction::Asin },
-		{ "atan",       ASTfunction::Atan },
-		{ "acot",       ASTfunction::Acot },
-		{ "cosh",       ASTfunction::Cosh },
-		{ "sinh",       ASTfunction::Sinh },
-		{ "tanh",       ASTfunction::Tanh },
-		{ "acosh",      ASTfunction::Acosh },
-		{ "asinh",      ASTfunction::Asinh },
-		{ "atanh",      ASTfunction::Atanh },
-		{ "log",        ASTfunction::Log },
-		{ "log10",      ASTfunction::Log10 },
-		{ "sqrt",       ASTfunction::Sqrt },
-		{ "exp",        ASTfunction::Exp },
-		{ "abs",        ASTfunction::Abs },
-		{ "floor",      ASTfunction::Floor },
-		{ "infinity",   ASTfunction::Infinity },
-		{ "factorial",  ASTfunction::Factorial },
-		{ "sg",         ASTfunction::Sg },
-		{ "isNatural",  ASTfunction::IsNatural },
-		{ "bitnot",     ASTfunction::BitNot },
-		{ "bitor",      ASTfunction::BitOr },
-		{ "bitand",     ASTfunction::BitAnd },
-		{ "bitxor",     ASTfunction::BitXOR },
-		{ "bitleft",    ASTfunction::BitLeft },
-		{ "bitright",   ASTfunction::BitRight },
-		{ "atan2",      ASTfunction::Atan2 },
-		{ "mod",        ASTfunction::Mod },
-		{ "divides",    ASTfunction::Divides },
-		{ "div",        ASTfunction::Div },
-		{ "min",        ASTfunction::Min },
-		{ "max",        ASTfunction::Max },
-		{ "ftime",      ASTfunction::Ftime },
-		{ "frame",      ASTfunction::Frame },
-		{ "rand_static", ASTfunction::Rand_Static },
-		{ "rand",       ASTfunction::Rand },
-		{ "rand+/-",    ASTfunction::Rand2 },
-		{ "randint",    ASTfunction::RandInt }
-	};
-
-	const std::map<ASTmodTerm::modTypeEnum, int> ASTmodification::ClassMap = {
-		{ASTmodTerm::unknownType,   ASTmodification::NotAClass},
-		{ ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
-		{ ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
-		{ ASTmodTerm::z,            ASTmodification::ZClass },
-		{ ASTmodTerm::xyz,          ASTmodification::GeomClass | ASTmodification::ZClass },
-		{ ASTmodTerm::transform,    ASTmodification::GeomClass },
-		{ ASTmodTerm::size,         ASTmodification::GeomClass },
-		{ ASTmodTerm::sizexyz,      ASTmodification::GeomClass | ASTmodification::ZClass },
-		{ ASTmodTerm::rot,          ASTmodification::GeomClass | ASTmodification::PathOpClass },
-		{ ASTmodTerm::skew,         ASTmodification::GeomClass },
-		{ ASTmodTerm::flip,         ASTmodification::GeomClass },
-		{ ASTmodTerm::zsize,        ASTmodification::ZClass },
-		{ ASTmodTerm::hue,          ASTmodification::HueClass },
-		{ ASTmodTerm::sat,          ASTmodification::SatClass },
-		{ ASTmodTerm::bright,       ASTmodification::BrightClass },
-		{ ASTmodTerm::alpha,        ASTmodification::AlphaClass },
-		{ ASTmodTerm::hueTarg,      ASTmodification::HueClass },
-		{ ASTmodTerm::satTarg,      ASTmodification::SatClass },
-		{ ASTmodTerm::brightTarg,   ASTmodification::BrightClass },
-		{ ASTmodTerm::alphaTarg,    ASTmodification::AlphaClass },
-		{ ASTmodTerm::targHue,      ASTmodification::HueTargetClass },
-		{ ASTmodTerm::targSat,      ASTmodification::SatTargetClass },
-		{ ASTmodTerm::targBright,   ASTmodification::BrightTargetClass },
-		{ ASTmodTerm::targAlpha,    ASTmodification::AlphaTargetClass },
-		{ ASTmodTerm::time,         ASTmodification::TimeClass },
-		{ ASTmodTerm::timescale,    ASTmodification::TimeClass },
-		{ ASTmodTerm::stroke,       ASTmodification::StrokeClass },
-		{ ASTmodTerm::param,        ASTmodification::ParamClass },
-		{ ASTmodTerm::x1,           ASTmodification::PathOpClass },
-		{ ASTmodTerm::y1,           ASTmodification::PathOpClass },
-		{ ASTmodTerm::x2,           ASTmodification::PathOpClass },
-		{ ASTmodTerm::y2,           ASTmodification::PathOpClass },
-		{ ASTmodTerm::xrad,         ASTmodification::PathOpClass },
-		{ ASTmodTerm::yrad,         ASTmodification::PathOpClass },
-		{ ASTmodTerm::modification, -1 }
-	};
-
-    // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
-	const std::map<ASTmodTerm::modTypeEnum, const char*> ASTmodTerm::EntropyMap = {
-		{ASTmodTerm::unknownType,   ""},
-		{ ASTmodTerm::x,            "\x95\xE7\x48\x5E\xCC\x06" },
-		{ ASTmodTerm::y,            "\x84\x2B\xF3\xBB\x93\x59" },
-		{ ASTmodTerm::z,            "\xC8\x3A\x12\x32\x36\x71" },
-		{ ASTmodTerm::xyz,          "\x6C\x31\xCA\xBF\x8D\x89" },
-		{ ASTmodTerm::transform,    "\x88\x90\x54\xC5\xD3\x20" },
-		{ ASTmodTerm::size,         "\x64\xEC\x5B\x4B\xEE\x2B" },
-		{ ASTmodTerm::sizexyz,      "\xB0\x31\xD5\x1E\x7A\x5A" },
-		{ ASTmodTerm::rot,          "\x84\xB0\x92\x26\x59\xE2" },
-		{ ASTmodTerm::skew,         "\xFF\x2D\x84\x01\xA0\x0A" },
-		{ ASTmodTerm::flip,         "\x43\x5A\x17\xEA\x12\x05" },
-		{ ASTmodTerm::zsize,        "\x64\xEC\x5B\x4B\xEE\x2B" },
-		{ ASTmodTerm::hue,          "\x02\xDE\x2B\x2C\x25\xA1" },
-		{ ASTmodTerm::sat,          "\x18\x4F\xCF\x04\x3F\xE5" },
-		{ ASTmodTerm::bright,       "\x1F\x3F\xEB\xA2\xA2\x7E" },
-		{ ASTmodTerm::alpha,        "\xB4\xFF\x9E\x45\xEE\x7E" },
-		{ ASTmodTerm::hueTarg,      "\xAF\xE5\x58\x33\x20\xF8" },
-		{ ASTmodTerm::satTarg,      "\x98\x80\xED\x44\x2F\xF2" },
-		{ ASTmodTerm::brightTarg,   "\x68\xD6\xCB\x8A\x96\x20" },
-		{ ASTmodTerm::alphaTarg,    "\x24\x4C\xCC\x41\x09\xC7" },
-		{ ASTmodTerm::targHue,      "\xDB\x3F\xA1\xDA\xE7\x45" },
-		{ ASTmodTerm::targSat,      "\xDA\x75\x13\xD3\x30\xEA" },
-		{ ASTmodTerm::targBright,   "\x8F\x01\x2B\x75\xC3\x25" },
-		{ ASTmodTerm::targAlpha,    "\xE7\xCD\x5E\xE3\x88\xF4" },
-		{ ASTmodTerm::time,         "\x20\xC6\xE8\x02\xED\x27" },
-		{ ASTmodTerm::timescale,    "\x78\x8E\xC8\x2C\x1C\x96" },
-		{ ASTmodTerm::stroke,       "" },
-		{ ASTmodTerm::param,        "" },
-		{ ASTmodTerm::x1,           "" },
-		{ ASTmodTerm::y1,           "" },
-		{ ASTmodTerm::x2,           "" },
-		{ ASTmodTerm::y2,           "" },
-		{ ASTmodTerm::xrad,         "" },
-		{ ASTmodTerm::yrad,         "" },
-		{ ASTmodTerm::modification, "\x88\x90\x54\xC5\xD3\x20" },
-	};
-
-	const std::map<ASTfunction::FuncType, const char*> ASTfunction::EntropyMap = {
-		{ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
-		{ ASTfunction::Sin,         "\xAF\x58\xFE\x2C\xD4\x53" },
-		{ ASTfunction::Tan,         "\x95\xFF\x59\x11\x03\x02" },
-		{ ASTfunction::Cot,         "\x77\xF5\xB6\x35\x8C\xF0" },
-		{ ASTfunction::Acos,        "\x3A\xCD\x79\x3E\xAD\xB4" },
-		{ ASTfunction::Asin,        "\x1D\x75\x0B\xBC\x5F\x52" },
-		{ ASTfunction::Atan,        "\x0B\xC8\x89\xAB\xF8\xB7" },
-		{ ASTfunction::Acot,        "\x69\x7C\xC7\x1A\xF6\x7B" },
-		{ ASTfunction::Cosh,        "\x48\x43\x43\x35\x62\x81" },
-		{ ASTfunction::Sinh,        "\x51\x62\xFB\x76\xED\x9C" },
-		{ ASTfunction::Tanh,        "\xBB\x91\x54\xA9\x63\x84" },
-		{ ASTfunction::Acosh,       "\x4F\x28\x48\x20\xB7\x5C" },
-		{ ASTfunction::Asinh,       "\x6C\x9B\x32\xAA\x4C\xD0" },
-		{ ASTfunction::Atanh,       "\x58\xEC\xBB\x25\xF8\xB6" },
-		{ ASTfunction::Log,         "\x8E\xB8\x62\xA1\x75\x0F" },
-		{ ASTfunction::Log10,       "\x4A\x6C\xA3\x02\x8B\x80" },
-		{ ASTfunction::Sqrt,        "\x86\x7C\xFC\x20\xCB\x97" },
-		{ ASTfunction::Exp,         "\x88\xA8\x65\xF0\xC1\x06" },
-		{ ASTfunction::Abs,         "\x41\x89\x18\xD1\xAD\x82" },
-		{ ASTfunction::Floor,       "\xB7\x28\xD7\xD7\xA3\xCC" },
-		{ ASTfunction::Infinity,    "\x2C\x28\x50\xCC\xDE\x44" },
-		{ ASTfunction::Factorial,   "\x19\xD7\x83\x29\x47\x99" },
-		{ ASTfunction::Sg,          "\xB7\x05\x28\xBA\xCD\x2E" },
-		{ ASTfunction::IsNatural,   "\x49\xD6\xF8\x5B\x45\x59" },
-		{ ASTfunction::BitNot,      "\x79\x19\x1A\x9F\x4D\xA0" },
-		{ ASTfunction::BitOr,       "\xF2\x77\xAB\x5C\x33\x43" },
-		{ ASTfunction::BitAnd,      "\xC3\x56\x9E\x75\xE0\x44" },
-		{ ASTfunction::BitXOR,      "\xBB\xFA\x2B\xD2\x91\x55" },
-		{ ASTfunction::BitLeft,     "\x91\x47\xE5\xE5\x0D\xAA" },
-		{ ASTfunction::BitRight,    "\xF1\xAB\x17\x00\xFA\xA5" },
-		{ ASTfunction::Atan2,       "\x99\x1B\xC9\xE0\x3F\xA4" },
-		{ ASTfunction::Divides,     "\x78\x8E\xC8\x2C\x1C\x96" },
-		{ ASTfunction::Div,         "\x64\xEC\x5B\x4B\xEE\x2B" },
-		{ ASTfunction::Mod,         "\x0F\xE3\xFE\x5F\xBF\xBF" },
-		{ ASTfunction::Min,         "\xA2\x42\xA3\x49\xB1\x19" },
-		{ ASTfunction::Max,         "\xD3\x55\x5C\x0D\xD8\x51" },
-		{ ASTfunction::Ftime,       "\x4F\xBE\xA1\x06\x80\x06" },
-		{ ASTfunction::Frame,       "\x90\x70\x6A\xBB\xBA\xB0" },
-		{ ASTfunction::Rand_Static, "\xC8\xF7\xE5\x3E\x05\xA3" },
-		{ ASTfunction::Rand,        "\xDA\x18\x5B\xE2\xDB\x79" },
-		{ ASTfunction::Rand2,       "\xDC\x8D\x09\x15\x8A\xC4" },
-		{ ASTfunction::RandInt,     "\x48\x14\x4E\x27\x35\x2E" }
-	};
-
     ASTexpression*
     ASTexpression::constCopy(const ASTparameter* bound, const std::string& entropy) const
     {
@@ -266,6 +97,51 @@ namespace AST {
     ASTfunction::FuncType
     ASTfunction::GetFuncType(const std::string& func) 
     {
+        const std::map<std::string, ASTfunction::FuncType> NameMap = {
+            { "cos",        ASTfunction::Cos},
+            { "sin",        ASTfunction::Sin },
+            { "tan",        ASTfunction::Tan },
+            { "cot",        ASTfunction::Cot },
+            { "acos",       ASTfunction::Acos },
+            { "asin",       ASTfunction::Asin },
+            { "atan",       ASTfunction::Atan },
+            { "acot",       ASTfunction::Acot },
+            { "cosh",       ASTfunction::Cosh },
+            { "sinh",       ASTfunction::Sinh },
+            { "tanh",       ASTfunction::Tanh },
+            { "acosh",      ASTfunction::Acosh },
+            { "asinh",      ASTfunction::Asinh },
+            { "atanh",      ASTfunction::Atanh },
+            { "log",        ASTfunction::Log },
+            { "log10",      ASTfunction::Log10 },
+            { "sqrt",       ASTfunction::Sqrt },
+            { "exp",        ASTfunction::Exp },
+            { "abs",        ASTfunction::Abs },
+            { "floor",      ASTfunction::Floor },
+            { "infinity",   ASTfunction::Infinity },
+            { "factorial",  ASTfunction::Factorial },
+            { "sg",         ASTfunction::Sg },
+            { "isNatural",  ASTfunction::IsNatural },
+            { "bitnot",     ASTfunction::BitNot },
+            { "bitor",      ASTfunction::BitOr },
+            { "bitand",     ASTfunction::BitAnd },
+            { "bitxor",     ASTfunction::BitXOR },
+            { "bitleft",    ASTfunction::BitLeft },
+            { "bitright",   ASTfunction::BitRight },
+            { "atan2",      ASTfunction::Atan2 },
+            { "mod",        ASTfunction::Mod },
+            { "divides",    ASTfunction::Divides },
+            { "div",        ASTfunction::Div },
+            { "min",        ASTfunction::Min },
+            { "max",        ASTfunction::Max },
+            { "ftime",      ASTfunction::Ftime },
+            { "frame",      ASTfunction::Frame },
+            { "rand_static", ASTfunction::Rand_Static },
+            { "rand",       ASTfunction::Rand },
+            { "rand+/-",    ASTfunction::Rand2 },
+            { "randint",    ASTfunction::RandInt }
+        };
+        
 		auto nameItem = NameMap.find(func);
 		if (nameItem == NameMap.end())
 			return NotAFunction;
@@ -1747,6 +1623,52 @@ namespace AST {
     void
     ASTfunction::entropy(std::string& ent) const
     {
+        // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
+        const std::map<ASTfunction::FuncType, const char*> EntropyMap = {
+            {ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
+            { ASTfunction::Sin,         "\xAF\x58\xFE\x2C\xD4\x53" },
+            { ASTfunction::Tan,         "\x95\xFF\x59\x11\x03\x02" },
+            { ASTfunction::Cot,         "\x77\xF5\xB6\x35\x8C\xF0" },
+            { ASTfunction::Acos,        "\x3A\xCD\x79\x3E\xAD\xB4" },
+            { ASTfunction::Asin,        "\x1D\x75\x0B\xBC\x5F\x52" },
+            { ASTfunction::Atan,        "\x0B\xC8\x89\xAB\xF8\xB7" },
+            { ASTfunction::Acot,        "\x69\x7C\xC7\x1A\xF6\x7B" },
+            { ASTfunction::Cosh,        "\x48\x43\x43\x35\x62\x81" },
+            { ASTfunction::Sinh,        "\x51\x62\xFB\x76\xED\x9C" },
+            { ASTfunction::Tanh,        "\xBB\x91\x54\xA9\x63\x84" },
+            { ASTfunction::Acosh,       "\x4F\x28\x48\x20\xB7\x5C" },
+            { ASTfunction::Asinh,       "\x6C\x9B\x32\xAA\x4C\xD0" },
+            { ASTfunction::Atanh,       "\x58\xEC\xBB\x25\xF8\xB6" },
+            { ASTfunction::Log,         "\x8E\xB8\x62\xA1\x75\x0F" },
+            { ASTfunction::Log10,       "\x4A\x6C\xA3\x02\x8B\x80" },
+            { ASTfunction::Sqrt,        "\x86\x7C\xFC\x20\xCB\x97" },
+            { ASTfunction::Exp,         "\x88\xA8\x65\xF0\xC1\x06" },
+            { ASTfunction::Abs,         "\x41\x89\x18\xD1\xAD\x82" },
+            { ASTfunction::Floor,       "\xB7\x28\xD7\xD7\xA3\xCC" },
+            { ASTfunction::Infinity,    "\x2C\x28\x50\xCC\xDE\x44" },
+            { ASTfunction::Factorial,   "\x19\xD7\x83\x29\x47\x99" },
+            { ASTfunction::Sg,          "\xB7\x05\x28\xBA\xCD\x2E" },
+            { ASTfunction::IsNatural,   "\x49\xD6\xF8\x5B\x45\x59" },
+            { ASTfunction::BitNot,      "\x79\x19\x1A\x9F\x4D\xA0" },
+            { ASTfunction::BitOr,       "\xF2\x77\xAB\x5C\x33\x43" },
+            { ASTfunction::BitAnd,      "\xC3\x56\x9E\x75\xE0\x44" },
+            { ASTfunction::BitXOR,      "\xBB\xFA\x2B\xD2\x91\x55" },
+            { ASTfunction::BitLeft,     "\x91\x47\xE5\xE5\x0D\xAA" },
+            { ASTfunction::BitRight,    "\xF1\xAB\x17\x00\xFA\xA5" },
+            { ASTfunction::Atan2,       "\x99\x1B\xC9\xE0\x3F\xA4" },
+            { ASTfunction::Divides,     "\x78\x8E\xC8\x2C\x1C\x96" },
+            { ASTfunction::Div,         "\x64\xEC\x5B\x4B\xEE\x2B" },
+            { ASTfunction::Mod,         "\x0F\xE3\xFE\x5F\xBF\xBF" },
+            { ASTfunction::Min,         "\xA2\x42\xA3\x49\xB1\x19" },
+            { ASTfunction::Max,         "\xD3\x55\x5C\x0D\xD8\x51" },
+            { ASTfunction::Ftime,       "\x4F\xBE\xA1\x06\x80\x06" },
+            { ASTfunction::Frame,       "\x90\x70\x6A\xBB\xBA\xB0" },
+            { ASTfunction::Rand_Static, "\xC8\xF7\xE5\x3E\x05\xA3" },
+            { ASTfunction::Rand,        "\xDA\x18\x5B\xE2\xDB\x79" },
+            { ASTfunction::Rand2,       "\xDC\x8D\x09\x15\x8A\xC4" },
+            { ASTfunction::RandInt,     "\x48\x14\x4E\x27\x35\x2E" }
+        };
+        
 		if (functype <= NotAFunction || functype >= LastOne) return;
 
         arguments->entropy(ent);
@@ -1876,8 +1798,47 @@ namespace AST {
     void
     ASTmodTerm::entropy(std::string& ent) const
     {
+        // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
+        const std::map<ASTmodTerm::modTypeEnum, const char*> EntropyMap = {
+            {ASTmodTerm::unknownType,   ""},
+            { ASTmodTerm::x,            "\x95\xE7\x48\x5E\xCC\x06" },
+            { ASTmodTerm::y,            "\x84\x2B\xF3\xBB\x93\x59" },
+            { ASTmodTerm::z,            "\xC8\x3A\x12\x32\x36\x71" },
+            { ASTmodTerm::xyz,          "\x6C\x31\xCA\xBF\x8D\x89" },
+            { ASTmodTerm::transform,    "\x88\x90\x54\xC5\xD3\x20" },
+            { ASTmodTerm::size,         "\x64\xEC\x5B\x4B\xEE\x2B" },
+            { ASTmodTerm::sizexyz,      "\xB0\x31\xD5\x1E\x7A\x5A" },
+            { ASTmodTerm::rot,          "\x84\xB0\x92\x26\x59\xE2" },
+            { ASTmodTerm::skew,         "\xFF\x2D\x84\x01\xA0\x0A" },
+            { ASTmodTerm::flip,         "\x43\x5A\x17\xEA\x12\x05" },
+            { ASTmodTerm::zsize,        "\x64\xEC\x5B\x4B\xEE\x2B" },
+            { ASTmodTerm::hue,          "\x02\xDE\x2B\x2C\x25\xA1" },
+            { ASTmodTerm::sat,          "\x18\x4F\xCF\x04\x3F\xE5" },
+            { ASTmodTerm::bright,       "\x1F\x3F\xEB\xA2\xA2\x7E" },
+            { ASTmodTerm::alpha,        "\xB4\xFF\x9E\x45\xEE\x7E" },
+            { ASTmodTerm::hueTarg,      "\xAF\xE5\x58\x33\x20\xF8" },
+            { ASTmodTerm::satTarg,      "\x98\x80\xED\x44\x2F\xF2" },
+            { ASTmodTerm::brightTarg,   "\x68\xD6\xCB\x8A\x96\x20" },
+            { ASTmodTerm::alphaTarg,    "\x24\x4C\xCC\x41\x09\xC7" },
+            { ASTmodTerm::targHue,      "\xDB\x3F\xA1\xDA\xE7\x45" },
+            { ASTmodTerm::targSat,      "\xDA\x75\x13\xD3\x30\xEA" },
+            { ASTmodTerm::targBright,   "\x8F\x01\x2B\x75\xC3\x25" },
+            { ASTmodTerm::targAlpha,    "\xE7\xCD\x5E\xE3\x88\xF4" },
+            { ASTmodTerm::time,         "\x20\xC6\xE8\x02\xED\x27" },
+            { ASTmodTerm::timescale,    "\x78\x8E\xC8\x2C\x1C\x96" },
+            { ASTmodTerm::stroke,       "" },
+            { ASTmodTerm::param,        "" },
+            { ASTmodTerm::x1,           "" },
+            { ASTmodTerm::y1,           "" },
+            { ASTmodTerm::x2,           "" },
+            { ASTmodTerm::y2,           "" },
+            { ASTmodTerm::xrad,         "" },
+            { ASTmodTerm::yrad,         "" },
+            { ASTmodTerm::modification, "\x88\x90\x54\xC5\xD3\x20" },
+        };
+        
         if (args) args->entropy(ent);
-		ent.append(ASTmodTerm::EntropyMap.at(modType));
+		ent.append(EntropyMap.at(modType));
 	}
     
     void
@@ -3031,6 +2992,44 @@ namespace AST {
     void
     ASTmodification::evalConst() 
     {
+        const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
+            {ASTmodTerm::unknownType,   ASTmodification::NotAClass},
+            { ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::z,            ASTmodification::ZClass },
+            { ASTmodTerm::xyz,          ASTmodification::GeomClass | ASTmodification::ZClass },
+            { ASTmodTerm::transform,    ASTmodification::GeomClass },
+            { ASTmodTerm::size,         ASTmodification::GeomClass },
+            { ASTmodTerm::sizexyz,      ASTmodification::GeomClass | ASTmodification::ZClass },
+            { ASTmodTerm::rot,          ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::skew,         ASTmodification::GeomClass },
+            { ASTmodTerm::flip,         ASTmodification::GeomClass },
+            { ASTmodTerm::zsize,        ASTmodification::ZClass },
+            { ASTmodTerm::hue,          ASTmodification::HueClass },
+            { ASTmodTerm::sat,          ASTmodification::SatClass },
+            { ASTmodTerm::bright,       ASTmodification::BrightClass },
+            { ASTmodTerm::alpha,        ASTmodification::AlphaClass },
+            { ASTmodTerm::hueTarg,      ASTmodification::HueClass },
+            { ASTmodTerm::satTarg,      ASTmodification::SatClass },
+            { ASTmodTerm::brightTarg,   ASTmodification::BrightClass },
+            { ASTmodTerm::alphaTarg,    ASTmodification::AlphaClass },
+            { ASTmodTerm::targHue,      ASTmodification::HueTargetClass },
+            { ASTmodTerm::targSat,      ASTmodification::SatTargetClass },
+            { ASTmodTerm::targBright,   ASTmodification::BrightTargetClass },
+            { ASTmodTerm::targAlpha,    ASTmodification::AlphaTargetClass },
+            { ASTmodTerm::time,         ASTmodification::TimeClass },
+            { ASTmodTerm::timescale,    ASTmodification::TimeClass },
+            { ASTmodTerm::stroke,       ASTmodification::StrokeClass },
+            { ASTmodTerm::param,        ASTmodification::ParamClass },
+            { ASTmodTerm::x1,           ASTmodification::PathOpClass },
+            { ASTmodTerm::y1,           ASTmodification::PathOpClass },
+            { ASTmodTerm::x2,           ASTmodification::PathOpClass },
+            { ASTmodTerm::y2,           ASTmodification::PathOpClass },
+            { ASTmodTerm::xrad,         ASTmodification::PathOpClass },
+            { ASTmodTerm::yrad,         ASTmodification::PathOpClass },
+            { ASTmodTerm::modification, -1 }
+        };
+        
         int nonConstant = 0;
         
         ASTtermArray temp;
@@ -3045,7 +3044,7 @@ namespace AST {
             
             // Put in code for separating color changes and target color changes
                         
-			int mc = ASTmodification::ClassMap.at(mod->modType);
+			int mc = ClassMap.at(mod->modType);
 			modClass |= mc;
             if (!mod->isConstant)
                 nonConstant |= mc;
