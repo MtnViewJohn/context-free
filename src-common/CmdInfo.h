@@ -66,6 +66,9 @@ namespace AST {
         CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
         CommandInfo(CommandInfo&&) noexcept;
         CommandInfo(const CommandInfo&);
+        CommandInfo(agg::path_storage* p)
+        : mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), mMiterLimit(4.0),
+          mStrokeWidth(0.1), mIndex(0), mPath(p), mPathUID(0) {}
         CommandInfo& operator=(const CommandInfo&);
         CommandInfo& operator=(CommandInfo&&) noexcept;
         void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);

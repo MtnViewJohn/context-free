@@ -161,10 +161,10 @@ class RendererImpl : public RendererAST {
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;
     
+        primShape        circleCopy;
+        primShape        squareCopy;
+        primShape        triangleCopy;
         AST::CommandInfo shapeMap[3];
-        primShape        shape0;
-        primShape        shape1;
-        primShape        shape2;
     
         static unsigned int MoveFinishedAt;     // when this many, move to file
         static unsigned int MoveUnfinishedAt;   // when this many, move to files

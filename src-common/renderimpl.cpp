@@ -66,9 +66,12 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
     : m_cfdg(cfdg), mVariation(variation), m_border(border), m_minSize(minSize),
-      shape0(*primShape::shapeMap[0]), 
-      shape1(*primShape::shapeMap[1]),
-      shape2(*primShape::shapeMap[2])
+      circleCopy(primShape::circle), squareCopy(primShape::square), triangleCopy(primShape::triangle),
+      shapeMap{
+          {&circleCopy},
+          {&squareCopy},
+          {&triangleCopy}
+      }
 {
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
@@ -96,12 +99,6 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     m_maxShapes = 500000000;
     m_currScale = m_currArea = 0.0;
     mScaleArea = mScale = 0.0;
-    shapeMap[0].mFlags = shapeMap[1].mFlags = shapeMap[2].mFlags = 
-        CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
-    shapeMap[0].mPathUID = shapeMap[1].mPathUID = shapeMap[2].mPathUID = 0;
-    shapeMap[0].mPath = &shape0;
-    shapeMap[1].mPath = &shape1;
-    shapeMap[2].mPath = &shape2;
     
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
     m_cfdg->hasParameter(CFG::Frame, mCurrentFrame, nullptr);
