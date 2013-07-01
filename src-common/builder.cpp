@@ -39,7 +39,6 @@
 #include "primShape.h"
 #include <string.h>
 #include <math.h>
-#include <typeinfo>
 #include <cassert>
 #include <limits>
 #include "scanner.h"

@@ -31,6 +31,7 @@
 #include <atomic>
 #include "rendererAST.h"
 #include "builder.h"
+#include <typeinfo>
 
 namespace AST {
     

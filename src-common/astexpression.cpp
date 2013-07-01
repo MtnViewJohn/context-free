@@ -28,7 +28,6 @@
 #include "rendererAST.h"
 
 #include <math.h>
-#include <typeinfo>
 #include <cassert>
 
 namespace AST {
