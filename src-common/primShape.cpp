@@ -37,20 +37,20 @@ static const double hp = h;
 static const double hn = -h / 2.0;
 static const double t = sqrt(2.0) / 4.0;
 
-const primShape primShape::square{
+const primShape primShape::square = {
     {  0.5,  0.5 },
     { -0.5,  0.5 },
     { -0.5, -0.5 },
     {  0.5, -0.5 }
 };
 
-const primShape primShape::triangle{
+const primShape primShape::triangle = {
     { 0.0, hp },
     {-0.5, hn },
     { 0.5, hn }
 };
 
-const primShape primShape::circle{
+const primShape primShape::circle = {
     { 0.5,  0.0 },
     {   t,    t },
     { 0.0,  0.5 },
