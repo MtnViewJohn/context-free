@@ -26,16 +26,22 @@
 #define INCLUDE_PRIMSHAPE_H
 
 #include "agg_path_storage.h"
+#include <initializer_list>
+#include <utility>
+#include <cassert>
 
 class primShape : public agg::path_storage
 {
 public:
     enum {circleType = 0, squareType = 1, triangleType = 2, fillType = 3,
     numTypes = 4};
-    primShape(const agg::point_d* p, unsigned s)
+    primShape(std::initializer_list<std::pair<double, double>> l)
     {
-        move_to(p[0].x, p[0].y);
-        for (unsigned i = 1; i < s; ++i) line_to(p[i].x, p[i].y);
+        auto p = l.begin();
+        assert(p != l.end());
+        move_to(p->first, p->second);
+        for (++p; p != l.end(); ++p)
+            line_to(p->first, p->second);
         end_poly(agg::path_flags_close);
     }
     primShape() {}
