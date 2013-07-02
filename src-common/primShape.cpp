@@ -32,41 +32,34 @@ using namespace agg;
 #define M_PI        3.14159265358979323846
 #endif
 
-static const point_d squareV[4] = { 
-    point_d( 0.5,  0.5),
-    point_d(-0.5,  0.5),
-    point_d(-0.5, -0.5),
-    point_d( 0.5, -0.5)
-};
-
-const primShape primShape::square(squareV, 4);
-
 static const double h = 0.5 / cos(M_PI/6.0);
 static const double hp = h;
 static const double hn = -h / 2.0;
-
-static const point_d triV[3] = { 
-    point_d( 0.0, hp),
-    point_d(-0.5, hn),
-    point_d( 0.5, hn)
-};
-
-const primShape primShape::triangle(triV, 3);
-
 static const double t = sqrt(2.0) / 4.0;
 
-static const point_d circleV[8] = { 
-    point_d( 0.5,  0.0),
-    point_d(   t,    t),
-    point_d( 0.0,  0.5),
-    point_d(  -t,    t),
-    point_d(-0.5,  0.0),
-    point_d(  -t,   -t),
-    point_d( 0.0, -0.5),
-    point_d(   t,   -t)
+const primShape primShape::square{
+    {  0.5,  0.5 },
+    { -0.5,  0.5 },
+    { -0.5, -0.5 },
+    {  0.5, -0.5 }
 };
-const primShape primShape::circle(circleV, 8);
 
+const primShape primShape::triangle{
+    { 0.0, hp },
+    {-0.5, hn },
+    { 0.5, hn }
+};
+
+const primShape primShape::circle{
+    { 0.5,  0.0 },
+    {   t,    t },
+    { 0.0,  0.5 },
+    {  -t,    t },
+    {-0.5,  0.0 },
+    {  -t,   -t },
+    { 0.0, -0.5 },
+    {   t,   -t }
+};
 const primShape* primShape::shapeMap[numTypes] = { 
     &primShape::circle, 
     &primShape::square, 
