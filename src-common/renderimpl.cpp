@@ -337,9 +337,8 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         mUnfinishedShapes.pop_back();
         m_stats.toDoCount--;
         
-        const ASTrule* rule = m_cfdg->findRule(s.mShapeType, s.mWorldState.mRand64Seed.getDouble());
-        
         try {
+            const ASTrule* rule = m_cfdg->findRule(s.mShapeType, s.mWorldState.mRand64Seed.getDouble());
             m_drawingMode = false;      // shouldn't matter
             rule->traverse(s, false, this);
         } catch (CfdgError& e) {
