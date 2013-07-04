@@ -230,7 +230,6 @@ inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index == __y._index;
 }
 
@@ -241,7 +240,6 @@ inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index != __y._index;
 }
 
@@ -252,7 +250,6 @@ inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index < __y._index;
 }
 
@@ -263,7 +260,6 @@ inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index > __y._index;
 }
 
@@ -274,7 +270,6 @@ inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index <= __y._index;
 }
 
@@ -285,7 +280,6 @@ inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    assert(__x._chunksPtr == __y.chunksPtr && __x._size == __y._size);
     return __x._index >= __y._index;
 }
 
