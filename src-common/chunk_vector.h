@@ -326,23 +326,24 @@ public:
     }
     ~chunk_vector() { clear(); _shrink_to_fit(); }
 
-    void push_back(const_reference x)
+    void push_back(const value_type& x)
     {
-        size_t chunkNum = _size >> _power2;
-        if (_chunks.size() <= chunkNum)
-            _chunks.push_back(_valAlloc.allocate(_chunk_size));
-        _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
+        _valType* endVal = _alloc_back();
         _valAlloc.construct(endVal, x);
+        ++_size;
+    }
+    
+    void push_back(value_type&& x)
+    {
+        _valType* endVal = _alloc_back();
+        _valAlloc.construct(endVal, std::move(x));
         ++_size;
     }
     
     template<typename... Args>
     void emplace_back(Args&&... args)
     {
-        size_t chunkNum = _size >> _power2;
-        if (_chunks.size() <= chunkNum)
-            _chunks.push_back(_valAlloc.allocate(_chunk_size));
-        _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
+        _valType* endVal = _alloc_back();
         _valAlloc.construct(endVal, std::forward<Args>(args)...);
         ++_size;
         
@@ -470,12 +471,17 @@ public:
 private:
     void push_back()
     {
+        _valType* endVal = _alloc_back();
+        ::new((void*)endVal) value_type();
+        ++_size;
+    }
+    
+    pointer _alloc_back()
+    {
         size_t chunkNum = _size >> _power2;
         if (_chunks.size() <= chunkNum)
             _chunks.push_back(_valAlloc.allocate(_chunk_size));
-        _valType* endVal = _chunks[chunkNum] + (_size & _chunk_mask);
-        ::new(reinterpret_cast<void*>(endVal)) value_type();
-        ++_size;
+        return _chunks[chunkNum] + (_size & _chunk_mask);
     }
     
     void _shrink_to_fit()
