@@ -56,14 +56,11 @@ private:
     };
     
     pointer*    _chunksPtr;
-    pointer     _current;
-    size_type   _size;
     size_type   _index;
     
-    chunk_vector_iterator(_valType** vals, size_t size, bool begin)
-        : _chunksPtr(vals), _size(size), _index(begin ? 0 : size)
+    chunk_vector_iterator(_valType** vals, size_t index)
+        : _chunksPtr(vals), _index(index)
     {
-        _set_current();
     }
     
     template <typename _vT, unsigned _p2, typename _Alloc>
@@ -95,31 +92,28 @@ private:
     
 public:
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
-        : _chunksPtr(cvi._chunksPtr), _current(cvi._current), _size(cvi._size), _index(cvi._index)
+        : _chunksPtr(cvi._chunksPtr), _index(cvi._index)
     { }
     chunk_vector_iterator()
-        : _chunksPtr(nullptr), _current(nullptr), _size(0), _index(0)
+        : _chunksPtr(nullptr), _index(0)
     { }
     
     chunk_vector_iterator& operator=(const chunk_vector_iterator& rhs)
     {
         _chunksPtr = rhs._chunksPtr;
-        _current = rhs._current;
-        _size = rhs._size;
         _index = rhs._index;
         return *this;
     }
 
     reference operator*() const
-    { return *_current; }
+    { return *_get_current(); }
 
     pointer operator->() const
-    { return _current; }
+    { return _get_current(); }
 
     chunk_vector_iterator& operator++()
     {
         ++_index;
-        _set_current();
         return *this;
     }
 
@@ -133,7 +127,6 @@ public:
     chunk_vector_iterator& operator--()
     {
         --_index;
-        _set_current();
         return *this;
     }
 
@@ -147,7 +140,6 @@ public:
     chunk_vector_iterator& operator+=(difference_type n)
     {
         _index += n;
-        _set_current();
         return *this;
     }
 
@@ -161,7 +153,6 @@ public:
     chunk_vector_iterator& operator-=(difference_type n)
     {
         _index -= n;
-        _set_current();
         return *this;
     }
 
@@ -177,12 +168,9 @@ public:
 
     reference operator[](difference_type n) const
     {
-        size_t i = _index + n;
-        if (i < _size) {
-            _valType* val = _chunksPtr[i >> _power2] + (i & _chunk_mask);
-            return *val;
-        }
-        return *_current;
+        chunk_vector_iterator tmp = *this;
+        tmp += n;
+        return *tmp;
     }
     
     bool operator<(const chunk_vector_iterator& rhs) const noexcept
@@ -216,10 +204,9 @@ public:
     }
     
 private:
-    void _set_current()
+    pointer _get_current() const
     {
-        if (_index < _size)
-            _current = _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        return _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
     }
 };
 
@@ -448,12 +435,12 @@ public:
     reference back() { return (*this)[_size - 1]; }
     const_reference back() const { return (*this)[_size - 1]; }
 
-    iterator begin() noexcept             { return iterator(_chunks.data(), _size, true); }
-    iterator end() noexcept               { return iterator(_chunks.data(), _size, false); }
-    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), _size, true); }
-    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _size, false); }
-    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), _size, true); }
-    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _size, false); }
+    iterator begin() noexcept             { return iterator(_chunks.data(), 0); }
+    iterator end() noexcept               { return iterator(_chunks.data(), _size); }
+    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), 0); }
+    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _size); }
+    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), 0); }
+    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _size); }
     
     reverse_iterator rbegin() noexcept             { return reverse_iterator(end()); }
     reverse_iterator rend() noexcept               { return reverse_iterator(begin()); }
