@@ -278,10 +278,11 @@ inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
 template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>
 class chunk_vector {
 private:
-    size_t _size;
+    size_t _start;
+    size_t _end;
     std::vector<_valType*> _chunks;
     _Alloc _valAlloc;
-    enum consts_e {
+    enum consts_e : size_t {
         _chunk_size = 1 << _power2,
         _chunk_mask = _chunk_size - 1
     };
@@ -301,24 +302,24 @@ public:
     typedef _Alloc                                          allocator_type;
 
     chunk_vector()
-        : _size(0)
+        : _start(0), _end(0)
     {
         assert(_valAlloc.max_size() >= _chunk_size);
     }
-    ~chunk_vector() { clear(); _shrink_to_fit(); }
+    ~chunk_vector() { clear(); _shrink_to_fit(true); }
 
     void push_back(const value_type& x)
     {
         _valType* endVal = _alloc_back();
         _valAlloc.construct(endVal, x);
-        ++_size;
+        ++_end;
     }
     
     void push_back(value_type&& x)
     {
         _valType* endVal = _alloc_back();
         _valAlloc.construct(endVal, std::move(x));
-        ++_size;
+        ++_end;
     }
     
     template<typename... Args>
@@ -326,78 +327,162 @@ public:
     {
         _valType* endVal = _alloc_back();
         _valAlloc.construct(endVal, std::forward<Args>(args)...);
-        ++_size;
+        ++_end;
         
     }
     
     void pop_back()
     {
-        if (_size == 0) return;
-        --_size;
-        _valType* endVal = _chunks[_size >> _power2] + (_size & _chunk_mask);
+        if (_start == _end) return;
+        --_end;
+        _valType* endVal = _chunks[_end >> _power2] + (_end & _chunk_mask);
         _valAlloc.destroy(endVal);
     }
     
-    size_type size() const noexcept { return _size; }
+    void push_front(const value_type& x)
+    {
+        _valType* frontVal = _alloc_front();
+        _valAlloc.construct(frontVal, x);
+        --_start;
+    }
     
-    bool empty() const noexcept { return _size == 0; }
+    void push_front(value_type&& x)
+    {
+        _valType* frontVal = _alloc_front();
+        _valAlloc.construct(frontVal, std::move(x));
+        --_start;
+    }
+    
+    template<typename... Args>
+    void emplace_front(Args&&... args)
+    {
+        _valType* frontVal = _alloc_front();
+        _valAlloc.construct(frontVal, std::forward<Args>(args)...);
+        --_start;
+        
+    }
+    
+    void pop_front()
+    {
+        if (_start == _end) return;
+        _valType* frontVal = _chunks[_start >> _power2] + (_start & _chunk_mask);
+        ++_start;
+        _valAlloc.destroy(frontVal);
+    }
+    
+    size_type size() const noexcept { return _end - _start; }
+    
+    bool empty() const noexcept { return _start == _end; }
     
     void clear() noexcept
     {
-        for (size_t chunkNum = 0, num2delete = _size; num2delete; ++chunkNum) {
-            size_t valCount = num2delete > _chunk_size ? _chunk_size : num2delete;
-            _valType* chunk = _chunks[chunkNum];
-            for (size_t valNum = 0; valNum < valCount; ++valNum)
-                _valAlloc.destroy(chunk + valNum);
-            num2delete -= valCount;
-        }
-        _size = 0;
+        for (size_t i = _start; i < _end; ++i)
+            _valAlloc.destroy(_chunks[i >> _power2] + (i & _chunk_mask));
+        _end = _start;
     }
     
     void shrink_to_fit()
     {
-        _shrink_to_fit();
+        _shrink_to_fit(true);
         _chunks.shrink_to_fit();
     }
     
-    void resize(size_type newSize, const_reference x)
+    void resize(difference_type _newSize, const_reference x)
+    // Set to |size|, adding to/removing from the end if positive and the front
+    // if negative.
     {
-        reserve(newSize);
-        while (newSize > _size)
-            push_back(x);
-        while (newSize < _size)
-            pop_back();
+        reserve(_newSize);
+        if (_newSize >= 0) {
+            size_type newSize = static_cast<size_type>(_newSize);
+            while (newSize > size())
+                push_back(x);
+            while (newSize < size())
+                pop_back();
+        } else {
+            size_type newSize = static_cast<size_type>(-_newSize);
+            while (newSize > size())
+                push_front(x);
+            while (newSize < size())
+                pop_front();
+        }
     }
     
-    void resize(size_type newSize)
+    void resize(difference_type _newSize)
+    // Set to |size|, adding to/removing from the end if positive and the front
+    // if negative.
     {
-        reserve(newSize);
-        while (newSize > _size)
-            push_back();
-        while (newSize < _size)
-            pop_back();
+        reserve(_newSize);
+        if (_newSize >= 0) {
+            size_type newSize = static_cast<size_type>(_newSize);
+            while (newSize > size())
+                push_back();
+            while (newSize < size())
+                pop_back();
+        } else {
+            size_type newSize = static_cast<size_type>(-_newSize);
+            while (newSize > size())
+                push_front();
+            while (newSize < size())
+                pop_front();
+        }
     }
     
     void swap(chunk_vector<_valType, _power2, _Alloc>& with)
     {
-        size_t tempsize = _size;
+        size_t tempstart = _start;
+        size_t tempend = _end;
         _Alloc tempalloc = _valAlloc;
-        _size = with._size;
+        _start = with._start;
+        _end = with._size;
         _valAlloc = with._valAlloc;
-        with._size = tempsize;
+        with._start = tempstart;
+        with._end = tempend;
         with._valAlloc = tempalloc;
         _chunks.swap(with._chunks);
-        _shrink_to_fit();   // no reallocation of _chunks, iterators stay valid
+        _shrink_to_fit(false);   // no reallocation of _chunks, iterators stay valid
+        with._shrink_to_fit(false);
     }
     
-    void reserve(size_type n)
+    void reserve(difference_type _newSize)
+    // Reserve allocation for |size|. Adding allocation to the end if positive
+    // and to the front if negative. 
     {
-        size_t chunksNeeded = _size ? (_size >> _power2) + 1 : 0;
-        if (_chunks.size() >= chunksNeeded)
-            return;
-        _chunks.reserve(chunksNeeded);
-        for (size_type num = chunksNeeded - _chunks.size(); num; --num)
-             _chunks.push_back(_valAlloc.allocate(_chunk_size));
+        if (_newSize >= 0) {
+            size_type newSize = static_cast<size_type>(_newSize);
+            if (capacity() - _start >= newSize) return;
+            size_type chunksNeeded = ((newSize - (capacity() - _start)) + _chunk_mask) >> _power2;
+            // Borrow from front before allocating
+            while (chunksNeeded && _start >= _chunk_size) {
+                pointer newChunk = _chunks.front();
+                _chunks.erase(_chunks.begin());
+                _start -= _chunk_size;
+                _end -= _chunk_size;
+                --chunksNeeded;
+                _chunks.push_back(newChunk);
+            }
+            _chunks.reserve(_chunks.size() + chunksNeeded);
+            for (size_type i = 0; i < chunksNeeded; ++i)
+                _chunks.push_back(_valAlloc.allocate(_chunk_size));
+        } else {
+            size_type newSize = static_cast<size_type>(-_newSize);
+            if (_end >= newSize) return;
+            size_type chunksNeeded = (newSize - _end + _chunk_mask) >> _power2;
+            while (chunksNeeded && capacity() - _end >= _chunk_size) {
+                pointer newChunk = _chunks.back();
+                _chunks.pop_back();
+                _chunks.insert(_chunks.begin(), newChunk);
+                _start += _chunk_size;
+                _end += _chunk_size;
+                --chunksNeeded;
+            }
+            // Less efficient but leaves that container state valid if the
+            // alloc throws an exception.
+            _chunks.reserve(_chunks.size() + chunksNeeded);
+            for (size_type i = 0; i < chunksNeeded; ++i) {
+                _chunks.insert(_chunks.begin(), _valAlloc.allocate(_chunk_size));
+                _start += _chunk_size;
+            }
+        }
     }
     
     size_type capacity() const noexcept
@@ -407,40 +492,42 @@ public:
 
     reference operator[](size_t i)
     {
+        i += _start;
         _valType* chunk = _chunks[i >> _power2];
         return chunk[i & _chunk_mask];
     }
     const_reference operator[](size_t i) const
     {
+        i += _start;
         _valType* chunk = _chunks[i >> _power2];
         return chunk[i & _chunk_mask];
     }
     
     reference at(size_t i)
     {
-        if (i >= _size)
+        if (i >= size())
             throw std::out_of_range("chunk_vector::at() range exceeded");
         return (*this)[i];
     }
     const_reference at(size_t i) const
     {
-        if (i >= _size)
+        if (i >= size())
             throw std::out_of_range("chunk_vector::at() range exceeded");
         return (*this)[i];
     }
     
-    reference front() { return (*this)[0]; }
-    const_reference front() const { return (*this)[0]; }
+    reference front() { return (*this)[_start]; }
+    const_reference front() const { return (*this)[_start]; }
     
-    reference back() { return (*this)[_size - 1]; }
-    const_reference back() const { return (*this)[_size - 1]; }
+    reference back() { return (*this)[_end - 1]; }
+    const_reference back() const { return (*this)[_end - 1]; }
 
-    iterator begin() noexcept             { return iterator(_chunks.data(), 0); }
-    iterator end() noexcept               { return iterator(_chunks.data(), _size); }
-    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), 0); }
-    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _size); }
-    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), 0); }
-    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _size); }
+    iterator begin() noexcept             { return iterator(_chunks.data(), _start); }
+    iterator end() noexcept               { return iterator(_chunks.data(), _end); }
+    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), _start); }
+    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _end); }
+    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), _start); }
+    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _end); }
     
     reverse_iterator rbegin() noexcept             { return reverse_iterator(end()); }
     reverse_iterator rend() noexcept               { return reverse_iterator(begin()); }
@@ -454,23 +541,70 @@ private:
     {
         _valType* endVal = _alloc_back();
         ::new((void*)endVal) value_type();
-        ++_size;
+        ++_end;
+    }
+    
+    void push_front()
+    {
+        _valType* frontVal = _alloc_front();
+        ::new((void*)frontVal) value_type();
+        --_start;
     }
     
     pointer _alloc_back()
+    // return a pointer to an allocated, uninitialized block of memory at the back
     {
-        size_t chunkNum = _size >> _power2;
-        if (_chunks.size() <= chunkNum)
-            _chunks.push_back(_valAlloc.allocate(_chunk_size));
-        return _chunks[chunkNum] + (_size & _chunk_mask);
+        size_t _chunkNum = _end >> _power2;
+        if (_chunks.size() <= _chunkNum) {
+            pointer newChunk = nullptr;
+            if (_start >= _chunk_size) {
+                // Borrow from the front if we can
+                newChunk = _chunks.front();
+                _chunks.erase(_chunks.begin());
+                _start -= _chunk_size;
+                _end -= _chunk_size;
+                --_chunkNum;
+            } else {
+                newChunk = _valAlloc.allocate(_chunk_size);
+            }
+            _chunks.push_back(newChunk);
+        }
+        return _chunks[_chunkNum] + (_end & _chunk_mask);
     }
     
-    void _shrink_to_fit()
+    pointer _alloc_front()
+    // return a pointer to an allocated, uninitialized block of memory at the front
     {
-        size_t chunksNeeded = _size ? (_size >> _power2) + 1 : 0;
-        for (size_t chunkNum = chunksNeeded; chunkNum < _chunks.size(); ++chunkNum)
-            _valAlloc.deallocate(_chunks[chunkNum], _chunk_size);
-        _chunks.resize(chunksNeeded);
+        if (_start == 0) {
+            pointer newChunk = nullptr;
+            if (capacity() - _end >= _chunk_size) {
+                // Borrow from the back if we can
+                newChunk = _chunks.back();
+                _chunks.pop_back();
+            } else {
+                newChunk =  _valAlloc.allocate(_chunk_size);
+            }
+            _chunks.insert(_chunks.begin(), newChunk);
+            _start += _chunk_size;
+            _end += _chunk_size;
+        }
+        size_t _front = _start - 1;
+        size_t _chunkNum = _front >> _power2;
+        return _chunks[_chunkNum] + (_front & _chunk_mask);
+    }
+    
+    void _shrink_to_fit(bool shrinkFront)
+    {
+        while (shrinkFront && _start >= _chunk_size) {
+            _valAlloc.deallocate(_chunks.front(), _chunk_size);
+            _chunks.erase(_chunks.begin());
+            _start -= _chunk_size;
+            _end -= _chunk_size;
+        }
+        while (capacity() - _end >= _chunk_size) {
+            _valAlloc.deallocate(_chunks.back(), _chunk_size);
+            _chunks.pop_back();
+        }
     }
 };
 
