@@ -1069,8 +1069,7 @@ namespace AST {
     }
     
     void
-    ASTselect::evaluate(Modification& m, double* width, 
-                        bool justCheck, bool shapeDest,
+    ASTselect::evaluate(Modification& m, double* width, bool shapeDest,
                         RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1078,19 +1077,17 @@ namespace AST {
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, width, justCheck, shapeDest, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, width, shapeDest, rti);
     }
     
     void
-    ASTvariable::evaluate(Modification& m, double*, 
-                          bool justCheck, bool shapeDest,
+    ASTvariable::evaluate(Modification& m, double*, bool shapeDest,
                           RendererAST* rti) const
     {
         if (mType != ModType)
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
         
         if (rti == nullptr) throw DeferUntilRuntime();
-        if (justCheck) return;
         const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
                                                         rti->mCFstack.data() + stackIndex;
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
@@ -1103,17 +1100,15 @@ namespace AST {
     }
     
     void
-    ASTcons::evaluate(Modification& m, double* width, 
-                      bool justCheck, bool shapeDest,
+    ASTcons::evaluate(Modification& m, double* width, bool shapeDest,
                       RendererAST* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, width, justCheck, shapeDest, rti);
+            children[i]->evaluate(m, width, shapeDest, rti);
     }
     
     void
-    ASTuserFunction::evaluate(Modification &m, double *width, 
-                              bool justCheck, bool shapeDest,
+    ASTuserFunction::evaluate(Modification &m, double *width, bool shapeDest,
                               RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1135,17 +1130,16 @@ namespace AST {
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(m, width, justCheck, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, shapeDest, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
-            definition->mExpression->evaluate(m, width, justCheck, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, shapeDest, rti);
         }
     }
     
     void
-    ASTmodification::evaluate(Modification& m, double* width, 
-                              bool justCheck, bool shapeDest,
+    ASTmodification::evaluate(Modification& m, double* width, bool shapeDest,
                               RendererAST* rti) const
     {
         if (shapeDest) {
@@ -1156,21 +1150,19 @@ namespace AST {
         }
         
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, justCheck, shapeDest, rti);
+            term->evaluate(m, width, shapeDest, rti);
     }
     
     void
-    ASTmodification::setVal(Modification& m, double* width, 
-                            bool justCheck, RendererAST* rti) const
+    ASTmodification::setVal(Modification& m, double* width, RendererAST* rti) const
     {
         m = modData;
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, justCheck, false, rti);
+            term->evaluate(m, width, false, rti);
     }
     
     void
-    ASTparen::evaluate(Modification& m, double* width,
-                       bool justCheck, bool shapeDest,
+    ASTparen::evaluate(Modification& m, double* width, bool shapeDest,
                        RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1178,12 +1170,11 @@ namespace AST {
             return;
         }
         
-        e->evaluate(m, width, justCheck, shapeDest, rti);
+        e->evaluate(m, width, shapeDest, rti);
     }
     
     void
-    ASTmodTerm::evaluate(Modification& m, double* width,
-                        bool justCheck, bool shapeDest,
+    ASTmodTerm::evaluate(Modification& m, double* width, bool shapeDest,
                         RendererAST* rti) const
     {
         double modArgs[6] = {0.0};
@@ -1191,10 +1182,7 @@ namespace AST {
         
         if (args) {
             if (modType != modification && args->mType == NumericType) {
-                if (justCheck)
-                    argcount = args->evaluate(nullptr, 0);
-                else 
-                    argcount = args->evaluate(modArgs, 6, rti);
+                argcount = args->evaluate(modArgs, 6, rti);
             } else if (modType == modification && args->mType != ModType){
                 CfdgError::Error(where, "Adjustments require numeric arguments");
                 return;
@@ -1212,27 +1200,23 @@ namespace AST {
         
         switch (modType) {
             case ASTmodTerm::x: {
-                if (justCheck) break;
-                if (argcount == 1) 
+                if (argcount == 1)
                     modArgs[1] = 0.0;
                 agg::trans_affine_translation trx(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(trx);
                 break;
             }
             case ASTmodTerm::y: {
-                if (justCheck) break;
                 agg::trans_affine_translation tr(0.0, modArgs[0]);
                 m.m_transform.premultiply(tr);
                 break;
             }
             case ASTmodTerm::z: {
-                if (justCheck) break;
                 agg::trans_affine_1D_translation tr(modArgs[0]);
                 m.m_Z.premultiply(tr);
                 break;
             }
             case ASTmodTerm::xyz: {
-                if (justCheck) break;
                 agg::trans_affine_translation trx(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(trx);
                 agg::trans_affine_1D_translation trz(modArgs[2]);
@@ -1240,21 +1224,16 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::time: {
-                if (justCheck) break;
                 agg::trans_affine_time_translation tr(modArgs[0], modArgs[1]);
                 m.m_time.premultiply(tr);
                 break;
             }
             case ASTmodTerm::timescale: {
-                if (justCheck) break;
                 agg::trans_affine_time_scaling sc(modArgs[0]);
                 m.m_time.premultiply(sc);
                 break;
             }
             case ASTmodTerm::transform: {
-                if (argcount != 1 && argcount != 2 && argcount != 4 && argcount != 6)
-                    CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters");
-                if (justCheck) break;
                 switch (argcount) {
                     case 2:
                     case 1: {
@@ -1286,15 +1265,13 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::size: {
-                if (justCheck) break;
-                if (argcount == 1) 
+                if (argcount == 1)
                     modArgs[1] = modArgs[0];
                 agg::trans_affine_scaling sc(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(sc);
                 break;
             }
             case ASTmodTerm::sizexyz: {
-                if (justCheck) break;
                 agg::trans_affine_scaling sc(modArgs[0], modArgs[1]);
                 m.m_transform.premultiply(sc);
                 agg::trans_affine_1D_scaling scz(modArgs[2]);
@@ -1302,32 +1279,27 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::zsize: {
-                if (justCheck) break;
                 agg::trans_affine_1D_scaling sc(modArgs[0]);
                 m.m_Z.premultiply(sc);
                 break;
             }
             case ASTmodTerm::rot: {
-                if (justCheck) break;
                 agg::trans_affine_rotation rot(modArgs[0] * MY_PI / 180.0);
                 m.m_transform.premultiply(rot);
                 break;
             }
             case ASTmodTerm::skew: {
-                if (justCheck) break;
-                agg::trans_affine_skewing sk(modArgs[0] * MY_PI / 180.0, 
+                agg::trans_affine_skewing sk(modArgs[0] * MY_PI / 180.0,
                                              modArgs[1] * MY_PI / 180.0);
                 m.m_transform.premultiply(sk);
                 break;
             }
             case ASTmodTerm::flip: {
-                if (justCheck) break;
                 agg::trans_affine_reflection ref(modArgs[0] * MY_PI / 180.0);
                 m.m_transform.premultiply(ref);
                 break;
             }
             case ASTmodTerm::hue: {
-                if (justCheck) break;
                 if (argcount == 1) {
                     if (m.m_ColorAssignment & HSBColor::HueMask) {
                         if (rti == nullptr)
@@ -1361,7 +1333,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::sat: {
-                if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                          m.m_Color.s != 0.0)
@@ -1395,7 +1366,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::bright: {
-                if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::BrightnessMask ||
                          m.m_Color.b != 0.0))
@@ -1429,7 +1399,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alpha: {
-                if (justCheck) break;
                 if (argcount == 1) {
                     if ((m.m_ColorAssignment & HSBColor::AlphaMask ||
                          m.m_Color.a != 0.0))
@@ -1463,7 +1432,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::hueTarg: {
-                if (justCheck) break;
                 if ((m.m_ColorAssignment & HSBColor::HueMask) ||
                      m.m_Color.h != 0.0)
                 {
@@ -1483,7 +1451,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::satTarg: {
-                if (justCheck) break;
                 if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
                      m.m_Color.s != 0.0)
                 {
@@ -1502,7 +1469,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::brightTarg: {
-                if (justCheck) break;
                 if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
                      m.m_Color.b != 0.0)
                 {
@@ -1521,7 +1487,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::alphaTarg: {
-                if (justCheck) break;
                 if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
                      m.m_Color.a != 0.0)
                 {
@@ -1540,12 +1505,10 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::targHue: {
-                if (justCheck) break;
                 m.m_ColorTarget.h += modArgs[0];
                 break;
             }
             case ASTmodTerm::targSat: {
-                if (justCheck) break;
                 if (m.m_ColorTarget.s != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
@@ -1559,7 +1522,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::targBright: {
-                if (justCheck) break;
                 if (m.m_ColorTarget.b != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
@@ -1573,7 +1535,6 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::targAlpha: {
-                if (justCheck) break;
                 if (m.m_ColorTarget.a != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
@@ -1591,7 +1552,6 @@ namespace AST {
                     CfdgError::Error(where, "Cannot provide a stroke width in this context");
                     break;
                 }
-                if (justCheck) break;
                 *width = modArgs[0];
                 break;
             }
@@ -1610,7 +1570,7 @@ namespace AST {
                         throw DeferUntilRuntime();
                     }
                 }
-                args->evaluate(m, width, justCheck, shapeDest, rti);
+                args->evaluate(m, width, shapeDest, rti);
                 break;
             }
             default:
@@ -3034,7 +2994,6 @@ namespace AST {
         temp.swap(modExp);
 
         for (term_ptr& mod: temp) {
-            bool keepThisOne = false;
             if (!mod) {
                 CfdgError::Error(where, "Unknown term in shape adjustment");
                 continue;
@@ -3046,15 +3005,16 @@ namespace AST {
 			modClass |= mc;
             if (!mod->isConstant)
                 nonConstant |= mc;
-            bool justCheck = (mc & nonConstant) != 0;
+            bool keepThisOne = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, &strokeWidth, justCheck, false, nullptr);
+                if (!keepThisOne)
+                    mod->evaluate(modData, &strokeWidth, false, nullptr);
             } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }
             
-            if (justCheck || keepThisOne) {
+            if (keepThisOne) {
                 assert(mod->modType != ASTmodTerm::param);
                 Simplify(mod->args);
                 modExp.push_back(std::move(mod));
