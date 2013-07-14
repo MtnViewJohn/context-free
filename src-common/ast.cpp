@@ -1017,8 +1017,7 @@ namespace AST {
                         m->modClass && (r || m->isConstant))
                     {
                         Modification mod;
-                        int dummy;
-                        cit->evaluate(mod, nullptr, false, dummy, false, r);
+                        cit->evaluate(mod, nullptr, false, false, r);
                         addUnique(syms, mod.m_transform);
                     } else {
                         ret.push_back(m);

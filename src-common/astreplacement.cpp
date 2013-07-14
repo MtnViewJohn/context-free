@@ -336,11 +336,10 @@ namespace AST {
     void 
     ASTreplacement::replace(Shape& s, RendererAST* r, double* width) const
     {
-        int dummy;
         replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
-        mChildChange.evaluate(s.mWorldState, width, false, dummy, true, r);
+        mChildChange.evaluate(s.mWorldState, width, false, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
     
@@ -385,7 +384,6 @@ namespace AST {
             end = mLoopData[1];
             step = mLoopData[2];
         }
-        int dummy;
         StackType t = {start};
         const StackType* oldTop = r->mLogicalStackTop;
         r->mCFstack.push_back(t);
@@ -403,7 +401,7 @@ namespace AST {
                     break;
             }
             mLoopBody.traverse(loopChild, tr || opsOnly, r);
-            mChildChange.evaluate(loopChild.mWorldState, nullptr, false, dummy, true, r);
+            mChildChange.evaluate(loopChild.mWorldState, nullptr, false, true, r);
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
@@ -424,14 +422,12 @@ namespace AST {
         if (opsOnly && !tr)
             transChild.mWorldState.m_transform.reset();
         
-        int dummy;
-        
         int modsLength = mods.size();
         int totalLength = modsLength + static_cast<int>(transforms.size());
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
-                mods[i]->evaluate(child.mWorldState, nullptr, false, dummy, true, r);
+                mods[i]->evaluate(child.mWorldState, nullptr, false, true, r);
             } else {
                 child.mWorldState.m_transform.premultiply(transforms[i - modsLength]);
             }
@@ -491,9 +487,8 @@ namespace AST {
                                    "Error evaluating parameters (too many or not enough).");
                 break;
             case ModType: {
-                int dummy;
                 Modification* smod = reinterpret_cast<Modification*> (dest);
-                mChildChange.setVal(*smod, nullptr, false, dummy, r);
+                mChildChange.setVal(*smod, nullptr, false, r);
                 break;
             }
             case RuleType:

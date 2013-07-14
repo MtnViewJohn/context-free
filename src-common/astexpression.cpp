@@ -1070,7 +1070,7 @@ namespace AST {
     
     void
     ASTselect::evaluate(Modification& m, double* width, 
-                        bool justCheck, int& seedIndex, bool shapeDest,
+                        bool justCheck, bool shapeDest,
                         RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1078,12 +1078,12 @@ namespace AST {
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, width, justCheck, shapeDest, rti);
     }
     
     void
     ASTvariable::evaluate(Modification& m, double*, 
-                          bool justCheck, int&, bool shapeDest,
+                          bool justCheck, bool shapeDest,
                           RendererAST* rti) const
     {
         if (mType != ModType)
@@ -1104,16 +1104,16 @@ namespace AST {
     
     void
     ASTcons::evaluate(Modification& m, double* width, 
-                      bool justCheck, int& seedIndex, bool shapeDest,
+                      bool justCheck, bool shapeDest,
                       RendererAST* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+            children[i]->evaluate(m, width, justCheck, shapeDest, rti);
     }
     
     void
     ASTuserFunction::evaluate(Modification &m, double *width, 
-                              bool justCheck, int &seedIndex, bool shapeDest,
+                              bool justCheck, bool shapeDest,
                               RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1135,17 +1135,17 @@ namespace AST {
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, justCheck, shapeDest, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
-            definition->mExpression->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+            definition->mExpression->evaluate(m, width, justCheck, shapeDest, rti);
         }
     }
     
     void
     ASTmodification::evaluate(Modification& m, double* width, 
-                              bool justCheck, int& seedIndex, bool shapeDest,
+                              bool justCheck, bool shapeDest,
                               RendererAST* rti) const
     {
         if (shapeDest) {
@@ -1156,22 +1156,21 @@ namespace AST {
         }
         
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+            term->evaluate(m, width, justCheck, shapeDest, rti);
     }
     
     void
     ASTmodification::setVal(Modification& m, double* width, 
-                            bool justCheck, int& seedIndex, 
-                            RendererAST* rti) const
+                            bool justCheck, RendererAST* rti) const
     {
         m = modData;
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, justCheck, seedIndex, false, rti);
+            term->evaluate(m, width, justCheck, false, rti);
     }
     
     void
     ASTparen::evaluate(Modification& m, double* width,
-                       bool justCheck, int& seedIndex, bool shapeDest,
+                       bool justCheck, bool shapeDest,
                        RendererAST* rti) const
     {
         if (mType != ModType) {
@@ -1179,12 +1178,12 @@ namespace AST {
             return;
         }
         
-        e->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+        e->evaluate(m, width, justCheck, shapeDest, rti);
     }
     
     void
     ASTmodTerm::evaluate(Modification& m, double* width,
-                        bool justCheck, int& seedIndex, bool shapeDest,
+                        bool justCheck, bool shapeDest,
                         RendererAST* rti) const
     {
         double modArgs[6] = {0.0};
@@ -1611,7 +1610,7 @@ namespace AST {
                         throw DeferUntilRuntime();
                     }
                 }
-                args->evaluate(m, width, justCheck, seedIndex, shapeDest, rti);
+                args->evaluate(m, width, justCheck, shapeDest, rti);
                 break;
             }
             default:
@@ -2989,7 +2988,7 @@ namespace AST {
     }
     
     void
-    ASTmodification::evalConst() 
+    ASTmodification::evalConst()
     {
         const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
             {ASTmodTerm::unknownType,   ASTmodification::NotAClass},
@@ -3050,7 +3049,7 @@ namespace AST {
             bool justCheck = (mc & nonConstant) != 0;
             
             try {
-                mod->evaluate(modData, &strokeWidth, justCheck, entropyIndex, false, nullptr);
+                mod->evaluate(modData, &strokeWidth, justCheck, false, nullptr);
             } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }
