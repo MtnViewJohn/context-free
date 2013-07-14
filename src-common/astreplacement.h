@@ -56,7 +56,6 @@ namespace AST {
         ASTmodification mChildChange;
         yy::location mLocation;
         void replace(Shape& s, RendererAST* r) const;
-        void replaceShape(Shape& s, RendererAST* r) const;
         
         ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
