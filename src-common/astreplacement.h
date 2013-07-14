@@ -221,6 +221,7 @@ namespace AST {
         exp_ptr mArguments;
         mod_ptr mOldStyleArguments;
         int mArgCount;
+        int mFlags;
         
         ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
@@ -237,12 +238,15 @@ namespace AST {
     class ASTpathCommand : public ASTreplacement {
     public:
         double  mMiterLimit;
+        double  mStrokeWidth;
         exp_ptr mParameters;
+        int     mFlags;
         
         // Empty constructor
         ASTpathCommand() :
         ASTreplacement(nullptr),
-        mMiterLimit(4.0), mParameters(nullptr)
+        mMiterLimit(4.0), mStrokeWidth(0.1), mParameters(nullptr),
+        mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL)
         {
         }
         

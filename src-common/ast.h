@@ -176,8 +176,7 @@ namespace AST {
         CF_P3M1 = 19 << 15,
         CF_P31M = 20 << 15,
         CF_P6 = 21 << 15,
-        CF_P6M = 22 << 15,
-        CF_USES_ALPHA = 1 << 20
+        CF_P6M = 22 << 15
     };
     
     double CFatof(const char* s);

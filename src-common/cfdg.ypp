@@ -1078,9 +1078,7 @@ buncha_adjustments[ASTmodOut]:
         }
         | {
             static const yy::location def;
-            ASTmodification* m = new ASTmodification(def);
-            m->flags = 0;
-            $ASTmodOut = m;
+            $ASTmodOut = new ASTmodification(def);
         }
         ;
 

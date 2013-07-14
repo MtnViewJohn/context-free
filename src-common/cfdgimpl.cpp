@@ -442,8 +442,12 @@ CFDGImpl::rulesLoaded()
         usesAlpha = value != 0.0;
     
     if (const ASTexpression* e = hasParameter(CFG::Background))
-        if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(e))
-            usesAlpha = m->flags & CF_USES_ALPHA;
+        if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(e)) {
+            usesAlpha = m->modData.m_Color.a != 1.0;
+            for (auto& term: m->modExp)
+                if (term->modType == ASTmodTerm::alpha || term->modType == ASTmodTerm::alphaTarg)
+                    usesAlpha = true;
+        }
 }
 
 int
