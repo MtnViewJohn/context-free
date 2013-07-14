@@ -339,7 +339,7 @@ namespace AST {
         replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
-        mChildChange.evaluate(s.mWorldState, width, false, true, r);
+        mChildChange.evaluate(s.mWorldState, width, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
     
@@ -401,7 +401,7 @@ namespace AST {
                     break;
             }
             mLoopBody.traverse(loopChild, tr || opsOnly, r);
-            mChildChange.evaluate(loopChild.mWorldState, nullptr, false, true, r);
+            mChildChange.evaluate(loopChild.mWorldState, nullptr, true, r);
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
@@ -427,7 +427,7 @@ namespace AST {
         for(int i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
-                mods[i]->evaluate(child.mWorldState, nullptr, false, true, r);
+                mods[i]->evaluate(child.mWorldState, nullptr, true, r);
             } else {
                 child.mWorldState.m_transform.premultiply(transforms[i - modsLength]);
             }
@@ -488,7 +488,7 @@ namespace AST {
                 break;
             case ModType: {
                 Modification* smod = reinterpret_cast<Modification*> (dest);
-                mChildChange.setVal(*smod, nullptr, false, r);
+                mChildChange.setVal(*smod, nullptr, r);
                 break;
             }
             case RuleType:
