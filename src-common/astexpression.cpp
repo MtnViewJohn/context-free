@@ -1069,20 +1069,18 @@ namespace AST {
     }
     
     void
-    ASTselect::evaluate(Modification& m, double* width, bool shapeDest,
-                        RendererAST* rti) const
+    ASTselect::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Evaluation of a non-adjustment select() in an adjustment context");
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, width, shapeDest, rti);
+        (*arguments)[getIndex(rti)]->evaluate(m, shapeDest, rti);
     }
     
     void
-    ASTvariable::evaluate(Modification& m, double*, bool shapeDest,
-                          RendererAST* rti) const
+    ASTvariable::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         if (mType != ModType)
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
@@ -1100,16 +1098,14 @@ namespace AST {
     }
     
     void
-    ASTcons::evaluate(Modification& m, double* width, bool shapeDest,
-                      RendererAST* rti) const
+    ASTcons::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, width, shapeDest, rti);
+            children[i]->evaluate(m, shapeDest, rti);
     }
     
     void
-    ASTuserFunction::evaluate(Modification &m, double *width, bool shapeDest,
-                              RendererAST* rti) const
+    ASTuserFunction::evaluate(Modification &m, bool shapeDest, RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Function does not evaluate to an adjustment");
@@ -1130,17 +1126,16 @@ namespace AST {
             rti->mCFstack.resize(size + definition->mStackCount);
             rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
             rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(m, width, shapeDest, rti);
+            definition->mExpression->evaluate(m, shapeDest, rti);
             rti->mCFstack.resize(size);
             rti->mLogicalStackTop = oldLogicalStackTop;
         } else {
-            definition->mExpression->evaluate(m, width, shapeDest, rti);
+            definition->mExpression->evaluate(m, shapeDest, rti);
         }
     }
     
     void
-    ASTmodification::evaluate(Modification& m, double* width, bool shapeDest,
-                              RendererAST* rti) const
+    ASTmodification::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         if (shapeDest) {
             m *= modData;
@@ -1150,32 +1145,30 @@ namespace AST {
         }
         
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, shapeDest, rti);
+            term->evaluate(m, shapeDest, rti);
     }
     
     void
-    ASTmodification::setVal(Modification& m, double* width, RendererAST* rti) const
+    ASTmodification::setVal(Modification& m, RendererAST* rti) const
     {
         m = modData;
         for (const term_ptr& term: modExp)
-            term->evaluate(m, width, false, rti);
+            term->evaluate(m, false, rti);
     }
     
     void
-    ASTparen::evaluate(Modification& m, double* width, bool shapeDest,
-                       RendererAST* rti) const
+    ASTparen::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         if (mType != ModType) {
             CfdgError::Error(where, "Expression does not evaluate to an adjustment");
             return;
         }
         
-        e->evaluate(m, width, shapeDest, rti);
+        e->evaluate(m, shapeDest, rti);
     }
     
     void
-    ASTmodTerm::evaluate(Modification& m, double* width, bool shapeDest,
-                        RendererAST* rti) const
+    ASTmodTerm::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
         double modArgs[6] = {0.0};
         int argcount = 0;
@@ -1548,11 +1541,7 @@ namespace AST {
                 break;
             }
             case ASTmodTerm::stroke: {
-                if (!width) {
-                    CfdgError::Error(where, "Cannot provide a stroke width in this context");
-                    break;
-                }
-                *width = modArgs[0];
+                CfdgError::Error(where, "Cannot provide a stroke width in this context");
                 break;
             }
             case ASTmodTerm::modification: {
@@ -1570,7 +1559,7 @@ namespace AST {
                         throw DeferUntilRuntime();
                     }
                 }
-                args->evaluate(m, width, shapeDest, rti);
+                args->evaluate(m, shapeDest, rti);
                 break;
             }
             default:
@@ -3009,7 +2998,7 @@ namespace AST {
             
             try {
                 if (!keepThisOne)
-                    mod->evaluate(modData, &strokeWidth, false, nullptr);
+                    mod->evaluate(modData, false, nullptr);
             } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }

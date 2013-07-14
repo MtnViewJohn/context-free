@@ -321,7 +321,7 @@ CFDGImpl::hasParameter(CFG name, Modification& value, RendererAST* r) const
         CfdgError::Error(exp->where, "This expression must be constant");
         return false;
     } else {
-        exp->evaluate(value, nullptr, true, r);
+        exp->evaluate(value, true, r);
     }
     return true;
 }
