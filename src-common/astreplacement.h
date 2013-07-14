@@ -55,7 +55,7 @@ namespace AST {
         pathOpEnum mPathOp;
         ASTmodification mChildChange;
         yy::location mLocation;
-        void replace(Shape& s, RendererAST* r, double* width = nullptr) const;
+        void replace(Shape& s, RendererAST* r) const;
         void replaceShape(Shape& s, RendererAST* r) const;
         
         ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
