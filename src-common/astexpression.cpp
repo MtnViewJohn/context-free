@@ -315,8 +315,7 @@ namespace AST {
     
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), modData(m.modData), 
-      modClass(m.modClass), strokeWidth(m.strokeWidth), flags(m.flags), 
-      entropyIndex(m.entropyIndex), canonical(m.canonical)
+      modClass(m.modClass), entropyIndex(m.entropyIndex), canonical(m.canonical)
     {
         assert(m.modExp.empty());
     }
@@ -329,8 +328,6 @@ namespace AST {
             grab(m.get());
         } else {
             modClass = 0;
-            strokeWidth = 0.1;
-            flags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
         }
     }
     
@@ -342,8 +339,6 @@ namespace AST {
         modData.mRand64Seed ^= oldEntropy;
         modExp.swap(m->modExp);
         modClass = m->modClass;
-        strokeWidth = m->strokeWidth;
-        flags = m->flags;
         entropyIndex = (entropyIndex + m->entropyIndex) & 7;
         isConstant = modExp.empty();
         canonical = m->canonical;
@@ -2680,40 +2675,6 @@ namespace AST {
                 ASTtermArray temp;
                 temp.swap(modExp);
                 for (auto term = temp.begin(); term != temp.end(); ++term) {
-                    if ((*term)->modType == ASTmodTerm::alpha ||
-                        (*term)->modType == ASTmodTerm::alphaTarg)
-                    {
-                        flags |= CF_USES_ALPHA;
-                    }
-                    if ((*term)->modType == ASTmodTerm::param) {
-                        if ((*term)->paramString.find("evenodd") != std::string::npos)
-                            flags |= CF_EVEN_ODD;
-                        if ((*term)->paramString.find("iso") != std::string::npos)
-                            flags |= CF_ISO_WIDTH;
-                        if ((*term)->paramString.find("join") != std::string::npos)
-                            flags &= ~CF_JOIN_MASK;
-                        if ((*term)->paramString.find("miterjoin") != std::string::npos)
-                            flags |= CF_MITER_JOIN | CF_JOIN_PRESENT;
-                        if ((*term)->paramString.find("roundjoin") != std::string::npos)
-                            flags |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
-                        if ((*term)->paramString.find("beveljoin") != std::string::npos)
-                            flags |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
-                        if ((*term)->paramString.find("cap") != std::string::npos)
-                            flags &= ~CF_CAP_MASK;
-                        if ((*term)->paramString.find("buttcap") != std::string::npos)
-                            flags |= CF_BUTT_CAP | CF_CAP_PRESENT;
-                        if ((*term)->paramString.find("squarecap") != std::string::npos)
-                            flags |= CF_SQUARE_CAP | CF_CAP_PRESENT;
-                        if ((*term)->paramString.find("roundcap") != std::string::npos)
-                            flags |= CF_ROUND_CAP | CF_CAP_PRESENT;
-                        if ((*term)->paramString.find("large") != std::string::npos)
-                            flags |= CF_ARC_LARGE;
-                        if ((*term)->paramString.find("cw") != std::string::npos)
-                            flags |= CF_ARC_CW;
-                        if ((*term)->paramString.find("align") != std::string::npos)
-                            flags |= CF_ALIGN;
-                        continue;
-                    }
                     if (!(*term)->args || (*term)->args->mType != NumericType) {
                         modExp.emplace_back(std::move(*term));
                         continue;

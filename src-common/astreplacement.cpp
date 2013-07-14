@@ -233,7 +233,7 @@ namespace AST {
     
     ASTpathOp::ASTpathOp(const std::string& s, const yy::location& loc)
     : ASTreplacement(nullptr, loc, op), mArguments(nullptr), 
-      mOldStyleArguments(nullptr), mArgCount(0)
+      mOldStyleArguments(nullptr), mArgCount(0), mFlags(0)
     {
         const std::map<std::string, pathOpEnum> PathOpNames = {
             { "MOVETO",     MOVETO },
@@ -271,13 +271,12 @@ namespace AST {
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
     :   ASTreplacement(std::move(mods), loc, command),
-        mMiterLimit(4.0), mParameters(std::move(params))
+        mMiterLimit(4.0), mStrokeWidth(0.1), mParameters(std::move(params)),
+        mFlags(CF_MITER_JOIN + CF_BUTT_CAP)
     {
-        if (!(s.compare("FILL"))) {
-            mChildChange.flags |= CF_FILL;
-        } else if (!s.compare("STROKE")) {
-            mChildChange.flags &= ~CF_FILL;
-        } else {
+        if (s == "FILL") {
+            mFlags |= CF_FILL;
+        } else if (s != "STROKE") {
             CfdgError::Error(loc, "Unknown path command/operation");
         }
     }
@@ -523,7 +522,7 @@ namespace AST {
     ASTpathCommand::traverse(const Shape& s, bool, RendererAST* r) const
     {
         Shape child = s;
-        double width = mChildChange.strokeWidth;
+        double width = mStrokeWidth;
         replace(child, r);
         if (mParameters && mParameters->evaluate(&width, 1, r) != 1)
             CfdgError::Error(mParameters->where, "Error computing stroke width");
@@ -905,6 +904,55 @@ namespace AST {
         }
     }
     
+    static exp_ptr GetFlagsAndStroke(ASTtermArray& terms, int& flags)
+    {
+        ASTtermArray temp(std::move(terms));
+        exp_ptr ret;
+        
+        for (auto term = temp.begin(); term != temp.end(); ++term) {
+            switch ((*term)->modType) {
+                case AST::ASTmodTerm::param:
+                    if ((*term)->paramString.find("evenodd") != std::string::npos)
+                        flags |= CF_EVEN_ODD;
+                    if ((*term)->paramString.find("iso") != std::string::npos)
+                        flags |= CF_ISO_WIDTH;
+                    if ((*term)->paramString.find("join") != std::string::npos)
+                        flags &= ~CF_JOIN_MASK;
+                    if ((*term)->paramString.find("miterjoin") != std::string::npos)
+                        flags |= CF_MITER_JOIN | CF_JOIN_PRESENT;
+                    if ((*term)->paramString.find("roundjoin") != std::string::npos)
+                        flags |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
+                    if ((*term)->paramString.find("beveljoin") != std::string::npos)
+                        flags |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
+                    if ((*term)->paramString.find("cap") != std::string::npos)
+                        flags &= ~CF_CAP_MASK;
+                    if ((*term)->paramString.find("buttcap") != std::string::npos)
+                        flags |= CF_BUTT_CAP | CF_CAP_PRESENT;
+                    if ((*term)->paramString.find("squarecap") != std::string::npos)
+                        flags |= CF_SQUARE_CAP | CF_CAP_PRESENT;
+                    if ((*term)->paramString.find("roundcap") != std::string::npos)
+                        flags |= CF_ROUND_CAP | CF_CAP_PRESENT;
+                    if ((*term)->paramString.find("large") != std::string::npos)
+                        flags |= CF_ARC_LARGE;
+                    if ((*term)->paramString.find("cw") != std::string::npos)
+                        flags |= CF_ARC_CW;
+                    if ((*term)->paramString.find("align") != std::string::npos)
+                        flags |= CF_ALIGN;
+                    break;
+                case AST::ASTmodTerm::stroke:
+                    if (ret)
+                        CfdgError::Error((*term)->where, "Only one stroke width term is allowed");
+                    ret = std::move((*term)->args);
+                    break;
+                default:
+                    terms.emplace_back(std::move(*term));
+                    break;
+            }
+        }
+        
+        return ret;
+    }
+    
     void
     ASTpathCommand::compile(AST::CompilePhase ph)
     {
@@ -913,22 +961,19 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                mChildChange.addEntropy((mChildChange.flags & CF_FILL) ? "FILL" : "STROKE");
+                mChildChange.addEntropy((mFlags & CF_FILL) ? "FILL" : "STROKE");
                 
                 check4z();
                 
                 // Extract any stroke adjustments
-                for (auto termIt = mChildChange.modExp.begin(), eit = mChildChange.modExp.end();
-                     termIt != eit; ++termIt)
-                {
-                    if ((*termIt)->modType == ASTmodTerm::stroke) {
-                        if (mParameters)
-                            CfdgError::Error((*termIt)->where, "Cannot have a stroke adjustment in a v3 path command");
-                        else
-                            mParameters = std::move((*termIt)->args);
-                        mChildChange.modExp.erase(termIt);
-                        break;
-                    }
+                exp_ptr w = GetFlagsAndStroke(mChildChange.modExp, mFlags);
+                if (w) {
+                    if (mParameters)
+                        CfdgError::Error(w->where, "Cannot have a stroke adjustment in a v3 path command");
+                    else if (w->size() != 1 || w->mType != NumericType || w->evaluate(nullptr, 0) != 1)
+                        CfdgError::Error(w->where, "Stroke adjustment is ill-formed");
+                    else
+                        mParameters = std::move(w);
                 }
                 
                 if (!mParameters)
@@ -968,12 +1013,12 @@ namespace AST {
                 }
                 
                 if (stroke) {
-                    if (mChildChange.flags & CF_FILL)
+                    if (mFlags & CF_FILL)
                         CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
                     if (stroke->mType != NumericType || stroke->evaluate(nullptr, 0) != 1) {
                         CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
                     } else if (!stroke->isConstant ||
-                               stroke->evaluate(&(mChildChange.strokeWidth), 1) != 1)
+                               stroke->evaluate(&mStrokeWidth, 1) != 1)
                     {
                         mParameters = std::move(stroke);
                     }
@@ -988,11 +1033,11 @@ namespace AST {
                     if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
                         int f = static_cast<int>(r->value);
                         if (f & CF_JOIN_PRESENT)
-                            mChildChange.flags &= ~CF_JOIN_MASK;
+                            mFlags &= ~CF_JOIN_MASK;
                         if (f & CF_CAP_PRESENT)
-                            mChildChange.flags &= ~CF_CAP_MASK;
-                        mChildChange.flags |= f;
-                        if ((mChildChange.flags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
+                            mFlags &= ~CF_CAP_MASK;
+                        mFlags |= f;
+                        if ((mFlags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
                             CfdgError::Warning(flags->where, "Stroke flags only useful for STROKE commands");
                     } else {
                         CfdgError::Error(flags->where, "Flag expressions must be constant");
@@ -1012,8 +1057,8 @@ namespace AST {
     {
         // Process the parameters for ARCTO/ARCREL
         double radius_x = 0.0, radius_y = 0.0, angle = 0.0;
-        bool sweep = (pop->mChildChange.flags & CF_ARC_CW) == 0;
-        bool largeArc = (pop->mChildChange.flags & CF_ARC_LARGE) != 0;
+        bool sweep = (pop->mFlags & CF_ARC_CW) == 0;
+        bool largeArc = (pop->mFlags & CF_ARC_LARGE) != 0;
         if (pop->mPathOp == ARCTO || pop->mPathOp == ARCREL) {
             if (pop->mArgCount == 5) {
                 // If the radii are specified then use the ellipse ARCxx form
@@ -1075,10 +1120,10 @@ namespace AST {
                 
                 // If this is an aligning CLOSEPOLY then change the last vertex to
                 // exactly match the first vertex in the path sequence
-                if (pop->mChildChange.flags & CF_ALIGN) {
+                if (pop->mFlags & CF_ALIGN) {
                     mPath.modify_vertex(last, r->mLastPoint.x, r->mLastPoint.y);
                 }
-            } else if (pop->mChildChange.flags & CF_ALIGN) {
+            } else if (pop->mFlags & CF_ALIGN) {
                 CfdgError::Error(pop->mLocation, "Nothing to align to.");
             }
             mPath.close_polygon();
@@ -1136,7 +1181,7 @@ namespace AST {
                 mPath.rel_to_abs(data + 2, data + 3);
                 mPath.rel_to_abs(data + 4, data + 5);
             case CURVETO:
-                if ((pop->mChildChange.flags & CF_CONTINUOUS) &&
+                if ((pop->mFlags & CF_CONTINUOUS) &&
                     !agg::is_curve(mPath.last_vertex(data + 4, data + 5)))
                 {
                     CfdgError::Error(pop->mLocation, "Smooth curve operations must be preceded by another curve operation.");
@@ -1147,7 +1192,7 @@ namespace AST {
                         mPath.curve3(data[0], data[1]);
                         break;
                     case 4:
-                        if (pop->mChildChange.flags & CF_CONTINUOUS)
+                        if (pop->mFlags & CF_CONTINUOUS)
                             mPath.curve4(data[2], data[3], data[0], data[1]);
                         else
                             mPath.curve3(data[2], data[3], data[0], data[1]);
@@ -1241,7 +1286,7 @@ namespace AST {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
                     if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
-                        mChildChange.flags |= rf ? static_cast<int>(rf->value) : 0;
+                        mFlags |= rf ? static_cast<int>(rf->value) : 0;
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");
                     --mArgCount;
@@ -1270,7 +1315,7 @@ namespace AST {
                 break;
             case CURVETO:
             case CURVEREL:
-                if (mChildChange.flags & CF_CONTINUOUS) {
+                if (mFlags & CF_CONTINUOUS) {
                     if (mArgCount != 2 && mArgCount != 4)
                         CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments");
                 } else {
@@ -1317,7 +1362,9 @@ namespace AST {
     void
     ASTpathOp::makePositional()
     {
-        mChildChange.flags |= mOldStyleArguments->flags;
+        exp_ptr w = GetFlagsAndStroke(mOldStyleArguments->modExp, mFlags);
+        if (w)
+            CfdgError::Error(w->where, "Stroke width not allowed in a path operation");
         
         exp_ptr ax;
         exp_ptr ay;
@@ -1429,7 +1476,7 @@ namespace AST {
                 if (ax1 || ay1) {
                     xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
                 } else {
-                    mChildChange.flags |= CF_CONTINUOUS;
+                    mFlags |= CF_CONTINUOUS;
                 }
                 if (ax2 || ay2) {
                     xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);

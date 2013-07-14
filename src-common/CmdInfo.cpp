@@ -59,7 +59,7 @@ namespace AST {
     {
         if (mPathUID != path->mPathUID || mIndex != i) {
             if (c) {
-                mFlags = c->mChildChange.flags;
+                mFlags = c->mFlags;
                 mMiterLimit = c->mMiterLimit;
             } else {
                 mFlags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
