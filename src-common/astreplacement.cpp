@@ -317,7 +317,7 @@ namespace AST {
     }
     
     void 
-    ASTreplacement::replaceShape(Shape& s, RendererAST* r) const
+    ASTreplacement::replace(Shape& s, RendererAST* r) const
     {
         if (mShapeSpec.argSource == ASTruleSpecifier::NoArgs) {
             s.mShapeType = mShapeSpec.shapeType;
@@ -331,12 +331,6 @@ namespace AST {
             if (s.mParameters->mParamCount == 0)
                 s.mParameters = nullptr;
         }
-    }
-    
-    void 
-    ASTreplacement::replace(Shape& s, RendererAST* r) const
-    {
-        replaceShape(s, r);
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed.bump();
         mChildChange.evaluate(s.mWorldState, true, r);
