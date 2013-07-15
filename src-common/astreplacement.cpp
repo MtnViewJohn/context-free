@@ -912,32 +912,7 @@ namespace AST {
         for (auto term = temp.begin(); term != temp.end(); ++term) {
             switch ((*term)->modType) {
                 case AST::ASTmodTerm::param:
-                    if ((*term)->paramString.find("evenodd") != std::string::npos)
-                        flags |= CF_EVEN_ODD;
-                    if ((*term)->paramString.find("iso") != std::string::npos)
-                        flags |= CF_ISO_WIDTH;
-                    if ((*term)->paramString.find("join") != std::string::npos)
-                        flags &= ~CF_JOIN_MASK;
-                    if ((*term)->paramString.find("miterjoin") != std::string::npos)
-                        flags |= CF_MITER_JOIN | CF_JOIN_PRESENT;
-                    if ((*term)->paramString.find("roundjoin") != std::string::npos)
-                        flags |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
-                    if ((*term)->paramString.find("beveljoin") != std::string::npos)
-                        flags |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
-                    if ((*term)->paramString.find("cap") != std::string::npos)
-                        flags &= ~CF_CAP_MASK;
-                    if ((*term)->paramString.find("buttcap") != std::string::npos)
-                        flags |= CF_BUTT_CAP | CF_CAP_PRESENT;
-                    if ((*term)->paramString.find("squarecap") != std::string::npos)
-                        flags |= CF_SQUARE_CAP | CF_CAP_PRESENT;
-                    if ((*term)->paramString.find("roundcap") != std::string::npos)
-                        flags |= CF_ROUND_CAP | CF_CAP_PRESENT;
-                    if ((*term)->paramString.find("large") != std::string::npos)
-                        flags |= CF_ARC_LARGE;
-                    if ((*term)->paramString.find("cw") != std::string::npos)
-                        flags |= CF_ARC_CW;
-                    if ((*term)->paramString.find("align") != std::string::npos)
-                        flags |= CF_ALIGN;
+                    flags |= (*term)->argCount;     // ctor stashes parsed params here
                     break;
                 case AST::ASTmodTerm::stroke:
                     if (ret)
