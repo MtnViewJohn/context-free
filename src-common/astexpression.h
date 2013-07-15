@@ -316,12 +316,10 @@ namespace AST {
         modTypeEnum modType;
         exp_ptr args;
         int argCount;
-        std::string paramString;
         
         ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc)
         : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a), argCount(0) {};
-        ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc)
-        : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0), paramString(ent) {};
+        ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc);
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0) {};
         virtual ~ASTmodTerm() { }

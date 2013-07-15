@@ -312,7 +312,38 @@ namespace AST {
                 CfdgError::Error(where, "Operator takes two operands");
         }
     }
-    
+
+    ASTmodTerm::ASTmodTerm(modTypeEnum t, const std::string& paramString, const yy::location& loc)
+    : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0)
+    {
+        if (paramString.find("evenodd") != std::string::npos)
+            argCount |= CF_EVEN_ODD;
+        if (paramString.find("iso") != std::string::npos)
+            argCount |= CF_ISO_WIDTH;
+        if (paramString.find("join") != std::string::npos)
+            argCount &= ~CF_JOIN_MASK;
+        if (paramString.find("miterjoin") != std::string::npos)
+            argCount |= CF_MITER_JOIN | CF_JOIN_PRESENT;
+        if (paramString.find("roundjoin") != std::string::npos)
+            argCount |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
+        if (paramString.find("beveljoin") != std::string::npos)
+            argCount |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
+        if (paramString.find("cap") != std::string::npos)
+            argCount &= ~CF_CAP_MASK;
+        if (paramString.find("buttcap") != std::string::npos)
+            argCount |= CF_BUTT_CAP | CF_CAP_PRESENT;
+        if (paramString.find("squarecap") != std::string::npos)
+            argCount |= CF_SQUARE_CAP | CF_CAP_PRESENT;
+        if (paramString.find("roundcap") != std::string::npos)
+            argCount |= CF_ROUND_CAP | CF_CAP_PRESENT;
+        if (paramString.find("large") != std::string::npos)
+            argCount |= CF_ARC_LARGE;
+        if (paramString.find("cw") != std::string::npos)
+            argCount |= CF_ARC_CW;
+        if (paramString.find("align") != std::string::npos)
+            argCount |= CF_ALIGN;
+    }
+
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), modData(m.modData), 
       modClass(m.modClass), entropyIndex(m.entropyIndex), canonical(m.canonical)
