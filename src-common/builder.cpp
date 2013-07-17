@@ -340,6 +340,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
         }
         ASTdefine* cfg = new ASTdefine(name, nameLoc);
         cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
+        cfg->mDefineType = ASTdefine::ConfigDefine;
         return cfg;
     }
     
@@ -363,7 +364,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
             param.mLocality = PureNonlocal;
         def->mParameters = mParamDecls.mParameters;     // copy
         def->mStackCount = mParamDecls.mStackCount;
-        def->isFunction = true;
+        def->mDefineType = ASTdefine::FunctionDefine;
         mLocalStackDepth -= mParamDecls.mStackCount;
         mParamDecls.mStackCount = 0;
         
@@ -502,7 +503,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
     def_ptr def(new ASTdefine(name, defLoc));
     def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
-    def->isFunction = def->isLetFunction = true;
+    def->mDefineType = ASTdefine::LetDefine;
     return new ASTlet(std::move(vars), std::move(def), letLoc, defLoc);
 }
 

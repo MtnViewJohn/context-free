@@ -381,18 +381,24 @@ global_definition:
             def_ptr var($global_definition_header);  $global_definition_header = nullptr;
             exp_ptr exp($exp2);                      $exp2 = nullptr;
             if (var) {
-                if (var->isFunction) {
-                    driver.pop_repContainer(nullptr);
-                    driver.mParamDecls.mParameters.clear();
-                    driver.mParamDecls.mStackCount = 0;
-                }
-                if (var->mConfigDepth >= 0 || var->isFunction) {
-                    var->mExpression = std::move(exp);
-                } else {
-                    if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get()))
-                        var->mChildChange.grab(mod);        // emptied ASTmod gets deleted
-                    else
+                switch (var->mDefineType) {
+                    case ASTdefine::StackDefine:
+                        if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get()))
+                            var->mChildChange.grab(mod);        // emptied ASTmod gets deleted
+                        else
+                            var->mExpression = std::move(exp);
+                        break;
+                    case ASTdefine::LetDefine:
+                        assert(false);
+                        break;
+                    case ASTdefine::FunctionDefine:
+                        driver.pop_repContainer(nullptr);
+                        driver.mParamDecls.mParameters.clear();
+                        driver.mParamDecls.mStackCount = 0;
+                        // fall through
+                    default:
                         var->mExpression = std::move(exp);
+                        break;
                 }
                 $global_definition = var.release();
             } else {
@@ -448,7 +454,14 @@ function_definition_header:
 
 global_definition_header:
         function_definition_header {
-            driver.push_repContainer(driver.mParamDecls);
+            if ($function_definition_header) {
+                assert($function_definition_header->mDefineType == ASTdefine::FunctionDefine);
+                driver.push_repContainer(driver.mParamDecls);
+            } else {
+                // An error occurred
+                driver.mParamDecls.mParameters.clear();
+                driver.mParamDecls.mStackCount = 0;
+            }
             $global_definition_header = $function_definition_header;
         }
         |
