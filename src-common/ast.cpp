@@ -267,6 +267,48 @@ namespace AST {
         return size;
     }
     
+    ASTexpression*
+    ASTparameter::constCopy(const yy::location& where, const std::string& entropy) const
+    {
+        switch (mType) {
+            case AST::NumericType: {
+                double data[9];
+                bool natural = isNatural;
+                int valCount = mDefinition->mExpression->evaluate(data, 9);
+                if (valCount != mTuplesize)
+                    CfdgError::Error(where, "Unexpected compile error.");                   // this also shouldn't happen
+                
+                // Create a new cons-list based on the evaluated variable's expression
+                ASTreal* top = new ASTreal(data[0], mDefinition->mExpression->where);
+                top->text = entropy;                // use variable name for entropy
+                ASTexpression* list = top;
+                for (int i = 1; i < valCount; ++i) {
+                    ASTreal* next = new ASTreal(data[i], where);
+                    list = list->append(next);
+                }
+                list->isNatural = natural;
+                return list;
+            }
+            case AST::ModType:
+                if (const ASTmodification* mod = dynamic_cast<const ASTmodification*>(mDefinition->mExpression.get()))
+                    return new ASTmodification(*mod, where);
+                else
+                    return new ASTmodification(mDefinition->mChildChange, where);
+            case AST::RuleType: {
+                // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
+                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (mDefinition->mExpression.get())) {
+                    return new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
+                } else {
+                    CfdgError::Error(where, "Internal error computing bound rule specifier");
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return nullptr;
+    }
+    
     Locality_t
     CombineLocality(Locality_t first, Locality_t second)
     {
