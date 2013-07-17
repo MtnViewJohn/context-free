@@ -172,16 +172,15 @@ namespace AST {
     };
     class ASTdefine : public ASTreplacement {
     public:
+        enum define_t { StackDefine, ConstDefine, ConfigDefine, FunctionDefine, LetDefine };
+        define_t mDefineType;
         exp_ptr mExpression;
         int mTuplesize;
         AST::expType mType;
-        bool isConstant;
         bool isNatural;
         ASTparameters mParameters;
         unsigned mStackCount;
         std::string mName;
-        bool isFunction;
-        bool isLetFunction;
         int mConfigDepth;
         
         ASTdefine(const std::string& name, const yy::location& loc);

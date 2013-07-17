@@ -2519,7 +2519,7 @@ namespace AST {
                 ASTexpression* args = nullptr;
                 for (auto& rep: mDefinitions->mBody) {
                     if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get()))
-                        if (!def->isConstant) {
+                        if (def->mDefineType == ASTdefine::StackDefine) {
                             definition->mStackCount += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
                         }
@@ -2532,7 +2532,7 @@ namespace AST {
                 mDefinitions.reset();   // we're done with these
                 arguments.reset(args);
                 
-                isConstant = !arguments && definition->isConstant;
+                isConstant = !arguments && definition->mExpression->isConstant;
                 isNatural = definition->isNatural;
                 mLocality = definition->mExpression ?
                     definition->mExpression->mLocality :

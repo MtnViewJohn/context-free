@@ -50,7 +50,7 @@ namespace AST {
         }
         
         mName = nameIndex;
-        if (def->isConstant)
+        if (def->mDefineType == ASTdefine::ConstDefine)
             mDefinition = def;
     }
     

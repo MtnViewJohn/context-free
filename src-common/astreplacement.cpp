@@ -123,9 +123,9 @@ namespace AST {
     }
     
     ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
-    : ASTreplacement(nullptr, loc, empty),
-      mType(NoType), isConstant(false), isNatural(false), mStackCount(0),
-      mName(std::move(name)), isFunction(false), isLetFunction(false), mConfigDepth(-1)
+    : ASTreplacement(nullptr, loc, empty), mDefineType(StackDefine),
+      mType(NoType), isNatural(false), mStackCount(0), mName(std::move(name)),
+      mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
@@ -466,7 +466,7 @@ namespace AST {
     void
     ASTdefine::traverse(const Shape& p, bool, RendererAST* r) const
     {
-        if (isConstant || isFunction || mConfigDepth >= 0)
+        if (mDefineType != StackDefine)
             return;
         size_t s = r->mCFstack.size();
         r->mCFstack.resize(s + mTuplesize);
@@ -795,7 +795,7 @@ namespace AST {
     void
     ASTdefine::compile(AST::CompilePhase ph)
     {
-        if (isFunction) {
+        if (mDefineType == FunctionDefine || mDefineType == LetDefine) {
             ASTrepContainer tempCont;
             tempCont.mParameters = mParameters;     // copy
             tempCont.mStackCount = mStackCount;
@@ -814,7 +814,7 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                if (mConfigDepth >= 0) {
+                if (mDefineType == ConfigDefine) {
                     Builder::CurrentBuilder->MakeConfig(this);
                     return;
                 }
@@ -830,14 +830,13 @@ namespace AST {
                     sz = mExpression->evaluate(nullptr, 0);
                 if (t == ModType)
                     sz = ModificationSize;
-                if (isFunction && !isLetFunction) {
+                if (mDefineType == FunctionDefine) {
                     if (t != mType)
                         CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function");
                     if (mType == NumericType && t == NumericType && sz != mTuplesize)
                         CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function");
                     if (isNatural && (!mExpression || !mExpression->isNatural))
                         CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function");
-                    isConstant = false;
                 } else {
                     if (mShapeSpec.shapeType >= 0) {
                         ASTdefine* func = nullptr;
@@ -855,7 +854,8 @@ namespace AST {
                     mType = t;
                     if (t != (t & (-t)) || !t)
                         CfdgError::Error(mLocation, "Expression can only have one type");
-                    isConstant = mExpression ? mExpression->isConstant : mChildChange.modExp.empty();
+                    if (mDefineType == StackDefine && (mExpression ? mExpression->isConstant : mChildChange.modExp.empty()))
+                        mDefineType = ConstDefine;
                     isNatural = mExpression && mExpression->isNatural && mType == NumericType;
                     ASTparameter& param = Builder::CurrentBuilder->
                         mContainerStack.back()->
