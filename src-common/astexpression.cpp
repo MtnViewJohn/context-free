@@ -32,46 +32,6 @@
 
 namespace AST {
     
-    ASTexpression*
-    ASTexpression::constCopy(const ASTparameter* bound, const std::string& entropy) const
-    {
-        switch (bound->mType) {
-            case AST::NumericType: {
-                double data[9];
-                bool natural = bound->isNatural;
-                int valCount = bound->mDefinition->mExpression->evaluate(data, 9);
-                if (valCount != bound->mTuplesize)
-                    CfdgError::Error(where, "Unexpected compile error.");                   // this also shouldn't happen
-                
-                // Create a new cons-list based on the evaluated variable's expression
-                ASTreal* top = new ASTreal(data[0], bound->mDefinition->mExpression->where);
-                top->text = entropy;                // use variable name for entropy
-                ASTexpression* list = top;
-                for (int i = 1; i < valCount; ++i) {
-                    ASTreal* next = new ASTreal(data[i],
-                                                bound->mDefinition->mExpression->where);
-                    list = list->append(next);
-                }
-                list->isNatural = natural;
-                return list;
-            }
-            case AST::ModType:
-                return new ASTmodification(bound->mDefinition->mChildChange, where);
-            case AST::RuleType: {
-                // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (bound->mDefinition->mExpression.get())) {
-                    return new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
-                } else {
-                    CfdgError::Error(where, "Internal error computing bound rule specifier");
-                }
-                break;
-            }
-            default:
-                break;
-        }
-        return nullptr;
-    }
-    
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType),
@@ -1948,9 +1908,8 @@ namespace AST {
             std::string ent;
             entropy(ent);
             ASTparameter p(-1, definition, where);
-            ASTexpression* ret = definition->mExpression ?
-                definition->mExpression->constCopy(&p, ent) :
-                definition->mChildChange.constCopy(&p, ent);
+            p.mDefinition = definition;     // ctor won't do this
+            ASTexpression* ret = p.constCopy(where, ent);
             if (ret) {
                 delete this;
                 return ret;
@@ -2427,9 +2386,7 @@ namespace AST {
 
                 if (bound->mStackIndex == -1) {
                     assert(bound->mDefinition);
-                    ASTexpression* ret = bound->mDefinition->mExpression ?
-                        bound->mDefinition->mExpression->constCopy(bound, name) :
-                        bound->mDefinition->mChildChange.constCopy(bound, name);
+                    ASTexpression* ret = bound->constCopy(where, name);
                     if (ret) {
                         ret->compile(ph);
                         return ret;

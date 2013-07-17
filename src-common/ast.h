@@ -131,6 +131,9 @@ namespace AST {
         bool operator!=(const ASTparameter& p) const;
         bool operator!=(const ASTexpression& e) const;
         
+        ASTexpression*
+        constCopy(const yy::location& where, const std::string& entropy) const;
+        
         static int CheckType(const ASTparameters* types, const ASTexpression* args,
                             const yy::location& where, bool checkNumber);
     };

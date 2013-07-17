@@ -72,7 +72,6 @@ namespace AST {
         virtual bool release(size_t = std::numeric_limits<size_t>::max()) { return false; }
         virtual ASTexpression* compile(CompilePhase ph) { return this; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
-        ASTexpression* constCopy(const ASTparameter* bound, const std::string& entropy) const;
     };
     class ASTfunction : public ASTexpression {
     public:
