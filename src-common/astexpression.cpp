@@ -1530,6 +1530,14 @@ namespace AST {
                 CfdgError::Error(where, "Cannot provide a stroke width in this context");
                 break;
             }
+            case ASTmodTerm::x1:
+            case ASTmodTerm::y1:
+            case ASTmodTerm::x2:
+            case ASTmodTerm::y2:
+            case ASTmodTerm::xrad:
+            case ASTmodTerm::yrad:
+                CfdgError::Error(where, "Cannot provide a path operation term in this context");
+                break;
             case ASTmodTerm::modification: {
                 if (rti == nullptr) {
                     const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
