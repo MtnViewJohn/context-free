@@ -1047,25 +1047,23 @@ namespace AST {
                     where = where + cit->where;
                     break;
                 }
-                case ModType: {
+                case ModType:
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
-                    const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit);
-                    if (!m) {
-                        CfdgError::Error(cit->where, "Wrong type");
-                        break;
-                    }
-                    if ((m->modClass &
-                         (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
-                        m->modClass && (r || m->isConstant))
-                    {
-                        Modification mod;
-                        cit->evaluate(mod, false, r);
-                        addUnique(syms, mod.m_transform);
+                    if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit)) {
+                        if ((m->modClass &
+                             (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
+                            m->modClass && (r || m->isConstant))
+                        {
+                            Modification mod;
+                            cit->evaluate(mod, false, r);
+                            addUnique(syms, mod.m_transform);
+                        } else {
+                            ret.push_back(m);
+                        }
                     } else {
-                        ret.push_back(m);
+                        CfdgError::Error(cit->where, "Wrong type");
                     }
                     break;
-                }
                 default:
                     CfdgError::Error(cit->where, "Wrong type");
                     break;
