@@ -205,7 +205,7 @@ namespace AST {
             return nullptr;
         }
         
-        return (*arguments)[getIndex(rti)]->evalArgs(rti, parent);
+        return arguments[getIndex(rti)]->evalArgs(rti, parent);
     }
     
     const StackRule*
@@ -336,12 +336,12 @@ namespace AST {
     }
     
     ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
-    : ASTexpression(loc), tupleSize(-1), indexCache(0), arguments(std::move(args)),
-      ifSelect(asIf)
+    : ASTexpression(loc), tupleSize(-1), indexCache(NotCached),
+      selector(std::move(args)), ifSelect(asIf)
     {
         isConstant = false;
         
-        if (!arguments || arguments->size() < 3) {
+        if (!selector || selector->size() < 3) {
             CfdgError::Error(loc, "select()/if() function requires arguments");
             return;
         }
@@ -986,7 +986,7 @@ namespace AST {
         if (res == nullptr)
             return tupleSize;
         
-        return (*arguments)[getIndex(rti)]->evaluate(res, length, rti);
+        return arguments[getIndex(rti)]->evaluate(res, length, rti);
     }
     
     int
@@ -1064,7 +1064,7 @@ namespace AST {
             return;
         }
         
-        (*arguments)[getIndex(rti)]->evaluate(m, shapeDest, rti);
+        arguments[getIndex(rti)]->evaluate(m, shapeDest, rti);
     }
     
     void
@@ -1816,14 +1816,14 @@ namespace AST {
     ASTexpression*
     ASTselect::simplify()
     {
-        if (!indexCache) {
-            Simplify(arguments);
+        if (indexCache == NotCached) {
+            for (auto& arg: arguments)
+                Simplify(arg);
+            Simplify(selector);
             return this;
         }
         
-        ASTexpression* chosenOne = (*arguments)[indexCache];
-        if (!arguments->release(indexCache))
-            return this;
+        ASTexpression* chosenOne = arguments[indexCache].release();
         
         delete this;
         return chosenOne->simplify();
@@ -2129,50 +2129,69 @@ namespace AST {
     ASTexpression*
     ASTselect::compile(AST::CompilePhase ph)
     {
-        if (!arguments)
+        if (!selector)
             return this;
-        Compile(arguments, ph);
+        for (auto& arg: arguments)
+            Compile(arg, ph);
+        Compile(selector, ph);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                arguments->entropy(ent);
+                selector->entropy(ent);
                 ent.append("\xB5\xA2\x4A\x74\xA9\xDF");
-                
-                if ((*arguments)[0]->mType != NumericType ||
-                    (*arguments)[0]->evaluate(nullptr, 0) != 1)
-                {
-                    CfdgError::Error((*arguments)[0]->where, "is()/select() selector must be a numeric scalar");
+                mLocality = selector->mLocality;
+
+                // Move arguments to their vector
+                exp_ptr sel((*selector)[0]);
+                if (!selector->release(0)) {
+                    sel.release();
+                    CfdgError::Error((*selector)[0]->where, "if()/select() selector parse error");
                     return this;
                 }
                 
-                mType = (*arguments)[1]->mType;
-                mLocality = arguments->mLocality;
-                isNatural = (*arguments)[1]->isNatural;
-                tupleSize = (mType == NumericType) ? (*arguments)[1]->evaluate(nullptr, 0) : 1;
-                if (tupleSize > 1) isNatural = false;
-                if (tupleSize == -1)
-                    CfdgError::Error((*arguments)[1]->where, "Error determining tuple size");
+                if (sel->mType != NumericType || sel->evaluate(nullptr, 0) != 1) {
+                    CfdgError::Error(sel->where, "if()/select() selector must be a numeric scalar");
+                    return this;
+                }
                 
-                for (int i = 2; i < arguments->size(); ++i) {
-                    if (mType != (*arguments)[i]->mType) {
-                        CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same type");
-                    } else if (mType == NumericType && tupleSize != -1 &&
-                               (*arguments)[i]->evaluate(nullptr, 0) != tupleSize)
-                    {
-                        CfdgError::Error((*arguments)[i]->where, "select()/if() choices must be of same length");
+                bool first = true;
+                arguments.reserve(selector->size());
+                for (size_t i = 1; i < selector->size(); ++i) {
+                    exp_ptr arg((*selector)[i]);
+                    if (!selector->release(i)) {
+                        arg.release();
+                        CfdgError::Error((*selector)[i]->where, "if()/select() selector parse error");
+                        return this;
                     }
-                    isNatural = isNatural && (*arguments)[i]->isNatural;
+                    if (first) {
+                        mType = arg->mType;
+                        isNatural = arg->isNatural;
+                        tupleSize = (mType == NumericType) ? arg->evaluate(nullptr, 0) : 1;
+                        first = false;
+                    } else {
+                        if (mType != arg->mType) {
+                            CfdgError::Error(arg->where, "select()/if() choices must be of same type");
+                        } else if (mType == NumericType && tupleSize != -1 &&
+                                   arg->evaluate(nullptr, 0) != tupleSize)
+                        {
+                            CfdgError::Error(arg->where, "select()/if() choices must be of same length");
+                        }
+                        isNatural = isNatural && arg->isNatural;
+                    }
+                    arguments.emplace_back(std::move(arg));
                 }
                 
-                if (ifSelect && arguments->size() != 3) {
-                    CfdgError::Error(arguments->where, "if() function requires two arguments");
+                selector = std::move(sel);
+                                
+                if (ifSelect && arguments.size() != 2) {
+                    CfdgError::Error(where, "if() function requires two arguments");
                 }
                 
-                if ((*arguments)[0]->isConstant) {
+                if (selector->isConstant) {
                     indexCache = getIndex();
-                    isConstant = (*arguments)[indexCache]->isConstant;
-                    mLocality = (*arguments)[indexCache]->mLocality;
-                    isNatural = (*arguments)[indexCache]->isNatural;
+                    isConstant = arguments[indexCache]->isConstant;
+                    mLocality = arguments[indexCache]->mLocality;
+                    isNatural = arguments[indexCache]->isNatural;
                 }
                 break;
             }
@@ -2978,24 +2997,25 @@ namespace AST {
         modData.mRand64Seed.xorString(s.c_str(), entropyIndex);
     }
     
-    unsigned
+    size_t
     ASTselect::getIndex(RendererAST* rti) const
     {
-        if (indexCache)
+        if (indexCache != NotCached)
             return indexCache;
 
         double select = 0.0;
-        (*arguments)[0]->evaluate(&select, 1, rti);
+        selector->evaluate(&select, 1, rti);
 
         if (ifSelect)
-            return select ? 1 : 2;
+            return select ? 0 : 1;
+        
+        if (select < 0.0)
+            return 0;
 
-        int i = static_cast<int>(select) + 1;
+        size_t i = static_cast<size_t>(select);
 
-        if (i <= 0)
-            return 1;
-        if (i > arguments->size())
-            return arguments->size() - 1;
+        if (i >= arguments.size())
+            return arguments.size() - 1;
         return i;
     }
 }

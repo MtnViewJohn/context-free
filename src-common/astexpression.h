@@ -99,11 +99,13 @@ namespace AST {
         ASTfunction() : ASTexpression(CfdgError::Default) {};
 	};
     class ASTselect : public ASTexpression {
+        enum consts_t: size_t { NotCached = std::numeric_limits<size_t>::max() };
     public:
         int              tupleSize;
-        unsigned         indexCache;
+        size_t           indexCache;
         std::string      ent;
-        exp_ptr          arguments;
+        ASTexpArray      arguments;
+        exp_ptr          selector;
         bool             ifSelect;
         
         ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
@@ -115,9 +117,9 @@ namespace AST {
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
     private:
-        ASTselect(const yy::location& loc)
-        : ASTexpression(loc), tupleSize(-1), indexCache(0) {}
-        unsigned getIndex(RendererAST* rti = nullptr) const;
+        //ASTselect(const yy::location& loc)
+        //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
+        size_t getIndex(RendererAST* rti = nullptr) const;
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
