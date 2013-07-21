@@ -672,7 +672,7 @@ namespace AST {
                         CfdgError::Error(mLoopArgs->where, "A loop must have one to three index parameters.");
                     }
                     
-                    for (int i = 0, count = 0; i < mLoopArgs->size(); ++i) {
+                    for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
                         int num = (*mLoopArgs)[i]->evaluate(nullptr, 0);
                         switch (count) {
                             case 0:
@@ -1253,7 +1253,7 @@ namespace AST {
         if (mArguments)
             mArgCount = mArguments->evaluate(nullptr, 0);
 
-        for (int i = 0; mArguments && i < mArguments->size(); ++i) {
+        for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
             ASTexpression* temp = (*mArguments)[i];
 			assert(temp);
             switch (temp->mType) {

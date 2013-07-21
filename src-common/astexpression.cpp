@@ -502,7 +502,7 @@ namespace AST {
         
         // Cannot insert an ASTcons into children, it will be flattened away.
         // You must wrap the ASTcons in an ASTparen in order to insert it whole.
-        for (int i = 0; i < sib->size(); ++i)
+        for (size_t i = 0; i < sib->size(); ++i)
             children.emplace_back((*sib)[i]);
         if (sib->release())
             delete sib;
@@ -793,7 +793,7 @@ namespace AST {
         double res = 0.0;
         if ((*e)[0]->evaluate(&res, 1, rti) != 1)
             CfdgError::Error((*e)[0]->where, "Error computing min/max here.");
-        for (int i = 1; i < e->size(); ++i) {
+        for (size_t i = 1; i < e->size(); ++i) {
             double v;
             if ((*e)[i]->evaluate(&v, 1, rti) != 1)
                 CfdgError::Error((*e)[i]->where, "Error computing min/max here.");
@@ -2754,7 +2754,7 @@ namespace AST {
                             
                             if ((*term)->args->size() > 1) {
                                 ASTexpression* xyargs = nullptr;
-                                int i = 0;
+                                size_t i = 0;
                                 for (; i < (*term)->args->size(); ++i) {
                                     xyargs = ASTexpression::Append(xyargs, (*(*term)->args)[i]);
                                     if (xyargs->evaluate(nullptr, 0) >= 2)
@@ -2856,7 +2856,7 @@ namespace AST {
                     }
                     double data[2];
                     int count = 0;
-                    for (int i = 1; i < args->size(); ++i) {
+                    for (size_t i = 1; i < args->size(); ++i) {
                         if (!(*args)[i]->isConstant) {
                             CfdgError::Error((*args)[i]->where, "Array argument is not constant");
                             break;

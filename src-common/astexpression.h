@@ -69,7 +69,7 @@ namespace AST {
         
         virtual ASTexpression* operator[](size_t i);
         virtual const ASTexpression* operator[](size_t i) const;
-        virtual int size() const { return 1; }
+        virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
         virtual bool release(size_t = ReleaseAll) { return false; }
         virtual ASTexpression* compile(CompilePhase ph) { return this; }
@@ -202,7 +202,7 @@ namespace AST {
         
         virtual ASTexpression* operator[](size_t i);
         virtual const ASTexpression* operator[](size_t i) const;
-        virtual int size() const { return static_cast<int>(children.size()); }
+        virtual size_t size() const { return children.size(); }
         virtual ASTexpression* append(ASTexpression* sib);
         virtual bool release(size_t i = ReleaseAll);
         
