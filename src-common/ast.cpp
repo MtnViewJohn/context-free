@@ -1025,7 +1025,7 @@ namespace AST {
         
         std::vector<double> symmSpec;
         yy::location where;
-        for (int i = 0; i < e->size(); ++i)
+        for (size_t i = 0; i < e->size(); ++i)
         {
             const ASTexpression* cit = (*e)[i];
             switch (cit->mType) {
