@@ -75,14 +75,14 @@ namespace AST {
     };
     class ASTfunction : public ASTexpression {
     public:
-        enum FuncType { IllegalArguments = -2, NotAFunction = -1, 
+        enum FuncType { NotAFunction, 
             Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
             Cosh, Sinh, Tanh, Acosh, Asinh, Atanh, Log, Log10,
             Sqrt, Exp, Abs, Floor, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
             Min, Max, Ftime, Frame,
-            Rand_Static, Rand, Rand2, RandInt, LastOne
+            Rand_Static, Rand, Rand2, RandInt
         };
         static FuncType GetFuncType(const std::string& func);
         FuncType functype;
@@ -310,7 +310,7 @@ namespace AST {
             hueTarg, satTarg, brightTarg, alphaTarg, 
             targHue, targSat, targBright, targAlpha,
             time, timescale, 
-            stroke, param, x1, y1, x2, y2, xrad, yrad, modification, lastModType };
+            stroke, param, x1, y1, x2, y2, xrad, yrad, modification };
         
         modTypeEnum modType;
         exp_ptr args;
