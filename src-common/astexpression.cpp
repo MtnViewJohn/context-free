@@ -810,7 +810,7 @@ namespace AST {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
             return -1;
         }
-        if ((res && length < 1) || (functype <= NotAFunction) || (functype >= LastOne))
+        if (res && length < 1)
             return -1;
         
         if (!res)
@@ -966,7 +966,9 @@ namespace AST {
                 rti->mRandUsed = true;
                 *res = floor(rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
                 break;
-            default:
+            case NotAFunction:
+            case Min:
+            case Max:
                 return -1;
         }
         
@@ -1538,6 +1540,12 @@ namespace AST {
             case ASTmodTerm::yrad:
                 CfdgError::Error(where, "Cannot provide a path operation term in this context");
                 break;
+            case ASTmodTerm::param:
+                CfdgError::Error(where, "Cannot provide a parameter in this context");
+                break;
+            case ASTmodTerm::unknownType:
+                CfdgError::Error(where, "Unrecognized adjustment type");
+                break;
             case ASTmodTerm::modification: {
                 if (rti == nullptr) {
                     const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
@@ -1556,8 +1564,6 @@ namespace AST {
                 args->evaluate(m, shapeDest, rti);
                 break;
             }
-            default:
-                break;
         }
     }
     
@@ -1610,8 +1616,6 @@ namespace AST {
             { ASTfunction::RandInt,     "\x48\x14\x4E\x27\x35\x2E" }
         };
         
-		if (functype <= NotAFunction || functype >= LastOne) return;
-
         arguments->entropy(ent);
 		ent.append(EntropyMap.at(functype));
 	}
