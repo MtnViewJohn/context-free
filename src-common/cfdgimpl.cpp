@@ -56,7 +56,7 @@ using namespace AST;
 CFDGImpl::CFDGImpl(AbstractSystem* m)
 : m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
-  ParamDepth({std::numeric_limits<unsigned>::max()}),
+  ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 { 
     // These have to be encoded first so that their type number will fit
@@ -342,7 +342,7 @@ CFDGImpl::hasParameter(CFG name) const
 {
     assert(static_cast<size_t>(name) < static_cast<size_t>(CFG::_NumberOf));
     
-    if (ParamDepth[name] == std::numeric_limits<unsigned>::max())
+    if (ParamDepth[name] == NoParameter)
         return nullptr;
     
     return ParamExp[name].get();

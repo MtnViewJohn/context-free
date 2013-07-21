@@ -44,6 +44,8 @@ namespace AST {
     class ASTrepContainer;
 
     class ASTexpression {
+    protected:
+        enum consts_t: size_t { ReleaseAll = std::numeric_limits<size_t>::max() };
     public:
         bool isConstant;
         bool isNatural;
@@ -69,7 +71,7 @@ namespace AST {
         virtual const ASTexpression* operator[](size_t i) const;
         virtual int size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t = std::numeric_limits<size_t>::max()) { return false; }
+        virtual bool release(size_t = ReleaseAll) { return false; }
         virtual ASTexpression* compile(CompilePhase ph) { return this; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
@@ -202,7 +204,7 @@ namespace AST {
         virtual const ASTexpression* operator[](size_t i) const;
         virtual int size() const { return static_cast<int>(children.size()); }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t i = std::numeric_limits<size_t>::max());
+        virtual bool release(size_t i = ReleaseAll);
         
     private:
         ASTcons() : ASTexpression(CfdgError::Default) {};

@@ -512,7 +512,7 @@ namespace AST {
     bool
     ASTcons::release(size_t i)
     {
-        if (i == std::numeric_limits<size_t>::max()) {
+        if (i == ReleaseAll) {
             for (exp_ptr& child: children) {
                 child.release();
             }

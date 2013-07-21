@@ -43,6 +43,7 @@
 #include "config.h"
 
 class CFDGImpl : public CFDG {
+    enum consts_t: unsigned { NoParameter = std::numeric_limits<unsigned>::max() };
     public:
         enum {newShape = 0, ruleType = 1, pathType = 2};
 private:
