@@ -228,7 +228,6 @@ namespace AST {
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
     private:
-        ASTpathOp(const std::string& s, const yy::location& loc);
         void pathData(double* data, RendererAST* rti) const;
         void pathDataConst();
         void makePositional();
