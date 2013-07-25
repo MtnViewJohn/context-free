@@ -62,6 +62,7 @@ namespace AST {
                        repElemListEnum t = replacement);
         ASTreplacement(mod_ptr mods, const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
+        ASTreplacement(const std::string& s, const yy::location& loc);
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);

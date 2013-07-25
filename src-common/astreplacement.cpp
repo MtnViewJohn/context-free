@@ -106,7 +106,30 @@ namespace AST {
       mChildChange(std::move(mods), loc), mLocation(loc)
     {
     }
-    
+
+    ASTreplacement::ASTreplacement(const std::string& s, const yy::location& loc)
+    : mShapeSpec(), mRepType(op), mPathOp(unknownPathop),
+      mChildChange(loc), mLocation(loc)
+    {
+        static const std::map<std::string, pathOpEnum> PathOpNames = {
+            { "MOVETO",     MOVETO },
+            { "MOVEREL",    MOVEREL },
+            { "LINETO",     LINETO },
+            { "LINEREL",    LINEREL },
+            { "ARCTO",      ARCTO },
+            { "ARCREL",     ARCREL },
+            { "CURVETO",    CURVETO },
+            { "CURVEREL",   CURVEREL },
+            { "CLOSEPOLY",  CLOSEPOLY }
+        };
+        
+        auto opname = PathOpNames.find(s);
+        if (opname == PathOpNames.end())
+            CfdgError::Error(loc, "Unknown path operation type");
+        else
+            mPathOp = opname->second;
+    }
+
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
@@ -231,40 +254,16 @@ namespace AST {
         mPathUID = NextPathUID();
     }
     
-    static pathOpEnum GetPathOp(const std::string& s, const yy::location& loc)
-    {
-        static const std::map<std::string, pathOpEnum> PathOpNames = {
-            { "MOVETO",     MOVETO },
-            { "MOVEREL",    MOVEREL },
-            { "LINETO",     LINETO },
-            { "LINEREL",    LINEREL },
-            { "ARCTO",      ARCTO },
-            { "ARCREL",     ARCREL },
-            { "CURVETO",    CURVETO },
-            { "CURVEREL",   CURVEREL },
-            { "CLOSEPOLY",  CLOSEPOLY }
-        };
-
-        auto opname = PathOpNames.find(s);
-        if (opname == PathOpNames.end()) {
-            CfdgError::Error(loc, "Unknown path operation type");
-            return unknownPathop;
-        }
-        return opname->second;
-    }
-    
     ASTpathOp::ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc)
-    : ASTreplacement(nullptr, loc, op), mArguments(std::move(a)), 
+    : ASTreplacement(s, loc), mArguments(std::move(a)),
       mOldStyleArguments(nullptr), mArgCount(0), mFlags(0)
     {
-        mPathOp = GetPathOp(s, loc);
     }
     
     ASTpathOp::ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc)
-    : ASTreplacement(nullptr, loc, op), mArguments(nullptr), 
+    : ASTreplacement(s, loc), mArguments(nullptr),
       mOldStyleArguments(std::move(a)), mArgCount(0), mFlags(0)
     {
-        mPathOp = GetPathOp(s, loc);
     }
     
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
