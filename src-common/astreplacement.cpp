@@ -413,9 +413,9 @@ namespace AST {
         if (opsOnly && !tr)
             transChild.mWorldState.m_transform.reset();
         
-        int modsLength = mods.size();
-        int totalLength = modsLength + static_cast<int>(transforms.size());
-        for(int i = 0; i < totalLength; ++i) {
+        size_t modsLength = mods.size();
+        size_t totalLength = modsLength + transforms.size();
+        for(size_t i = 0; i < totalLength; ++i) {
             Shape child = transChild;
             if (i < modsLength) {
                 mods[i]->evaluate(child.mWorldState, true, r);

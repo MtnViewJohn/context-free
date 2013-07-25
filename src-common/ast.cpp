@@ -213,8 +213,8 @@ namespace AST {
         }
         bool justCount = args->mType == AST::NoType;
         
-        int count = 0, size = 0;
-        int expect = args->size();
+        size_t count = 0, size = 0;
+        size_t expect = args->size();
         ASTparameters::const_iterator param_it = types->begin(),
         param_end = types->end();
         
@@ -264,7 +264,7 @@ namespace AST {
             return -1;
         }
 
-        return size;
+        return static_cast<int>(size);
     }
     
     ASTexpression*
