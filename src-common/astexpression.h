@@ -45,7 +45,7 @@ namespace AST {
 
     class ASTexpression {
     protected:
-        enum consts_t: size_t { ReleaseAll = std::numeric_limits<size_t>::max() };
+        enum consts_t: size_t { ReleaseAll = static_cast<size_t>(-1) };
     public:
         bool isConstant;
         bool isNatural;
@@ -101,7 +101,7 @@ namespace AST {
         ASTfunction() : ASTexpression(CfdgError::Default) {};
 	};
     class ASTselect : public ASTexpression {
-        enum consts_t: size_t { NotCached = std::numeric_limits<size_t>::max() };
+        enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
     public:
         int              tupleSize;
         size_t           indexCache;
