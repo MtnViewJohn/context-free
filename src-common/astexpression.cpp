@@ -2976,6 +2976,11 @@ namespace AST {
                 nonConstant |= mc;
             bool keepThisOne = (mc & nonConstant) != 0;
             
+            if (Builder::CurrentBuilder->mInPathContainer && (mc & ZClass))
+                CfdgError::Warning(mod->where, "Z changes are not supported within paths");
+            if (Builder::CurrentBuilder->mInPathContainer && (mc & TimeClass))
+                CfdgError::Warning(mod->where, "Time changes are not supported within paths");
+            
             try {
                 if (!keepThisOne)
                     mod->evaluate(modData, false, nullptr);

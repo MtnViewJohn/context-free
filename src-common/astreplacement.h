@@ -256,7 +256,6 @@ namespace AST {
         virtual void compile(CompilePhase ph);
     private:
         mutable CommandInfo mInfoCache;
-        void    check4z() const;
     };
     class ASTcompiledPath {
     public:
