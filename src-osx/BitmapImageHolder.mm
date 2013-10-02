@@ -86,8 +86,8 @@
     if (pixelBits < 0) return FALSE;
     _bitsPerPixel = pixelBits;
     
-    unsigned int planesExpected = isPlanar ? _samplesPerPixel : 1;
-    unsigned int planesProvided = 0;
+    NSInteger planesExpected = isPlanar ? _samplesPerPixel : 1;
+    NSInteger planesProvided = 0;
     
     if (planes) {
         for (unsigned int i = 0 ; i < 5; ++i) {
@@ -163,17 +163,17 @@
     [super dealloc];
 }
 
-- (int) bitsPerPixel { return _bitsPerPixel; }
-- (int) samplesPerPixel { return _samplesPerPixel; }
+- (NSInteger) bitsPerPixel { return _bitsPerPixel; }
+- (NSInteger) samplesPerPixel { return _samplesPerPixel; }
 - (BOOL) isPlanar { return _isPlanar; }
-- (int) numberOfPlanes { return _isPlanar ? _samplesPerPixel : 1; }
-- (int) bytesPerPlane { return _bytesPerRow * _pixelsHigh; }
-- (int) bytesPerRow { return _bytesPerRow; }
-- (int) bitsPerSample { return _bitsPerSample; }
+- (NSInteger) numberOfPlanes { return _isPlanar ? _samplesPerPixel : 1; }
+- (NSInteger) bytesPerPlane { return _bytesPerRow * _pixelsHigh; }
+- (NSInteger) bytesPerRow { return _bytesPerRow; }
+- (NSInteger) bitsPerSample { return _bitsPerSample; }
 - (NSString *) colorSpaceName { return _colorSpace; }
 - (BOOL) hasAlpha { return _hasAlpha; }
-- (int) pixelsHigh { return _pixelsHigh; }
-- (int) pixelsWide { return _pixelsWide; }
+- (NSInteger) pixelsHigh { return _pixelsHigh; }
+- (NSInteger) pixelsWide { return _pixelsWide; }
 
 //
 // Getting Image Data 
@@ -224,8 +224,8 @@
 - (NSBitmapImageRep*) getImageRepCropped: (NSRect)cropRect
 {
     unsigned char* planes[5];
-    int offset =    (int)cropRect.origin.y * _bytesPerRow + 
-                    (int)cropRect.origin.x * (_bitsPerPixel >> 3);
+    NSInteger offset =    (NSInteger)cropRect.origin.y * _bytesPerRow +
+                          (NSInteger)cropRect.origin.x * (_bitsPerPixel >> 3);
     for (unsigned int i = 0; i < 5; ++i)
         planes[i] = _imagePlanes[i] ? (_imagePlanes[i] + offset) : nullptr;
     int width = (int)cropRect.size.width;

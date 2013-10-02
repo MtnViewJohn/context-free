@@ -35,7 +35,7 @@
 @interface GalleryUploader : NSWindowController {
     CFDGDocument*               mDocument;
     GView*                      mView;
-    int                 mStatus;
+    NSInteger                   mStatus;
 
     IBOutlet NSView*    mContentView;
 

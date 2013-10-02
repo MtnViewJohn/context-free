@@ -188,7 +188,7 @@ namespace {
             theParsedHTML = [[NSAttributedString alloc] initWithHTML:mResponseBody 
                         documentAttributes: nil];
             
-            int responseLength = [mResponseBody length];
+            NSUInteger responseLength = [mResponseBody length];
             char* rawHTML = reinterpret_cast<char*>([mResponseBody mutableBytes]);
             
             // This UUID will only be found in the response body if the upload
@@ -212,7 +212,7 @@ namespace {
             break;
         default:
             [mMessage setString: [NSString localizedStringWithFormat:
-                @"Failed with unexpected status code: %d, %@", mStatus, 
+                @"Failed with unexpected status code: %ld, %@", static_cast<long>(mStatus),
                 [NSHTTPURLResponse localizedStringForStatusCode: mStatus]]];
             break;
     }

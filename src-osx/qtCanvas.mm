@@ -186,7 +186,9 @@ qtCanvas::qtCanvas(NSString* name, BitmapImageHolder* bits,
 : aggCanvas(QT_Blend), impl(* new Impl(name, bits, fps, qual, mpeg4))
 {
     if (bits)
-        attach([bits bitmapData], [bits pixelsWide], [bits pixelsHigh], [bits bytesPerRow]);
+        attach([bits bitmapData], static_cast<unsigned>([bits pixelsWide]),
+               static_cast<unsigned>([bits pixelsHigh]),
+               static_cast<int>([bits bytesPerRow]));
 }
 
 qtCanvas::~qtCanvas()

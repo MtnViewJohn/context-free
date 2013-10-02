@@ -107,6 +107,7 @@ class qtCanvas;
 - (IBAction) showHiresRenderSheet:(id)sender;
 
 - (void)noteStats:(NSValue*)v;
+- (void)redisplayImage:(NSValue*)sizeObj;
 
 - (int) variation;
 - (bool) canvasColor256;
