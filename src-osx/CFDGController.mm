@@ -103,8 +103,8 @@ namespace {
     void addFileMenuItems(NSArray* filePaths, NSMenu* menu,
         CFDGController* target, SEL selector)
     {
-        int n = [filePaths count];
-        for (int i = 0; i < n; ++i) {
+        NSUInteger n = [filePaths count];
+        for (NSUInteger i = 0; i < n; ++i) {
             NSString* path = [filePaths objectAtIndex: i];
             NSString* title = [[path lastPathComponent]
                                 stringByDeletingPathExtension];
@@ -123,7 +123,7 @@ namespace {
         if (![sender respondsToSelector: @selector(tag)])
             return;
         
-        int index = [sender tag];
+        NSInteger index = [sender tag];
         if (index < 0 || index >= static_cast<int>([filePaths count]))
             return;
             
@@ -168,7 +168,7 @@ namespace {
     if (![sender respondsToSelector: @selector(tag)])
         return;
     
-    int index = [sender tag];
+    NSInteger index = [sender tag];
     if (index < 0 || index >= static_cast<int>([urls count]))
         return;
         
@@ -351,8 +351,8 @@ namespace {
 
 - (void)buildHelpMenu
 {
-    int n = [urls count];
-    for (int i = 0; i < n; i += 2) {
+    NSUInteger n = [urls count];
+    for (NSUInteger i = 0; i < n; i += 2) {
         NSString* title = [urls objectAtIndex: i];
         
         if ([title length] == 0) {

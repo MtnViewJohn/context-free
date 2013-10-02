@@ -398,8 +398,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     NSRange lineRange;
     unsigned int lineCount;
     NSUInteger endOfLine;
-    unsigned int start;
-    unsigned int end;
+    NSUInteger start;
+    NSUInteger end;
     
     lineRange.location = 0;
     lineRange.length = 0;
@@ -508,9 +508,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     ||  action == @selector(saveAsSVG:)
     ||  action == @selector(saveAsMovie:)
     ||  action == @selector(showHiresRenderSheet:)
-    ||  action == @selector(uploadToGallery:)
-    ||  action == @selector(toggleLegacyVariations:)
-    ||  action == @selector(showSvgRenderSheet:))
+    ||  action == @selector(uploadToGallery:))
     {
         return [mGView validateMenuItem: anItem];
     }

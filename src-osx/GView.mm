@@ -149,7 +149,6 @@ enum {
 - (void)invalidateDrawingImage;
 - (void)validateDrawingImage;
 
-- (void)redisplayImage:(NSValue*)sizeObj;
 - (void)noteProgress;
 - (void)requestRenderUpdate;
 
@@ -529,6 +528,13 @@ namespace {
 - (IBAction) showHiresRenderSheet:(id)sender
 {
     [mDocument showHiresRenderSheet: sender];
+}
+
+- (void)redisplayImage:(NSValue*)rectObj
+{
+    mRenderedRect = [rectObj rectValue];
+    [self invalidateDrawingImage];
+    [self setNeedsDisplay: YES];
 }
 
 - (void)noteStats:(NSValue*)value
@@ -1104,13 +1110,6 @@ namespace {
         [mDrawingImage addRepresentation: bitmap];
 }
 
-- (void)redisplayImage:(NSValue*)rectObj
-{
-    mRenderedRect = [rectObj rectValue];
-    [self invalidateDrawingImage];
-    [self setNeedsDisplay: YES];
-}
-
 - (void)noteProgress
 {
 #ifdef PROGRESS_ANIMATE_DIRECTLY
@@ -1235,7 +1234,7 @@ namespace {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
-    int movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
+    NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     bool mpeg4 = (bool)[defaults integerForKey: PrefKeyMovieFormat];
     int qual = (int)[defaults floatForKey: PrefKeyMovieQuality];
     
@@ -1254,7 +1253,7 @@ namespace {
     }
     
     mAnimationCanvas = new qtCanvas([filename path], [bits autorelease],
-                                    movieFrameRate, qual, mpeg4);
+                                    static_cast<int>(movieFrameRate), qual, mpeg4);
     
     bool movieOK = mAnimationCanvas->getError() == nil;
     if (movieOK) {

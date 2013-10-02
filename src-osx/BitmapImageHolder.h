@@ -35,12 +35,12 @@
     // Attributes
     NSString*       _colorSpace;
     BOOL            _hasAlpha;
-    int             _bitsPerSample;
-    int             _pixelsWide;
-    int             _pixelsHigh;  
-    unsigned int    _bytesPerRow;
-    unsigned int    _bitsPerPixel; 
-    unsigned int    _samplesPerPixel;
+    NSInteger       _bitsPerSample;
+    NSInteger       _pixelsWide;
+    NSInteger       _pixelsHigh;
+    NSInteger       _bytesPerRow;
+    NSInteger       _bitsPerPixel;
+    NSInteger       _samplesPerPixel;
     BOOL            _isPlanar;
     unsigned char   *_imagePlanes[5];
     NSMutableData   *_imageData;
@@ -64,17 +64,17 @@
 //
 // Getting Information about the Image 
 //
-- (int) bitsPerPixel;
-- (int) samplesPerPixel;
+- (NSInteger) bitsPerPixel;
+- (NSInteger) samplesPerPixel;
 - (BOOL) isPlanar;
-- (int) numberOfPlanes;
-- (int) bytesPerPlane;
-- (int) bytesPerRow;
-- (int) bitsPerSample;
+- (NSInteger) numberOfPlanes;
+- (NSInteger) bytesPerPlane;
+- (NSInteger) bytesPerRow;
+- (NSInteger) bitsPerSample;
 - (NSString *) colorSpaceName;
 - (BOOL) hasAlpha;
-- (int) pixelsHigh;
-- (int) pixelsWide;
+- (NSInteger) pixelsHigh;
+- (NSInteger) pixelsWide;
 
 //
 // Getting Image Data 

@@ -50,7 +50,7 @@
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string
     errorDescription:(NSString **)error
 {
-    unsigned int l = [string length];
+    NSUInteger l = [string length];
     if (l > 6) {
         if (error)
             *error = NSLocalizedString(@"No more than six letters", @"");
