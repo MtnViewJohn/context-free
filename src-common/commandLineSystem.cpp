@@ -38,7 +38,7 @@
 
 using namespace std;
 
-const char* prettyInt(int);
+const char* prettyInt(unsigned long);
 
 const char*
 CommandLineSystem::maybeLF()
@@ -112,10 +112,10 @@ CommandLineSystem::stats(const Stats& s)
         cerr << &(todo[progress]);
         cerr << ']';
     } else {
-        cerr << "    " << prettyInt(s.shapeCount) << " shapes";
+        cerr << "    " << prettyInt(static_cast<unsigned long>(s.shapeCount)) << " shapes";
         
         if (s.toDoCount > 0)
-            cerr << " - " << prettyInt(s.toDoCount) << " expansions to do";
+            cerr << " - " << prettyInt(static_cast<unsigned long>(s.toDoCount)) << " expansions to do";
     }
 
     clearAndCR();

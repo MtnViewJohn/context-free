@@ -30,7 +30,7 @@
 
 using namespace std;
 
-const char* prettyInt(int);
+const char* prettyInt(unsigned long);
 
 abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
@@ -70,7 +70,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
 	attach(mData + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
 
     if (quiet) return;
-    cout << prettyInt(mFullWidth) << "w x " << prettyInt(mFullHeight) << "h pixel image." << endl;
+    cout << prettyInt(static_cast<unsigned long>(mFullWidth)) << "w x " <<
+            prettyInt(static_cast<unsigned long>(mFullHeight)) << "h pixel image." << endl;
     cout << "Generating..." << endl;
 }
 
