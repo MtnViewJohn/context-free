@@ -121,6 +121,12 @@ RendererImpl::init()
     mCurrentSeed.seed(static_cast<unsigned long long>(mVariation));
     mCurrentSeed.bump();
     
+    Shape dummy;
+    for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
+        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get()))
+            def->traverse(dummy, false, this);
+    }
+    
     mFinishedFileCount = 0;
     mUnfinishedFileCount = 0;
     
@@ -300,12 +306,6 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     
     int reportAt = 250;
 
-    Shape dummy;
-    for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
-        if (const ASTdefine* def = dynamic_cast<const ASTdefine*> (rep.get()))
-            def->traverse(dummy, false, this);
-    }
-    
     Shape initShape = m_cfdg->getInitialShape(this);
     initShape.mWorldState.mRand64Seed = mCurrentSeed;
     if (!m_timed)
