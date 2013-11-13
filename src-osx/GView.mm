@@ -1083,8 +1083,6 @@ namespace {
     mCanvas = new ImageCanvas(self, mRenderBitmap, [bm aggPixelFormat]);
 
     mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
-
-    mRenderer->draw(mCanvas);
 }
 
 
