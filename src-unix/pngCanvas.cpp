@@ -49,7 +49,7 @@ namespace {
     }
 }
 
-const char* prettyInt(int);
+const char* prettyInt(unsigned long);
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
@@ -117,7 +117,8 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         if (frame == -1 && !mQuiet) {
             cerr << endl << "Writing "
-            << prettyInt(width) << "w x " << prettyInt(height) << "h pixel image..." << endl;
+                 << prettyInt(static_cast<unsigned long>(width)) << "w x "
+                 << prettyInt(static_cast<unsigned long>(height)) << "h pixel image..." << endl;
         } 
         
         png_set_IHDR(png_ptr, info_ptr,

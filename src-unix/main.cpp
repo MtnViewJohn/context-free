@@ -97,7 +97,7 @@ void termination_handler(int signum)
 
 
 const char*
-prettyInt(int v)
+prettyInt(unsigned long v)
 {
     if (!v) return "0";
     
@@ -658,7 +658,7 @@ int main (int argc, char* argv[]) {
     
     if (opts.paramTest) {
         if (Renderer::ParamCount)
-            cerr << "Left-over parameter blocks in memory:" << prettyInt(Renderer::ParamCount) << endl;
+            cerr << "Left-over parameter blocks in memory:" << prettyInt(static_cast<unsigned long>(Renderer::ParamCount)) << endl;
         else
             *myCout << "All parameter blocks deleted" << endl;
     }
