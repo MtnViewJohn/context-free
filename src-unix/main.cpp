@@ -57,7 +57,7 @@ using namespace std;
 
 void setupTimer(Renderer* renderer);
 
-const char* prettyInt(int);
+const char* prettyInt(unsigned long);
 
 ostream* myCout = &cerr;
 
