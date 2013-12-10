@@ -1,7 +1,7 @@
 // HSBEdit.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2008 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2013 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -35,8 +35,6 @@ using namespace System::Drawing;
 
 void HSBEdit::MoreInitialization()
 {
-    validNumber = gcnew System::Text::RegularExpressions::Regex("-?\\.?,?");
-
     EventHandler^ texter = gcnew EventHandler(this, &HSBEdit::textHandler);
     hueBox->TextChanged += texter;
     satBox->TextChanged += texter;
@@ -52,9 +50,9 @@ System::Void HSBEdit::textHandler(System::Object^ sender, System::EventArgs^ e)
     double number;
     bool accept = true;
     try {
-        number = System::Double::Parse(numberT);
+        number = System::Double::Parse(numberT, System::Globalization::NumberStyles::Float);
     } catch (FormatException^) {
-        accept = validNumber->IsMatch(numberT);
+        accept = false;
         number = 0.0;
     }
 
@@ -67,6 +65,8 @@ System::Void HSBEdit::textHandler(System::Object^ sender, System::EventArgs^ e)
     }
 
     double lowerBound = colorBox->Visible ? 0.0 : -1.0;
+    // The delta HSB editor allows a -1 lower bound and is distinguished
+    // by not having a visible colorBox.
 
     if (Object::ReferenceEquals(sender, satBox)) {
         if (accept && number >= lowerBound && number <= 1.0) {
@@ -87,11 +87,16 @@ System::Void HSBEdit::textHandler(System::Object^ sender, System::EventArgs^ e)
     }
 
     if (accept) {
+        // If the textBox has focus then it is the originator of the color change,
+        // so it must propagate it to the rest of the color system. If it doesn't
+        // have focus then some other color component originated the change, so
+        // just accept it.
         if (box->Focused)
             OnColorChange(gcnew ColorChangeEventArgs(myColor));
 
-        hsbBox->Text = "h " + hueBox->Text + 
-            " sat " + satBox->Text + " b " + brightBox->Text;
+        hsbBox->Text = "h " + hueBox->Text->Replace(',', '.') + 
+                       " sat " + satBox->Text->Replace(',', '.') + 
+                       " b " + brightBox->Text->Replace(',', '.');
 
         if (colorBox->Enabled) {
             colorBox->BackColor = myColor.GetColor();
