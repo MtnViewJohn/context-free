@@ -46,7 +46,6 @@ namespace AST {
 
     class ASTpath;
     class ASTreplacement;
-    class ASTparameterList;
     class ASTparameter;
     class ASTrule;
     class ASTcompiledPath;

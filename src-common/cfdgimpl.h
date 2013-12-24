@@ -160,7 +160,6 @@ private:
         void addParameter(Parameter);
         bool addParameter(std::string name, AST::exp_ptr e, unsigned depth);
 
-        std::vector<AST::ASTparameterList*> mParamList;
         AST::ASTrepContainer    mCFDGcontents;
         std::deque<const StackRule*> mLongLivedParams;
     
