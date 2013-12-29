@@ -43,6 +43,7 @@
 #include <limits>
 #include "scanner.h"
 #include <cstring>
+#include <typeinfo>
 
 using namespace AST;
 
@@ -400,27 +401,41 @@ Builder::MakeConfig(ASTdefine* cfg)
         }
     }
     if (cfg->mName == "CF::StartShape" && cfg->mExpression &&
-        !dynamic_cast<ASTstartSpecifier*>(cfg->mExpression.get()))
+        typeid(*(cfg->mExpression)) != typeid(ASTstartSpecifier))
     {
-        ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>((*cfg->mExpression)[0]);
-        ASTmodification* m = nullptr;
-        bool deleteM = false;
-        if (cfg->mExpression->size() == 2) {
-            m = dynamic_cast<ASTmodification*>((*cfg->mExpression)[1]);
-        } else {
-            m = new ASTmodification(expLoc);
-            deleteM = true;
-        }
-        if (r && m) {
-            if (cfg->mExpression->size() == 2)
+        // This code supports setting the startshape with a config statement:
+        //    CF::StartShape = foo(foo params), [mods]
+        // It converts the ASTruleSpec and optional ASTmod to a single ASTstartSpec
+        
+        ASTruleSpecifier* rule = nullptr;
+        mod_ptr mod;
+        switch (cfg->mExpression->size()) {
+            case 2:
+                mod.reset(dynamic_cast<ASTmodification*>((*cfg->mExpression)[1]));
+                if (!mod) {
+                    CfdgError::Error(((*cfg->mExpression)[1])->where, "CF::StartShape second term must be a modification");
+                    return;
+                }
                 cfg->mExpression->release(1);
-            if (!cfg->mExpression->release(0))
-                cfg->mExpression.release();
-            mod_ptr mod(m); m = nullptr;
-            cfg->mExpression.reset(new ASTstartSpecifier(std::move(*r), std::move(mod)));
+                // fall through
+            case 1:
+                rule = dynamic_cast<ASTruleSpecifier*>((*cfg->mExpression)[0]);
+                if (!rule) {
+                    CfdgError::Error(((*cfg->mExpression)[0])->where, "CF::StartShape must start with a shape specification");
+                    return;
+                }
+                break;
+            default:
+                CfdgError::Error(expLoc, "CF::StartShape expression must have the form shape_spec or shape_spec, modification]");
+                return;
         }
-        if (deleteM)
-            delete m;
+        
+        if (!mod)
+            mod.reset(new ASTmodification(expLoc));
+        
+        if (!cfg->mExpression->release(0))
+            cfg->mExpression.release();
+        cfg->mExpression.reset(new ASTstartSpecifier(std::move(*rule), std::move(mod)));
     }
     ASTexpression* current = cfg->mExpression.get();
     if (!m_CFDG->addParameter(cfg->mName, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth)))
