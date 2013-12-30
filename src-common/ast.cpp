@@ -30,6 +30,8 @@
 #include <cmath>
 #include <cassert>
 #include "rendererAST.h"
+#include <regex>
+#include <cstdlib>
 
 namespace AST {
 
@@ -45,8 +47,8 @@ namespace AST {
         if (mType == AST::NumericType) {
             isNatural = def->mExpression && def->mExpression->isNatural && mTuplesize == 1;
             if (mTuplesize == 0) mTuplesize = 1;    // loop index
-            if (mTuplesize < 1 || mTuplesize > 9)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
+            if (mTuplesize < 1 || mTuplesize > MaxVectorSize)
+                CfdgError::Error(mLocation, "Illegal vector size (<1 or >99)");
         }
         
         mName = nameIndex;
@@ -62,6 +64,9 @@ namespace AST {
         mTuplesize = 1;
         isNatural = false;
         
+        static std::regex VectorCheck("^vector[1-9][[:digit:]]*$");
+        // NOT THREAD SAFE! Depends on only being called during build step
+        
         if (typeName == "number") {
             type = AST::NumericType;
         } else if (typeName == "natural") {
@@ -72,14 +77,11 @@ namespace AST {
             type = AST::ModType;
         } else if (typeName == "shape") {
             type = AST::RuleType;
-        } else if (strncmp(typeName.data(), "vector", 6) == 0 &&
-                   typeName.length() == 7 &&
-                   isdigit(typeName[6]))
-        {
+        } else if (std::regex_match(typeName, VectorCheck)) {
             type = AST::NumericType;
-            mTuplesize = typeName[6] - '0';
-            if (mTuplesize < 1 || mTuplesize > 9)
-                CfdgError::Error(mLocation, "Illegal vector size (<1 or >9)");
+            mTuplesize = std::atoi(typeName.c_str() + 6);
+            if (mTuplesize <= 1 || mTuplesize > MaxVectorSize)
+                CfdgError::Error(mLocation, "Illegal vector size (<=1 or >99)");
         } else {
             type = AST::NoType;
             CfdgError::Error(mLocation, "Unrecognized type name");
@@ -272,9 +274,9 @@ namespace AST {
     {
         switch (mType) {
             case AST::NumericType: {
-                double data[9];
+                std::vector<double> data(mTuplesize);
                 bool natural = isNatural;
-                int valCount = mDefinition->mExpression->evaluate(data, 9);
+                int valCount = mDefinition->mExpression->evaluate(data.data(), mTuplesize);
                 if (valCount != mTuplesize)
                     CfdgError::Error(where, "Unexpected compile error.");                   // this also shouldn't happen
                 
