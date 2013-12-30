@@ -366,7 +366,7 @@ namespace AST {
     ASTarray::ASTarray(int nameIndex, exp_ptr args,
                        const yy::location& loc, const std::string& name)
     : ASTexpression(loc, false, false, NumericType), mName(nameIndex),
-      mConstData(false), mArgs(std::move(args)), mLength(1), mStride(1),
+      mData(nullptr), mArgs(std::move(args)), mLength(1), mStride(1),
       mStackIndex(-1), mCount(0), isParameter(false), entString(name)
     {
     }
@@ -390,6 +390,8 @@ namespace AST {
     
     ASTarray::~ASTarray()
     {
+        delete [] mData;
+        mData = nullptr;
     }
     
     ASTlet::~ASTlet()
@@ -1031,21 +1033,21 @@ namespace AST {
             return -1;
         
         if (res) {
-            if (rti == nullptr && !mConstData) throw DeferUntilRuntime();
+            if (rti == nullptr && (!mData || !mArgs->isConstant)) throw DeferUntilRuntime();
             
             double i;
             if (mArgs->evaluate(&i, 1, rti) != 1) {
-                CfdgError::Error(mArgs->where, "Cannot evaluate array index");
+                CfdgError::Error(mArgs->where, "Cannot evaluate vector index");
                 return -1;
             }
             int index = static_cast<int>(i);
             if ((mLength - 1) * mStride + index >= mCount || index < 0) {
-                CfdgError::Error(where, "array index exceeds bounds");
+                CfdgError::Error(where, "Vector index exceeds bounds");
                 return -1;
             }
             
             const double* source = mData;
-            if (!mConstData)
+            if (!source)
                 source = (mStackIndex < 0) ? &(rti->mLogicalStackTop[mStackIndex].number) :
                                              &(rti->mCFstack[mStackIndex].number);
             
@@ -1987,7 +1989,7 @@ namespace AST {
     ASTexpression*
     ASTarray::simplify()
     {
-        if (!isConstant) {
+        if (!mData || !isConstant || mLength > 1) {
             Simplify(mArgs);
             return this;
         }
@@ -1998,20 +2000,16 @@ namespace AST {
             return this;
         }
         int index = static_cast<int>(i);
-        if ((mLength - 1) * mStride + index >= mCount || index < 0) {
+        if (index >= mCount || index < 0) {
             CfdgError::Error(where, "Array index exceeds bounds");
             return this;
         }
         
-        // Create a new cons-list based on the evaluated variable's expression
         ASTreal* top = new ASTreal(mData[index], where);
         top->text = entString;                // use variable name for entropy
-        ASTexpression* list = top;
-        for (int i = 1; i < mLength; ++i)
-            list = list->append(new ASTreal(mData[i * mStride + index], where));
-        list->isNatural = isNatural;
+        top->isNatural = isNatural;
         delete this;
-        return list;
+        return top;
     }
 
     ASTexpression*
@@ -2818,34 +2816,42 @@ namespace AST {
     {
         Compile(mArgs, ph);
         if (!mArgs) {
-            CfdgError::Error(where, "Illegal expression in array accessor");
+            CfdgError::Error(where, "Illegal expression in vector index");
             return this;
         }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (!mArgs || mArgs->mType != AST::NumericType) {
-                    CfdgError::Error(where, "Array arguments must be numeric");
-                    isConstant = mConstData = false;
+                    CfdgError::Error(where, "Vector index arguments must be numeric");
                     return this;
                 }
                 
                 bool isGlobal;
                 const ASTparameter* bound = Builder::CurrentBuilder->findExpression(mName, isGlobal);
                 assert(bound);
+                if (bound ->mType != NumericType) {
+                    CfdgError::Error(where, "Vectors can only have numeric components");
+                    return this;
+                }
                 
-                isConstant = bound->mStackIndex == -1;
+                isConstant = (bound->mStackIndex == -1) && mArgs->isConstant;
                 isNatural = bound->isNatural;
-                mType = bound->mType;
-                mConstData = isConstant;
                 mStackIndex = bound->mStackIndex -
                     (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
-                mCount = mType == NumericType ? bound->mTuplesize : 1;
+                mCount = bound->mTuplesize;
                 isParameter = bound->isParameter;
                 
                 mLocality = CombineLocality(bound->mLocality, mArgs->mLocality);
                 mArgs->entropy(entString);
-                mConstData = mConstData && bound->mDefinition->mExpression->evaluate(mData, 9) > 0;
+                if (bound->mStackIndex == -1) {
+                    mData = new double[mCount];
+                    if (bound->mDefinition->mExpression->evaluate(mData, mCount) != mCount) {
+                        CfdgError::Error(where, "Error computing vector data");
+                        isConstant = false;
+                        return this;
+                    }
+                }
                 
                 if ((*mArgs)[0]->evaluate(nullptr, 0) == 1) {
                     exp_ptr args(std::move(mArgs));
@@ -2858,12 +2864,12 @@ namespace AST {
                     int count = 0;
                     for (size_t i = 1; i < args->size(); ++i) {
                         if (!(*args)[i]->isConstant) {
-                            CfdgError::Error((*args)[i]->where, "Array argument is not constant");
+                            CfdgError::Error((*args)[i]->where, "Vector stride/length is not constant");
                             break;
                         }
                         int num = (*args)[i]->evaluate(data + count, 2 - count);
                         if (num <= 0) {
-                            CfdgError::Error((*args)[i]->where, "Error evaluating array arguments");
+                            CfdgError::Error((*args)[i]->where, "Error evaluating vector index");
                             break;
                         }
                         count += num;
@@ -2877,7 +2883,7 @@ namespace AST {
                             break;
                             
                         default:
-                            CfdgError::Error(args->where, "Unexpected number of array arguments");
+                            CfdgError::Error(args->where, "Unexpected number of vector index arguments");
                             break;
                     }
                 } else if (mArgs->isConstant) {
@@ -2894,17 +2900,17 @@ namespace AST {
                             break;
                             
                         default:
-                            CfdgError::Error(mArgs->where, "Error evaluating array arguments");
+                            CfdgError::Error(mArgs->where, "Error evaluating vector index");
                             break;
                     }
                 } else {
                     if (mArgs->evaluate(nullptr, 0) != 1)
-                        CfdgError::Error(mArgs->where, "Array length & stride arguments must be contant");
+                        CfdgError::Error(mArgs->where, "Vector length & stride arguments must be contant");
                 }
                 if (mStride < 0 || mLength < 0)
-                    CfdgError::Error(mArgs->where, "Array length & stride arguments must be positive");
+                    CfdgError::Error(mArgs->where, "Vector length & stride arguments must be positive");
                 if (mStride * (mLength - 1) >= mCount)
-                    CfdgError::Error(mArgs->where, "Array length & stride arguments too large for source");
+                    CfdgError::Error(mArgs->where, "Vector length & stride arguments too large for source");
                 
                 isConstant = isConstant && mArgs->isConstant;
                 mLocality = CombineLocality(mLocality, mArgs->mLocality);

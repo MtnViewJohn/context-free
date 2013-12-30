@@ -91,6 +91,7 @@ namespace AST {
     enum class CompilePhase {
         TypeCheck, Simplify
     };
+    enum consts_e { MaxVectorSize = 99 };
     
     expType decodeType(const std::string& typeName, int& mTuplesize,
                        bool& isNatural, const yy::location& mLocation);

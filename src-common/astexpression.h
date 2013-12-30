@@ -365,8 +365,7 @@ namespace AST {
     class ASTarray : public ASTexpression {
     public:
         int     mName;
-        double  mData[9];
-        bool    mConstData;
+        double* mData;
         exp_ptr mArgs;
         int     mLength;
         int     mStride;
@@ -376,6 +375,8 @@ namespace AST {
         std::string entString;
         
         ASTarray(int nameIndex, exp_ptr args, const yy::location& loc, const std::string& name);
+        ASTarray(const ASTarray&) = delete;
+        ASTarray& operator=(const ASTarray&) = delete;
         virtual ~ASTarray();
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
