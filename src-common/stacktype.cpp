@@ -273,7 +273,7 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
         assert(dest != end);
         if (onStack)
             rti->mLogicalStackTop = &(*dest);
-        const AST::ASTexpression* arg = (*arguments)[i];
+        const AST::ASTexpression* arg = arguments->getChild(i);
         switch (arg->mType) {
             case AST::NumericType: {
                 int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);

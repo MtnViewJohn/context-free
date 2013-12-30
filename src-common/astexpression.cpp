@@ -504,31 +504,19 @@ namespace AST {
         
         // Cannot insert an ASTcons into children, it will be flattened away.
         // You must wrap the ASTcons in an ASTparen in order to insert it whole.
-        for (size_t i = 0; i < sib->size(); ++i)
-            children.emplace_back((*sib)[i]);
-        if (sib->release())
+        
+        if (ASTcons* c = dynamic_cast<ASTcons*>(sib)) {
+            children.reserve(children.size() + c->children.size());
+            std::move(c->children.begin(), c->children.end(), std::back_inserter(children));
             delete sib;
+        } else {
+            children.emplace_back(sib);
+        }
         return this;
     }
     
-    bool
-    ASTcons::release(size_t i)
-    {
-        if (i == ReleaseAll) {
-            for (exp_ptr& child: children) {
-                child.release();
-            }
-            children.clear();
-        } else if (i < children.size()) {
-            children[i].release();
-        } else {
-            CfdgError::Error(where, "Expression list bounds exceeded");
-        }
-        return true;
-    }
-    
     ASTexpression*
-    ASTexpression::operator[](size_t i)
+    ASTexpression::getChild(size_t i)
     {
         if (i)
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -536,7 +524,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    ASTexpression::operator[](size_t i) const
+    ASTexpression::getChild(size_t i) const
     {
         if (i)
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -544,7 +532,7 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTcons::operator[](size_t i)
+    ASTcons::getChild(size_t i)
     {
         if (i >= children.size()) {
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -554,7 +542,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    ASTcons::operator[](size_t i) const
+    ASTcons::getChild(size_t i) const
     {
         if (i >= children.size()) {
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -793,12 +781,12 @@ namespace AST {
     static double MinMax(const ASTexpression* e, RendererAST* rti, bool isMin)
     {
         double res = 0.0;
-        if ((*e)[0]->evaluate(&res, 1, rti) != 1)
-            CfdgError::Error((*e)[0]->where, "Error computing min/max here.");
+        if (e->getChild(0)->evaluate(&res, 1, rti) != 1)
+            CfdgError::Error(e->getChild(0)->where, "Error computing min/max here.");
         for (size_t i = 1; i < e->size(); ++i) {
             double v;
-            if ((*e)[i]->evaluate(&v, 1, rti) != 1)
-                CfdgError::Error((*e)[i]->where, "Error computing min/max here.");
+            if (e->getChild(i)->evaluate(&v, 1, rti) != 1)
+                CfdgError::Error(e->getChild(i)->where, "Error computing min/max here.");
             bool leftMin = res < v;
             res = ((isMin && leftMin) || (!isMin && !leftMin)) ? res : v;
         }
@@ -2140,47 +2128,34 @@ namespace AST {
                 mLocality = selector->mLocality;
 
                 // Move arguments to their vector
-                exp_ptr sel((*selector)[0]);
-                if (!selector->release(0)) {
-                    sel.release();
-                    CfdgError::Error((*selector)[0]->where, "if()/select() selector parse error");
+                arguments = Extract(std::move(selector));
+                selector = std::move(arguments[0]);
+                arguments.erase(arguments.begin());
+                
+                if (selector->mType != NumericType || selector->evaluate(nullptr, 0) != 1) {
+                    CfdgError::Error(selector->where, "if()/select() selector must be a numeric scalar");
+                    return this;
+                }
+                if (arguments.size() < 2) {
+                    CfdgError::Error(selector->where, "if()/select() selector must have at least two arguments");
                     return this;
                 }
                 
-                if (sel->mType != NumericType || sel->evaluate(nullptr, 0) != 1) {
-                    CfdgError::Error(sel->where, "if()/select() selector must be a numeric scalar");
-                    return this;
+                mType = arguments[0]->mType;
+                isNatural = arguments[0]->isNatural;
+                tupleSize = (mType == NumericType) ? arguments[0]->evaluate(nullptr, 0) : 1;
+                for (size_t i = 1; i < arguments.size(); ++i) {
+                    if (mType != arguments[i]->mType) {
+                        CfdgError::Error(arguments[i]->where, "select()/if() choices must be of same type");
+                    } else if (mType == NumericType && tupleSize != -1 &&
+                               arguments[i]->evaluate(nullptr, 0) != tupleSize)
+                    {
+                        CfdgError::Error(arguments[i]->where, "select()/if() choices must be of same length");
+                        tupleSize = -1;
+                    }
+                    isNatural = isNatural && arguments[i]->isNatural;
                 }
                 
-                bool first = true;
-                arguments.reserve(selector->size());
-                for (size_t i = 1; i < selector->size(); ++i) {
-                    exp_ptr arg((*selector)[i]);
-                    if (!selector->release(i)) {
-                        arg.release();
-                        CfdgError::Error((*selector)[i]->where, "if()/select() selector parse error");
-                        return this;
-                    }
-                    if (first) {
-                        mType = arg->mType;
-                        isNatural = arg->isNatural;
-                        tupleSize = (mType == NumericType) ? arg->evaluate(nullptr, 0) : 1;
-                        first = false;
-                    } else {
-                        if (mType != arg->mType) {
-                            CfdgError::Error(arg->where, "select()/if() choices must be of same type");
-                        } else if (mType == NumericType && tupleSize != -1 &&
-                                   arg->evaluate(nullptr, 0) != tupleSize)
-                        {
-                            CfdgError::Error(arg->where, "select()/if() choices must be of same length");
-                        }
-                        isNatural = isNatural && arg->isNatural;
-                    }
-                    arguments.emplace_back(std::move(arg));
-                }
-                
-                selector = std::move(sel);
-                                
                 if (ifSelect && arguments.size() != 2) {
                     CfdgError::Error(where, "if() function requires two arguments");
                 }
@@ -2735,56 +2710,65 @@ namespace AST {
                             if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
                                 (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
                                 (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
-                                ASTmodTerm::x : ASTmodTerm::size;
+                                    ASTmodTerm::x : ASTmodTerm::size;
                                 (*term)->argCount = 2;
                                 
                                 ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
-                                ASTmodTerm::zsize : ASTmodTerm::z;
+                                    ASTmodTerm::zsize : ASTmodTerm::z;
                                 ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
                                 zmod->argCount = 1;
                                 
                                 // Check if xy part is the identity transform and only save it if it is not
-                                if (d[0] != 1.0 || d[1] != 1.0 || (*term)->modType == ASTmodTerm::x)
-                                    modExp.emplace_back(std::move(*term));
-                                modExp.emplace_back(zmod);
+                                if (d[0] == 1.0 && d[1] == 1.0 && (*term)->modType == ASTmodTerm::size)
+                                {
+                                    // Drop xy term and just save z term if xy term
+                                    // is the identity transform
+                                    (*term).reset(zmod);
+                                } else {
+                                    modExp.emplace_back(zmod);
+                                }
+                                modExp.emplace_back(std::move(*term));
                                 continue;
                             }
                             
-                            if ((*term)->args->size() > 1) {
-                                ASTexpression* xyargs = nullptr;
-                                size_t i = 0;
-                                for (; i < (*term)->args->size(); ++i) {
-                                    xyargs = ASTexpression::Append(xyargs, (*(*term)->args)[i]);
-                                    if (xyargs->evaluate(nullptr, 0) >= 2)
-                                        break;
-                                }
-                                if (xyargs && xyargs->evaluate(nullptr, 0) == 2 && i == (*term)->args->size() - 1) {
-                                    // We have successfully split the 3-tuple into a 2-tuple and a scalar
-                                    ASTexpression* zargs = (*(*term)->args)[i];
-                                    (*term)->args->release();
-                                    
-                                    (*term)->args.reset(xyargs);
-                                    (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
-                                    ASTmodTerm::x : ASTmodTerm::size;
-                                    (*term)->argCount = 2;
-                                    
-                                    ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
-                                    ASTmodTerm::zsize : ASTmodTerm::z;
-                                    ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
-                                    zmod->argCount = 1;
-                                    
-                                    double d[2];
-                                    if ((*term)->modType != ASTmodTerm::size || !xyargs->isConstant ||
-                                        xyargs->evaluate(d, 2) != 2 || d[0] != 1.0 || d[1] != 1.0)
-                                    {
-                                        // Check if xy part is the identity transform and only save it if it is not
-                                        modExp.emplace_back(std::move(*term));
-                                    }
-                                    modExp.emplace_back(zmod);
-                                    continue;
+                            ASTexpArray xyzargs = Extract(std::move((*term)->args));
+                            ASTexpression* xyargs = nullptr;
+                            ASTexpression* zargs = nullptr;
+                            for (exp_ptr& arg: xyzargs) {
+                                if (!xyargs || xyargs->evaluate(nullptr, 0) < 2) {
+                                    xyargs = Append(xyargs, arg.release());
+                                } else {
+                                    zargs = Append(zargs, arg.release());
                                 }
                             }
-                            break;
+                            if (xyargs && zargs && xyargs->evaluate(nullptr, 0) == 2) {
+                                // We have successfully split the 3-tuple into a 2-tuple and a scalar
+                                (*term)->args.reset(xyargs);
+                                (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
+                                    ASTmodTerm::x : ASTmodTerm::size;
+                                (*term)->argCount = 2;
+                                
+                                ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
+                                    ASTmodTerm::zsize : ASTmodTerm::z;
+                                ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                                zmod->argCount = 1;
+                                
+                                double d[2];
+                                if ((*term)->modType == ASTmodTerm::size && xyargs->isConstant &&
+                                    xyargs->evaluate(d, 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
+                                {
+                                    // Drop xy term and just save z term if xy term
+                                    // is the identity transform
+                                    (*term).reset(zmod);
+                                } else {
+                                    modExp.emplace_back(zmod);
+                                }
+                            } else {    // No dice, put it all back
+                                xyargs = Append(xyargs, zargs);
+                                (*term)->args.reset(xyargs);
+                            }
+                            modExp.emplace_back(std::move(*term));
+                            continue;
                         }
                         default:
                             break;
@@ -2822,11 +2806,6 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                if (!mArgs || mArgs->mType != AST::NumericType) {
-                    CfdgError::Error(where, "Vector index arguments must be numeric");
-                    return this;
-                }
-                
                 bool isGlobal;
                 const ASTparameter* bound = Builder::CurrentBuilder->findExpression(mName, isGlobal);
                 assert(bound);
@@ -2835,84 +2814,50 @@ namespace AST {
                     return this;
                 }
                 
-                isConstant = (bound->mStackIndex == -1) && mArgs->isConstant;
                 isNatural = bound->isNatural;
                 mStackIndex = bound->mStackIndex -
                     (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
                 mCount = bound->mTuplesize;
                 isParameter = bound->isParameter;
+                mLocality = bound->mLocality;
                 
-                mLocality = CombineLocality(bound->mLocality, mArgs->mLocality);
                 mArgs->entropy(entString);
                 if (bound->mStackIndex == -1) {
                     mData = new double[mCount];
                     if (bound->mDefinition->mExpression->evaluate(mData, mCount) != mCount) {
                         CfdgError::Error(where, "Error computing vector data");
                         isConstant = false;
+                        delete [] mData;
+                        mData = nullptr;
                         return this;
                     }
                 }
                 
-                if ((*mArgs)[0]->evaluate(nullptr, 0) == 1) {
-                    exp_ptr args(std::move(mArgs));
-                    mArgs.reset((*args)[0]);
-                    if (!args->release(0)) {
-                        args.release();
-                        args.reset(new ASTexpression(mArgs->where)); // replace with dummy
+                ASTexpArray indices = Extract(std::move(mArgs));
+                mArgs = std::move(indices[0]);
+                
+                for (size_t i = indices.size() - 1; i; --i) {
+                    double data;
+                    if ( indices[i]->mType != NumericType ||
+                        !indices[i]->isConstant ||
+                         indices[i]->evaluate(&data, 1) != 1)
+                    {
+                        CfdgError::Error(indices[i]->where, "Vector stride/length must be a scalar numeric constant");
+                        break;
                     }
-                    double data[2];
-                    int count = 0;
-                    for (size_t i = 1; i < args->size(); ++i) {
-                        if (!(*args)[i]->isConstant) {
-                            CfdgError::Error((*args)[i]->where, "Vector stride/length is not constant");
-                            break;
-                        }
-                        int num = (*args)[i]->evaluate(data + count, 2 - count);
-                        if (num <= 0) {
-                            CfdgError::Error((*args)[i]->where, "Error evaluating vector index");
-                            break;
-                        }
-                        count += num;
-                    }
-                    switch (count) {
-                        case 2:
-                            mStride = static_cast<int>(data[1]);  // fall through
-                        case 1:
-                            mLength = static_cast<int>(data[0]);  // fall through
-                        case 0:
-                            break;
-                            
-                        default:
-                            CfdgError::Error(args->where, "Unexpected number of vector index arguments");
-                            break;
-                    }
-                } else if (mArgs->isConstant) {
-                    double data[3];
-                    switch (mArgs->evaluate(data, 3)) {
-                        case 3:
-                            mStride = static_cast<int>(data[2]);
-                            // fall through
-                        case 2:
-                            mLength = static_cast<int>(data[1]);
-                            // fall through
-                        case 1:
-                            mArgs.reset(new ASTreal(data[0], mArgs->where));
-                            break;
-                            
-                        default:
-                            CfdgError::Error(mArgs->where, "Error evaluating vector index");
-                            break;
-                    }
-                } else {
-                    if (mArgs->evaluate(nullptr, 0) != 1)
-                        CfdgError::Error(mArgs->where, "Vector length & stride arguments must be contant");
+                    mStride = mLength;
+                    mLength = static_cast<int>(data);  // fall through
                 }
+                
+                if (mArgs->mType != NumericType || mArgs->evaluate(nullptr, 0) != 1)
+                    CfdgError::Error(mArgs->where, "Vector index must be a scalar numeric expression");
+
                 if (mStride < 0 || mLength < 0)
                     CfdgError::Error(mArgs->where, "Vector length & stride arguments must be positive");
                 if (mStride * (mLength - 1) >= mCount)
                     CfdgError::Error(mArgs->where, "Vector length & stride arguments too large for source");
                 
-                isConstant = isConstant && mArgs->isConstant;
+                isConstant = mData && mArgs->isConstant;
                 mLocality = CombineLocality(mLocality, mArgs->mLocality);
                 break;
             }
