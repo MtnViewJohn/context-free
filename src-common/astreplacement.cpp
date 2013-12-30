@@ -671,25 +671,26 @@ namespace AST {
                     }
                     
                     for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
-                        int num = (*mLoopArgs)[i]->evaluate(nullptr, 0);
+                        const ASTexpression* loopArg = mLoopArgs->getChild(i);
+                        int num = loopArg->evaluate(nullptr, 0);
                         switch (count) {
                             case 0:
-                                if ((*mLoopArgs)[i]->isNatural)
+                                if (loopArg->isNatural)
                                     bodyNatural = finallyNatural = true;
                                 break;
                             case 2: {
                                 // Special case: if 1st & 2nd args are natural and 3rd
                                 // is -1 then that is ok
                                 double step;
-                                if ((*mLoopArgs)[i]->isConstant &&
-                                    (*mLoopArgs)[i]->evaluate(&step, 1) == 1 &&
+                                if (loopArg->isConstant &&
+                                    loopArg->evaluate(&step, 1) == 1 &&
                                     step == -1.0)
                                 {
                                     break;
                                 }
                             }   // else fall through
                             case 1:
-                                if (!((*mLoopArgs)[i]->isNatural))
+                                if (!loopArg->isNatural)
                                     bodyNatural = finallyNatural = false;
                                 break;
                             default:
@@ -951,35 +952,30 @@ namespace AST {
                     return;
                 
                 exp_ptr stroke, flags;
-                switch (mParameters->size()) {
+                yy::location loc = mParameters->where;
+                ASTexpArray pcmdParams = Extract(std::move(mParameters));
+                switch (pcmdParams.size()) {
                     case 2:
-                        stroke.reset((*mParameters)[0]);
-                        flags.reset((*mParameters)[1]);
-                        if (!mParameters->release()) {
-                            CfdgError::Error(mParameters->where, "Path commands can have zero, one, or two parameters");
-                            stroke.release();
-                            flags.release();
-                            return;
-                        }
-                        mParameters.reset();
+                        stroke = std::move(pcmdParams[0]);
+                        flags = std::move(pcmdParams[1]);
                         break;
                     case 1:
-                        switch (mParameters->mType) {
+                        switch (pcmdParams[0]->mType) {
                             case NumericType:
-                                stroke = std::move(mParameters);
+                                stroke = std::move(pcmdParams[0]);
                                 break;
                             case FlagType:
-                                flags = std::move(mParameters);
+                                flags = std::move(pcmdParams[0]);
                                 break;
                             default:
-                                CfdgError::Error(mParameters->where, "Bad expression type in path command parameters");
+                                CfdgError::Error(loc, "Bad expression type in path command parameters");
                                 break;
                         }
                         break;
                     case 0:
                         return;
                     default:
-                        CfdgError::Error(mParameters->where, "Path commands can have zero, one, or two parameters");
+                        CfdgError::Error(loc, "Path commands can have zero, one, or two parameters");
                         return;
                 }
                 
@@ -1250,7 +1246,7 @@ namespace AST {
             mArgCount = mArguments->evaluate(nullptr, 0);
 
         for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
-            ASTexpression* temp = (*mArguments)[i];
+            ASTexpression* temp = mArguments->getChild(i);
 			assert(temp);
             switch (temp->mType) {
                 case FlagType: {

@@ -44,8 +44,6 @@ namespace AST {
     class ASTrepContainer;
 
     class ASTexpression {
-    protected:
-        enum consts_t: size_t { ReleaseAll = static_cast<size_t>(-1) };
     public:
         bool isConstant;
         bool isNatural;
@@ -67,11 +65,10 @@ namespace AST {
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
         
-        virtual ASTexpression* operator[](size_t i);
-        virtual const ASTexpression* operator[](size_t i) const;
+        virtual ASTexpression* getChild(size_t i);
+        virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t = ReleaseAll) { return false; }
         virtual ASTexpression* compile(CompilePhase ph) { return this; }
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
@@ -200,11 +197,10 @@ namespace AST {
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
         
-        virtual ASTexpression* operator[](size_t i);
-        virtual const ASTexpression* operator[](size_t i) const;
+        virtual ASTexpression* getChild(size_t i);
+        virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return children.size(); }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual bool release(size_t i = ReleaseAll);
         
     private:
         ASTcons() : ASTexpression(CfdgError::Default) {};
@@ -397,6 +393,18 @@ namespace AST {
         if (!exp) return;
         ASTexpression* r = exp.release()->simplify();
         exp.reset(r);
+    }
+    
+    inline ASTexpArray Extract(exp_ptr exp)
+    // Extract children from exp, leaving it empty
+    {
+        if (ASTcons* c = dynamic_cast<ASTcons*>(exp.get())) {
+            return std::move(c->children);
+        } else {
+            ASTexpArray ret;
+            ret.emplace_back(std::move(exp));
+            return ret;
+        }
     }
 }
 

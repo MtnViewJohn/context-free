@@ -230,7 +230,7 @@ namespace AST {
                 return -1;
             }
             
-            const ASTexpression* arg = (*args)[count];
+            const ASTexpression* arg = args->getChild(count);
 			assert(arg);
             
             if (param_it->mType != arg->mType) {
@@ -262,7 +262,7 @@ namespace AST {
         }
         
         if (count < expect) {
-            CfdgError::Error((*args)[count]->where, "Too many arguments.");
+            CfdgError::Error(args->getChild(count)->where, "Too many arguments.");
             return -1;
         }
 
@@ -1029,7 +1029,7 @@ namespace AST {
         yy::location where;
         for (size_t i = 0; i < e->size(); ++i)
         {
-            const ASTexpression* cit = (*e)[i];
+            const ASTexpression* cit = e->getChild(i);
             switch (cit->mType) {
                 case FlagType:
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
