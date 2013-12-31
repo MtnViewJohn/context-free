@@ -30,8 +30,8 @@
 #include <cmath>
 #include <cassert>
 #include "rendererAST.h"
-#include <regex>
 #include <cstdlib>
+#include <cstring>
 
 namespace AST {
 
@@ -64,9 +64,6 @@ namespace AST {
         mTuplesize = 1;
         isNatural = false;
         
-        static std::regex VectorCheck("^vector[1-9][[:digit:]]*$");
-        // NOT THREAD SAFE! Depends on only being called during build step
-        
         if (typeName == "number") {
             type = AST::NumericType;
         } else if (typeName == "natural") {
@@ -77,7 +74,16 @@ namespace AST {
             type = AST::ModType;
         } else if (typeName == "shape") {
             type = AST::RuleType;
-        } else if (std::regex_match(typeName, VectorCheck)) {
+        } else if (typeName.find("vector") == 0) {
+            // Would have used a regex but gcc does not have support yet
+            if (!std::strchr("123456789", typeName[6]))
+                CfdgError::Error(mLocation, "Illegal vector type specification");
+            else
+                for (size_t i = 7; i < typeName.size(); ++i)
+                    if (!std::strchr("1234567890", typeName[i])) {
+                        CfdgError::Error(mLocation, "Illegal vector type specification");
+                        break;
+                    }
             type = AST::NumericType;
             mTuplesize = std::atoi(typeName.c_str() + 6);
             if (mTuplesize <= 1 || mTuplesize > MaxVectorSize)
