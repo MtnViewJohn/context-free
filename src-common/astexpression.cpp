@@ -56,7 +56,7 @@ namespace AST {
     ASTfunction::FuncType
     ASTfunction::GetFuncType(const std::string& func) 
     {
-        const std::map<std::string, ASTfunction::FuncType> NameMap = {
+        static const std::map<std::string, ASTfunction::FuncType> NameMap = {
             { "cos",        ASTfunction::Cos},
             { "sin",        ASTfunction::Sin },
             { "tan",        ASTfunction::Tan },
@@ -1561,7 +1561,7 @@ namespace AST {
     ASTfunction::entropy(std::string& ent) const
     {
         // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
-        const std::map<ASTfunction::FuncType, const char*> EntropyMap = {
+        static const std::map<ASTfunction::FuncType, const char*> EntropyMap = {
             {ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
             { ASTfunction::Sin,         "\xAF\x58\xFE\x2C\xD4\x53" },
             { ASTfunction::Tan,         "\x95\xFF\x59\x11\x03\x02" },
@@ -1734,7 +1734,7 @@ namespace AST {
     ASTmodTerm::entropy(std::string& ent) const
     {
         // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
-        const std::map<ASTmodTerm::modTypeEnum, const char*> EntropyMap = {
+        static const std::map<ASTmodTerm::modTypeEnum, const char*> EntropyMap = {
             {ASTmodTerm::unknownType,   ""},
             { ASTmodTerm::x,            "\x95\xE7\x48\x5E\xCC\x06" },
             { ASTmodTerm::y,            "\x84\x2B\xF3\xBB\x93\x59" },
@@ -2870,7 +2870,7 @@ namespace AST {
     void
     ASTmodification::evalConst()
     {
-        const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
+        static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
             {ASTmodTerm::unknownType,   ASTmodification::NotAClass},
             { ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
             { ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
