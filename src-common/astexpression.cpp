@@ -2846,7 +2846,7 @@ namespace AST {
                         break;
                     }
                     mStride = mLength;
-                    mLength = static_cast<int>(data);  // fall through
+                    mLength = static_cast<int>(data);
                 }
                 
                 if (mArgs->mType != NumericType || mArgs->evaluate(nullptr, 0) != 1)
