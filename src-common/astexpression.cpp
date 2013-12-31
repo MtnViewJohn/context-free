@@ -1661,66 +1661,31 @@ namespace AST {
     void
     ASToperator::entropy(std::string& ent) const
     {
+        // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
+        static const std::map<char, const char*> EntropyMap = {
+            { '*', "\x2E\x32\xD9\x2C\x41\xFE" },
+            { '/', "\x6B\x15\x23\x41\x9E\xEB" },
+            { '+', "\xD7\xB1\xB0\x39\x33\xC8" },
+            { '-', "\x5D\xE7\xF0\x94\xC4\x13" },
+            { '^', "\x02\x3C\x68\x36\xC5\xA0" },
+            { 'N', "\x55\x89\x51\x46\xDB\x84" },
+            { 'P', "\x8E\xAC\x29\x4B\x0E\xDC" },
+            { '!', "\x19\x3A\x3E\x53\x14\xEA" },
+            { '<', "\xBE\xDB\xC4\xA6\x4E\xAD" },
+            { '>', "\xC7\xD9\x57\x32\xD6\x87" },
+            { 'L', "\xE3\x56\x7E\x44\x57\x80" },
+            { 'G', "\xB1\x2D\x2A\xCC\x2C\x40" },
+            { '=', "\x78\x48\xC2\x95\xA9\xE2" },
+            { 'n', "\x36\xCC\x01\x3B\x2F\xAD" },
+            { '&', "\x28\x9B\xFB\x7F\xDB\x9C" },
+            { '|', "\x2E\x40\x1B\x44\x15\x7C" },
+            { 'X', "\xA7\x2B\x92\xFA\xFC\xF9" },
+            { '_', "\x60\x2F\x10\xAD\x10\xFF" },
+        };
+        
         left->entropy(ent);
         if (right) right->entropy(ent);
-        
-        // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
-        switch (op) {
-            case '*':
-                ent.append("\x2E\x32\xD9\x2C\x41\xFE");
-                break;
-            case '/':
-                ent.append("\x6B\x15\x23\x41\x9E\xEB");
-                break;
-            case '+':
-                ent.append("\xD7\xB1\xB0\x39\x33\xC8");
-                break;
-            case '-':
-                ent.append("\x5D\xE7\xF0\x94\xC4\x13");
-                break;
-            case '^':
-                ent.append("\x02\x3C\x68\x36\xC5\xA0");
-                break;
-            case 'N':
-                ent.append("\x55\x89\x51\x46\xDB\x84");
-                break;
-            case 'P':
-                ent.append("\x8E\xAC\x29\x4B\x0E\xDC");
-                break;
-            case '!':
-                ent.append("\x19\x3A\x3E\x53\x14\xEA");
-                break;
-            case '<':
-                ent.append("\xBE\xDB\xC4\xA6\x4E\xAD");
-                break;
-            case '>':
-                ent.append("\xC7\xD9\x57\x32\xD6\x87");
-                break;
-            case 'L':
-                ent.append("\xE3\x56\x7E\x44\x57\x80");
-                break;
-            case 'G':
-                ent.append("\xB1\x2D\x2A\xCC\x2C\x40");
-                break;
-            case '=':
-                ent.append("\x78\x48\xC2\x95\xA9\xE2");
-                break;
-            case 'n':
-                ent.append("\x36\xCC\x01\x3B\x2F\xAD");
-                break;
-            case '&':
-                ent.append("\x28\x9B\xFB\x7F\xDB\x9C");
-                break;
-            case '|':
-                ent.append("\x2E\x40\x1B\x44\x15\x7C");
-                break;
-            case 'X':
-                ent.append("\xA7\x2B\x92\xFA\xFC\xF9");
-                break;
-            default:
-                ent.append("\x60\x2F\x10\xAD\x10\xFF");
-                break;
-        }
+        ent.append(EntropyMap.at(op));
     }
     
     void
