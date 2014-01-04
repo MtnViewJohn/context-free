@@ -65,7 +65,6 @@ namespace AST {
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
         
-        virtual ASTexpression* getChild(size_t i);
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
@@ -197,7 +196,6 @@ namespace AST {
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
         
-        virtual ASTexpression* getChild(size_t i);
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return children.size(); }
         virtual ASTexpression* append(ASTexpression* sib);

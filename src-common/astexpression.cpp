@@ -515,30 +515,12 @@ namespace AST {
         return this;
     }
     
-    ASTexpression*
-    ASTexpression::getChild(size_t i)
-    {
-        if (i)
-            CfdgError::Error(where, "Expression list bounds exceeded");
-        return this;
-    }
-    
     const ASTexpression*
     ASTexpression::getChild(size_t i) const
     {
         if (i)
             CfdgError::Error(where, "Expression list bounds exceeded");
         return this;
-    }
-    
-    ASTexpression*
-    ASTcons::getChild(size_t i)
-    {
-        if (i >= children.size()) {
-            CfdgError::Error(where, "Expression list bounds exceeded");
-            return this;
-        }
-        return children[i].get();
     }
     
     const ASTexpression*
