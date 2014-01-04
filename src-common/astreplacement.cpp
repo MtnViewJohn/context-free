@@ -1246,13 +1246,13 @@ namespace AST {
             mArgCount = mArguments->evaluate(nullptr, 0);
 
         for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
-            ASTexpression* temp = mArguments->getChild(i);
+            const ASTexpression* temp = mArguments->getChild(i);
 			assert(temp);
             switch (temp->mType) {
                 case FlagType: {
                     if (i != mArguments->size() - 1)
                         CfdgError::Error(temp->where, "Flags must be the last argument");
-                    if (ASTreal* rf = dynamic_cast<ASTreal*> (temp))
+                    if (const ASTreal* rf = dynamic_cast<const ASTreal*> (temp))
                         mFlags |= rf ? static_cast<int>(rf->value) : 0;
                     else
                         CfdgError::Error(temp->where, "Flag expressions must be constant");
