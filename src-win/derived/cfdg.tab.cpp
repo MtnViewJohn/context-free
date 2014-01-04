@@ -2334,7 +2334,7 @@ namespace yy {
   case 178:
 #line 1165 "../../src-common/cfdg.ypp" // lalr1.cc:846
     {
-            (yylhs.value.expression) = new ASTcons(new ASTparen((yystack_[0].value.expression)), nullptr);
+            (yylhs.value.expression) = new ASTcons{ new ASTparen((yystack_[0].value.expression)) };
         }
 #line 2340 "cfdg.tab.cpp" // lalr1.cc:846
     break;
