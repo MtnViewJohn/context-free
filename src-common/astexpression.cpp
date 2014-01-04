@@ -1,7 +1,7 @@
 // astexpression.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2009-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2009-2014 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -241,12 +241,14 @@ namespace AST {
         return ret;
     }
     
-    ASTcons::ASTcons(ASTexpression* l, ASTexpression* r)
-    : ASTexpression(l->where, l->isConstant, l->isNatural, l->mType)
+    ASTcons::ASTcons(std::initializer_list<ASTexpression*> kids)
+    : ASTexpression((*(kids.begin()))->where, true, true, NoType)
+    // Must have at least one kid or else undefined behavior
     {
-        mLocality = l->mLocality;
-        children.emplace_back(l);
-        append(r);
+        mLocality = PureLocal;
+        children.reserve(kids.size());
+        for (ASTexpression* kid : kids)
+            append(kid);
     };
 
     ASTexpression*
@@ -489,7 +491,7 @@ namespace AST {
     ASTexpression*
     ASTexpression::append(AST::ASTexpression *sib)
     {
-        return sib ? new ASTcons(this, sib) : this;
+        return sib ? new ASTcons{ this, sib } : this;
     }
     
     ASTexpression*
@@ -1996,18 +1998,18 @@ namespace AST {
                         isConstant = false;
                     
                     switch (argcount) {
-                        case 0:
-                            arguments.reset(new ASTcons(new ASTreal(0.0, argsLoc),
-                                                        new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc)));
+                    case 0:
+                        arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc),
+                                                     new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc) });
+                        break;
+                    case 1:
+                        arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc), arguments.release() });
+                        break;
+                    case 2:
                             break;
-                        case 1:
-                            arguments.reset(new ASTcons(new ASTreal(0.0, argsLoc), arguments.release()));
-                            break;
-                        case 2:
-                            break;
-                        default:
-                            CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
-                            break;
+                    default:
+                        CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
+                        break;
                     }
                     
                     if (!isConstant && functype == Rand_Static) {
@@ -2655,7 +2657,7 @@ namespace AST {
                         case ASTmodTerm::sizexyz: {
                             double d[3];
                             if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
-                                (*term)->args.reset(new ASTcons(new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where)));
+                                (*term)->args.reset(new ASTcons{ new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where) });
                                 (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
                                     ASTmodTerm::x : ASTmodTerm::size;
                                 (*term)->argCount = 2;

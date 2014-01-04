@@ -1,7 +1,7 @@
 // astexpression.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2014 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 #include <limits>
 #include "Rand64.h"
 #include <map>
+#include <initializer_list>
 
 class RendererAST;
 class Builder;
@@ -188,7 +189,7 @@ namespace AST {
     class ASTcons : public ASTexpression {
     public:
         ASTexpArray children;
-        ASTcons(ASTexpression* l, ASTexpression* r);
+        ASTcons(std::initializer_list<ASTexpression*> kids);
         virtual ~ASTcons();
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void evaluate(Modification& m, bool shapeDest, RendererAST* r) const;
