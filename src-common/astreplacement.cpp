@@ -1,7 +1,7 @@
 // astreplacement.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2009-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2009-2014 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -214,26 +214,26 @@ namespace AST {
                 unsigned cmd;
                 while (!agg::is_stop(cmd = shape.vertex(&x, &y))) {
                     if (agg::is_vertex(cmd)) {
-                        exp_ptr a(new ASTcons(new ASTreal(x, CfdgError::Default),
-                            new ASTreal(y, CfdgError::Default)));
+                        exp_ptr a(new ASTcons{ new ASTreal(x, CfdgError::Default),
+                                               new ASTreal(y, CfdgError::Default) });
                         ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
                             std::move(a), CfdgError::Default);
                         mRuleBody.mBody.emplace_back(op);
                     }
                 }
             } else {
-                exp_ptr a(new ASTcons(new ASTreal(0.5, CfdgError::Default),
-                    new ASTreal(0.0, CfdgError::Default)));
+                exp_ptr a(new ASTcons{ new ASTreal(0.5, CfdgError::Default),
+                                       new ASTreal(0.0, CfdgError::Default) });
                 ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
                 mRuleBody.mBody.emplace_back(op);
-                a.reset(new ASTcons(new ASTreal(-0.5, CfdgError::Default),
-                    new ASTreal(0.0, CfdgError::Default)));
-                a.get()->append(new ASTreal(0.5, CfdgError::Default));
+                a.reset(new ASTcons{ new ASTreal(-0.5, CfdgError::Default),
+                                     new ASTreal( 0.0, CfdgError::Default),
+                                     new ASTreal( 0.5, CfdgError::Default) });
                 op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
                 mRuleBody.mBody.emplace_back(op);
-                a.reset(new ASTcons(new ASTreal(0.5, CfdgError::Default),
-                    new ASTreal(0.0, CfdgError::Default)));
-                a.get()->append(new ASTreal(0.5, CfdgError::Default));
+                a.reset(new ASTcons{ new ASTreal( 0.5, CfdgError::Default),
+                                     new ASTreal( 0.0, CfdgError::Default),
+                                     new ASTreal( 0.5, CfdgError::Default) });
                 op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
                 mRuleBody.mBody.emplace_back(op);
             }
