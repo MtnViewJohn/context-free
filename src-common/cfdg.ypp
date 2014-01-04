@@ -1163,7 +1163,7 @@ arglist[listOut]:
         }
         |
         exp3 {
-            $listOut = new ASTcons(new ASTparen($exp3), nullptr);
+            $listOut = new ASTcons{ new ASTparen($exp3) };
         }
         ;
         
