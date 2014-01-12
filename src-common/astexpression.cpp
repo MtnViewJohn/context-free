@@ -152,8 +152,7 @@ namespace AST {
         case SimpleArgs:
             return simpleRule;
         case StackArgs: {
-            const StackType* stackItem = (mStackIndex < 0) ? rti->mLogicalStackTop + mStackIndex :
-                                                             rti->mCFstack.data() + mStackIndex;
+            const StackType* stackItem = rti->stackItem(mStackIndex);
             stackItem->rule->retain(rti);
             return stackItem->rule;
         }
@@ -583,8 +582,7 @@ namespace AST {
             return -1;
         if (res) {
             if (rti == nullptr) throw DeferUntilRuntime();
-            const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
-                                                            rti->mCFstack.data() + stackIndex;
+            const StackType* stackItem = rti->stackItem(stackIndex);
             for (int i = 0; i < count; ++i)
                 res[i] = stackItem[i].number;
         }
@@ -1020,8 +1018,7 @@ namespace AST {
             
             const double* source = mData;
             if (!source)
-                source = (mStackIndex < 0) ? &(rti->mLogicalStackTop[mStackIndex].number) :
-                                             &(rti->mCFstack[mStackIndex].number);
+                source = &(rti->stackItem(mStackIndex)->number);
             
             for (int i = 0; i < mLength; ++i)
                 res[i] = source[i * mStride + index];
@@ -1048,8 +1045,7 @@ namespace AST {
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
         
         if (rti == nullptr) throw DeferUntilRuntime();
-        const StackType* stackItem = (stackIndex < 0) ? rti->mLogicalStackTop + stackIndex :
-                                                        rti->mCFstack.data() + stackIndex;
+        const StackType* stackItem = rti->stackItem(stackIndex);
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
         if (shapeDest) {
             m *= *smod;
