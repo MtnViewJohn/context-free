@@ -262,13 +262,6 @@ namespace AST {
             append(kid);
     };
 
-    ASTexpression*
-    ASToperator::Op(char op, ASTexpression* l, ASTexpression* r)
-    {
-        if (l && r) return new ASToperator(op, l, r);
-        return l ? l : r;
-    }
-    
     ASToperator::ASToperator(char o, ASTexpression* l, ASTexpression* r)
     : ASTexpression(r ? (l->where + r->where) : l->where), op(o), left(l), right(r) 
     {

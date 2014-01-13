@@ -283,7 +283,6 @@ namespace AST {
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
-        static ASTexpression* Op(char o, ASTexpression* l, ASTexpression* r);
     private:
         ASToperator() : ASTexpression(CfdgError::Default) {};
     };
