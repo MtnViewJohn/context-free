@@ -207,6 +207,31 @@ namespace AST {
         return arguments[getIndex(rti)]->evalArgs(rti, parent);
     }
     
+    // Hopefully these two functions get inlined
+    ASTuserFunction::stackState_t
+    ASTuserFunction::setupStack(RendererAST* rti) const
+    {
+        size_t size = rti->mCFstack.size();
+        const StackType* oldTop = rti->mLogicalStackTop;
+        if (definition->mStackCount) {
+            if (size + definition->mStackCount > rti->mCFstack.capacity())
+                CfdgError::Error(where, "Maximum stack size exceeded");
+            rti->mCFstack.resize(size + definition->mStackCount);
+            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
+            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
+        }
+        return stackState_t(size, oldTop);
+    }
+    
+    void
+    ASTuserFunction::cleanupStack(RendererAST* rti, ASTuserFunction::stackState_t& old) const
+    {
+        if (definition->mStackCount) {
+            rti->mCFstack.resize(old.first);
+            rti->mLogicalStackTop = old.second;
+        }
+    }
+    
     const StackRule*
     ASTuserFunction::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
@@ -221,22 +246,9 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        const StackRule* ret = nullptr;
-        
-        if (definition->mStackCount) {
-            size_t size = rti->mCFstack.size();
-            if (size + definition->mStackCount > rti->mCFstack.capacity())
-                CfdgError::Error(where, "Maximum stack size exceeded");
-            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount);
-            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            ret = definition->mExpression->evalArgs(rti, parent);
-            rti->mCFstack.resize(size);
-            rti->mLogicalStackTop = oldLogicalStackTop;
-        } else {
-            ret = definition->mExpression->evalArgs(rti, parent);
-        }
+        stackState_t oldState = setupStack(rti);
+        const StackRule* ret = definition->mExpression->evalArgs(rti, parent);
+        cleanupStack(rti, oldState);
         return ret;
     }
     
@@ -607,20 +619,9 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        if (definition->mStackCount) {
-            size_t size = rti->mCFstack.size();
-            if (size + definition->mStackCount > rti->mCFstack.capacity())
-                CfdgError::Error(where, "Maximum stack size exceeded");
-            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount);
-            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(res, length, rti);
-            rti->mCFstack.resize(size);
-            rti->mLogicalStackTop = oldLogicalStackTop;
-        } else {
-            definition->mExpression->evaluate(res, length, rti);
-        }
+        stackState_t oldState = setupStack(rti);
+        definition->mExpression->evaluate(res, length, rti);
+        cleanupStack(rti, oldState);
         return definition->mTuplesize;
     }
     
@@ -1076,20 +1077,9 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        if (definition->mStackCount) {
-            size_t size = rti->mCFstack.size();
-            if (size + definition->mStackCount > rti->mCFstack.capacity())
-                CfdgError::Error(where, "Maximum stack size exceeded");
-            const StackType*  oldLogicalStackTop = rti->mLogicalStackTop;
-            rti->mCFstack.resize(size + definition->mStackCount);
-            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-            definition->mExpression->evaluate(m, shapeDest, rti);
-            rti->mCFstack.resize(size);
-            rti->mLogicalStackTop = oldLogicalStackTop;
-        } else {
-            definition->mExpression->evaluate(m, shapeDest, rti);
-        }
+        stackState_t oldState = setupStack(rti);
+        definition->mExpression->evaluate(m, shapeDest, rti);
+        cleanupStack(rti, oldState);
     }
     
     void
