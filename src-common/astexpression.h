@@ -258,6 +258,10 @@ namespace AST {
         virtual void entropy(std::string&) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
+    private:
+        typedef std::pair<size_t, const StackType*> stackState_t;
+        stackState_t setupStack(RendererAST* rti) const;
+        void cleanupStack(RendererAST* rti, stackState_t& old) const;
     };
     class ASTlet : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
