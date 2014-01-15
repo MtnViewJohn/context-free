@@ -54,7 +54,9 @@ struct HSBColor
         BrightnessMask = 3 << 4,
         AlphaTarget = ColorTarget << 6,
         Alpha2Value = Color2Value << 6,
-        AlphaMask = 3 << 6 
+        AlphaMask = 3 << 6,
+        HSBA2Value = Hue2Value | Saturation2Value | Brightness2Value | Alpha2Value,
+        HSBATarget = HueTarget | SaturationTarget | BrightnessTarget | AlphaTarget
     };
                              
     HSBColor() : h(0), s(0), b(0), a(0) {};

@@ -1113,6 +1113,15 @@ namespace AST {
     {
         double modArgs[6] = {0.0};
         int argcount = 0;
+        static_assert(offsetof(HSBColor, s) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::sat - ASTmodTerm::hue), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, b) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::bright - ASTmodTerm::hue), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, a) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::alpha - ASTmodTerm::hue), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, s) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::satTarg - ASTmodTerm::hueTarg), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, b) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::brightTarg - ASTmodTerm::hueTarg), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, a) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::alphaTarg - ASTmodTerm::hueTarg), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, s) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::targSat - ASTmodTerm::targHue), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, b) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::targBright - ASTmodTerm::targHue), "Unexpected HSBcolor layout");
+        static_assert(offsetof(HSBColor, a) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::targAlpha - ASTmodTerm::targHue), "Unexpected HSBcolor layout");
         
         if (args) {
             if (modType != modification && args->mType == NumericType) {
@@ -1131,6 +1140,10 @@ namespace AST {
 		double arg[6] = {0.0};
         for (int i = 0; i < argcount; ++i)
             arg[i] = fmax(-1.0, fmin(1.0, modArgs[i]));
+        
+        double *color = &m.m_Color.h, *target = &m.m_ColorTarget.h;
+        bool hue = true;
+        int mask = HSBColor::HueMask;
         
         switch (modType) {
             case ASTmodTerm::x: {
@@ -1233,21 +1246,29 @@ namespace AST {
                 m.m_transform.premultiply(ref);
                 break;
             }
+            case ASTmodTerm::alpha:
+            case ASTmodTerm::bright:
+            case ASTmodTerm::sat:
+                color += modType - ASTmodTerm::hue;
+                target += modType - ASTmodTerm::hue;
+                mask <<= 2 * (modType - ASTmodTerm::hue);
+                hue = false;
             case ASTmodTerm::hue: {
                 if (argcount == 1) {
-                    if (m.m_ColorAssignment & HSBColor::HueMask) {
+                    if ((m.m_ColorAssignment & mask) || (!hue && *color != 0.0)) {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
                         if (!shapeDest)
                             RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest)
-                        m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, modArgs[0]);
+                        *color = hue ? HSBColor::adjustHue(*color, modArgs[0])
+                                     : HSBColor::adjust(*color, arg[0]);
                     else
-                        m.m_Color.h += modArgs[0];
+                        *color = hue ? *color + modArgs[0] : arg[0];
                 } else {
-                    if ((m.m_ColorAssignment & HSBColor::HueMask ||
-                         m.m_Color.h != 0.0))
+                    if ((m.m_ColorAssignment & mask) || *color != 0.0 ||
+                        (!hue && *target != 0.0))
                     {
                         if (rti == nullptr)
                             throw DeferUntilRuntime();
@@ -1255,230 +1276,63 @@ namespace AST {
                             RendererAST::ColorConflict(rti, where);
                     }
                     if (shapeDest) {
-                        m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
-                                                          HSBColor::HueTarget,
-                                                          modArgs[1]);
+                        *color = hue ? HSBColor::adjustHue(*color, arg[0],
+                                                           HSBColor::HueTarget,
+                                                           modArgs[1])
+                                     : HSBColor::adjust(*color, arg[0], 1, arg[1]);
                     } else {
-                        m.m_Color.h = arg[0];
-                        m.m_ColorTarget.h = modArgs[1];
-                        m.m_ColorAssignment |= HSBColor::Hue2Value;
+                        *color = arg[0];
+                        *target = hue ? modArgs[1] : arg[1];
+                        m.m_ColorAssignment |= HSBColor::HSBA2Value & mask;
                     }
                 }
                 break;
             }
-            case ASTmodTerm::sat: {
-                if (argcount == 1) {
-                    if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
-                         m.m_Color.s != 0.0)
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest)
-                        m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0]);
-                    else
-                        m.m_Color.s = arg[0];
-                } else {
-                    if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
-                         m.m_Color.s != 0.0 || m.m_ColorTarget.s != 0.0)
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest) {
-                        m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0], 1, arg[1]);
-                    } else {
-                        m.m_Color.s = arg[0];
-                        m.m_ColorTarget.s = arg[1];
-                        m.m_ColorAssignment |= HSBColor::Saturation2Value;
-                    }
-                }
-                break;
-            }
-            case ASTmodTerm::bright: {
-                if (argcount == 1) {
-                    if ((m.m_ColorAssignment & HSBColor::BrightnessMask ||
-                         m.m_Color.b != 0.0))
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest)
-                        m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0]);
-                    else
-                        m.m_Color.b = arg[0];
-                } else {
-                    if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
-                         m.m_Color.b != 0.0 || m.m_ColorTarget.b != 0.0)
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest) {
-                        m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0], 1, arg[1]);
-                    } else {
-                        m.m_Color.b = arg[0];
-                        m.m_ColorTarget.b = arg[1];
-                        m.m_ColorAssignment |= HSBColor::Brightness2Value;
-                    }
-                }
-                break;
-            }
-            case ASTmodTerm::alpha: {
-                if (argcount == 1) {
-                    if ((m.m_ColorAssignment & HSBColor::AlphaMask ||
-                         m.m_Color.a != 0.0))
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest)
-                        m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0]);
-                    else
-                        m.m_Color.a = arg[0];
-                } else {
-                    if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
-                         m.m_Color.a != 0.0 || m.m_ColorTarget.a != 0.0)
-                    {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
-                    }
-                    if (shapeDest) {
-                        m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0], 1, arg[1]);
-                    } else {
-                        m.m_Color.a = arg[0];
-                        m.m_ColorTarget.a = arg[1];
-                        m.m_ColorAssignment |= HSBColor::Alpha2Value;
-                    }
-                }
-                break;
-            }
+            case ASTmodTerm::alphaTarg:
+            case ASTmodTerm::brightTarg:
+            case ASTmodTerm::satTarg:
+                color += modType - ASTmodTerm::hueTarg;
+                target += modType - ASTmodTerm::hueTarg;
+                mask <<= 2 * (modType - ASTmodTerm::hueTarg);
+                hue = false;
             case ASTmodTerm::hueTarg: {
-                if ((m.m_ColorAssignment & HSBColor::HueMask) ||
-                     m.m_Color.h != 0.0)
-                {
+                if ((m.m_ColorAssignment & mask) || *color != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         RendererAST::ColorConflict(rti, where);
                 }
                 if (shapeDest) {
-                    m.m_Color.h = HSBColor::adjustHue(m.m_Color.h, arg[0],
-                                                      HSBColor::HueTarget,
-                                                      m.m_ColorTarget.h);
+                    *color = hue ? HSBColor::adjustHue(*color, arg[0],
+                                                       HSBColor::HueTarget,
+                                                       *target)
+                                 : HSBColor::adjust(*color, arg[0], 1, *target);
                 } else {
-                    m.m_Color.h = arg[0];
-                    m.m_ColorAssignment |= HSBColor::HueTarget;
+                    *color = arg[0];
+                    m.m_ColorAssignment |= HSBColor::HSBATarget & mask;
                 }
                 break;
             }
-            case ASTmodTerm::satTarg: {
-                if ((m.m_ColorAssignment & HSBColor::SaturationMask) ||
-                     m.m_Color.s != 0.0)
-                {
+            case ASTmodTerm::targAlpha:
+            case ASTmodTerm::targBright:
+            case ASTmodTerm::targSat: {
+                color += modType - ASTmodTerm::targHue;
+                target += modType - ASTmodTerm::targHue;
+                mask <<= 2 * (modType - ASTmodTerm::targHue);
+                if (*target != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
                     if (!shapeDest)
                         RendererAST::ColorConflict(rti, where);
                 }
-                if (shapeDest) {
-                    m.m_Color.s = HSBColor::adjust(m.m_Color.s, arg[0], 1,
-                                                   m.m_ColorTarget.s);
-                } else {
-                    m.m_Color.s = arg[0];
-                    m.m_ColorAssignment |= HSBColor::SaturationTarget;
-                }
-                break;
-            }
-            case ASTmodTerm::brightTarg: {
-                if ((m.m_ColorAssignment & HSBColor::BrightnessMask) ||
-                     m.m_Color.b != 0.0)
-                {
-                    if (rti == nullptr)
-                        throw DeferUntilRuntime();
-                    if (!shapeDest)
-                        RendererAST::ColorConflict(rti, where);
-                }
-                if (shapeDest) {
-                    m.m_Color.b = HSBColor::adjust(m.m_Color.b, arg[0], 1,
-                                                   m.m_ColorTarget.b);
-                } else {
-                    m.m_Color.b = arg[0];
-                    m.m_ColorAssignment |= HSBColor::BrightnessTarget;
-                }
-                break;
-            }
-            case ASTmodTerm::alphaTarg: {
-                if ((m.m_ColorAssignment & HSBColor::AlphaMask) ||
-                     m.m_Color.a != 0.0)
-                {
-                    if (rti == nullptr)
-                        throw DeferUntilRuntime();
-                    if (!shapeDest)
-                        RendererAST::ColorConflict(rti, where);
-                }
-                if (shapeDest) {
-                    m.m_Color.a = HSBColor::adjust(m.m_Color.a, arg[0], 1,
-                                                   m.m_ColorTarget.a);
-                } else {
-                    m.m_Color.a = arg[0];
-                    m.m_ColorAssignment |= HSBColor::AlphaTarget;
-                }
+                if (shapeDest)
+                    *target = HSBColor::adjust(*target, arg[0]);
+                else
+                    *target = arg[0];
                 break;
             }
             case ASTmodTerm::targHue: {
                 m.m_ColorTarget.h += modArgs[0];
-                break;
-            }
-            case ASTmodTerm::targSat: {
-                if (m.m_ColorTarget.s != 0.0) {
-                    if (rti == nullptr)
-                        throw DeferUntilRuntime();
-                    if (!shapeDest)
-                        RendererAST::ColorConflict(rti, where);
-                }
-                if (shapeDest)
-                    m.m_ColorTarget.s = HSBColor::adjust(m.m_ColorTarget.s, arg[0]);
-                else
-                    m.m_ColorTarget.s = arg[0];
-                break;
-            }
-            case ASTmodTerm::targBright: {
-                if (m.m_ColorTarget.b != 0.0) {
-                    if (rti == nullptr)
-                        throw DeferUntilRuntime();
-                    if (!shapeDest)
-                        RendererAST::ColorConflict(rti, where);
-                }
-                if (shapeDest)
-                    m.m_ColorTarget.b = HSBColor::adjust(m.m_ColorTarget.b, arg[0]);
-                else
-                    m.m_ColorTarget.b = arg[0];
-                break;
-            }
-            case ASTmodTerm::targAlpha: {
-                if (m.m_ColorTarget.a != 0.0) {
-                    if (rti == nullptr)
-                        throw DeferUntilRuntime();
-                    if (!shapeDest)
-                        RendererAST::ColorConflict(rti, where);
-                }
-                if (shapeDest)
-                    m.m_ColorTarget.a = HSBColor::adjust(m.m_ColorTarget.a, arg[0]);
-                else
-                    m.m_ColorTarget.a = arg[0];
                 break;
             }
             case ASTmodTerm::stroke: {
