@@ -2126,21 +2126,15 @@ namespace AST {
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                bool first = true;
+                isConstant = isNatural = true;
+                mLocality = PureLocal;
+                mType = NoType;
                 for (auto& child : children) {
                     Compile(child, ph);
-                    if (first) {
-                        isConstant = child->isConstant;
-                        isNatural = child->isNatural;
-                        mLocality = child->mLocality;
-                        mType = child->mType;
-                    } else {
-                        isConstant = isConstant && child->isConstant;
-                        isNatural = isNatural && child->isNatural;
-                        mLocality = CombineLocality(mLocality, child->mLocality);
-                        mType = static_cast<expType>(mType | child->mType);
-                    }
-                    first = false;
+                    isConstant = isConstant && child->isConstant;
+                    isNatural = isNatural && child->isNatural;
+                    mLocality = CombineLocality(mLocality, child->mLocality);
+                    mType = static_cast<expType>(mType | child->mType);
                 }
                 break;
             }
