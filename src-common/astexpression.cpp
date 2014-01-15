@@ -353,6 +353,10 @@ namespace AST {
         }
     }
     
+    ASTvariable::ASTvariable(int stringNum, const std::string& str, const yy::location& loc)
+    : ASTexpression(loc), stringIndex(stringNum), text(str), stackIndex(0),
+      isParameter(false) { };
+    
     ASTuserFunction::ASTuserFunction(int name, ASTexpression* args, ASTdefine* func,
                                      const yy::location& nameLoc)
     : ASTexpression(args ? (nameLoc + args->where) : nameLoc, 
@@ -1737,10 +1741,6 @@ namespace AST {
         delete this;
         return e2;
     }
-    
-    ASTvariable::ASTvariable(int stringNum, const std::string& str, const yy::location& loc) 
-    : ASTexpression(loc), stringIndex(stringNum), text(str), stackIndex(0),
-      isParameter(false) { };
     
     ASTexpression*
     ASTmodTerm::simplify()
