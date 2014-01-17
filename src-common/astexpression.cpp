@@ -2553,7 +2553,7 @@ namespace AST {
                 }
 
                 isConstant = true;
-                mLocality = modExp.empty() ? PureLocal : modExp.front()->mLocality;
+                mLocality = PureLocal;
                 for (auto& term : modExp) {
                     isConstant = isConstant && term->isConstant;
                     mLocality = CombineLocality(mLocality, term->mLocality);
