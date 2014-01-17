@@ -1877,7 +1877,7 @@ namespace AST {
                 if (functype == Mod || functype == Abs || functype == Min ||
                     functype == Max || (functype >= BitNot && functype <= BitRight))
                 {
-                    isNatural = arguments ? arguments->isNatural : true;
+                    isNatural = !arguments || arguments->isNatural;
                 }
                 if (functype == Factorial || functype == Sg || functype == IsNatural ||
                     functype == Div || functype == Divides)
@@ -2292,13 +2292,13 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                isConstant = left->isConstant && (right ? right->isConstant : true);
+                isConstant = left->isConstant && (!right || right->isConstant);
                 mLocality = right ? CombineLocality(left->mLocality, right->mLocality) : left->mLocality;
                 if (mLocality == PureNonlocal)
                     mLocality = ImpureNonlocal;
                 mType = right ? static_cast<expType>(left->mType | right->mType) : left->mType;
                 if (strchr("+_*<>LG=n&|X^!", op))
-                    isNatural = left->isNatural && (right ? right->isNatural : true);
+                    isNatural = left->isNatural && (!right || right->isNatural);
                 
                 if (op == '+') {
                     if (mType != FlagType && mType != NumericType)
