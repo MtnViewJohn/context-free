@@ -49,7 +49,10 @@ DialogResult SaveImage::ShowTheDialog(IWin32Window^ owner)
                 multiplier[1] = System::Double::Parse(saveHeight->Text);
             }
         }
-    } catch (Exception^) {}
+    } catch (Exception^) {
+        res = DialogResult::Cancel;
+        System::Media::SystemSounds::Beep->Play();
+    }
 
     return res;
 }

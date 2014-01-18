@@ -452,7 +452,9 @@ private:
         prefs->BorderWidth = (double)(trackBarBorder->Value) / 33.0 - 1.0;
         prefs->ImageAppendVariation = checkSaveWithVariation->Checked;
         prefs->ImageCrop = checkCropImage->Checked;
-        prefs->JPEGQuality = System::Int32::Parse(editJPEGquality->Text);
+        try {
+            prefs->JPEGQuality = System::Int32::Parse(editJPEGquality->Text);
+        } catch (System::SystemException^) { }
         this->Close();
     }
 private: 

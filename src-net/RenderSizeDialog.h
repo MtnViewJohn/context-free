@@ -399,12 +399,17 @@ private:
 private: 
     System::Void OKbutton_Click(System::Object^  sender, System::EventArgs^  e) 
     {
-        renderSizeParameters->width = System::Int32::Parse(widthBox->Text);
-        renderSizeParameters->height = System::Int32::Parse(heightBox->Text);
-        renderSizeParameters->borderSize = (double)(borderTrackBar->Value) / 33.0 - 1.0;
-        renderSizeParameters->minimumSize = System::Single::Parse(minimumSizeBox->Text);
-        renderSizeParameters->suppressDisplay = noDisplayCheckBox->Checked;
-        renderSizeParameters->saveToPrefs();
+        try {
+            renderSizeParameters->width = System::Int32::Parse(widthBox->Text);
+            renderSizeParameters->height = System::Int32::Parse(heightBox->Text);
+            renderSizeParameters->borderSize = (double) (borderTrackBar->Value) / 33.0 - 1.0;
+            renderSizeParameters->minimumSize = System::Single::Parse(minimumSizeBox->Text);
+            renderSizeParameters->suppressDisplay = noDisplayCheckBox->Checked;
+            renderSizeParameters->saveToPrefs();
+        } catch (System::SystemException^) {
+            this->DialogResult = System::Windows::Forms::DialogResult::Cancel;
+            System::Media::SystemSounds::Beep->Play();
+        }
         this->Close();
     }
 private: 

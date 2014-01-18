@@ -143,7 +143,13 @@ System::Void RGBChoose::textHandler(System::Object^ sender, System::EventArgs^ e
     if (box == nullptr || !box->Focused) return;
 
     String^ numberT = box->Text;
-    int number = System::Int32::Parse(numberT);
+    int number = 0;
+    try {
+        number = System::Int32::Parse(numberT, Globalization::NumberStyles::AllowLeadingWhite | Globalization::NumberStyles::AllowTrailingWhite);
+    } catch (SystemException^) {
+        number = 0;
+        box->Text = L"0";
+    }
     double numberD = (double)number / 255.0;
     bool accept = validNumber->IsMatch(numberT) && number >= 0 && number < 256;
 
@@ -180,7 +186,7 @@ System::Void RGBChoose::textHandler(System::Object^ sender, System::EventArgs^ e
     if (accept) {
         OnColorChange(gcnew ColorChangeEventArgs(myColor));
     } else {
-        System::Media::SystemSounds::Beep->Play();;
+        System::Media::SystemSounds::Beep->Play();
     }
 }
 
