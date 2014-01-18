@@ -82,6 +82,7 @@ System::Void UploadDesign::wizardPage_beforeChange(System::Object^ sender,
             if (usernameBox->Text->Length == 0 || passwordBox->Text->Length == 0) {
                 e->Cancel = true;
                 labelAcctError->Visible = true;
+                System::Media::SystemSounds::Asterisk->Play();
                 return;
             }
             labelAcctError->Visible = false;
@@ -92,15 +93,23 @@ System::Void UploadDesign::wizardPage_beforeChange(System::Object^ sender,
         case 1:
             if (titleBox->Text->Length == 0 || fileNameBox->Text->Length == 0) {
                 e->Cancel = true;
+                labelDesignError->Text = L"You must provide a title and a file name.";
                 labelDesignError->Visible = true;
+                System::Media::SystemSounds::Asterisk->Play();
+                return;
+            }
+            Form1::prefs->ImageCrop = checkCrop->Checked;
+            if (outputMultiplier)  try {
+                outputMultiplier[0] = System::Double::Parse(saveWidth->Text);
+                outputMultiplier[1] = System::Double::Parse(saveHeight->Text);
+            } catch (SystemException^) {
+                e->Cancel = true;
+                labelDesignError->Text = L"Output multipliers are invalid.";
+                labelDesignError->Visible = true;
+                System::Media::SystemSounds::Asterisk->Play();
                 return;
             }
             labelDesignError->Visible = false;
-            Form1::prefs->ImageCrop = checkCrop->Checked;
-            if (outputMultiplier) {
-                outputMultiplier[0] = System::Double::Parse(saveWidth->Text);
-                outputMultiplier[1] = System::Double::Parse(saveHeight->Text);
-            }
             break;
         case 2:
             {

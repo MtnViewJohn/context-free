@@ -67,7 +67,10 @@ double PreferenceManager::GetPrefDouble(String^ name, double defValue)
         SetPrefDouble(name, defValue);
         return defValue;
     }
-    return System::Double::Parse((String^)obj);
+    double ret = defValue;
+    try { ret = System::Double::Parse((String^) obj); }
+    catch (SystemException^) {}
+    return ret;
 }
 
 String^ PreferenceManager::GetPrefString(String^ name, String^ defValue)
