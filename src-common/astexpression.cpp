@@ -1807,7 +1807,7 @@ namespace AST {
                 
                 if (functype == ASTfunction::Infinity && argcount == 0) {
                     arguments.reset(new ASTreal(1.0, argsLoc));
-                    return this;
+                    return nullptr;
                 }
                 
                 if (functype == Ftime) {
@@ -1815,7 +1815,7 @@ namespace AST {
                         CfdgError::Error(argsLoc, "ftime() function takes no arguments");
                     isConstant = false;
                     arguments.reset(new ASTreal(1.0, argsLoc));
-                    return this;
+                    return nullptr;
                 }
                 
                 if (functype == Frame) {
@@ -1823,7 +1823,7 @@ namespace AST {
                         CfdgError::Error(argsLoc, "frame() functions takes no arguments");
                     isConstant = false;
                     arguments.reset(new ASTreal(1.0, argsLoc));
-                    return this;
+                    return nullptr;
                 }
                 
                 if (functype >= Rand_Static && functype <= RandInt) {
@@ -1851,7 +1851,7 @@ namespace AST {
                     
                     if (functype == RandInt && arguments)
                         isNatural = arguments->isNatural;
-                    return this;
+                    return nullptr;
                 }
                 
                 if (functype == Abs) {
@@ -1891,14 +1891,14 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
     ASTselect::compile(AST::CompilePhase ph)
     {
         if (!selector)
-            return this;
+            return nullptr;
         for (auto& arg: arguments)
             Compile(arg, ph);
         Compile(selector, ph);
@@ -1916,11 +1916,11 @@ namespace AST {
                 
                 if (selector->mType != NumericType || selector->evaluate(nullptr, 0) != 1) {
                     CfdgError::Error(selector->where, "if()/select() selector must be a numeric scalar");
-                    return this;
+                    return nullptr;
                 }
                 if (arguments.size() < 2) {
                     CfdgError::Error(selector->where, "if()/select() selector must have at least two arguments");
-                    return this;
+                    return nullptr;
                 }
                 
                 mType = arguments[0]->mType;
@@ -1953,7 +1953,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -1971,13 +1971,13 @@ namespace AST {
                         isConstant = false;
                         mLocality = arguments->mLocality;
                         arguments->entropy(entropyVal);
-                        return this;
+                        return nullptr;
                     case SimpleParentArgs:
                         assert(typeSignature == parentSignature);
                         assert(arguments && arguments->mType == ReuseType);
                         isConstant = true;
                         mLocality = PureLocal;
-                        return this;
+                        return nullptr;
                     case StackArgs: {
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
@@ -1989,7 +1989,7 @@ namespace AST {
                         if (bound->mStackIndex == -1) {
                             if (!bound->mDefinition) {
                                 CfdgError::Error(where, "Error processing shape variable.");
-                                return this;
+                                return nullptr;
                             }
                             mLocality = PureLocal;
                         } else {
@@ -2000,7 +2000,7 @@ namespace AST {
                         }
                         if (arguments && arguments->mType != AST::NoType)
                             CfdgError::Error(arguments->where, "Cannot bind parameters twice");
-                        return this;
+                        return nullptr;
                     }
                     case NoArgs:
                         assert(!arguments || arguments->mType == NoType);
@@ -2031,14 +2031,15 @@ namespace AST {
                             if (arguments)
                                 arguments->entropy(entropyVal);
                             
-                            return this;
+                            return nullptr;
                         }
                         
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
                         if (bound && bound->mType == RuleType) {
                             argSource = StackArgs;
-                            return compile(ph);
+                            compile(ph);    // always return nullptr
+                            return nullptr;
                         }
                         
                         if (arguments && arguments->mType == AST::ReuseType) {
@@ -2067,13 +2068,13 @@ namespace AST {
                             }
                             isConstant = true;
                             mLocality = PureNonlocal;
-                            return this;
+                            return nullptr;
                         }
                         
                         argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
                         if (argSize < 0) {
                             argSource = NoArgs;
-                            return this;
+                            return nullptr;
                         }
                         
                         if (arguments && arguments->mType != AST::NoType) {
@@ -2104,21 +2105,19 @@ namespace AST {
                 break;
             }
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
     ASTstartSpecifier::compile(AST::CompilePhase ph)
     {
         std::string name(entropyVal);
-        ASTexpression* ret = ASTruleSpecifier::compile(ph);
-        entropyVal = std::move(name);   // StartShape only uses name for entropy (grrr)
-        assert(ret == this);
+        ASTruleSpecifier::compile(ph);      // always return nullptr
+        entropyVal = std::move(name);       // StartShape only uses name for entropy (grrr)
         if (mModification) {
-            ret = mModification->compile(ph);
-            assert(ret == mModification.get());
+            mModification->compile(ph);     // always returns nullptr
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2141,13 +2140,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
-    }
-    
-    ASTexpression*
-    ASTreal::compile(AST::CompilePhase ph)
-    {
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2159,7 +2152,7 @@ namespace AST {
                 const ASTparameter* bound = Builder::CurrentBuilder->findExpression(stringIndex, isGlobal);
                 if (bound == nullptr) {
                     CfdgError::Error(where, "internal error.");
-                    return this;
+                    return nullptr;
                 }
                 
                 std::string name = Builder::CurrentBuilder->ShapeToString(stringIndex);
@@ -2168,7 +2161,7 @@ namespace AST {
                     assert(bound->mDefinition);
                     ASTexpression* ret = bound->constCopy(where, name);
                     if (ret) {
-                        ret->compile(ph);
+                        ret->compile(ph);   // always returns nullptr
                         return ret;
                     } else {
                         CfdgError::Error(where, "internal error.");
@@ -2176,7 +2169,8 @@ namespace AST {
                 } else {
                     if (bound->mType == AST::RuleType) {
                         ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
-                        return ret->compile(ph);
+                        ret->compile(ph);       // always return nullptr
+                        return ret;
                     }
                     
                     count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
@@ -2191,7 +2185,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2208,11 +2202,11 @@ namespace AST {
                 
                 if (def && p) {
                     CfdgError::Error(where, "Name matches both a function and a shape");
-                    return this;
+                    return nullptr;
                 }
                 if (!def && !p) {
                     CfdgError::Error(where, "Name does not match shape name or function name");
-                    return this;
+                    return nullptr;
                 }
                 
                 if (def) {  // && !p
@@ -2229,20 +2223,21 @@ namespace AST {
                     {
                         mLocality = ImpureNonlocal;
                     }
-                    return this;
+                    return nullptr;
                 }
                 
                 // if (!def && p)
                 ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, name,
                                                            std::move(arguments),
                                                            where, nullptr);
-                return r->compile(CompilePhase::TypeCheck);
+                r->compile(CompilePhase::TypeCheck);    // always returns nullptr
+                return r;
                 break;
             }
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2281,7 +2276,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2314,13 +2309,13 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
     ASTparen::compile(AST::CompilePhase ph)
     {
-        if (!e) return this;
+        if (!e) return nullptr;
         Compile(e, ph);
         
         switch (ph) {
@@ -2334,7 +2329,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2344,7 +2339,7 @@ namespace AST {
         if (!args) {
             if (modType != param)
                 CfdgError::Error(where, "Illegal expression in shape adjustment");
-            return this;
+            return nullptr;
         }
         
         switch (ph) {
@@ -2429,7 +2424,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2568,7 +2563,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2577,7 +2572,7 @@ namespace AST {
         Compile(mArgs, ph);
         if (!mArgs) {
             CfdgError::Error(where, "Illegal expression in vector index");
-            return this;
+            return nullptr;
         }
         
         switch (ph) {
@@ -2587,7 +2582,7 @@ namespace AST {
                 assert(bound);
                 if (bound ->mType != NumericType) {
                     CfdgError::Error(where, "Vectors can only have numeric components");
-                    return this;
+                    return nullptr;
                 }
                 
                 isNatural = bound->isNatural;
@@ -2605,7 +2600,7 @@ namespace AST {
                         isConstant = false;
                         delete [] mData;
                         mData = nullptr;
-                        return this;
+                        return nullptr;
                     }
                 }
                 
@@ -2640,7 +2635,7 @@ namespace AST {
             case CompilePhase::Simplify:
                 break;
         }
-        return this;
+        return nullptr;
     }
     
     void

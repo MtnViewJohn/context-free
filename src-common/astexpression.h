@@ -69,7 +69,18 @@ namespace AST {
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual ASTexpression* compile(CompilePhase ph) { return this; }
+        virtual ASTexpression* compile(CompilePhase ph) { return nullptr; }
+        // Always returns nullptr except during type check in the following cases:
+        // * An ASTvariable bound to a constant returns a copy of the constant
+        // * An ASTvariable bound to a rule spec returns an ASTruleSpec that
+        //   acts as a stack variable
+        // * A shape spec that was parsed as an ASTuserFunc because of grammar
+        //   ambiguity will return the correct ASTruleSpec
+        //
+        // It is safe to ignore the return value if you can guarantee that none
+        // of these conditions is possible. Otherwise you must replace the object
+        // with the returned object. Using the original object after type check
+        // will fail.
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
     };
     class ASTfunction : public ASTexpression {
@@ -223,7 +234,6 @@ namespace AST {
         virtual ~ASTreal() {};
         virtual int evaluate(double* r, int size, RendererAST* = nullptr) const;
         virtual void entropy(std::string& e) const;
-        virtual ASTexpression* compile(CompilePhase ph);
     private:
         ASTreal() : ASTexpression(CfdgError::Default) {};
     };
@@ -386,7 +396,7 @@ namespace AST {
     {
         if (!exp) return;
         ASTexpression* r = exp->compile(ph);
-        if (r != exp.get())
+        if (r)
             exp.reset(r);
     }
     

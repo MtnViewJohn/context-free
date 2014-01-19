@@ -598,10 +598,10 @@ namespace AST {
     ASTreplacement::compile(AST::CompilePhase ph)
     {
         ASTexpression* r;
-        r = mShapeSpec.compile(ph);             // always returns this
-        assert(r == &mShapeSpec);
+        r = mShapeSpec.compile(ph);             // always returns nullptr
+        assert(r == nullptr);
         r = mChildChange.compile(ph);           // ditto
-        assert(r == &mChildChange);
+        assert(r == nullptr);
 
         switch (ph) {
             case CompilePhase::TypeCheck:
@@ -736,8 +736,8 @@ namespace AST {
         ASTreplacement::compile(ph);
         ASTexpression* ret = nullptr;
         if (mExpHolder)
-            ret = mExpHolder->compile(ph);        // always returns this
-        if (ret != mExpHolder.get())
+            ret = mExpHolder->compile(ph);        // always returns nullptr
+        if (ret != nullptr)
             CfdgError::Error(mLocation, "Error analyzing transform list");
         mBody.compile(ph);
 
@@ -886,7 +886,7 @@ namespace AST {
         ASTreplacement::compile(ph);
         Compile(mArguments, ph);
         if (mOldStyleArguments)
-            mOldStyleArguments->compile(ph);        // always return this
+            mOldStyleArguments->compile(ph);        // always return nullptr
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
