@@ -908,18 +908,18 @@ namespace AST {
         ASTtermArray temp(std::move(terms));
         exp_ptr ret;
         
-        for (auto term = temp.begin(); term != temp.end(); ++term) {
-            switch ((*term)->modType) {
+        for (term_ptr& term: temp) {
+            switch (term->modType) {
                 case AST::ASTmodTerm::param:
-                    flags |= (*term)->argCount;     // ctor stashes parsed params here
-                    break;
+                    flags |= term->argCount;    // ctor stashes parsed params here and
+                    break;                      // ASTmodTerm::compile() does not overwrite them
                 case AST::ASTmodTerm::stroke:
                     if (ret)
-                        CfdgError::Error((*term)->where, "Only one stroke width term is allowed");
-                    ret = std::move((*term)->args);
+                        CfdgError::Error(term->where, "Only one stroke width term is allowed");
+                    ret = std::move(term->args);
                     break;
                 default:
-                    terms.emplace_back(std::move(*term));
+                    terms.emplace_back(std::move(term));
                     break;
             }
         }
