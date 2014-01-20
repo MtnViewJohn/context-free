@@ -1304,13 +1304,21 @@ namespace AST {
     {
         if (!ax)
             ax.reset(new ASTreal(def, loc));
-        int sz = ax->evaluate(nullptr, 0);
+        int sz = 0;
+        if (ax->mType == NumericType)
+            sz = ax->evaluate(nullptr, 0);
+        else
+            CfdgError::Error(ax->where, "Path argument must be a scalar value");
         
         if (sz == 1 && !ay)
             ay.reset(new ASTreal(def, loc));
         
-        if (ay)
-            sz += ay->evaluate(nullptr, 0);
+        if (ay && sz >= 0) {
+            if (ay->mType == NumericType)
+                sz += ay->evaluate(nullptr, 0);
+            else
+                CfdgError::Error(ay->where, "Path argument must be a scalar value");
+        }
         
         if (sz != 2)
             CfdgError::Error(loc, "Error parsing path operation arguments");
@@ -1319,11 +1327,20 @@ namespace AST {
     }
     
     static void
-    rejectTerm(exp_ptr term)
+    rejectTerm(exp_ptr& term)
     {
         if (term)
             CfdgError::Error(term->where, "Illegal argument");
-        // and delete it
+    }
+    
+    static void
+    acquireTerm(exp_ptr& exp, term_ptr& term)
+    {
+        if (exp) {
+            CfdgError::Error(exp->where, "Duplicate argument");
+            CfdgError::Error(term->where, "    conflicts with this argument");
+        }
+        exp = std::move(term->args);
     }
     
     void
@@ -1344,43 +1361,43 @@ namespace AST {
         exp_ptr ar;
         
         for (term_ptr& mod: mOldStyleArguments->modExp) {
-            switch (mod ? mod->modType : ASTmodTerm::unknownType) {
+            if (!mod)
+                continue;
+            switch (mod->modType) {
                 case ASTmodTerm::x:
-                    ax = std::move(mod->args);
+                    acquireTerm(ax, mod);
                     break;
                 case ASTmodTerm::y:
-                    ay = std::move(mod->args);
+                    acquireTerm(ay, mod);
                     break;
                 case ASTmodTerm::x1:
-                    ax1 = std::move(mod->args);
+                    acquireTerm(ax1, mod);
                     break;
                 case ASTmodTerm::y1:
-                    ay1 = std::move(mod->args);
+                    acquireTerm(ay1, mod);
                     break;
                 case ASTmodTerm::x2:
-                    ax2 = std::move(mod->args);
+                    acquireTerm(ax2, mod);
                     break;
                 case ASTmodTerm::y2:
-                    ay2 = std::move(mod->args);
+                    acquireTerm(ay2, mod);
                     break;
                 case ASTmodTerm::xrad:
-                    arx = std::move(mod->args);
+                    acquireTerm(arx, mod);
                     break;
                 case ASTmodTerm::yrad:
-                    ary = std::move(mod->args);
+                    acquireTerm(ary, mod);
                     break;
                 case ASTmodTerm::rot:
-                    ar = std::move(mod->args);
+                    acquireTerm(ar, mod);
                     break;
                 case ASTmodTerm::z:
                 case ASTmodTerm::zsize:
                     CfdgError::Error(mod->where, "Z changes are not permitted in paths");
                     break;
                 case ASTmodTerm::unknownType:
-                    CfdgError::Error(mLocation, "Unrecognized element in a path operation");
-                    break;
                 default:
-                    CfdgError::Error(mLocation, "Unrecognized element in a path operation");
+                    CfdgError::Error(mod->where, "Unrecognized element in a path operation");
                     break;
             }
         }
@@ -1395,30 +1412,17 @@ namespace AST {
             case LINEREL:
             case MOVETO:
             case MOVEREL:
-                rejectTerm(std::move(ar));
-                rejectTerm(std::move(arx));
-                rejectTerm(std::move(ary));
-                rejectTerm(std::move(ax1));
-                rejectTerm(std::move(ay1));
-                rejectTerm(std::move(ax2));
-                rejectTerm(std::move(ay2));
-                
                 mArguments.reset(xy);
                 break;
             case ARCTO:
             case ARCREL:
-                rejectTerm(std::move(ax1));
-                rejectTerm(std::move(ay1));
-                rejectTerm(std::move(ax2));
-                rejectTerm(std::move(ay2));
-                
                 if (arx || ary) {
                     ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1.0, mLocation);
                     ASTexpression* angle = ar.release();
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
                     
-                    if (angle->evaluate(nullptr, 0) != 1)
+                    if (angle->mType != NumericType || angle->evaluate(nullptr, 0) != 1)
                         CfdgError(angle->where, "Arc angle must be a scalar value");
                     
                     mArguments.reset(xy->append(rxy)->append(angle));
@@ -1427,7 +1431,7 @@ namespace AST {
                     if (!radius)
                         radius = new ASTreal(1.0, mLocation);
                     
-                    if (radius->evaluate(nullptr, 0) != 1)
+                    if (radius->mType != NumericType || radius->evaluate(nullptr, 0) != 1)
                         CfdgError::Error(radius->where, "Arc radius must be a scalar value");
                     
                     mArguments.reset(xy->append(radius));
@@ -1435,10 +1439,6 @@ namespace AST {
                 break;
             case CURVETO:
             case CURVEREL: {
-                rejectTerm(std::move(ar));
-                rejectTerm(std::move(arx));
-                rejectTerm(std::move(ary));
-                
                 ASTexpression *xy1 = nullptr, *xy2 = nullptr;
                 if (ax1 || ay1) {
                     xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
@@ -1453,19 +1453,20 @@ namespace AST {
                 break;
             }
             case CLOSEPOLY:
-                rejectTerm(std::move(ax));
-                rejectTerm(std::move(ay));
-                rejectTerm(std::move(ar));
-                rejectTerm(std::move(arx));
-                rejectTerm(std::move(ary));
-                rejectTerm(std::move(ax1));
-                rejectTerm(std::move(ay1));
-                rejectTerm(std::move(ax2));
-                rejectTerm(std::move(ay2));
                 break;
             default:
                 break;
-        } 
+        }
+        
+        rejectTerm(ax);
+        rejectTerm(ay);
+        rejectTerm(ar);
+        rejectTerm(arx);
+        rejectTerm(ary);
+        rejectTerm(ax1);
+        rejectTerm(ay1);
+        rejectTerm(ax2);
+        rejectTerm(ay2);
         
         mArgCount = mArguments ? mArguments->evaluate(nullptr, 0) : 0;
         mOldStyleArguments.reset();
