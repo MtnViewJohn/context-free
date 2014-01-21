@@ -295,17 +295,25 @@ namespace AST {
                     list = list->append(next);
                 }
                 list->isNatural = natural;
+                list->mLocality = mLocality;
                 return list;
             }
-            case AST::ModType:
+            case AST::ModType: {
+                ASTmodification* ret = nullptr;
                 if (const ASTmodification* mod = dynamic_cast<const ASTmodification*>(mDefinition->mExpression.get()))
-                    return new ASTmodification(*mod, where);
+                    ret = new ASTmodification(*mod, where);
                 else
-                    return new ASTmodification(mDefinition->mChildChange, where);
+                    ret = new ASTmodification(mDefinition->mChildChange, where);
+                ret->mLocality = mLocality;
+                return ret;
+            }
             case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
                 if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (mDefinition->mExpression.get())) {
-                    return new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
+                    ASTruleSpecifier* ret = new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
+                    ret->grab(r);
+                    ret->mLocality = mLocality;
+                    return ret;
                 } else {
                     CfdgError::Error(where, "Internal error computing bound rule specifier");
                 }

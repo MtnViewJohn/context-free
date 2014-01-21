@@ -144,6 +144,25 @@ namespace AST {
         assert(arguments);
     }
     
+    void
+    ASTruleSpecifier::grab(const ASTruleSpecifier* src)
+    {
+        assert(src);
+        assert(src->isConstant);
+        assert(src->argSource != DynamicArgs && src->argSource != ShapeArgs);
+        assert(src->argSource != SimpleArgs || src->simpleRule);
+        isConstant = true;
+        shapeType = src->shapeType;
+        argSize = 0;
+        argSource = src->argSource;
+        arguments.reset();
+        simpleRule = src->simpleRule;
+        mStackIndex = 0;
+        typeSignature = src->typeSignature;
+        parentSignature = src->parentSignature;
+    }
+
+    
     const StackRule*
     ASTruleSpecifier::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
@@ -1987,10 +2006,16 @@ namespace AST {
                             CfdgError::Error(bound->mLocation, "   this is what it binds to");
                         }
                         if (bound->mStackIndex == -1) {
-                            if (!bound->mDefinition) {
+                            if (!bound->mDefinition || !bound->mDefinition->mExpression) {
                                 CfdgError::Error(where, "Error processing shape variable.");
                                 return nullptr;
                             }
+                            const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound->mDefinition->mExpression.get());
+                            if (r == nullptr) {
+                                CfdgError::Error(where, "Error processing shape variable.");
+                                return nullptr;
+                            }
+                            grab(r);
                             mLocality = PureLocal;
                         } else {
                             mStackIndex = bound->mStackIndex -
@@ -2160,12 +2185,9 @@ namespace AST {
                 if (bound->mStackIndex == -1) {
                     assert(bound->mDefinition);
                     ASTexpression* ret = bound->constCopy(where, name);
-                    if (ret) {
-                        ret->compile(ph);   // always returns nullptr
-                        return ret;
-                    } else {
+                    if (!ret)
                         CfdgError::Error(where, "internal error.");
-                    }
+                    return ret;
                 } else {
                     if (bound->mType == AST::RuleType) {
                         ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
