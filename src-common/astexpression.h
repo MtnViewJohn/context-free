@@ -172,6 +172,7 @@ namespace AST {
         virtual void entropy(std::string& e) const;
         virtual ASTexpression* simplify();
         virtual ASTexpression* compile(CompilePhase ph);
+        void grab(const ASTruleSpecifier* src);
 #ifdef _WIN32
     private:
         ASTruleSpecifier(const ASTruleSpecifier&) :
