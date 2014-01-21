@@ -368,6 +368,8 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     
     if (!requestStop) {
         outputStats();
+        if (m_canvas)
+            system()->message("Done.");
     }
     
     if (!m_canvas && m_frieze)
