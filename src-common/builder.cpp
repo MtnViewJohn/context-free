@@ -527,6 +527,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
                       const yy::location& loc, mod_ptr mod, bool makeStart)
 {
     if (name == "if" || name == "let" || name == "select") {
+        // if and let are handled by the parser, select is handled here
         if (name == "select") {
             yy::location argsLoc = args->where;
             args.reset(new ASTselect(std::move(args), argsLoc, false));
