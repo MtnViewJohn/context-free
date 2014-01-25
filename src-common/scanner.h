@@ -95,6 +95,8 @@ private:
     unsigned int utf8length(const char* txt, size_t len);
     std::stack<CfdgParser::location_type> mLocationStack;
     bool        atStartup;
+    CfdgParser::token_type v2token(CfdgParser::semantic_type* yylval,
+                                   AST::ASTmodTerm::modTypeEnum mod);
 };
 
 } // namespace yy
