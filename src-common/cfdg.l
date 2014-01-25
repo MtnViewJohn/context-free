@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2005-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2014 John Horigan - john@glyphic.com
 // Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
 //
 // This program is free software; you can redistribute it and/or
@@ -183,87 +183,15 @@ STRING     [a-zA-Z\200-\377_]([a-zA-Z:_0-9\200-\377])*
 "|alpha"        {yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 "|a"            {yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 
-"param" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::param;
-        return token::PARAM;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"p" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::param;
-        return token::PARAM;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"width" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::stroke;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"x1" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::x1;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"y1" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::y1;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"x2" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::x2;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"y2" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::y2;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"rx" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::xrad;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
-"ry" {
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::yrad;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+"param"         { return v2token(yylval, AST::ASTmodTerm::param); }
+"p"             { return v2token(yylval, AST::ASTmodTerm::param); }
+"width"         { return v2token(yylval, AST::ASTmodTerm::stroke); }
+"x1"            { return v2token(yylval, AST::ASTmodTerm::x1); }
+"y1"            { return v2token(yylval, AST::ASTmodTerm::y1); }
+"x2"            { return v2token(yylval, AST::ASTmodTerm::x2); }
+"y2"            { return v2token(yylval, AST::ASTmodTerm::y2); }
+"rx"            { return v2token(yylval, AST::ASTmodTerm::xrad); }
+"ry"            { return v2token(yylval, AST::ASTmodTerm::yrad); }
 
 "<"             { return token::LT; }
 "<="            { return token::LE; }
@@ -472,8 +400,20 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
     }
     return length;
 }
-    
+
+CfdgParser::token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
+                                        AST::ASTmodTerm::modTypeEnum mod)
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = mod;
+        return mod == AST::ASTmodTerm::param ? token::PARAM : token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
 }
+
+}   // namespace yy
 
 /* This implementation of CfdgFlexLexer::yylex() is required to fill the
  * vtable of the class CfdgFlexLexer. We define the scanner's main yylex
