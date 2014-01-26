@@ -809,7 +809,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[90] =
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2005-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2014 John Horigan - john@glyphic.com
 // Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
 //
 // This program is free software; you can redistribute it and/or
@@ -1376,198 +1376,126 @@ YY_RULE_SETUP
 case 56:
 YY_RULE_SETUP
 #line 186 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::param;
-        return token::PARAM;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+{ return v2token(yylval, AST::ASTmodTerm::param); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 195 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::param;
-        return token::PARAM;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 187 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::param); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 204 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::stroke;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 188 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::stroke); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 213 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::x1;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 189 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::x1); }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 222 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::y1;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 190 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::y1); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 231 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::x2;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 191 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::x2); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 240 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::y2;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 192 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::y2); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 249 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::xrad;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 193 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::xrad); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 258 "../../src-common/cfdg.l"
-{
-    if (startToken == token::CFDG2) {
-        yylval->modToken = AST::ASTmodTerm::yrad;
-        return token::MODTYPE;
-    } else {
-        yylval->string = new std::string(yytext);
-        return token::USER_STRING;
-    }
-}
+#line 194 "../../src-common/cfdg.l"
+{ return v2token(yylval, AST::ASTmodTerm::yrad); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 268 "../../src-common/cfdg.l"
+#line 196 "../../src-common/cfdg.l"
 { return token::LT; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 269 "../../src-common/cfdg.l"
+#line 197 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 270 "../../src-common/cfdg.l"
+#line 198 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 271 "../../src-common/cfdg.l"
+#line 199 "../../src-common/cfdg.l"
 { return token::GT; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 272 "../../src-common/cfdg.l"
+#line 200 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 273 "../../src-common/cfdg.l"
+#line 201 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 274 "../../src-common/cfdg.l"
+#line 202 "../../src-common/cfdg.l"
 { return token::EQ; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 275 "../../src-common/cfdg.l"
+#line 203 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 276 "../../src-common/cfdg.l"
+#line 204 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 277 "../../src-common/cfdg.l"
+#line 205 "../../src-common/cfdg.l"
 { return token::NOT; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 278 "../../src-common/cfdg.l"
+#line 206 "../../src-common/cfdg.l"
 { return token::AND; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 279 "../../src-common/cfdg.l"
+#line 207 "../../src-common/cfdg.l"
 { return token::OR; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 280 "../../src-common/cfdg.l"
+#line 208 "../../src-common/cfdg.l"
 { return token::XOR; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 281 "../../src-common/cfdg.l"
+#line 209 "../../src-common/cfdg.l"
 { return '_'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 283 "../../src-common/cfdg.l"
+#line 211 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 284 "../../src-common/cfdg.l"
+#line 212 "../../src-common/cfdg.l"
 {
     // This greedy string regex gobbles up Unicode operators. Find the first one
     // and chop the string there.
@@ -1610,17 +1538,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 323 "../../src-common/cfdg.l"
+#line 251 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 324 "../../src-common/cfdg.l"
+#line 252 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 325 "../../src-common/cfdg.l"
+#line 253 "../../src-common/cfdg.l"
 {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
@@ -1630,18 +1558,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 331 "../../src-common/cfdg.l"
+#line 259 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 332 "../../src-common/cfdg.l"
+#line 260 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 	YY_BREAK
 /* gobble up white-spaces */
 case 86:
 YY_RULE_SETUP
-#line 335 "../../src-common/cfdg.l"
+#line 263 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1650,7 +1578,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 340 "../../src-common/cfdg.l"
+#line 268 "../../src-common/cfdg.l"
 {
     yylloc->lines(1); yylloc->step();
 }
@@ -1658,13 +1586,13 @@ YY_RULE_SETUP
 /* pass all other characters up to bison */
 case 88:
 YY_RULE_SETUP
-#line 345 "../../src-common/cfdg.l"
+#line 273 "../../src-common/cfdg.l"
 {
     return static_cast<int>(*yytext);
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 349 "../../src-common/cfdg.l"
+#line 277 "../../src-common/cfdg.l"
 {
     if (!YY_CURRENT_BUFFER)
         yyterminate();
@@ -1678,10 +1606,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 360 "../../src-common/cfdg.l"
+#line 288 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1685 "lex.yy.cpp"
+#line 1613 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2587,7 +2515,7 @@ void Cfdgfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 360 "../../src-common/cfdg.l"
+#line 288 "../../src-common/cfdg.l"
 
 
 
@@ -2704,8 +2632,20 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
     }
     return length;
 }
-    
+
+CfdgParser::token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
+                                        AST::ASTmodTerm::modTypeEnum mod)
+{
+    if (startToken == token::CFDG2) {
+        yylval->modToken = mod;
+        return mod == AST::ASTmodTerm::param ? token::PARAM : token::MODTYPE;
+    } else {
+        yylval->string = new std::string(yytext);
+        return token::USER_STRING;
+    }
 }
+
+}   // namespace yy
 
 /* This implementation of CfdgFlexLexer::yylex() is required to fill the
  * vtable of the class CfdgFlexLexer. We define the scanner's main yylex
