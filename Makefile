@@ -18,6 +18,7 @@ SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
 
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
+INC_DIRS += /usr/local/include
 
 #
 # Library directories for FFmpeg and libpng
