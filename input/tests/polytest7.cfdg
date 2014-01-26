@@ -1,0 +1,5 @@
+startshape foo
+
+rule foo {
+	SQUARE {s (1+2) (3+4)}
+}

@@ -1,0 +1,18 @@
+startshape test
+
+path test {
+    MOVETO {x 1 y 0}
+    ARCTO{x -1 y 0 r 1}
+    ARCTO{x 1 y 0 r 1}
+    CLOSEPOLY{}
+    STROKE {b 0.5 p iso}
+    MOVETO {x -1}
+    LINETO {x 1}
+    STROKE {p roundcap}
+    MOVETO {x -1 y 1}
+    LINETO {x 1 y 1}
+    STROKE {p squarecap}
+    MOVETO {x -1 y -1}
+    LINETO {x 1 y -1}
+    STROKE {p buttcap}
+}

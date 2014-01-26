@@ -1,0 +1,12 @@
+startshape foo
+
+shape rect(natural height) {
+  SQUARE [[y 0.5 s 1 (height+1) y 0.5]]
+}
+
+shape foo {
+  loop i = randint(6,9),0,-1 [x 1]
+    rect(i)[]
+  finally
+    rect(i)[]
+}

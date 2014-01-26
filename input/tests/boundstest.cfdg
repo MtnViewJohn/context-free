@@ -1,0 +1,6 @@
+startshape foo
+
+rule foo {
+  CIRCLE{}
+  CIRCLE{s 0.5 b 1}
+}

@@ -1,0 +1,11 @@
+startshape SINO[s 2]
+CF::MinimumSize = 0.3
+CF::BorderDynamic = 0
+M=40
+path SINO {
+    MOVETO(0,0)
+    loop j=1, 360*M [ ] {
+        LINETO(j, 100*((sin(j*4))+sin(1.1*j*4)))
+    }
+    STROKE(10) [b -1 ] 
+}

@@ -1,0 +1,78 @@
+startshape tentaclesun
+
+rule tentaclesun {
+	sun {sat 1 b 0.4 hue 30 b 0.9 sat 1}
+}
+
+rule sun {
+	disk{s 10 z 1 |hue 0 |b 0.4}
+	18* {r 20} linepair{|hue 60}
+	18* {r 20} linepair{|hue 60 x -10}
+}
+
+rule disk {
+	CIRCLE {}
+	disk {hue -0.05| b 0.05| s 0.95}
+}
+
+rule linepair {
+	line{x 5}
+	line[r 10 x 5 flip 0]
+}
+
+rule line3 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r 3 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line3 [r 3 x 0.75 s 0.97 r 3 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line3 0.2 { line{} }
+
+rule line2 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r 2 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line2 [r 2 x 0.75 s 0.97 r 2 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line2 0.2 { line{} }
+
+rule line1 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r 1 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line1 [r 1 x 0.75 s 0.97 r 1 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line1 0.2 { line{} }
+
+rule line0 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line0 [x 0.75 s 0.97 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line0 0.2 { line{} }
+
+rule line_1 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r -1 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line_1 [r -1 x 0.75 s 0.97 r -1 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line_1 0.2 { line{} }
+
+rule line_2 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r -2 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line_2 [r -2 x 0.75 s 0.97 r -2 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line_2 0.2 { line{} }
+
+rule line_3 {
+	TRIANGLE {y -0.2}
+	TRIANGLE [ r -3 x 0.75 s 0.97 r 180 y -0.2 hue 0.1| b 0.1]
+	line_3 [r -3 x 0.75 s 0.97 r -3 x 0.75 s 0.97 hue 0.19| b 0.19]
+}
+rule line_3 0.2 { line{} }
+
+rule line {line3 {} }
+rule line {line2 {} }
+rule line {line1 {} }
+rule line {line0 {} }
+rule line {line_1 {} }
+rule line {line_2 {} }
+rule line {line_3 {} }

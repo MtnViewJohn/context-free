@@ -1,0 +1,11 @@
+startshape flower
+
+path flower {
+	MOVETO {x 1}
+	6* {r 60} 
+		ARCTO {x 0.5 y 0.86602540378 rx 2 ry 0.5 r 30}
+	CLOSEPOLY{}
+	STROKE {p roundjoin}
+}
+
+

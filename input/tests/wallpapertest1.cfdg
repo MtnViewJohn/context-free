@@ -1,0 +1,48 @@
+startshape unit
+
+//CF::Tile = [s 2 3 skew 15 0]
+//CF::Symmetry = CF::p2, 0.5, 0.25
+//CF::Tile = [s 2 3]
+//CF::Symmetry = CF::pm, 1, 0.754
+//CF::Tile = [s 2 3]
+//CF::Symmetry = CF::pg, 0, 0
+//CF::Tile = [trans 0 0 3 0 4.5 2]
+//CF::Tile = [[skew atan2(1.5, 2) 0 s 3 2]]
+//CF::Symmetry = CF::cm, 1, 1
+//CF::Tile = [s 2 3]
+//CF::Symmetry = CF::pmm, 0.5, 0.5
+//CF::Tile = [s 3 2]
+//CF::Symmetry = CF::pmg, 0
+//CF::Tile = [s 5 3]
+//CF::Symmetry = CF::pgg, 1.25, 0.75
+//CF::Tile = [[skew atan2(1.5, 2) 0 s 3 2]]
+//CF::Symmetry = CF::cmm
+//CF::Tile = [s 3]
+//CF::Symmetry = CF::p4, 0.5, 0
+//CF::Tile = [s 3]
+//CF::Symmetry = CF::p4m, 0.5, 0
+CF::Tile = [s 4]
+CF::Symmetry = CF::p4g
+//CF::Tile = [s 3 skew 15 15 r 15]
+//CF::Symmetry = CF::p3m1
+//CF::Tile = [s 3 skew 15 15 r -15]
+//CF::Symmetry = CF::p6m
+
+shape unit {
+  F[x 1.5 1.4]  // p4g
+  //F[r -90 x -0.75 0.5]  // pmg
+  //F[r -90 y 0.25] // pgg
+  CIRCLE [y 0.0 b 1 s 0.1 sat 1]
+}
+
+vector2 f9(i) = i,i + 1
+f91(j) = j + 1
+
+path F {
+  MOVETO(0.25, 0.5)
+  LINEREL(-0.5, 0)
+  LINEREL(0, -1)
+  MOVETO(0, 0)
+  LINEREL(-0.25, 0)
+  STROKE[]
+}

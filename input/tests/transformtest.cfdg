@@ -1,0 +1,28 @@
+startshape trtest
+size {s 10}
+rule trtest {
+	sq{a -0.5}
+	sq{a -0.5 trans 0.5}
+
+	sq{a -0.5 trans (2, -2)}
+	sq{a -0.5 trans (2.5, -1.5) }
+
+	sq{trans (-2, -2) }
+	sq{b 0.5 transform (-1.5, -1.5) z -1 }
+
+	sq{a -0.5 trans (2, 2)}
+	sq{a -0.5 trans (2.5, 2.5, 3.5, 3.0)}
+
+	sq{a -0.5 trans (-2, 2)}
+	sq{a -0.5 trans (-1.5, 2.5, -0.5, 3.0, 0.0, 3.5)}
+}
+
+
+path sq {
+	MOVETO{x 0 y 0}
+	LINETO{x 1 y 0}
+	LINETO{x 1 y 1}
+	LINETO{x 0 y 1}
+	CLOSEPOLY{}
+	FILL{}
+}

@@ -1,0 +1,14 @@
+startshape pentagram
+
+path pentagram {
+    MOVETO{x -1}
+    ARCTO{x 1}
+    ARCTO{x -1}
+    CLOSEPOLY{}
+    STROKE{p buttjoin}
+    MOVETO{y 1}
+    5* {r 144} 
+        LINETO {x (cos(234)) y (sin(234))}
+    CLOSEPOLY{p align}
+    STROKE{p miterjoin s 0.82}
+}

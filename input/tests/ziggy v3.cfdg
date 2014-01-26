@@ -1,0 +1,33 @@
+startshape Trident 
+
+shape Trident {
+	Zig(-2) []
+	Zig(0) []
+	Zig(2) []
+	CIRCLE [ x 10 y 10 s 6 b 0.75 ]
+	CIRCLE [ x -10 y 10 s 6 b 0.75 ]
+}
+
+shape Zig(number turn)
+rule {
+	Seg [ x -0.5 r -45 ]
+	Zag(=) [ y 1 s 0.97 r turn ]
+}
+rule 0.1 {
+    if (turn) {
+        Trident []
+    } else {
+    	Seg [ x -0.5 r -45 ]
+	    Zag(=) [ y 1 s 0.97 r turn ]
+    }
+}
+
+shape Zag(number turn) {
+	Seg [ x 0.5 r 45 ]
+	Zig(=) [ y 1 s 0.97 r turn ]
+}
+
+
+shape Seg {
+	SQUARE [ y 0.6925 s 0.5 1.885 ]
+}

@@ -1,0 +1,8 @@
+startshape test
+
+testf(number a1, number b1) = if(a1==b1,5,10)
+shape test
+rule{
+  CIRCLE []
+  CIRCLE[x let(n=5…10;m=testf(n,2);1,m) a -0.5 sat 1 b 1 y 5 h 90]
+}

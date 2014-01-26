@@ -1,0 +1,6 @@
+startshape foo(60)
+
+shape foo(col)
+rule {CIRCLE[h col sat 1 b 1]}
+rule {SQUARE[h col sat 1 b 1]}
+rule {TRIANGLE[h col sat 1 b 1]}

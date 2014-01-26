@@ -1,0 +1,38 @@
+startshape unit
+
+
+//CF::Tile = [trans 0 0 sqrt(2) 0 sqrt(4.5) sqrt(0.5)]
+//CF::Tile = [trans 0 0 sqrt(0.5) sqrt(0.5) sqrt(0.5) sqrt(4.5)]
+//CF::Symmetry = CF::pm, 3, 0.2
+//CF::Symmetry = CF::pg, 3, 0.3
+//CF::Symmetry = CF::pmm
+//CF::Symmetry = CF::pmg, 3, 0.1, 0.2
+//CF::Symmetry = CF::pgg, 0.1, 0.2
+//CF::Symmetry = CF::p4, 0.1, 0.2
+//CF::Symmetry = CF::p4m, 0.1, 0.2
+//CF::Symmetry = CF::p4g, 0.1, 0.2
+CF::Tile = [s 1]
+//CF::Symmetry = CF::cm, 3, 0.05
+CF::Symmetry = CF::cmm, 0.1, 0.2
+
+shape unit {
+  //F[x 0.25 0.25 s 0.5] // pm
+  //F[x 0.1 0.1 r -45 s 0.5] // pg
+  //F[x -0.1 0.1 r -45 s 0.5] // pmm, pmg, pgg
+  //F[x -0.3 0.2 r -45 s 0.5] // p4, p4m
+  F[x -0.1 0.0 r -45 s 0.25] // p4g
+  CIRCLE [s 0.05 sat 1 b 1 x 0.1 0.2]
+  //CIRCLE [s 0.05 sat 1 b 1 x (-0.05*sqrt(0.5)) (0.05*sqrt(0.5))]
+}
+
+vector2 f9(i) = i,i + 1
+f91(j) = j + 1
+
+path F {  // origin at center of F
+  MOVETO(0.25, 0.5)
+  LINEREL(-0.5, 0)
+  LINEREL(0, -1)
+  MOVETO(0, 0)
+  LINEREL(-0.25, 0)
+  STROKE[]
+}

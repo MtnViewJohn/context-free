@@ -1,0 +1,15 @@
+startshape tri
+
+rule tri {
+	12* {r 30} TRIANGLE {y 3}
+}
+
+path TRIANGLE {
+    MOVETO { x 0 y 0.57735}
+    LINETO { x -0.5 y -0.288675 }
+    LINETO {x  0.5 y -0.288675 }
+    LINETO {x 0 y 0}
+    CLOSEPOLY{}
+    FILL{}
+}
+

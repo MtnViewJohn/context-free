@@ -1,0 +1,32 @@
+/* Example CFDG File
+   This is a block comment. */
+// This is one type of line comment
+# This is the other type of line comment
+ 
+startshape Foo       // There must be a startshape directive
+ 
+import curves.cfdg   // Import rules and paths from stuff.cfdg
+ 
+CF::Background = [ b -1 ]  // This changes the background to black
+ 
+CF::Tile = [ s 3 4 ]       // tile the design on a grid with spacing 3 units wide and 4 units high
+//CF::Size = [ s 3 4 x 1 y 2 ]       // Size the canvas 3 units wide and 4 units high, centered on (-1, -2)
+ 
+// Let us define a rule for shape Foo that is a white square
+// containing a black circle. This will be on a black background.
+shape Foo {
+    SQUARE [ b 1 ]
+    CIRCLE []
+    Bar [ b 1 s 0.5 ]
+}
+ 
+path Bar {
+    MOVETO(0, 1)
+    steps = randint(1, 13)
+    loop 12 [ r (steps * 360 / 13) ] {
+        LINETO(cos(90 + steps * 360 / 13), 
+               sin(90 + steps * 360 / 13))
+    }
+    CLOSEPOLY()
+    FILL(CF::EvenOdd)[]
+}

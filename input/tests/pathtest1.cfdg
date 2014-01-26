@@ -1,0 +1,22 @@
+startshape foo
+
+path circle {
+    MOVETO {x -0.5}
+    ARCTO {x 0.5 rx 0.5 ry 0.5}
+    ARCTO {x -0.5 rx 0.5 ry 0.5}
+    CLOSEPOLY{}
+    FILL{}
+    MOVETO {x -0.5 y 0.5}
+    LINETO {}
+    LINETO {x 0.5 y 0.5}
+    MOVETO {x -0.5 y -0.5}
+    LINETO {y -0.25}
+    LINETO {x 0.5 y -0.5}
+    //STROKE{}
+}
+
+
+rule foo {
+    circle{a -0.5 sat 1 b 1}
+    CIRCLE {a -0.5 sat 1 b 1 hue -120}
+}

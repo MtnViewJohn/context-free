@@ -1,0 +1,27 @@
+startshape test3
+
+shape test1 
+{
+  sides = floor(rand(3, 13))
+  loop sides [r (360/sides)] {
+    TRIANGLE [s 1 5 y 1.1]
+  }
+}
+
+draw = CIRCLE
+
+CF::AllowOverlap = 1
+
+shape test2 
+{
+  loop i = 10 [x 1] {
+    loop i = i+1 [y 1]  // refers to previous i
+      draw []
+  }
+}
+
+shape test3 {
+  test2[]
+  test1 [x 3 y 7 s 0.5]
+}
+

@@ -1,0 +1,22 @@
+startshape foo
+
+vec0 = 1, 2, 3, 4, 5, 6, 7, 8//, [s 10]
+vec1 = 1, 2, 3, 4, 5, 6, 7, 8, 9
+vec2 = 1, 2, 3, 4, 5, 6, 7, 8, 9…12
+
+vector3 f1(i) = i, 2, 1
+
+shape foo {
+  a¿ = 1
+  b7 = 5
+b9 = [s 10]
+  vec3 = 1, 2, 3, 4, 5, 6, 7, 8, 9…12
+  loop i = 0, 8 [x i y i h 30]
+    SQUARE [s vec1[i, 2, 1] sat 1 b 1 a -0.5]
+  loop i = 0, 8 [x i h 30]
+    SQUARE [s vec2[i, 2, 1] sat 1 b 1 a -0.5]
+  loop i = 0, 8 [x i y -i h 30]
+    SQUARE [s vec3[i, 2, 1] sat 1 b 1 a -0.5]
+}
+
+

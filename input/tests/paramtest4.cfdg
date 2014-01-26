@@ -1,0 +1,28 @@
+startshape SUN [hue 0 sat 1 b 0.3]
+
+shape LINER(number angle)
+rule {
+	curveyTri [y 0.5 r -6]
+	LINER(=)  [r angle b 0.1 1 hue 0.1 60
+		 y 0.75 x 0.4330125
+		 s 0.97]
+}
+rule 0.1 {
+    LINER (floor(rand(-3, 4))) []
+}
+
+
+shape SUN {
+	loop 72 [r 5] LINER(0) [y 5]
+}
+
+path curveyTri
+{
+    ht = 0.25 / cos(30)
+    MOVETO(-0.5, -ht)
+    loop 3 [r 120]
+        CURVEREL(1, 0, 0.5, -0.25, 0.5, 0.25)
+    CLOSEPOLY(CF::Align)
+    FILL[]
+}
+

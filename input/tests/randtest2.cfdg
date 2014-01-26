@@ -1,0 +1,42 @@
+startshape colortest
+
+shape colortest
+rule { colorbar[] }
+rule { colorgrid[] }
+rule {graygrid [] }
+
+Sin(A) = sin(A)
+R() = 0±180
+
+shape colorbar
+{
+    loop angle = 300..360 [x 1] {
+        CIRCLE [h R() s 10 sat 1
+                b 1 y (90*Sin(angle))]
+    }
+    finally {
+        CIRCLE [h(0±180) s(10, 50) sat(1)
+                b(1) y(90*Sin(angle))]
+    }
+}
+
+shape colorgrid
+{
+    loop row = 180 [y 1] {
+        loop col = 180 [x 1] {
+            SQUARE [h(30* floor(6 * (sin(row * 10)*
+                                     sin(col * 10))))
+                    sat(1) b(1)]
+        }
+    }
+}
+
+shape graygrid
+{
+    loop row = 360 [y 1] {
+        loop col = 360 [x 1] {
+            SQUARE [b((sin(row * 10) + 
+                       sin(col * 10)) * 0.25 + 0.5)]
+        }
+    }
+}

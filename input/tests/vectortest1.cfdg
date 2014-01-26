@@ -1,0 +1,25 @@
+startshape test
+
+vector2 rndvec2(vector2 n) = 1…n[0], 1…n[1]
+
+shape circ(vector2 sz) {
+  CIRCLE[s sz]
+}
+shape circ2(number alph, vector2 sz) {
+  CIRCLE[s sz a alph]
+}
+
+shape test
+rule 2.5 {
+  circ((1…5,1…5))[a -0.5]
+  test [x (-5…5,-5…5)]
+}
+rule 2.5 {
+  circ(rndvec2((5,5)))[a -0.5]
+  test [x (-5…5,-5…5)]
+}
+rule 5 {
+  circ2(-0.5,(1…5,1…5))[]
+  test [x (-5…5,-5…5)]
+}
+rule {}

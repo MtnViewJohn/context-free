@@ -1,0 +1,66 @@
+SQRT3 = sqrt(3)
+TTOP = sin(30)/SQRT3
+HEXS = SQRT3/4
+GOLD = 31      // Def limited to one parameter sat 0.9 b 0.9
+BLUE = 201     // ............................ sat 0.8 b 0.73
+MAGENTA = 42
+GREEN = 132
+RED = 356
+startshape alhambraII
+
+CF::Size = [s 6 6 x -2.5 y -3.5] // trim to hide the ragged edge
+
+CF::Background = [b .6]
+CF::AllowOverlap = 1
+
+shape alhambraII{        // using switch
+  loop i = 0, 10 [x .97]{
+    loop j = 0, 10 [y .85 x -.48]{
+       BLUE = [b .73 h BLUE sat .53]
+       MAGENTA = [b .53 h MAGENTA sat .76]
+       RED = [b .53 h RED sat .7]
+       GREEN = [b .68 h GREEN sat .64]
+       triangle[trans select(mod(i, 4), BLUE, MAGENTA, RED, GREEN)]
+       switch (mod(j,2)){ 
+       case 0: hexastar[x -.48 y .3 s .33 b .9 h GOLD sat .8]
+       case 1: hexastar[x -.48 y .3 s .33 trans RED]
+       }
+      //hexagon[s .42 b 1]
+      }
+   }	
+}
+
+path hexagon{ 
+  MOVETO(0.25, HEXS)          // 3.0 Syntax in path loop and definition
+  loop 5 [r -60]{
+  LINETO(0.5, 0)
+  }
+  CLOSEPOLY()  
+  //FILL[]    
+} 
+
+path SQ {
+  MOVETO(0.5,0.5)
+  LINETO(-0.5,0.5)
+  LINETO(-0.5,-0.5)
+  LINETO(0.5,-0.5)
+  LINETO(0.5,0.5)
+  CLOSEPOLY()
+}
+
+path triangle {              // CF 3.0 Syntax in path loop and definition
+    MOVETO(-0.5, -TTOP)
+    loop 3 [r 120]{ 
+    CURVETO(0, -TTOP, -0.25, 0.05) 
+    CURVETO(0.5, - TTOP, CF::Continuous) 
+    }
+    CLOSEPOLY()
+    //path hexagon[s 0.81]
+    path CIRCLE[s 0.81]
+    FILL[]
+}
+
+shape hexastar{
+  TRIANGLE[r 90]
+  TRIANGLE[r 270]
+}

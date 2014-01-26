@@ -1,0 +1,23 @@
+startshape PATHover
+
+foo(natural n) = if(n, n + bar(n -- 1), 0)
+bar(natural n) = if(n, n + foo(n -- 1), 0)
+
+shape baz(shape fizz) 
+rule {
+  fizz[]
+}
+
+shape PATHover 
+rule {
+  baz(CIRC(foo(4), 42)) [ ]
+}
+
+path CIRC(number STrK, number dummy) {
+  MOVETO(-10,0)
+  ARCREL(20,0,10)
+  ARCREL(-20,0,10)
+  CLOSEPOLY()
+  STROKE(STrK, CF::ButtCap) [ ]
+}
+

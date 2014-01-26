@@ -1,0 +1,12 @@
+startshape subpath
+
+hole = select(randint(3), CIRCLE, SQUARE, TRIANGLE)
+
+path subpath {
+  MOVETO(1, 0)
+  ARCTO(-1, 0, 1, CF::ArcCW)
+  ARCTO( 1, 0, 1, CF::ArcCW)
+  path hole[]
+  CLOSEPOLY()
+  FILL[]
+}

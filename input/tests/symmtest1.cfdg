@@ -1,0 +1,5 @@
+startshape test
+
+shape test {
+  CIRCLE[x 0.5]
+}

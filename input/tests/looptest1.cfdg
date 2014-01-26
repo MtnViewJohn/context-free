@@ -1,0 +1,61 @@
+startshape grid
+
+rule grid {
+    3* {y 1.1} {
+        3* {x 1.1} myShape {}
+    }
+}
+
+rule myShape { 
+    TRIANGLE {s cos(30)}
+    TRIANGLE {r 180 s cos(30)}
+}
+rule myShape { trill1 {s 0.5}}
+rule myShape { trill2 {s 0.5}}
+rule myShape { hept {s 0.5}}
+rule myShape { hept2 {s 0.5}}
+rule myShape { hex {s 0.5}}
+
+path trill1 {
+    MOVETO {x cos(234) y sin(234)}
+   5* {r -144} 
+    CURVETO {y 1 x1 cos(342) y1 sin(342)}
+    CLOSEPOLY {p align}
+    FILL [p evenodd]
+    STROKE {p miterjoin width 0.075 a -0.5}
+}
+
+path trill2 {
+    MOVETO {x cos(234) y sin(234)}
+   5* {r -144} 
+    CURVETO {y 1 x1 (cos(234) + cos(324)) y1 (sin(234) + sin(324)) x2 1 y2 1}
+    CLOSEPOLY {p align}
+    FILL {p evenodd}
+    STROKE {p buttjoin a -0.5}
+}
+
+path hept {
+	MOVETO {x cos(90 - 720 / 7) y sin(90 - 720 / 7) }
+	7* {r (720 / 7)}
+		LINETO { y 1}
+	CLOSEPOLY {p align}
+	FILL {p evenodd}
+}
+
+path hept2 {
+	MOVETO {x cos(90 - 1080 / 7) y sin(90 - 1080 / 7) }
+	7* {r (1080 / 7)}
+		LINETO { y 1}
+	CLOSEPOLY {p align}
+	FILL {p evenodd}
+}
+
+path hex {
+	MOVETO {x cos(330) y sin(330) }
+	3* {r 120} LINETO {y 1}
+	CLOSEPOLY{p align}
+	MOVETO {x cos(150) y sin(150) }
+	3* {r 120} LINETO {y -1}
+	CLOSEPOLY{p align}
+	FILL {p evenodd}
+}

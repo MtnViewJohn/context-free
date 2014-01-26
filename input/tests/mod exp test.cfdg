@@ -1,0 +1,23 @@
+//Ben Scheele
+//modified from the code in the fractals tutorial 
+//1-1-10
+
+CF::Background = [ b -1 ]
+
+startshape fract
+
+shape fract 
+rule {
+	x5 = [alpha -.5 sat .5]
+	CIRCLE [[trans x5 b .5]]
+	fract [x(0)    y(.289)  r(10) z(.2)  s(.51) b(.1) alpha(.1) sat(.1) b(.1) h(0)]
+	fract [x(-.25) y(-.144) r(10) z(.1)  s(.51) b(.1) alpha(.1) sat(.1) b(.1) h(10)]
+	fract [x(.25)  y(-.144) r(10) z(-.1) s(.51) b(.1) alpha(.1) sat(.1) b(.1) h(20)]
+}
+
+rule .5 {
+	CIRCLE [alpha(-.55) sat(.55) b(.55)]
+	fract [x(0)    y(.289)  r(-20) z(.2)  s(.52) b(.1) alpha(.1) sat(.1) b(.1) h(0)]
+	fract [x(-.25) y(-.144) r(-20) z(.1)  s(.52) b(.1) alpha(.1) sat(.1) b(.1) h(14)]
+	fract [x(.25)  y(-.144) r(-20) z(-.1) s(.52) b(.1) alpha(.1) sat(.1) b(.1) h(7)]
+}

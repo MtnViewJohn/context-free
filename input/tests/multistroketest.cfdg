@@ -1,0 +1,27 @@
+startshape Scene
+
+shape Scene{
+   randSquiggle []
+   //Squiggle [x 6]
+}
+
+path randSquiggle {
+   MOVETO(0,0)   
+   
+   // one parameter randomized
+   CURVETO(1..5,5,9,2)
+
+   STROKE(0.2) []
+   STROKE(0.02) [y 1 b 0.5]   
+}
+
+
+path Squiggle {
+   MOVETO(0,0)   
+   
+   //no randomization
+   CURVETO(7,5,9,2)
+
+   STROKE(0.2) []
+   STROKE(0.02) [y 1 b 0.5]   
+}

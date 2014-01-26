@@ -1,0 +1,3 @@
+startshape CIRCLE
+
+CF::Tile = [skew 72 0 s 3]

@@ -1,0 +1,9 @@
+startshape bar(1)
+
+CF::MaxNatural = 10
+
+shape bar(natural n) {
+  SQUARE[s 1 n y (n / 2)]
+  if (isNatural(n + 1))
+    bar(n + 1)[x 1]
+}

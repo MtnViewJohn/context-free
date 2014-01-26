@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="576px" height="576px" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <polygon id="TRIANGLE" points="0,0.57735 -0.5,-0.288675 0.5,-0.288675"/>
+  </defs>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix( 67.800993  39.144922  39.144922 -67.800993  405.43477  84.597025)">
+    <path id="path1" d="M 0,0.57735 L -0.5,-0.288675 L 0.5,-0.288675 Z"/>
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix( 39.144922  67.800993  67.800993 -39.144922  491.40297  170.56523)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-6.5189391e-14  78.289845  78.289845 6.5189391e-14  522.86953        288)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-39.144922  67.800993  67.800993  39.144922  491.40297  405.43477)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-78.289845 -4.3459594e-14 -4.3459594e-14  78.289845        288  522.86953)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-67.800993 -39.144922 -39.144922  67.800993  170.56523  491.40297)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-39.144922 -67.800993 -67.800993  39.144922  84.597025  405.43477)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(2.1729797e-14 -78.289845 -78.289845 -2.1729797e-14  53.130466        288)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix( 39.144922 -67.800993 -67.800993 -39.144922  84.597025  170.56523)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix( 67.800993 -39.144922 -39.144922 -67.800993  170.56523  84.597025)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix( 78.289845          0          0 -78.289845        288  53.130466)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#000000" fill-rule="nonzero"
+     transform="matrix(-67.800993  39.144922  39.144922  67.800993  405.43477  491.40297)">
+    <use xlink:href="#path1" />
+  </g>
+</svg>

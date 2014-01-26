@@ -1,0 +1,16 @@
+startshape colorgrid
+
+shape sq(number c) {
+    SQUARE [h c sat 1 b 1]
+}
+
+shape colorgrid
+rule {
+    loop row = 100 [y 1] {
+        loop col = 100 [x 1] {
+            sq(30* floor(6 * (sin(row * 10)+
+                              sin(col * 10))))
+              []
+        }
+    }
+}

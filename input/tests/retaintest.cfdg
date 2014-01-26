@@ -1,0 +1,17 @@
+startshape rect((3…6, 3…6)) [x 2 2 a -0.5]
+
+CF::Symmetry=CF::Dihedral, 6
+
+path rect(vector2 sz) {
+  MOVETO(sz)
+  LINEREL(-sz[0],0)
+  LINEREL(0,-sz[1])
+  LINEREL(sz[0],0)
+  CLOSEPOLY()
+  FILL[s 0.5]
+}
+
+
+shape test {
+  rect((3…6, 3…6)) [x 2 2 a -0.5]
+}

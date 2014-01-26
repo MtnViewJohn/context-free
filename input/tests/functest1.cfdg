@@ -1,0 +1,70 @@
+startshape ApollonianGasket
+
+vector2 vector2(number a1, number b1) = (a1,b1)
+vector3 vector3(number a1, number b1, number c1) = (a1,b1,c1)
+
+vector2 Cadd(vector2 c1, vector2 c2) =
+  (c1[0]+c2[0],c1[1]+c2[1])
+
+vector2 Csub(vector2 c1, vector2 c2) =
+  (c1[0]-c2[0],c1[1]-c2[1])
+
+vector2 Cmul(vector2 c1, vector2 c2) =
+  (((c1[0]*c2[0])-(c1[1]*c2[1])),((c1[0]*c2[1])+(c1[1]*c2[0])))
+
+number Cmulconj(vector2 c1) =
+  (c1[0])^2 + (c1[1])^2
+
+vector2 Cmulnum(vector2 c1, number n1) =
+  (c1[0]*n1,c1[1]*n1)
+
+vector2 Cconj(vector2 c1) =
+  (c1[0],-c1[1])
+
+vector2 Cdivnum(vector2 c1, number n1) =
+  (c1[0]/n1,c1[1]/n1)
+
+vector2 Cdiv(vector2 c1, vector2 c2) =
+  Cdivnum(Cmul(c1,Cconj(c2)),Cmulconj(c2))
+
+vector2 Csqrt(vector2 c1) =
+  (sqrt(sqrt(c1[0]^2 + c1[1]^2)) * cos(atan2(c1[1],c1[0])/2),
+   sqrt(sqrt(c1[0]^2 + c1[1]^2)) * sin(atan2(c1[1],c1[0])/2))
+
+// Descartes' theorem of mutually tangent circles, negative and positive
+dtn(k1,k2,k3) = k1 + k2 + k3 - 2*sqrt(k1*k2 + k2*k3 + k1*k3)
+dtp(k1,k2,k3) = k1 + k2 + k3 - 2*sqrt(k1*k2 + k2*k3 + k1*k3)
+
+// complex version
+vector2 dtcn(vector2 c1, number k1, vector2 c2, number k2, vector2 c3, number k3, number k4) =
+  Cdivnum(
+    Csub(Cadd(Cadd(Cmulnum(c1,k1),Cmulnum(c2,k2)),Cmulnum(c3,k3)),Cmulnum(Csqrt(
+      Cadd(Cadd(Cmulnum(Cmul(c1,c2),k1*k2),Cmulnum(Cmul(c2,c3),k2*k3)),Cmulnum(Cmul(c1,c3),k1*k3))),2)),k4)
+
+vector2 dtcp(vector2 c1, number k1, vector2 c2, number k2, vector2 c3, number k3, number k4) =
+  Cdivnum(
+    Cadd(Cadd(Cadd(Cmulnum(c1,k1),Cmulnum(c2,k2)),Cmulnum(c3,k3)),Cmulnum(Csqrt(
+      Cadd(Cadd(Cmulnum(Cmul(c1,c2),k1*k2),Cmulnum(Cmul(c2,c3),k2*k3)),Cmulnum(Cmul(c1,c3),k1*k3))),2)),k4)
+
+shape ApollonianGasket
+rule{
+  r1  = 1/2
+  k1  = 1/r1
+  c1  = vector2(0,0)
+  r2  = 1/2
+  k2  = 1/r2
+  c2  = vector2(1,0)
+  r3  = 1/2
+  k3  = 1/r3
+  c3  = vector2(1/2,sqrt(3)/2)
+  CIRCLE [x c1 s (2*r1)]
+  CIRCLE [x c2 s (2*r2)]
+  CIRCLE [x c3 s (2*r3)]
+  k4  = dtn(k1,k2,k3)
+  r4  = abs(1/k4)
+  c4  = dtcn(c1,k1,c2,k2,c3,k3,k4)
+  // the error
+  CIRCLE [x c4 s (2*r4) a -0.5]
+  // no error, proper translation
+  //CIRCLE [x 0.5 y (sqrt(3)/6) s (2*r4)]
+}

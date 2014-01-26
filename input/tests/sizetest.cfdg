@@ -1,0 +1,7 @@
+startshape foo
+size {s 9 x -4 y -2}
+rule foo {
+	SQUARE {s 2}
+	SQUARE {s 2 3 x 3}
+	SQUARE {s 2 3 4 x 4 y 1 b 0.5}
+}

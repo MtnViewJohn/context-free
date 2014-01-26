@@ -1,0 +1,6 @@
+startshape TRIANGLE[s 0.5 1 skew 20 0]
+
+//CF::Symmetry = CF::Dihedral, 6, 5, 1, 1
+CF::Symmetry = CF::p2mg, -0.25, -0.5
+
+CF::Tile = [s 4 0]

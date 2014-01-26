@@ -1,0 +1,29 @@
+startshape LeftOrRightFlower
+
+shape curve(number shrink, number turn)
+{
+  SQUARE []
+  curve(=) [[y 0.5 r turn s shrink y 0.5]]
+}
+
+stem = curve(0.97, 1)
+
+shape LeftOrRightFlower 
+rule {  LeftFlower [] }
+rule {  LeftFlower [flip 90] }
+
+shape LeftFlower { 
+   curve(0.98, -3) [x  1.5 y 0.125 size 0.25]
+   curve(0.98, -2) [x  1.0 y 0.125 size 0.25]
+   curve(0.98, -1) [x  0.5 y 0.125 size 0.25]
+   curve(0.98,  1) [x -0.5 y 0.125 size 0.25]
+   curve(0.98,  2) [x -1.0 y 0.125 size 0.25]
+   curve(0.98,  3) [x -1.5 y 0.125 size 0.25]
+   stem [y 0.5]
+   Blossom [x -13.25 y 26.3]
+}
+
+shape Blossom {
+   CIRCLE [size 2]
+   loop 6 [r 60] LeftOrRightFlower [size 0.4 y 3]
+}

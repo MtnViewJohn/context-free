@@ -1,0 +1,16 @@
+
+startshape test
+
+shape curve(number shrink, adjustment turn)
+{
+  SQUARE []
+  curve(=) [[trans turn y 0.5 s shrink y 0.5]]
+}
+
+shape test {
+  loop i=(3, -4, -1) [x 1] {
+    curve(0.98, [r i]) []
+  }
+}
+
+

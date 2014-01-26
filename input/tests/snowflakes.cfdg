@@ -1,0 +1,28 @@
+startshape flake[b 1]
+
+CF::Background = [b -0.5]
+CF::Impure = 1
+CF::Tile = [s 300]
+
+shape SPIKE
+rule {
+	SQUARE []
+	SPIKE [y 0.95 s 0.97]
+}
+rule 0.03 {
+	SQUARE []
+	SPIKE [r 60]
+	SPIKE [r -60]
+	SPIKE [y 0.95 s 0.97]
+}
+
+shape flake 
+rule {
+    clone CF::Dihedral, 6
+    {
+        SPIKE []
+    }
+    flake [x -100…100 -100…100 r 0…60]
+}
+rule 0.1 {}
+

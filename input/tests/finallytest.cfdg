@@ -1,0 +1,34 @@
+startshape foo2
+
+shape foo1 {
+	CIRCLE[]
+	foo1 [[x 0.5 s 0.99 x 0.5 r 3]]
+}
+
+shape foo2 {
+    SQUARE [[r -22.5 s 0.1 14.5 y 0.5]]
+	//trap [[r -22.5 y 0.5 s 0.1 14 y 0.5]]
+	loop 10 [[x 0.5 s 0.99 x 0.5 r 3]] 
+		CIRCLE []
+	finally
+		foo2 []
+}
+
+shape foo {
+	foo1[]
+	foo2[z 1]
+}
+
+path trap
+{
+	MOVETO( 0.25,  0.5)
+	LINETO(-0.25,  0.5)
+	LINETO(-1.00, -0.5)
+	LINETO( 1.00, -0.5)
+	CLOSEPOLY()
+	FILL[]
+}
+
+
+
+

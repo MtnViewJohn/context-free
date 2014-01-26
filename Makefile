@@ -132,6 +132,9 @@ $(OUTPUT_DIR)/rtest-700.png: cfdg $(RTEST_CFDG)
 $(OUTPUT_DIR)/rtest-2k.png: cfdg $(RTEST_CFDG)
 	./cfdg -s 2000 $(RTEST_CFDG) $@
 
+test: cfdg
+	./runtests.sh
+
 #
 # Rules
 #

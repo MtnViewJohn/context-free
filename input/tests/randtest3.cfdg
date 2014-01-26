@@ -1,0 +1,21 @@
+startshape PLANT
+
+rule PLANT {
+	BL {x -2}
+	BL {x 2}
+}
+
+rule BOTH {
+	BL {rotate 30}
+	BL {rotate -30 flip 90}
+}
+
+rule BL {
+	CIRCLE {}
+	WL {size 0.95 y 1.6}
+}
+
+rule WL 10 {BL {rotate 3…8}}
+rule WL {BOTH {}}
+rule WL {BL {rotate -10 flip 90}}
+

@@ -1,0 +1,7 @@
+startshape weightrule
+
+
+shape weightrule
+rule 10% { CIRCLE[]}
+rule 15% { TRIANGLE[]}
+rule { SQUARE []}

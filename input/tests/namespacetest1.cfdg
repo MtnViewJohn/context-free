@@ -1,0 +1,7 @@
+startshape EITHER
+
+import@bar mtreev3.cfdg
+
+shape EITHER {
+  bar::EITHER[]
+}

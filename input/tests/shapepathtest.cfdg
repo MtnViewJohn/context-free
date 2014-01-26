@@ -1,0 +1,29 @@
+startshape star(5, 2)
+//startshape go
+
+path star(number points, number skip)
+{
+  delta = 360 * skip / points
+  MOVETO(0, 1)
+  loop 1, points [r delta] {
+    LINETO(cos(delta + 90), sin(delta + 90))
+  }
+  CLOSEPOLY()
+  STROKE()[]
+}
+
+shape go {
+  star(5, 2) []
+}
+
+path star_5_2
+{
+  delta = 360 * 2 / 5
+  MOVETO(0, 1)
+  loop 1, 5 [r delta] {
+    LINETO(cos(delta + 90), sin(delta + 90))
+  }
+  CLOSEPOLY()
+  STROKE()[]
+}
+

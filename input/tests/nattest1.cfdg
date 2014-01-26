@@ -1,0 +1,7 @@
+startshape begin
+
+myfunc(thing) = thing
+
+shape begin {
+  SQUARE [ h myfunc(1) sat 1 b 1 ]
+}

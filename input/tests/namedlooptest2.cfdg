@@ -1,0 +1,5 @@
+startshape test
+
+shape test {
+  loop i = 1, 20 [[x 0.5 x i 1]] SQUARE [s i 1]
+}

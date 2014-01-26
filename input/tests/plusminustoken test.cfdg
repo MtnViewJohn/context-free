@@ -1,0 +1,8 @@
+startshape foo
+//gggooogggooo
+shape foo {
+  A¿ = 5.
+  B = 3…6
+  SQUARE [a -0.5 s A¿±B]
+  SQUARE [x .0]
+}

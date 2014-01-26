@@ -1,0 +1,18 @@
+startshape flower
+
+path flower {
+    petals = randint(5,9)
+    MOVETO(1, 0)
+    loop i = petals [r (360/petals)] {
+        CURVETO(
+            cos(360/petals), sin(360/petals),
+            3*cos(180/petals), 3*sin(180/petals)
+        )
+    }
+    CLOSEPOLY(CF::Align)
+    STROKE[]
+}
+
+shape flower2 {
+    flower[]
+}

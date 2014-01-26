@@ -1,0 +1,12 @@
+startshape foo
+CF::Time = [time 45 405]
+CF::Size = [s 1]
+shape foo {
+  SQUARE[r (ftime() - 45) 
+         s (sqrt(0.5)/max(sin(ftime()),
+                  sin(ftime() + 90),
+                  sin(ftime() + 180),
+                  sin(ftime() + 270)))
+         time 0 405]
+}
+

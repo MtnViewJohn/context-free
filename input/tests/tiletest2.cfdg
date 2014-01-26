@@ -1,0 +1,8 @@
+startshape foo
+tile {s 2}
+background {a -0.5}
+
+rule foo {
+	SQUARE {}
+	foo [x 0.5 y 0.5 s 0.5 x 0.5 y 0.5]
+}

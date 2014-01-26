@@ -1,0 +1,15 @@
+startshape stars
+
+path star {
+    MOVETO(0,1)
+    loop 4 [r 144]
+        LINETO(cos(234), sin(234))
+    CLOSEPOLY()
+}
+
+path stars {
+    loop 5 [r 72]
+        path star[y ((sqrt(5)+1)/2)]
+    STROKE[]
+}
+

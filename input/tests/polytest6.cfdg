@@ -1,0 +1,19 @@
+startshape foo
+background {b -1}
+rule foo {
+7* {r (360 / 7)} hept2 { y (sin(360/7) / tan(180/7) + cos(360/7)) r 180 b 1}
+hept2 {b 1 s (sin(360/7) / tan(180/7) + cos(360/7) - 1)}
+}
+
+path hept {
+	MOVETO {x (cos (90 - 720 / 7)) y (sin(90 - 720 / 7)) }
+	7* {r (720/7)}
+		LINETO { y 1}
+	CLOSEPOLY {p sync}
+	FILL {p evenodd}
+}
+
+rule hept2 {
+	hept{}
+	hept2 {r 180 s 0.69}
+}

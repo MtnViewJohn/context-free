@@ -1,0 +1,18 @@
+
+startshape test
+
+shape curve(number shrink, adjustment turn, shape base)
+{
+  base []
+  curve(=) [[y 0.5 trans turn s shrink y 0.5]]
+}
+
+shape test {
+  loop i=(3, -4, -1) [x 1] {
+    curve(select(i + 3, 99%, 98.5%, 98.25%, 98%, 98.25%, 98.5%, 99%), 
+          select(randint(3), [r -i], [], [r i]),
+          select(mod(i + 8, 2), CIRCLE, TRIANGLE)) []
+  }
+}
+
+

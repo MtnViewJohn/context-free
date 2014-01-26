@@ -1,0 +1,35 @@
+startshape PLANT
+CF::Symmetry = [skew 30 0], [[skew 30 0 r 120]], [[skew 30 0 r 240]], [skew 30 0]
+shape PLANT {
+	//EITHER [x -2]
+	EITHER [y 1 a -0.75]
+}
+
+shape BOTH {
+	BL [rotate 30]
+	BL [rotate -30 flip 90]
+}
+
+shape EITHER 
+rule {BL[]}
+rule {BL[flip 90]}
+
+shape BL {
+	CIRCLE []
+	WL [size 0.95 y 1.6]
+}
+
+shape WL
+rule {BL [rotate 3]}
+rule {BL [rotate 4]}
+rule {BL [rotate 5]}
+rule {BL [rotate 6]}
+rule {BL [rotate 7]}
+rule {BL [rotate 3]}
+rule {BL [rotate 4]}
+rule {BL [rotate 5]}
+rule {BL [rotate 6]}
+rule {BL [rotate 7]}
+rule {BOTH []}
+rule {BL [rotate -10 flip 90]}
+
