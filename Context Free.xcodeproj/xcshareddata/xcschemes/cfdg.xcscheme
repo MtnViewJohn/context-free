@@ -44,7 +44,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/john/Projects/CF3xc4"
+      customWorkingDirectory = "/Users/john/Projects/CF3cpp11"
       buildConfiguration = "Development"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -64,7 +64,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/john/Documents/Context\ Free/tests/arraytest1.cfdg output/test.png"
+            argument = "-qP /Users/john/Documents/Context\ Free/tests/adjparamtest1.cfdg output/test.png"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
