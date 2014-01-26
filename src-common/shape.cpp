@@ -62,9 +62,7 @@ Modification::isFinite() const
             isfinite(m_transform.shx) &&
             isfinite(m_transform.sy) &&
             isfinite(m_transform.tx) &&
-            isfinite(m_transform.ty) &&
-            isfinite(m_Z.sz) &&
-            isfinite(m_Z.tz);
+            isfinite(m_transform.ty);
 }
 
 bool
