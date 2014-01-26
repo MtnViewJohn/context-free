@@ -1,0 +1,9 @@
+startshape test
+
+testf(number a1, number b1) = let(c=a1*b1;c)
+
+shape test
+rule{
+  CIRCLE []
+  CIRCLE[x testf(1,2)]
+}

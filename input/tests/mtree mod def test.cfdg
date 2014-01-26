@@ -1,0 +1,32 @@
+startshape PLANT
+
+next = [ size(0.95)  y(1.6)]
+bit = TRIANGLE
+
+shape PLANT {
+	EITHER [x -2]
+	EITHER [x 2]
+}
+
+shape BOTH {
+	loop 2 [flip 90] BL [rotate 30]
+	//BL [rotate -30 flip 90]
+}
+
+shape EITHER
+rule {BL[]}
+rule {BL[flip 90]}
+
+shape BL 
+{
+    c4 = [sat(1) b(0.5) hue(0..360)]
+    foo = 4..8
+	bit [trans c4]
+	WL [trans next]
+}
+
+shape WL
+rule 8 {BL [rotate 3..8]}
+rule {BOTH []}
+rule {BL [rotate -10 flip 90]}
+

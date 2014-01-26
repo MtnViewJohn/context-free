@@ -1,0 +1,14 @@
+startshape foo
+CF::Background = [b -1]
+shape foo {
+    loop 4 [x (2 * cos (90 - 720 / 7))] hept [b 1]
+}
+
+path hept {
+	MOVETO(cos (90 - 720 / 7), sin(90 - 720 / 7))
+	loop 6 [r (720/7)]
+		LINETO(0, 1)
+	CLOSEPOLY()
+	FILL(CF::EvenOdd)[]
+	STROKE [y 2 r 180]
+}

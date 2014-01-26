@@ -1,0 +1,9 @@
+startshape foo(4, 5)
+m = 3
+shape foo(n, m)
+{
+  x7 = 8
+  n = 5
+  loop x7=5 [x n y m]
+    SQUARE[s n m]
+}

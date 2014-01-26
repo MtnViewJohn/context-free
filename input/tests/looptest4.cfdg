@@ -1,0 +1,14 @@
+startshape foo
+
+path flower {
+    MOVETO {x cos(-30) y sin(-30) }
+    6* {r 60}
+    LINETO { x cos(30) y sin(30) }
+    CLOSEPOLY{p align}
+    FILL {}
+    STROKE {p miterjoin sat 1}
+}
+
+rule foo {
+    flower {sat 0.65 b 1}
+}

@@ -1,0 +1,8 @@
+startshape foo [s log(ftime() + 1) h (ftime() * 360) r (ftime() * -1141.2)]
+CF::Time = [time 0 1]
+CF::Size = [s 41]
+shape foo {
+  CIRCLE [sat 1 b 1 y 20 time 0 1]
+  foo[h 1 r 3.17 s 0.9995]
+}
+

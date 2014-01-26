@@ -1,0 +1,20 @@
+startshape scene
+CF::Background = [b -1]
+CF::Size = [s 120]
+
+path rings {
+  loop i = 0.5,100 [] {
+    MOVETO(i, 0)
+    ARCTO(-i, 0, i)
+    ARCTO(i, 0, i)
+    STROKE(.5)[]
+  }
+}
+
+shape scene {
+  rings [b 0.9 sat 1 alpha -0.5]
+  loop i = 1, rand_static(1, 3) [] {
+    rings [b 0.9 sat 1 alpha -0.5
+           x rand(-30,30) y rand(-30,30)]
+  }
+}

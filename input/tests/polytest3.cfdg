@@ -1,0 +1,19 @@
+startshape foo
+
+path squiggle {
+	MOVETO {}
+	CURVETO {x 1 x1 0.5 y1 1}
+	CURVETO {x 2}
+	CURVETO {x 3}
+	CLOSEPOLY {}
+	//FILL {}
+}
+
+rule foo {
+	//SQUARE {s 7 b 0.8 z -1}
+	squiggle{}
+    FILL {a -0.75}
+}
+
+
+	

@@ -1,0 +1,16 @@
+startshape test
+
+shape foo(number sz)
+{
+  SQUARE [r 0..90 s sz]
+}
+
+shape curve(number scale, number turn, shape thingie)
+{
+  thingie[]  // invoke thingie with parameters already bound
+  curve(=) [[y 0.5 s scale r turn y 0.5]]
+}
+
+shape test {
+  curve(0.97, 3, foo(0.5)) [] // bind 0.5 to sz here
+}

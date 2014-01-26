@@ -1,0 +1,41 @@
+startshape rect
+
+path rect {
+	// anisotropically stretched
+	// with default stroke
+	MOVETO {x 0.5 y 0.5}
+	3* {r 90} LINETO {x -0.5 y 0.5}
+	CLOSEPOLY{}
+	STROKE{s 1 2}
+	MOVETO {x 0.5}
+	ARCTO{x -0.5 r 0.5}
+	ARCTO{x 0.5 r 0.5}
+	CLOSEPOLY{}
+	STROKE{s 1 2 y 3}
+
+	// isotropically stretched
+	// with default stroke
+	MOVETO {x 0.5 y 1}
+	LINETO {x -0.5 y 1}
+	LINETO {x -0.5 y -1}
+	LINETO {x 0.5 y -1}
+	CLOSEPOLY{}
+	STROKE{x 2}
+	MOVETO {x 0.5}
+	ARCTO{x -0.5 rx 0.5 ry 1}
+	ARCTO{x 0.5 rx 0.5 ry 1}
+	CLOSEPOLY{}
+	STROKE{x 2 y 3}
+
+	// anisotropically stretched
+	// with isowidth stroke
+	MOVETO {x 0.5 y 0.5}
+	3* {r 90} LINETO {x -0.5 y 0.5}
+	CLOSEPOLY{}
+	STROKE{x 4 s 1 2 p iso}
+	MOVETO {x 0.5}
+	ARCTO{x -0.5 r 0.5}
+	ARCTO{x 0.5 r 0.5}
+	CLOSEPOLY{}
+	STROKE{s 1 2 x 4 y 3 p iso}
+}

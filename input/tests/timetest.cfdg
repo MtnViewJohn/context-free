@@ -1,0 +1,37 @@
+startshape timegrid4
+
+shape timegrid
+{
+    loop 10 [y 1 time 5 10] {
+        loop 10 [x 1 time 0.5 1]
+            CIRCLE []
+    }
+}
+
+
+shape timegrid2
+{
+    loop 10 [y 1 time 0 0] {
+        loop 10 [x 1 time 0 0]
+            CIRCLE []
+    }
+}
+
+shape timegrid3
+{
+    loop 10 [y 1 time 1 1] {
+        loop 10 [x 1 time 1 1]
+            CIRCLE [ time 0 19]
+    }
+}
+
+shape timegrid4
+{
+    loop 10 [y 1 time 1 1] {
+        loop 9 [x 1 time 1 1]
+            CIRCLE [ time 0 19]
+        finally
+            CIRCLE [ time 0 infinity()]
+            
+    }
+}

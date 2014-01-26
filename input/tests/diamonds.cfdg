@@ -1,0 +1,12 @@
+startshape SQUAREPIC
+ 
+CF::Background = [ h 231.14 sat 1.0000 b 1.0000 ]
+ 
+shape SQUAREPIC {    
+  loop i = 30, 0, -1 [] {
+    sqh = 0…360
+    sqsat = 0.5…1
+    SQUARE [s i skew (31 - i) (31 - i) h sqh sat sqsat b 1]
+    SQUARE [s i skew (i - 31) (i - 31) h sqh sat sqsat b 1]
+  }
+}

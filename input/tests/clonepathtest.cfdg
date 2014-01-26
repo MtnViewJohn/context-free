@@ -1,0 +1,25 @@
+startshape garden
+
+CF::Impure = 1
+
+path flower {
+  petals = randint(5, 9)
+  filled = randint(2)
+  MOVETO(cos(-180/petals), sin(-180/petals))
+  loop petals [r (360/petals)]
+    ARCTO(cos(180/petals), sin(180/petals), 
+          0.4, 0.4 + 0.2 * (petals - 5), 90)
+  CLOSEPOLY(CF::Align)
+  if (filled) FILL[a -0.5]
+  MOVETO(0.65, 0)
+  ARCTO(-0.65, 0, 0.65, CF::ArcCW)
+  ARCTO( 0.65, 0, 0.65, CF::ArcCW)
+  CLOSEPOLY()
+  FILL[a -0.5]
+}
+
+shape garden {
+  clone [], [x 4]
+    flower [r 0…360 h 0…360 sat 1 b 1]
+}
+

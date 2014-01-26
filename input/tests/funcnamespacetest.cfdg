@@ -1,0 +1,16 @@
+startshape test4
+
+import @func recursiontest.cfdg
+
+shape test3 {
+  loop i = 1, 10 [x 1]
+    SQUARE [[y 0.5 s 1 func::fib(i) y 0.5]]
+}
+
+shape test4 {
+  loop m = 4 [y 1] {
+    loop n = 6 [x 1]
+      SQUARE [sat 1 b 1 h func::ack(m,n)]
+  }
+}
+

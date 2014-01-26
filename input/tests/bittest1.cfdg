@@ -1,0 +1,10 @@
+startshape test
+
+shape test {
+  loop i = 64 [y -1] {
+    gray = bitxor(i, bitright(i, 1))
+    loop j = 6 [x -1] {
+      SQUARE [b if(bitand(gray, bitleft(1, j)), 0, 1)]
+    }
+  }
+}

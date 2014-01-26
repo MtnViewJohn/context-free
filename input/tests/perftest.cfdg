@@ -1,0 +1,11 @@
+startshape grid
+
+background {a -0.9}
+
+rule grid {
+	1000* {y 0.1} row {}
+}
+
+rule row {
+	1000* {x 0.1} SQUARE { r 45 a -0.995 }
+}

@@ -1,0 +1,18 @@
+startshape test
+
+natural fibnat(natural n) = if(n <= 1, n, fibnat(n -- 1) + fibnat(n -- 2))
+
+fib(n) = if(n <= 1, n, fib(n-1) + fib(n-2))
+
+adjustment fibsize(n) = [s fib(n) fib(n+1)]
+
+shape anything() = select(randint(3), SQUARE, CIRCLE, TRIANGLE)
+
+shape test {
+  draw = anything()
+  draw[trans fibsize(4)]
+  anything()[trans fibsize(3) b 1 sat 1]
+  if(randint(2),SQUARE,CIRCLE)[b 1]
+  //select(randint(3),SQUARE,CIRCLE,TRIANGLE)[s 0.5]
+  let(n=randint(3);select(n,SQUARE,CIRCLE,TRIANGLE))[s 0.5]
+}

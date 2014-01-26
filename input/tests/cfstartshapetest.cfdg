@@ -1,0 +1,13 @@
+//CF::StartShape = CIRCLE
+CF::StartShape = curve(0.95…0.99, -3…3),[b 1 sat 1 h 0…360]
+
+//CF::StartShape = 5
+//CF::StartShape = CF::Continuous
+//CF::StartShape = CIRCLE, 5
+//CF::StartShape = CIRCLE, [sat 1], 5
+//CF::StartShape = [sat 1]
+
+shape curve(shrink, turn) {
+  SQUARE [r (-0.25*turn)]
+  curve(=) [[y 0.5 s shrink r turn y 0.5]]
+}

@@ -1,0 +1,11 @@
+startshape begin
+
+shape taper(number shrink) 
+rule {
+    SQUARE []
+    taper((((shrink)))) [size shrink]           // Allowed, shrink is a number parameter
+}
+
+shape begin {
+  taper(0.9) [a -0.9 ]
+}

@@ -1,0 +1,22 @@
+startshape stars
+
+CF::Time = [time 0 ((sqrt(5)+1)/2)]
+CF::FrameTime = (sqrt(5)+1)/2
+CF::Size = [s 5 y -0.25]
+
+path star {
+    MOVETO(0,1)
+    loop 4 [r 144]
+        LINETO(cos(234), sin(234))
+    CLOSEPOLY()
+}
+ 
+path penta(shape doodle) {
+    loop 5 [r 72]
+        path doodle[y ftime()]
+    FILL(CF::EvenOdd)[]
+}
+
+shape stars {
+    penta(star)[time 0 ∞]
+}

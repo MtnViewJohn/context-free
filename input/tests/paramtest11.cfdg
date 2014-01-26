@@ -1,0 +1,16 @@
+startshape foo
+
+shape curve(number shrink, number turn)
+{
+  bar = curve(=)
+  SQUARE []
+  bar [[y 0.5 r turn s shrink y 0.5]]
+}
+
+shape foo
+{
+  bar = curve(0.99, 3)
+  bar2 = bar
+  bar[]
+  bar2[r 180]
+}

@@ -1,0 +1,14 @@
+startshape foo
+
+path trill {
+    MOVETO(cos(234), sin(234))
+    loop 5 [r -144] 
+        CURVETO(0, 1, cos(234) + cos(324), sin(234) + sin(324), 1, 1)
+    CLOSEPOLY(CF::Align)
+    FILL(CF::EvenOdd)[]
+    STROKE[a -0.5]
+}
+
+shape foo {
+    trill[]
+}

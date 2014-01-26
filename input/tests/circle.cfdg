@@ -1,0 +1,24 @@
+startshape circ
+
+path circ {
+    MOVETO {x 0.5}
+    CURVETO {
+        y 0.5
+        x1 0.5 y1 0.275892
+        x2 0.275892 y2 0.5
+    }
+    CURVETO {
+        x -0.5
+        x2 -0.5 y2 0.275892
+    }
+    CURVETO {
+        y -0.5
+        x2 -0.275892 y2 -0.5
+    }
+    CURVETO {
+        x 0.5
+        x2 0.5 y2 -0.275892
+    }
+    CLOSEPOLY {}
+    FILL {}
+}

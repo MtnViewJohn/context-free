@@ -1,0 +1,11 @@
+startshape flower
+
+phi = (1 + sqrt(5))/2
+
+shape flower 
+rule {
+    petals = floor(rand(5, 13))
+    loop i = petals [r (360/petals)] {
+        CIRCLE [[s (2*phi/petals, 1) y 0.5]]
+    }
+}

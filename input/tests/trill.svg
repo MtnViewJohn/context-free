@@ -1,0 +1,63 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="580px" height="552px" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <polygon id="TRIANGLE" points="0,0.57735 -0.5,-0.288675 0.5,-0.288675"/>
+  </defs>
+  <g stroke="none" fill="#ff0000" fill-rule="evenodd"
+     transform="matrix( 96.688605          0          0 -96.688605        290  304.31441)">
+    <path id="path1" d="M -0.58778525,-0.80901699 Q 0.95105652,-0.30901699 0,1 Q -0.95105652,-0.30901699 0.58778525,-0.80901699 Q 0.58778525,0.80901699 -0.95105652,0.30901699 Q -1.48066e-11,-1 0.95105652,0.30901699 Q -0.58778525,0.80901699 -0.58778525,-0.80901699 Z"/>
+  </g>
+  <g fill="none" stroke="#ff0000" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix( 96.688605          0          0 -96.688605        290  304.31441)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#ff0000" fill-rule="evenodd"
+     transform="matrix( 96.688605          0          0 -96.688605        290   110.9372)">
+    <use xlink:href="#path1" />
+  </g>
+  <g fill="none" stroke="#ff0000" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix( 96.688605          0          0 -96.688605        290   110.9372)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#ccff00" fill-rule="evenodd"
+     transform="matrix( 29.878423  -91.95633  -91.95633 -29.878423  106.08734  244.55756)">
+    <use xlink:href="#path1" />
+  </g>
+  <g fill="none" stroke="#ccff00" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix( 29.878423  -91.95633  -91.95633 -29.878423  106.08734  244.55756)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#00ff66" fill-rule="evenodd"
+     transform="matrix(-78.222725 -56.832135 -56.832135  78.222725  176.33573  460.75986)">
+    <use xlink:href="#path1" />
+  </g>
+  <g fill="none" stroke="#00ff66" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix(-78.222725 -56.832135 -56.832135  78.222725  176.33573  460.75986)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#0066ff" fill-rule="evenodd"
+     transform="matrix(-78.222725  56.832135  56.832135  78.222725  403.66427  460.75986)">
+    <use xlink:href="#path1" />
+  </g>
+  <g fill="none" stroke="#0066ff" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix(-78.222725  56.832135  56.832135  78.222725  403.66427  460.75986)">
+    <use xlink:href="#path1" />
+  </g>
+  <g stroke="none" fill="#cc00ff" fill-rule="evenodd"
+     transform="matrix( 29.878423   91.95633   91.95633 -29.878423  473.91266  244.55756)">
+    <use xlink:href="#path1" />
+  </g>
+  <g fill="none" stroke="#cc00ff" stroke-opacity="0.50196078"
+     stroke-width="0.075" stroke-linecap="miter" stroke-linejoin="miter" stroke-miterlimit="4"
+     transform="matrix( 29.878423   91.95633   91.95633 -29.878423  473.91266  244.55756)">
+    <use xlink:href="#path1" />
+  </g>
+</svg>

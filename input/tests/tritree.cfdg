@@ -1,0 +1,32 @@
+startshape PLANT
+
+rule PLANT {
+	3* /*SYMMETRIC*/ {r 120} EITHER {}
+}
+
+rule BOTH {
+	BL {rotate 30}
+	BL {rotate -30 flip 90}
+}
+
+rule EITHER {BL{}}
+rule EITHER {BL{flip 90}}
+
+rule BL {
+	CIRCLE {}
+	WL {size 0.95 y 1.6}
+}
+
+rule WL {BL {rotate 3}}
+rule WL {BL {rotate 4}}
+rule WL {BL {rotate 5}}
+rule WL {BL {rotate 6}}
+rule WL {BL {rotate 7}}
+rule WL {BL {rotate 3}}
+rule WL {BL {rotate 4}}
+rule WL {BL {rotate 5}}
+rule WL {BL {rotate 6}}
+rule WL {BL {rotate 7}}
+rule WL {BOTH {}}
+rule WL {BL {rotate -10 flip 90}}
+

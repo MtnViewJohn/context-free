@@ -1,0 +1,35 @@
+startshape flower(5,1)[h 30 sat 0.75 b 1]
+//startshape garden
+
+CF::Tile = [skew 15 15 r 15 s 16]
+
+path flower(number petals, number filled)
+{
+  MOVETO(cos(-180/petals), sin(-180/petals))
+  loop petals [r (360/petals)]
+    ARCTO(cos(180/petals), sin(180/petals), 
+          0.4, 0.4 + 0.2 * (petals - 5), 90)
+  CLOSEPOLY(CF::Align)
+  if (filled) FILL[a -0.5]
+  MOVETO(0.65, 0)
+  ARCTO(-0.65, 0, 0.65, CF::ArcCW)
+  ARCTO( 0.65, 0, 0.65, CF::ArcCW)
+  CLOSEPOLY()
+  FILL[a -0.5]
+}
+
+shape FLOWER {
+  flower(randint(5, 9), randint(2))
+    [h rand(180, 420) sat 0.75 b 1 
+     s rand(0.9, 1.5) r rand(360)]
+}
+
+shape garden 
+rule 10 {
+	FLOWER[]
+	garden[x rand(16) y rand(16)]
+}
+rule {
+	FLOWER[]
+}
+

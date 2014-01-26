@@ -1,0 +1,5 @@
+startshape foo
+CF::Time = [time 0 360]
+shape foo {
+  CIRCLE [sat 1 b 1 h ftime() time 0 360]
+}

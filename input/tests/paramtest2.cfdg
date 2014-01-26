@@ -1,0 +1,16 @@
+
+startshape test
+
+shape curve(vector2 shrink, number turn, shape base)
+{
+  base []
+  curve(=) [[r turn y 0.5 s shrink y 0.5]]
+}
+
+shape test {
+  loop i=(3, -4, -1) [x 1] {
+    curve((0.98, 0.98), i, CIRCLE) []
+  }
+}
+
+

@@ -1,0 +1,5 @@
+startshape foo
+tile {s 4}
+rule foo {
+	SQUARE {a -0.5 s 1 16 r -17}
+}

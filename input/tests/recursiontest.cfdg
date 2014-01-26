@@ -1,0 +1,25 @@
+startshape test
+
+CF::MaxNatural = 10
+
+natural fib(natural n) = if(n <= 1, n, fib(n -- 1) + fib(n -- 2))
+
+ack(m, n) = if(m == 0, n+1, if(n == 0, ack(m-1, 1), ack(m-1, ack(m, n-1))))
+
+foo = ack(1,1)
+
+erf(n) = if(n > 0, 1, -1) *
+sqrt(1 - exp(-n * n * (4 / 3.1415926535 + 0.147 * n * n) / (1 + 0.147 * n * n)))
+
+shape test {
+  loop i = 1, 10 [x 1]
+    SQUARE [[y 0.5 s 1 fib(i) y 0.5]]
+}
+
+shape test2 {
+  loop m = 4 [y 1] {
+    loop n = 7 [x 1]
+      SQUARE [sat 1 b 1 h ack(m,n)]
+  }
+}
+

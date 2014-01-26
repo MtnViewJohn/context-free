@@ -1,0 +1,9 @@
+vector2 Sz(n) = n, 2*n
+vector2 Sz2() = 1…4, 1…4
+
+startshape foo
+
+shape foo {
+  CIRCLE[size Sz(2) a -0.5]
+  SQUARE[size Sz2() a -0.5]
+}

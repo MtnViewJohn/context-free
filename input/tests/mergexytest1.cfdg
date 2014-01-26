@@ -1,0 +1,6 @@
+startshape test
+
+shape test {
+  CIRCLE[x 1 y 2]
+  CIRCLE[b 0.5]
+}

@@ -1,0 +1,13 @@
+startshape spiral
+
+vector2 polar2rect(radius, angle) = 
+  radius*cos(angle),
+  radius*sin(angle)
+
+hueRange = -60, 60
+
+shape spiral {
+  loop i = 360 [] {
+    SQUARE[x polar2rect(i, i) r i s 5 h rand(hueRange) sat 1 b 1]
+  }
+}

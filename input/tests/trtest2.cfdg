@@ -1,0 +1,7 @@
+startshape foo
+
+path foo {
+	5* {x 2 s 1 1.5}
+	ARCTO {rx 1 ry 1}
+	STROKE{}
+}

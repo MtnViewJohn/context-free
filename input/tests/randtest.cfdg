@@ -1,0 +1,10 @@
+startshape foo
+
+rule foo {
+	SQUARE {s rand_static() a -0.75}
+	SQUARE {s rand_static(2, 4) a -0.75}
+	SQUARE {s rand_static(1) a -0.75}
+	SQUARE {s rand_static(1) a -0.75}
+	SQUARE {s rand_static(1) a -0.75}
+	SQUARE {s rand_static(1) a -0.75}
+}

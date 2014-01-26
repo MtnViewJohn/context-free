@@ -1,0 +1,10 @@
+startshape wiggle
+
+path wiggle {
+    MOVETO {x -1}
+    CURVETO {x 0 x1 -0.5 y1 2}
+    20* {s 0.75} 
+        CURVEREL {x 1 x2 0.625 y2 1.5}
+
+    STROKE {width 0.025}
+}

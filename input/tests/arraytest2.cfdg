@@ -1,0 +1,13 @@
+a6 = 1,2,3,4,5,6,7,8,9,10…16
+a7 = 1,2,3,4,5,6,7,8,9,10
+
+a8 = a7[5]
+
+//startshape CIRCLE[s pick6(a6) 1]
+//startshape CIRCLE[s pick6(a7) 1]
+//startshape CIRCLE[s a6[5] 1]
+startshape CIRCLE[s a7[5] 1]
+
+pick6(vector10 foo) = foo[5]
+//pick6(vector010 foo) = foo[5]
+//pick6(vector100 foo) = foo[5]

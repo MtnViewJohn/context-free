@@ -1,0 +1,17 @@
+startshape test
+
+shape test {
+  CIRCLE[s let(n=5;m=7;n,m) a -0.5 sat 1 b 1]
+  // let() returns a vector2, which is used in a size adjustment
+  CIRCLE[s let(n=5…6;m=7…8;n,m) a -0.5 sat 1 b 1 y 5 h 90]
+
+  // let() returns a shape adjustment, which is inserted into another shape adjustment
+  CIRCLE[trans let(n=5…6;m=7…8;[s n m x (2.5 + 0.5 * n)]) a -0.5 sat 1 b 1]
+
+  // Use lat to specify a shape and then draw with it
+  draw = let(n = randint(3); select(n, CIRCLE, SQUARE, TRIANGLE))
+  draw[s 5 7 a -0.5 sat 1 b 1 x -5 h 180]
+
+  // Directly use let() function as a shape specifier
+  let(n = randint(3); select(n, CIRCLE, SQUARE, TRIANGLE))[s 5 7 a -0.5 sat 1 b 1 y -5 h 270]
+}

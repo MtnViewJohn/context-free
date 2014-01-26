@@ -1,0 +1,21 @@
+startshape foo
+
+shape foo {
+  SQ[trans 0 0 3 0 4.5 1 b 1 sat 1 a -0.5]
+  SQ[trans 0 0 1.5 1 1.5 3 b 1 sat 1 h 240 a -0.5]
+  trans[trans 0 0 1.5 -1 3 0] {
+    SQ[b 1 sat 1 h 120 a -0.75]
+    loop 4 [x 1]
+      loop 4 [y 1]
+        CIRCLE [x -1 -1 s 0.1]
+  }
+}
+
+path SQ {
+  MOVETO(0, 0)
+  LINEREL(1,0)
+  LINEREL(0, 1)
+  LINEREL(-1,0)
+  CLOSEPOLY()
+  FILL[]
+}

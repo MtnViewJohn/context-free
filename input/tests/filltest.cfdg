@@ -1,0 +1,8 @@
+startshape foo
+
+rule foo {
+10* {x 1 z 1} {
+		CIRCLE {b 1}
+		FILL {a -0.95 z -0.5}
+	}
+}

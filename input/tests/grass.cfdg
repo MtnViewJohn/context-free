@@ -1,0 +1,13 @@
+startshape grass[h 120 sat 1 b .5]
+
+shape curve(number shrink, number turn)
+{
+  SQUARE []
+  curve(=) [[y 0.5 r turn s shrink y 0.5]]
+}
+
+
+shape grass {
+  loop 100 [x 1]
+    curve(rand(0.98, 0.99), rand(-3, 3))[]
+}

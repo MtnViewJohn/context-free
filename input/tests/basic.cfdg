@@ -1,0 +1,20 @@
+startshape grid
+
+gridsize = 20
+width = 0.1
+
+CF::Tile = [s gridsize]
+
+shape grid {
+  loop gridsize [y 1]
+    loop gridsize [x 1]
+      diag[]
+}
+
+shape diag
+rule {
+  SQUARE [r 45 s (width) (sqrt(2) + width)]
+}
+rule {
+  SQUARE [r -45 s (width) (sqrt(2) + width)]
+}

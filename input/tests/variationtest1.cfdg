@@ -1,0 +1,10 @@
+startshape foo[trans if(randint(2),[],[flip 90])]
+
+shape foo
+rule {
+  SQUARE[r -0.75]
+  foo[[y 0.5 s 0.99 y 0.5 r 3]]
+}
+rule 1% {
+  foo [flip 90]
+}

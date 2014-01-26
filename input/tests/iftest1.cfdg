@@ -1,0 +1,11 @@
+startshape iftest
+
+shape iftest {
+  if (randint(2)) {
+    SQUARE []
+   } else
+    TRIANGLE []
+
+  if (randint(2))
+    CIRCLE [s 0.5 b 1]
+}

@@ -1,0 +1,61 @@
+startshape unit
+CF::BorderDynamic = 1
+CF::BorderFixed = 5
+
+//CF::Tile = [s 2 0]
+//CF::Symmetry = CF::p11g, 0
+//CF::Tile = [s 2 0]
+//CF::Symmetry = CF::p11m, 0
+//CF::Tile = [s 2.2 0]
+//CF::Symmetry = CF::p1m1, 0
+//CF::Tile = [s 2.2 0]
+//CF::Symmetry = CF::p2, 0, 0
+CF::Tile = [s 4.4 0]
+CF::Symmetry = CF::p2mg, 0, 0
+//CF::Tile = [s 2.2 0]
+//CF::Symmetry = CF::p2mm, 0, 0
+
+shape unit {
+  //foot[x 0.1 -0.1]  // p2mm
+  foot[x 0 0.15]  // p2mg
+  //foot[x -1 0.5]  // p1m1 & p2
+  //foot[r -90 x 0 1.1]  // p11g & p11m
+  SQUARE[s 2.2 0.1 b 0.5 z -1]
+}
+
+path F {
+  MOVETO(0.25, 0.5)
+  LINEREL(-0.5, 0)
+  LINEREL(0, -1)
+  MOVETO(0, 0)
+  LINEREL(-0.25, 0)
+  STROKE[]
+}
+
+path foot {
+  MOVETO(86.068,0)
+  CURVETO(70.691,35.041, 61.466,0, 56.851,35.041)
+  CURVETO(86.068,0, 84.529,35.041, 110.671,0)
+  CLOSEPOLY()
+  MOVETO(45.217,30.699)
+  CURVETO(46.821,4.374, 52.586,31.149, 60.671,2.577)
+  CURVETO(45.217,30.699, 32.976,6.171, 37.845,30.249)
+  CLOSEPOLY()
+  MOVETO(11.445,48.453)
+  CURVETO(3.208,29.735, 16.686,46.146, 12.12,23.581)
+  CURVETO(11.445,48.453, -5.7,35.89, 6.204,50.759)
+  CLOSEPOLY()
+  MOVETO(26.212,36.642)
+  CURVETO(21.667,14.369, 32.451,35.37, 32.793,9.778)
+  CURVETO(26.212,36.642, 10.539,18.961, 19.978,37.916)
+  CLOSEPOLY()
+  MOVETO(58.791,93.913)
+  CURVETO(45.431,101.092, 59.898,102.367, 52.589,106.542)
+  CURVETO(79.171,51.386, 22.644,83.743, 83.16,75.088)
+  CURVETO(8.621,68.553, 75.86,31.712, 15.495,37.769)
+  CURVETO(52.614,118.26, 3.968,89.374, 27.774,118.26)
+  CURVETO(81.566,93.248, 64.834,118.26, 78.929,107.226)
+  CURVETO(58.791,93.913, 83.58,82.589, 57.867,86.86)
+  CLOSEPOLY()
+  FILL[s 0.01 f 0]
+}

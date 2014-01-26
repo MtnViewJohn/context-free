@@ -1,0 +1,11 @@
+foo = curve(0.95…0.99, -3…3)
+
+
+//startshape curve(0.99, 3)
+startshape foo
+
+shape curve(shrink, turn)
+{
+  SQUARE[r (-turn*0.5)]
+  curve(=) [[y 0.5 s shrink y 0.5 r turn]]
+}

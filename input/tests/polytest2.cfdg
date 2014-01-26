@@ -1,0 +1,16 @@
+startshape SQ
+
+path SQ {
+	MOVETO {x 2 y 2}
+	LINETO {x -2 y 2}
+	LINETO {x -2 y -2}
+	LINETO {x 2 y -2}
+	CLOSEPOLY {}
+	MOVETO {x 1 y 1}
+	LINETO {x 1 y -1}
+	LINETO {x -1 y -1}
+	LINETO {x -1 y 1}
+	CLOSEPOLY {}
+	//FILL {}
+	//CIRCLE {b 1 s 0.1}
+}

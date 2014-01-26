@@ -1,0 +1,37 @@
+startshape START[b .5]
+CF::Background = [b -0.5]
+shape START{
+   recurse([s .95 b .1],CIRCLE)[]
+   recurse([s .95 b -.1],TRIANGLE)[x 1]
+   recurse([s .95 h -5 r 3 a .05],SQUARE)[x 2 b 1 sat 1 a -1]
+   recurse([s .95 h -5 r -5 a -.05],NGON(5))[x 3 b 1 sat 1]
+   Evar[x 4 b 0.5]
+   A[y -1.1]
+   B[y -1.1 x 1]
+   C[y -1.1 x 2 b 1 sat 1 a -1]
+   D[y -1.1 x 3 b 1 sat 1]
+   E[y -1.1 x 4 b 0.5]
+   }
+
+shape A{CIRCLE[]   A[s .95 b .1]}
+shape B{TRIANGLE[] B[s .95 b -.1]}
+shape C{SQUARE[] C[s .95 h -5 r 3 a .05]}
+shape D{NGON(5)[] D[s .95 h -5 r -5 a -.05]}
+shape E{SQUARE[] E[s 0.95 b -0.05]}
+shape Evar{
+  var = [s 0.95 b -0.05]
+  SQUARE[]
+  Evar[trans var]
+}
+
+shape recurse(adjustment change, shape thingie)
+{
+  thingie[]                      // invoke thingie with parameters already bound
+  recurse(=) [transform change]  // can be abbreviated as trans
+}
+
+path NGON(number n){
+   MOVETO(0,.5)
+   loop n [r (360/n)] LINETO(0,.5)
+   CLOSEPOLY()
+   }

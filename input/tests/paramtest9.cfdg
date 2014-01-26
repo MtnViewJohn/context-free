@@ -1,0 +1,5 @@
+startshape begin
+
+shape problem(natural thing) { SQUARE [ ] }
+
+shape begin { problem(0) [ ] }

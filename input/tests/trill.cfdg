@@ -1,0 +1,18 @@
+startshape foo
+background {b -1}
+path trill {
+    MOVETO {x cos(234) y sin(234)}
+   5* {r -144} 
+     CURVETO {y 1 x1 cos(342) y1 sin(342)}
+    CLOSEPOLY {p align}
+    FILL {p evenodd}
+    STROKE {p miterjoin width 0.075 a -0.5}
+    5* {r 72 h 72} {
+	FILL {y 2 p evenodd}
+    	STROKE {y 2 p miterjoin width 0.075 a -0.5}
+    }
+}
+
+rule foo {
+    trill{b 1 sat 1}
+}
