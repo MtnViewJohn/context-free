@@ -1,7 +1,7 @@
 // posixTimer.cpp
 // Context Free
 // ---------------------
-// Copyright (C) 2008-2013 John Horigan
+// Copyright (C) 2008-2014 John Horigan
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,39 +25,43 @@
 #include "cfdg.h"
 #include <sys/time.h>
 #include <signal.h>
+#include <memory>
 
-Renderer* runningRenderer = nullptr;
+static std::weak_ptr<Renderer> gRenderer;
 
 void
 statusTimer(int signal)
 {
-  if (runningRenderer) runningRenderer->requestUpdate = true;
+  if (auto runningRenderer = gRenderer.lock())
+      runningRenderer->requestUpdate = true;
 }
 
 void
-setupTimer(Renderer* renderer)
+setupTimer(std::shared_ptr<Renderer>& renderer)
 {
-  runningRenderer = renderer;
+    gRenderer = renderer;
 
-  if (renderer) {
     struct sigaction doit;
     doit.sa_handler = statusTimer;
     sigemptyset(&doit.sa_mask);
     doit.sa_flags = SA_RESTART;
     sigaction(SIGALRM, &doit, 0);
-    
+
     itimerval period;
     period.it_interval.tv_sec = 0;
     period.it_interval.tv_usec = 250000;  // 1/4 second
     period.it_value = period.it_interval;
     setitimer(ITIMER_REAL, &period, 0);
-  } else {
+}
+
+void
+cleanupTimer()
+{
     itimerval period;
     period.it_interval.tv_sec = 0;
     period.it_interval.tv_usec = 0;
     period.it_value = period.it_interval;
     setitimer(ITIMER_REAL, &period, 0);
-  }
 }
 
 

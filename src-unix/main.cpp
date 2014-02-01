@@ -5,7 +5,7 @@
  
  Copyright (C) 2005 Chris Coyne - ccoyne77@gmail.com
  Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
- Copyright (C) 2008-2013 John Horigan - john@glyphic.com
+ Copyright (C) 2008-2014 John Horigan - john@glyphic.com
  
  [Send me anything cool you make with it or of it.]
  
@@ -52,10 +52,12 @@
 #include "Rand64.h"
 #include "makeCFfilename.h"
 #include <cassert>
+#include <memory>
 
 using namespace std;
 
-void setupTimer(Renderer* renderer);
+void setupTimer(shared_ptr<Renderer>& renderer);
+void cleanupTimer();
 
 const char* prettyInt(unsigned long);
 
@@ -63,23 +65,12 @@ ostream* myCout = &cerr;
 
 const char* invokeName = "";
 
-static Renderer* TheRenderer = nullptr;
+static weak_ptr<Renderer> gRenderer;
 
-#ifdef _WIN32
-#include <Windows.h>
-
-BOOL CtrlHandler(DWORD ctrlType) 
+static bool processInterrupt()
 {
-    if (!TheRenderer) return FALSE;
-    if (ctrlType != CTRL_C_EVENT && ctrlType != CTRL_BREAK_EVENT)
-        return FALSE;
-#else
-#include <csignal>
-
-void termination_handler(int signum)
-{
-    if (!TheRenderer) return;
-#endif
+    auto TheRenderer = gRenderer.lock();
+    if (!TheRenderer) return false;
     
     if (!TheRenderer->requestFinishUp) {
         TheRenderer->requestFinishUp = true;
@@ -90,10 +81,26 @@ void termination_handler(int signum)
     } else {
         exit(9);
     }
-#ifdef _WIN32
-    return TRUE;
-#endif
+    return true;
 }
+
+#ifdef _WIN32
+#include <Windows.h>
+
+BOOL CtrlHandler(DWORD ctrlType) 
+{
+    if (ctrlType != CTRL_C_EVENT && ctrlType != CTRL_BREAK_EVENT)
+        return FALSE;
+    return processInterrupt();
+}
+#else
+#include <csignal>
+
+void termination_handler(int signum)
+{
+    processInterrupt();
+}
+#endif
 
 
 const char*
@@ -560,17 +567,20 @@ int main (int argc, char* argv[]) {
         << ", variation " 
         << code << "..." << endl;
     
-    pngCanvas* png = nullptr;
-    SVGCanvas* svg = nullptr;
-    ffCanvas*  mov = nullptr;
+    { // Scope for canvas & renderer
+    unique_ptr<pngCanvas> png;
+    unique_ptr<SVGCanvas> svg;
+    unique_ptr<ffCanvas>  mov;
     Canvas* myCanvas = nullptr;
-    
-    TheRenderer = myDesign->renderer(opts.width, opts.height, opts.minSize,
-                                     opts.variation, opts.borderSize);
+        
+    shared_ptr<Renderer> TheRenderer(myDesign->renderer(opts.width, opts.height, opts.minSize,
+                                     opts.variation, opts.borderSize));
     
     if (TheRenderer == nullptr) {
         return 9;
     }
+        
+    gRenderer = TheRenderer;    // weak pointer for interrupt signal handler
 
     if (!opts.quiet) setupTimer(TheRenderer);
     
@@ -584,11 +594,11 @@ int main (int argc, char* argv[]) {
     switch (opts.format) {
         case options::BMPfile:
         case options::PNGfile: {
-            png = new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height, 
-                                pixfmt, opts.crop, opts.animationFrames, opts.variation,
-                                opts.format == options::BMPfile, TheRenderer, 
-                                opts.widthMult, opts.heightMult);
-            myCanvas = static_cast<Canvas*>(png);
+            png.reset(new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height,
+                                    pixfmt, opts.crop, opts.animationFrames, opts.variation,
+                                    opts.format == options::BMPfile, TheRenderer.get(),
+                                    opts.widthMult, opts.heightMult));
+            myCanvas = static_cast<Canvas*>(png.get());
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
                 TheRenderer->resetSize(png->mWidth, png->mHeight);
                 opts.width = TheRenderer->m_width;
@@ -598,27 +608,26 @@ int main (int argc, char* argv[]) {
         }
         case options::SVGfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
-            svg = new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop);
-            myCanvas = static_cast<Canvas*>(svg);
+            svg.reset(new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop));
+            myCanvas = static_cast<Canvas*>(svg.get());
             break;
         }
         case options::MOVfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
-            mov = new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height, 
-                               opts.animationFPS);
+            mov.reset(new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height,
+                                   opts.animationFPS));
             if (mov->mError) {
                 cerr << "Failed to create movie file: " << mov->mError << endl;
                 exit(8);
             }
-            myCanvas = static_cast<Canvas*>(mov);
+            myCanvas = static_cast<Canvas*>(mov.get());
             break;
         }
     }
     
     if (system.error(false) || TheRenderer->requestStop) {
-        setupTimer(0);
+        cleanupTimer();
         Renderer::AbortEverything = true;
-        delete TheRenderer;  TheRenderer = nullptr;
         return 5;
     }
     
@@ -636,7 +645,7 @@ int main (int argc, char* argv[]) {
     }
     *myCout << endl;
     
-    if (!opts.quiet) setupTimer(0);
+    if (!opts.quiet) cleanupTimer();
     
     *myCout << "DONE!" << endl;
     *myCout << "The output file name is " << 
@@ -650,11 +659,8 @@ int main (int argc, char* argv[]) {
         *myCout << "The cfdg file took a total of " << prettyInt(runTime) << " msec to process." << endl;
     }
     
-    delete png;
-    delete svg;
-    delete mov;
-    Renderer::AbortEverything = !(opts.paramTest);
-    delete TheRenderer; TheRenderer = nullptr;
+        Renderer::AbortEverything = !(opts.paramTest);
+    }   // delete canvas & renderer
     
     if (opts.paramTest) {
         if (Renderer::ParamCount)
