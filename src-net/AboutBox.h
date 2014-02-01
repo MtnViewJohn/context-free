@@ -136,7 +136,7 @@ namespace ContextFreeNet {
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(268, 32);
 			this->label3->TabIndex = 3;
-			this->label3->Text = L"Context Free Copyright � 2005 to 2011 Mark Lentczner and John Horigan";
+			this->label3->Text = L"Context Free Copyright \u00A9 2005 to 2014 Mark Lentczner and John Horigan";
 			// 
 			// label4
 			// 
@@ -146,7 +146,7 @@ namespace ContextFreeNet {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(258, 16);
 			this->label4->TabIndex = 4;
-			this->label4->Text = L"CFDG Copyright � 2005 Chris Coyne";
+			this->label4->Text = L"CFDG Copyright \u00A9 2005 Chris Coyne";
 			// 
 			// label5
 			// 
@@ -156,7 +156,7 @@ namespace ContextFreeNet {
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(268, 32);
 			this->label5->TabIndex = 5;
-			this->label5->Text = L"Anti-Grain Geometry library Copyright � 2002 to 2006 Maxim Shemanarev";
+			this->label5->Text = L"Anti-Grain Geometry library Copyright \u00A9 2002 to 2006 Maxim Shemanarev";
 			// 
 			// label6
 			// 
@@ -166,7 +166,7 @@ namespace ContextFreeNet {
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(272, 32);
 			this->label6->TabIndex = 6;
-			this->label6->Text = L"DockPanel Suite Copyright � 2005 to 2007 Weifen Luo";
+			this->label6->Text = L"DockPanel Suite Copyright \u00A9 2005 to 2007 Weifen Luo";
 			// 
 			// okButton
 			// 
