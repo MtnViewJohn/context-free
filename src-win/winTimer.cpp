@@ -1,7 +1,7 @@
 // winTimer.cpp
 // Context Free
 // ---------------------
-// Copyright (C) 2008-2013 John Horigan
+// Copyright (C) 2008-2014 John Horigan
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,27 +26,33 @@
 #define NOMINMAX 1
 #include <Windows.h>
 #include "cfdg.h"
+#include <memory>
 
-Renderer* runningRenderer = 0;
+static std::weak_ptr<Renderer> gRenderer;
 
 VOID CALLBACK 
 statusTimer(PVOID, BOOLEAN)
 {
-    if (runningRenderer) runningRenderer->requestUpdate = true;
+    if (auto runningRenderer = gRenderer.lock())
+        runningRenderer->requestUpdate = true;
 }
 
 HANDLE timerQueueTimer = NULL;
 
 void
-setupTimer(Renderer* renderer)
+setupTimer(std::shared_ptr<Renderer>& renderer)
 {
-    runningRenderer = renderer;
+    gRenderer = renderer;
     if (renderer) {
         CreateTimerQueueTimer(&timerQueueTimer, NULL, statusTimer, 
             nullptr, 250, 250, WT_EXECUTEINTIMERTHREAD);
-    } else {
-        if (timerQueueTimer) {
-            DeleteTimerQueueTimer(NULL, timerQueueTimer, INVALID_HANDLE_VALUE);
-        }
+    }
+}
+
+void
+cleanupTimer()
+{
+    if (timerQueueTimer) {
+        DeleteTimerQueueTimer(NULL, timerQueueTimer, INVALID_HANDLE_VALUE);
     }
 }
