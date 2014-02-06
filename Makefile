@@ -49,8 +49,8 @@ AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
 LIBS = png z m
 
 # Use the first one for clang and the second one for gcc
-LIBS += c++
-#LIBS += stdc++
+#LIBS += c++
+LIBS += stdc++
 
 #
 # FFmpeg support
@@ -140,8 +140,11 @@ test: cfdg
 #
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses -std=c++0x -stdlib=libc++
+CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses -std=c++0x
 #CPPFLAGS += -g
+
+# Add this for clang
+#CPPFLAGS += -stdlib=libc++
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
