@@ -1265,6 +1265,9 @@ void Document::drawCheckerBoard(Graphics^ g, SolidBrush^ grayBrush, Rectangle de
 void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, 
                          SolidBrush^ grayBrush, int x, int y)
 {
+    if (!mRenderer || !mRenderer->m_tiledCanvas)
+        return;
+
     tileList points;
     mRenderer->m_tiledCanvas->getTesselation(points, dest->Width, dest->Height,
             x, y, true);
