@@ -389,7 +389,7 @@ namespace {
     CGFloat ox = dRect.origin.x = floor((fSize.width - dRect.size.width) * ((CGFloat)0.5));
     CGFloat oy = dRect.origin.y = floor((fSize.height - dRect.size.height) * ((CGFloat)0.5));
 
-    if (mTiled && scale == 1.0) {
+    if (mTiled && mRenderer && mRenderer->m_tiledCanvas && scale == 1.0) {
         tileList points;
         mRenderer->m_tiledCanvas->getTesselation(points, fSize.width, fSize.height, ox, oy);
         
