@@ -41,6 +41,7 @@ public:
 
     virtual void catastrophicError(const char* what);
 
+    virtual std::istream* tempFileForRead(const std::string& path);
     virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
     virtual const char* tempFileDirectory();
     virtual std::vector<std::string> findTempFiles();

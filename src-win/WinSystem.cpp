@@ -78,7 +78,7 @@ void WinSystem::message(const char* fmt, ...)
     char* buf = new char[strlen(cbuf) + 1];
     strcpy(buf, cbuf);
 
-    if (!::PostMessage((HWND)mWindow, WM_USER_MESSAGE_UPDATE,(WPARAM)buf, NULL))
+    if (!::PostMessageW((HWND)mWindow, WM_USER_MESSAGE_UPDATE,(WPARAM)buf, NULL))
         delete[] buf;
 }
 
@@ -90,8 +90,9 @@ void WinSystem::syntaxError(const CfdgError& errLoc)
                 errLoc.where.begin.line, errLoc.where.begin.column,
                 errLoc.where.end.line, errLoc.where.end.column, errLoc.what);
     } else {
-        message("Error in file %s - %s", 
-        ::PathFindFileNameA(errLoc.where.begin.filename->c_str()), errLoc.what);
+        const char* file = strrchr(errLoc.where.begin.filename->c_str(), '\\');
+        file = file ? file + 1 : errLoc.where.begin.filename->c_str();
+        message("Error in file %s - %s", file, errLoc.what);
     }
 }
 
@@ -104,7 +105,9 @@ bool WinSystem::error(bool errorOccurred)
 
 void WinSystem::catastrophicError(const char* what)
 {
-    (void)::MessageBoxA(NULL, what, "Unexpected error", MB_OK);
+    wchar_t wbuf[32768];
+    if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf, 32768))
+        (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK);
 }
 
 std::istream* WinSystem::openFileForRead(const std::string& path)
@@ -114,9 +117,9 @@ std::istream* WinSystem::openFileForRead(const std::string& path)
     if (path == mName) {
         return new stringstream(mText);
     } else if (exText != ExampleMap.end()) {
-        return new stringstream(exText->second);
+        return new stringstream(exText->second, ios_base::in);
     } else {
-        return new ifstream(path.c_str(), ios::binary);
+        return tempFileForRead(path);
     }
 }
 
@@ -124,14 +127,14 @@ void WinSystem::stats(const Stats& s)
 {
     if (!mWindow) return;
     Stats* stat = new Stats(s);
-    if (!::PostMessage((HWND)mWindow, WM_USER_STATUS_UPDATE,(WPARAM)stat, NULL))
+    if (!::PostMessageW((HWND)mWindow, WM_USER_STATUS_UPDATE,(WPARAM)stat, NULL))
         delete stat;
 }
 
 void WinSystem::statusUpdate()
 {
     if (mWindow)
-        ::PostMessage((HWND)mWindow, WM_USER_STATUS_UPDATE, NULL, NULL);
+        ::PostMessageW((HWND)mWindow, WM_USER_STATUS_UPDATE, NULL, NULL);
 }
 
 void WinSystem::orphan()

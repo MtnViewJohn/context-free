@@ -33,6 +33,9 @@
 #include "ast.h"
 #include <map>
 #include "CmdInfo.h"
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 using namespace std;
 
@@ -257,7 +260,15 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
     mDescription(desc),
     mLength(length)
 {
-    if (*opath) mOutputFile.open(opath);
+    if (*opath) {
+#ifdef _WIN32
+        wchar_t wpath[32768];
+        if (!::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
+            mOutputFile.open(wpath, ios::binary | ios::trunc | ios::out);
+#else
+        mOutputFile.open(opath, ios::binary | ios::trunc | ios::out);
+#endif
+    }
     mEndline[0] = '\n';
     mEndline[1] = '\0';
     if (mLength == -1 && mDescription)

@@ -32,6 +32,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
+#include <sstream>
 #include <shlwapi.h>
 
 using namespace std;
@@ -57,10 +58,24 @@ Win32System::catastrophicError(const char* what)
 const char*
 Win32System::tempFileDirectory()
 {
-    static char tempPathBuffer[MAX_PATH];
-    
-    GetTempPathA(MAX_PATH, tempPathBuffer);
-    return tempPathBuffer;
+    static wchar_t tempPathBufferW[32768];
+    static char tempPathBuffer[32768];
+
+    GetTempPathW(32768, tempPathBufferW);
+    if (::WideCharToMultiByte(CP_UTF8, 0, tempPathBufferW, -1, tempPathBuffer, 32768, NULL, NULL))
+        return tempPathBuffer;
+    else
+        return "";
+}
+
+istream*
+Win32System::tempFileForRead(const string& path)
+{
+    wchar_t wpath[32768];
+    if (::MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, wpath, 32768))
+        return new ifstream(wpath, ios::binary);
+    message("Could not open this file: %s", path.c_str());
+    return new stringstream(ios_base::in);
 }
 
 ostream*
@@ -68,11 +83,17 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
 {    
     ofstream* f = nullptr;
     
-    char* b = _tempnam(tempFileDirectory(), TempPrefixes[tt]);
+    wchar_t wtempdir[32768];
+    if (!::MultiByteToWideChar(CP_UTF8, 0, tempFileDirectory(), -1, wtempdir, 32768))
+        return nullptr;
+
+    wchar_t* b = _wtempnam(wtempdir, TempPrefixes_w[tt]);
     if (b) {
+        char buf[32768];
         f = new ofstream;
         f->open(b, ios::binary | ios::trunc | ios::out);
-        nameOut.assign(b);
+        if (::WideCharToMultiByte(CP_UTF8, 0, b, -1, buf, 32768, NULL, NULL))
+            nameOut.assign(buf);
     }
     free(b);
     
@@ -82,41 +103,52 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
 std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    char buf[MAX_PATH+1];
-    strcpy(buf, base.c_str());
-    PathRemoveFileSpecA(buf);
-    PathAppendA(buf, rel.c_str());
-    if (PathFileExistsA(buf))
+    wchar_t wbase[32768], wrel[32768];
+    char buf[32768];
+    if (!::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase, 32768) ||
+        !::MultiByteToWideChar(CP_UTF8, 0, rel.c_str(), -1, wrel, 32768))
+    {
+        message("Cannot find %s relative to %s", rel.c_str(), base.c_str());
+        return string();
+    }
+    PathRemoveFileSpecW(wbase);
+    PathAppendW(wbase, wrel);
+    if (PathFileExistsW(wbase) && ::WideCharToMultiByte(CP_UTF8, 0, wbase, -1, buf, 32768, NULL, NULL)) {
         return string(buf);
-    else
+    } else {
         return rel;
+    }
 }
 
 vector<string>
 Win32System::findTempFiles()
 {
     vector<string> ret;
+    const char* tempdir = tempFileDirectory();
 
-    std::string name(tempFileDirectory());
-    if (name.back() != '\\')
-        name.push_back('\\');
-    name.append(TempPrefixAll);
-    name.push_back('*');
+    wchar_t wtempdir[32768];
+    char buf[32768];
+    if (!::MultiByteToWideChar(CP_UTF8, 0, tempdir, -1, wtempdir, 32768) ||
+        !::PathAppendW(wtempdir, TempPrefixAll_w) || 
+        wcsncat_s(wtempdir, 32768, L"*", 1))
+        return ret;
 
-    ::WIN32_FIND_DATAA ffd;
-    unique_ptr<void, decltype(&FindClose)> fff(::FindFirstFileA(name.c_str(), &ffd), &FindClose);
+    ::WIN32_FIND_DATAW ffd;
+    unique_ptr<void, decltype(&FindClose)> fff(::FindFirstFileW(wtempdir, &ffd), &FindClose);
     if (fff.get() == INVALID_HANDLE_VALUE) {
         fff.release();  // Don't call FindClose() if invalid
         return ret;     // Return empty
     }
 
     do {
-        std::string name(tempFileDirectory());
-        if (name.back() != '\\')
-            name.push_back('\\');
-        name.append(ffd.cFileName);
-        ret.push_back(std::move(name));
-    } while (::FindNextFileA(fff.get(), &ffd));
+        if (::WideCharToMultiByte(CP_UTF8, 0, ffd.cFileName, -1, buf, 32768, NULL, NULL)) {
+            std::string name(tempdir);
+            if (name.back() != '\\')
+                name.push_back('\\');
+            name.append(buf);
+            ret.push_back(std::move(name));
+        }
+    } while (::FindNextFileW(fff.get(), &ffd));
     return ret;
 }
 
