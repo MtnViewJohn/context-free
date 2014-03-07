@@ -321,7 +321,7 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
         cli::array<String^>^ names = gcnew  cli::array<String^>(temps.size());
         int i = 0;
         for (std::string& temp: temps) {
-            String^ name = gcnew String(temp.c_str());
+            String^ name = gcnew String(temp.c_str(), 0, temp.length(), System::Text::Encoding::UTF8);
             names[i++] = name;
         }
         ::DialogResult dlgr = MessageBox::Show(this, "Should they be deleted?", 

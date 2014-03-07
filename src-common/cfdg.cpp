@@ -106,6 +106,10 @@ const char* AbstractSystem::TempPrefixes[AbstractSystem::NumberofTempTypes] = {
     "cfdg-temp-fin-", "cfdg-temp-unfin-", "cfdg-temp-mrg-"
 };
 const char* AbstractSystem::TempPrefixAll = "cfdg-temp-";
+const wchar_t* AbstractSystem::TempPrefixes_w[AbstractSystem::NumberofTempTypes] = {
+    L"cfdg-temp-fin-", L"cfdg-temp-unfin-", L"cfdg-temp-mrg-"
+};
+const wchar_t* AbstractSystem::TempPrefixAll_w = L"cfdg-temp-";
 
 AbstractSystem::~AbstractSystem() { }
 

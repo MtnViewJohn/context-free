@@ -120,6 +120,8 @@ class AbstractSystem {
     protected:
         static const char* TempPrefixes[NumberofTempTypes];
         static const char* TempPrefixAll;
+        static const wchar_t* TempPrefixes_w[NumberofTempTypes];
+        static const wchar_t* TempPrefixAll_w;
         virtual void clearAndCR() {};
 };
 

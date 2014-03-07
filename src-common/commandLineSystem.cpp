@@ -92,7 +92,7 @@ CommandLineSystem::openFileForRead(const string& path)
         }
         return new istringstream(*mInputBuffer, ios::binary);
     }
-    return new ifstream(path.c_str(), ios::binary);
+    return tempFileForRead(path);
 }
 
 void
