@@ -486,18 +486,6 @@ CFDGImpl::encodeShapeName(const string& s)
 }
 
 int
-CFDGImpl::getShapeType(const string& s)
-{
-    for (unsigned int i = 0; i < m_shapeTypes.size(); i++) {
-        if (s == m_shapeTypes[i].name) {
-            return m_shapeTypes[i].shapeType;
-        }
-    }
-    
-    return newShape;
-}
-
-int
 CFDGImpl::getShapeType(int shapetype)
 {
     return m_shapeTypes[shapetype].shapeType;
