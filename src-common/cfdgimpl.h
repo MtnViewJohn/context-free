@@ -142,7 +142,6 @@ private:
         std::string  decodeShapeName(int shapetype);
         int     encodeShapeName(const std::string& s);
         int     tryEncodeShapeName(const std::string& s) const;
-        int     getShapeType(const std::string& s);
         int     getShapeType(int shapetype);
         bool    shapeHasRules(int shapetype);
         const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size, bool isPath);
