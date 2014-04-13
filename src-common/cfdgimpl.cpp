@@ -146,11 +146,9 @@ CFDGImpl::findRule(int shapetype, double r)
 const ASTrule*
 CFDGImpl::findRule(int shapetype)
 {
-    for (ASTrule* rule: mRules)
-        if (rule->mNameIndex == shapetype)
-            return rule;
-    
-    return nullptr;
+    auto rule = std::find_if(mRules.begin(), mRules.end(),
+                             [=](ASTrule* r){return r->mNameIndex == shapetype;});
+    return rule == mRules.end() ? nullptr : *rule;
 }
 
 // Adds a new rule/path to the rule container. Updates information about the rule
