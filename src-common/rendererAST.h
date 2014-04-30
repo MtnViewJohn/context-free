@@ -68,8 +68,8 @@ public:
         virtual void processSubpath(const Shape& s, bool tr, int) = 0;
     
     protected:
-        RendererAST() 
-        : Renderer(),
+        RendererAST(int w, int h) 
+        : Renderer(w, h),
           mMaxNatural(1000.0),
           mCurrentTime(0.0), mCurrentFrame(0.0),
           mCurrentPath(nullptr)

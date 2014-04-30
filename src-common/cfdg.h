@@ -206,10 +206,11 @@ class Renderer {
         static bool   AbortEverything;
         static unsigned ParamCount;
     protected:
-        Renderer() 
+        Renderer(int w, int h) 
         : requestStop(false),
           requestFinishUp(false),
           requestUpdate(false),
+          m_width(w), m_height(h),
           m_tiledCanvas(nullptr)
      { }
 };
