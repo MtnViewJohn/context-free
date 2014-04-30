@@ -65,8 +65,12 @@ const double FIXED_BORDER = 8.0; // fixed extra border, in pixels
 RendererImpl::RendererImpl(CFDGImpl* cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
-    : m_cfdg(cfdg), mVariation(variation), m_border(border), m_minSize(minSize),
-      circleCopy(primShape::circle), squareCopy(primShape::square), triangleCopy(primShape::triangle)
+    : RendererAST(width, height), m_cfdg(cfdg), m_canvas(nullptr), mColorConflict(false), 
+      m_maxShapes(500000000), mScaleArea(0.0), mScale(0.0), m_currScale(0.0), 
+      m_currArea(0.0), mVariation(variation), m_border(border), m_minSize(minSize),
+      mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),
+      circleCopy(primShape::circle), squareCopy(primShape::square), triangleCopy(primShape::triangle),
+      shapeMap{ { &circleCopy, &squareCopy, &triangleCopy} }
 {
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
@@ -84,20 +88,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
 #endif
     }
     
-    m_width = width;
-    m_height = height;
     mCFstack.reserve(8000);
-    mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);
-
-    m_canvas = nullptr;
-    mColorConflict = false;
-    m_maxShapes = 500000000;
-    m_currScale = m_currArea = 0.0;
-    mScaleArea = mScale = 0.0;
-
-    shapeMap[primShape::circleType] =   CommandInfo(&circleCopy);
-    shapeMap[primShape::squareType] =   CommandInfo(&squareCopy);
-    shapeMap[primShape::triangleType] = CommandInfo(&triangleCopy);
 
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
     m_cfdg->hasParameter(CFG::Frame, mCurrentFrame, nullptr);
