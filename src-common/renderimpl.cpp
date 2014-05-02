@@ -66,11 +66,11 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
     : RendererAST(width, height), m_cfdg(cfdg), m_canvas(nullptr), mColorConflict(false), 
-      m_maxShapes(500000000), mScaleArea(0.0), mScale(0.0), m_currScale(0.0), 
-      m_currArea(0.0), mVariation(variation), m_border(border), m_minSize(minSize),
-      mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),
+      m_maxShapes(500000000), mVariation(variation), m_border(border), 
+      mScaleArea(0.0), mScale(0.0), m_currScale(0.0), m_currArea(0.0), 
+      m_minSize(minSize), mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),
       circleCopy(primShape::circle), squareCopy(primShape::square), triangleCopy(primShape::triangle),
-      shapeMap{ { &circleCopy, &squareCopy, &triangleCopy} }
+      shapeMap{}
 {
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
@@ -89,6 +89,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
     }
     
     mCFstack.reserve(8000);
+    shapeMap = { { CommandInfo(&circleCopy), CommandInfo(&squareCopy), CommandInfo(&triangleCopy)} };
 
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
     m_cfdg->hasParameter(CFG::Frame, mCurrentFrame, nullptr);
