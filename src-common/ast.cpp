@@ -60,7 +60,7 @@ namespace AST {
     decodeType(const std::string& typeName, int& mTuplesize,
                bool& isNatural, const yy::location& mLocation)
     {
-        expType type;
+        expType type = NoType;
         mTuplesize = 1;
         isNatural = false;
         
@@ -76,18 +76,22 @@ namespace AST {
             type = AST::RuleType;
         } else if (typeName.find("vector") == 0) {
             // Would have used a regex but gcc does not have support yet
-            if (!std::strchr("123456789", typeName[6]))
+            if (typeName.length() < 7 || !std::strchr("123456789", typeName[6]))
                 CfdgError::Error(mLocation, "Illegal vector type specification");
-            else
-                for (size_t i = 7; i < typeName.size(); ++i)
-                    if (!std::strchr("1234567890", typeName[i])) {
-                        CfdgError::Error(mLocation, "Illegal vector type specification");
-                        break;
-                    }
-            type = AST::NumericType;
-            mTuplesize = std::atoi(typeName.c_str() + 6);
-            if (mTuplesize <= 1 || mTuplesize > MaxVectorSize)
-                CfdgError::Error(mLocation, "Illegal vector size (<=1 or >99)");
+            else {
+                // Must make sure next char is not +/-, whitespace or 0 before
+                // we can use strtol()
+                char* tail = nullptr;
+                long sz = std::strtol(typeName.c_str() + 6, &tail, 10);
+                if ((tail && *tail != '\0') || errno == ERANGE) {
+                    CfdgError::Error(mLocation, "Illegal vector type specification");
+                } else if (sz <= 1 || sz > MaxVectorSize) {
+                    CfdgError::Error(mLocation, "Illegal vector size (<=1 or >99)");
+                } else {
+                    type = AST::NumericType;
+                    mTuplesize = static_cast<int>(sz);
+                }
+            }
         } else {
             type = AST::NoType;
             CfdgError::Error(mLocation, "Unrecognized type name");
