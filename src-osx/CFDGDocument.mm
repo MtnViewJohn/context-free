@@ -451,6 +451,12 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     [self showContent];
     [mStatusText setEditable: NO];
+    [mEditor setAutomaticDashSubstitutionEnabled:NO];
+    [mEditor setAutomaticDataDetectionEnabled:NO];
+    [mEditor setAutomaticLinkDetectionEnabled:NO];
+    [mEditor setAutomaticSpellingCorrectionEnabled:NO];
+    [mEditor setAutomaticTextReplacementEnabled:NO];
+    [mEditor setAutomaticQuoteSubstitutionEnabled:NO];
 }
 
 - (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(NSUInteger)charIndex
