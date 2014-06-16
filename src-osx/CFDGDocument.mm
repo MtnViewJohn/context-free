@@ -351,7 +351,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)noteCatastrophicError:(NSString*)s
 {
-    (void)NSRunAlertPanel(@"A major error has occured", s, nil, nil, nil);
+    (void)NSRunAlertPanel(@"A major error has occured", @"Error: %@", nil, nil, nil, s);
 }
 
 - (void)noteError:(CfdgErrorWrapper*)e
