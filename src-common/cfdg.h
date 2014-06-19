@@ -41,10 +41,12 @@
 #include "stacktype.h"
 #include "Rand64.h"
 #include "config.h"
+#include <exception>
+#include "mynoexcept.h"
 
 typedef agg::rgba16 RGBA8;
 
-namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter; 
+namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter;
     typedef std::vector<agg::trans_affine> SymmList;
     struct CommandInfo;
 }
@@ -53,9 +55,10 @@ class Shape;
 class tiledCanvas;
 
 class DeferUntilRuntime {};
-class CfdgError {
+class CfdgError : public std::exception {
 public:
-    const char*     what;
+    virtual const char* what() const NOEXCEPT;
+    CfdgError& operator=(const CfdgError& e) NOEXCEPT;
     yy::location    where;
     static yy::location Default;
     
@@ -64,6 +67,8 @@ public:
     
     CfdgError(const yy::location& loc, const char* msg);
     CfdgError(const char* msg);
+private:
+    const char* mMsg;
 };
 
 class AbstractSystem {

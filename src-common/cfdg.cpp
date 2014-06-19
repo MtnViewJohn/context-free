@@ -72,19 +72,32 @@ const CfgArray<std::string> CFDG::ParamNames = {
 };
 
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
-: what(msg), where(loc)
+: where(loc), mMsg(msg)
 {
     where.begin.column -= Default.begin.column;
     where.end.column -= Default.end.column;
 }
 
 CfdgError::CfdgError(const char* msg)
-: what(msg), where(Default)
+: where(Default), mMsg(msg)
 {
     where.begin.column = 0;
     where.end.column = 0;
 }
 
+const char*
+CfdgError::what() const NOEXCEPT
+{
+    return mMsg;
+}
+
+CfdgError&
+CfdgError::operator=(const CfdgError& e) NOEXCEPT
+{
+    mMsg = e.mMsg;
+    where = e.where;
+    return *this;
+}
 
 void
 CfdgError::Error(const yy::location& errLoc, const char* msg)
