@@ -203,7 +203,7 @@ namespace {
     self = [super init];
     if (self) {
         mLocation = err->where;
-        mMessage = [[NSString stringWithUTF8String: err->what] retain];
+        mMessage = [[NSString stringWithUTF8String: err->what()] retain];
     }
     return self;
 }
