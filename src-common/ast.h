@@ -33,10 +33,7 @@
 #include "agg_trans_affine.h"
 #include "location.hh"
 #include <stdint.h>
-
-#if defined(_MSC_VER) && !defined(noexcept)
-#define noexcept throw()
-#endif
+#include "mynoexcept.h"
 
 class RendererAST;
 
@@ -121,10 +118,10 @@ namespace AST {
                 // ctor for loop variables
         ASTparameter(const ASTparameter&);
                 // ctor for copying parameter lists, never used after definitions are added
-        ASTparameter(ASTparameter&&) noexcept;
+        ASTparameter(ASTparameter&&) NOEXCEPT;
         ASTparameter& operator=(const ASTparameter&);
                 // method for copying parameter lists, never used after definitions are added
-        ASTparameter& operator=(ASTparameter&&) noexcept;
+        ASTparameter& operator=(ASTparameter&&) NOEXCEPT;
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, ASTdefine*  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);

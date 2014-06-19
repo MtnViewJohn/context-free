@@ -141,7 +141,7 @@ namespace AST {
       mTuplesize(from.mTuplesize)
     { assert(!from.mDefinition); }          // only used with parameters
     
-    ASTparameter::ASTparameter(ASTparameter&& from) noexcept
+    ASTparameter::ASTparameter(ASTparameter&& from) NOEXCEPT
     : mType(from.mType), isParameter(from.isParameter), isLoopIndex(from.isLoopIndex),
       isNatural(from.isNatural), mLocality(from.mLocality), mName(from.mName),
       mLocation(from.mLocation), mDefinition(std::move(from.mDefinition)),
@@ -166,7 +166,7 @@ namespace AST {
     }
     
     ASTparameter&
-    ASTparameter::operator=(ASTparameter&& from) noexcept
+    ASTparameter::operator=(ASTparameter&& from) NOEXCEPT
     {
         mType = from.mType;
         isParameter = from.isParameter;

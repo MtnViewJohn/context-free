@@ -34,10 +34,7 @@
 #include <utility>
 #include <stdexcept>
 #include <type_traits>
-
-#if defined(_MSC_VER) && !defined(noexcept)
-#define noexcept throw()
-#endif
+#include "mynoexcept.h"
 
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
@@ -68,27 +65,27 @@ private:
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator==(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                           const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator!=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                           const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator<(const chunk_vector_iterator<_valType1, _p2>& __x,
-                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                          const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator>(const chunk_vector_iterator<_valType1, _p2>& __x,
-                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                          const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator<=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                           const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
     friend bool operator>=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+                           const chunk_vector_iterator<_valType2, _p2>& __y) NOEXCEPT;
     
 public:
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
@@ -173,32 +170,32 @@ public:
         return *tmp;
     }
     
-    bool operator<(const chunk_vector_iterator& rhs) const noexcept
+    bool operator<(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index < rhs._index;
     }
     
-    bool operator>(const chunk_vector_iterator& rhs) const noexcept
+    bool operator>(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index > rhs._index;
     }
     
-    bool operator<=(const chunk_vector_iterator& rhs) const noexcept
+    bool operator<=(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index <= rhs._index;
     }
     
-    bool operator>=(const chunk_vector_iterator& rhs) const noexcept
+    bool operator>=(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index >= rhs._index;
     }
     
-    bool operator==(const chunk_vector_iterator& rhs) const noexcept
+    bool operator==(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index == rhs._index;
     }
     
-    bool operator!=(const chunk_vector_iterator& rhs) const noexcept
+    bool operator!=(const chunk_vector_iterator& rhs) const NOEXCEPT
     {
         return _index != rhs._index;
     }
@@ -212,7 +209,7 @@ private:
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -222,7 +219,7 @@ inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -232,7 +229,7 @@ inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                  const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -242,7 +239,7 @@ inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                  const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                  const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -252,7 +249,7 @@ inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -262,7 +259,7 @@ inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -272,7 +269,7 @@ inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType, unsigned _power2>
 inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
-	                   const chunk_vector_iterator<_valType, _power2>& __x) noexcept
+	                   const chunk_vector_iterator<_valType, _power2>& __x) NOEXCEPT
 { return __x + __n; }
 
 template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>
@@ -370,11 +367,11 @@ public:
         _valAlloc.destroy(frontVal);
     }
     
-    size_type size() const noexcept { return _end - _start; }
+    size_type size() const NOEXCEPT { return _end - _start; }
     
-    bool empty() const noexcept { return _start == _end; }
+    bool empty() const NOEXCEPT { return _start == _end; }
     
-    void clear() noexcept
+    void clear() NOEXCEPT
     {
         for (size_t i = _start; i < _end; ++i)
             _valAlloc.destroy(_chunks[i >> _power2] + (i & _chunk_mask));
@@ -485,7 +482,7 @@ public:
         }
     }
     
-    size_type capacity() const noexcept
+    size_type capacity() const NOEXCEPT
     {
         return _chunks.size() << _power2;
     }
@@ -522,19 +519,19 @@ public:
     reference back() { return (*this)[_end - 1]; }
     const_reference back() const { return (*this)[_end - 1]; }
 
-    iterator begin() noexcept             { return iterator(_chunks.data(), _start); }
-    iterator end() noexcept               { return iterator(_chunks.data(), _end); }
-    const_iterator begin() const noexcept { return const_iterator(_chunks.data(), _start); }
-    const_iterator end() const noexcept   { return const_iterator(_chunks.data(), _end); }
-    const_iterator cbegin() noexcept      { return const_iterator(_chunks.data(), _start); }
-    const_iterator cend() noexcept        { return const_iterator(_chunks.data(), _end); }
+    iterator begin() NOEXCEPT             { return iterator(_chunks.data(), _start); }
+    iterator end() NOEXCEPT               { return iterator(_chunks.data(), _end); }
+    const_iterator begin() const NOEXCEPT { return const_iterator(_chunks.data(), _start); }
+    const_iterator end() const NOEXCEPT   { return const_iterator(_chunks.data(), _end); }
+    const_iterator cbegin() NOEXCEPT      { return const_iterator(_chunks.data(), _start); }
+    const_iterator cend() NOEXCEPT        { return const_iterator(_chunks.data(), _end); }
     
-    reverse_iterator rbegin() noexcept             { return reverse_iterator(end()); }
-    reverse_iterator rend() noexcept               { return reverse_iterator(begin()); }
-    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
-    const_reverse_iterator rend() const noexcept   { return const_reverse_iterator(begin()); }
-    const_reverse_iterator crbegin() noexcept      { return const_reverse_iterator(cend()); }
-    const_reverse_iterator crend() noexcept        { return const_reverse_iterator(cbegin()); }
+    reverse_iterator rbegin() NOEXCEPT             { return reverse_iterator(end()); }
+    reverse_iterator rend() NOEXCEPT               { return reverse_iterator(begin()); }
+    const_reverse_iterator rbegin() const NOEXCEPT { return const_reverse_iterator(end()); }
+    const_reverse_iterator rend() const NOEXCEPT   { return const_reverse_iterator(begin()); }
+    const_reverse_iterator crbegin() NOEXCEPT      { return const_reverse_iterator(cend()); }
+    const_reverse_iterator crend() NOEXCEPT        { return const_reverse_iterator(cbegin()); }
     
 private:
     void push_back()

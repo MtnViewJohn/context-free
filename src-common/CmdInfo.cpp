@@ -73,7 +73,7 @@ namespace AST {
         }
     }
     
-    CommandInfo::CommandInfo(CommandInfo&& from) noexcept
+    CommandInfo::CommandInfo(CommandInfo&& from) NOEXCEPT
     : mFlags(from.mFlags), mMiterLimit(from.mMiterLimit),
       mStrokeWidth(from.mStrokeWidth), mIndex(from.mIndex), mPath(from.mPath),
       mPathUID(from.mPathUID.load())
@@ -86,7 +86,7 @@ namespace AST {
     { }
     
     CommandInfo&
-    CommandInfo::operator=(CommandInfo&& from) noexcept
+    CommandInfo::operator=(CommandInfo&& from) NOEXCEPT
     {
         mFlags = from.mFlags;
         mMiterLimit = from.mMiterLimit;

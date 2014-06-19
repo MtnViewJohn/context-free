@@ -31,6 +31,7 @@
 #define INCLUDE_TEMPFILE_H
 
 #include "cfdg.h"
+#include "mynoexcept.h"
 
 class TempFile
 {
@@ -42,8 +43,8 @@ public:
     int         number() { return mNum; }
     
     TempFile(AbstractSystem*, AbstractSystem::TempType t, const char* type, int num);
-    TempFile(TempFile&&) noexcept;
-    TempFile& operator=(TempFile&&) noexcept;
+    TempFile(TempFile&&) NOEXCEPT;
+    TempFile& operator=(TempFile&&) NOEXCEPT;
 #ifndef _WIN32
     TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
