@@ -66,12 +66,12 @@ private:
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
               parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
 
-            ShapeType(ShapeType&& from) noexcept
+            ShapeType(ShapeType&& from) NOEXCEPT
                 : name(std::move(from.name)), hasRules(from.hasRules), isShape(from.isShape),
                   shapeType(from.shapeType), parameters(std::move(from.parameters)), 
                   argSize(from.argSize), shouldHaveNoParams(from.shouldHaveNoParams) { }
 
-            ShapeType& operator=(ShapeType&& from) noexcept {
+            ShapeType& operator=(ShapeType&& from) NOEXCEPT {
                 name = std::move(from.name); hasRules = from.hasRules; isShape = from.isShape;
                 shapeType = from.shapeType; parameters = std::move(from.parameters); 
                 argSize = from.argSize; shouldHaveNoParams = from.shouldHaveNoParams;

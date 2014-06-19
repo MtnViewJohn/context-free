@@ -32,15 +32,12 @@
 #include <vector>
 #include <iosfwd>
 #include "ast.h"
+#include "mynoexcept.h"
 
 //#define EXTREME_PARAM_DEBUG
 
 #ifdef EXTREME_PARAM_DEBUG
 #include <map>
-#endif
-
-#if defined(_MSC_VER) && !defined(noexcept)
-#define noexcept throw()
 #endif
 
 namespace AST { class ASTparameter; class ASTexpression; }
@@ -90,8 +87,8 @@ public:
         return tmp;
     }
     
-    bool operator==(const StackTypeIterator& o) const noexcept { return _Ptr == o._Ptr; }
-    bool operator!=(const StackTypeIterator& o) const noexcept { return _Ptr != o._Ptr; }
+    bool operator==(const StackTypeIterator& o) const NOEXCEPT { return _Ptr == o._Ptr; }
+    bool operator!=(const StackTypeIterator& o) const NOEXCEPT { return _Ptr != o._Ptr; }
     
     StackTypeIterator& operator=(const StackTypeIterator& o)
     {
