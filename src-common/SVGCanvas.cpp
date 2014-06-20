@@ -263,7 +263,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
     if (*opath) {
 #ifdef _WIN32
         wchar_t wpath[32768];
-        if (!::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
+        if (::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
             mOutputFile.open(wpath, ios::binary | ios::trunc | ios::out);
 #else
         mOutputFile.open(opath, ios::binary | ios::trunc | ios::out);
