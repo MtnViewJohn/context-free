@@ -88,11 +88,11 @@ void WinSystem::syntaxError(const CfdgError& errLoc)
     if (mName.compare(*(errLoc.where.begin.filename)) == 0) {
         message("Error - <a href='#e:%d:%d:%d:%d'>%s</a>",
                 errLoc.where.begin.line, errLoc.where.begin.column,
-                errLoc.where.end.line, errLoc.where.end.column, errLoc.what);
+                errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
     } else {
         const char* file = strrchr(errLoc.where.begin.filename->c_str(), '\\');
         file = file ? file + 1 : errLoc.where.begin.filename->c_str();
-        message("Error in file %s - %s", file, errLoc.what);
+        message("Error in file %s - %s", file, errLoc.what());
     }
 }
 
