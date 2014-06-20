@@ -95,9 +95,8 @@ abstractPngCanvas::end()
     aggCanvas::end();
     
     if (mRenderer && mRenderer->m_tiledCanvas) {
-        tileList points;
-        mRenderer->m_tiledCanvas->getTesselation(points, mFullWidth, mFullHeight,
-                                                 mOriginX, mOriginY, true);
+        tileList points = mRenderer->m_tiledCanvas->getTesselation(mFullWidth, mFullHeight,
+                                                                   mOriginX, mOriginY, true);
         
         for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
              pt != ept; ++pt)
