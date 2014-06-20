@@ -180,9 +180,9 @@ void tiledCanvas::scale(double scaleFactor)
     }
 }
 
-void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h, 
-                                 int x, int y, bool flipY)
+tileList tiledCanvas::getTesselation(int w, int h, int x, int y, bool flipY)
 {
+    tileList tessPoints;
     // Produce an integer version of mOffset that is centered in the w x h screen
     agg::trans_affine tess(mWidth, floor(mOffset.shy + 0.5), floor(mOffset.shx + 0.5),
         flipY ? -mHeight : mHeight, x, y);
@@ -211,7 +211,7 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
                     tessPoints.emplace_back(px, py);
                 }
             }
-            if (!hit) return;
+            if (!hit) return tessPoints;
         }
     }
     
@@ -243,5 +243,6 @@ void tiledCanvas::getTesselation(tileList& tessPoints, int w, int h,
         
         if (!hit) break;
     }
+    return tessPoints;
 }
 
