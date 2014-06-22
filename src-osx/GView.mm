@@ -857,8 +857,12 @@ namespace {
                                parameters.animateZoom);
             qt->exitThread();
         }
-        else
+        else {
             mRenderer->draw(mCanvas);
+            [mDocument performSelectorOnMainThread: @selector(noteStatus:)
+                                        withObject: @"Drawing operation complete"
+                                     waitUntilDone: NO];
+        }
         
         if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas))
             mCanvasColor256 = ic->colorCount256();
@@ -1186,7 +1190,7 @@ namespace {
     if (pngData) {
         [pngData writeToURL: filename atomically: YES];
     } else {
-        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        [mDocument noteStatus: @"An error occured while writing the PNG file."];
         NSBeep();
     }
 }
@@ -1201,7 +1205,7 @@ namespace {
     if (pngData) {
         [pngData writeToURL: filename atomically: YES];
     } else {
-        [mStatus setStringValue: @"An error occured while writing the PNG file."];
+        [mDocument noteStatus: @"An error occured while writing the PNG file."];
         NSBeep();
     }
 }
@@ -1211,6 +1215,16 @@ namespace {
     mCanvas = new SVGCanvas([[filename path] UTF8String],
         (int)mRenderedRect.size.width, (int)mRenderedRect.size.height,
         false);
+    
+    if (mCanvas->mError) {
+        [mDocument noteStatus: @"An error occured while writing the SVG file."];
+        NSBeep();
+        delete mCanvas;
+        mCanvas = nullptr;
+        return;
+    }
+    
+    [mDocument noteStatus: @"Saving to SVG file"];
     
     RenderParameters parameters;
     parameters.render = false;
@@ -1243,7 +1257,7 @@ namespace {
                  pixelsWide: (NSInteger)sz->width
                  pixelsHigh: (NSInteger)sz->height];
     if (!bits) {
-        [mStatus setStringValue: @"An error occured while initializing the movie canvas."];
+        [mDocument noteStatus: @"An error occured while initializing the movie canvas."];
         NSBeep();
         return;
     }
@@ -1260,7 +1274,7 @@ namespace {
     } else {
         delete mAnimationCanvas;
         mAnimationCanvas = nullptr;
-        [mStatus setStringValue: @"An error occured while initializing the movie file."];
+        [mDocument noteStatus: @"An error occured while initializing the movie file."];
         NSBeep();
     }
 }
