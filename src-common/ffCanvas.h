@@ -33,7 +33,7 @@ public:
     ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps);
     ~ffCanvas();
     
-    const char* mError;
+    const char* mErrorMsg;
     
     void end();
     
