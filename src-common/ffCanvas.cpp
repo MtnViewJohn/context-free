@@ -249,7 +249,8 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int
     
     impl = new Impl(name, mapPixFmt(fmt), width, height, stride, bits, fps);
     if (impl->mError) {
-        mError = impl->mError;
+        mErrorMsg = impl->mError;
+        mError = true;
         delete impl;
         impl = NULL;
     }
@@ -268,7 +269,8 @@ ffCanvas::end()
     if (impl) {
         impl->addFrame();
         if (impl->mError) {
-            mError = impl->mError;
+            mErrorMsg = impl->mError;
+            mError = true;
             delete impl;
             impl = NULL;
         }

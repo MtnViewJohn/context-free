@@ -42,10 +42,11 @@ mapPixFmt(aggCanvas::PixelFormat in)
 }
 
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
-: aggCanvas(mapPixFmt(fmt)), mError("Quicktime support not compiled in"), impl(nullptr)
+: aggCanvas(mapPixFmt(fmt)), mErrorMsg("Quicktime support not compiled in"), impl(nullptr)
 {
     width &= ~3;
     height &= ~3;
+    mError = true;
 }
 
 ffCanvas::~ffCanvas()
