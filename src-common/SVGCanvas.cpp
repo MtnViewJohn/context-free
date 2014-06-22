@@ -75,6 +75,7 @@ void SVGCanvas::end() {
     indent(-2);
     mOutput << mEndline << "</svg>" << mEndline;
 
+    mError = mError || !(mOutputFile.is_open() && mOutputFile.good());
     if (mOutputFile.is_open()) mOutputFile.close();
 }
 
@@ -269,6 +270,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
         mOutputFile.open(opath, ios::binary | ios::trunc | ios::out);
 #endif
     }
+    mError = !(mOutputFile.is_open() && mOutputFile.good());
     mEndline[0] = '\n';
     mEndline[1] = '\0';
     if (mLength == -1 && mDescription)

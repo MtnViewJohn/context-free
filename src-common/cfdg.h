@@ -144,12 +144,13 @@ class Canvas {
         virtual void path(RGBA8 , agg::trans_affine, const AST::CommandInfo& ) = 0;
 
         Canvas(int width, int height) 
-        : mWidth(width), mHeight(height) {}
+        : mWidth(width), mHeight(height), mError(false) {}
         virtual ~Canvas();
         
         int mWidth;
         int mHeight;
         clock_t mTime;
+        bool mError;
 };
 
 class Renderer;
