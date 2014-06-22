@@ -237,7 +237,7 @@ mapPixFmt(aggCanvas::PixelFormat in)
 }
 
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
-: aggCanvas(mapPixFmt(fmt)), mError(NULL), impl(NULL)
+: aggCanvas(mapPixFmt(fmt)), mErrorMsg(NULL), impl(NULL)
 {
     width &= ~3;
     height &= ~3;
