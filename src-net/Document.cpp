@@ -424,6 +424,7 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
 { 
     if (!mCanvas) {
         setMessageText("There is no image to save.");
+        System::Console::Beep();
         return;
     }
 
@@ -520,12 +521,14 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
                 bm->Save(str, Imaging::ImageFormat::Png);
         } else {
             setMessageText("Nowhere to save the image.");
+            System::Console::Beep();
         }
         delete bm;
         setMessageText("Image save complete.");
     } catch (Exception^) {
         setMessageText("Image save failed.");
-        success =  false;
+        System::Console::Beep();
+        success = false;
     }
     delete mTempCanvas;
     mTempCanvas = nullptr;
@@ -534,7 +537,11 @@ bool Document::saveToPNGorJPEG(String^ path, System::IO::Stream^ str, bool JPEG)
 
 void Document::saveToSVG(String^ path)
 {
-    if (!mRenderer) return;
+    if (!mRenderer) {
+        setMessageText("There is no SVG data to save.");
+        System::Console::Beep();
+        return;
+    }
 
     setMessageText("Saving SVG file...");
 
@@ -543,12 +550,19 @@ void Document::saveToSVG(String^ path)
     array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(path);
     if (pathutf8->Length == 0) {
         setMessageText("Bad file name");
+        System::Console::Beep();
         return;
     }
     pin_ptr<Byte> pathutf8pin = &pathutf8[0];
 
     mSVGCanvas = new SVGCanvas(reinterpret_cast<const char*>(pathutf8pin), 
         renderParams->width, renderParams->height, Form1::prefs->ImageCrop);
+
+    if (mSVGCanvas->mError) {
+        setMessageText("An error occurred while saving the SVG file.");
+        System::Console::Beep();
+        return;
+    }
 
     postAction = PostRenderAction::DoNothing;
     renderThread->RunWorkerAsync();
@@ -561,6 +575,7 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
 { 
     if (!mCanvas || !mRenderer) {
         setMessageText("There is no movie to save.");
+        System::Console::Beep();
         return;
     }
 
