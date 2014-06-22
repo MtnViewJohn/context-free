@@ -610,14 +610,16 @@ int main (int argc, char* argv[]) {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
             svg.reset(new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop));
             myCanvas = static_cast<Canvas*>(svg.get());
+            if (svg->mError)
+                cerr << "Failed to open SVG file." << endl;
             break;
         }
         case options::MOVfile: {
             string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
             mov.reset(new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height,
                                    opts.animationFPS));
-            if (mov->mError) {
-                cerr << "Failed to create movie file: " << mov->mError << endl;
+            if (mov->mErrorMsg) {
+                cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
                 exit(8);
             }
             myCanvas = static_cast<Canvas*>(mov.get());
@@ -625,7 +627,7 @@ int main (int argc, char* argv[]) {
         }
     }
     
-    if (system.error(false) || TheRenderer->requestStop) {
+    if (myCanvas->mError || system.error(false) || TheRenderer->requestStop) {
         cleanupTimer();
         Renderer::AbortEverything = true;
         return 5;
