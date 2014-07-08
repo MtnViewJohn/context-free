@@ -81,6 +81,14 @@ void Rand64::xorString(const char* t, int& i)
 
 void Rand64::bump()
 {
+#if 1
     mSeed = mSeed * RAND64_MULT + RAND64_ADD;
+#else
+    // This is the xorshift64* PRNG. Pity we can't use it.
+    mSeed ^= mSeed >> 12;
+    mSeed ^= mSeed << 25;
+    mSeed ^= mSeed >> 27;
+    mSeed *= 2685821657736338717ULL;
+#endif
 }
 
