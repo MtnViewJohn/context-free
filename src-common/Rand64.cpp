@@ -30,24 +30,37 @@
 
 Rand64 Rand64::Common;
 
-double Rand64::getDouble(bool doBump)
+// Return double in [0,1)
+double Rand64::getDoubleLower(bool doBump)
 {
     if (doBump) bump();
-    return  ldexp(static_cast<double>(mSeed & 0xffffffffffffULL), -48);
+    return  ldexp(static_cast<double>(mSeed & 0xfffffffffffffULL), -52);
 }
 
+// Return double in (0,1]
+double Rand64::getDoubleUpper(bool doBump)
+{
+    if (doBump) bump();
+    uint64_t maskedSeed = mSeed & 0xfffffffffffffULL;
+    if (maskedSeed == 0) return 1.0;
+    return  ldexp(static_cast<double>(maskedSeed), -52);
+}
+
+// Return long in [LONG_MIN,LONG_MAX]
 long Rand64::getLong(bool doBump)
 {
     if (doBump) bump();
     return static_cast<long>(mSeed & ULONG_MAX);
 }
 
+// Return long in [0,LONG_MAX]
 long Rand64::getPositive(bool doBump)
 {
     if (doBump) bump();
     return static_cast<long>(mSeed & LONG_MAX);
 }
 
+// Return ulong in [0,ULONG_MAX]
 unsigned long Rand64::getUnsigned(bool doBump)
 {
     if (doBump) bump();
@@ -81,14 +94,10 @@ void Rand64::xorString(const char* t, int& i)
 
 void Rand64::bump()
 {
-#if 1
-    mSeed = mSeed * RAND64_MULT + RAND64_ADD;
-#else
-    // This is the xorshift64* PRNG. Pity we can't use it.
+    // This is the xorshift64* PRNG.
     mSeed ^= mSeed >> 12;
     mSeed ^= mSeed << 25;
     mSeed ^= mSeed >> 27;
-    mSeed *= 2685821657736338717ULL;
-#endif
+    mSeed *= RAND64_MULT;
 }
 

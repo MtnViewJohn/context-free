@@ -32,12 +32,11 @@
 
 #include <stdint.h>
 
-// This class  implements the 64-bit linear congruent PRNG from Knuth's MMIX architecture.
+// This class  implements the xorshift64* PRNG.
 class Rand64 {
 public:
     enum e_consts : uint64_t {
-        RAND64_MULT = 0x5851F42D4C957F2DULL,
-        RAND64_ADD  = 0x14057B7EF767814FULL,
+        RAND64_MULT = 2685821657736338717ULL,
         RAND64_SEED = 0x3DF41234ABCD330EULL
     };
     
@@ -47,9 +46,19 @@ public:
     Rand64() : mSeed(RAND64_SEED) { }
     Rand64(uint64_t seed) : mSeed(seed) { }
     
-    double getDouble(bool bump = true);
+    // Return double in [0,1)
+    double getDoubleLower(bool bump = true);
+    
+    // Return double in (0,1]
+    double getDoubleUpper(bool bump = true);
+    
+    // Return long in [LONG_MIN,LONG_MAX]
     long getLong(bool bump = true);
+    
+    // Return long in [0,LONG_MAX]
     long getPositive(bool bump = true);
+    
+    // Return ulong in [0,ULONG_MAX]
     unsigned long getUnsigned(bool bump = true);
     
     void seed(uint64_t seed);
