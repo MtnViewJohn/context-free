@@ -565,6 +565,8 @@ namespace AST {
             savedPath = r->mCurrentPath;
             r->mCurrentPath = mCachedPath.get();
             r->mCurrentCommand = mCachedPath->mCommandInfo.begin();
+        } else {
+            r->mCurrentPath->mTerminalCommand.mLocation = mLocation;
         }
         
         mRuleBody.traverse(parent, false, r, true);
