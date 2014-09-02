@@ -85,7 +85,7 @@ void WinSystem::message(const char* fmt, ...)
 void WinSystem::syntaxError(const CfdgError& errLoc)
 {
     if (!mWindow) return;
-    if (mName.compare(*(errLoc.where.begin.filename)) == 0) {
+    if (!errLoc.where.begin.filename || mName.compare(*(errLoc.where.begin.filename)) == 0) {
         message("Error - <a href='#e:%d:%d:%d:%d'>%s</a>",
                 errLoc.where.begin.line, errLoc.where.begin.column,
                 errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
