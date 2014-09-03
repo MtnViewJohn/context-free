@@ -44,10 +44,12 @@
 @private
     yy::location mLocation;
     NSString* mMessage;
+    NSString* mFile;
 }
 
 -(id)initWithError: (const CfdgError*) err;
 -(NSString*)message;
+-(NSString*)path;
 -(yy::location*)location;
 
 @end
@@ -126,7 +128,6 @@ namespace {
     CocoaSystem::syntaxError(const CfdgError& err)
     {
         if (!mDoc) return;
-        if (err.where.begin.filename == nullptr) return;
         
         CfdgErrorWrapper* objcerr = [[[CfdgErrorWrapper alloc] initWithError: &err]
                                      autorelease];
@@ -204,6 +205,10 @@ namespace {
     if (self) {
         mLocation = err->where;
         mMessage = [[NSString stringWithUTF8String: err->what()] retain];
+        if (mLocation.begin.filename && mLocation.begin.filename->length()) {
+            mFile = [[NSString stringWithUTF8String: mLocation.begin.filename->c_str()] retain];
+            mLocation.begin.filename = mLocation.end.filename = nullptr;
+        }
     }
     return self;
 }
@@ -211,6 +216,7 @@ namespace {
 - (void)dealloc
 {
     [mMessage release];     mMessage = nil;
+    [mFile release];        mFile = nil; mLocation.begin.filename = mLocation.end.filename = nullptr;
     [super dealloc];
 }
 
@@ -219,6 +225,11 @@ namespace {
     return mMessage;
 }
 
+-(NSString*)path
+{
+    return mFile;
+}
+    
 -(yy::location*)location
 {
     return &mLocation;
@@ -368,18 +379,28 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
     
     if (mStatusText != nil) {
+        NSURL* errorFile = nil;
+        NSString* errorPath = [e path];
+        if (errorPath)
+            errorFile = [NSURL fileURLWithPath: errorPath isDirectory: NO];
+        
         [msg beginEditing];
-        NSRange r = NSMakeRange(start, [msg length] - start);
-        
-        [msg addAttribute: NSLinkAttributeName value: e range: r];
-        
-        // make the text appear in blue
-        [msg addAttribute: NSForegroundColorAttributeName value: [NSColor blueColor] range: r];
-        
-        // next make the text appear with an underline
-        [msg addAttribute:
-         NSUnderlineStyleAttributeName value:[NSNumber numberWithInt: NSSingleUnderlineStyle] 
-                    range:r];
+        NSURL* myURL = [self fileURL];
+        if ((errorPath == nil && myURL == nil) ||
+            ([[myURL path] isEqual: errorPath]))
+        {
+            NSRange r = NSMakeRange(start, [msg length] - start);
+            
+            [msg addAttribute: NSLinkAttributeName value: e range: r];
+            
+            // make the text appear in blue
+            [msg addAttribute: NSForegroundColorAttributeName value: [NSColor blueColor] range: r];
+            
+            // next make the text appear with an underline
+            [msg addAttribute:
+             NSUnderlineStyleAttributeName value:[NSNumber numberWithInt: NSSingleUnderlineStyle] 
+                        range:r];
+        }
         [[msg mutableString] appendString: @"\n"];
         [msg endEditing];
         
