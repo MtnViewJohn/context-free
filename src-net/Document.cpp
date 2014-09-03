@@ -355,7 +355,7 @@ void Document::setStatusText(String^ txt, bool sendToPane)
         ((Form1^)MdiParent)->AddMessage(Text, txt);
 }
 
-// Receive the Modify-fag-changed event from the cfdg edit box and merge the updated
+// Receive the Modify-flag-changed event from the cfdg edit box and merge the updated
 // flag into the three local modify flags.
 System::Void Document::modifiedCFDG(System::Object^ sender, System::EventArgs^ e)
 {
