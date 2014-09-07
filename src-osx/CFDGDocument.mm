@@ -372,6 +372,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
                                       autorelease];
     NSUInteger start = [msg length];
     [[msg mutableString] appendString: [e message]];
+    [[msg mutableString] appendString: @"\n"];
     
     if (mStatus != nil) {
         [mStatus setStringValue: [msg mutableString]];
@@ -389,7 +390,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         if ((errorPath == nil && myURL == nil) ||
             ([[myURL path] isEqual: errorPath]))
         {
-            NSRange r = NSMakeRange(start, [msg length] - start);
+            NSRange r = NSMakeRange(start, [msg length] - (start + 1));
             
             [msg addAttribute: NSLinkAttributeName value: e range: r];
             
@@ -401,7 +402,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
              NSUnderlineStyleAttributeName value:[NSNumber numberWithInt: NSSingleUnderlineStyle] 
                         range:r];
         }
-        [[msg mutableString] appendString: @"\n"];
         [msg endEditing];
         
         [[mStatusText textStorage] appendAttributedString: msg];
