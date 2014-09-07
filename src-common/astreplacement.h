@@ -206,7 +206,10 @@ namespace AST {
         ASTrule(int ruleIndex, double weight, bool percent, const yy::location& loc)
         : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(weight <= 0.0 ? 1.0 : weight), isPath(false), mNameIndex(ruleIndex),
-          weightType(percent ? PercentWeight : ExplicitWeight) { };
+          weightType(percent ? PercentWeight : ExplicitWeight) {
+              if (weight <= 0.0)
+                  CfdgError::Warning(loc, "Rule weight coerced to 1.0");
+          };
         ASTrule(int ruleIndex, const yy::location& loc)
         : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
