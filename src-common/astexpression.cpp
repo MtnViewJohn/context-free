@@ -1446,7 +1446,8 @@ namespace AST {
             { ASTfunction::RandInt,     "\x48\x14\x4E\x27\x35\x2E" }
         };
         
-        arguments->entropy(ent);
+        if (arguments)
+            arguments->entropy(ent);
 		ent.append(EntropyMap.at(functype));
 	}
     
@@ -1495,7 +1496,8 @@ namespace AST {
     {
         if (arguments)
             arguments->entropy(ent);
-        ent.append(definition->mName);
+        if (definition)
+            ent.append(definition->mName);
     }
     
     void
@@ -1523,7 +1525,7 @@ namespace AST {
             { '_', "\x60\x2F\x10\xAD\x10\xFF" },
         };
         
-        left->entropy(ent);
+        if (left)  left->entropy(ent);
         if (right) right->entropy(ent);
         ent.append(EntropyMap.at(op));
     }
@@ -1531,7 +1533,7 @@ namespace AST {
     void
     ASTparen::entropy(std::string& ent) const
     {
-        e->entropy(ent);
+        if (e) e->entropy(ent);
         ent.append("\xE8\xE9\xF6\x7E\x1A\xF1");
     }
     
