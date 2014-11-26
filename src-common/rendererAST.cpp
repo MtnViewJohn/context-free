@@ -46,6 +46,7 @@ RendererAST::init()
     mClosed = false;
     mWantMoveTo = true;
     mWantCommand = true;
+    mOpsOnly = false;
     mIndex = mNextIndex = 0;
 }
 

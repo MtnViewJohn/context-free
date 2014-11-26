@@ -519,6 +519,9 @@ namespace AST {
     void
     ASTpathCommand::traverse(const Shape& s, bool, RendererAST* r) const
     {
+        if (r->mOpsOnly)
+            CfdgError::Error(mLocation, "Path commands not allowed at this point");
+
         Shape child = s;
         double width = mStrokeWidth;
         replace(child, r);

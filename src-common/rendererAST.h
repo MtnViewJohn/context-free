@@ -53,6 +53,7 @@ public:
         bool         mClosed;
         bool         mWantMoveTo;
         bool         mWantCommand;
+        bool         mOpsOnly;
         unsigned     mIndex;
         unsigned     mNextIndex;
         AST::ASTcompiledPath* mCurrentPath;

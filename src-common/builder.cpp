@@ -608,10 +608,11 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
             t = ASTreplacement::op;
         } else if (m_CFDG->getShapeType(r->shapeType) == CFDGImpl::pathType) {
             const ASTrule* rule = m_CFDG->findRule(r->shapeType);
-            if (rule) {
+            if (rule && rule->mRuleBody.mRepType) {
                 t = static_cast<ASTreplacement::repElemListEnum>(rule->mRuleBody.mRepType);
             } else {
-                error(loc, "Subpath references must be to previously declared paths");
+                // Recursive calls must be all ops, check at runtime
+                t = ASTreplacement::op;
             }
         } else if (bound) {
             // Variable subpaths must be all ops, but we must check at runtime
@@ -619,7 +620,8 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
         } else if (primShape::isPrimShape(r->shapeType)){
             t = ASTreplacement::op;
         } else {
-            error(loc, "Subpath references must be to previously declared paths");
+            // Forward calls must be all ops, check at runtime
+            t = ASTreplacement::op;
         }
     }
     return new ASTreplacement(std::move(*r), std::move(mods), loc, t);
