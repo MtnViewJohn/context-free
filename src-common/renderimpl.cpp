@@ -669,6 +669,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         mPathBounds.invalidate();
         m_drawingMode = false;
         if (path) {
+            mOpsOnly = false;
             path->traversePath(s, this);
         } else {
             CommandInfo* attr = nullptr;
@@ -740,7 +741,10 @@ RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
     }
     if (static_cast<int>(rule->mRuleBody.mRepType) != expectedType)
         throw CfdgError(rule->mLocation, "Subpath is not of the expected type (path ops/commands)");
+    bool saveOpsOnly = mOpsOnly;
+    mOpsOnly = mOpsOnly || (expectedType == ASTreplacement::op);
     rule->mRuleBody.traverse(s, tr, this, true);
+    mOpsOnly = saveOpsOnly;
 }
 
 
