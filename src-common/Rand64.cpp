@@ -24,50 +24,11 @@
 
 
 #include "Rand64.h"
-#include <cmath>
-#include <climits>
 
 
 Rand64 Rand64::Common;
 
-// Return double in [0,1)
-double Rand64::getDoubleLower(bool doBump)
-{
-    if (doBump) bump();
-    return  ldexp(static_cast<double>(mSeed & 0xfffffffffffffULL), -52);
-}
-
-// Return double in (0,1]
-double Rand64::getDoubleUpper(bool doBump)
-{
-    if (doBump) bump();
-    uint64_t maskedSeed = mSeed & 0xfffffffffffffULL;
-    if (maskedSeed == 0) return 1.0;
-    return  ldexp(static_cast<double>(maskedSeed), -52);
-}
-
-// Return long in [LONG_MIN,LONG_MAX]
-long Rand64::getLong(bool doBump)
-{
-    if (doBump) bump();
-    return static_cast<long>(mSeed & ULONG_MAX);
-}
-
-// Return long in [0,LONG_MAX]
-long Rand64::getPositive(bool doBump)
-{
-    if (doBump) bump();
-    return static_cast<long>(mSeed & LONG_MAX);
-}
-
-// Return ulong in [0,ULONG_MAX]
-unsigned long Rand64::getUnsigned(bool doBump)
-{
-    if (doBump) bump();
-    return static_cast<unsigned long>(mSeed & ULONG_MAX);
-}
-
-void Rand64::seed(uint64_t seed)
+void Rand64::seed(seed_t seed)
 {
     mSeed = seed;
 }
@@ -79,7 +40,7 @@ void Rand64::init()
 
 void Rand64::xorChar(unsigned char c, unsigned i)
 {
-    mSeed ^= (static_cast<uint64_t>(c)) << (i * 8);
+    mSeed ^= (static_cast<seed_t>(c)) << (i * 8);
 }
 
 void Rand64::xorString(const char* t, int& i)
@@ -89,15 +50,5 @@ void Rand64::xorString(const char* t, int& i)
         bump();
         i = (i + 1) & 7;
     }
-}
-
-
-void Rand64::bump()
-{
-    // This is the xorshift64* PRNG.
-    mSeed ^= mSeed >> 12;
-    mSeed ^= mSeed << 25;
-    mSeed ^= mSeed >> 27;
-    mSeed *= RAND64_MULT;
 }
 
