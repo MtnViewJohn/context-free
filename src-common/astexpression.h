@@ -88,7 +88,7 @@ namespace AST {
         enum FuncType { NotAFunction, 
             Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
             Cosh, Sinh, Tanh, Acosh, Asinh, Atanh, Log, Log10,
-            Sqrt, Exp, Abs, Floor, Infinity, Factorial, Sg, IsNatural,
+            Sqrt, Exp, Abs, Floor, Ceiling, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
             Min, Max, Ftime, Frame,

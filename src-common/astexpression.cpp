@@ -77,6 +77,7 @@ namespace AST {
             { "exp",        ASTfunction::Exp },
             { "abs",        ASTfunction::Abs },
             { "floor",      ASTfunction::Floor },
+            { "ceiling",    ASTfunction::Ceiling },
             { "infinity",   ASTfunction::Infinity },
             { "factorial",  ASTfunction::Factorial },
             { "sg",         ASTfunction::Sg },
@@ -929,6 +930,9 @@ namespace AST {
             case Floor:
                 *res = floor(a[0]);
                 break;
+            case Ceiling:
+                *res = ceil(a[0]);
+                break;
             case Ftime:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 *res = rti->mCurrentTime;
@@ -1402,7 +1406,7 @@ namespace AST {
     {
         // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
         static const std::map<ASTfunction::FuncType, const char*> EntropyMap = {
-            {ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
+            { ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
             { ASTfunction::Sin,         "\xAF\x58\xFE\x2C\xD4\x53" },
             { ASTfunction::Tan,         "\x95\xFF\x59\x11\x03\x02" },
             { ASTfunction::Cot,         "\x77\xF5\xB6\x35\x8C\xF0" },
@@ -1422,6 +1426,7 @@ namespace AST {
             { ASTfunction::Exp,         "\x88\xA8\x65\xF0\xC1\x06" },
             { ASTfunction::Abs,         "\x41\x89\x18\xD1\xAD\x82" },
             { ASTfunction::Floor,       "\xB7\x28\xD7\xD7\xA3\xCC" },
+            { ASTfunction::Ceiling,     "\xF7\x96\x02\x7C\x27\xE4" },
             { ASTfunction::Infinity,    "\x2C\x28\x50\xCC\xDE\x44" },
             { ASTfunction::Factorial,   "\x19\xD7\x83\x29\x47\x99" },
             { ASTfunction::Sg,          "\xB7\x05\x28\xBA\xCD\x2E" },
