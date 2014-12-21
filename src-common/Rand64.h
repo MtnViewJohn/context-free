@@ -31,37 +31,62 @@
 #endif
 
 #include <stdint.h>
+#include <cmath>
+#include <climits>
 
 // This class  implements the xorshift64* PRNG.
 class Rand64 {
 public:
-    enum e_consts : uint64_t {
+    typedef uint64_t seed_t;
+    
+    enum e_consts : seed_t {
         RAND64_MULT = 2685821657736338717ULL,
         RAND64_SEED = 0x3DF41234ABCD330EULL
     };
     
-    uint64_t mSeed;
-    static Rand64   Common;
+    seed_t mSeed;
     
     Rand64() : mSeed(RAND64_SEED) { }
-    Rand64(uint64_t seed) : mSeed(seed) { }
+    Rand64(seed_t seed) : mSeed(seed) { }
     
     // Return double in [0,1)
-    double getDoubleLower(bool bump = true);
+    double getDoubleLower(bool doBump = true)
+    {
+        if (doBump) bump();
+        return  ldexp(static_cast<double>(mSeed & 0xfffffffffffffULL), -52);
+    }
     
     // Return double in (0,1]
-    double getDoubleUpper(bool bump = true);
+    double getDoubleUpper(bool doBump = true)
+    {
+        if (doBump) bump();
+        seed_t maskedSeed = mSeed & 0xfffffffffffffULL;
+        if (maskedSeed == 0) return 1.0;
+        return  ldexp(static_cast<double>(maskedSeed), -52);
+    }
     
     // Return long in [LONG_MIN,LONG_MAX]
-    long getLong(bool bump = true);
+    long getLong(bool doBump = true)
+    {
+        if (doBump) bump();
+        return static_cast<long>(mSeed & ULONG_MAX);
+    }
     
     // Return long in [0,LONG_MAX]
-    long getPositive(bool bump = true);
+    long getPositive(bool doBump = true)
+    {
+        if (doBump) bump();
+        return static_cast<long>(mSeed & LONG_MAX);
+    }
     
     // Return ulong in [0,ULONG_MAX]
-    unsigned long getUnsigned(bool bump = true);
+    unsigned long getUnsigned(bool doBump = true)
+    {
+        if (doBump) bump();
+        return static_cast<unsigned long>(mSeed & ULONG_MAX);
+    }
     
-    void seed(uint64_t seed);
+    void seed(seed_t seed);
     void init();
     
     Rand64& operator^=(const Rand64& r)
@@ -75,7 +100,38 @@ public:
     };
     void xorString(const char* t, int& i);
     void xorChar(unsigned char c, unsigned i);
-    void bump();
+    void bump()
+    {
+        // This is the xorshift64* PRNG.
+        mSeed ^= mSeed >> 12;
+        mSeed ^= mSeed << 25;
+        mSeed ^= mSeed >> 27;
+        mSeed *= RAND64_MULT;
+    }
+
+    static double GetDoubleLower(bool doBump = true)
+    { return Common.getDoubleLower(doBump); }
+    static double GetDoubleUpper(bool doBump = true)
+    { return Common.getDoubleUpper(doBump); }
+    static long GetLong(bool doBump = true)
+    { return Common.getLong(doBump); }
+    static long GetPositive(bool doBump = true)
+    { return Common.getPositive(doBump); }
+    static unsigned long GetUnsigned(bool doBump = true)
+    { return Common. getUnsigned(doBump); }
+    static void Seed(seed_t s)
+    { Common.seed(s); }
+    static void Init()
+    { Common.init(); }
+    static void XorString(const char* t, int& i)
+    { Common.xorString(t, i); }
+    static void XorChar(unsigned char c, unsigned i)
+    { Common.xorChar(c, i); }
+    static void Bump()
+    { Common.bump(); }
+
+private:
+    static Rand64   Common;
 };
 
 #endif  // INCLUDE_RAND48_H
