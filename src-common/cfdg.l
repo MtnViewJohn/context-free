@@ -337,7 +337,7 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
 {
     unsigned int length = 0;
     for (size_t i = 0; i < len; ++i, ++length) {
-        char c = txt[i];
+        unsigned char c = static_cast<unsigned char>(txt[i]);
         if (c == '\0')
             LexerError("Invalid UTF-8 encoding: ASCII null character");
         if ((c & 0x80) == 0) continue;
@@ -359,7 +359,7 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         }
         
         // Compute the Unicode code point
-        unsigned long code = c >> j;
+        unsigned long code = (c & 0x7f) >> j;
         size_t k = 1;
         for (; k < j; ++k) {
             if ((txt[i + k] & 0xc0) != 0x80) {
