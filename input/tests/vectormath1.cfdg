@@ -1,0 +1,19 @@
+startshape foo
+
+
+shape foo {
+  cs = (1,1)+(1,0)
+  CIRCLE[s cs]
+  cs2 = vec(0.5,2) + (0,0.5)
+  CIRCLE[s cs2 b 1]
+  CIRCLE[s ((0.25,0) + vec(0.25,2))]
+  CIRCLE[s dot((1,2),(1.9…2.1,1)) y 2.5]
+  
+  v3 = cross((1,2,-3),(3,-2,4))
+  CIRCLE[s v3[0,2] y v3[2]]
+  loop 13 [y -1]
+    CIRCLE[sat 1 b 1 y -2 s 0.5 1]
+  loop 2 [x 1]
+    CIRCLE[sat 1 b 1 x -0.5 -8 s 1 0.5]
+}
+
