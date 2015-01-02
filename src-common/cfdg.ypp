@@ -142,7 +142,7 @@ namespace AST {
 %left '*' '/'
 %left NOT NEG POS    /* negation--unary minus, unary identity */
 %right '^'    /* exponentiation */
-%type <expression> exp exp2 exp3 expfunc exp2func explist arglist parameter_spec letBody
+%type <expression> exp exp2 exp3 expfunc explist arglist parameter_spec letBody
 %type <mod> modification modification_v2 buncha_adjustments
 %type <term> adjustment
 %type <component> element element_simple
@@ -162,7 +162,7 @@ namespace AST {
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP USER_ARRAYNAME fileString fileNameSpace shapeName
 %destructor { } directive_string
 %destructor { delete $$; } definition_header global_definition_header function_definition_header global_definition definition
-%destructor { delete $$; } exp exp2 exp3 expfunc exp2func explist arglist parameter_spec letBody
+%destructor { delete $$; } exp exp2 exp3 expfunc explist arglist parameter_spec letBody
 %destructor { delete $$; } adjustment
 %destructor { delete $$; } modification modification_v2 buncha_adjustments
 %destructor { driver.pop_repContainer(nullptr); delete $$; } loopHeader_v2
@@ -1176,6 +1176,12 @@ exp[res]:
         | 
         expfunc             { $res = $expfunc; }
         |
+        USER_STRING[funcName] '(' arglist ')'   {
+            str_ptr func($funcName); $funcName = nullptr;
+            exp_ptr args($arglist);  $arglist = nullptr;
+            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, true);
+        }
+        |
         '-' exp[unop]       { $res = new ASToperator('N', $unop, nullptr);; }
         |
         '+' exp[unop]       { $res = new ASToperator('P', $unop, nullptr);; }
@@ -1191,64 +1197,10 @@ exp[res]:
         }
         ;
 
-exp2[res]: 
-        USER_RATIONAL        { $res = new ASTreal(*$USER_RATIONAL, @res); delete $USER_RATIONAL; $USER_RATIONAL = nullptr; }
+exp2[res]:
+        exp2[l] ',' exp3[r]     { $res = $l->append($r); }
         |
-        CF_INFINITY          { $res = new ASTreal(Renderer::Infinity, @res); }
-        |
-        exp2func             { $res = $exp2func; }
-        |
-        exp2[start] RANGEOP exp2[end] {
-            exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand", std::move(pair), driver.mSeed, @start, @res);
-        }
-        |
-        exp2[center] PLUSMINUSOP exp2[range] {
-            exp_ptr pair($center->append($range)); $center = nullptr; $range = nullptr;
-            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res);
-        }
-        | 
-        exp2[l] ',' exp2[r]        { $res = $l->append($r);   }
-        | 
-        exp2[l] '+' exp2[r]        { $res = new ASToperator('+', $l, $r); }
-        | 
-        exp2[l] '-' exp2[r]        { $res = new ASToperator('-', $l, $r); }
-        | 
-        exp2[l] '_' exp2[r]        { $res = new ASToperator('_', $l, $r); }
-        | 
-        exp2[l] '*' exp2[r]        { $res = new ASToperator('*', $l, $r); }
-        | 
-        exp2[l] '/' exp2[r]        { $res = new ASToperator('/', $l, $r); }
-        | 
-        '-' exp2[un]  %prec NEG    { $res = new ASToperator('N', $un, nullptr); }
-        | 
-        '+' exp2[un]  %prec POS    { $res = new ASToperator('P', $un, nullptr); }
-        | 
-        NOT exp2[un]               { $res = new ASToperator('!', $un, nullptr); }
-        | 
-        exp2[l] '^' exp2[r]        { $res = new ASToperator('^', $l, $r); }
-        | 
-        exp2[l] LT exp2[r]         { $res = new ASToperator('<', $l, $r); }
-        | 
-        exp2[l] LE exp2[r]         { $res = new ASToperator('L', $l, $r); }
-        | 
-        exp2[l] GT exp2[r]         { $res = new ASToperator('>', $l, $r); }
-        | 
-        exp2[l] GE exp2[r]         { $res = new ASToperator('G', $l, $r); }
-        | 
-        exp2[l] EQ exp2[r]         { $res = new ASToperator('=', $l, $r); }
-        | 
-        exp2[l] NEQ exp2[r]        { $res = new ASToperator('n', $l, $r); }
-        | 
-        exp2[l] AND exp2[r]        { $res = new ASToperator('&', $l, $r); }
-        | 
-        exp2[l] OR exp2[r]         { $res = new ASToperator('|', $l, $r); }
-        | 
-        exp2[l] XOR exp2[r]        { $res = new ASToperator('X', $l, $r); }
-        | 
-        '(' exp2[e] ')'            { $res = new ASTparen($e); }
-        | 
-        modification               { $res = $modification; }
+        exp3                    { $res = $exp3; }
         ;
 
 exp3[res]:
@@ -1256,7 +1208,13 @@ exp3[res]:
         |
         CF_INFINITY          { $res = new ASTreal(Renderer::Infinity, @res); }
         |
-        exp2func             { $res = $exp2func; }
+        expfunc              { $res = $expfunc; }
+        |
+        USER_STRING[funcName] '(' arglist ')'   {
+            str_ptr func($funcName); $funcName = nullptr;
+            exp_ptr args($arglist);  $arglist = nullptr;
+            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, false);
+        }
         |
         exp3[start] RANGEOP exp3[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
@@ -1315,12 +1273,6 @@ expfunc:
             $expfunc = driver.MakeFunction(std::move(func), nullptr, @funcName, @2 + @3, false);
         }
         | 
-        USER_STRING[funcName] '(' arglist ')'   {
-            str_ptr func($funcName); $funcName = nullptr;
-            exp_ptr args($arglist);  $arglist = nullptr;
-            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, true);
-        }
-        | 
         USER_ARRAYNAME '[' exp2 ']'   { 
             str_ptr func($USER_ARRAYNAME); $USER_ARRAYNAME = nullptr;
             exp_ptr args($exp2);           $exp2 = nullptr;
@@ -1333,6 +1285,12 @@ expfunc:
             $expfunc = driver.MakeFunction(std::move(func), std::move(args), @IF, @exp2, false);
         }
         |
+        USER_STRING '(' BECOMES ')'   {
+            str_ptr func($USER_STRING); $USER_STRING = nullptr;
+            exp_ptr args(new ASTexpression(@$, false, false, AST::ReuseType));
+            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @USER_STRING, @BECOMES, false);
+        }
+        |
         letHeader letBody {
             driver.pop_repContainer(nullptr);
             cont_ptr vars($letHeader); $letHeader = nullptr;
@@ -1343,49 +1301,6 @@ expfunc:
         USER_STRING { 
             str_ptr var($USER_STRING); $USER_STRING = nullptr;
             $expfunc = driver.MakeVariable(*var, @USER_STRING);
-        }
-        ;
-
-exp2func:
-        USER_STRING[funcName] '(' ')'   { 
-            str_ptr func($funcName); $funcName = nullptr;
-            $exp2func = driver.MakeFunction(std::move(func), nullptr, @funcName, @2 + @3, false);
-        }
-        | 
-        USER_STRING[funcName] '(' arglist ')'   {
-            str_ptr func($funcName); $funcName = nullptr;
-            exp_ptr args($arglist);  $arglist = nullptr;
-            $exp2func = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, false);
-        }
-        | 
-        USER_ARRAYNAME '[' exp2 ']'   { 
-            str_ptr func($USER_ARRAYNAME); $USER_ARRAYNAME = nullptr;
-            exp_ptr args($exp2);           $exp2 = nullptr;
-            $exp2func = driver.MakeArray(std::move(func), std::move(args), @USER_ARRAYNAME, @exp2);
-        }
-        |
-        IF '(' exp2 ')'   { 
-            str_ptr func(new std::string("if"));
-            exp_ptr args($exp2); $exp2 = nullptr;
-            $exp2func = driver.MakeFunction(std::move(func), std::move(args), @IF, @exp2, false);
-        }
-        |
-        USER_STRING '(' BECOMES ')'   { 
-            str_ptr func($USER_STRING); $USER_STRING = nullptr;
-            exp_ptr args(new ASTexpression(@$, false, false, AST::ReuseType));
-            $exp2func = driver.MakeFunction(std::move(func), std::move(args), @USER_STRING, @BECOMES, false);
-        }
-        |
-        letHeader letBody {
-            driver.pop_repContainer(nullptr);
-            cont_ptr vars($letHeader); $letHeader = nullptr;
-            exp_ptr exp($letBody); $letBody = nullptr;
-            $exp2func = driver.MakeLet(@letHeader, std::move(vars), std::move(exp));
-        }
-        |
-        USER_STRING { 
-            str_ptr var($USER_STRING); $USER_STRING = nullptr;
-            $exp2func = driver.MakeVariable(*var, @USER_STRING);
         }
         ;
 
