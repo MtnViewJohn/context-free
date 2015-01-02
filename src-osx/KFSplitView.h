@@ -58,8 +58,8 @@
 - (void)splitViewDidCollapseSubview:(NSNotification *)notification;
 - (void)splitViewDidExpandSubview:(NSNotification *)notification;
 
-- (void)splitView:(id)sender didDoubleClickInDivider:(int)index;
-- (void)splitView:(id)sender didFinishDragInDivider:(int)index;
+- (void)splitView:(id)sender didDoubleClickInDivider:(NSInteger)index;
+- (void)splitView:(id)sender didFinishDragInDivider:(NSInteger)index;
 
 @end
 

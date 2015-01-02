@@ -38,11 +38,6 @@ const NSPoint KFOffScreenPoint = {1000000.0,1000000.0};
 
 static NSMutableSet *kfInUsePositionNames;
 
-#if !defined(NSINTEGER_DEFINED)
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#endif
-
 #pragma mark Utility:
 
 // these are macros (instead of inlines) so that we can use the instance variable kfIsVertical
@@ -59,11 +54,11 @@ typedef unsigned int NSUInteger;
 // proportionally scale a list of integers so that the sum of the resulting list is targetTotal
 // Will fail (return NO) if all integers are zero 
 // Favors not completely zeroing out a nonzero int
-static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal) 
+static BOOL kfScaleUInts(NSUInteger *integers, NSUInteger numInts, NSUInteger targetTotal)
 {
-    unsigned total;
+    NSUInteger total;
     float scalingFactor;
-    int i, numNonZeroInts;
+    NSUInteger i, numNonZeroInts;
     
     // compute total
     total = 0;
@@ -101,9 +96,9 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // Each non-zero integer may be as much as 1 off of its "proper" floating point value due to roundoff,
     // so abs(targetTotal - total) might be as much as numNonZero.  We randomly choose integers to increment (or decrement)
     // to make up the gap, and we choose only from the non-zero values.
-    int gap = abs(targetTotal - total);
-    int closeGapIncrement =  (targetTotal > total) ? 1 : -1;
-    int numRemainingNonZeroInts = numNonZeroInts;
+    NSUInteger gap = (targetTotal > total) ? (targetTotal - total) : (total - targetTotal);
+    NSInteger closeGapIncrement =  (targetTotal > total) ? 1 : -1;
+    NSUInteger numRemainingNonZeroInts = numNonZeroInts;
     for (i = 0; i < numInts && gap > 0; i++)
     {
         if (integers[i] > 0)
@@ -126,13 +121,13 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 + (NSString *)kfDefaultsKeyForName:(NSString *)name;
 - (void)kfSetup;
 - (void)kfSetupResizeCursors;
-- (int)kfGetDividerAtMajCoord:(float)coord;
+- (NSInteger)kfGetDividerAtMajCoord:(float)coord;
 - (void)kfPutDivider:(NSUInteger)offset atMajCoord:(float)coord;
 - (void)kfRecalculateDividerRects;
 - (void)kfMoveCollapsedSubviewsOffScreen;
 - (void)kfSavePositionUsingAutosaveName:(id)sender;
 
-- (void)kfLayoutSubviewsUsingThicknesses:(unsigned *)subviewThicknesses;
+- (void)kfLayoutSubviewsUsingThicknesses:(NSUInteger *)subviewThicknesses;
 
 @end
 
@@ -556,7 +551,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // the delegate
 - (void)adjustSubviews
 {
-    int i, numSubviews;
+    NSUInteger i, numSubviews;
     NSArray *subviews;
     
     // The 'thickness' of a subview will mean the amount of space along
@@ -567,7 +562,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // Ex 1: The thickness of a collapsed subview is 0.
     // Ex 2: For an uncollapsed subview in a horizontal (standard direction) splitview,
     //       thickness means height.
-    unsigned *subviewThicknesses;
+    NSUInteger *subviewThicknesses;
     
     // setup 
     subviews = [self subviews];
@@ -577,12 +572,12 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
         return;
     }
     
-    subviewThicknesses = malloc(sizeof(unsigned)*numSubviews);
+    subviewThicknesses = malloc(sizeof(NSUInteger)*numSubviews);
     
     // Fill out subviewThicknesses array.
     // Also keep track of the total thickness of all subviews, and 
     // of the first expanded subview
-    unsigned totalSubviewThicknesses = 0;
+    NSUInteger totalSubviewThicknesses = 0;
     NSInteger firstExpandedSubviewIndex = NSNotFound;
     for (i = 0; i < numSubviews; i++)
     {
@@ -602,7 +597,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // Compute new thicknesses for subviews.
     
     // In the end, the subview thicknesses should sum to the thickness of the splitview minus the space occupied by dividers.
-    unsigned targetTotalSubviewsThickness = KFMAX(floor(KFMAJORDIMOFSIZE([self frame].size) - [self dividerThickness]*(numSubviews - 1)), 0);
+    NSUInteger targetTotalSubviewsThickness = KFMAX(floor(KFMAJORDIMOFSIZE([self frame].size) - [self dividerThickness]*(numSubviews - 1)), 0);
     
     // If at least one of the subviews has positive thickness
     if (totalSubviewThicknesses != 0)
@@ -637,7 +632,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // 
 // Does not currently put collapsed subviews off screen or do divider placement.
 // Could be done efficiently here, but would duplicate functionality of other methods.
-- (void)kfLayoutSubviewsUsingThicknesses:(unsigned *)subviewThicknesses
+- (void)kfLayoutSubviewsUsingThicknesses:(NSUInteger *)subviewThicknesses
 {
     NSInteger i, lastPositiveThicknessSubviewIndex, numSubviews;
     float minorDimOfSplitViewSize;
@@ -742,7 +737,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 - (void)drawRect:(NSRect)rect
 {
-    int i, numDividers;
+    NSUInteger i, numDividers;
 
     numDividers = [kfDividerRects count];
     for (i = 0; i < numDividers; i++)
@@ -753,7 +748,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 // returns the index ('offset' in Apple's docs) of the divider under the
 // given coordinate, or NSNotFound if there isn't a divider there.
-- (int)kfGetDividerAtMajCoord:(float)coord
+- (NSInteger)kfGetDividerAtMajCoord:(float)coord
 {
     NSInteger i, numDividers, result;
     float curDividerMinimumMajorCoord, dividerThickness;
@@ -836,7 +831,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 - (void)resetCursorRects
 {
-    int i, numDividers;
+    NSUInteger i, numDividers;
 
     numDividers = [kfDividerRects count];
     for (i = 0; i < numDividers; i++)
@@ -875,7 +870,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 {
     NSArray* delegateAutoRegNotifications;
     NSArray* delegateMethodNames;
-    int i, numAutoRegNotifications;
+    NSUInteger i, numAutoRegNotifications;
     SEL methodSelector;
 
     delegateAutoRegNotifications = [NSArray arrayWithObjects:
@@ -1046,7 +1041,7 @@ static NSString *savedPositionIsVerticalKey		= @"isVertical";
         if ([[positionDict objectForKey:savedPositionVersionKey] intValue] == 2)
         {
             NSArray *subviews, *subviewPositionsArray;
-            int numSubviews, numSavedSubviews, numSettableSubviews, i;
+            NSUInteger numSubviews, numSavedSubviews, numSettableSubviews, i;
             
             // set subview positions
             subviews = [self subviews];
@@ -1089,7 +1084,7 @@ static NSString *savedPositionIsVerticalKey		= @"isVertical";
     // save subview positions
     NSArray *subviews;
     NSMutableArray *subviewPositionsArray;
-    int numSubviews, i;
+    NSUInteger numSubviews, i;
     
     subviews = [self subviews];
     numSubviews = [subviews count];
