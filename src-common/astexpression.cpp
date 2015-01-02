@@ -92,6 +92,9 @@ namespace AST {
             { "mod",        ASTfunction::Mod },
             { "divides",    ASTfunction::Divides },
             { "div",        ASTfunction::Div },
+            { "dot",        ASTfunction::Dot },
+            { "cross",      ASTfunction::Cross },
+            { "vec",        ASTfunction::Vec },
             { "min",        ASTfunction::Min },
             { "max",        ASTfunction::Max },
             { "ftime",      ASTfunction::Ftime },
@@ -283,7 +286,8 @@ namespace AST {
     };
 
     ASToperator::ASToperator(char o, ASTexpression* l, ASTexpression* r)
-    : ASTexpression(r ? (l->where + r->where) : l->where), op(o), left(l), right(r) 
+    : ASTexpression(r ? (l->where + r->where) : l->where), op(o), tupleSize(1),
+      left(l), right(r)
     {
         static const std::string Ops("NP!+-*/^_<>LG=n&|X");
         size_t pos = Ops.find(op);
@@ -645,18 +649,18 @@ namespace AST {
     int
     ASToperator::evaluate(double* res, int length, RendererAST* rti) const
     {
-        double l = 0.0;
-        double r = 0.0;
+        double l[AST::MaxVectorSize];
+        double r[AST::MaxVectorSize];
         
         if (res && length < 1)
             return -1;
         
         if (mType == FlagType && op == '+') {
-            if (left->evaluate(res ? &l : nullptr, 1, rti) != 1)
+            if (left->evaluate(res ? l : nullptr, 1, rti) != 1)
                 return -1;
-            if (!right || right->evaluate(res ? &r : nullptr, 1, rti) != 1)
+            if (!right || right->evaluate(res ? r : nullptr, 1, rti) != 1)
                 return -1;
-            int f = static_cast<int>(l) | static_cast<int>(r);
+            int f = static_cast<int>(l[0]) | static_cast<int>(r[0]);
             if (res)
                 *res = static_cast<double>(f);
             return 1;
@@ -667,36 +671,43 @@ namespace AST {
             return -1;
         }
         
-        if (left->evaluate(res ? &l : nullptr, 1, rti) != 1) {
+        int leftnum = left->evaluate(res ? l : nullptr, AST::MaxVectorSize, rti);
+        if (leftnum == -1) {
             CfdgError::Error(left->where, "illegal operand");
             return -1;
         }
         
         // short-circuit evaluate && and ||
         if (res && (op == '&' || op == '|')) {
-            if (l != 0.0 && op == '|') {
-                *res = l;
+            if (l[0] != 0.0 && op == '|') {
+                *res = l[0];
                 return 1;
             }
-            if (l == 0.0 && op == '&') {
+            if (l[0] == 0.0 && op == '&') {
                 *res = 0.0;
                 return 1;
             }
         }
         
-        int rightnum = right ? right->evaluate(res ? &r : nullptr, 1, rti) : 0;
+        int rightnum = right ? right->evaluate(res ? r : nullptr, AST::MaxVectorSize, rti) : 0;
+        if (right && rightnum == -1) {
+            CfdgError::Error(right->where, "illegal operand");
+            return -1;
+        }
         
         if (rightnum == 0 && (op == 'N' || op == 'P' || op == '!')) {
             if (res) {
                 switch (op) {
                     case 'P':
-                        *res = l;
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = l[i];
                         break;
                     case 'N':
-                        *res = -l;
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = -l[i];
                         break;
                     case '!':
-                        *res = (l == 0.0) ? 1.0 : 0.0;
+                        *res = (l[0] == 0.0) ? 1.0 : 0.0;
                         break;
                     default:
                         return -1;
@@ -705,60 +716,67 @@ namespace AST {
             return 1;
         }
         
-        if (rightnum != 1) {
-            CfdgError::Error(left->where, "illegal operand");
-            return -1;
-        }
-        
-        
         if (res) {
             switch(op) {
                 case '+':
-                    *res = l + r;
+                    for (int i = 0 ; i < tupleSize; ++i)
+                        res[i] = l[i] + r[i];
                     break;
                 case '-':
-                    *res = l - r;
+                    for (int i = 0 ; i < tupleSize; ++i)
+                        res[i] = l[i] - r[i];
                     break;
                 case '_':
-                    *res = l - r > 0.0 ? l - r : 0.0;
+                    for (int i = 0 ; i < tupleSize; ++i)
+                        res[i] = ((l[i] - r[i]) > 0.0) ? (l[i] - r[i]) : 0.0;
                     break;
                 case '*':
-                    *res = l * r;
+                    for (int i = 0 ; i < tupleSize; ++i)
+                        res[i] = l[i] * r[i];
                     break;
                 case '/':
-                    *res = l / r;
+                    for (int i = 0 ; i < tupleSize; ++i)
+                        res[i] = l[i] / r[i];
                     break;
                 case '<':
-                    *res = (l < r) ? 1.0 : 0.0;
+                    *res = (l[0] < r[0]) ? 1.0 : 0.0;
                     break;
                 case 'L':
-                    *res = (l <= r) ? 1.0 : 0.0;
+                    *res = (l[0] <= r[0]) ? 1.0 : 0.0;
                     break;
                 case '>':
-                    *res = (l > r) ? 1.0 : 0.0;
+                    *res = (l[0] > r[0]) ? 1.0 : 0.0;
                     break;
                 case 'G':
-                    *res = (l >= r) ? 1.0 : 0.0;
+                    *res = (l[0] >= r[0]) ? 1.0 : 0.0;
                     break;
                 case '=':
-                    *res = (l == r) ? 1.0 : 0.0;
+                    *res = 0.0;
+                    for (int i = 0; i < tupleSize; ++i)
+                        if (l[i] != r[i])
+                            return 1;
+                    *res = 1.0;
                     break;
                 case 'n':
-                    *res = (l != r) ? 1.0 : 0.0;
+                    *res = 1.0;
+                    for (int i = 0; i < tupleSize; ++i)
+                        if (l[i] != r[i])
+                            return 1;
+                    *res = 0.0;
                     break;
                 case '&':
                 case '|':
-                    *res = r;
+                    *res = r[0];
                     break;
                 case 'X':
-                    *res = ((l && !r) || (!l && r)) ? 1.0 : 0.0;
+                    *res = ((l[0] && !r[0]) || (!l[0] && r[0])) ? 1.0 : 0.0;
                     break;
                 case '^':
-                    *res = pow(l, r);
+                    *res = pow(l[0], r[0]);
                     if (isNatural && *res < 9007199254740992.) {
                         uint64_t pow = 1;
-                        uint64_t il = static_cast<uint64_t>(l);
-                        uint64_t ir = static_cast<uint64_t>(r);
+                        uint64_t il = static_cast<uint64_t>(l[0]);
+                        uint64_t ir = static_cast<uint64_t>(r[0]);
                         while (ir) {
                             if (ir & 1) pow *= il;
                             il *= il;
@@ -775,7 +793,7 @@ namespace AST {
                 return -1;
         }
         
-        return 1;
+        return tupleSize;
     }
     
     static double MinMax(const ASTexpression* e, RendererAST* rti, bool isMin)
@@ -800,15 +818,55 @@ namespace AST {
             CfdgError::Error(where, "Non-numeric expression in a numeric context");
             return -1;
         }
-        if (res && length < 1)
-            return -1;
+        
+        const int destLength = functype == Cross ? 3
+                             : functype == Vec   ? static_cast<int>(floor(random))
+                             : 1;
         
         if (!res)
-            return 1;
+            return destLength;
+        
+        if (length < destLength)
+            return -1;
         
         if (functype == Min || functype == Max) {
             *res = MinMax(arguments.get(), rti, functype == Min);
             return 1;
+        }
+        
+        if (functype == Dot) {
+            double l[AST::MaxVectorSize];
+            double r[AST::MaxVectorSize];
+            int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
+            int rc = arguments->getChild(1)->evaluate(r, AST::MaxVectorSize, rti);
+            if (lc == rc && lc > 1) {
+                *res = 0.0;
+                for (int i = 0; i < lc; ++i)
+                    *res += l[i] * r[i];
+            }
+            return 1;
+        }
+        
+        if (functype == Cross) {
+            double l[3];
+            double r[3];
+            if (arguments->getChild(0)->evaluate(l, 3, rti) == 3 &&
+                arguments->getChild(1)->evaluate(r, 3, rti) == 3)
+            {
+                res[0] = l[1]*r[2] - l[2]*r[1];
+                res[1] = l[2]*r[0] - l[0]*r[2];
+                res[2] = l[0]*r[1] - l[1]*r[0];
+            }
+            return 3;
+        }
+
+        if (functype == Vec) {
+            double l[AST::MaxVectorSize];
+            int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
+            if (lc >= 1)
+                for (int i = 0; i < destLength; ++i)
+                    res[i] = l[i % lc];
+            return destLength;
         }
         
         double a[2];
@@ -962,6 +1020,9 @@ namespace AST {
             case NotAFunction:
             case Min:
             case Max:
+            case Dot:
+            case Cross:
+            case Vec:
                 return -1;
         }
         
@@ -1440,6 +1501,9 @@ namespace AST {
             { ASTfunction::Atan2,       "\x99\x1B\xC9\xE0\x3F\xA4" },
             { ASTfunction::Divides,     "\x78\x8E\xC8\x2C\x1C\x96" },
             { ASTfunction::Div,         "\x64\xEC\x5B\x4B\xEE\x2B" },
+            { ASTfunction::Dot,         "\x60\xAA\xB7\xE1\xB9\x06" },
+            { ASTfunction::Cross,       "\x39\x38\x40\xE5\x93\xF8" },
+            { ASTfunction::Vec,         "\xE1\x75\x95\xC9\x80\xCF" },
             { ASTfunction::Mod,         "\x0F\xE3\xFE\x5F\xBF\xBF" },
             { ASTfunction::Min,         "\xA2\x42\xA3\x49\xB1\x19" },
             { ASTfunction::Max,         "\xD3\x55\x5C\x0D\xD8\x51" },
@@ -1594,22 +1658,42 @@ namespace AST {
         e.append(entString);
     }
     
+    static ASTexpression*
+    MakeResult(const double* result, int length, const ASTexpression* from)
+    {
+        ASTreal* r = new ASTreal(result[0], from->where);
+        r->mType = from->mType;
+        r->isNatural = from->isNatural;
+        
+        if (length > 1) {
+            ASTcons* l = new ASTcons{r};
+            for (int i = 1; i < length; ++i) {
+                ASTreal* r = new ASTreal(result[i], from->where);
+                r->mType = from->mType;
+                r->isNatural = from->isNatural;
+                l->append(r);
+            }
+            return l;
+        }
+        
+        return r;
+    }
+    
     ASTexpression*
     ASTfunction::simplify()
     {
+        Simplify(arguments);
+        
         if (isConstant) {
-            double result;
-            if (evaluate(&result, 1) != 1) {
+            double result[AST::MaxVectorSize];
+            int len = evaluate(result, AST::MaxVectorSize);
+            if (len < 0) {
                 return this;
             }
             
-            ASTreal* r = new ASTreal(result, where);
-            r->isNatural = isNatural;
-            
+            ASTexpression* r = MakeResult(result, len, this);
             delete this;
             return r;
-        } else {
-            Simplify(arguments);
         }
         
         return this;
@@ -1743,15 +1827,12 @@ namespace AST {
         Simplify(right);
         
         if (isConstant && (mType == NumericType || mType == FlagType)) {
-            double result;
-            if (evaluate(&result, 1) != 1) {
-                return nullptr;
+            double result[AST::MaxVectorSize];
+            if (evaluate(result, tupleSize) != tupleSize) {
+                return this;
             }
             
-            ASTreal* r = new ASTreal(result, where);
-            r->mType = mType;
-            r->isNatural = isNatural;
-            
+            ASTexpression* r = MakeResult(result, tupleSize, this);
             delete this;
             return r;
         }
@@ -1819,7 +1900,9 @@ namespace AST {
                 isConstant = true;
                 mLocality = PureLocal;
                 int argcount = 0;
+                size_t argnum = 0;
                 if (arguments) {
+                    argnum = arguments->size();
                     argsLoc = arguments->where;
                     isConstant = arguments->isConstant;
                     mLocality = arguments->mLocality;
@@ -1831,87 +1914,136 @@ namespace AST {
                         CfdgError::Error(argsLoc, "function arguments must be numeric");
                 }
                 
-                if (functype == ASTfunction::Infinity && argcount == 0) {
-                    arguments.reset(new ASTreal(1.0, argsLoc));
-                    return nullptr;
-                }
-                
-                if (functype == Ftime) {
-                    if (arguments)
-                        CfdgError::Error(argsLoc, "ftime() function takes no arguments");
-                    isConstant = false;
-                    arguments.reset(new ASTreal(1.0, argsLoc));
-                    return nullptr;
-                }
-                
-                if (functype == Frame) {
-                    if (arguments)
-                        CfdgError::Error(argsLoc, "frame() functions takes no arguments");
-                    isConstant = false;
-                    arguments.reset(new ASTreal(1.0, argsLoc));
-                    return nullptr;
-                }
-                
-                if (functype >= Rand_Static && functype <= RandInt) {
-                    if (functype != Rand_Static)
+                switch (functype) {
+                    case Abs:
+                        if (argcount < 1 || argcount > 2)
+                            CfdgError::Error(argsLoc, "function takes one or two arguments");
+                        break;
+                    case Infinity:
+                        if (argcount == 0) {
+                            arguments.reset(new ASTreal(1.0, argsLoc));
+                            argcount = 1;
+                        }   // fall through
+                    case Cos:
+                    case Sin:
+                    case Tan:
+                    case Cot:
+                    case Acos:
+                    case Asin:
+                    case Atan:
+                    case Acot:
+                    case Cosh:
+                    case Sinh:
+                    case Tanh:
+                    case Acosh:
+                    case Asinh:
+                    case Atanh:
+                    case Log:
+                    case Log10:
+                    case Sqrt:
+                    case Exp:
+                    case Floor:
+                    case Ceiling:
+                    case BitNot:
+                    case Factorial:
+                    case Sg:
+                    case IsNatural:
+                        if (argcount != 1)
+                            CfdgError::Error(argsLoc, "Function takes one argument");
+                        break;
+                    case BitOr:
+                    case BitAnd:
+                    case BitXOR:
+                    case BitLeft:
+                    case BitRight:
+                    case Atan2:
+                    case Mod:
+                    case Divides:
+                    case Div:
+                        if (argcount != 2)
+                            CfdgError::Error(argsLoc, "Function takes two arguments");
+                        break;
+                    case Dot:
+                    case Cross:
+                        if (argnum != 2) {
+                            CfdgError::Error(argsLoc, "Dot/cross product takes two vectors");
+                        } else {
+                            int l = arguments->getChild(0)->evaluate(nullptr, 0);
+                            int r = arguments->getChild(1)->evaluate(nullptr, 0);
+                            if (functype == Dot && (l != r || l < 2))
+                                CfdgError::Error(argsLoc, "Dot product takes two vectors of the same length");
+                            if (functype == Cross && (l != 3 || r != 3))
+                                CfdgError::Error(argsLoc, "Cross product takes two vector3s");
+                        }
+                        break;
+                    case Vec:
+                        if (argnum != 2) {
+                            CfdgError::Error(argsLoc, "vec() function takes two arguments");
+                        } else if (!arguments->getChild(1)->isConstant ||
+                                   !arguments->getChild(1)->isNatural ||
+                                    arguments->getChild(1)->evaluate(&random, 1) != 1)
+                        {
+                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be a scalar constant");
+                        } else if (static_cast<int>(floor(random)) < 2 ||
+                                   static_cast<int>(floor(random)) > AST::MaxVectorSize)
+                        {
+                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be >= 2 and <= 99");
+                        }
+                        break;
+                    case Ftime:
+                    case Frame:
+                        if (arguments)
+                            CfdgError::Error(argsLoc, "ftime()/frame() functions takes no arguments");
                         isConstant = false;
-                    
-                    switch (argcount) {
-                    case 0:
-                        arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc),
-                                                     new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc) });
+                        arguments.reset(new ASTreal(1.0, argsLoc));
                         break;
-                    case 1:
-                        arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc), arguments.release() });
+                    case Rand:
+                    case Rand2:
+                    case RandInt:
+                        isConstant = false;
+                    case Rand_Static:
+                        switch (argcount) {
+                            case 0:
+                                arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc),
+                                                             new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc) });
+                                break;
+                            case 1:
+                                arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc), arguments.release() });
+                                break;
+                            case 2:
+                                break;
+                            default:
+                                CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
+                                break;
+                        }
+                        if (!isConstant && functype == Rand_Static) {
+                            CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
+                        }
                         break;
-                    case 2:
-                            break;
-                    default:
-                        CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
+                    case Min:
+                    case Max:
+                        if (argcount < 2)
+                            CfdgError::Error(argsLoc, "Function takes at least two arguments");
                         break;
-                    }
-                    
-                    if (!isConstant && functype == Rand_Static) {
-                        CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
-                    }
-                    
-                    if (functype == RandInt && arguments)
-                        isNatural = arguments->isNatural;
-                    return nullptr;
+                    case NotAFunction:
+                        CfdgError::Error(where, "Unknown function");
+                        break;
                 }
                 
-                if (functype == Abs) {
-                    if (argcount < 1 || argcount > 2) {
-                        CfdgError::Error(argsLoc, "function takes one or two arguments");
-                    }
-                } else if (functype < BitOr) {
-                    if (argcount != 1) {
-                        CfdgError::Error(argsLoc, functype == ASTfunction::Infinity ?
-                                         "function takes zero or one arguments" :
-                                         "function takes one argument");
-                    }
-                } else if (functype < Min) {
-                    if (argcount != 2) {
-                        CfdgError::Error(argsLoc, "function takes two arguments");
-                    }
-                } else {
-                    if (argcount < 2) {
-                        CfdgError::Error(argsLoc, "function takes at least two arguments");
-                    }
-                }
-
-                if (functype == Mod || functype == Abs || functype == Min ||
-                    functype == Max || (functype >= BitNot && functype <= BitRight))
-                {
+                static FuncType mightBeNatural[] = {Mod, Abs, Min, Max, BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight, RandInt};
+                
+                if (std::find(std::begin(mightBeNatural), std::end(mightBeNatural), functype) != std::end(mightBeNatural)) {
                     isNatural = !arguments || arguments->isNatural;
                 }
-                if (functype == Factorial || functype == Sg || functype == IsNatural ||
-                    functype == Div || functype == Divides)
-                {
+                
+                static FuncType mustBeNatural[] = {Factorial, Sg, IsNatural, Div, Divides};
+                
+                if (std::find(std::begin(mustBeNatural), std::end(mustBeNatural), functype) != std::end(mustBeNatural)) {
                     if (arguments && !arguments->isNatural)
                         CfdgError::Error(arguments->where, "function is defined over natural numbers only");
                     isNatural = true;
                 }
+
                 break;
             }
             case CompilePhase::Simplify:
@@ -2321,6 +2453,39 @@ namespace AST {
                 if (mLocality == PureNonlocal)
                     mLocality = ImpureNonlocal;
                 mType = right ? static_cast<expType>(left->mType | right->mType) : left->mType;
+                if (mType == NumericType) {
+                    int ls = left ? left->evaluate(nullptr, 0) : 0;
+                    int rs = right ? right->evaluate(nullptr, 0) : 0;
+                    switch (op) {
+                        case 'N':
+                        case 'P':
+                            tupleSize = ls;
+                            if (rs != 0)
+                                CfdgError::Error(where, "Unitary operators must have only one operand");
+                            break;
+                        case '!':
+                            if (rs != 0 || ls != 1)
+                                CfdgError::Error(where, "Unitary operators must have only one scalar operand");
+                            break;
+                        case '+':
+                        case '-':
+                        case '_':
+                        case '/':
+                        case '*':
+                            tupleSize = ls;
+                        case '=':
+                        case 'n':
+                            if (ls != rs)
+                                CfdgError::Error(where, "Operands must have the same length");
+                            if (ls < 1 || rs < 1)
+                                CfdgError::Error(where, "Binary operators must have two operands");
+                            break;
+                        default:
+                            if (ls != 1 || rs != 1)
+                                CfdgError::Error(where, "Binary operators must have two scalar operands");
+                            break;
+                    }
+                }
                 if (strchr("+_*<>LG=n&|X^!", op))
                     isNatural = left->isNatural && (!right || right->isNatural);
                 
@@ -2671,7 +2836,7 @@ namespace AST {
     ASTmodification::evalConst()
     {
         static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
-            {ASTmodTerm::unknownType,   ASTmodification::NotAClass},
+            { ASTmodTerm::unknownType,  ASTmodification::NotAClass },
             { ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
             { ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
             { ASTmodTerm::z,            ASTmodification::ZClass },

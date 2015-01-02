@@ -91,6 +91,7 @@ namespace AST {
             Sqrt, Exp, Abs, Floor, Ceiling, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
+            Dot, Cross, Vec,
             Min, Max, Ftime, Frame,
             Rand_Static, Rand, Rand2, RandInt
         };
@@ -286,6 +287,7 @@ namespace AST {
     class ASToperator : public ASTexpression {
     public:
         char op;
+        int  tupleSize;
         exp_ptr left;
         exp_ptr right;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
