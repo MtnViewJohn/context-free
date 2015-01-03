@@ -94,6 +94,8 @@ namespace AST {
             { "div",        ASTfunction::Div },
             { "dot",        ASTfunction::Dot },
             { "cross",      ASTfunction::Cross },
+            { "hsb2rgb",    ASTfunction::Hsb2Rgb },
+            { "rgb2hsb",    ASTfunction::Rgb2Hsb },
             { "vec",        ASTfunction::Vec },
             { "min",        ASTfunction::Min },
             { "max",        ASTfunction::Max },
@@ -819,7 +821,7 @@ namespace AST {
             return -1;
         }
         
-        const int destLength = functype == Cross ? 3
+        const int destLength = functype >= Cross && functype <= Rgb2Hsb ? 3
                              : functype == Vec   ? static_cast<int>(floor(random))
                              : 1;
         
@@ -829,44 +831,64 @@ namespace AST {
         if (length < destLength)
             return -1;
         
-        if (functype == Min || functype == Max) {
-            *res = MinMax(arguments.get(), rti, functype == Min);
-            return 1;
-        }
-        
-        if (functype == Dot) {
-            double l[AST::MaxVectorSize];
-            double r[AST::MaxVectorSize];
-            int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
-            int rc = arguments->getChild(1)->evaluate(r, AST::MaxVectorSize, rti);
-            if (lc == rc && lc > 1) {
-                *res = 0.0;
-                for (int i = 0; i < lc; ++i)
-                    *res += l[i] * r[i];
+        switch (functype) {
+            case Min:
+            case Max:
+                *res = MinMax(arguments.get(), rti, functype == Min);
+                return 1;
+            case Dot: {
+                double l[AST::MaxVectorSize];
+                double r[AST::MaxVectorSize];
+                int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
+                int rc = arguments->getChild(1)->evaluate(r, AST::MaxVectorSize, rti);
+                if (lc == rc && lc > 1) {
+                    *res = 0.0;
+                    for (int i = 0; i < lc; ++i)
+                        *res += l[i] * r[i];
+                }
+                return 1;
             }
-            return 1;
-        }
-        
-        if (functype == Cross) {
-            double l[3];
-            double r[3];
-            if (arguments->getChild(0)->evaluate(l, 3, rti) == 3 &&
-                arguments->getChild(1)->evaluate(r, 3, rti) == 3)
-            {
-                res[0] = l[1]*r[2] - l[2]*r[1];
-                res[1] = l[2]*r[0] - l[0]*r[2];
-                res[2] = l[0]*r[1] - l[1]*r[0];
+            case Cross: {
+                double l[3];
+                double r[3];
+                if (arguments->getChild(0)->evaluate(l, 3, rti) == 3 &&
+                    arguments->getChild(1)->evaluate(r, 3, rti) == 3)
+                {
+                    res[0] = l[1]*r[2] - l[2]*r[1];
+                    res[1] = l[2]*r[0] - l[0]*r[2];
+                    res[2] = l[0]*r[1] - l[1]*r[0];
+                }
+                return 3;
             }
-            return 3;
-        }
-
-        if (functype == Vec) {
-            double l[AST::MaxVectorSize];
-            int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
-            if (lc >= 1)
-                for (int i = 0; i < destLength; ++i)
-                    res[i] = l[i % lc];
-            return destLength;
+            case Vec: {
+                double l[AST::MaxVectorSize];
+                int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
+                if (lc >= 1)
+                    for (int i = 0; i < destLength; ++i)
+                        res[i] = l[i % lc];
+                return destLength;
+            }
+            case Hsb2Rgb: {
+                double c[3];
+                if (arguments->evaluate(c, 3, rti) == 3) {
+                    agg::rgba rgb;
+                    HSBColor hsb(c[0], c[1], c[2], 1.0);
+                    hsb.getRGBA(rgb);
+                    res[0] = rgb.r; res[1] = rgb.g; res[2] = rgb.b;
+                }
+                return 3;
+            }
+            case Rgb2Hsb: {
+                double c[3];
+                if (arguments->evaluate(c, 3, rti) == 3) {
+                    agg::rgba rgb(c[0], c[1], c[2], 1.0);
+                    HSBColor hsb(rgb);
+                    res[0] = hsb.h; res[1] = hsb.s; res[2] = hsb.b;
+                }
+                return 3;
+            }
+            default:
+                break;
         }
         
         double a[2];
@@ -1017,12 +1039,7 @@ namespace AST {
                 rti->mRandUsed = true;
                 *res = floor(rti->mCurrentSeed.getDoubleLower() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
                 break;
-            case NotAFunction:
-            case Min:
-            case Max:
-            case Dot:
-            case Cross:
-            case Vec:
+            default:
                 return -1;
         }
         
@@ -1503,6 +1520,8 @@ namespace AST {
             { ASTfunction::Div,         "\x64\xEC\x5B\x4B\xEE\x2B" },
             { ASTfunction::Dot,         "\x60\xAA\xB7\xE1\xB9\x06" },
             { ASTfunction::Cross,       "\x39\x38\x40\xE5\x93\xF8" },
+            { ASTfunction::Hsb2Rgb,     "\xC3\xD4\x57\x04\xAF\x9F" },
+            { ASTfunction::Rgb2Hsb,     "\xD0\x2A\x55\x7A\x53\x97" },
             { ASTfunction::Vec,         "\xE1\x75\x95\xC9\x80\xCF" },
             { ASTfunction::Mod,         "\x0F\xE3\xFE\x5F\xBF\xBF" },
             { ASTfunction::Min,         "\xA2\x42\xA3\x49\xB1\x19" },
@@ -1975,6 +1994,11 @@ namespace AST {
                             if (functype == Cross && (l != 3 || r != 3))
                                 CfdgError::Error(argsLoc, "Cross product takes two vector3s");
                         }
+                        break;
+                    case Hsb2Rgb:
+                    case Rgb2Hsb:
+                        if (argcount != 3)
+                            CfdgError::Error(argsLoc, "RGB/HSB conversion function takes 3 arguments");
                         break;
                     case Vec:
                         if (argnum != 2) {

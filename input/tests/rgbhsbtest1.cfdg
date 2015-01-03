@@ -1,0 +1,9 @@
+startshape foo
+
+shape foo {
+  hsb = rgb2hsb(107/255, 22/255, 65/255)
+  CIRCLE[h hsb[0] sat hsb[1] b hsb[2]]
+  rgb = hsb2rgb(hsb)
+  hsb2 = rgb2hsb(rgb)
+  CIRCLE[h hsb2[0] sat hsb2[1] b hsb2[2] x 1]
+}
