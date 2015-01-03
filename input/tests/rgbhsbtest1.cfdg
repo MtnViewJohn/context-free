@@ -6,4 +6,6 @@ shape foo {
   rgb = hsb2rgb(hsb)
   hsb2 = rgb2hsb(rgb)
   CIRCLE[h hsb2[0] sat hsb2[1] b hsb2[2] x 1]
+  CIRCLE[h hsb y 1]
+  CIRCLE[h hsb2 x 1 1]
 }
