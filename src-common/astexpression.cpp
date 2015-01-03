@@ -1359,18 +1359,22 @@ namespace AST {
                 mask <<= 2 * (modType - ASTmodTerm::hue);
                 hue = false;
             case ASTmodTerm::hue: {
-                if (argcount == 1) {
-                    if ((m.m_ColorAssignment & mask) || (!hue && *color != 0.0)) {
-                        if (rti == nullptr)
-                            throw DeferUntilRuntime();
-                        if (!shapeDest)
-                            RendererAST::ColorConflict(rti, where);
+                if (argcount != 2) {
+                    // One argument changes hue, 3 changes hsb, 4 changes hsba
+                    for (int i = 0; i < argcount; ++i) {
+                        if ((m.m_ColorAssignment & mask) || (!hue && *color != 0.0)) {
+                            if (rti == nullptr)
+                                throw DeferUntilRuntime();
+                            if (!shapeDest)
+                                RendererAST::ColorConflict(rti, where);
+                        }
+                        if (shapeDest)
+                            *color = hue ? HSBColor::adjustHue(*color, modArgs[i])
+                                         : HSBColor::adjust(*color, arg[i]);
+                        else
+                            *color = hue ? *color + modArgs[i] : arg[i];
+                        ++color; mask <<= 2; hue = false;
                     }
-                    if (shapeDest)
-                        *color = hue ? HSBColor::adjustHue(*color, modArgs[0])
-                                     : HSBColor::adjust(*color, arg[0]);
-                    else
-                        *color = hue ? *color + modArgs[0] : arg[0];
                 } else {
                     if ((m.m_ColorAssignment & mask) || *color != 0.0 ||
                         (!hue && *target != 0.0))
@@ -2576,9 +2580,11 @@ namespace AST {
                             modType = ASTmodTerm::sizexyz;
                         
                         switch (modType) {
+                            case ASTmodTerm::hue:
+                                maxCount = 4;
+                                break;
                             case ASTmodTerm::x:
                             case ASTmodTerm::size:
-                            case ASTmodTerm::hue:
                             case ASTmodTerm::sat:
                             case ASTmodTerm::bright:
                             case ASTmodTerm::alpha:
