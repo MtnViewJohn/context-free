@@ -91,7 +91,7 @@ namespace AST {
             Sqrt, Exp, Abs, Floor, Ceiling, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
-            Dot, Cross, Vec,
+            Dot, Cross, Hsb2Rgb, Rgb2Hsb, Vec, 
             Min, Max, Ftime, Frame,
             Rand_Static, Rand, Rand2, RandInt
         };
