@@ -296,6 +296,7 @@
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
 		52D06C1E17667BB400F8D94C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		52D803671A69BCD800047742 /* xorshift64star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xorshift64star.h; path = "src-common/xorshift64star.h"; sourceTree = "<group>"; };
 		52E94E9813650A2E00BB2D96 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		52E94EAD13650C5C00BB2D96 /* qtCanvas.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = qtCanvas.mm; sourceTree = "<group>"; };
 		52E950A31367D3B600BB2D96 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
@@ -462,6 +463,7 @@
 		29B97314FDCFA39411CA2CEA /* CFDA */ = {
 			isa = PBXGroup;
 			children = (
+				52D803671A69BCD800047742 /* xorshift64star.h */,
 				524D22DB13BA01D8002732C2 /* src-unix */,
 				FD2D472B08411DCC00697CE7 /* src-agg */,
 				FD1EF08A0811ADE500FD38C6 /* src-common */,
