@@ -152,7 +152,7 @@ namespace AST {
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
-        mChildChange.modData.mRand64Seed.init();
+        mChildChange.modData.mRand64Seed.seed();
         mChildChange.modData.mRand64Seed.xorString(name.c_str(), i);
     }
     
@@ -329,7 +329,7 @@ namespace AST {
                 s.mParameters = nullptr;
         }
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
-        r->mCurrentSeed.bump();
+        r->mCurrentSeed();
         mChildChange.evaluate(s.mWorldState, true, r);
         s.mAreaCache = s.mWorldState.area();
     }
@@ -342,7 +342,7 @@ namespace AST {
             case replacement:
                 replace(child, r);
                 child.mWorldState.mRand64Seed = r->mCurrentSeed;
-                child.mWorldState.mRand64Seed.bump();
+                child.mWorldState.mRand64Seed();
                 r->processShape(child);
                 break;
             case op:
@@ -422,7 +422,7 @@ namespace AST {
             } else {
                 child.mWorldState.m_transform.premultiply(transforms[i - modsLength]);
             }
-            r->mCurrentSeed.bump();
+            r->mCurrentSeed();
 
             // Specialized mBody.traverse() with cloning behavior
             size_t s = r->mCFstack.size();
@@ -824,7 +824,7 @@ namespace AST {
                 }
 
                 // Set the Modification entropy to parameter name, not its own contents
-                mChildChange.modData.mRand64Seed.init();
+                mChildChange.modData.mRand64Seed.seed();
                 mChildChange.entropyIndex = 0;
                 mChildChange.addEntropy(mName);
                 

@@ -50,7 +50,7 @@ namespace AST {
         }
         
         if (functype == Rand_Static)
-            random = r.getDoubleLower();
+            random = r.getDouble();
     }
     
     ASTfunction::FuncType
@@ -1027,17 +1027,17 @@ namespace AST {
             case Rand: 
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = rti->mCurrentSeed.getDoubleLower() * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
+                *res = rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
                 break;
             case Rand2: 
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = (rti->mCurrentSeed.getDoubleLower() * 2.0 - 1.0) * a[1] + a[0];
+                *res = (rti->mCurrentSeed.getDouble() * 2.0 - 1.0) * a[1] + a[0];
                 break;
             case RandInt: 
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = floor(rti->mCurrentSeed.getDoubleLower() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
+                *res = floor(rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
                 break;
             default:
                 return -1;

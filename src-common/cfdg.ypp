@@ -487,7 +487,7 @@ definition:
             exp_ptr exp($exp2);               $exp2 = nullptr;
             if (var) {
                 if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get())) {
-                    mod->modData.mRand64Seed.seed(0);
+                    mod->modData.mRand64Seed.seed();
                     var->mChildChange.grab(mod);
                 } else {
                     var->mExpression = std::move(exp);
