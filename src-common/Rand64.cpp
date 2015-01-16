@@ -1,7 +1,7 @@
 // Rand64.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2008-2014 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2015 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,26 +28,16 @@
 
 Rand64 Rand64::Common;
 
-void Rand64::seed(seed_t seed)
-{
-    mSeed = seed;
-}
-
-void Rand64::init()
-{
-    mSeed = RAND64_SEED;
-}
-
 void Rand64::xorChar(unsigned char c, unsigned i)
 {
-    mSeed ^= (static_cast<seed_t>(c)) << (i * 8);
+    mSeed.mSeed ^= (static_cast<result_type>(c)) << (i * 8);
 }
 
 void Rand64::xorString(const char* t, int& i)
 {
     for (; *t; ++t) {
         xorChar(static_cast<unsigned char>(*t), static_cast<unsigned>(i));
-        bump();
+        mSeed.discard(1);
         i = (i + 1) & 7;
     }
 }

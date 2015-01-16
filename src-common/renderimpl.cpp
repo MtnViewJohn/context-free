@@ -111,7 +111,7 @@ RendererImpl::init()
     // and before each frame of an animation
     
     mCurrentSeed.seed(static_cast<unsigned long long>(mVariation));
-    mCurrentSeed.bump();
+    mCurrentSeed();
     
     Shape dummy;
     for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
@@ -330,7 +330,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         m_stats.toDoCount--;
         
         try {
-            const ASTrule* rule = m_cfdg->findRule(s.mShapeType, s.mWorldState.mRand64Seed.getDoubleLower());
+            const ASTrule* rule = m_cfdg->findRule(s.mShapeType, s.mWorldState.mRand64Seed.getDouble());
             m_drawingMode = false;      // shouldn't matter
             rule->traverse(s, false, this);
         } catch (CfdgError& e) {

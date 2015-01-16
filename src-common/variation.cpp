@@ -101,7 +101,7 @@ int Variation::random(int letters)
 {
     static bool seeded = false;
     if (!seeded) {
-        Rand64::seed_t randomSeed = static_cast<Rand64::seed_t>(time(0));
+        auto randomSeed = static_cast<Rand64::result_type>(time(0));
 #ifdef WIN32
         HMODULE hLib = LoadLibrary(TEXT("ADVAPI32.DLL"));
         if (hLib) {
@@ -123,14 +123,8 @@ int Variation::random(int letters)
         Rand64::Seed(randomSeed);
         seeded = true;
     }
-
-    int min = recommendedMin();
-    int max = recommendedMax(letters);
-    for (;;) {
-        unsigned long rnd = Rand64::GetUnsigned();
-        if (rnd + max > rnd)
-            return min + rnd % (max - min + 1);
-    }
+    
+    return Rand64::GetInt(recommendedMin(), recommendedMax(letters));
 }
 
 #ifdef TEST_MAIN
