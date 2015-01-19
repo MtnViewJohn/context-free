@@ -101,10 +101,26 @@ namespace AST {
             { "max",        ASTfunction::Max },
             { "ftime",      ASTfunction::Ftime },
             { "frame",      ASTfunction::Frame },
-            { "rand_static", ASTfunction::Rand_Static },
-            { "rand",       ASTfunction::Rand },
-            { "rand+/-",    ASTfunction::Rand2 },
-            { "randint",    ASTfunction::RandInt }
+            { "rand_static",        ASTfunction::Rand_Static },
+            { "rand",               ASTfunction::Rand },
+            { "rand+/-",            ASTfunction::Rand2 },
+            { "rand::exponential",  ASTfunction::RandExponential },
+            { "rand::gamma",        ASTfunction::RandGamma },
+            { "rand::weibull",      ASTfunction::RandWeibull },
+            { "rand::extremeV",     ASTfunction::RandExtremeValue },
+            { "rand::normal",       ASTfunction::RandNormal },
+            { "rand::lognormal",    ASTfunction::RandLogNormal },
+            { "rand::chisquared",   ASTfunction::RandChiSquared },
+            { "rand::cauchy",       ASTfunction::RandCauchy },
+            { "rand::fisherF",      ASTfunction::RandFisherF },
+            { "rand::studentT",     ASTfunction::RandStudentT },
+            { "randint",            ASTfunction::RandInt },
+            { "randint::bernoulli", ASTfunction::RandBernoulli },
+            { "randint::binomial",  ASTfunction::RandBinomial },
+            { "randint::negbinomial", ASTfunction::RandNegBinomial },
+            { "randint::poisson",   ASTfunction::RandPoisson },
+            { "randint::discrete",  ASTfunction::RandDiscrete },
+            { "randint::geometric", ASTfunction::RandGeometric }
         };
         
 		auto nameItem = NameMap.find(func);
@@ -887,6 +903,13 @@ namespace AST {
                 }
                 return 3;
             }
+            case RandDiscrete: {
+                double w[AST::MaxVectorSize];
+                int wc = arguments->evaluate(w, AST::MaxVectorSize, rti);
+                if (wc >= 1)
+                    *res = rti->mCurrentSeed.getDiscrete(wc, w);
+                return 1;
+            }
             default:
                 break;
         }
@@ -1034,10 +1057,85 @@ namespace AST {
                 rti->mRandUsed = true;
                 *res = (rti->mCurrentSeed.getDouble() * 2.0 - 1.0) * a[1] + a[0];
                 break;
-            case RandInt: 
+            case RandExponential:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getExponential(a[0]);
+                break;
+            case RandGamma:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getGamma(a[0], a[1]);
+                break;
+            case RandWeibull:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getWeibull(a[0], a[1]);
+                break;
+            case RandExtremeValue:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getExtremeValue(a[0], a[1]);
+                break;
+            case RandNormal:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getNormal(a[0], a[1]);
+                break;
+            case RandLogNormal:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getLogNormal(a[0], a[1]);
+                break;
+            case RandChiSquared:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getChiSquared(a[0]);
+                break;
+            case RandCauchy:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getCauchy(a[0], a[1]);
+                break;
+            case RandFisherF:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getFisherF(a[0], a[1]);
+                break;
+            case RandStudentT:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getStudentT(a[0]);
+                break;
+            case RandInt:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
                 *res = floor(rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]));
+                break;
+            case RandBernoulli:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = rti->mCurrentSeed.getBernoulli(a[0]) ? 1.0 : 0.0;
+                break;
+            case RandBinomial:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = floor(rti->mCurrentSeed.getBinomial(a[0], a[1]));
+                break;
+            case RandNegBinomial:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = floor(rti->mCurrentSeed.getNegativeBinomial(a[0], a[1]));
+                break;
+            case RandPoisson:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = floor(rti->mCurrentSeed.getPoisson(a[0]));
+                break;
+            case RandGeometric:
+                if (rti == nullptr) throw DeferUntilRuntime();
+                rti->mRandUsed = true;
+                *res = floor(rti->mCurrentSeed.getGeometric(a[0]));
                 break;
             default:
                 return -1;
@@ -1535,7 +1633,23 @@ namespace AST {
             { ASTfunction::Rand_Static, "\xC8\xF7\xE5\x3E\x05\xA3" },
             { ASTfunction::Rand,        "\xDA\x18\x5B\xE2\xDB\x79" },
             { ASTfunction::Rand2,       "\xDC\x8D\x09\x15\x8A\xC4" },
-            { ASTfunction::RandInt,     "\x48\x14\x4E\x27\x35\x2E" }
+            { ASTfunction::RandExponential, "\x32\xDF\x4A\xFD\x00\x1F" },
+            { ASTfunction::RandGamma,       "\xC9\xD5\x57\x4F\xE6\x77" },
+            { ASTfunction::RandWeibull,     "\xE7\xCF\xA2\x01\xCD\x02" },
+            { ASTfunction::RandExtremeValue,"\xE8\xCF\x86\x0B\xFD\x8E" },
+            { ASTfunction::RandNormal,      "\xCF\xAC\xD4\x12\x09\xCC" },
+            { ASTfunction::RandLogNormal,   "\x36\x65\x08\x5C\x49\xAA" },
+            { ASTfunction::RandChiSquared,  "\x6D\x4B\x49\xA8\x83\xAD" },
+            { ASTfunction::RandCauchy,      "\x22\x6C\x9E\x77\x79\x89" },
+            { ASTfunction::RandFisherF,     "\x9B\x76\x1B\x51\xCD\xAE" },
+            { ASTfunction::RandStudentT,    "\xF9\x41\x44\xF2\x63\xA7" },
+            { ASTfunction::RandInt,         "\x48\x14\x4E\x27\x35\x2E" },
+            { ASTfunction::RandBernoulli,   "\xBE\xD1\x55\x04\xD4\x54" },
+            { ASTfunction::RandBinomial,    "\x6A\x69\x9A\x94\x36\x6C" },
+            { ASTfunction::RandNegBinomial, "\xED\x31\x46\x9C\xA6\xAD" },
+            { ASTfunction::RandPoisson,     "\x09\x89\xF3\x77\xAE\x67" },
+            { ASTfunction::RandDiscrete,    "\x17\x69\x8D\x61\xFF\x2A" },
+            { ASTfunction::RandGeometric,   "\xD5\x10\x2E\xA5\x03\xB4" }
         };
         
         if (arguments)
@@ -2048,6 +2162,37 @@ namespace AST {
                             CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
                         }
                         break;
+                    case RandDiscrete:
+                        isConstant = false;
+                        isNatural = RendererAST::isNatural(nullptr, static_cast<double>(argcount));
+                        if (argcount < 1)
+                            CfdgError::Error(argsLoc, "Function takes at least one arguments");
+                        break;
+                    case RandBernoulli:
+                    case RandGeometric:
+                    case RandPoisson:
+                    case RandExponential:
+                    case RandChiSquared:
+                    case RandStudentT:
+                        isConstant = false;
+                        if (argcount != 1)
+                            CfdgError::Error(argsLoc, "Function takes one argument");
+                        break;
+                    case RandBinomial:
+                    case RandNegBinomial:
+                        isNatural = arguments &&  arguments->size() == 2 &&
+                                    arguments->getChild(0)->isNatural;
+                    case RandCauchy:
+                    case RandExtremeValue:
+                    case RandFisherF:
+                    case RandGamma:
+                    case RandLogNormal:
+                    case RandNormal:
+                    case RandWeibull:
+                        isConstant = false;
+                        if (argcount != 2)
+                            CfdgError::Error(argsLoc, "Function takes two arguments");
+                        break;
                     case Min:
                     case Max:
                         if (argcount < 2)
@@ -2058,7 +2203,11 @@ namespace AST {
                         break;
                 }
                 
-                static FuncType mightBeNatural[] = {Mod, Abs, Min, Max, BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight, RandInt};
+                static FuncType mightBeNatural[] =
+                {
+                    Mod, Abs, Min, Max, BitNot, BitOr, BitAnd, BitXOR, BitLeft,
+                    BitRight, RandInt
+                };
                 
                 if (std::find(std::begin(mightBeNatural), std::end(mightBeNatural), functype) != std::end(mightBeNatural)) {
                     isNatural = !arguments || arguments->isNatural;
@@ -2229,6 +2378,9 @@ namespace AST {
                         bool isGlobal;
                         const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
                         if (bound && bound->mType == RuleType) {
+                            // Shape was a stack variable but the variable type
+                            // was not known to be a ruleSpec until now. Convert
+                            // to a StackArgs and recompile as such.
                             argSource = StackArgs;
                             compile(ph);    // always return nullptr
                             return nullptr;
