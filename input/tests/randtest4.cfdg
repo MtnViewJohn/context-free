@@ -1,0 +1,24 @@
+startshape foo
+
+shape foo
+{
+  loop -50,50 [x 1] SQUARE[s 0.1 16 x -50 7]
+  SQUARE[s 0.1 16 b 1 sat 1 y 7 h if(randint::bernoulli(0.25),0,180)]
+  loop 1000 [] {
+    SQUARE[x rand::normal(0,10) a -0.95 y 14]
+    SQUARE[x rand::lognormal(0,1) a -0.95 y 13]
+    SQUARE[x rand::exponential(0.5) a -0.95 y 12]
+    SQUARE[x rand::gamma(2,3) a -0.95 y 11]
+    SQUARE[x rand::weibull(1,5) a -0.95 y 10]
+    SQUARE[x rand::extremeV(0,5) a -0.95 y 9]
+    SQUARE[x randint::binomial(10,0.5) a -0.95 y 8]
+    SQUARE[x randint::negbinomial(10,0.5) a -0.95 y 7]
+    SQUARE[x randint::geometric(0.25) a -0.95 y 6]
+    SQUARE[x randint::poisson(10) a -0.95 y 5]
+    SQUARE[x rand::chisquared(10) a -0.95 y 4]
+    SQUARE[x rand::cauchy(0,0.1) a -0.95 y 3]
+    SQUARE[x rand::fisherF(5,5) a -0.95 y 2]
+    SQUARE[x rand::studentT(2) a -0.95 y 1]
+    SQUARE[x randint::discrete(1,0,0,.01,0,0,1,0,0,1) a -0.95 y 0]
+  }
+}

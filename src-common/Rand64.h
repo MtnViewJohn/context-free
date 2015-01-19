@@ -42,11 +42,41 @@ public:
     }
     
     // Return int in [l,u]
-    int getInt(int l, int u)
-    {
-        std::uniform_int_distribution<int> intRand(l,u);
-        return intRand(mSeed);
-    }
+    int getInt(int l, int u);
+    
+    // Return int in [0,trials]
+    int getBinomial(int trials, double prob);
+    
+    // Return int in [0,trials]
+    int getNegativeBinomial(int trials, double prob);
+    
+    bool getBernoulli(double prob);
+    
+    int getGeometric(double p);
+    
+    int getPoisson(double mean);
+    
+    double getExponential(double lambda);
+    
+    double getGamma(double alpha, double beta);
+    
+    double getWeibull(double a, double b);
+    
+    double getExtremeValue(double a, double b);
+    
+    double getNormal(double mean, double stddev);
+    
+    double getLogNormal(double scale, double shape);
+    
+    double getChiSquared(double freedom);
+    
+    double getCauchy(double location, double scale);
+    
+    double getFisherF(double mfree, double nfree);
+    
+    double getStudentT(double freedom);
+    
+    int getDiscrete(unsigned count, double* weights);
     
     Rand64& operator^=(const Rand64& r)
     {
@@ -75,6 +105,10 @@ public:
 private:
     XORshift64star  mSeed;
     static Rand64   Common;
+    double prob(double p) { return p < 0.0 ? 0.0 : p > 1.0 ? 1.0 : p; };
+    double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
+    double degree(double n) { return n >= 1.0 ? floor(n) : 1.0; }
+    int nat(int i) { return i < 1 ? 1 : i; }
 };
 
 #endif  // INCLUDE_RAND64_H

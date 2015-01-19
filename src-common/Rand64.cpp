@@ -28,6 +28,114 @@
 
 Rand64 Rand64::Common;
 
+// Return int in [l,u]
+int Rand64::getInt(int l, int u)
+{
+    std::uniform_int_distribution<int> intRand(l,u);
+    return intRand(mSeed);
+}
+
+// Return int in [0,trials]
+int Rand64::getBinomial(int trials, double p)
+{
+    std::binomial_distribution<int> bd(nat(trials), prob(p));
+    return bd(mSeed);
+}
+
+// Return int in [0,trials]
+int Rand64::getNegativeBinomial(int trials, double p)
+{
+    std::negative_binomial_distribution<int> nbd(nat(trials), prob(p));
+    return nbd(mSeed);
+}
+
+bool Rand64::getBernoulli(double p)
+{
+    std::bernoulli_distribution bd(prob(p));
+    return bd(mSeed);
+}
+
+int Rand64::getGeometric(double p)
+{
+    std::geometric_distribution<int> gd(prob(p));
+    return gd(mSeed);
+}
+
+int Rand64::getPoisson(double mean)
+{
+    std::poisson_distribution<int> pd(pos(mean));
+    return pd(mSeed);
+}
+
+double Rand64::getExponential(double lambda)
+{
+    std::exponential_distribution<double> ed(pos(lambda));
+    return ed(mSeed);
+}
+
+double Rand64::getGamma(double alpha, double beta)
+{
+    std::gamma_distribution<double> gd(pos(alpha), pos(beta));
+    return gd(mSeed);
+}
+
+double Rand64::getWeibull(double a, double b)
+{
+    std::weibull_distribution<double> wd(pos(a), pos(b));
+    return wd(mSeed);
+}
+
+double Rand64::getExtremeValue(double location, double scale)
+{
+    std::extreme_value_distribution<double> evd(location, pos(scale));
+    return evd(mSeed);
+}
+
+double Rand64::getNormal(double mean, double stddev)
+{
+    std::normal_distribution<double> nd(mean, stddev);
+    return nd(mSeed);
+}
+
+double Rand64::getLogNormal(double scale, double shape)
+{
+    std::lognormal_distribution<double> lnd(scale, shape);
+    return lnd(mSeed);
+}
+
+double Rand64::getChiSquared(double freedom)
+{
+    std::chi_squared_distribution<double> csd(degree(freedom));
+    return csd(mSeed);
+}
+
+double Rand64::getCauchy(double location, double scale)
+{
+    std::cauchy_distribution<double> cd(location, pos(scale));
+    return cd(mSeed);
+}
+
+double Rand64::getFisherF(double mfree, double nfree)
+{
+    std::fisher_f_distribution<double> ffd(degree(mfree), degree(nfree));
+    return ffd(mSeed);
+}
+
+double Rand64::getStudentT(double freedom)
+{
+    std::student_t_distribution<double> sttd(degree(freedom));
+    return sttd(mSeed);
+}
+
+int Rand64::getDiscrete(unsigned count, double* weights)
+{
+    for (unsigned i = 0; i < count; ++i)
+        weights[i] = fabs(weights[i]);
+    std::discrete_distribution<int> sd(weights, weights + count);
+    return sd(mSeed);
+}
+
+
 void Rand64::xorChar(unsigned char c, unsigned i)
 {
     mSeed.mSeed ^= (static_cast<result_type>(c)) << (i * 8);

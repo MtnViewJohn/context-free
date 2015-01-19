@@ -93,7 +93,11 @@ namespace AST {
             Atan2, Mod, Divides, Div,
             Dot, Cross, Hsb2Rgb, Rgb2Hsb, Vec, 
             Min, Max, Ftime, Frame,
-            Rand_Static, Rand, Rand2, RandInt
+            Rand_Static, Rand, Rand2, RandExponential, RandGamma, RandWeibull,
+            RandExtremeValue, RandNormal, RandLogNormal, RandChiSquared,
+            RandCauchy, RandFisherF, RandStudentT,
+            RandInt, RandBernoulli, RandBinomial, RandNegBinomial, RandPoisson,
+            RandDiscrete, RandGeometric
         };
         static FuncType GetFuncType(const std::string& func);
         FuncType functype;
