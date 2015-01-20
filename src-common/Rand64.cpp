@@ -29,23 +29,23 @@
 Rand64 Rand64::Common;
 
 // Return int in [l,u]
-int Rand64::getInt(int l, int u)
+int64_t Rand64::getInt(int64_t l, int64_t u)
 {
-    std::uniform_int_distribution<int> intRand(l,u);
+    std::uniform_int_distribution<int64_t> intRand(l,u);
     return intRand(mSeed);
 }
 
 // Return int in [0,trials]
-int Rand64::getBinomial(int trials, double p)
+int64_t Rand64::getBinomial(int64_t trials, double p)
 {
-    std::binomial_distribution<int> bd(nat(trials), prob(p));
+    std::binomial_distribution<int64_t> bd(nat(trials), prob(p));
     return bd(mSeed);
 }
 
 // Return int in [0,trials]
-int Rand64::getNegativeBinomial(int trials, double p)
+int64_t Rand64::getNegativeBinomial(int64_t trials, double p)
 {
-    std::negative_binomial_distribution<int> nbd(nat(trials), prob(p));
+    std::negative_binomial_distribution<int64_t> nbd(nat(trials), prob(p));
     return nbd(mSeed);
 }
 
@@ -55,15 +55,15 @@ bool Rand64::getBernoulli(double p)
     return bd(mSeed);
 }
 
-int Rand64::getGeometric(double p)
+int64_t Rand64::getGeometric(double p)
 {
-    std::geometric_distribution<int> gd(prob(p));
+    std::geometric_distribution<int64_t> gd(prob(p));
     return gd(mSeed);
 }
 
-int Rand64::getPoisson(double mean)
+int64_t Rand64::getPoisson(double mean)
 {
-    std::poisson_distribution<int> pd(pos(mean));
+    std::poisson_distribution<int64_t> pd(pos(mean));
     return pd(mSeed);
 }
 
@@ -127,11 +127,11 @@ double Rand64::getStudentT(double freedom)
     return sttd(mSeed);
 }
 
-int Rand64::getDiscrete(unsigned count, double* weights)
+int64_t Rand64::getDiscrete(unsigned count, double* weights)
 {
     for (unsigned i = 0; i < count; ++i)
         weights[i] = fabs(weights[i]);
-    std::discrete_distribution<int> sd(weights, weights + count);
+    std::discrete_distribution<int64_t> sd(weights, weights + count);
     return sd(mSeed);
 }
 
