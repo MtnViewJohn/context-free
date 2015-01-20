@@ -324,32 +324,23 @@ namespace AST {
     ASTmodTerm::ASTmodTerm(modTypeEnum t, const std::string& paramString, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0)
     {
-        if (paramString.find("evenodd") != std::string::npos)
-            argCount |= CF_EVEN_ODD;
-        if (paramString.find("iso") != std::string::npos)
-            argCount |= CF_ISO_WIDTH;
-        if (paramString.find("join") != std::string::npos)
-            argCount &= ~CF_JOIN_MASK;
-        if (paramString.find("miterjoin") != std::string::npos)
-            argCount |= CF_MITER_JOIN | CF_JOIN_PRESENT;
-        if (paramString.find("roundjoin") != std::string::npos)
-            argCount |= CF_ROUND_JOIN | CF_JOIN_PRESENT;
-        if (paramString.find("beveljoin") != std::string::npos)
-            argCount |= CF_BEVEL_JOIN | CF_JOIN_PRESENT;
-        if (paramString.find("cap") != std::string::npos)
-            argCount &= ~CF_CAP_MASK;
-        if (paramString.find("buttcap") != std::string::npos)
-            argCount |= CF_BUTT_CAP | CF_CAP_PRESENT;
-        if (paramString.find("squarecap") != std::string::npos)
-            argCount |= CF_SQUARE_CAP | CF_CAP_PRESENT;
-        if (paramString.find("roundcap") != std::string::npos)
-            argCount |= CF_ROUND_CAP | CF_CAP_PRESENT;
-        if (paramString.find("large") != std::string::npos)
-            argCount |= CF_ARC_LARGE;
-        if (paramString.find("cw") != std::string::npos)
-            argCount |= CF_ARC_CW;
-        if (paramString.find("align") != std::string::npos)
-            argCount |= CF_ALIGN;
+        static const std::vector<std::pair<std::string, int>> paramStrings = {
+            { "evenodd",    CF_EVEN_ODD },
+            { "iso",        CF_ISO_WIDTH },
+            { "miterjoin",  CF_MITER_JOIN | CF_JOIN_PRESENT },
+            { "roundjoin",  CF_ROUND_JOIN | CF_JOIN_PRESENT },
+            { "beveljoin",  CF_BEVEL_JOIN | CF_JOIN_PRESENT },
+            { "buttcap",    CF_BUTT_CAP   | CF_CAP_PRESENT },
+            { "squarecap",  CF_SQUARE_CAP | CF_CAP_PRESENT },
+            { "roundcap",   CF_ROUND_CAP  | CF_CAP_PRESENT },
+            { "large",      CF_ARC_LARGE },
+            { "cw",         CF_ARC_CW },
+            { "align",      CF_ALIGN }
+        };
+        
+        for (const auto& pp: paramStrings)
+            if (paramString.find(pp.first) != std::string::npos)
+                argCount |= pp.second;
     }
 
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
@@ -1586,7 +1577,7 @@ namespace AST {
     {
         // These random strings are courtesy of http://www.fourmilab.ch/hotbits/
         static const std::map<ASTfunction::FuncType, const char*> EntropyMap = {
-            { ASTfunction::Cos,          "\xA1\xE7\x9C\x1A\xAF\x7D"},
+            { ASTfunction::Cos,         "\xA1\xE7\x9C\x1A\xAF\x7D" },
             { ASTfunction::Sin,         "\xAF\x58\xFE\x2C\xD4\x53" },
             { ASTfunction::Tan,         "\x95\xFF\x59\x11\x03\x02" },
             { ASTfunction::Cot,         "\x77\xF5\xB6\x35\x8C\xF0" },
