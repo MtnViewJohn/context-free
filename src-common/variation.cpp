@@ -124,7 +124,7 @@ int Variation::random(int letters)
         seeded = true;
     }
     
-    return Rand64::GetInt(recommendedMin(), recommendedMax(letters));
+    return static_cast<int>(Rand64::GetInt(recommendedMin(), recommendedMax(letters)));
 }
 
 #ifdef TEST_MAIN

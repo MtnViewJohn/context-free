@@ -42,19 +42,19 @@ public:
     }
     
     // Return int in [l,u]
-    int getInt(int l, int u);
+    int64_t getInt(int64_t l, int64_t u);
     
     // Return int in [0,trials]
-    int getBinomial(int trials, double prob);
+    int64_t getBinomial(int64_t trials, double prob);
     
     // Return int in [0,trials]
-    int getNegativeBinomial(int trials, double prob);
+    int64_t getNegativeBinomial(int64_t trials, double prob);
     
     bool getBernoulli(double prob);
     
-    int getGeometric(double p);
+    int64_t getGeometric(double p);
     
-    int getPoisson(double mean);
+    int64_t getPoisson(double mean);
     
     double getExponential(double lambda);
     
@@ -76,7 +76,7 @@ public:
     
     double getStudentT(double freedom);
     
-    int getDiscrete(unsigned count, double* weights);
+    int64_t getDiscrete(unsigned count, double* weights);
     
     Rand64& operator^=(const Rand64& r)
     {
@@ -93,7 +93,7 @@ public:
     void xorChar(unsigned char c, unsigned i);
     static double GetDouble()
     { return Common.getDouble(); }
-    static int GetInt(int l, int u)
+    static int64_t GetInt(int64_t l, int64_t u)
     { return Common.getInt(l,u); }
     static void Seed(result_type s = XORshift64star::RAND64_SEED)
     { Common.seed(s); }
@@ -108,7 +108,7 @@ private:
     double prob(double p) { return p < 0.0 ? 0.0 : p > 1.0 ? 1.0 : p; };
     double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
     double degree(double n) { return n >= 1.0 ? floor(n) : 1.0; }
-    int nat(int i) { return i < 1 ? 1 : i; }
+    int64_t nat(int64_t i) { return i < 1 ? 1 : i; }
 };
 
 #endif  // INCLUDE_RAND64_H
