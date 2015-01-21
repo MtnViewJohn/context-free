@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2005-2014 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2015 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,14 +28,8 @@
 
 
 #include "variation.h"
-#include <stdlib.h>
-#include <time.h>
-#include <fstream>
 #include "Rand64.h"
-#ifdef _WIN32
-#include <windows.h>
-#include <Wincrypt.h>
-#endif
+#include <random>
 
 template<class T> static int
 fromString(T* str)
@@ -101,26 +95,8 @@ int Variation::random(int letters)
 {
     static bool seeded = false;
     if (!seeded) {
-        auto randomSeed = static_cast<Rand64::result_type>(time(0));
-#ifdef WIN32
-        HMODULE hLib = LoadLibrary(TEXT("ADVAPI32.DLL"));
-        if (hLib) {
-            BOOLEAN (APIENTRY *pfn)(void*, ULONG) = 
-                (BOOLEAN (APIENTRY *)(void*, ULONG))GetProcAddress(hLib, "SystemFunction036");
-            if (pfn)
-                pfn(&randomSeed, (ULONG)sizeof(randomSeed));
-
-            FreeLibrary(hLib);
-        }
-#else
-        /* [AMS] 2/13/2007 -- Added seeding from /dev/urandom */
-        std::ifstream urand("/dev/urandom", std::ios::in | std::ios::binary);
-        if (urand.is_open()) {
-            urand.read(reinterpret_cast<char*>(&randomSeed), sizeof(randomSeed));
-            urand.close();
-        }
-#endif
-        Rand64::Seed(randomSeed);
+        std::random_device rd;
+        Rand64::Seed(rd());
         seeded = true;
     }
     
