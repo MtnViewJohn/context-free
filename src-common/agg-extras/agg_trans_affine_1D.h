@@ -189,7 +189,7 @@ namespace agg
     //------------------------------------------------------------------------
     inline void trans_affine_1D::inverse_transform(double* z) const
     {
-        register double d = determinant_reciprocal();
+        double d = determinant_reciprocal();
         *z = (*z - tz) * d;
     }
     
