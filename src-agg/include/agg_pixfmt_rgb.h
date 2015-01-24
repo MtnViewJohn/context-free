@@ -167,9 +167,9 @@ namespace agg
             calc_type r = m_gamma->dir(p[Order::R]);
             calc_type g = m_gamma->dir(p[Order::G]);
             calc_type b = m_gamma->dir(p[Order::B]);
-            p[Order::R] = m_gamma->inv(color_type::lerp(r, m_gamma->dir(cr), alpha));
-            p[Order::G] = m_gamma->inv(color_type::lerp(g, m_gamma->dir(cg), alpha));
-            p[Order::B] = m_gamma->inv(color_type::lerp(b, m_gamma->dir(cb), alpha));
+            p[Order::R] = m_gamma->inv(color_type::downscale((m_gamma->dir(cr) - r) * alpha) + r);
+            p[Order::G] = m_gamma->inv(color_type::downscale((m_gamma->dir(cg) - g) * alpha) + g);
+            p[Order::B] = m_gamma->inv(color_type::downscale((m_gamma->dir(cb) - b) * alpha) + b);
         }
         
     private:

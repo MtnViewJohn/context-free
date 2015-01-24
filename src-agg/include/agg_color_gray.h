@@ -105,7 +105,7 @@ namespace agg
         gray8T() {}
 
         //--------------------------------------------------------------------
-        gray8T(unsigned v_, unsigned a_=base_mask) :
+        explicit gray8T(unsigned v_, unsigned a_ = base_mask) :
             v(int8u(v_)), a(int8u(a_)) {}
 
         //--------------------------------------------------------------------
@@ -198,8 +198,8 @@ namespace agg
         //--------------------------------------------------------------------
         rgba32 make_rgba32(const linear&) const 
         {
-            rgba32::value_type v32 = v / 255.0;
-            return rgba32(v32, v32, v32, a / 255.0);
+            rgba32::value_type v32 = v / 255.0f;
+            return rgba32(v32, v32, v32, a / 255.0f);
         }
 
         rgba32 make_rgba32(const sRGB&) const 
@@ -259,7 +259,22 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type demultiply(value_type a, value_type b) 
         {
-            return (b == 0) ? 0 : value_type(a / b);
+            if (a * b == 0)
+            {
+                return 0;
+            }
+            else if (a >= b)
+            {
+                return base_mask;
+            }
+            else return value_type((a * base_mask + (b >> 1)) / b); 
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a >> base_shift;
         }
 
         //--------------------------------------------------------------------
@@ -315,8 +330,8 @@ namespace agg
         //--------------------------------------------------------------------
         self_type& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            else if (a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            else if (a_ > 1) a = 1;
             else a = (value_type)uround(a_ * double(base_mask));
 			return *this;
         }
@@ -449,7 +464,7 @@ namespace agg
         gray16() {}
 
         //--------------------------------------------------------------------
-        gray16(unsigned v_, unsigned a_ = base_mask) :
+        explicit gray16(unsigned v_, unsigned a_ = base_mask) :
             v(int16u(v_)), a(int16u(a_)) {}
 
         //--------------------------------------------------------------------
@@ -505,7 +520,14 @@ namespace agg
             return rgba16(v, v, v, a);
         }
 
-        //--------------------------------------------------------------------
+		//--------------------------------------------------------------------
+		operator rgba32() const
+		{
+			rgba32::value_type v32 = v / 65535.0f;
+			return rgba32(v32, v32, v32, a / 65535.0f);
+		}
+
+		//--------------------------------------------------------------------
         operator gray8() const 
         {
             return gray8(v >> 8, a >> 8);
@@ -566,7 +588,22 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type demultiply(value_type a, value_type b) 
         {
-            return (b == 0) ? 0 : value_type(a / b);
+            if (a * b == 0)
+            {
+                return 0;
+            }
+            else if (a >= b)
+            {
+                return base_mask;
+            }
+            else return value_type((a * base_mask + (b >> 1)) / b); 
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a >> base_shift;
         }
 
         //--------------------------------------------------------------------
@@ -622,8 +659,8 @@ namespace agg
         //--------------------------------------------------------------------
         self_type& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            else if(a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            else if(a_ > 1) a = 1;
             else a = (value_type)uround(a_ * double(base_mask));
 			return *this;
         }
@@ -746,7 +783,7 @@ namespace agg
         gray32() {}
 
         //--------------------------------------------------------------------
-        gray32(value_type v_, value_type a_ = 1) :
+        explicit gray32(value_type v_, value_type a_ = 1) :
             v(v_), a(a_) {}
 
         //--------------------------------------------------------------------
@@ -834,14 +871,20 @@ namespace agg
             return srgba8(y, y, y, sRGB_conv<value_type>::alpha_to_sRGB(a));
         }
 
-        //--------------------------------------------------------------------
-        operator rgba16() const 
-        {
-            rgba16::value_type y = uround(v * 65535.0);
-            return rgba16(y, y, y, uround(a * 65535.0));
-        }
+		//--------------------------------------------------------------------
+		operator rgba16() const
+		{
+			rgba16::value_type y = uround(v * 65535.0);
+			return rgba16(y, y, y, uround(a * 65535.0));
+		}
 
-        //--------------------------------------------------------------------
+		//--------------------------------------------------------------------
+		operator rgba32() const
+		{
+            return rgba32(v, v, v, a);
+		}
+
+		//--------------------------------------------------------------------
         static AGG_INLINE double to_double(value_type a)
         {
             return a;
@@ -893,6 +936,13 @@ namespace agg
         static AGG_INLINE value_type demultiply(value_type a, value_type b) 
         {
             return (b == 0) ? 0 : value_type(a / b);
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a;
         }
 
         //--------------------------------------------------------------------
