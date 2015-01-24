@@ -279,6 +279,10 @@
 		5276ACE8137A513B000FA1AB /* stacktype.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stacktype.cpp; sourceTree = "<group>"; };
 		527FE236135ABF2400F9B15F /* pathIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathIterator.h; sourceTree = "<group>"; };
 		527FE237135ABF2400F9B15F /* pathIterator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathIterator.cpp; sourceTree = "<group>"; };
+		5289C3F71A73707F00E02205 /* agg_conv_transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_conv_transform.h; sourceTree = "<group>"; };
+		5289C3F81A737ED700E02205 /* agg_gamma_lut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_gamma_lut.h; sourceTree = "<group>"; };
+		5289C3F91A737ED700E02205 /* agg_pixfmt_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_pixfmt_base.h; sourceTree = "<group>"; };
+		5289C3FA1A737ED700E02205 /* agg_rasterizer_scanline_aa_nogamma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_rasterizer_scanline_aa_nogamma.h; sourceTree = "<group>"; };
 		528D3E8E0CEAC3D20022E4F1 /* agg_bezier_arc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = agg_bezier_arc.cpp; sourceTree = "<group>"; };
 		528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = commandLineSystem.cpp; sourceTree = "<group>"; };
 		528EC35016C5D28D004DAEC2 /* commandLineSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commandLineSystem.h; sourceTree = "<group>"; };
@@ -637,6 +641,10 @@
 		FD2D476508411F5200697CE7 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				5289C3F81A737ED700E02205 /* agg_gamma_lut.h */,
+				5289C3F91A737ED700E02205 /* agg_pixfmt_base.h */,
+				5289C3FA1A737ED700E02205 /* agg_rasterizer_scanline_aa_nogamma.h */,
+				5289C3F71A73707F00E02205 /* agg_conv_transform.h */,
 				523311430CF807EA0087307A /* agg_bounding_rect.h */,
 				523311170CF7F65B0087307A /* agg_shorten_path.h */,
 				523311030CF7F2450087307A /* agg_vertex_sequence.h */,
