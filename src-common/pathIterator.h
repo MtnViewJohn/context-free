@@ -42,8 +42,10 @@ class pathIterator {
 public:
     typedef agg::conv_curve<agg::path_storage>      CurvedPath;
     typedef agg::conv_stroke<CurvedPath>            CurvedStroked;
-    typedef agg::conv_transform<CurvedStroked>      CurvedStrokedTrans;
-    typedef agg::conv_transform<CurvedPath>         CurvedTrans;
+    typedef agg::conv_transform<CurvedStroked, const agg::trans_affine>
+                                                    CurvedStrokedTrans;
+    typedef agg::conv_transform<CurvedPath, const agg::trans_affine>
+                                                    CurvedTrans;
     typedef agg::conv_stroke<CurvedTrans>           CurvedTransStroked;
     
     typedef agg::conv_centroid<CurvedTrans>         CurvedTransCentroid;
