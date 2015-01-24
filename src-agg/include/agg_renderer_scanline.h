@@ -65,7 +65,7 @@ namespace agg
             // "rgba8" is needed. Otherwise it will be implicitly 
             // converted in the loop many times.
             //----------------------
-            typename BaseRenderer::color_type ren_color(color);
+            typename BaseRenderer::color_type ren_color = color;
 
             sl.reset(ras.min_x(), ras.max_x());
             while(ras.sweep_scanline(sl))

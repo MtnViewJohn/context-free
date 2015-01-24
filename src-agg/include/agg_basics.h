@@ -143,9 +143,17 @@ namespace agg
         __asm mov eax, dword ptr [t]
     }
 #pragma warning(pop)
+    AGG_INLINE int ifloor(double v)
+    {
+        return int(floor(v));
+    }
     AGG_INLINE unsigned ufloor(double v)         //-------ufloor
     {
         return unsigned(floor(v));
+    }
+    AGG_INLINE int iceil(double v)
+    {
+        return int(ceil(v));
     }
     AGG_INLINE unsigned uceil(double v)          //--------uceil
     {
@@ -160,9 +168,17 @@ namespace agg
     {
         return unsigned(v);
     }
+    AGG_INLINE int ifloor(double v)
+    {
+        return int(floor(v));
+    }
     AGG_INLINE unsigned ufloor(double v)
     {
         return unsigned(floor(v));
+    }
+    AGG_INLINE int iceil(double v)
+    {
+        return int(ceil(v));
     }
     AGG_INLINE unsigned uceil(double v)
     {
@@ -177,9 +193,18 @@ namespace agg
     {
         return unsigned(v + 0.5);
     }
+    AGG_INLINE int ifloor(double v)
+    {
+        int i = int(v);
+        return i - (i > v);
+    }
     AGG_INLINE unsigned ufloor(double v)
     {
         return unsigned(v);
+    }
+    AGG_INLINE int iceil(double v)
+    {
+        return int(ceil(v));
     }
     AGG_INLINE unsigned uceil(double v)
     {
@@ -203,7 +228,7 @@ namespace agg
     {
         AGG_INLINE static unsigned mul(unsigned a, unsigned b)
         {
-            register unsigned q = a * b + (1 << (Shift-1));
+            unsigned q = a * b + (1 << (Shift-1));
             return (q + (q >> Shift)) >> Shift;
         }
     };

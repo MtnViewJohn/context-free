@@ -30,14 +30,14 @@
 
 namespace agg
 {
-    // Supported byte orders for RGB and RGBA pixel formats
+    // Supported component orders for RGB and RGBA pixel formats
     //=======================================================================
-    struct order_rgb  { enum rgb_e  { R=0, G=1, B=2, rgb_tag, hasAlpha=false }; };       //----order_rgb
-    struct order_bgr  { enum bgr_e  { B=0, G=1, R=2, rgb_tag, hasAlpha=false }; };       //----order_bgr
-    struct order_rgba { enum rgba_e { R=0, G=1, B=2, A=3, rgba_tag, hasAlpha=true }; }; //----order_rgba
-    struct order_argb { enum argb_e { A=0, R=1, G=2, B=3, rgba_tag, hasAlpha=true }; }; //----order_argb
-    struct order_abgr { enum abgr_e { A=0, B=1, G=2, R=3, rgba_tag, hasAlpha=true }; }; //----order_abgr
-    struct order_bgra { enum bgra_e { B=0, G=1, R=2, A=3, rgba_tag, hasAlpha=true }; }; //----order_bgra
+    struct order_rgb  { enum rgb_e  { R=0, G=1, B=2, N=3 }; };
+    struct order_bgr  { enum bgr_e  { B=0, G=1, R=2, N=3 }; };
+    struct order_rgba { enum rgba_e { R=0, G=1, B=2, A=3, N=4 }; };
+    struct order_argb { enum argb_e { A=0, R=1, G=2, B=3, N=4 }; };
+    struct order_abgr { enum abgr_e { A=0, B=1, G=2, R=3, N=4 }; };
+    struct order_bgra { enum bgra_e { B=0, G=1, R=2, A=3, N=4 }; };
 
     // Colorspace tag types.
     struct linear {};
@@ -80,8 +80,8 @@ namespace agg
         //--------------------------------------------------------------------
         rgba& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            else if (a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            else if (a_ > 1) a = 1;
             else a = a_;
             return *this;
         }
@@ -148,6 +148,24 @@ namespace agg
             return ret;
         }
 
+        rgba& operator+=(const rgba& c)
+        {
+            r += c.r;
+            g += c.g;
+            b += c.b;
+            a += c.a;
+            return *this;
+        }
+
+        rgba& operator*=(double k)
+        {
+            r *= k;
+            g *= k;
+            b *= k;
+            a *= k;
+            return *this;
+        }
+
         //--------------------------------------------------------------------
         static rgba no_color() { return rgba(0,0,0,0); }
 
@@ -161,6 +179,16 @@ namespace agg
         }
 
     };
+
+    inline rgba operator+(const rgba& a, const rgba& b)
+    {
+        return rgba(a) += b;
+    }
+
+    inline rgba operator*(const rgba& a, double b)
+    {
+        return rgba(a) *= b;
+    }
 
     //------------------------------------------------------------------------
     inline rgba rgba::from_wavelength(double wl, double gamma)
@@ -373,7 +401,22 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type demultiply(value_type a, value_type b) 
         {
-            return (b == 0) ? 0 : value_type((a << base_shift) / b); 
+            if (a * b == 0)
+            {
+                return 0;
+            }
+            else if (a >= b)
+            {
+                return base_mask;
+            }
+            else return value_type((a * base_mask + (b >> 1)) / b); 
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a >> base_shift;
         }
 
         //--------------------------------------------------------------------
@@ -429,8 +472,8 @@ namespace agg
         //--------------------------------------------------------------------
         self_type& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            else if (a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            else if (a_ > 1) a = 1;
             else a = (value_type)uround(a_ * double(base_mask));
             return *this;
         }
@@ -446,9 +489,16 @@ namespace agg
         {
             if (a != base_mask)
             {
-                r = multiply(r, a);
-                g = multiply(g, a);
-                b = multiply(b, a);
+                if (a == 0)
+                {
+                    r = g = b = 0;
+                }
+                else
+                {
+                    r = multiply(r, a);
+                    g = multiply(g, a);
+                    b = multiply(b, a);
+                }
             }
             return *this;
         }
@@ -743,7 +793,22 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type demultiply(value_type a, value_type b) 
         {
-            return (b == 0) ? 0 : value_type((a << base_shift) / b);
+            if (a * b == 0)
+            {
+                return 0;
+            }
+            else if (a >= b)
+            {
+                return base_mask;
+            }
+            else return value_type((a * base_mask + (b >> 1)) / b); 
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a >> base_shift;
         }
 
         //--------------------------------------------------------------------
@@ -799,8 +864,8 @@ namespace agg
         //--------------------------------------------------------------------
         AGG_INLINE self_type& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            if (a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            if (a_ > 1) a = 1;
             a = value_type(uround(a_ * double(base_mask)));
             return *this;
         }
@@ -816,9 +881,16 @@ namespace agg
         {
             if (a != base_mask) 
             {
-                r = multiply(r, a);
-                g = multiply(g, a);
-                b = multiply(b, a);
+                if (a == 0)
+                {
+                    r = g = b = 0;
+                }
+                else
+                {
+                    r = multiply(r, a);
+                    g = multiply(g, a);
+                    b = multiply(b, a);
+                }
             }
             return *this;
         }
@@ -1096,6 +1168,13 @@ namespace agg
 
         //--------------------------------------------------------------------
         template<typename T>
+        static AGG_INLINE T downscale(T a) 
+        {
+            return a;
+        }
+
+        //--------------------------------------------------------------------
+        template<typename T>
         static AGG_INLINE T downshift(T a, unsigned n) 
         {
             return n > 0 ? a / (1 << n) : a;
@@ -1148,8 +1227,8 @@ namespace agg
         //--------------------------------------------------------------------
         AGG_INLINE self_type& opacity(double a_)
         {
-            if (a_ < 0) a_ = 0;
-            else if (a_ > 1) a_ = 1;
+            if (a_ < 0) a = 0;
+            else if (a_ > 1) a = 1;
             else a = value_type(a_);
             return *this;
         }

@@ -112,10 +112,65 @@ namespace agg
     };
 
 
+    template<class ColorT, class Order> 
+    struct conv_rgba_pre
+    {
+        typedef ColorT color_type;
+        typedef Order order_type;
+        typedef typename color_type::value_type value_type;
+
+        //--------------------------------------------------------------------
+        static AGG_INLINE void set_plain_color(value_type* p, color_type c)
+        {
+            c.premultiply();
+            p[Order::R] = c.r;
+            p[Order::G] = c.g;
+            p[Order::B] = c.b;
+            p[Order::A] = c.a;
+        }
+
+        //--------------------------------------------------------------------
+        static AGG_INLINE color_type get_plain_color(const value_type* p)
+        {
+            return color_type(
+                p[Order::R],
+                p[Order::G],
+                p[Order::B],
+                p[Order::A]).demultiply();
+        }
+    };
+
+    template<class ColorT, class Order> 
+    struct conv_rgba_plain
+    {
+        typedef ColorT color_type;
+        typedef Order order_type;
+        typedef typename color_type::value_type value_type;
+
+        //--------------------------------------------------------------------
+        static AGG_INLINE void set_plain_color(value_type* p, color_type c)
+        {
+            p[Order::R] = c.r;
+            p[Order::G] = c.g;
+            p[Order::B] = c.b;
+            p[Order::A] = c.a;
+        }
+
+        //--------------------------------------------------------------------
+        static AGG_INLINE color_type get_plain_color(const value_type* p)
+        {
+            return color_type(
+                p[Order::R],
+                p[Order::G],
+                p[Order::B],
+                p[Order::A]);
+        }
+    };
+
     //=============================================================blender_rgba
     // Blends "plain" (i.e. non-premultiplied) colors into a premultiplied buffer.
     template<class ColorT, class Order> 
-    struct blender_rgba
+    struct blender_rgba : conv_rgba_pre<ColorT, Order>
     {
         typedef ColorT color_type;
         typedef Order order_type;
@@ -143,33 +198,13 @@ namespace agg
             p[Order::B] = color_type::lerp(p[Order::B], cb, alpha);
             p[Order::A] = color_type::prelerp(p[Order::A], alpha, alpha);
         }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE void set_plain_color(value_type* p, color_type c)
-        {
-            c.premultiply();
-            p[Order::R] = c.r;
-            p[Order::G] = c.g;
-            p[Order::B] = c.b;
-            p[Order::A] = c.a;
-        }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE color_type get_plain_color(const value_type* p)
-        {
-            return color_type(
-                p[Order::R],
-                p[Order::G],
-                p[Order::B],
-                p[Order::A]).demultiply();
-        }
     };
 
 
     //========================================================blender_rgba_pre
     // Blends premultiplied colors into a premultiplied buffer.
     template<class ColorT, class Order> 
-    struct blender_rgba_pre
+    struct blender_rgba_pre : conv_rgba_pre<ColorT, Order>
     {
         typedef ColorT color_type;
         typedef Order order_type;
@@ -200,32 +235,12 @@ namespace agg
             p[Order::B] = color_type::prelerp(p[Order::B], cb, alpha);
             p[Order::A] = color_type::prelerp(p[Order::A], alpha, alpha);
         }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE void set_plain_color(value_type* p, color_type c)
-        {
-            c.premultiply();
-            p[Order::R] = c.r;
-            p[Order::G] = c.g;
-            p[Order::B] = c.b;
-            p[Order::A] = c.a;
-        }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE color_type get_plain_color(const value_type* p)
-        {
-            return color_type(
-                p[Order::R],
-                p[Order::G],
-                p[Order::B],
-                p[Order::A]).demultiply();
-        }
     };
 
     //======================================================blender_rgba_plain
     // Blends "plain" (non-premultiplied) colors into a plain (non-premultiplied) buffer.
     template<class ColorT, class Order> 
-    struct blender_rgba_plain
+    struct blender_rgba_plain : conv_rgba_plain<ColorT, Order>
     {
         typedef ColorT color_type;
         typedef Order order_type;
@@ -240,7 +255,7 @@ namespace agg
         static AGG_INLINE void blend_pix(value_type* p, 
             value_type cr, value_type cg, value_type cb, value_type alpha, cover_type cover)
         {
-            blend_pix(p, cr, cg, cb, mult_cover(alpha, cover));
+            blend_pix(p, cr, cg, cb, color_type::mult_cover(alpha, cover));
         }
         
         //--------------------------------------------------------------------
@@ -259,25 +274,6 @@ namespace agg
                 p[Order::A] = color_type::prelerp(a, alpha, alpha);
                 multiplier_rgba<ColorT, Order>::demultiply(p);
             }
-        }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE void set_plain_color(value_type* p, color_type c)
-        {
-            p[Order::R] = c.r;
-            p[Order::G] = c.g;
-            p[Order::B] = c.b;
-            p[Order::A] = c.a;
-        }
-
-        //--------------------------------------------------------------------
-        static AGG_INLINE color_type get_plain_color(const value_type* p)
-        {
-            return color_type(
-                p[Order::R],
-                p[Order::G],
-                p[Order::B],
-                p[Order::A]);
         }
     };
 
@@ -1341,6 +1337,44 @@ namespace agg
         }
     };
 
+    //====================================================comp_op_adaptor_rgba_plain
+    template<class ColorT, class Order> 
+    struct comp_op_adaptor_rgba_plain
+    {
+        typedef ColorT color_type;
+        typedef Order order_type;
+        typedef typename color_type::value_type value_type;
+        typedef typename color_type::calc_type calc_type;
+        typedef typename color_type::long_type long_type;
+
+        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        {
+            multiplier_rgba<ColorT, Order>::premultiply(p);
+            comp_op_adaptor_rgba<ColorT, Order>::blend_pix(op, p, r, g, b, a, cover);
+            multiplier_rgba<ColorT, Order>::demultiply(p);
+        }
+    };
+
+    //=========================================comp_op_adaptor_clip_to_dst_rgba_plain
+    template<class ColorT, class Order> 
+    struct comp_op_adaptor_clip_to_dst_rgba_plain
+    {
+        typedef ColorT color_type;
+        typedef Order order_type;
+        typedef typename color_type::value_type value_type;
+        typedef typename color_type::calc_type calc_type;
+        typedef typename color_type::long_type long_type;
+
+        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        {
+            multiplier_rgba<ColorT, Order>::premultiply(p);
+            comp_op_adaptor_clip_to_dst_rgba<ColorT, Order>::blend_pix(op, p, r, g, b, a, cover);
+            multiplier_rgba<ColorT, Order>::demultiply(p);
+        }
+    };
+
     //=======================================================comp_adaptor_rgba
     template<class BlenderPre> 
     struct comp_adaptor_rgba
@@ -1387,6 +1421,23 @@ namespace agg
         }
     };
 
+    //=======================================================comp_adaptor_rgba_pre
+    template<class BlenderPre> 
+    struct comp_adaptor_rgba_pre
+    {
+        typedef typename BlenderPre::color_type color_type;
+        typedef typename BlenderPre::order_type order_type;
+        typedef typename color_type::value_type value_type;
+        typedef typename color_type::calc_type calc_type;
+        typedef typename color_type::long_type long_type;
+
+        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        {
+            BlenderPre::blend_pix(p, r, g, b, a, cover);
+        }
+    };
+
     //======================================comp_adaptor_clip_to_dst_rgba_pre
     template<class BlenderPre> 
     struct comp_adaptor_clip_to_dst_rgba_pre
@@ -1407,6 +1458,44 @@ namespace agg
                 color_type::multiply(b, da), 
                 color_type::multiply(a, da), 
                 cover);
+        }
+    };
+
+    //=======================================================comp_adaptor_rgba_plain
+    template<class BlenderPre> 
+    struct comp_adaptor_rgba_plain
+    {
+        typedef typename BlenderPre::color_type color_type;
+        typedef typename BlenderPre::order_type order_type;
+        typedef typename color_type::value_type value_type;
+        typedef typename color_type::calc_type calc_type;
+        typedef typename color_type::long_type long_type;
+
+        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        {
+            multiplier_rgba<color_type, order_type>::premultiply(p);
+            comp_adaptor_rgba<BlenderPre>::blend_pix(op, p, r, g, b, a, cover);
+            multiplier_rgba<color_type, order_type>::demultiply(p);
+        }
+    };
+
+    //==========================================comp_adaptor_clip_to_dst_rgba_plain
+    template<class BlenderPre> 
+    struct comp_adaptor_clip_to_dst_rgba_plain
+    {
+        typedef typename BlenderPre::color_type color_type;
+        typedef typename BlenderPre::order_type order_type;
+        typedef typename color_type::value_type value_type;
+        typedef typename color_type::calc_type calc_type;
+        typedef typename color_type::long_type long_type;
+
+        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        {
+            multiplier_rgba<color_type, order_type>::premultiply(p);
+            comp_adaptor_clip_to_dst_rgba<BlenderPre>::blend_pix(op, p, r, g, b, a, cover);
+            multiplier_rgba<color_type, order_type>::demultiply(p);
         }
     };
 
@@ -1486,21 +1575,6 @@ namespace agg
         };
 
     private:
-        //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, 
-            value_type r, value_type g, value_type b, value_type a, 
-            unsigned cover)
-        {
-            m_blender.blend_pix(p->c, r, g, b, a, cover);
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, 
-            value_type r, value_type g, value_type b, value_type a)
-        {
-            m_blender.blend_pix(p->c, r, g, b, a);
-        }
-
         //--------------------------------------------------------------------
         AGG_INLINE void blend_pix(pixel_type* p, const color_type& c, unsigned cover)
         {
@@ -1651,7 +1725,7 @@ namespace agg
         //--------------------------------------------------------------------
         AGG_INLINE void blend_pixel(int x, int y, const color_type& c, int8u cover)
         {
-            copy_or_blend_pix(pix_value_ptr(x, y, 1), c.r, c.g, c.b, c.a, cover);
+            copy_or_blend_pix(pix_value_ptr(x, y, 1), c, cover);
         }
 
         //--------------------------------------------------------------------
@@ -2181,34 +2255,13 @@ namespace agg
 
     private:
         //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, 
-            value_type r, value_type g, value_type b, value_type a, 
-            unsigned cover)
-        {
-            m_blender.blend_pix(p->c, r, g, b, a, cover);
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, 
-            value_type r, value_type g, value_type b, value_type a)
-        {
-            m_blender.blend_pix(p->c, r, g, b, a);
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, const color_type& c, unsigned cover)
+        AGG_INLINE void blend_pix(pixel_type* p, const color_type& c, unsigned cover = cover_full)
         {
             m_blender.blend_pix(m_comp_op, p->c, c.r, c.g, c.b, c.a, cover);
         }
 
         //--------------------------------------------------------------------
-        AGG_INLINE void blend_pix(pixel_type* p, const color_type& c)
-        {
-            m_blender.blend_pix(m_comp_op, p->c, c.r, c.g, c.b, c.a);
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE void copy_or_blend_pix(pixel_type* p, const color_type& c, unsigned cover)
+        AGG_INLINE void copy_or_blend_pix(pixel_type* p, const color_type& c, unsigned cover = cover_full)
         {
             if (!c.is_transparent())
             {
@@ -2218,23 +2271,7 @@ namespace agg
                 }
                 else
                 {
-                    m_blender.blend_pix(p->c, c.r, c.g, c.b, c.a, cover);
-                }
-            }
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE void copy_or_blend_pix(pixel_type* p, const color_type& c)
-        {
-            if (!c.is_transparent())
-            {
-                if (c.is_opaque())
-                {
-                    p->set(c.r, c.g, c.b, c.a);
-                }
-                else
-                {
-                    m_blender.blend_pix(p->c, c.r, c.g, c.b, c.a);
+                    blend_pix(p, c, cover);
                 }
             }
         }
@@ -2316,18 +2353,6 @@ namespace agg
         }
 
         //--------------------------------------------------------------------
-        AGG_INLINE static void write_plain_color(void* p, color_type c)
-        {
-            blender_type::set_plain_color(pix_value_ptr(p)->c, c);
-        }
-
-        //--------------------------------------------------------------------
-        AGG_INLINE static color_type read_plain_color(const void* p)
-        {
-            return blender_type::get_plain_color(pix_value_ptr(p)->c);
-        }
-
-        //--------------------------------------------------------------------
         AGG_INLINE static void make_pix(int8u* p, const color_type& c)
         {
             ((pixel_type*)p)->set(c);
@@ -2356,23 +2381,32 @@ namespace agg
         }
 
         //--------------------------------------------------------------------
-        void copy_hline(int x, int y, unsigned len, const color_type& c)
+        AGG_INLINE void copy_hline(int x, int y, 
+                                   unsigned len, 
+                                   const color_type& c)
         {
+            pixel_type v;
+            v.set(c);
             pixel_type* p = pix_value_ptr(x, y, len);
             do
             {
-                blend_pix(p, c, cover_mask);
+                *p = v;
                 p = p->next();
             }
             while (--len);
         }
 
+
         //--------------------------------------------------------------------
-        void copy_vline(int x, int y, unsigned len, const color_type& c)
+        AGG_INLINE void copy_vline(int x, int y,
+                                   unsigned len, 
+                                   const color_type& c)
         {
+            pixel_type v;
+            v.set(c);
             do
             {
-                blend_pix(pix_value_ptr(x, y++, 1), c, cover_mask);
+                *pix_value_ptr(x, y++, 1) = v;
             }
             while (--len);
         }
@@ -2681,7 +2715,12 @@ namespace agg
     typedef blender_rgba_pre<rgba16, order_abgr> blender_abgr64_pre;
     typedef blender_rgba_pre<rgba16, order_bgra> blender_bgra64_pre;
 
-    typedef blender_rgba<rgba32, order_rgba> blender_rgba128;
+	typedef blender_rgba_plain<rgba16, order_rgba> blender_rgba64_plain;
+	typedef blender_rgba_plain<rgba16, order_argb> blender_argb64_plain;
+	typedef blender_rgba_plain<rgba16, order_abgr> blender_abgr64_plain;
+	typedef blender_rgba_plain<rgba16, order_bgra> blender_bgra64_plain;
+
+	typedef blender_rgba<rgba32, order_rgba> blender_rgba128;
     typedef blender_rgba<rgba32, order_argb> blender_argb128;
     typedef blender_rgba<rgba32, order_abgr> blender_abgr128;
     typedef blender_rgba<rgba32, order_bgra> blender_bgra128;
@@ -2738,7 +2777,12 @@ namespace agg
     typedef pixfmt_alpha_blend_rgba<blender_abgr64_pre, rendering_buffer> pixfmt_abgr64_pre;
     typedef pixfmt_alpha_blend_rgba<blender_bgra64_pre, rendering_buffer> pixfmt_bgra64_pre;
 
-    typedef pixfmt_alpha_blend_rgba<blender_rgba128, rendering_buffer> pixfmt_rgba128;
+	typedef pixfmt_alpha_blend_rgba<blender_rgba64_plain, rendering_buffer> pixfmt_rgba64_plain;
+	typedef pixfmt_alpha_blend_rgba<blender_argb64_plain, rendering_buffer> pixfmt_argb64_plain;
+	typedef pixfmt_alpha_blend_rgba<blender_abgr64_plain, rendering_buffer> pixfmt_abgr64_plain;
+	typedef pixfmt_alpha_blend_rgba<blender_bgra64_plain, rendering_buffer> pixfmt_bgra64_plain;
+
+	typedef pixfmt_alpha_blend_rgba<blender_rgba128, rendering_buffer> pixfmt_rgba128;
     typedef pixfmt_alpha_blend_rgba<blender_argb128, rendering_buffer> pixfmt_argb128;
     typedef pixfmt_alpha_blend_rgba<blender_abgr128, rendering_buffer> pixfmt_abgr128;
     typedef pixfmt_alpha_blend_rgba<blender_bgra128, rendering_buffer> pixfmt_bgra128;
