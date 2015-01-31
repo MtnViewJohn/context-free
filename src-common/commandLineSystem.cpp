@@ -87,8 +87,9 @@ CommandLineSystem::openFileForRead(const string& path)
 {
     if (path == "-") {
         if (!mInputBuffer) {
-            mInputBuffer.reset(new string(istreambuf_iterator<char>(cin),
-                                          istreambuf_iterator<char>()));
+            auto ss = std::ostringstream{};
+            ss << cin.rdbuf();
+            mInputBuffer.reset(new string(ss.str()));
         }
         return new istringstream(*mInputBuffer, ios::binary);
     }
