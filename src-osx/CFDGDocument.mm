@@ -63,17 +63,17 @@ namespace {
     public:
         CocoaSystem(CFDGDocument* doc) : mDoc(doc) { }
         
-        virtual void message(const char* fmt, ...);
-        virtual void syntaxError(const CfdgError& err);
-        virtual void catastrophicError(const char* what);
+        void message(const char* fmt, ...) override;
+        void syntaxError(const CfdgError& err) override;
+        void catastrophicError(const char* what) override;
         
-        virtual istream* openFileForRead(const string& path);
-        virtual const char* tempFileDirectory();
-        virtual string relativeFilePath(const string& base, const string& rel);
+        istream* openFileForRead(const string& path) override;
+        const char* tempFileDirectory() override;
+        string relativeFilePath(const string& base, const string& rel) override;
         
-        virtual void stats(const Stats& s);
+        void stats(const Stats& s) override;
         
-        virtual void orphan();
+        void orphan() override;
         
     private:
         CFDGDocument* mDoc;

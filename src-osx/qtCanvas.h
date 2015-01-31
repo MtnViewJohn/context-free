@@ -40,13 +40,13 @@ class qtCanvas : public aggCanvas {
     public:
         qtCanvas(NSString* name, BitmapImageHolder* bits, 
                  int fps, int qual, bool mpeg4);
-        ~qtCanvas();
+        ~qtCanvas() override;
     
         NSError* getError() const;
         void enterThread();
         void exitThread();
         
-        void end();
+        void end() override;
 
     private:
         class Impl;

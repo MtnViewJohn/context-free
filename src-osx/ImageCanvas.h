@@ -35,11 +35,11 @@ class ImageCanvas : public aggCanvas
 {
 public:
     ImageCanvas(GView* view, BitmapImageHolder* bitmap, PixelFormat format);
-    virtual ~ImageCanvas();
+    ~ImageCanvas() override;
     
     void start(bool clear, const agg::rgba& background,
-                int width, int height);
-    void end();
+                int width, int height) override;
+    void end() override;
                 
 private:
     GView*   mView;
