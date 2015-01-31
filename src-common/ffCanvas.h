@@ -31,11 +31,11 @@
 class ffCanvas : public aggCanvas {
 public:
     ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps);
-    ~ffCanvas();
+    ~ffCanvas() override;
     
     const char* mErrorMsg;
     
-    void end();
+    void end() override;
     
 private:
     class Impl;

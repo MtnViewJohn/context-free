@@ -37,17 +37,17 @@ protected:
     virtual void clearAndCR();
 public:
     PosixSystem() {};
-    ~PosixSystem() {};
+    ~PosixSystem() override {};
     
-    virtual void catastrophicError(const char* what);
+    void catastrophicError(const char* what) override;
     
-    virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
-    virtual const char* tempFileDirectory();
-    virtual std::vector<std::string> findTempFiles();
+    std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) override;
+    const char* tempFileDirectory() override;
+    std::vector<std::string> findTempFiles() override;
     
-    virtual std::string relativeFilePath(
-        const std::string& base, const std::string& rel);
-    virtual size_t getPhysicalMemory();
+    std::string relativeFilePath(
+        const std::string& base, const std::string& rel) override;
+    size_t getPhysicalMemory() override;
 };
 
 #endif // INCLUDE_POSIX_SYSTEM

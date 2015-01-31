@@ -34,19 +34,20 @@
 
 class SVGCanvas : public Canvas {
 public:
-    void start(bool clear, const agg::rgba& bk, int width, int height);
-    void end();
+    void start(bool clear, const agg::rgba& bk, int width, int height) override;
+    void end() override;
 
     void complete(RGBA8 c, agg::trans_affine tr, int padding, 
                   const AST::CommandInfo& attr,
                   bool g = false);
-    void circle(RGBA8 c, agg::trans_affine tr);
-    void square(RGBA8 c, agg::trans_affine tr);
-    void triangle(RGBA8 c, agg::trans_affine tr);
-    void fill(RGBA8 c);
-    void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
+    void circle(RGBA8 c, agg::trans_affine tr) override;
+    void square(RGBA8 c, agg::trans_affine tr) override;
+    void triangle(RGBA8 c, agg::trans_affine tr) override;
+    void fill(RGBA8 c) override;
+    void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
 
     SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
+    ~SVGCanvas() override { }
 
 private:
     typedef std::pair<AST::UIDdatatype, unsigned> uniquePath;

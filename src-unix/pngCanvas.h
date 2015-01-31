@@ -39,6 +39,6 @@ public:
     {
     }
 protected:
-    virtual void output(const char * outfilename, int frame = -1);
+    void output(const char * outfilename, int frame = -1) override;
 };
 

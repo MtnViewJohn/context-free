@@ -107,17 +107,17 @@ private:
         
     public:
         CFDGImpl(AbstractSystem*);
-        virtual ~CFDGImpl();
+        ~CFDGImpl() override;
         
-        virtual Renderer* renderer(
+        Renderer* renderer(
                 int width, int height, double minSize,
-                int variation, double border = 2.0);
+                int variation, double border = 2.0) override;
         
-        bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
-        frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const;
-        bool isSized(double* x = nullptr, double* y = nullptr) const;
-        bool isTimed(agg::trans_affine_time* t = nullptr) const;
-        const agg::rgba& getBackgroundColor();
+        bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override;
+        frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override;
+        bool isSized(double* x = nullptr, double* y = nullptr) const override;
+        bool isTimed(agg::trans_affine_time* t = nullptr) const override;
+        const agg::rgba& getBackgroundColor() override;
         void setBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
     

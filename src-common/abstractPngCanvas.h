@@ -32,9 +32,9 @@ public:
     abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                       PixelFormat pixfmt, bool crop, int frameCount,
                       int variation, bool wallpaper, Renderer *r, int mx, int my);
-    virtual ~abstractPngCanvas();
-    virtual void start(bool , const agg::rgba& , int , int );
-    virtual void end();
+    ~abstractPngCanvas() override;
+    void start(bool , const agg::rgba& , int , int ) override;
+    void end() override;
     
 protected:
     const char* mOutputFileName;
