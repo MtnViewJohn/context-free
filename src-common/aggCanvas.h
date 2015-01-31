@@ -51,14 +51,14 @@ class aggCanvas : public Canvas {
             RGB16_Blend = RGB8_Blend | Has_16bit_Color
         };
 		static const std::map<PixelFormat, int> BytesPerPixel;
-        void start(bool clear, const agg::rgba& bk, int width, int height);
-        void end();
+        void start(bool clear, const agg::rgba& bk, int width, int height) override;
+        void end() override;
 
-        void circle(RGBA8 c, agg::trans_affine tr);
-        void square(RGBA8 c, agg::trans_affine tr);
-        void triangle(RGBA8 c, agg::trans_affine tr);
-        void fill(RGBA8 c);
-        void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
+        void circle(RGBA8 c, agg::trans_affine tr) override;
+        void square(RGBA8 c, agg::trans_affine tr) override;
+        void triangle(RGBA8 c, agg::trans_affine tr) override;
+        void fill(RGBA8 c) override;
+        void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
         
         bool colorCount256();
             // return whether the aggCanvas can fit in byte pixels
@@ -67,7 +67,7 @@ class aggCanvas : public Canvas {
         
     protected:
         aggCanvas(PixelFormat);
-        virtual ~aggCanvas();
+        ~aggCanvas() override;
         
         void attach(void* data, unsigned width, unsigned height, int stride, bool invert = true);
             // data is int8u grayscale pixels or int32u pixels

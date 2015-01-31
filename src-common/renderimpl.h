@@ -75,10 +75,10 @@ class RendererImpl : public RendererAST {
         double run(Canvas* canvas, bool partialDraw);
         void draw(Canvas* canvas);
         void animate(Canvas* canvas, int frames, bool zoom);
-        virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr);
-        virtual void processShape(const Shape& s);
-        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr);
-        virtual void processSubpath(const Shape& s, bool tr, int);
+        void processPathCommand(const Shape& s, const AST::CommandInfo* attr) override;
+        void processShape(const Shape& s) override;
+        void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) override;
+        void processSubpath(const Shape& s, bool tr, int) override;
         
     private:
         void outputPrep(Canvas*);
@@ -172,7 +172,7 @@ class RendererImpl : public RendererAST {
         static unsigned int MaxMergeFiles;      // maximum number of files to merge at once
     
     protected:
-        virtual void colorConflict(const yy::location& w);
+        void colorConflict(const yy::location& w) override;
 };
 
 

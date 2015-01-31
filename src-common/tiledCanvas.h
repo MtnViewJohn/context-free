@@ -37,17 +37,17 @@ typedef std::vector<agg::point_i> tileList;
 
 class tiledCanvas : public Canvas {
 public:
-    void start(bool clear, const agg::rgba& bk, int width, int height);
-    void end();
+    void start(bool clear, const agg::rgba& bk, int width, int height) override;
+    void end() override;
     
-    void circle(RGBA8 c, agg::trans_affine tr);
-    void square(RGBA8 c, agg::trans_affine tr);
-    void triangle(RGBA8 c, agg::trans_affine tr);
-    void fill(RGBA8 c);
-    void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr);
+    void circle(RGBA8 c, agg::trans_affine tr) override;
+    void square(RGBA8 c, agg::trans_affine tr) override;
+    void triangle(RGBA8 c, agg::trans_affine tr) override;
+    void fill(RGBA8 c) override;
+    void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
     
     tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
-    ~tiledCanvas() {};
+    ~tiledCanvas() override {};
     
     void scale(double scaleFactor);
     

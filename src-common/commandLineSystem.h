@@ -55,15 +55,15 @@ protected:
 public:
     CommandLineSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
         mErrorMode(false) { };
-    ~CommandLineSystem() { };
-    virtual void message(const char* fmt, ...);
-    virtual void syntaxError(const CfdgError& err);
-    virtual bool error(bool errorOccurred = true);
+    ~CommandLineSystem() override { };
+    void message(const char* fmt, ...) override;
+    void syntaxError(const CfdgError& err) override;
+    bool error(bool errorOccurred = true) override;
     
-    virtual std::istream* openFileForRead(const std::string& path);
+    std::istream* openFileForRead(const std::string& path) override;
     
-    virtual void stats(const Stats&);
-    virtual void orphan() {};
+    void stats(const Stats&) override;
+    void orphan() override {};
 };
 
 #endif // INCLUDE_COMMANDLINE_SYSTEM
