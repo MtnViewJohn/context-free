@@ -131,6 +131,7 @@ double __cdecl __strtod(
     return strtod(nptr, endptr);
 }
 
+#if defined (_MSC_VER) && _MSC_VER < 1800
 __int64 strtoll(
      const char *nptr, 
      char **endptr, 
@@ -145,6 +146,7 @@ double __cdecl trunc(
 {
     return n > 0.0 ? floor(n) : ceil(n);
 }
+#endif 
 
 int __cdecl __mingw_vsscanf(
      const char *s, 

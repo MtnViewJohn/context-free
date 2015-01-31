@@ -898,7 +898,7 @@ namespace AST {
                 double w[AST::MaxVectorSize];
                 int wc = arguments->evaluate(w, AST::MaxVectorSize, rti);
                 if (wc >= 1)
-                    *res = rti->mCurrentSeed.getDiscrete(wc, w);
+                    *res = static_cast<double>(rti->mCurrentSeed.getDiscrete(wc, w));
                 return 1;
             }
             default:
@@ -1111,12 +1111,12 @@ namespace AST {
             case RandBinomial:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = floor(rti->mCurrentSeed.getBinomial(a[0], a[1]));
+                *res = floor(static_cast<double>(rti->mCurrentSeed.getBinomial(a[0], a[1])));
                 break;
             case RandNegBinomial:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = floor(rti->mCurrentSeed.getNegativeBinomial(a[0], a[1]));
+                *res = floor(static_cast<double>(rti->mCurrentSeed.getNegativeBinomial(a[0], a[1])));
                 break;
             case RandPoisson:
                 if (rti == nullptr) throw DeferUntilRuntime();
