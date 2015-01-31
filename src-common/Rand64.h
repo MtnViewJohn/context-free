@@ -76,7 +76,7 @@ public:
     
     double getStudentT(double freedom);
     
-    int64_t getDiscrete(unsigned count, double* weights);
+    int64_t getDiscrete(unsigned count, const double* weights);
     
     Rand64& operator^=(const Rand64& r)
     {
