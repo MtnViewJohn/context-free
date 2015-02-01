@@ -162,10 +162,8 @@ namespace AST {
         ASTruleSpecifier(int t, const std::string& name, const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
         ASTruleSpecifier(ASTruleSpecifier&& r);
-#ifndef _WIN32
         ASTruleSpecifier(const ASTruleSpecifier&) = delete;
         ASTruleSpecifier& operator=(const ASTruleSpecifier&) = delete;
-#endif
         explicit ASTruleSpecifier()
         :   ASTexpression(CfdgError::Default, false, false, RuleType), shapeType(-1),
             argSize(0), argSource(NoArgs), arguments(nullptr),
@@ -178,12 +176,6 @@ namespace AST {
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
         void grab(const ASTruleSpecifier* src);
-#ifdef _WIN32
-    private:
-        ASTruleSpecifier(const ASTruleSpecifier&) :
-            ASTexpression(CfdgError::Default) { };
-        ASTruleSpecifier& operator=(const ASTruleSpecifier&) { return *this; };
-#endif
     };
     class ASTstartSpecifier : public ASTruleSpecifier {
     public:
