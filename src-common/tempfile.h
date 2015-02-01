@@ -45,11 +45,9 @@ public:
     TempFile(AbstractSystem*, AbstractSystem::TempType t, const char* type, int num);
     TempFile(TempFile&&) NOEXCEPT;
     TempFile& operator=(TempFile&&) NOEXCEPT;
-#ifndef _WIN32
     TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
-#endif
-    virtual ~TempFile();
+    ~TempFile();
 
 private:
     AbstractSystem*     mSystem;
@@ -59,10 +57,6 @@ private:
     int         mNum;
     bool        mWritten;
     void        erase();
-#ifdef _WIN32
-    TempFile(const TempFile&) { };
-    TempFile& operator=(const TempFile&) { return *this; };
-#endif
 };
 
 #endif // INCLUDE_TEMPFILE_H
