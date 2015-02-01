@@ -1111,12 +1111,12 @@ namespace AST {
             case RandBinomial:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = floor(static_cast<double>(rti->mCurrentSeed.getBinomial(a[0], a[1])));
+                *res = floor(static_cast<double>(rti->mCurrentSeed.getBinomial(static_cast<Rand64::result_type>(a[0]), a[1])));
                 break;
             case RandNegBinomial:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-                *res = floor(static_cast<double>(rti->mCurrentSeed.getNegativeBinomial(a[0], a[1])));
+				*res = floor(static_cast<double>(rti->mCurrentSeed.getNegativeBinomial(static_cast<Rand64::result_type>(a[0]), a[1])));
                 break;
             case RandPoisson:
                 if (rti == nullptr) throw DeferUntilRuntime();
