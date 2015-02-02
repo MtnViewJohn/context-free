@@ -380,10 +380,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
     
     if (mStatusText != nil) {
-        NSURL* errorFile = nil;
         NSString* errorPath = [e path];
-        if (errorPath)
-            errorFile = [NSURL fileURLWithPath: errorPath isDirectory: NO];
         
         [msg beginEditing];
         NSURL* myURL = [self fileURL];

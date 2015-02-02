@@ -442,10 +442,10 @@ Builder::MakeConfig(ASTdefine* cfg)
         warning(cfg->mLocation, "Unknown configuration parameter");
     if (cfg->mName == "CF::MaxNatural") {
         const ASTexpression* max = m_CFDG->hasParameter(CFG::MaxNatural);
-        if (max != current)
-            return;                             // only process if we are chaanging it
+        if (max != current || !max)
+            return;                             // only process if we are changing it
         double v = -1.0;
-        if (!max || !max->isConstant ||
+        if (!max->isConstant ||
             max->mType != AST::NumericType ||
             max->evaluate(&v, 1) != 1)
         {
