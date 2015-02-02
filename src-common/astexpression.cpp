@@ -193,6 +193,7 @@ namespace AST {
         case SimpleArgs:
             return simpleRule;
         case StackArgs: {
+            assert(rti);
             const StackType* stackItem = rti->stackItem(mStackIndex);
             stackItem->rule->retain(rti);
             return stackItem->rule;
@@ -1514,9 +1515,7 @@ namespace AST {
             case ASTmodTerm::targAlpha:
             case ASTmodTerm::targBright:
             case ASTmodTerm::targSat: {
-                color += modType - ASTmodTerm::targHue;
                 target += modType - ASTmodTerm::targHue;
-                mask <<= 2 * (modType - ASTmodTerm::targHue);
                 if (*target != 0.0) {
                     if (rti == nullptr)
                         throw DeferUntilRuntime();
@@ -2379,7 +2378,9 @@ namespace AST {
                         
                         if (arguments && arguments->mType == AST::ReuseType) {
                             argSource = ParentArgs;
-                            if (typeSignature != parentSignature) {
+                            if (!typeSignature) {
+                                CfdgError::Error(where, "Parameter reuse only allowed when shape has parameters to reuse.");
+                            } else if (typeSignature != parentSignature) {
                                 ASTparameters::const_iterator param_it = typeSignature->begin();
                                 ASTparameters::const_iterator parent_it = parentSignature->begin();
                                 while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {

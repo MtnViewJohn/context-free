@@ -210,7 +210,8 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         pCfdg = nullptr;
     }
     
-    system->message("%d rules loaded", pCfdg->numRules());
+    if (pCfdg)
+        system->message("%d rules loaded", pCfdg->numRules());
     
     return pCfdg;
 }
