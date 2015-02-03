@@ -43,6 +43,7 @@
 #include "config.h"
 #include <exception>
 #include "mynoexcept.h"
+#include <memory>
 
 typedef agg::rgba16 RGBA8;
 
@@ -206,19 +207,13 @@ class Renderer {
         
         int m_width;
         int m_height;
-        tiledCanvas* m_tiledCanvas;
+        std::unique_ptr<tiledCanvas> m_tiledCanvas;
     
         static double Infinity;
         static bool   AbortEverything;
         static unsigned ParamCount;
     protected:
-        Renderer(int w, int h) 
-        : requestStop(false),
-          requestFinishUp(false),
-          requestUpdate(false),
-          m_width(w), m_height(h),
-          m_tiledCanvas(nullptr)
-     { }
+        Renderer(int w, int h);
 };
 
 #endif

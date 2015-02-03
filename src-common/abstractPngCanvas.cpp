@@ -36,7 +36,7 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
                                      int variation, bool wallpaper, Renderer *r, int mx, int my)
 : aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
-  mCurrentFrame(0), mVariation(variation), mData(nullptr), mPixelFormat(pixfmt),
+  mCurrentFrame(0), mVariation(variation), mPixelFormat(pixfmt),
   mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
   mFullHeight(height), mOriginX(0), mOriginY(0)
 {
@@ -66,8 +66,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
 #ifdef _WIN32
     mStride += ((-mStride) & 3);
 #endif
-    mData = new unsigned char[mStride * mFullHeight];
-	attach(mData + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
+    mData.reset(new unsigned char[mStride * mFullHeight]);
+	attach(mData.get() + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
 
     if (quiet) return;
     cout << prettyInt(static_cast<unsigned long>(mFullWidth)) << "w x " <<
@@ -75,10 +75,7 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
     cout << "Generating..." << endl;
 }
 
-abstractPngCanvas::~abstractPngCanvas()
-{
-    delete[] mData;
-}
+abstractPngCanvas::~abstractPngCanvas() = default;
 
 void
 abstractPngCanvas::start(bool clear, const agg::rgba &bk, int width, int height)

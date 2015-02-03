@@ -42,7 +42,7 @@ protected:
     int mCurrentFrame;
     int  mVariation;
 
-    unsigned char* mData;
+    std::unique_ptr<unsigned char[]> mData;
     int mStride;
     PixelFormat mPixelFormat;
     bool mCrop;

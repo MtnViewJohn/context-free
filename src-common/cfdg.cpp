@@ -137,7 +137,14 @@ AbstractSystem::tempFileForRead(const string& path)
 
 Canvas::~Canvas() { }
 
-Renderer::~Renderer() { delete m_tiledCanvas; }
+Renderer::Renderer(int w, int h)
+: requestStop(false),
+  requestFinishUp(false),
+  requestUpdate(false),
+  m_width(w), m_height(h)
+{ }
+
+Renderer::~Renderer() = default;
 
 
 
@@ -147,11 +154,11 @@ CFDG::~CFDG() { }
 CFDG*
 CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
 {
-    CFDGImpl* pCfdg = nullptr;
+    cfdgi_ptr pCfdg;
     for (int version = 2; version <= 3; ++version) {
-        if (pCfdg == nullptr)
-            pCfdg = new CFDGImpl(system); 
-        Builder b(pCfdg, variation);
+        if (!pCfdg)
+            pCfdg.reset(new CFDGImpl(system));
+        Builder b(std::move(pCfdg), variation);
 
         yy::Scanner lexer;
         b.lexer = &lexer;
@@ -160,27 +167,25 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
                                           yy::CfdgParser::token::CFDG3;
         
         yy::CfdgParser parser(b);
-        istream* input = system->openFileForRead(fname);
+        std::unique_ptr<istream> input(system->openFileForRead(fname));
         if (!input || !input->good()) {
-            delete input;
-            input = nullptr;
             system->error();
             system->message("Couldn't open rules file %s", fname);
             return nullptr;
         }
         
-        pCfdg->fileNames.push_back(fname);
-        b.m_currentPath = &(pCfdg->fileNames.back());
+        b.m_CFDG->fileNames.push_back(fname);
+        b.m_currentPath = &(b.m_CFDG->fileNames.back());
         b.m_basePath = b.m_currentPath;
         b.m_filesToLoad.push(b.m_currentPath);
-        b.m_streamsToLoad.push(input);
+        b.m_streamsToLoad.push(std::move(input));
         b.m_includeNamespace.push(false);
-        b.push_repContainer(pCfdg->mCFDGcontents);
+        b.push_repContainer(b.m_CFDG->mCFDGcontents);
         
         if (version == 2)
             system->message("Reading rules file %s", fname);
 
-        lexer.yyrestart(input);
+        lexer.yyrestart(b.m_streamsToLoad.top().get());
         //parser.set_debug_level(1);
         
         int yyresult = 0;
@@ -196,10 +201,10 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         if (b.mErrorOccured)
             return nullptr;
         if (yyresult == 0) {
-            pCfdg->rulesLoaded();
+            b.m_CFDG->rulesLoaded();
             if (b.mErrorOccured)
                 return nullptr;
-            b.m_CFDG = nullptr;
+            pCfdg = std::move(b.m_CFDG);
             break;
         }
         if (lexer.maybeVersion == 0 || 
@@ -207,11 +212,11 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
                                                   yy::CfdgParser::token::CFDG3))
             return nullptr;
         system->message("Restarting as a version 3 design");
-        pCfdg = nullptr;
+        pCfdg.reset();
     }
     
     if (pCfdg)
         system->message("%d rules loaded", pCfdg->numRules());
     
-    return pCfdg;
+    return pCfdg.release();
 }

@@ -204,13 +204,10 @@ RendererImpl::~RendererImpl()
         return;
 #ifdef EXTREME_PARAM_DEBUG
     AbstractSystem* sys = system();
-    delete m_cfdg;
     for (auto &p: StackRule::ParamMap) {
         if (p.second > 0)
             sys->message("Parameter at %p is still alive, it is param number %d\n", p.first, p.second);
     }
-#else
-    delete m_cfdg;
 #endif
 }
 
@@ -271,10 +268,9 @@ RendererImpl::outputPrep(Canvas* canvas)
             agg::trans_affine tr;
             m_cfdg->isTiled(&tr);
             m_cfdg->isFrieze(&tr);
-            delete m_tiledCanvas;
-            m_tiledCanvas = new tiledCanvas(canvas, tr, m_frieze);
+            m_tiledCanvas.reset(new tiledCanvas(canvas, tr, m_frieze));
             m_tiledCanvas->scale(m_currScale);
-            m_canvas = m_tiledCanvas;
+            m_canvas = m_tiledCanvas.get();
         }
 
         mFrameTimeBounds.load_from(1.0, -Renderer::Infinity, Renderer::Infinity);

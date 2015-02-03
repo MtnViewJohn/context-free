@@ -615,9 +615,9 @@ CFDGImpl::renderer(int width, int height, double minSize,
         return nullptr;
     }
 
-    RendererImpl* r = nullptr;
+    std::unique_ptr<RendererImpl> r;
     try {
-        r = new RendererImpl(this, width, height, minSize, variation, border);
+        r.reset(new RendererImpl(this, width, height, minSize, variation, border));
         Modification tiled;
         Modification sized;
         Modification timed;
@@ -637,16 +637,15 @@ CFDGImpl::renderer(int width, int height, double minSize,
         if (hasParameter(CFG::Time, timed, nullptr)) {
             mTimeMod = timed;
         }
-        if (hasParameter(CFG::MaxShapes, maxShape, r)) {
+        if (hasParameter(CFG::MaxShapes, maxShape, r.get())) {
             if (maxShape > 1)
                 r->setMaxShapes(static_cast<int>(maxShape));
         }
         r->initBounds();
     } catch (CfdgError& e) {
         m_system->syntaxError(e);
-        delete r;   // deletes this
-        return nullptr;
+        return nullptr;     // deletes this
     }
-    return r;
+    return r.release();
 }
 
