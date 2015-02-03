@@ -67,8 +67,9 @@ class aggCanvas : public Canvas {
         
     protected:
         aggCanvas(PixelFormat);
-        ~aggCanvas() override;
-        
+        ~aggCanvas() override;  // defined in cpp file so that it knows how
+                                // to call the impl dtor
+    
         void attach(void* data, unsigned width, unsigned height, int stride, bool invert = true);
             // data is int8u grayscale pixels or int32u pixels
         
@@ -85,7 +86,7 @@ class aggCanvas : public Canvas {
     //private:
     public:
         class impl;
-        impl* m;
+        std::unique_ptr<impl> m;
 };
 
 #endif // INCLUDE_AGGCANVAS_H

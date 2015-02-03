@@ -41,17 +41,25 @@ mapPixFmt(aggCanvas::PixelFormat in)
     }
 }
 
+class ffCanvas::Impl
+// We need to declare this to make std::unique_ptr<ffCanvas::Impl> happy, even though
+// it is never constructed or destroyed.
+{
+public:
+    Impl() = default;
+    ~Impl() = default;
+};
+
+
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
-: aggCanvas(mapPixFmt(fmt)), mErrorMsg("Quicktime support not compiled in"), impl(nullptr)
+: aggCanvas(mapPixFmt(fmt)), mErrorMsg("Quicktime support not compiled in")
 {
     width &= ~3;
     height &= ~3;
     mError = true;
 }
 
-ffCanvas::~ffCanvas()
-{
-}
+ffCanvas::~ffCanvas() = default;
 
 void
 ffCanvas::end()

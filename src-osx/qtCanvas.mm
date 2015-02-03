@@ -57,6 +57,7 @@ class qtCanvas::Impl
     NSError*        mError;
 
     friend class qtCanvas;
+    friend struct std::default_delete<qtCanvas::Impl>;
 };
 
 qtCanvas::Impl::Impl(NSString* name, BitmapImageHolder* bits, int fps, 
@@ -183,7 +184,7 @@ qtCanvas::Impl::exitThread()
 
 qtCanvas::qtCanvas(NSString* name, BitmapImageHolder* bits, 
                    int fps, int qual, bool mpeg4)
-: aggCanvas(QT_Blend), impl(* new Impl(name, bits, fps, qual, mpeg4))
+: aggCanvas(QT_Blend), impl(new Impl(name, bits, fps, qual, mpeg4))
 {
     if (bits)
         attach([bits bitmapData], static_cast<unsigned>([bits pixelsWide]),
@@ -191,33 +192,30 @@ qtCanvas::qtCanvas(NSString* name, BitmapImageHolder* bits,
                static_cast<int>([bits bytesPerRow]));
 }
 
-qtCanvas::~qtCanvas()
-{
-    delete &impl;
-}
+qtCanvas::~qtCanvas() = default;
 
 void
 qtCanvas::end()
 {
     aggCanvas::end();
 
-    impl.addFrame();
+    impl->addFrame();
 }
 
 NSError*
 qtCanvas::getError() const
 {
-    return impl.mError;
+    return impl->mError;
 }
 
 void
 qtCanvas::enterThread()
 {
-    impl.enterThread();
+    impl->enterThread();
 }
 
 void
 qtCanvas::exitThread()
 {
-    impl.exitThread();
+    impl->exitThread();
 }
