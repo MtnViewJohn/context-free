@@ -434,8 +434,6 @@ namespace AST {
     
     ASTarray::~ASTarray()
     {
-        delete [] mData;
-        mData = nullptr;
     }
     
     ASTlet::~ASTlet()
@@ -1205,7 +1203,7 @@ namespace AST {
                 return -1;
             }
             
-            const double* source = mData;
+            const double* source = mData.get();
             if (!source)
                 source = &(rti->stackItem(mStackIndex)->number);
             
@@ -2962,12 +2960,10 @@ namespace AST {
                 
                 mArgs->entropy(entString);
                 if (bound->mStackIndex == -1) {
-                    mData = new double[mCount];
-                    if (bound->mDefinition->mExpression->evaluate(mData, mCount) != mCount) {
+                    mData.reset(new double[mCount]);
+                    if (bound->mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
                         CfdgError::Error(where, "Error computing vector data");
                         isConstant = false;
-                        delete [] mData;
-                        mData = nullptr;
                         return nullptr;
                     }
                 }
