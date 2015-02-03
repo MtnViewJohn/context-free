@@ -45,7 +45,7 @@ public:
     int             mWidth;
     int             mHeight;
     int             mStride;
-    char*           mBuffer;
+    std::unique_ptr<char[]> mBuffer;
     int             mFrameRate;
     const char*     mError;
     
@@ -185,8 +185,6 @@ ffCanvas::Impl::~Impl()
     if (mFrame) {
         av_free(mFrame); mFrame = NULL;
     }
-    
-    delete[] mBuffer; mBuffer = NULL;
 }
 
 void
@@ -237,7 +235,7 @@ mapPixFmt(aggCanvas::PixelFormat in)
 }
 
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
-: aggCanvas(mapPixFmt(fmt)), mErrorMsg(NULL), impl(NULL)
+: aggCanvas(mapPixFmt(fmt)), mErrorMsg(NULL)
 {
     width &= ~3;
     height &= ~3;
@@ -247,19 +245,15 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int
     char* bits = new char[stride * height];
     aggCanvas::attach((void*)bits, width, height, stride);
     
-    impl = new Impl(name, mapPixFmt(fmt), width, height, stride, bits, fps);
+    impl.reset(new Impl(name, mapPixFmt(fmt), width, height, stride, bits, fps));
     if (impl->mError) {
         mErrorMsg = impl->mError;
+		impl.reset();
         mError = true;
-        delete impl;
-        impl = NULL;
     }
 }
 
-ffCanvas::~ffCanvas()
-{
-    delete impl;
-}
+ffCanvas::~ffCanvas() = default;
 
 void
 ffCanvas::end()
@@ -271,9 +265,8 @@ ffCanvas::end()
         if (impl->mError) {
             mErrorMsg = impl->mError;
             mError = true;
-            delete impl;
-            impl = NULL;
-        }
+			impl.reset();
+		}
     }
 }
 

@@ -134,18 +134,18 @@ void pngCanvas::output(const char* outfilename, int frame)
     int height = mFullHeight;
     // If the canvas is 16-bit then copy it to an 8-bit version
     // and output that. GDI+ doesn't really support 16-bit modes.
-    unsigned char* data = mData;
+    unsigned char* data = mData.get();
     int stride = mStride;
     int bpp = BytesPerPixel.at(mPixelFormat);
-    unsigned char* data8 = 0;
+    std::unique_ptr<unsigned char[]> data8;
     PixelFormat pf = mPixelFormat;
     if (pf & Has_16bit_Color) {
         stride = stride >> 1;
         stride += ((-stride) & 3);
-        data8 = new unsigned char[stride * height];
+        data8.reset(new unsigned char[stride * height]);
         bpp = bpp >> 1;
-        unsigned char* row8 = data8;
-        unsigned char* srcrow = mData;
+        unsigned char* row8 = data8.get();
+        unsigned char* srcrow = mData.get();
         for (int y = 0; y < height; ++y) {
             unsigned __int16* row16 = (unsigned __int16*)srcrow;
             for (int x = 0; x < width; ++x)
@@ -153,7 +153,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             row8 += stride;
             srcrow += mStride;
         }
-        data = data8;
+        data = data8.get();
         pf = (PixelFormat)(pf & (~Has_16bit_Color));
     }
 
@@ -183,21 +183,20 @@ void pngCanvas::output(const char* outfilename, int frame)
             GrayPalette->Entries[i] = Color::MakeARGB(255, (BYTE)i, (BYTE)i, (BYTE)i);
     }
 
-    Bitmap* saveBM;
+    std::unique_ptr<Bitmap> saveBM;
 
     switch (pf) {
         case aggCanvas::Gray8_Blend:
-            saveBM = new Bitmap(width, height, stride, PixelFormat8bppIndexed, data);
+            saveBM.reset(new Bitmap(width, height, stride, PixelFormat8bppIndexed, data));
             saveBM->SetPalette(GrayPalette);
             break;
         case aggCanvas::RGB8_Blend:
-            saveBM = new Bitmap(width, height, stride, PixelFormat24bppRGB, data);
+            saveBM.reset(new Bitmap(width, height, stride, PixelFormat24bppRGB, data));
             break;
         case aggCanvas::RGBA8_Blend:
-            saveBM = new Bitmap(width, height, stride, PixelFormat32bppPARGB, data);
+            saveBM.reset(new Bitmap(width, height, stride, PixelFormat32bppPARGB, data));
             break;
         default:
-            saveBM = nullptr;
             break;
     }
 
@@ -240,9 +239,6 @@ void pngCanvas::output(const char* outfilename, int frame)
         SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, (LPVOID)fullpath, 
                              SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
     }
-
-    delete saveBM;
-    delete[] data8;
 
     return;
 }
