@@ -165,6 +165,6 @@ private:
         std::list<std::string> fileNames;
 };
 
-
+typedef std::unique_ptr<CFDGImpl> cfdgi_ptr;
 
 #endif // INCLUDE_CFDGIMPL_H

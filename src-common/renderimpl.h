@@ -60,7 +60,7 @@ namespace AST {
 
 class RendererImpl : public RendererAST {
     public:
-        RendererImpl(CFDGImpl* cfdg,
+        RendererImpl(CFDGImpl* cfdg,    // takes ownership w/o move semantics
                         int width, int height, double minSize,
                         int variation, double border);
         ~RendererImpl();
@@ -108,7 +108,7 @@ class RendererImpl : public RendererAST {
         void cleanup();
 
     private:
-        CFDGImpl*   m_cfdg;
+        cfdgi_ptr   m_cfdg;
         Canvas*     m_canvas;
         pathIterator m_pathIter;
     

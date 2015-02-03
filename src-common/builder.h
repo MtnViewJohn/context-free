@@ -47,6 +47,7 @@
 #include "astreplacement.h"
 
 class CFDGImpl;
+typedef std::unique_ptr<CFDGImpl> cfdgi_ptr;
 namespace yy {
     class location;
 }
@@ -60,9 +61,9 @@ public:
     static Builder* CurrentBuilder;
     static double   MaxNatural;
 
-    CFDGImpl*       m_CFDG;
-    std::stack<std::string*>   m_filesToLoad;
-    std::stack<std::istream*> m_streamsToLoad;
+    cfdgi_ptr                   m_CFDG;
+    std::stack<std::string*>    m_filesToLoad;
+    std::stack<std::unique_ptr<std::istream>> m_streamsToLoad;
     std::stack<bool>            m_includeNamespace;
     std::string*          m_currentPath;
     std::string*          m_basePath;
@@ -104,7 +105,7 @@ public:
     void    error(int line, const char* msg);
     bool    mErrorOccured;
     
-    Builder(CFDGImpl* cfdg, int variation);
+    Builder(cfdgi_ptr cfdg, int variation);
     ~Builder();
     
     int             StringToShape(const std::string& name, const yy::location& loc,

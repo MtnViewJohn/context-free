@@ -89,8 +89,8 @@ const std::map<std::string, int> Builder::FlagNames = {
 Builder* Builder::CurrentBuilder = nullptr;
 double Builder:: MaxNatural = 1000.0;
 
-Builder::Builder(CFDGImpl* cfdg, int variation)
-: m_CFDG(cfdg), m_currentPath(nullptr), m_basePath(nullptr), m_pathCount(1),
+Builder::Builder(cfdgi_ptr cfdg, int variation)
+: m_CFDG(std::move(cfdg)), m_currentPath(nullptr), m_basePath(nullptr), m_pathCount(1),
   mInPathContainer(false), mCurrentShape(-1),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)
@@ -105,12 +105,7 @@ Builder::Builder(CFDGImpl* cfdg, int variation)
 
 Builder::~Builder()
 {
-    delete m_CFDG;
     Builder::CurrentBuilder = nullptr;
-    while (!m_streamsToLoad.empty()) {
-        delete m_streamsToLoad.top();
-        m_streamsToLoad.pop();
-    }
 }
 
 static const char*
@@ -215,10 +210,8 @@ Builder::IncludeFile(const std::string& fname)
 {
     std::string path =
         m_CFDG->system()->relativeFilePath(*m_currentPath, fname.c_str());
-    std::istream* input = m_CFDG->system()->openFileForRead(path);
+    std::unique_ptr<std::istream> input(m_CFDG->system()->openFileForRead(path));
     if (!input || !input->good()) {
-        delete input;
-        input = nullptr;
         m_CFDG->system()->error();
         mErrorOccured = true;
         m_CFDG->system()->message("Couldn't open rules file %s", path.c_str());
@@ -228,7 +221,7 @@ Builder::IncludeFile(const std::string& fname)
     m_CFDG->fileNames.push_back(path);
     m_currentPath = &(m_CFDG->fileNames.back());
     m_filesToLoad.push(m_currentPath);
-    m_streamsToLoad.push(input);
+    m_streamsToLoad.push(std::move(input));
     m_includeNamespace.push(false);
     ++m_pathCount;
     ++mIncludeDepth;
@@ -237,7 +230,7 @@ Builder::IncludeFile(const std::string& fname)
     
     m_CFDG->system()->message("Reading rules file %s", fname.c_str());
     
-    lexer->yypush_buffer_state(lexer->yy_create_buffer(input, 16384));
+    lexer->yypush_buffer_state(lexer->yy_create_buffer(m_streamsToLoad.top().get(), 16384));
     lexer->nextLocAction = yy::Scanner::pushLoc;
 }
 
@@ -256,7 +249,6 @@ Builder::EndInclude()
     
     if (m_includeNamespace.top())
         PopNameSpace();
-    delete m_streamsToLoad.top();
     m_streamsToLoad.pop();
     m_filesToLoad.pop();
     m_includeNamespace.pop();
