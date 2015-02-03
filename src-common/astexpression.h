@@ -372,7 +372,7 @@ namespace AST {
     class ASTarray : public ASTexpression {
     public:
         int     mName;
-        double* mData;
+        std::unique_ptr<double[]> mData;
         exp_ptr mArgs;
         int     mLength;
         int     mStride;
