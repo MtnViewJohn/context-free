@@ -331,20 +331,20 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
 
 aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) { 
     switch (pixfmt) {
-        case Gray8_Blend: m = new aggPixelPainter<gray_pixel_fmt>(this); break;
-        case RGBA8_Blend: m = new aggPixelPainter<color32_pixel_fmt>(this); break;
-        case RGB8_Blend:  m = new aggPixelPainter<color24_pixel_fmt>(this); break;
-        case Gray16_Blend: m = new aggPixelPainter<gray16_pixel_fmt>(this); break;
-        case RGBA16_Blend: m = new aggPixelPainter<color64_pixel_fmt>(this); break;
-        case RGB16_Blend:  m = new aggPixelPainter<color48_pixel_fmt>(this); break;
-        case FF_Blend:    m = new aggPixelPainter<ff_pixel_fmt>(this); break;
-        case FF24_Blend:  m = new aggPixelPainter<ff24_pixel_fmt>(this); break;
-        case QT_Blend:    m = new aggPixelPainter<qt_pixel_fmt>(this); break;
-        default: m = nullptr; break;
+        case Gray8_Blend:   m.reset(new aggPixelPainter<gray_pixel_fmt>(this)); break;
+        case RGBA8_Blend:   m.reset(new aggPixelPainter<color32_pixel_fmt>(this)); break;
+        case RGB8_Blend:    m.reset(new aggPixelPainter<color24_pixel_fmt>(this)); break;
+        case Gray16_Blend:  m.reset(new aggPixelPainter<gray16_pixel_fmt>(this)); break;
+        case RGBA16_Blend:  m.reset(new aggPixelPainter<color64_pixel_fmt>(this)); break;
+        case RGB16_Blend:   m.reset(new aggPixelPainter<color48_pixel_fmt>(this)); break;
+        case FF_Blend:      m.reset(new aggPixelPainter<ff_pixel_fmt>(this)); break;
+        case FF24_Blend:    m.reset(new aggPixelPainter<ff24_pixel_fmt>(this)); break;
+        case QT_Blend:      m.reset(new aggPixelPainter<qt_pixel_fmt>(this)); break;
+        default: break;
     }
 }
-aggCanvas::~aggCanvas()                 { delete m; }
 
+aggCanvas::~aggCanvas() = default;
 
 void
 aggCanvas::start(bool clear, const agg::rgba& bk, int width, int height)
