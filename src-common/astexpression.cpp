@@ -410,7 +410,7 @@ namespace AST {
     ASTarray::ASTarray(int nameIndex, exp_ptr args,
                        const yy::location& loc, const std::string& name)
     : ASTexpression(loc, false, false, NumericType), mName(nameIndex),
-      mData(nullptr), mArgs(std::move(args)), mLength(1), mStride(1),
+      mArgs(std::move(args)), mLength(1), mStride(1),
       mStackIndex(-1), mCount(0), isParameter(false), entString(name)
     {
     }
