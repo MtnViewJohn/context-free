@@ -47,7 +47,7 @@ public:
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
     
     tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
-    ~tiledCanvas() override {};
+    ~tiledCanvas() override = default;
     
     void scale(double scaleFactor);
     

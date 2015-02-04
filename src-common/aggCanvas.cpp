@@ -178,7 +178,7 @@ class aggCanvas::impl {
         {
 //            rasterizer.gamma(agg::gamma_power(1.0));
         }
-        virtual ~impl() {};
+        virtual ~impl() = default;
 
         virtual void reset() = 0;
         virtual void clear(const agg::rgba& bk) = 0;
@@ -205,9 +205,8 @@ template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
         : aggCanvas::impl(canvas), pixFmt(buffer), 
           rendBase(pixFmt), rendSolid(rendBase)
             { }
-        ~aggPixelPainter()
-            { }
-        
+        ~aggPixelPainter() = default;
+    
         void reset()
         {
             rendBase.reset_clipping(true);

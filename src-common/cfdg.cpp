@@ -124,7 +124,7 @@ const wchar_t* AbstractSystem::TempPrefixes_w[AbstractSystem::NumberofTempTypes]
 };
 const wchar_t* AbstractSystem::TempPrefixAll_w = L"cfdg-temp-";
 
-AbstractSystem::~AbstractSystem() { }
+AbstractSystem::~AbstractSystem() = default;
 
 void AbstractSystem::stats(const Stats&)
     { }
@@ -135,7 +135,7 @@ AbstractSystem::tempFileForRead(const string& path)
     return new ifstream(path.c_str(), ios::binary);
 }
 
-Canvas::~Canvas() { }
+Canvas::~Canvas() = default;
 
 Renderer::Renderer(int w, int h)
 : requestStop(false),
@@ -148,7 +148,7 @@ Renderer::~Renderer() = default;
 
 
 
-CFDG::~CFDG() { }
+CFDG::~CFDG() = default;
 
 
 CFDG*

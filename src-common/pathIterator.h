@@ -64,7 +64,7 @@ public:
     CurvedTransStrokedCentroid  curvedTransStrokedCentroid;
 
     pathIterator();
-    ~pathIterator() {}
+    ~pathIterator() = default;
     
     void apply(const AST::CommandInfo& attr, const agg::trans_affine& tr, 
                double accuracy);
