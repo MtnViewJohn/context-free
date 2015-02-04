@@ -103,6 +103,7 @@ namespace AST {
         FuncType functype;
         exp_ptr arguments;
         double random;
+        ASTfunction() = delete;
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                     const yy::location& nameLoc, const yy::location& argsLoc);
         ~ASTfunction() override = default;
@@ -110,8 +111,6 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph) override;
         ASTexpression* simplify() override;
-    private:
-        ASTfunction() : ASTexpression(CfdgError::Default) {};
 	};
     class ASTselect : public ASTexpression {
         enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
@@ -198,6 +197,7 @@ namespace AST {
     class ASTcons : public ASTexpression {
     public:
         ASTexpArray children;
+        ASTcons() = delete;
         ASTcons(std::initializer_list<ASTexpression*> kids);
         ~ASTcons() override;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
@@ -209,15 +209,13 @@ namespace AST {
         const ASTexpression* getChild(size_t i) const override;
         size_t size() const override { return children.size(); }
         ASTexpression* append(ASTexpression* sib) override;
-        
-    private:
-        ASTcons() : ASTexpression(CfdgError::Default) { }
     };
     class ASTreal : public ASTexpression {
     public:
         double value;
         std::string text;
-        ASTreal(const std::string& t, const yy::location& loc, bool negative = false) 
+        ASTreal() = delete;
+        ASTreal(const std::string& t, const yy::location& loc, bool negative = false)
         : ASTexpression(loc, true, false, NumericType), text(t) 
         { 
             if (negative) text.insert(0, 1, '-');
@@ -232,8 +230,6 @@ namespace AST {
         ~ASTreal() override = default;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void entropy(std::string& e) const override;
-    private:
-        ASTreal() : ASTexpression(CfdgError::Default) {};
     };
     class ASTvariable : public ASTexpression {
     public:
@@ -243,13 +239,12 @@ namespace AST {
         int count;
         bool isParameter;
         
-        ASTvariable(int stringNum, const std::string& str, const yy::location& loc); 
+        ASTvariable() = delete;
+        ASTvariable(int stringNum, const std::string& str, const yy::location& loc);
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph) override;
-    private:
-        ASTvariable() : ASTexpression(CfdgError::Default) { }
     };
     class ASTuserFunction : public ASTexpression {
     public:
@@ -286,19 +281,19 @@ namespace AST {
         int  tupleSize;
         exp_ptr left;
         exp_ptr right;
+        ASToperator() = delete;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
         ~ASToperator() override = default;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
-    private:
-        ASToperator() : ASTexpression(CfdgError::Default) { }
     };
     class ASTparen : public ASTexpression {
     public:
         exp_ptr e;
-        ASTparen(ASTexpression* e1) : ASTexpression(e1->where, e1->isConstant, 
+        ASTparen() = delete;
+        ASTparen(ASTexpression* e1) : ASTexpression(e1->where, e1->isConstant,
                                                     e1->isNatural,
                                                     e1->mType), e(e1)
         { };
@@ -309,8 +304,6 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
-    private:
-        ASTparen() : ASTexpression(CfdgError::Default) { }
     };
 
     class ASTmodTerm : public ASTexpression {

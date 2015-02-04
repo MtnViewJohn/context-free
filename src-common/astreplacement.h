@@ -57,6 +57,7 @@ namespace AST {
         yy::location mLocation;
         void replace(Shape& s, RendererAST* r) const;
         
+        ASTreplacement(const ASTreplacement&) = delete;
         ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
@@ -66,8 +67,6 @@ namespace AST {
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph);
-    private:
-        ASTreplacement(const ASTreplacement&);
     };
     class ASTrepContainer {
     public:
@@ -135,7 +134,6 @@ namespace AST {
         ~ASTtransform() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
-        
     };
     class ASTif: public ASTreplacement {
     public:
@@ -180,8 +178,7 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
         ~ASTdefine() override = default;
-    private:
-        ASTdefine& operator=(const ASTdefine&);
+        ASTdefine& operator=(const ASTdefine&) = delete;
     };
     class ASTrule : public ASTreplacement {
     public:
