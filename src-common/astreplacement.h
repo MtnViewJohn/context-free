@@ -179,7 +179,7 @@ namespace AST {
         ASTdefine(const std::string& name, const yy::location& loc);
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
-        ~ASTdefine() override { }
+        ~ASTdefine() override = default;
     private:
         ASTdefine& operator=(const ASTdefine&);
     };
@@ -249,7 +249,7 @@ namespace AST {
         
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
-        ~ASTpathCommand() override { }
+        ~ASTpathCommand() override = default;
     private:
         mutable CommandInfo mInfoCache;
     };

@@ -44,7 +44,7 @@ public:
             line_to(p->first, p->second);
         end_poly(agg::path_flags_close);
     }
-    primShape() {}
+    primShape() = default;
     
     static const primShape circle;
     static const primShape square;

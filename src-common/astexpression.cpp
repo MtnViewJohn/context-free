@@ -415,26 +415,16 @@ namespace AST {
     {
     }
 
-    ASTruleSpecifier::~ASTruleSpecifier()
-    {
+    ASTruleSpecifier::~ASTruleSpecifier() = default;
         // simpleRule is deleted along with the long-lived params
-    };
     
-    ASTcons::~ASTcons()
-    {
-    }
+    ASTcons::~ASTcons() = default;
     
-    ASTselect::~ASTselect()
-    {
-    }
+    ASTselect::~ASTselect() = default;
     
-    ASTmodification::~ASTmodification()
-    {
-    }
+    ASTmodification::~ASTmodification() = default;
     
-    ASTarray::~ASTarray()
-    {
-    }
+    ASTarray::~ASTarray() = default;
     
     ASTlet::~ASTlet()
     {

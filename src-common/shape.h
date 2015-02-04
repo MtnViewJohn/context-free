@@ -137,7 +137,7 @@ protected:
 class FinishedShape : public Shape {
 public:
     Bounds mBounds;
-    FinishedShape() : Shape() {}
+    FinishedShape() = default;
     FinishedShape(const Shape& s, int order, const Bounds& b)
     {
         mShapeType = s.mShapeType;

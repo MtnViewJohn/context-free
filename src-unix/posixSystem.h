@@ -36,8 +36,8 @@ class PosixSystem : public AbstractSystem
 protected:
     virtual void clearAndCR();
 public:
-    PosixSystem() {};
-    ~PosixSystem() override {};
+    PosixSystem() = default;
+    ~PosixSystem() override = default;
     
     void catastrophicError(const char* what) override;
     

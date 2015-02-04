@@ -47,7 +47,7 @@ public:
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
 
     SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
-    ~SVGCanvas() override { }
+    ~SVGCanvas() override = default;
 
 private:
     typedef std::pair<AST::UIDdatatype, unsigned> uniquePath;

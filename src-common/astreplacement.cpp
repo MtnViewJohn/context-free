@@ -279,25 +279,15 @@ namespace AST {
         }
     }
     
-    ASTreplacement::~ASTreplacement()
-    {
-    }
+    ASTreplacement::~ASTreplacement() = default;
     
-    ASTloop::~ASTloop()
-    {
-    }
+    ASTloop::~ASTloop() = default;
     
-    ASTif::~ASTif()
-    {
-    }
+    ASTif::~ASTif() = default;
     
-    ASTswitch::~ASTswitch()
-    {
-    }
+    ASTswitch::~ASTswitch() = default;
     
-    ASTrule::~ASTrule()
-    {
-    }
+    ASTrule::~ASTrule() = default;
     
     ASTcompiledPath::~ASTcompiledPath()
     {
@@ -305,13 +295,9 @@ namespace AST {
             mParameters->release();
     }
     
-    ASTtransform::~ASTtransform()
-    {
-    }
+    ASTtransform::~ASTtransform() = default;
     
-    ASTpathOp::~ASTpathOp()
-    {
-    }
+    ASTpathOp::~ASTpathOp() = default;
     
     void 
     ASTreplacement::replace(Shape& s, RendererAST* r) const
