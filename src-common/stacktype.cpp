@@ -254,7 +254,7 @@ StackRule::Read(std::istream& is)
         s->read(is);
         return s;
     } else {
-        return reinterpret_cast<StackRule*>(static_cast<uint64_t>(size));
+        return reinterpret_cast<StackRule*>(static_cast<intptr_t>(size));
     }
 }
 
