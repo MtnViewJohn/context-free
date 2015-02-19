@@ -249,7 +249,7 @@ namespace AST {
     }
     
     ASTcompiledPath::ASTcompiledPath()
-    : mComplete(false), mUseTerminal(false), mParameters(nullptr)
+    : mCached(false), mUseTerminal(false), mParameters(nullptr)
     {
         mPathUID = NextPathUID();
     }
@@ -495,7 +495,7 @@ namespace AST {
     
     void ASTpathOp::traverse(const Shape& s, bool tr, RendererAST* r) const
     {
-        if (r->mCurrentPath->mComplete) 
+        if (r->mCurrentPath->mCached)
             return;
         double opData[7];
         pathData(opData, r);
@@ -516,7 +516,7 @@ namespace AST {
         
         CommandInfo* info = nullptr;
         
-        if (r->mCurrentPath->mComplete) {
+        if (r->mCurrentPath->mCached) {
             if (r->mCurrentCommand == r->mCurrentPath->mCommandInfo.end())
                 CfdgError::Error(mLocation, "Not enough path commands in cache");
             info = &(*(r->mCurrentCommand++));
@@ -559,7 +559,7 @@ namespace AST {
         }
         
         mRuleBody.traverse(parent, false, r, true);
-        if (!r->mCurrentPath->mComplete)
+        if (!r->mCurrentPath->mCached)
             r->mCurrentPath->finish(true, r);
         if (r->mCurrentPath->mUseTerminal) 
             r->mCurrentPath->mTerminalCommand.traverse(parent, false, r);
@@ -570,7 +570,7 @@ namespace AST {
         } else {
             if (!(r->mRandUsed) && !mCachedPath) {
                 mCachedPath = std::move(r->mCurrentPath);
-                mCachedPath->mComplete = true;
+                mCachedPath->mCached = true;
                 mCachedPath->mParameters = StackRule::alloc(parent.mParameters);
                 r->mCurrentPath.reset(new ASTcompiledPath());
             } else {

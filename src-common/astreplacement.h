@@ -252,7 +252,7 @@ namespace AST {
     };
     class ASTcompiledPath {
     public:
-        bool mComplete;
+        bool mCached;
         agg::path_storage mPath;
         InfoCache mCommandInfo;
         ASTpathCommand mTerminalCommand;
