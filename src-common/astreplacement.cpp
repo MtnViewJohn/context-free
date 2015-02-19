@@ -527,13 +527,13 @@ namespace AST {
             r->mWantCommand = false;
             r->mCurrentPath->finish(false, r);
 
-            mInfoCache.tryInit(r->mIndex, r->mCurrentPath, width, this);
+            mInfoCache.tryInit(r->mIndex, r->mCurrentPath.get(), width, this);
             if (mInfoCache.mPathUID == r->mCurrentPath->mPathUID && 
                 mInfoCache.mIndex   == r->mIndex) 
             {
                 r->mCurrentPath->mCommandInfo.push_back(mInfoCache);
             } else {
-                r->mCurrentPath->mCommandInfo.emplace_back(r->mIndex, r->mCurrentPath, width, this);
+                r->mCurrentPath->mCommandInfo.emplace_back(r->mIndex, r->mCurrentPath.get(), width, this);
             }
             info = &(r->mCurrentPath->mCommandInfo.back());
         }
@@ -548,12 +548,12 @@ namespace AST {
         r->mCurrentSeed = parent.mWorldState.mRand64Seed;
         r->mRandUsed = false;
         
-        ASTcompiledPath* savedPath = nullptr;
+        cpath_ptr savedPath;
         
         if (mCachedPath && StackRule::Equal(mCachedPath->mParameters, parent.mParameters)) {
-            savedPath = r->mCurrentPath;
-            r->mCurrentPath = mCachedPath.get();
-            r->mCurrentCommand = mCachedPath->mCommandInfo.begin();
+            savedPath = std::move(r->mCurrentPath);
+            r->mCurrentPath = std::move(mCachedPath);
+            r->mCurrentCommand = r->mCurrentPath->mCommandInfo.begin();
         } else {
             r->mCurrentPath->mTerminalCommand.mLocation = mLocation;
         }
@@ -565,13 +565,14 @@ namespace AST {
             r->mCurrentPath->mTerminalCommand.traverse(parent, false, r);
         
         if (savedPath) {
-            r->mCurrentPath = savedPath;
+            mCachedPath = std::move(r->mCurrentPath);
+            r->mCurrentPath = std::move(savedPath);
         } else {
             if (!(r->mRandUsed) && !mCachedPath) {
-                mCachedPath.reset(r->mCurrentPath);
+                mCachedPath = std::move(r->mCurrentPath);
                 mCachedPath->mComplete = true;
                 mCachedPath->mParameters = StackRule::alloc(parent.mParameters);
-                r->mCurrentPath = new ASTcompiledPath();
+                r->mCurrentPath.reset(new ASTcompiledPath());
             } else {
                 r->mCurrentPath->mPath.remove_all();
                 r->mCurrentPath->mCommandInfo.clear();

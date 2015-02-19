@@ -184,7 +184,7 @@ namespace AST {
     public:
         enum WeightTypes { NoWeight = 1, PercentWeight = 2, ExplicitWeight = 4};
         ASTrepContainer mRuleBody;
-        mutable std::unique_ptr<ASTcompiledPath> mCachedPath;
+        mutable cpath_ptr mCachedPath;
         double mWeight;
         bool isPath;
         int mNameIndex;

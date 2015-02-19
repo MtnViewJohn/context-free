@@ -26,7 +26,14 @@
 #include "builder.h"
 #include <cassert>
 
-RendererAST::~RendererAST() { delete mCurrentPath; }
+RendererAST::RendererAST(int w, int h)
+: Renderer(w, h),
+  mMaxNatural(1000.0),
+  mCurrentTime(0.0), mCurrentFrame(0.0),
+  mCurrentPath(nullptr)
+{ }
+
+RendererAST::~RendererAST() = default;
 
 void
 RendererAST::ColorConflict(RendererAST* r, const yy::location& w)

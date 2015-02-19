@@ -152,7 +152,7 @@ RendererImpl::init()
                             "CF::MaxNatural must be < 9007199254740992");
     }
     
-    mCurrentPath = new AST::ASTcompiledPath();
+    mCurrentPath.reset(new AST::ASTcompiledPath());
     
     m_cfdg->getSymmetry(mSymmetryOps, this);
     m_cfdg->setBackgroundColor(this);
@@ -239,7 +239,7 @@ RendererImpl::cleanup()
     
     unwindStack(0, m_cfdg->mCFDGcontents.mParameters);
     
-    delete mCurrentPath; mCurrentPath = nullptr;
+    mCurrentPath.reset();
     m_cfdg->resetCachedPaths();
 }
 

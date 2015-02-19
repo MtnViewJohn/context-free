@@ -56,6 +56,7 @@ namespace AST {
     class ASTmodTerm;
     class ASTrepContainer;
     class ASTdefine;
+    class ASTcompiledPath;
 
     typedef std::unique_ptr<std::string>      str_ptr;
     typedef std::unique_ptr<ASTexpression>    exp_ptr;
@@ -69,6 +70,7 @@ namespace AST {
     typedef std::unique_ptr<ASTmodification>  mod_ptr;
     typedef std::unique_ptr<ASTrepContainer>  cont_ptr;
     typedef std::unique_ptr<ASTdefine>        def_ptr;
+    typedef std::unique_ptr<ASTcompiledPath>  cpath_ptr;
     
     typedef std::vector<rep_ptr>              ASTbody;
     typedef std::vector<exp_ptr>              ASTexpArray;
