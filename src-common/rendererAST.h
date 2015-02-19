@@ -56,7 +56,7 @@ public:
         bool         mOpsOnly;
         unsigned     mIndex;
         unsigned     mNextIndex;
-        AST::ASTcompiledPath* mCurrentPath;
+        AST::cpath_ptr mCurrentPath;
         AST::InfoCache::iterator mCurrentCommand;
     
         void init();
@@ -69,12 +69,7 @@ public:
         virtual void processSubpath(const Shape& s, bool tr, int) = 0;
     
     protected:
-        RendererAST(int w, int h) 
-        : Renderer(w, h),
-          mMaxNatural(1000.0),
-          mCurrentTime(0.0), mCurrentFrame(0.0),
-          mCurrentPath(nullptr)
-     { }
+        RendererAST(int w, int h);
         virtual void colorConflict(const yy::location& w) = 0;
 };
 
