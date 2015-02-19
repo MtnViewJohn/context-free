@@ -96,7 +96,7 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 }
 
 StackRule*
-StackRule::alloc(const StackRule* from)
+StackRule::alloc(const StackRule* from, RendererAST* r)
 {
     if (from == nullptr)
         return nullptr;
@@ -108,6 +108,11 @@ StackRule::alloc(const StackRule* from)
         data[1].typeInfo = ti;
         for (unsigned i = 0; i < from->mParamCount; ++i)
             data[i + HeaderSize] = src[i + HeaderSize];
+        // Bump the retain count in all rules pointed to by the duplicate param block
+        for (const_iterator it = ret->cbegin(), e = ret->cend(); it != e; ++it) {
+            if (it.type().mType == AST::RuleType)
+                it->rule->retain(r);
+        }
     }
     return ret;
 }
