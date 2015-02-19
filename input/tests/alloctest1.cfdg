@@ -1,0 +1,27 @@
+startshape foo
+
+shape tendril(number turn, shape what) {
+  what[]
+  tendril2(=)[[y 0.5 s 0.99 r turn y 0.5]]
+}
+
+shape tendril2(number turn, shape what) {
+  what[]
+  tendril(=)[[y 0.5 s 0.99 r turn y 0.5]]
+}
+
+
+shape foo {
+  tendril(-5…5, ring(0.05…0.5))[]
+}
+
+path ring(number width) {
+  MOVETO(0.5,0)
+  ARCREL(-1,0,0.5)
+  ARCREL(1,0,0.5)
+  CLOSEPOLY()
+  STROKE(width)[]
+}
+
+
+

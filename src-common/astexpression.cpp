@@ -205,7 +205,7 @@ namespace AST {
                 // Child shape is different from parent, even though parameters are reused,
                 // and we can't finesse it in ASTreplacement::traverse(). Just
                 // copy the parameters with the correct shape type.
-                StackRule* ret = StackRule::alloc(parent);
+                StackRule* ret = StackRule::alloc(parent, rti);
                 ret->mRuleName = shapeType;
                 return ret;
             }
