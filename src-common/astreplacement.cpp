@@ -571,7 +571,9 @@ namespace AST {
             if (!(r->mRandUsed) && !mCachedPath) {
                 mCachedPath = std::move(r->mCurrentPath);
                 mCachedPath->mCached = true;
-                mCachedPath->mParameters = StackRule::alloc(parent.mParameters, r);
+                mCachedPath->mParameters = parent.mParameters;
+                if (mCachedPath->mParameters)
+                    mCachedPath->mParameters->retain(r);
                 r->mCurrentPath.reset(new ASTcompiledPath());
             } else {
                 r->mCurrentPath->mPath.remove_all();

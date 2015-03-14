@@ -2,26 +2,37 @@ startshape foo
 
 shape tendril(number turn, shape what) {
   what[]
-  tendril2(=)[[y 0.5 s 0.99 r turn y 0.5]]
+  tendril2(=)[[y 2 s 0.99 r turn y 2]]
 }
 
 shape tendril2(number turn, shape what) {
   what[]
-  tendril(=)[[y 0.5 s 0.99 r turn y 0.5]]
+  tendril(=)[[y 2 s 0.99 r turn y 2]]
 }
 
 
 shape foo {
-  tendril(-5…5, ring(0.05…0.5))[]
+  tendril(-5…5, outline(0.05…0.5, flower(randint(5,9),randint::bernoulli(0.5))))[]
 }
 
-path ring(number width) {
-  MOVETO(0.5,0)
-  ARCREL(-1,0,0.5)
-  ARCREL(1,0,0.5)
-  CLOSEPOLY()
+path outline(number width, shape what) {
+  path what[]
   STROKE(width)[]
 }
 
 
 
+path flower(number petals, number filled)
+{
+  MOVETO(cos(-180/petals), sin(-180/petals))
+  loop petals [r (360/petals)]
+    ARCTO(cos(180/petals), sin(180/petals), 
+          0.4, 0.4 + 0.2 * (petals - 5), 90)
+  CLOSEPOLY(CF::Align)
+  if (filled) {
+    MOVETO(0.65, 0)
+    ARCTO(-0.65, 0, 0.65, CF::ArcCW)
+    ARCTO( 0.65, 0, 0.65, CF::ArcCW)
+    CLOSEPOLY()
+  }
+}
