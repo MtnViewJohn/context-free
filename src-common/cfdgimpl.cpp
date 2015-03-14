@@ -95,6 +95,10 @@ CFDGImpl::~CFDGImpl()
         --Renderer::ParamCount;
         if (Renderer::AbortEverything) return;
     }
+#ifdef EXTREME_PARAM_DEBUG
+    StackRule::ParamMap.clear();
+    StackRule::ParamUID = 0;
+#endif
 }
 
 const Shape&

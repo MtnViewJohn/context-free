@@ -1283,9 +1283,13 @@ namespace {
 {
     mEngine = nullptr;
     if (mRenderer == nullptr) return;
+#ifdef EXTREME_PARAM_DEBUG
+    delete mRenderer; mRenderer = nullptr;
+#else
     NSValue* r = [NSValue valueWithPointer: (const void*)mRenderer];
     mRenderer = nullptr;
     [NSThread detachNewThreadSelector:@selector(rendererDeleteThread:) toTarget:[GView class] withObject:r];
+#endif
 }
 
 + (void)rendererDeleteThread:(id)arg

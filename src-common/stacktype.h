@@ -128,6 +128,8 @@ struct StackRule {
     
 #ifdef EXTREME_PARAM_DEBUG
     static std::map<const StackRule*, int> ParamMap;
+    static int ParamUID;
+    static int ParamOfInterest;
 #endif
 
     iterator begin();

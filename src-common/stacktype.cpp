@@ -68,17 +68,13 @@ static_assert(offsetof(StackType, ruleHeader) == 0, "StackRule must align with S
 
 #ifdef EXTREME_PARAM_DEBUG
 std::map<const StackRule*, int> StackRule::ParamMap;
+int StackRule::ParamUID = 0;
+int StackRule::ParamOfInterest = 3;
 #endif
-
-#define ParamOfInterest 9
 
 StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
-#ifdef EXTREME_PARAM_DEBUG
-    static int ParamUID = 0;
-#endif
-    
     ++Renderer::ParamCount;
     StackType* newrule = new StackType[size ? size + HeaderSize : 1];
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
@@ -103,6 +99,11 @@ StackRule::alloc(const StackRule* from, RendererAST* r)
     const StackType* src = reinterpret_cast<const StackType*>(from);
     const AST::ASTparameters* ti = from->mParamCount ? src[1].typeInfo : nullptr;
     StackRule* ret = alloc(from->mRuleName, from->mParamCount, ti);
+#ifdef EXTREME_PARAM_DEBUG
+    ParamMap[ret] = ++ParamUID;
+    if (ParamUID == ParamOfInterest)
+        ParamMap[ret] = ParamOfInterest;
+#endif
     if (ret->mParamCount) {
         StackType* data = reinterpret_cast<StackType*>(ret);
         data[1].typeInfo = ti;
