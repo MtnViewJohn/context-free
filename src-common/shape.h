@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2005-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2005-2015 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -102,9 +102,26 @@ protected:
 // and executing a cfdg file
 class Shape : public ShapeBase {
 public:
-    Shape() : ShapeBase(), mParameters(nullptr) {}
+    Shape() = default;
+    Shape(const Shape&) = default;
+    Shape(Shape&&) = default;
+    ~Shape() = default;
+    Shape& operator=(const Shape& o) {
+        mShapeType = o.mShapeType;
+        mWorldState = o.mWorldState;
+        mAreaCache = o.mAreaCache;
+        mParameters = o.mParameters;
+        return *this;
+    }
+    Shape& operator=(Shape&& o) {
+        mShapeType = o.mShapeType;
+        mWorldState = o.mWorldState;
+        mAreaCache = o.mAreaCache;
+        mParameters = std::move(o.mParameters);
+        return *this;
+    }
     
-    const StackRule* mParameters;
+    param_ptr mParameters;
 
     Shape operator*(const Modification& m) const {
         Shape s = *this;
@@ -117,12 +134,6 @@ public:
         mWorldState *= m;
         mAreaCache = mWorldState.area();
         return *this;
-    }
-    
-    void releaseParams() const
-    {
-        if (mParameters)
-            mParameters->release();
     }
     
     bool operator<(const Shape& b) const { return mAreaCache < b.mAreaCache; }
@@ -138,14 +149,32 @@ class FinishedShape : public Shape {
 public:
     Bounds mBounds;
     FinishedShape() = default;
-    FinishedShape(const Shape& s, int order, const Bounds& b)
+    FinishedShape(Shape&& s, int order, const Bounds& b)
     {
         mShapeType = s.mShapeType;
         mWorldState = s.mWorldState;
         mWorldState.m_ColorAssignment = order;
-        mParameters = s.mParameters;
+        mParameters = std::move(s.mParameters);
         mBounds = b;
-    };
+    }
+    FinishedShape(const FinishedShape&) = default;
+    FinishedShape(FinishedShape&&) = default;
+    FinishedShape& operator=(const FinishedShape& o) {
+        mShapeType = o.mShapeType;
+        mWorldState = o.mWorldState;
+        mAreaCache = o.mAreaCache;
+        mParameters = o.mParameters;
+        mBounds = o.mBounds;
+        return *this;
+    }
+    FinishedShape& operator=(FinishedShape&& o) {
+        mShapeType = o.mShapeType;
+        mWorldState = o.mWorldState;
+        mAreaCache = o.mAreaCache;
+        mParameters = std::move(o.mParameters);
+        mBounds = o.mBounds;
+        return *this;
+    }
 
     bool operator<(const Shape& b) const
     {

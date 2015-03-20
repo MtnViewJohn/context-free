@@ -123,8 +123,7 @@ Shape::read(std::istream& is)
 void
 Shape::writeParams(std::ostream& os) const
 {
-    StackRule::Write(os, mParameters);
-    releaseParams();
+    StackRule::Write(os, mParameters.get());
 }
 
 void
