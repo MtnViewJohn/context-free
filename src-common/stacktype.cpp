@@ -230,7 +230,7 @@ StackRule::write(std::ostream& os) const
             os.write(reinterpret_cast<const char*>(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
-            Write(os, it->rule);
+            Write(os, it->rule.get());
             break;
         default:
             assert(false);
@@ -239,7 +239,7 @@ StackRule::write(std::ostream& os) const
     }
 }
 
-StackRule*
+param_ptr
 StackRule::Read(std::istream& is)
 {
     uint64_t size = 0;
@@ -248,9 +248,9 @@ StackRule::Read(std::istream& is)
         // Don't know the typeInfo yet, get it during read
         StackRule* s = StackRule::alloc((size >> 24) & 0xffff, (size >> 8) & 0xffff, nullptr);
         s->read(is);
-        return s;
+        return param_ptr(s);
     } else {
-        return reinterpret_cast<StackRule*>(static_cast<intptr_t>(size));
+        return param_ptr(reinterpret_cast<StackRule*>(static_cast<intptr_t>(size)));
     }
 }
 

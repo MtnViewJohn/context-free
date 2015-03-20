@@ -1,7 +1,7 @@
 // stacktype.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2015 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -43,6 +43,7 @@
 namespace AST { class ASTparameter; class ASTexpression; }
 
 union StackType;
+struct StackRule;
 class RendererAST;
 
 template <class _stack>
@@ -102,6 +103,49 @@ public:
 };
 
 
+class param_ptr {
+    const StackRule*  mPtr = nullptr;
+public:
+    param_ptr() = default;
+    param_ptr(std::nullptr_t) { }
+    param_ptr(const StackRule* r) : mPtr(r) { }
+    param_ptr(const param_ptr& o);
+    param_ptr(param_ptr&& o) : mPtr(o.mPtr)
+    { o.mPtr = nullptr; }
+    ~param_ptr();
+    
+    param_ptr& operator=(const param_ptr& o);
+    param_ptr& operator=(param_ptr&& o);
+    param_ptr& operator=(std::nullptr_t);
+    
+    explicit operator bool() const
+    { return mPtr != nullptr; }
+    
+    void reset(StackRule* r = nullptr);
+    const StackRule* release()
+    {
+        const StackRule* ret = mPtr;
+        mPtr = nullptr;
+        return ret;
+    }
+    void swap(param_ptr& o)
+    {
+        auto temp = mPtr;
+        mPtr = o.mPtr;
+        o.mPtr = temp;
+    }
+    
+    const StackRule* get() const
+    { return mPtr; }
+    
+    const StackRule& operator*() const
+    { return *mPtr; }
+    
+    const StackRule* operator->() const
+    { return mPtr; }
+};
+
+
 struct StackRule {
     enum const_t : uint32_t { MaxRefCount = UINT32_MAX, HeaderSize = 2 };
 
@@ -120,7 +164,7 @@ struct StackRule {
     void        release() const;
     void        retain() const;
     
-    static StackRule*  Read(std::istream& is);
+    static param_ptr   Read(std::istream& is);
     static void        Write(std::ostream& os, const StackRule* s);
     
     void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
@@ -151,8 +195,10 @@ union StackType {
     typedef StackTypeIterator<StackType> iterator;
     typedef StackTypeIterator<const StackType> const_iterator;
     
+    StackType() { number = 0.0; }
+    
     double      number;
-    const StackRule*  rule;
+    param_ptr   rule;
     StackRule   ruleHeader;
     const AST::ASTparameters* typeInfo;
 
@@ -203,6 +249,52 @@ StackRule::cbegin()
         return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();
+}
+
+inline param_ptr::param_ptr(const param_ptr& o) : mPtr(o.mPtr)
+{
+    if (mPtr)
+        mPtr->retain();
+}
+
+inline param_ptr::~param_ptr()
+{
+    if (mPtr)
+        mPtr->release();
+}
+
+inline param_ptr& param_ptr::operator=(const param_ptr& o)
+{
+    if (mPtr)
+        mPtr->release();
+    mPtr = o.mPtr;
+    if (mPtr)
+        mPtr->retain();
+    return *this;
+}
+
+inline param_ptr& param_ptr::operator=(param_ptr&& o)
+{
+    if (mPtr)
+        mPtr->release();
+    mPtr = o.mPtr;
+    o.mPtr = nullptr;
+    return *this;
+}
+
+inline param_ptr& param_ptr::operator=(std::nullptr_t)
+{
+    if (mPtr)
+        mPtr->release();
+    mPtr = nullptr;
+    return *this;
+}
+
+inline void param_ptr::reset(StackRule* r = nullptr)
+{
+    if (mPtr)
+        mPtr->release();
+    mPtr = r;
 }
 
 #endif // INCLUDE_STACKTYPE_H
