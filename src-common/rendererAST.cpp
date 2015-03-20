@@ -74,7 +74,7 @@ RendererAST::initStack(const StackRule* p)
                 mCFstack.push_back(*(&*it + i));
             // Retain any shape params to balance the releases in unwindStack()
             if (it.type().mType == AST::RuleType)
-                it->rule->retain(this);
+                it->rule->retain();
         }
     }
     if (!mCFstack.empty()) {

@@ -720,7 +720,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
     }
     mFinishedShapes.push_back(fs);
     if (fs.mParameters)
-        fs.mParameters->retain(this);
+        fs.mParameters->retain();
 }
 
 void

@@ -116,9 +116,9 @@ struct StackRule {
     static bool Equal(const StackRule* a, const StackRule* b);
     
     static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
-    static StackRule*  alloc(const StackRule* from, RendererAST* r);
+    static StackRule*  alloc(const StackRule* from);
     void        release() const;
-    void        retain(RendererAST* r) const;
+    void        retain() const;
     
     static StackRule*  Read(std::istream& is);
     static void        Write(std::ostream& os, const StackRule* s);

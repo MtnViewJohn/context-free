@@ -195,7 +195,7 @@ namespace AST {
         case StackArgs: {
             assert(rti);
             const StackType* stackItem = rti->stackItem(mStackIndex);
-            stackItem->rule->retain(rti);
+            stackItem->rule->retain();
             return stackItem->rule;
         }
         case ParentArgs:
@@ -205,14 +205,14 @@ namespace AST {
                 // Child shape is different from parent, even though parameters are reused,
                 // and we can't finesse it in ASTreplacement::traverse(). Just
                 // copy the parameters with the correct shape type.
-                StackRule* ret = StackRule::alloc(parent, rti);
+                StackRule* ret = StackRule::alloc(parent);
                 ret->mRuleName = shapeType;
                 return ret;
             }
         case SimpleParentArgs:
             assert(parent);
             assert(rti);
-            parent->retain(rti);
+            parent->retain();
             return parent;
         case DynamicArgs: {
             StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);

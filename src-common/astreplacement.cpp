@@ -573,7 +573,7 @@ namespace AST {
                 mCachedPath->mCached = true;
                 mCachedPath->mParameters = parent.mParameters;
                 if (mCachedPath->mParameters)
-                    mCachedPath->mParameters->retain(r);
+                    mCachedPath->mParameters->retain();
                 r->mCurrentPath.reset(new ASTcompiledPath());
             } else {
                 r->mCurrentPath->mPath.remove_all();

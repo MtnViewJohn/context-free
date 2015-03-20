@@ -92,7 +92,7 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 }
 
 StackRule*
-StackRule::alloc(const StackRule* from, RendererAST* r)
+StackRule::alloc(const StackRule* from)
 {
     if (from == nullptr)
         return nullptr;
@@ -112,7 +112,7 @@ StackRule::alloc(const StackRule* from, RendererAST* r)
         // Bump the retain count in all rules pointed to by the duplicate param block
         for (const_iterator it = ret->cbegin(), e = ret->cend(); it != e; ++it) {
             if (it.type().mType == AST::RuleType)
-                it->rule->retain(r);
+                it->rule->retain();
         }
     }
     return ret;
@@ -157,7 +157,7 @@ StackType::release(const AST::ASTparameters* p) const
 }
 
 void
-StackRule::retain(RendererAST* r) const
+StackRule::retain() const
 {
 #ifdef EXTREME_PARAM_DEBUG
     auto f = ParamMap.find(this);
@@ -167,13 +167,8 @@ StackRule::retain(RendererAST* r) const
     if (n == ParamOfInterest)
         (*f).second = ParamOfInterest;
 #endif
-    if (mRefCount == MaxRefCount)
-        return;
-    
-    ++mRefCount;
-    if (mRefCount == MaxRefCount) {
-        r->storeParams(this);
-    }
+    if (mRefCount != MaxRefCount)
+        ++mRefCount;                // After 4+ billion refs this causes a leak
 }
 
 bool
