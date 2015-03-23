@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0610"
+   LastUpgradeVersion = "0620"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -44,12 +44,13 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/john/Projects/CF3cpp11"
+      customWorkingDirectory = "/Users/john/Projects/context-free"
       buildConfiguration = "Development"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "524D22A613B9FEBC002732C2"
@@ -65,15 +66,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-qP /Users/john/Documents/Context\ Free/tests/adjparamtest1.cfdg output/test.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s 1000 -x 0.3 -v CRYSTL -T 1x2 /Users/john/Downloads/crystals-2013.cfdg output/crystals-2013-CRYSTL.png"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-?"
-            isEnabled = "NO">
+            argument = "-qP input/tests/pass2test1.cfdg output/test.png"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 - output/square.png"
@@ -112,7 +113,8 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Deployment"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "524D22A613B9FEBC002732C2"
