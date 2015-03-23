@@ -61,7 +61,6 @@ class CFDGImpl : public CFDG {
             }
         };
         LLPdeleter                      mCleanupLLP;
-        Shape m_initialShape;
     
         agg::rgba m_backgroundColor;
     
@@ -98,7 +97,9 @@ class CFDGImpl : public CFDG {
         };
         
         std::vector<ShapeType> m_shapeTypes;
-        
+    
+        Shape m_initialShape;
+
     public:
         AST::rep_ptr mInitShape;
         std::vector<AST::ASTrule*> mRules;
