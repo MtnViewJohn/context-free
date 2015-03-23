@@ -828,7 +828,7 @@ namespace AST {
                         CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function");
                     if (mType == NumericType && t == NumericType && sz != mTuplesize)
                         CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function");
-                    if (isNatural && (!mExpression || !mExpression->isNatural))
+                    if (isNatural && (!mExpression || !mExpression->isNatural) && !ASTparameter::Impure)
                         CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function");
                 } else {
                     if (mShapeSpec.shapeType >= 0) {

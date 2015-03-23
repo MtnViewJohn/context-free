@@ -2194,7 +2194,7 @@ namespace AST {
                 static FuncType mustBeNatural[] = {Factorial, Sg, IsNatural, Div, Divides};
                 
                 if (std::find(std::begin(mustBeNatural), std::end(mustBeNatural), functype) != std::end(mustBeNatural)) {
-                    if (arguments && !arguments->isNatural)
+                    if (arguments && !arguments->isNatural && !ASTparameter::Impure)
                         CfdgError::Error(arguments->where, "function is defined over natural numbers only");
                     isNatural = true;
                 }
@@ -2656,7 +2656,7 @@ namespace AST {
                     if (mType != NumericType)
                         CfdgError::Error(where, "Operand(s) must be numeric");
                 }
-                if (op == '_' && !isNatural)
+                if (op == '_' && !isNatural &&!ASTparameter::Impure)
                     CfdgError::Error(where, "Proper subtraction operands must be natural");
                 break;
             }
