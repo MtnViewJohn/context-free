@@ -88,7 +88,6 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
 #endif
     }
     
-    mCFstack.reserve(8000);
     shapeMap = { { CommandInfo(&circleCopy), CommandInfo(&squareCopy), CommandInfo(&triangleCopy)} };
 
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
@@ -112,6 +111,9 @@ RendererImpl::init()
     
     mCurrentSeed.seed(static_cast<unsigned long long>(mVariation));
     mCurrentSeed();
+    
+    mLogicalStackTop = mCFstack.data();
+    mStackSize = 0;
     
     Shape dummy;
     for (const rep_ptr& rep: m_cfdg->mCFDGcontents.mBody) {
@@ -221,13 +223,12 @@ RendererImpl::cleanup()
     m_unfinishedFiles.clear();
 
     try {
-        std::function <void (const Shape& s)> releaseParam([](const Shape& s) {
+        std::function <void (const Shape& s)> checkStop([](const Shape& s) {
             if (Renderer::AbortEverything)
                 throw Stopped();
-            s.releaseParams();
         });
-        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), releaseParam);
-        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), releaseParam);
+        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), checkStop);
+        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), checkStop);
     } catch (Stopped&) {
         return;
     } catch (exception& e) {
@@ -294,19 +295,21 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
     
     int reportAt = 250;
 
-    Shape initShape = m_cfdg->getInitialShape(this);
-    initShape.mWorldState.mRand64Seed = mCurrentSeed;
-    if (!m_timed)
-        mTimeBounds = initShape.mWorldState.m_time;
-    
-    try {
-        processShape(initShape);
-    } catch (CfdgError& e) {
-        requestStop = true;
-        system()->syntaxError(e);
-    } catch (exception& e) {
-        requestStop = true;
-        system()->catastrophicError(e.what());
+    {
+        Shape initShape = m_cfdg->getInitialShape(this);
+        initShape.mWorldState.mRand64Seed = mCurrentSeed;
+        if (!m_timed)
+            mTimeBounds = initShape.mWorldState.m_time;
+        
+        try {
+            processShape(initShape);
+        } catch (CfdgError& e) {
+            requestStop = true;
+            system()->syntaxError(e);
+        } catch (exception& e) {
+            requestStop = true;
+            system()->catastrophicError(e.what());
+        }
     }
     
     for (;;) {
@@ -320,7 +323,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             break;
 
         // Get the largest unfinished shape
-        Shape s = mUnfinishedShapes.front();
+        Shape s(std::move(mUnfinishedShapes.front()));
         pop_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
         mUnfinishedShapes.pop_back();
         m_stats.toDoCount--;
@@ -601,12 +604,10 @@ RendererImpl::processShape(const Shape& s)
         requestStop = true;
         system()->error();
         system()->message("A shape got too big.");
-        s.releaseParams();
         return;
     }
     
     if (s.mWorldState.m_time.tbegin > s.mWorldState.m_time.tend) {
-        s.releaseParams();
         return;
     }
     
@@ -618,8 +619,6 @@ RendererImpl::processShape(const Shape& s)
             m_stats.toDoCount++;
             mUnfinishedShapes.push_back(s);
             push_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
-        } else {
-            s.releaseParams();
         }
     } else if (m_cfdg->getShapeType(s.mShapeType) == CFDGImpl::pathType) {
         const ASTrule* rule = m_cfdg->findRule(s.mShapeType, 0.0);
@@ -628,7 +627,6 @@ RendererImpl::processShape(const Shape& s)
         processPrimShape(s);
     } else {
         requestStop = true;
-        s.releaseParams();
         system()->error();
         system()->message("Shape with no rules encountered: %s.", 
             m_cfdg->decodeShapeName(s.mShapeType).c_str());
@@ -640,19 +638,19 @@ RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
 {
     size_t num = mSymmetryOps.size();
     if (num == 0 || s.mShapeType == primShape::fillType) {
-        processPrimShapeSiblings(s, path);
+        Shape copy(s);
+        processPrimShapeSiblings(std::move(copy), path);
     } else {
         for (size_t i = 0; i < num; ++i) {
             Shape sym(s);
             sym.mWorldState.m_transform.multiply(mSymmetryOps[i]);
-            processPrimShapeSiblings(sym, path);
+            processPrimShapeSiblings(std::move(sym), path);
         }
     }
-    s.releaseParams();
 }
 
 void
-RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
+RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
 {
     m_stats.shapeCount++;
     if (mScale == 0.0) {
@@ -686,7 +684,7 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
     } else {
         mCurrentArea = 1.0;
     }
-    FinishedShape fs(s, m_stats.shapeCount, mPathBounds);
+    FinishedShape fs(std::move(s), m_stats.shapeCount, mPathBounds);
     fs.mWorldState.m_Z.sz = mCurrentArea;
     if (!m_cfdg->usesTime) {
         fs.mWorldState.m_time.tbegin = mTotalArea;
@@ -719,8 +717,6 @@ RendererImpl::processPrimShapeSiblings(const Shape& s, const ASTrule* path)
         return;
     }
     mFinishedShapes.push_back(fs);
-    if (fs.mParameters)
-        fs.mParameters->retain();
 }
 
 void

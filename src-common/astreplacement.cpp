@@ -289,11 +289,7 @@ namespace AST {
     
     ASTrule::~ASTrule() = default;
     
-    ASTcompiledPath::~ASTcompiledPath()
-    {
-        if (mParameters)
-            mParameters->release();
-    }
+    ASTcompiledPath::~ASTcompiledPath() = default;
     
     ASTtransform::~ASTtransform() = default;
     
@@ -306,13 +302,13 @@ namespace AST {
             s.mShapeType = mShapeSpec.shapeType;
             s.mParameters = nullptr;
         } else {
-            s.mParameters = mShapeSpec.evalArgs(r, s.mParameters);
+            s.mParameters = mShapeSpec.evalArgs(r, s.mParameters.get());
             if (mShapeSpec.argSource == ASTruleSpecifier::SimpleParentArgs)
                 s.mShapeType = mShapeSpec.shapeType;
             else
                 s.mShapeType = s.mParameters->mRuleName;
-            if (s.mParameters->mParamCount == 0)
-                s.mParameters = nullptr;
+            if (s.mParameters && s.mParameters->mParamCount == 0)
+                s.mParameters.reset();
         }
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         r->mCurrentSeed();
@@ -323,7 +319,7 @@ namespace AST {
     void
     ASTreplacement::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
-        Shape child = parent;
+        Shape child(parent);
         switch (mRepType) {
             case replacement:
                 replace(child, r);
@@ -347,7 +343,7 @@ namespace AST {
     void
     ASTloop::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
-        Shape loopChild = parent;
+        Shape loopChild(parent);
         bool opsOnly = (mLoopBody.mRepType | mFinallyBody.mRepType) == op;
         if (opsOnly && !tr)
             loopChild.mWorldState.m_transform.reset();
@@ -361,10 +357,12 @@ namespace AST {
             end = mLoopData[1];
             step = mLoopData[2];
         }
-        StackType t = {start};
         const StackType* oldTop = r->mLogicalStackTop;
-        r->mCFstack.push_back(t);
-        StackType& index = r->mCFstack.back();
+        if (r->mStackSize + 1 > r->mCFstack.size())
+            CfdgError::Error(mLocation, "Maximum stack depth exceeded");
+        StackType& index = r->mCFstack[r->mStackSize];
+        index.number = start;
+        ++r->mStackSize;
         r->mLogicalStackTop = &index + 1;
         for (;;) {
             if (r->requestStop || Renderer::AbortEverything)
@@ -382,7 +380,7 @@ namespace AST {
             index.number += step;
         }
         mFinallyBody.traverse(loopChild, tr || opsOnly, r);
-        r->mCFstack.pop_back();
+        --r->mStackSize;
         r->mLogicalStackTop = oldTop;
     }
     
@@ -394,7 +392,7 @@ namespace AST {
         std::vector<const ASTmodification*> mods = getTransforms(mExpHolder.get(), transforms, r, false, Dummy);
         
         Rand64 cloneSeed = r->mCurrentSeed;
-        Shape transChild = parent;
+        Shape transChild(parent);
         bool opsOnly = mBody.mRepType == op;
         if (opsOnly && !tr)
             transChild.mWorldState.m_transform.reset();
@@ -402,7 +400,7 @@ namespace AST {
         size_t modsLength = mods.size();
         size_t totalLength = modsLength + transforms.size();
         for(size_t i = 0; i < totalLength; ++i) {
-            Shape child = transChild;
+            Shape child(transChild);
             if (i < modsLength) {
                 mods[i]->evaluate(child.mWorldState, true, r);
             } else {
@@ -411,7 +409,7 @@ namespace AST {
             r->mCurrentSeed();
 
             // Specialized mBody.traverse() with cloning behavior
-            size_t s = r->mCFstack.size();
+            size_t s = r->mStackSize;
             for (const rep_ptr& rep: mBody.mBody) {
                 if (mClone)
                     r->mCurrentSeed = cloneSeed;
@@ -452,8 +450,10 @@ namespace AST {
     {
         if (mDefineType != StackDefine)
             return;
-        size_t s = r->mCFstack.size();
-        r->mCFstack.resize(s + mTuplesize);
+        if (r->mStackSize + mTuplesize > r->mCFstack.size())
+            CfdgError::Error(mLocation, "Maximum stack depth exceeded");
+        size_t s = r->mStackSize;
+        r->mStackSize += mTuplesize;
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         StackType* dest = r->mCFstack.data() + s;
         
@@ -469,15 +469,14 @@ namespace AST {
                 break;
             }
             case RuleType:
-                dest->rule = mExpression->evalArgs(r, p.mParameters);
+                new (&(dest->rule)) param_ptr(mExpression->evalArgs(r, p.mParameters.get()));
                 break;
             default:
                 CfdgError::Error(mExpression->where, "Unimplemented parameter type.");
                 break;
         }
         
-        if (!(r->mCFstack.empty()))
-            r->mLogicalStackTop = r->mCFstack.data() + r->mCFstack.size();
+        r->mLogicalStackTop = r->mCFstack.data() + r->mStackSize;
     }
     
     void
@@ -489,7 +488,6 @@ namespace AST {
             r->processPrimShape(parent, this);
         } else {
             mRuleBody.traverse(parent, tr, r, true);
-            parent.releaseParams();
         }
     }
     
@@ -508,7 +506,7 @@ namespace AST {
         if (r->mOpsOnly)
             CfdgError::Error(mLocation, "Path commands not allowed at this point");
 
-        Shape child = s;
+        Shape child(s);
         double width = mStrokeWidth;
         replace(child, r);
         if (mParameters && mParameters->evaluate(&width, 1, r) != 1)
@@ -550,7 +548,7 @@ namespace AST {
         
         cpath_ptr savedPath;
         
-        if (mCachedPath && StackRule::Equal(mCachedPath->mParameters, parent.mParameters)) {
+        if (mCachedPath && StackRule::Equal(mCachedPath->mParameters.get(), parent.mParameters.get())) {
             savedPath = std::move(r->mCurrentPath);
             r->mCurrentPath = std::move(mCachedPath);
             r->mCurrentCommand = r->mCurrentPath->mCommandInfo.begin();
@@ -572,18 +570,13 @@ namespace AST {
                 mCachedPath = std::move(r->mCurrentPath);
                 mCachedPath->mCached = true;
                 mCachedPath->mParameters = parent.mParameters;
-                if (mCachedPath->mParameters)
-                    mCachedPath->mParameters->retain();
                 r->mCurrentPath.reset(new ASTcompiledPath());
             } else {
                 r->mCurrentPath->mPath.remove_all();
                 r->mCurrentPath->mCommandInfo.clear();
                 r->mCurrentPath->mUseTerminal = false;
                 r->mCurrentPath->mPathUID = ASTcompiledPath::NextPathUID();
-                if (r->mCurrentPath->mParameters) {
-                    r->mCurrentPath->mParameters->release();
-                    r->mCurrentPath->mParameters = nullptr;
-                }
+                r->mCurrentPath->mParameters.reset();
             }
         }
     }

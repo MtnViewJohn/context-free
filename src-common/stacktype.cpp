@@ -76,7 +76,7 @@ StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     ++Renderer::ParamCount;
-    StackType* newrule = new StackType[size ? size + HeaderSize : 1];
+    StackType* newrule = reinterpret_cast<StackType*>(new double[size ? size + HeaderSize : 1]);
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
     newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
@@ -107,15 +107,35 @@ StackRule::alloc(const StackRule* from)
     if (ret->mParamCount) {
         StackType* data = reinterpret_cast<StackType*>(ret);
         data[1].typeInfo = ti;
-        for (unsigned i = 0; i < from->mParamCount; ++i)
-            data[i + HeaderSize] = src[i + HeaderSize];
-        // Bump the retain count in all rules pointed to by the duplicate param block
-        for (const_iterator it = ret->cbegin(), e = ret->cend(); it != e; ++it) {
-            if (it.type().mType == AST::RuleType)
-                it->rule->retain();
-        }
+        from->copyParams(data + HeaderSize);
     }
     return ret;
+}
+
+void
+StackRule::copyParams(StackType* dest) const
+{
+    int current = 0;
+    // Copy the POD and param_ptrs over
+    for (const_iterator it = begin(), e = end(); it != e; ++it) {
+        switch (it.type().mType) {
+            case AST::NumericType:
+            case AST::FlagType:
+            case AST::ModType:
+                // Copy over POD types
+                memcpy(static_cast<void*>(dest + current),
+                       static_cast<const void*>(&*it),
+                       it.type().mTuplesize * sizeof(StackType));
+                break;
+            case AST::RuleType:
+                // Placement copy ctor param_ptr
+                new (&(dest[current].rule)) param_ptr(it->rule);
+                break;
+            default:
+                break;
+        }
+        current += it.type().mTuplesize;
+    }
 }
 
 // Release arguments on the heap
@@ -131,9 +151,9 @@ StackRule::release() const
         (*f).second = ParamOfInterest;
 #endif
     if (mRefCount == 0) {
-        for (const_iterator it = begin(), e = end(); it != e; ++it) {
-            if (it.type().mType == AST::RuleType)
-                it->rule->release();
+        if (mParamCount) {
+            const StackType* data = reinterpret_cast<const StackType*>(this);
+            data[HeaderSize].release(data[1].typeInfo);
         }
 #ifdef EXTREME_PARAM_DEBUG
         (*f).second = -n;
@@ -153,7 +173,7 @@ StackType::release(const AST::ASTparameters* p) const
 {
     for (const_iterator it = begin(p), e = end(); it != e; ++it)
         if (it.type().mType == AST::RuleType)
-            it->rule->release();
+            it->rule.~param_ptr();
 }
 
 void
@@ -203,7 +223,7 @@ StackRule::read(std::istream& is)
             is.read(reinterpret_cast<char*>(&*it), it.type().mTuplesize * sizeof(StackType));
             break;
         case AST::RuleType:
-            it->rule = Read(is);
+            new (&(it->rule)) param_ptr(Read(is));
             break;
         default:
             assert(false);
@@ -292,7 +312,7 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
                 break;
             }
             case AST::RuleType: {
-                dest->rule = arg->evalArgs(rti, parent);
+                new (&(dest->rule)) param_ptr(arg->evalArgs(rti, parent));
                 break;
             }
             default:

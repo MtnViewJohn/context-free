@@ -102,7 +102,7 @@ protected:
 // and executing a cfdg file
 class Shape : public ShapeBase {
 public:
-    Shape() = default;
+    Shape() : ShapeBase() { }
     Shape(const Shape&) = default;
     Shape(Shape&&) = default;
     ~Shape() = default;
@@ -154,7 +154,7 @@ public:
         mShapeType = s.mShapeType;
         mWorldState = s.mWorldState;
         mWorldState.m_ColorAssignment = order;
-        mParameters = std::move(s.mParameters);
+        mParameters = s.mParameters;
         mBounds = b;
     }
     FinishedShape(const FinishedShape&) = default;

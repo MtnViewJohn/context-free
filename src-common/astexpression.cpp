@@ -151,10 +151,10 @@ namespace AST {
     ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r)
     : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
       argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
-      arguments(std::move(r.arguments)), simpleRule(r.simpleRule), mStackIndex(r.mStackIndex),
-      typeSignature(r.typeSignature), parentSignature(r.parentSignature)
+      arguments(std::move(r.arguments)), simpleRule(std::move(r.simpleRule)),
+      mStackIndex(r.mStackIndex), typeSignature(r.typeSignature),
+      parentSignature(r.parentSignature)
     {
-        r.simpleRule = nullptr;    // move semantics
     }
     
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
@@ -178,14 +178,14 @@ namespace AST {
         argSize = 0;
         argSource = src->argSource;
         arguments.reset();
-        simpleRule = src->simpleRule;
+        simpleRule = std::move(src->simpleRule);
         mStackIndex = 0;
         typeSignature = src->typeSignature;
         parentSignature = src->parentSignature;
     }
 
     
-    const StackRule*
+    param_ptr
     ASTruleSpecifier::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         switch (argSource) {
@@ -195,7 +195,6 @@ namespace AST {
         case StackArgs: {
             assert(rti);
             const StackType* stackItem = rti->stackItem(mStackIndex);
-            stackItem->rule->retain();
             return stackItem->rule;
         }
         case ParentArgs:
@@ -207,17 +206,17 @@ namespace AST {
                 // copy the parameters with the correct shape type.
                 StackRule* ret = StackRule::alloc(parent);
                 ret->mRuleName = shapeType;
-                return ret;
+                return param_ptr(ret);
             }
         case SimpleParentArgs:
             assert(parent);
             assert(rti);
             parent->retain();
-            return parent;
+            return param_ptr(parent);
         case DynamicArgs: {
             StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
             ret->evalArgs(rti, arguments.get(), parent);
-            return ret;
+            return param_ptr(ret);
         }
         case ShapeArgs:
             return arguments->evalArgs(rti, parent);
@@ -227,7 +226,7 @@ namespace AST {
         }
     }
     
-    const StackRule*
+    param_ptr
     ASTparen::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
@@ -238,7 +237,7 @@ namespace AST {
         return e->evalArgs(rti, parent);
     }
     
-    const StackRule*
+    param_ptr
     ASTselect::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
@@ -249,32 +248,29 @@ namespace AST {
         return arguments[getIndex(rti)]->evalArgs(rti, parent);
     }
     
-    // Hopefully these two functions get inlined
-    ASTuserFunction::stackState_t
-    ASTuserFunction::setupStack(RendererAST* rti) const
+    ASTuserFunction::StackSetup::StackSetup(const ASTuserFunction* func, RendererAST* rti)
+    : mFunc(func), mRTI(rti),
+      mOldTop(rti->mLogicalStackTop), mOldSize(rti->mStackSize)
     {
-        size_t size = rti->mCFstack.size();
-        const StackType* oldTop = rti->mLogicalStackTop;
-        if (definition->mStackCount) {
-            if (size + definition->mStackCount > rti->mCFstack.capacity())
-                CfdgError::Error(where, "Maximum stack size exceeded");
-            rti->mCFstack.resize(size + definition->mStackCount);
-            rti->mCFstack[size].evalArgs(rti, arguments.get(), &(definition->mParameters), isLet);
-            rti->mLogicalStackTop = rti->mCFstack.data() + rti->mCFstack.size();
-        }
-        return stackState_t(size, oldTop);
-    }
-    
-    void
-    ASTuserFunction::cleanupStack(RendererAST* rti, ASTuserFunction::stackState_t& old) const
-    {
-        if (definition->mStackCount) {
-            rti->mCFstack.resize(old.first);
-            rti->mLogicalStackTop = old.second;
+        if (mFunc->definition->mStackCount) {
+            if (mOldSize + mFunc->definition->mStackCount > mRTI->mCFstack.size())
+                CfdgError::Error(mFunc->where, "Maximum stack size exceeded");
+            mRTI->mStackSize += mFunc->definition->mStackCount;
+            mRTI->mCFstack[mOldSize].evalArgs(mRTI, mFunc->arguments.get(), &(mFunc->definition->mParameters), mFunc->isLet);
+            mRTI->mLogicalStackTop = mRTI->mCFstack.data() + mRTI->mStackSize;
         }
     }
     
-    const StackRule*
+    ASTuserFunction::StackSetup::~StackSetup()
+    {
+        if (mFunc->definition->mStackCount) {
+            mRTI->mCFstack[mOldSize].release(&(mFunc->definition->mParameters));
+            mRTI->mStackSize = mOldSize;
+            mRTI->mLogicalStackTop = mOldTop;
+        }
+    }
+    
+    param_ptr
     ASTuserFunction::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         if (mType != RuleType) {
@@ -288,11 +284,9 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        stackState_t oldState = setupStack(rti);
-        const StackRule* ret = definition->mExpression->evalArgs(rti, parent);
-        cleanupStack(rti, oldState);
-        return ret;
-    }
+        StackSetup saveIt(this, rti);
+        return definition->mExpression->evalArgs(rti, parent);
+    }   // saveIt dtor cleans up the stack
     
     ASTcons::ASTcons(std::initializer_list<ASTexpression*> kids)
     : ASTexpression((*(kids.begin()))->where, true, true, NoType)
@@ -638,11 +632,11 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        stackState_t oldState = setupStack(rti);
-        definition->mExpression->evaluate(res, length, rti);
-        cleanupStack(rti, oldState);
+        StackSetup saveIt(this, rti);
+        if (definition->mExpression->evaluate(res, length, rti) != definition->mTuplesize)
+            CfdgError::Error(where, "Error evaluating function");
         return definition->mTuplesize;
-    }
+    }   // saveIt dtor cleans up stack
     
     int
     ASToperator::evaluate(double* res, int length, RendererAST* rti) const
@@ -1253,10 +1247,9 @@ namespace AST {
         if (rti->requestStop || Renderer::AbortEverything)
             throw CfdgError(where, "Stopping");
         
-        stackState_t oldState = setupStack(rti);
+        StackSetup saveIt(this, rti);
         definition->mExpression->evaluate(m, shapeDest, rti);
-        cleanupStack(rti, oldState);
-    }
+    }   // saveIt dtor cleans up stack
     
     void
     ASTmodification::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
@@ -2405,7 +2398,7 @@ namespace AST {
                             if (arguments->isConstant) {
                                 simpleRule = evalArgs();
                                 argSource = SimpleArgs;
-                                Builder::CurrentBuilder->storeParams(simpleRule);
+                                Builder::CurrentBuilder->storeParams(simpleRule.get());
                                 isConstant = true;
                                 mLocality = PureLocal;
                             } else {
@@ -2418,7 +2411,7 @@ namespace AST {
                             simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
                             isConstant = true;
                             mLocality = PureLocal;
-                            Builder::CurrentBuilder->storeParams(simpleRule);
+                            Builder::CurrentBuilder->storeParams(simpleRule.get());
                         }
                         break;
                     }

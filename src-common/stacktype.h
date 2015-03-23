@@ -163,6 +163,8 @@ struct StackRule {
     static StackRule*  alloc(const StackRule* from);
     void        release() const;
     void        retain() const;
+    void        copyParams(StackType* dest) const;
+    
     
     static param_ptr   Read(std::istream& is);
     static void        Write(std::ostream& os, const StackRule* s);
@@ -195,7 +197,8 @@ union StackType {
     typedef StackTypeIterator<StackType> iterator;
     typedef StackTypeIterator<const StackType> const_iterator;
     
-    StackType() { number = 0.0; }
+    StackType() { }
+    ~StackType() { }
     
     double      number;
     param_ptr   rule;
@@ -265,6 +268,8 @@ inline param_ptr::~param_ptr()
 
 inline param_ptr& param_ptr::operator=(const param_ptr& o)
 {
+    if (this == &o || mPtr == o.mPtr)
+        return *this;
     if (mPtr)
         mPtr->release();
     mPtr = o.mPtr;
@@ -275,6 +280,8 @@ inline param_ptr& param_ptr::operator=(const param_ptr& o)
 
 inline param_ptr& param_ptr::operator=(param_ptr&& o)
 {
+    if (this == &o || mPtr == o.mPtr)
+        return *this;
     if (mPtr)
         mPtr->release();
     mPtr = o.mPtr;
@@ -290,11 +297,13 @@ inline param_ptr& param_ptr::operator=(std::nullptr_t)
     return *this;
 }
 
-inline void param_ptr::reset(StackRule* r = nullptr)
+inline void param_ptr::reset(StackRule* r)
 {
     if (mPtr)
         mPtr->release();
     mPtr = r;
+    if (mPtr)
+        mPtr->retain();
 }
 
 #endif // INCLUDE_STACKTYPE_H

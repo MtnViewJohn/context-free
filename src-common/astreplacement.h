@@ -87,9 +87,9 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r,
                       bool getParams = false) const
         {
-            size_t s = r->mCFstack.size();
+            size_t s = r->mStackSize;
             if (getParams && parent.mParameters)
-                r->initStack(parent.mParameters);
+                r->initStack(parent.mParameters.get());
             for (const rep_ptr& rep: mBody)
                 rep->traverse(parent, tr, r);
             r->unwindStack(s, mParameters);
@@ -257,7 +257,7 @@ namespace AST {
         InfoCache mCommandInfo;
         ASTpathCommand mTerminalCommand;
         bool mUseTerminal;
-        const StackRule* mParameters;
+        param_ptr mParameters;
         CommandInfo::UIDtype mPathUID;
         
         void finish(bool setAttr, RendererAST* r);

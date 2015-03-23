@@ -54,7 +54,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
-: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
+: mCleanupLLP(this), m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
   ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
@@ -83,16 +83,12 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
 
 CFDGImpl::~CFDGImpl()
 {
-    for (const StackRule* param: mLongLivedParams) {
-        for (auto it = param->begin(), e = param->end(); it != e; ++it) {
+    // Release everything owned by the long-lived params
+    for (auto&& param: mLongLivedParams) {
+        for (auto it = param[0].begin(), e = param[0].end(); it != e; ++it) {
             if (it.type().mType == AST::RuleType)
-                it->rule->release();
+                it->rule.~param_ptr();
         }
-        if (Renderer::AbortEverything) return;
-    }
-    for (const StackRule* param: mLongLivedParams) {
-        delete[] param;
-        --Renderer::ParamCount;
         if (Renderer::AbortEverything) return;
     }
 #ifdef EXTREME_PARAM_DEBUG
@@ -111,7 +107,7 @@ CFDGImpl::getInitialShape(RendererAST* r)
     mInitShape->replace(init, r);
     init.mWorldState.m_transform.tx += mTileOffset.x;
     init.mWorldState.m_transform.ty += mTileOffset.y;
-    m_initialShape = init;
+    m_initialShape = std::move(init);
     return m_initialShape; 
 }
 

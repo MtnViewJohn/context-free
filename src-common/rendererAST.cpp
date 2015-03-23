@@ -67,45 +67,34 @@ void
 RendererAST::initStack(const StackRule* p)
 {
     if (p && p->mParamCount) {
-        for (StackRule::const_iterator  it = p->begin(), eit = p->end();
-             it != eit; ++it)
-        {
-            for (int i = 0; i < it.type().mTuplesize; ++i)
-                mCFstack.push_back(*(&*it + i));
-            // Retain any shape params to balance the releases in unwindStack()
-            if (it.type().mType == AST::RuleType)
-                it->rule->retain();
-        }
+        if (mStackSize + p->mParamCount > mCFstack.size())
+            throw CfdgError("Maximum stack size exceeded");
+        size_t oldSize = mStackSize;
+        mStackSize += p->mParamCount;
+        p->copyParams(mCFstack.data() + oldSize);
     }
-    if (!mCFstack.empty()) {
-        mLogicalStackTop = mCFstack.data() + mCFstack.size();
-    } else {
-        mLogicalStackTop = nullptr;
-    }
+    mLogicalStackTop = mCFstack.data() + mStackSize;
 }
 
 void
 RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params)
 {
-    if (oldsize == mCFstack.size())
+    if (oldsize == mStackSize)
         return;
 
-    assert(!mCFstack.empty());
+    assert(mStackSize > 0);
     size_t pos = oldsize;
     for (const AST::ASTparameter& param: params) {
-        if (pos >= mCFstack.size())
+        if (pos >= mStackSize)
             break;                        // no guarantee entire frame was computed
         if (param.isLoopIndex || param.mStackIndex < 0) continue;
             // loop indices are unwound in ASTloop::traverse()
             // and <0 stack index indicates that the param isn't on the stack
             // (i.e., function, constant, or config var)
         if (param.mType == AST::RuleType)
-            mCFstack[pos].rule->release();
+            mCFstack[pos].rule.~param_ptr();
         pos += param.mTuplesize;
     }
-    mCFstack.resize(oldsize);
-    if (oldsize)
-        mLogicalStackTop = mCFstack.data() + oldsize;
-    else
-        mLogicalStackTop = nullptr;
+    mStackSize = oldsize;
+    mLogicalStackTop = mCFstack.data() + mStackSize;
 }

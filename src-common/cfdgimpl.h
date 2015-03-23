@@ -46,7 +46,21 @@ class CFDGImpl : public CFDG {
     enum consts_t: unsigned { NoParameter = static_cast<unsigned>(-1) };
     public:
         enum {newShape = 0, ruleType = 1, pathType = 2};
-private:
+        std::deque<const StackRule*>  mLongLivedParams;
+    private:
+        class LLPdeleter {
+            friend CFDGImpl;
+            CFDGImpl* parent;
+            
+            LLPdeleter(CFDGImpl* p) : parent(p) { }
+            ~LLPdeleter() {
+                for (auto&& param : parent->mLongLivedParams) {
+                    delete[] param;
+                    --Renderer::ParamCount;
+                }
+            }
+        };
+        LLPdeleter                      mCleanupLLP;
         Shape m_initialShape;
     
         agg::rgba m_backgroundColor;
@@ -85,6 +99,7 @@ private:
         
         std::vector<ShapeType> m_shapeTypes;
         
+    public:
         AST::rep_ptr mInitShape;
         std::vector<AST::ASTrule*> mRules;
         std::map<int, AST::ASTdefine*> mFunctions;
@@ -160,7 +175,6 @@ private:
         bool addParameter(std::string name, AST::exp_ptr e, unsigned depth);
 
         AST::ASTrepContainer    mCFDGcontents;
-        std::deque<const StackRule*> mLongLivedParams;
     
         std::list<std::string> fileNames;
 };

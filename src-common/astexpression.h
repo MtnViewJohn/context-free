@@ -61,7 +61,7 @@ namespace AST {
         { return 0; }
         virtual void evaluate(Modification&, bool, RendererAST*) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
-        virtual const StackRule* evalArgs(RendererAST* = nullptr, const StackRule* = nullptr) const
+        virtual param_ptr evalArgs(RendererAST* = nullptr, const StackRule* = nullptr) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return nullptr; }
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify() { return this; }
@@ -126,7 +126,7 @@ namespace AST {
         ~ASTselect() override;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
+        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
@@ -151,7 +151,7 @@ namespace AST {
         std::string entropyVal;
         ArgSource argSource;
         exp_ptr arguments;
-        const StackRule* simpleRule;
+        param_ptr simpleRule;
         int mStackIndex;
         const ASTparameters* typeSignature;
         const ASTparameters* parentSignature;
@@ -170,7 +170,7 @@ namespace AST {
             parentSignature(nullptr) {};
         ~ASTruleSpecifier() override;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
-        const StackRule* evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const override;
+        param_ptr evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
@@ -257,14 +257,21 @@ namespace AST {
         ~ASTuserFunction() override = default;
         int evaluate(double* , int, RendererAST* = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
+        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string&) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
     private:
-        typedef std::pair<size_t, const StackType*> stackState_t;
-        stackState_t setupStack(RendererAST* rti) const;
-        void cleanupStack(RendererAST* rti, stackState_t& old) const;
+        class StackSetup {
+            friend class ASTuserFunction;
+            StackSetup(const ASTuserFunction* func, RendererAST* rti);
+            ~StackSetup();
+            
+            const ASTuserFunction*  mFunc;
+            RendererAST*            mRTI;
+            const StackType*        mOldTop;
+            size_t                  mOldSize;
+        };
     };
     class ASTlet : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
@@ -300,7 +307,7 @@ namespace AST {
         ~ASTparen() override = default;
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        const StackRule* evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
+        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;

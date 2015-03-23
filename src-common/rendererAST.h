@@ -27,13 +27,15 @@
 
 #include "cfdg.h"
 #include "CmdInfo.h"
+#include <array>
 
 class RendererAST : public Renderer {
 public:
     // AST interface
         ~RendererAST();
-        std::vector<StackType>  mCFstack;
-        const StackType*  mLogicalStackTop;
+        std::array<StackType, 8192> mCFstack;
+        const StackType*            mLogicalStackTop;
+        size_t                      mStackSize;
         void initStack(const StackRule* p);
         void unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params);
         const StackType* stackItem(int offset) const {

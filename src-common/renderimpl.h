@@ -84,7 +84,7 @@ class RendererImpl : public RendererAST {
         void outputPrep(Canvas*);
         void rescaleOutput(int& curr_width, int& curr_height, bool final);
         void forEachShape(bool final, ShapeFunction op);
-        void processPrimShapeSiblings(const Shape& s, const AST::ASTrule* attr);
+        void processPrimShapeSiblings(Shape&& s, const AST::ASTrule* attr);
         void drawShape(const FinishedShape& s);
 
         void output(bool final);
