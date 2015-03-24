@@ -308,7 +308,7 @@ namespace AST {
         int evaluate(double* r, int size, RendererAST* = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
-        void entropy(std::string& e) const override;
+        void entropy(std::string& ent) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
     };

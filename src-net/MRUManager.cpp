@@ -276,7 +276,7 @@ void MRUManager::LoadMRU()
                 mruList.Add(s);
             }
 
-            String^ s = (String^)key->GetValue("", String::Empty);
+            s = (String^)key->GetValue("", String::Empty);
             if (s != String::Empty) currentDirectory = s;
 
             key->Close();

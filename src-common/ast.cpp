@@ -753,7 +753,6 @@ namespace AST {
                         double cy = fabs(centery + 0.25 * tile.sy) < fabs(centery - 0.25 * tile.sy) ?
                         centery + 0.25 * tile.sy : centery - 0.25 * tile.sy;
                         processDihedral(syms, 2.0, centerx, cy, false, 0.0, where);
-                        agg::trans_affine tr, tr2;
                         tr.translate(-centerx, 0.0);
                         tr.flip_x();
                         tr.translate(centerx, 0.5 * tile.sy);
@@ -768,7 +767,6 @@ namespace AST {
                         double cx = fabs(centerx + 0.25 * tile.sx) < fabs(centerx - 0.25 * tile.sx) ?
                         centerx + 0.25 * tile.sx : centerx - 0.25 * tile.sx;
                         processDihedral(syms, 2.0, cx, centery, false, 0.0, where);
-                        agg::trans_affine tr, tr2;
                         tr.translate(-centerx, 0.0);
                         tr.flip_x();
                         tr.translate(centerx, 0.0);
@@ -789,8 +787,7 @@ namespace AST {
                             cy = cy2;
                         }
                         processDihedral(syms, 2.0, cx, cy, false, 0.0, where);
-                        agg::trans_affine tr, tr2;
-                        tr.translate(-centerx, -centery);   // mirror on x=y
+						tr.translate(-centerx, -centery);   // mirror on x=y
                         tr *= ref45;
                         tr.translate( centerx,  centery);
                         addUnique(syms, tr);
@@ -810,8 +807,7 @@ namespace AST {
                             cy = cy2;
                         }
                         processDihedral(syms, 2.0, cx, cy, false, 0.0, where);
-                        agg::trans_affine tr, tr2;
-                        tr.translate(-centerx, -centery);   // mirror on x=-y
+						tr.translate(-centerx, -centery);   // mirror on x=-y
                         tr *= ref135;
                         tr.translate( centerx,  centery);
                         addUnique(syms, tr);

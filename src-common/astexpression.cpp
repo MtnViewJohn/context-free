@@ -1176,12 +1176,12 @@ namespace AST {
         if (res) {
             if (rti == nullptr && (!mData || !mArgs->isConstant)) throw DeferUntilRuntime();
             
-            double i;
-            if (mArgs->evaluate(&i, 1, rti) != 1) {
+            double index_d;
+            if (mArgs->evaluate(&index_d, 1, rti) != 1) {
                 CfdgError::Error(mArgs->where, "Cannot evaluate vector index");
                 return -1;
             }
-            int index = static_cast<int>(i);
+            int index = static_cast<int>(index_d);
             if ((mLength - 1) * mStride + index >= mCount || index < 0) {
                 CfdgError::Error(where, "Vector index exceeds bounds");
                 return -1;
@@ -1776,7 +1776,7 @@ namespace AST {
         if (length > 1) {
             ASTcons* l = new ASTcons{r};
             for (int i = 1; i < length; ++i) {
-                ASTreal* r = new ASTreal(result[i], from->where);
+                r = new ASTreal(result[i], from->where);
                 r->mType = from->mType;
                 r->isNatural = from->isNatural;
                 l->append(r);
@@ -2873,7 +2873,6 @@ namespace AST {
                                 ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
                                 zmod->argCount = 1;
                                 
-                                double d[2];
                                 if ((*term)->modType == ASTmodTerm::size && xyargs->isConstant &&
                                     xyargs->evaluate(d, 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
                                 {
