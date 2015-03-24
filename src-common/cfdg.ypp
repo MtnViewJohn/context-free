@@ -36,7 +36,6 @@
 %expect 3
 //%debug
 %parse-param {class Builder& driver}
-%lex-param {class Builder& driver}
 
 %code requires {
 #include "builder.h"

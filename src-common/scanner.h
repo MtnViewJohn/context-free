@@ -36,8 +36,7 @@
     int                                     \
     yy::Scanner::lex(                       \
     yy::CfdgParser::semantic_type* yylval,  \
-    yy::CfdgParser::location_type* yylloc,  \
-    Builder&                       driver   \
+    yy::CfdgParser::location_type* yylloc   \
     )
 #endif
 
@@ -77,8 +76,7 @@ public:
      * calls this virtual function to fetch new tokens. */
     virtual int lex(
         CfdgParser::semantic_type* yylval,
-        CfdgParser::location_type* yylloc,
-        Builder&                   driver
+        CfdgParser::location_type* yylloc
     );
 
     Builder*    driver;
