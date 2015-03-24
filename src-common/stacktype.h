@@ -193,6 +193,10 @@ private:
     void        write(std::ostream& os) const;
 };
 
+#ifdef _MSC_VER
+#pragma warning(disable:4582 4583)
+#endif
+
 union StackType {
     typedef StackTypeIterator<StackType> iterator;
     typedef StackTypeIterator<const StackType> const_iterator;
