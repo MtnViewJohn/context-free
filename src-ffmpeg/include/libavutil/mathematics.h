@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * copyright (c) 2005-2012 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
  *
@@ -45,6 +45,9 @@
 #ifndef M_PI
 #define M_PI           3.14159265358979323846  /* pi */
 #endif
+#ifndef M_PI_2
+#define M_PI_2         1.57079632679489661923  /* pi/2 */
+#endif
 #ifndef M_SQRT1_2
 #define M_SQRT1_2      0.70710678118654752440  /* 1/sqrt(2) */
 #endif
@@ -70,6 +73,7 @@ enum AVRounding {
     AV_ROUND_DOWN     = 2, ///< Round toward -infinity.
     AV_ROUND_UP       = 3, ///< Round toward +infinity.
     AV_ROUND_NEAR_INF = 5, ///< Round to nearest and halfway cases away from zero.
+    AV_ROUND_PASS_MINMAX = 8192, ///< Flag to pass INT64_MIN/MAX through instead of rescaling, this avoids special cases for AV_NOPTS_VALUE
 };
 
 /**
@@ -88,6 +92,9 @@ int64_t av_rescale(int64_t a, int64_t b, int64_t c) av_const;
 /**
  * Rescale a 64-bit integer with specified rounding.
  * A simple a*b/c isn't possible as it can overflow.
+ *
+ * @return rescaled value a, or if AV_ROUND_PASS_MINMAX is set and a is
+ *         INT64_MIN or INT64_MAX then a is passed through unchanged.
  */
 int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding) av_const;
 
@@ -98,6 +105,9 @@ int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const;
 
 /**
  * Rescale a 64-bit integer by 2 rational numbers with specified rounding.
+ *
+ * @return rescaled value a, or if AV_ROUND_PASS_MINMAX is set and a is
+ *         INT64_MIN or INT64_MAX then a is passed through unchanged.
  */
 int64_t av_rescale_q_rnd(int64_t a, AVRational bq, AVRational cq,
                          enum AVRounding) av_const;
@@ -123,6 +133,31 @@ int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b);
 int64_t av_compare_mod(uint64_t a, uint64_t b, uint64_t mod);
 
 /**
+ * Rescale a timestamp while preserving known durations.
+ *
+ * @param in_ts Input timestamp
+ * @param in_tb Input timebase
+ * @param fs_tb Duration and *last timebase
+ * @param duration duration till the next call
+ * @param out_tb Output timebase
+ */
+int64_t av_rescale_delta(AVRational in_tb, int64_t in_ts,  AVRational fs_tb, int duration, int64_t *last, AVRational out_tb);
+
+/**
+ * Add a value to a timestamp.
+ *
+ * This function guarantees that when the same value is repeatly added that
+ * no accumulation of rounding errors occurs.
+ *
+ * @param ts Input timestamp
+ * @param ts_tb Input timestamp timebase
+ * @param inc value to add to ts
+ * @param inc_tb inc timebase
+ */
+int64_t av_add_stable(AVRational ts_tb, int64_t ts, AVRational inc_tb, int64_t inc);
+
+
+    /**
  * @}
  */
 

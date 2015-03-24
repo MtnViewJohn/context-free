@@ -29,6 +29,7 @@
 
 #include "avutil.h"
 #include "pixdesc.h"
+#include "rational.h"
 
 /**
  * Compute the max pixel step for each plane of an image with a
@@ -98,6 +99,9 @@ int av_image_alloc(uint8_t *pointers[4], int linesizes[4],
  * That is, copy "height" number of lines of "bytewidth" bytes each.
  * The first byte of each successive line is separated by *_linesize
  * bytes.
+ *
+ * bytewidth must be contained by both absolute values of dst_linesize
+ * and src_linesize, otherwise the function behavior is undefined.
  *
  * @param dst_linesize linesize for the image plane in dst
  * @param src_linesize linesize for the image plane in src
@@ -187,7 +191,19 @@ int av_image_copy_to_buffer(uint8_t *dst, int dst_size,
  */
 int av_image_check_size(unsigned int w, unsigned int h, int log_offset, void *log_ctx);
 
-int ff_set_systematic_pal2(uint32_t pal[256], enum AVPixelFormat pix_fmt);
+/**
+ * Check if the given sample aspect ratio of an image is valid.
+ *
+ * It is considered invalid if the denominator is 0 or if applying the ratio
+ * to the image size would make the smaller dimension less than 1. If the
+ * sar numerator is 0, it is considered unknown and will return as valid.
+ *
+ * @param w width of the image
+ * @param h height of the image
+ * @param sar sample aspect ratio of the image
+ * @return 0 if valid, a negative AVERROR code otherwise
+ */
+int av_image_check_sar(unsigned int w, unsigned int h, AVRational sar);
 
 /**
  * @}

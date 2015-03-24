@@ -443,16 +443,6 @@
     <ClCompile Include="src-common\pathIterator.cpp" />
     <ClCompile Include="src-common\rendererAST.cpp" />
     <ClCompile Include="src-common\stacktype.cpp" />
-    <ClCompile Include="src-ffmpeg\ffmpegshim.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
     <ClCompile Include="src-win\getopt.c" />

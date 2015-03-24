@@ -42,10 +42,24 @@ typedef struct AVFifoBuffer {
 AVFifoBuffer *av_fifo_alloc(unsigned int size);
 
 /**
+ * Initialize an AVFifoBuffer.
+ * @param nmemb number of elements
+ * @param size  size of the single element
+ * @return AVFifoBuffer or NULL in case of memory allocation failure
+ */
+AVFifoBuffer *av_fifo_alloc_array(size_t nmemb, size_t size);
+
+/**
  * Free an AVFifoBuffer.
  * @param f AVFifoBuffer to free
  */
 void av_fifo_free(AVFifoBuffer *f);
+
+/**
+ * Free an AVFifoBuffer and reset pointer to NULL.
+ * @param f AVFifoBuffer to free
+ */
+void av_fifo_freep(AVFifoBuffer **f);
 
 /**
  * Reset the AVFifoBuffer to the state right after av_fifo_alloc, in particular it is emptied.
@@ -59,7 +73,7 @@ void av_fifo_reset(AVFifoBuffer *f);
  * @param f AVFifoBuffer to read from
  * @return size
  */
-int av_fifo_size(AVFifoBuffer *f);
+int av_fifo_size(const AVFifoBuffer *f);
 
 /**
  * Return the amount of space in bytes in the AVFifoBuffer, that is the
@@ -67,7 +81,7 @@ int av_fifo_size(AVFifoBuffer *f);
  * @param f AVFifoBuffer to write into
  * @return size
  */
-int av_fifo_space(AVFifoBuffer *f);
+int av_fifo_space(const AVFifoBuffer *f);
 
 /**
  * Feed data from an AVFifoBuffer to a user-supplied callback.
@@ -140,16 +154,5 @@ static inline uint8_t *av_fifo_peek2(const AVFifoBuffer *f, int offs)
         ptr = f->end - (f->buffer - ptr);
     return ptr;
 }
-
-#if FF_API_AV_FIFO_PEEK
-/**
- * @deprecated Use av_fifo_peek2() instead.
- */
-attribute_deprecated
-static inline uint8_t av_fifo_peek(AVFifoBuffer *f, int offs)
-{
-    return *av_fifo_peek2(f, offs);
-}
-#endif
 
 #endif /* AVUTIL_FIFO_H */

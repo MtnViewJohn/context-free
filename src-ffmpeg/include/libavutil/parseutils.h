@@ -99,6 +99,19 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, int slen,
                    void *log_ctx);
 
 /**
+ * Get the name of a color from the internal table of hard-coded named
+ * colors.
+ *
+ * This function is meant to enumerate the color names recognized by
+ * av_parse_color().
+ *
+ * @param color_idx index of the requested color, starting from 0
+ * @param rgbp      if not NULL, will point to a 3-elements array with the color value in RGB
+ * @return the color name string or NULL if color_idx is not in the array
+ */
+const char *av_get_known_color_name(int color_idx, const uint8_t **rgb);
+
+/**
  * Parse timestr and return in *time a corresponding number of
  * microseconds.
  *
@@ -122,12 +135,12 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, int slen,
  * year-month-day.
  * - If a duration the syntax is:
  * @code
- * [-]HH:MM:SS[.m...]]]
+ * [-][HH:]MM:SS[.m...]
  * [-]S+[.m...]
  * @endcode
  * @param duration flag which tells how to interpret timestr, if not
  * zero timestr is interpreted as a duration, otherwise as a date
- * @return 0 in case of success, a negative value corresponding to an
+ * @return >= 0 in case of success, a negative value corresponding to an
  * AVERROR code otherwise
  */
 int av_parse_time(int64_t *timeval, const char *timestr, int duration);
@@ -141,6 +154,7 @@ int av_parse_time(int64_t *timeval, const char *timestr, int duration);
  * In particular it actually supports the parameters:
  * - %H: the hour as a decimal number, using a 24-hour clock, in the
  * range '00' through '23'
+ * - %J: hours as a decimal number, in the range '0' through INT_MAX
  * - %M: the minute as a decimal number, using a 24-hour clock, in the
  * range '00' through '59'
  * - %S: the second as a decimal number, using a 24-hour clock, in the
