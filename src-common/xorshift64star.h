@@ -60,7 +60,7 @@ public:
         std::uint32_t seeds[2];
         q.generate(seeds, seeds+2);
         mSeed = static_cast<result_type>(seeds[0]) << 32 |
-        static_cast<result_type>(seeds[1]);
+                static_cast<result_type>(seeds[1]);
         if (mSeed == 0)
             mSeed = RAND64_SEED;
     }
