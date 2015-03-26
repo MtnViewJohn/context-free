@@ -90,7 +90,7 @@ Builder* Builder::CurrentBuilder = nullptr;
 double Builder:: MaxNatural = 1000.0;
 
 Builder::Builder(cfdgi_ptr cfdg, int variation)
-: m_CFDG(std::move(cfdg)), m_currentPath(nullptr), m_basePath(nullptr), m_pathCount(1),
+: m_CFDG(std::move(cfdg)), m_currentPath(nullptr), m_pathCount(1),
   mInPathContainer(false), mCurrentShape(-1),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)
@@ -117,6 +117,8 @@ getUniqueFile(const std::string* base, const std::string* file)
         if (*b != *f)
             return f;
     }
+    if (*b == '\0' && *f != '\0')
+        return f;
     if (*b == '\0' && *f == '\0')
         return nullptr;
     return file->c_str();
@@ -127,6 +129,7 @@ void
 Builder::error(const yy::location& l, const std::string& msg)
 {
     mErrorOccured = true;
+    m_CFDG->system()->error();
     warning(l, msg);
 }
 
@@ -134,19 +137,18 @@ void
 Builder::warning(const yy::location& l, const std::string& msg)
 {
     CfdgError err(l, msg.c_str());
+    
+    // Create user-friendly file name and put it in err.where.end.filename
+    const char* fname = nullptr;
     if (l.begin.filename) {
-        const char* fname = getUniqueFile(m_basePath, l.begin.filename);
-        if (fname == nullptr) {
-            m_CFDG->system()->syntaxError(err);
-        } else {
-            m_CFDG->system()->error();
-            m_CFDG->system()->message("Error in %s at line %d - %s", 
-                                      fname, err.where.begin.line, msg.c_str());
-        }
-    } else {
-        m_CFDG->system()->error();
-        m_CFDG->system()->message("Error - %s", msg.c_str());
+        fname = getUniqueFile(m_basePath.get(), l.begin.filename);
+        if (!fname)
+            fname = l.begin.filename->c_str();
     }
+    m_CFDG->fileNames.emplace_back((fname && *fname) ? fname : "input");
+    err.where.end.filename = &(m_CFDG->fileNames.back());;
+    
+    m_CFDG->system()->syntaxError(err);
 }
 
 void Builder::error(int line, const char* msg)
@@ -156,8 +158,9 @@ void Builder::error(int line, const char* msg)
     loc.begin.line = line;
     loc.end.line = line + 1;
     CfdgError err(loc, msg);
-    const char* fname = getUniqueFile(m_basePath, loc.begin.filename);
+    const char* fname = getUniqueFile(m_basePath.get(), loc.begin.filename);
     mErrorOccured = true;
+    m_CFDG->system()->error();
     if (fname == nullptr) {
         m_CFDG->system()->syntaxError(err);
     } else {

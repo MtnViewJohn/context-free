@@ -611,6 +611,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
     } else {
         CfdgError err(startExp->where, "Type error in startshape");
+        m_system->error();
         m_system->syntaxError(err);
         return nullptr;
     }
@@ -643,6 +644,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
         }
         r->initBounds();
     } catch (CfdgError& e) {
+        m_system->error();
         m_system->syntaxError(e);
         return nullptr;     // deletes this
     }

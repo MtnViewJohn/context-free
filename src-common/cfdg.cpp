@@ -176,7 +176,18 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         
         b.m_CFDG->fileNames.push_back(fname);
         b.m_currentPath = &(b.m_CFDG->fileNames.back());
-        b.m_basePath = b.m_currentPath;
+        {
+#ifdef _MSC_VER
+            static char dirchar = '\\';
+#else
+            static char dirchar = '/';
+#endif
+            auto dirptr = b.m_currentPath->find_last_of(dirchar);
+            if (dirptr == std::string::npos)
+                b.m_basePath.reset(new std::string(*b.m_currentPath));
+            else
+                b.m_basePath.reset(new std::string(*b.m_currentPath, 0, dirptr+1));
+        }
         b.m_filesToLoad.push(b.m_currentPath);
         b.m_streamsToLoad.push(std::move(input));
         b.m_includeNamespace.push(false);

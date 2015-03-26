@@ -99,6 +99,7 @@ RendererImpl::colorConflict(const yy::location& w)
 {
     if (mColorConflict) return;
     CfdgError err(w, "Conflicting color change");
+    system()->error();
     system()->syntaxError(err);
     mColorConflict = true;
 }
@@ -305,6 +306,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             processShape(initShape);
         } catch (CfdgError& e) {
             requestStop = true;
+            system()->error();
             system()->syntaxError(e);
         } catch (exception& e) {
             requestStop = true;
@@ -334,6 +336,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             rule->traverse(s, false, this);
         } catch (CfdgError& e) {
             requestStop = true;
+            system()->error();
             system()->syntaxError(e);
             break;
         } catch (exception& e) {
@@ -570,6 +573,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
             try {
                 init();
             } catch (CfdgError& err) {
+                system()->error();
                 system()->syntaxError(err);
                 cleanup();
                 mBounds = saveBounds;

@@ -70,9 +70,9 @@ CommandLineSystem::syntaxError(const CfdgError& err)
     // this version doesn't high-light the line in error
     // the parser will have already called message() with
     // the syntax error information
-    error();
-    message("Error in %s at line %d - %s", 
-            err.where.begin.filename->c_str(), err.where.begin.line, err.what());
+    message("Error in %s at line %d:%d-%d:%d - %s",
+            err.where.end.filename->c_str(), err.where.begin.line, err.where.begin.column,
+            err.where.end.line, err.where.end.column, err.what());
 }
 
 bool
