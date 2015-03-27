@@ -508,7 +508,7 @@ int main (int argc, char* argv[]) {
     }
     
     CFDG* myDesign = CFDG::ParseFile(opts.input, &system, opts.variation);
-    if (!myDesign) return 1;
+    if (!myDesign) return 3;
     if (opts.check) return 0;
     if (opts.widthMult != 1 || opts.heightMult != 1) {
         if (!myDesign->isTiled() && !myDesign->isFrieze()) {
