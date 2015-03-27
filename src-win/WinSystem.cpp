@@ -90,9 +90,9 @@ void WinSystem::syntaxError(const CfdgError& errLoc)
                 errLoc.where.begin.line, errLoc.where.begin.column,
                 errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
     } else {
-        const char* file = strrchr(errLoc.where.begin.filename->c_str(), '\\');
-        file = file ? file + 1 : errLoc.where.begin.filename->c_str();
-        message("Error in file %s - %s", file, errLoc.what());
+        message("Error in file %s at line %d:%d - %d:%d - %s", errLoc.where.end.filename->c_str(), 
+                errLoc.where.begin.line, errLoc.where.begin.column, 
+                errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
     }
 }
 
