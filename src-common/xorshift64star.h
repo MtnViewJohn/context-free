@@ -27,11 +27,12 @@
 #define INCLUDE_XORSHIFT64STAR_H
 
 #include <cstdint>
+#include <limits>
 #include <random>
 #include <istream>
 #include <ostream>
 
-#if defined(_MSC_VER) && _MSC_VER < 2100
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #define myConstExpr
 #else
 #define myConstExpr constexpr
@@ -83,7 +84,7 @@ public:
     }
     
 	static myConstExpr result_type min() { return 1; }
-	static myConstExpr result_type max() { return std::numeric_limits<result_type>::max(); }
+	static myConstExpr result_type max() { return static_cast<result_type>(-1LL); }
     
     bool operator==(const XORshift64star& rhs) const { return mSeed == rhs.mSeed; }
     bool operator!=(const XORshift64star& rhs) const { return mSeed != rhs.mSeed; }

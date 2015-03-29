@@ -27,6 +27,7 @@
  *
  */
 
+#define NOMINMAX 1
 #include <iostream>
 #include <sstream>
 #include <fstream>
