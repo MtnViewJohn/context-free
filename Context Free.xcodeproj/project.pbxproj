@@ -300,6 +300,7 @@
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
 		52D06C1E17667BB400F8D94C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		52D5D8DA1ACB938B005109E5 /* myrandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myrandom.h; sourceTree = "<group>"; };
 		52D803671A69BCD800047742 /* xorshift64star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xorshift64star.h; sourceTree = "<group>"; };
 		52E94E9813650A2E00BB2D96 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		52E94EAD13650C5C00BB2D96 /* qtCanvas.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = qtCanvas.mm; sourceTree = "<group>"; };
@@ -569,6 +570,7 @@
 				5276AA9813776AE1000FA1AB /* CmdInfo.cpp */,
 				52C267B6154F268C00230EB9 /* abstractPngCanvas.h */,
 				52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */,
+				52D5D8DA1ACB938B005109E5 /* myrandom.h */,
 			);
 			path = "src-common";
 			sourceTree = "<group>";
