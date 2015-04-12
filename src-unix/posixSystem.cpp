@@ -126,7 +126,7 @@ PosixSystem::getPhysicalMemory()
 #ifdef __linux
 #if defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
     uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
-    if (static_cast<std::uint64_t>(size) > MaximumMemory)
+    if (size > MaximumMemory)
         size = MaximumMemory;
     return static_cast<size_t>(size);
 #else
@@ -136,23 +136,24 @@ PosixSystem::getPhysicalMemory()
     int mib[2];
 	mib[0] = CTL_HW;
 #if defined(HW_MEMSIZE)
-	mib[1] = HW_MEMSIZE;		// OSX
-	int64_t size = 0;		// 64-bit
+	mib[1] = HW_MEMSIZE;    // OSX
+	uint64_t size = 0;      // 64-bit
 #elif defined(HW_PHYSMEM64)
 	mib[1] = HW_PHYSMEM64;  // NetBSD, OpenBSD
-	int64_t size = 0;		// 64-bit
+	uint64_t size = 0;      // 64-bit
 #elif defined(HW_REALMEM)
-	mib[1] = HW_REALMEM;		// FreeBSD
+	mib[1] = HW_REALMEM;    // FreeBSD
 	unsigned int size = 0;	// 32-bit
 #elif defined(HW_PHYSMEM)
-	mib[1] = HW_PHYSMEM;		// DragonFly BSD
+	mib[1] = HW_PHYSMEM;    // DragonFly BSD
 	unsigned int size = 0;	// 32-bit
 #else
+    uint64_t size = 0;      // need to define this anyway
     return 0;
 #endif
 	size_t len = sizeof(size);
 	if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
-        if (static_cast<std::uint64_t>(size) > MaximumMemory)
+        if (size > MaximumMemory)
             size = MaximumMemory;
 		return static_cast<size_t>(size);
     }
