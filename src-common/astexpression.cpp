@@ -37,7 +37,7 @@ namespace AST {
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType),
       functype(NotAFunction), arguments(std::move(args))
     {
-        if (&func == nullptr || func.empty()) {
+        if (func.empty()) {
             CfdgError::Error(nameLoc, "bad function call");
             return;
         }

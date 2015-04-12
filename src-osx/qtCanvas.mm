@@ -150,7 +150,6 @@ qtCanvas::Impl::addFrame()
     NSImage* img = [[NSImage alloc] initWithSize: mSize];
     NSBitmapImageRep* rep = [mImageData newImageRep];
     [img addRepresentation: rep];
-    [img setCachedSeparately: YES];
                              ;
     [mMovie addImage: img forDuration: QTMakeTime(100, mFrameRate) 
       withAttributes: mDict];

@@ -1101,8 +1101,6 @@ namespace {
     if (mDrawingImage || !mRenderBitmap) return;
     
     mDrawingImage = [[NSImage alloc] initWithSize: mRenderedRect.size];
-    [mDrawingImage setScalesWhenResized: TRUE];
-    [mDrawingImage setDataRetained: TRUE];
     
     NSBitmapImageRep* bitmap = [mRenderBitmap getImageRepCropped: mRenderedRect];
     

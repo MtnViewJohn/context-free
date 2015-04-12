@@ -86,8 +86,6 @@ void tiledCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& at
     }
 }
 
-static const double tileBuffer = 1.05;
-
 void
 tiledCanvas::tileTransform(const Bounds& b)
 // Adjust the translation part of the transform so that it falls within the 

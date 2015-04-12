@@ -44,6 +44,7 @@
 #include <exception>
 #include "mynoexcept.h"
 #include <memory>
+#include <cstdint>
 
 typedef agg::rgba16 RGBA8;
 
@@ -75,10 +76,12 @@ private:
 class AbstractSystem {
     public:
         enum TempType { ShapeTemp = 0, ExpensionTemp = 1, MergeTemp = 2, NumberofTempTypes = 3 };
-        enum SystemSize {
+        enum SystemSize : std::uint64_t {
 #if defined(_WIN64) || defined(__x86_64__)
+            MaximumMemory = 17179869184ULL,     // 16GB
             SystemIs64bit = 1
 #else
+            MaximumMemory = 2147483648ULL,      //  2GB
             SystemIs64bit = 0
 #endif
         };

@@ -491,7 +491,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     [[NSDocumentController sharedDocumentController] 
         closeAllDocumentsWithDelegate: nil 
-                  didCloseAllSelector: @selector(nosuchselector:) 
+                  didCloseAllSelector: @selector(toggleRenderView:) 
                           contextInfo: (void*)0];
 }
 

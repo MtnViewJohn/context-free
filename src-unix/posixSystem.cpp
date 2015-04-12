@@ -126,8 +126,8 @@ PosixSystem::getPhysicalMemory()
 #ifdef __linux
 #if defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
     uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
-    if (!SystemIs64bit && size > 2147483648ULL)
-        size = 2147483648ULL;
+    if (static_cast<std::uint64_t>(size) > MaximumMemory)
+        size = MaximumMemory;
     return static_cast<size_t>(size);
 #else
     return 0;
@@ -147,11 +147,13 @@ PosixSystem::getPhysicalMemory()
 #elif defined(HW_PHYSMEM)
 	mib[1] = HW_PHYSMEM;		// DragonFly BSD
 	unsigned int size = 0;	// 32-bit
+#else
+    return 0;
 #endif
 	size_t len = sizeof(size);
 	if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
-        if (!SystemIs64bit && len > 4 && size > 2147483648UL)
-            size = 2147483648UL;
+        if (static_cast<std::uint64_t>(size) > MaximumMemory)
+            size = MaximumMemory;
 		return static_cast<size_t>(size);
     }
 	return 0;
