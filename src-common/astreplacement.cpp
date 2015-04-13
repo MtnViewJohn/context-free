@@ -1234,7 +1234,7 @@ namespace AST {
 
         for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
             const ASTexpression* temp = mArguments->getChild(i);
-			assert(temp);
+            assert(temp);
             switch (temp->mType) {
                 case FlagType: {
                     if (i != mArguments->size() - 1)

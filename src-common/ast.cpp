@@ -241,7 +241,7 @@ namespace AST {
             }
             
             const ASTexpression* arg = args->getChild(count);
-			assert(arg);
+            assert(arg);
             
             if (param_it->mType != arg->mType) {
                 CfdgError::Error(arg->where, "Incorrect argument type.");
@@ -787,7 +787,7 @@ namespace AST {
                             cy = cy2;
                         }
                         processDihedral(syms, 2.0, cx, cy, false, 0.0, where);
-						tr.translate(-centerx, -centery);   // mirror on x=y
+                        tr.translate(-centerx, -centery);   // mirror on x=y
                         tr *= ref45;
                         tr.translate( centerx,  centery);
                         addUnique(syms, tr);
@@ -807,7 +807,7 @@ namespace AST {
                             cy = cy2;
                         }
                         processDihedral(syms, 2.0, cx, cy, false, 0.0, where);
-						tr.translate(-centerx, -centery);   // mirror on x=-y
+                        tr.translate(-centerx, -centery);   // mirror on x=-y
                         tr *= ref135;
                         tr.translate( centerx,  centery);
                         addUnique(syms, tr);

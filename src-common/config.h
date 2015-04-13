@@ -67,7 +67,7 @@ struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
         }
     }
 
-	CfgArray(const _T* l) : base_t()
+    CfgArray(const _T* l) : base_t()
     {
         std::copy(l, l + base_t::size(), base_t::begin());
     }

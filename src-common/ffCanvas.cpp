@@ -248,7 +248,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int
     impl.reset(new Impl(name, mapPixFmt(fmt), width, height, stride, bits, fps));
     if (impl->mError) {
         mErrorMsg = impl->mError;
-		impl.reset();
+        impl.reset();
         mError = true;
     }
 }
@@ -265,8 +265,8 @@ ffCanvas::end()
         if (impl->mError) {
             mErrorMsg = impl->mError;
             mError = true;
-			impl.reset();
-		}
+            impl.reset();
+        }
     }
 }
 

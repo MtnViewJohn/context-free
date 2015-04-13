@@ -111,7 +111,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph) override;
         ASTexpression* simplify() override;
-	};
+    };
     class ASTselect : public ASTexpression {
         enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
     public:
@@ -338,7 +338,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
-	};
+    };
     class ASTmodification : public ASTexpression {
     public:
         enum modClassEnum {
@@ -368,7 +368,7 @@ namespace AST {
         void evalConst();
         void makeCanonical();
         void grab(ASTmodification* m);
-	};
+    };
     class ASTarray : public ASTexpression {
     public:
         int     mName;

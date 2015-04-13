@@ -156,9 +156,9 @@ size_t
 Win32System::getPhysicalMemory()
 {
     MEMORYSTATUSEX status;
-	status.dwLength = sizeof(status);
-	GlobalMemoryStatusEx(&status);
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
     if (!SystemIs64bit && status.ullTotalPhys > 2147483648ULL)
         return (size_t)2147483648ULL;
-	return (size_t)status.ullTotalPhys;
+    return (size_t)status.ullTotalPhys;
 }

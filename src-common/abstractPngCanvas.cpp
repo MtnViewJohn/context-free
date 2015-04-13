@@ -61,13 +61,13 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
     mOriginX = (mFullWidth - mWidth) / 2;
     mOriginY = (mFullHeight - mHeight) / 2;
     
-	int bpp = BytesPerPixel.at(mPixelFormat);
-	mStride = mFullWidth * bpp;
+    int bpp = BytesPerPixel.at(mPixelFormat);
+    mStride = mFullWidth * bpp;
 #ifdef _WIN32
     mStride += ((-mStride) & 3);
 #endif
     mData.reset(new unsigned char[mStride * mFullHeight]);
-	attach(mData.get() + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
+    attach(mData.get() + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
 
     if (quiet) return;
     cout << prettyInt(static_cast<unsigned long>(mFullWidth)) << "w x " <<
@@ -117,10 +117,10 @@ abstractPngCanvas::end()
 void
 abstractPngCanvas::copyImageUnscaled(int destx, int desty)
 {
-	int bpp = BytesPerPixel.at(mPixelFormat);
-	destx *= bpp;
-	int srcx = mOriginX * bpp;
-	int srcy = mOriginY;
+    int bpp = BytesPerPixel.at(mPixelFormat);
+    destx *= bpp;
+    int srcx = mOriginX * bpp;
+    int srcy = mOriginY;
     for (int y = 0; y < mHeight; ++y) {
         if (y + desty < 0 || y + desty >= mFullHeight) continue;
         for (int x = 0; x < mWidth * bpp; ++x) {

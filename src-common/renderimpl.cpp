@@ -781,7 +781,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
                                   use = mUnfinishedShapes.end();
     usi += count;
     
-	if (f1->good() && f2->good()) {
+    if (f1->good() && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
         outStats.outputCount = static_cast<int>(count);
         outStats.outputDone = 0;
@@ -789,11 +789,11 @@ RendererImpl::moveUnfinishedToTwoFiles()
         *f2 << outStats.outputCount;
         outStats.outputCount = static_cast<int>(count * 2);
         outStats.showProgress = true;
-		// Split the bottom 2/3 of the heap between the two files
-		while (usi != use) {
-			usi->write(*((m_unfinishedInFilesCount & 1) ? f1 : f2));
-			++usi;
-			++m_unfinishedInFilesCount;
+        // Split the bottom 2/3 of the heap between the two files
+        while (usi != use) {
+            usi->write(*((m_unfinishedInFilesCount & 1) ? f1 : f2));
+            ++usi;
+            ++m_unfinishedInFilesCount;
             ++outStats.outputDone;
             if (requestUpdate) {
                 system()->stats(outStats);
@@ -801,12 +801,12 @@ RendererImpl::moveUnfinishedToTwoFiles()
             }
             if (requestStop || requestFinishUp)
                 return;
-		}
-	} else {
-		system()->message("Cannot open temporary file for expansions");
+        }
+    } else {
+        system()->message("Cannot open temporary file for expansions");
         requestStop = true;
         return;
-	}
+    }
 
     // Remove the written shapes, heap property remains intact
     static const Shape neverActuallyUsed;
@@ -843,8 +843,8 @@ RendererImpl::getUnfinishedFromFile()
             if (requestStop || requestFinishUp)
                 return;
         }
-	} else {
-		system()->message("Cannot open temporary file for expansions");
+    } else {
+        system()->message("Cannot open temporary file for expansions");
         requestStop = true;
         return;
     }
@@ -893,7 +893,7 @@ RendererImpl::moveFinishedToFile()
     
     unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
-	if (f->good()) {
+    if (f->good()) {
         if (mFinishedShapes.size() > 10000)
             system()->message("Sorting shapes...");
         std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
@@ -911,11 +911,11 @@ RendererImpl::moveFinishedToFile()
             if (requestStop)
                 return;
         }
-	} else {
-		system()->message("Cannot open temporary file for shapes");
+    } else {
+        system()->message("Cannot open temporary file for shapes");
         requestStop = true;
         return;
-	}
+    }
 
     mFinishedShapes.clear();
 }

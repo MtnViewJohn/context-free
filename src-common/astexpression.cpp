@@ -123,11 +123,11 @@ namespace AST {
             { "randint::geometric", ASTfunction::RandGeometric }
         };
         
-		auto nameItem = NameMap.find(func);
-		if (nameItem == NameMap.end())
-			return NotAFunction;
-		return (*nameItem).second;
-	}
+        auto nameItem = NameMap.find(func);
+        if (nameItem == NameMap.end())
+            return NotAFunction;
+        return (*nameItem).second;
+    }
     
     ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, exp_ptr args, 
                                        const yy::location& loc, const ASTparameters* parent)
@@ -1099,7 +1099,7 @@ namespace AST {
             case RandNegBinomial:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
-				*res = floor(static_cast<double>(rti->mCurrentSeed.getNegativeBinomial(static_cast<Rand64::result_type>(a[0]), a[1])));
+                *res = floor(static_cast<double>(rti->mCurrentSeed.getNegativeBinomial(static_cast<Rand64::result_type>(a[0]), a[1])));
                 break;
             case RandPoisson:
                 if (rti == nullptr) throw DeferUntilRuntime();
@@ -1313,7 +1313,7 @@ namespace AST {
             return;
         }
         
-		double arg[6] = {0.0};
+        double arg[6] = {0.0};
         for (int i = 0; i < argcount; ++i)
             arg[i] = fmax(-1.0, fmin(1.0, modArgs[i]));
         
@@ -1625,8 +1625,8 @@ namespace AST {
         
         if (arguments)
             arguments->entropy(ent);
-		ent.append(EntropyMap.at(functype));
-	}
+        ent.append(EntropyMap.at(functype));
+    }
     
     void
     ASTselect::entropy(std::string& e) const
@@ -1757,8 +1757,8 @@ namespace AST {
         };
         
         if (args) args->entropy(ent);
-		ent.append(EntropyMap.at(modType));
-	}
+        ent.append(EntropyMap.at(modType));
+    }
     
     void
     ASTarray::entropy(std::string& e) const
@@ -3038,8 +3038,8 @@ namespace AST {
             
             // Put in code for separating color changes and target color changes
                         
-			int mc = ClassMap.at(mod->modType);
-			modClass |= mc;
+            int mc = ClassMap.at(mod->modType);
+            modClass |= mc;
             if (!mod->isConstant)
                 nonConstant |= mc;
             bool keepThisOne = (mc & nonConstant) != 0;

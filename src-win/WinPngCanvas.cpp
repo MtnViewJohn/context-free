@@ -165,7 +165,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
     WCHAR wpath[MAX_PATH];
     TCHAR fullpath[MAX_PATH];
-	size_t cvt;
+    size_t cvt;
     ::mbstowcs_s(&cvt, wpath, MAX_PATH, outfilename, MAX_PATH);
     ::GetFullPathName(wpath, MAX_PATH, fullpath, nullptr);
     const WCHAR* mimetype = mWallpaper ? L"image/bmp" : L"image/png";

@@ -209,7 +209,7 @@ private:
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                       const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -219,7 +219,7 @@ inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                       const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -229,7 +229,7 @@ inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                  const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                      const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -239,7 +239,7 @@ inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                  const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                      const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -249,7 +249,7 @@ inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                       const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -259,7 +259,7 @@ inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType1, typename _valType2, unsigned _power2>
 inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
-	                   const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
+                       const chunk_vector_iterator<_valType2, _power2>& __y) NOEXCEPT
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
@@ -269,7 +269,7 @@ inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
 
 template<typename _valType, unsigned _power2>
 inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
-	                   const chunk_vector_iterator<_valType, _power2>& __x) NOEXCEPT
+                       const chunk_vector_iterator<_valType, _power2>& __x) NOEXCEPT
 { return __x + __n; }
 
 template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>

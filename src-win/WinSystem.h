@@ -66,7 +66,7 @@ public:
     std::string mText;
 private:
     void* mWindow;
-	bool mErrorMode;
+    bool mErrorMode;
 };
 
 #endif  // INCLUDE_WINSYSTEM_H

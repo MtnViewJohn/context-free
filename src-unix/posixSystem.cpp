@@ -134,30 +134,30 @@ PosixSystem::getPhysicalMemory()
 #endif
 #else // __linux
     int mib[2];
-	mib[0] = CTL_HW;
+    mib[0] = CTL_HW;
 #if defined(HW_MEMSIZE)
-	mib[1] = HW_MEMSIZE;    // OSX
-	uint64_t size = 0;      // 64-bit
+    mib[1] = HW_MEMSIZE;    // OSX
+    uint64_t size = 0;      // 64-bit
 #elif defined(HW_PHYSMEM64)
-	mib[1] = HW_PHYSMEM64;  // NetBSD, OpenBSD
-	uint64_t size = 0;      // 64-bit
+    mib[1] = HW_PHYSMEM64;  // NetBSD, OpenBSD
+    uint64_t size = 0;      // 64-bit
 #elif defined(HW_REALMEM)
-	mib[1] = HW_REALMEM;    // FreeBSD
-	unsigned int size = 0;	// 32-bit
+    mib[1] = HW_REALMEM;    // FreeBSD
+    unsigned int size = 0;  // 32-bit
 #elif defined(HW_PHYSMEM)
-	mib[1] = HW_PHYSMEM;    // DragonFly BSD
-	unsigned int size = 0;	// 32-bit
+    mib[1] = HW_PHYSMEM;    // DragonFly BSD
+    unsigned int size = 0;  // 32-bit
 #else
     uint64_t size = 0;      // need to define this anyway
     return 0;
 #endif
-	size_t len = sizeof(size);
-	if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
+    size_t len = sizeof(size);
+    if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
         if (size > MaximumMemory)
             size = MaximumMemory;
-		return static_cast<size_t>(size);
+        return static_cast<size_t>(size);
     }
-	return 0;
+    return 0;
 #endif // __linux
 }
 

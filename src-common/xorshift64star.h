@@ -83,8 +83,8 @@ public:
         return mSeed;
     }
     
-	static myConstExpr result_type min() { return 1; }
-	static myConstExpr result_type max() { return static_cast<result_type>(-1LL); }
+    static myConstExpr result_type min() { return 1; }
+    static myConstExpr result_type max() { return static_cast<result_type>(-1LL); }
     
     bool operator==(const XORshift64star& rhs) const { return mSeed == rhs.mSeed; }
     bool operator!=(const XORshift64star& rhs) const { return mSeed != rhs.mSeed; }

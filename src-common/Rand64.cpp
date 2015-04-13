@@ -129,21 +129,21 @@ double Rand64::getStudentT(double freedom)
 
 int64_t Rand64::getDiscrete(unsigned count, const double* weights)
 {
-	if (count == 0)
-		return 0;
+    if (count == 0)
+        return 0;
 
-	std::vector<double> w(count);
+    std::vector<double> w(count);
     for (unsigned i = 0; i < count; ++i)
         w[i] = fabs(weights[i]);
 
-	std::size_t i(0);
-	CF::discrete_distribution<int64_t> sd(count, 0, 1,
-		[&w, &i](double)
-		{
-			auto weight = w[i];
-			++i;
-			return weight;
-		});
+    std::size_t i(0);
+    CF::discrete_distribution<int64_t> sd(count, 0, 1,
+        [&w, &i](double)
+        {
+            auto weight = w[i];
+            ++i;
+            return weight;
+        });
     return sd(mSeed);
 }
 
