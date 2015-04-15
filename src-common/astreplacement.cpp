@@ -427,7 +427,7 @@ namespace AST {
             CfdgError::Error(mLocation, "Error evaluating if condition");
             return;
         }
-        if (cond) mThenBody.traverse(parent, tr, r);
+        if (cond != 0.0) mThenBody.traverse(parent, tr, r);
         else mElseBody.traverse(parent, tr, r);
     }
     
