@@ -386,11 +386,11 @@ namespace {
     // center scaled image rectangle
     dRect.size.width = rSize.width * scale;
     dRect.size.height = rSize.height * scale;
-    CGFloat ox = dRect.origin.x = floor((fSize.width - dRect.size.width) * ((CGFloat)0.5));
-    CGFloat oy = dRect.origin.y = floor((fSize.height - dRect.size.height) * ((CGFloat)0.5));
+    int ox = static_cast<int>(dRect.origin.x = floor((fSize.width - dRect.size.width) * ((CGFloat)0.5)));
+    int oy = static_cast<int>(dRect.origin.y = floor((fSize.height - dRect.size.height) * ((CGFloat)0.5)));
 
     if (mTiled && mRenderer && mRenderer->m_tiledCanvas && scale == 1.0) {
-        tileList points = mRenderer->m_tiledCanvas->getTesselation(fSize.width, fSize.height, ox, oy);
+        tileList points = mRenderer->m_tiledCanvas->getTesselation(static_cast<int>(fSize.width), static_cast<int>(fSize.height), ox, oy);
         
         for (agg::point_i& pt: points) {
             NSPoint dPoint = NSMakePoint(pt.x, pt.y);
@@ -636,8 +636,8 @@ namespace {
         fRect.size.width *= mult->width;
         fRect.size.height *= mult->height;
         
-        tileList points = mRenderer->m_tiledCanvas->getTesselation(fRect.size.width,
-                                                                   fRect.size.height, 0, 0);
+        tileList points = mRenderer->m_tiledCanvas->getTesselation(static_cast<int>(fRect.size.width),
+                                                                   static_cast<int>(fRect.size.height), 0, 0);
         
         NSImage* tileImage = [[NSImage alloc] initWithSize: fRect.size];
 
@@ -1025,6 +1025,12 @@ namespace {
     NSRect box;
     box.size.width = u;
     box.size.height = u;
+    
+#if defined(CGFLOAT_IS_DOUBLE) && CGFLOAT_IS_DOUBLE
+#define MYfmod fmod
+#else
+#define MYfmod fmodf
+#endif
 
     for (box.origin.y = floor(NSMinY(rect) / box.size.height) * box.size.height;
         box.origin.y < NSMaxY(rect);
@@ -1032,7 +1038,7 @@ namespace {
     {
         for (box.origin.x = 
                 (floor(NSMinX(rect) / (2.0 * box.size.width)) * 2.0
-                + fmodf(box.origin.y / box.size.height, 2.0))
+                + MYfmod(box.origin.y / box.size.height, 2.0))
                 * box.size.width;
             box.origin.x < NSMaxX(rect);
             box.origin.x += 2*box.size.width)
@@ -1246,7 +1252,7 @@ namespace {
     bool mpeg4 = (bool)[defaults integerForKey: PrefKeyMovieFormat];
     int qual = (int)[defaults floatForKey: PrefKeyMovieQuality];
     
-    parameters.animateFrameCount = movieLength * movieFrameRate * 0.01;
+    parameters.animateFrameCount = static_cast<int>(movieLength * movieFrameRate * 0.01);
     
     NSSize* sz = mTiled ? &mRenderedRect.size : &mRenderSize;
     

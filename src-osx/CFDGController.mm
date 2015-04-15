@@ -199,7 +199,7 @@ namespace {
     NSFont* oldFont = [mFontDisplay font];
     NSFont* newFont = [sender convertFont: oldFont];
     NSString* name = [newFont fontName];
-    float size = [newFont pointSize];
+    float size = static_cast<float>([newFont pointSize]);
     [[NSUserDefaults standardUserDefaults] setObject: name 
                                               forKey: prefKeyEditorFontName];
     [[NSUserDefaults standardUserDefaults] setFloat: size 
@@ -384,7 +384,7 @@ namespace {
 
 - (void)updateFontDisplay:(NSFont*)font 
 {
-    float size = [font pointSize];
+    double size = static_cast<double>([font pointSize]);
     NSString* name;
     
     if (fabs(size - floor(size + 0.5)) >= 0.05) {
