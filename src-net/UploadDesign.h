@@ -85,9 +85,8 @@ namespace ContextFreeNet {
             checkTiled->Checked = u->mTiled;
             titleBox->Text = name;
             fileNameBox->Text = name;
-            char vChars[Variation::maxStringLength];
-            Variation::toString(u->mVariation, vChars, false);
-            this->labelVariation->Text = gcnew System::String(vChars);
+            std::string vChars = Variation::toString(u->mVariation, false);
+            this->labelVariation->Text = gcnew System::String(vChars.c_str());
 
             wizard1->BeforeSwitchPages += gcnew CristiPotlog::Controls::Wizard::BeforeSwitchPagesEventHandler(this, &UploadDesign::wizardPage_beforeChange);
             wizard1->AfterSwitchPages += gcnew CristiPotlog::Controls::Wizard::AfterSwitchPagesEventHandler(this, &UploadDesign::wizardPage_afterChange);

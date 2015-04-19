@@ -766,9 +766,8 @@ System::Void Document::PrevVar_Click(System::Object^ sender, System::EventArgs^ 
     --currentVariation;
     if (currentVariation > maxVariation || currentVariation < minVariation)
         currentVariation = maxVariation;
-    char vChars[Variation::maxStringLength];
-    Variation::toString(currentVariation, vChars, false);
-    variationEdit->Text = gcnew String(vChars);
+    std::string vChars = Variation::toString(currentVariation, false);
+    variationEdit->Text = gcnew String(vChars.c_str());
 }
 
 System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ e)
@@ -777,9 +776,8 @@ System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ 
     ++currentVariation;
     if (currentVariation > maxVariation || currentVariation < minVariation)
         currentVariation = minVariation;
-    char vChars[Variation::maxStringLength];
-    Variation::toString(currentVariation, vChars, false);
-    variationEdit->Text = gcnew String(vChars);
+    std::string vChars = Variation::toString(currentVariation, false);
+    variationEdit->Text = gcnew String(vChars.c_str());
 }
 
 void Document::WndProc( Message% m )
