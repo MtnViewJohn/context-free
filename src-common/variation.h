@@ -30,18 +30,14 @@
 #ifndef INCLUDED_VARIATION
 #define INCLUDED_VARIATION
 
-#ifdef VC6
-typedef unsigned short WinTcharType;
-#else
-typedef wchar_t WinTcharType;
-#endif
+#include <string>
 
 class Variation {
   public:
     static int  fromString(const char* str);
-    static void toString(int var, char* str, bool lowerCase);
-    static int  fromString(const WinTcharType* str);
-    static void toString(int var, WinTcharType* str, bool lowerCase);
+    static std::string toString(int var, char dummy, bool lowerCase);
+    static int  fromString(const wchar_t* str);
+    static std::wstring toString(int var, wchar_t dummy, bool lowerCase);
 
     enum Constants { maxStringLength = 9 }; // including null terminator
 

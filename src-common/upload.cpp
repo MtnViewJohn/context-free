@@ -101,9 +101,7 @@ namespace {
     
     std::string variationName(int variation)
     {
-        char buffer[Variation::maxStringLength];
-        Variation::toString(variation, buffer, false);
-        return buffer;
+        return Variation::toString(variation, ' ', false);
     }
 }
 

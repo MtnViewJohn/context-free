@@ -31,7 +31,8 @@
 #include "Rand64.h"
 #include <random>
 
-template<class T> static int
+template<class T>
+static int
 fromString(T* str)
 {
     int value = 0;
@@ -53,11 +54,15 @@ fromString(T* str)
 }
 
 
-template<class T> static void
-toString(int var, T* str, bool lowerCase)
+template<class T>
+static std::basic_string<T>
+toString(int var, T dummy, bool lowerCase)
 {
     int length = 0;
     int range = 1;
+    
+    if (var < 1)
+        var = 1;
     
     while (var >= range) {
         length += 1;
@@ -65,19 +70,22 @@ toString(int var, T* str, bool lowerCase)
         range *= 26;
     }
     
-    str[length--] = static_cast<T>('\0');
+    std::basic_string<T> str(length--, dummy);
+    
     while (length >= 0) {
         T v = static_cast<T>(var % 26);
         var = (var - v) / 26;
         
         str[length--] = static_cast<T>(lowerCase ? 'a' : 'A') + v;
     }
+    
+    return str;
 }
 
 int Variation::fromString(const char* str) { return ::fromString(str); }
-int Variation::fromString(const WinTcharType* str) { return ::fromString(str); }
-void Variation::toString(int var, char* str, bool lowerCase) { ::toString(var, str, lowerCase); }
-void Variation::toString(int var, WinTcharType* str, bool lowerCase) { ::toString(var, str, lowerCase); }
+int Variation::fromString(const wchar_t* str) { return ::fromString(str); }
+std::string  Variation::toString(int var, char dummy, bool lowerCase) { return ::toString(var, dummy, lowerCase); }
+std::wstring Variation::toString(int var, wchar_t dummy, bool lowerCase) { return ::toString(var, dummy, lowerCase); }
 
 int Variation::recommendedMin() { return 1; }
 int Variation::recommendedMax(int letters) 
