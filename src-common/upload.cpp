@@ -101,7 +101,7 @@ namespace {
     
     std::string variationName(int variation)
     {
-        return Variation::toString(variation, ' ', false);
+        return Variation::toString(variation, false);
     }
 }
 

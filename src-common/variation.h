@@ -35,9 +35,7 @@
 class Variation {
   public:
     static int  fromString(const char* str);
-    static std::string toString(int var, char dummy, bool lowerCase);
-    static int  fromString(const wchar_t* str);
-    static std::wstring toString(int var, wchar_t dummy, bool lowerCase);
+    static std::string toString(int var, bool lowerCase);
 
     enum Constants { maxStringLength = 9 }; // including null terminator
 
