@@ -96,7 +96,10 @@ int Variation::random(int letters)
     static bool seeded = false;
     if (!seeded) {
         std::random_device rd;
-        Rand64::Seed(rd());
+        Rand64::result_type seed = rd();
+        if (sizeof(std::random_device::result_type) < sizeof(Rand64::result_type))
+            seed = (seed << 32) | rd();
+        Rand64::Seed(seed);
         seeded = true;
     }
     
