@@ -65,7 +65,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-qP /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"
+            argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

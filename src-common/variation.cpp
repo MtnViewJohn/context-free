@@ -39,6 +39,8 @@ Variation::fromString(const char* str)
     int range = 1;
     
     while (char c = *str++) {
+        if (range < 1)
+            return -1;
         offset += range;
         
         value *= 26;
@@ -62,7 +64,7 @@ Variation::toString(int var, bool lowerCase)
     if (var < 1)
         var = 1;
     
-    while (var >= range) {
+    while (var >= range && range > 0) {
         length += 1;
         var -= range;
         range *= 26;
