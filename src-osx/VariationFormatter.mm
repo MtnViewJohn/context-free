@@ -33,9 +33,8 @@
 
 + (NSString *)stringForVariation:(int)v lowerCase:(BOOL)lowerCase
 {
-    char code[Variation::maxStringLength];
-    Variation::toString(v, code, lowerCase);
-    return [NSString stringWithUTF8String: code];
+    std::string code = Variation::toString(v, ' ', lowerCase);
+    return [NSString stringWithUTF8String: code.c_str()];
 }
 
 - (NSString *)stringForObjectValue:(id)obj
@@ -69,6 +68,11 @@
     }
     
     int v = Variation::fromString([string UTF8String]);
+    if (v == -1) {
+        if (error)
+            *error = NSLocalizedString(@"Error parsing variation", @"");
+        return NO;
+    }
     
     if (obj)
         *obj = [NSNumber numberWithInt: v];

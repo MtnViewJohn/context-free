@@ -98,8 +98,11 @@
     NSString* var = [newURL query];
     if (var) {
         NSRange varLoc = [var rangeOfString: @"variation="];
-        if (varLoc.location != NSNotFound)
+        if (varLoc.location != NSNotFound) {
             variation = Variation::fromString([[var substringFromIndex: (varLoc.location + varLoc.length)] UTF8String]);
+            if (variation == -1)
+                variation = 1;
+        }
     }
     return request;
 }
