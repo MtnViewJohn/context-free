@@ -33,7 +33,7 @@
 
 + (NSString *)stringForVariation:(int)v lowerCase:(BOOL)lowerCase
 {
-    std::string code = Variation::toString(v, ' ', lowerCase);
+    std::string code = Variation::toString(v, lowerCase);
     return [NSString stringWithUTF8String: code.c_str()];
 }
 

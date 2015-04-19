@@ -61,7 +61,7 @@ string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
             case 'V':
                 lower = false;
             case 'v':
-                namestream << Variation::toString(variation, ' ', lower);
+                namestream << Variation::toString(variation, lower);
                 break;
             case 'f':
                 namestream << setfill('0') << setw(numLength) << frame;

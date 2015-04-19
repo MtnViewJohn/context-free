@@ -482,7 +482,7 @@ int main (int argc, char* argv[]) {
     clock_t clocksPerMsec = CLOCKS_PER_SEC / 1000;
     
     if (opts.variation < 0) opts.variation = var;
-    std::string code = Variation::toString(opts.variation, ' ', false);
+    std::string code = Variation::toString(opts.variation, false);
     
     CommandLineSystem system(opts.quiet);
     
