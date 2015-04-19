@@ -350,6 +350,10 @@ processCommandLine(int argc, char* argv[], options& opt)
                 break;
             case 'v':
                 opt.variation = Variation::fromString(optarg);
+                if (opt.variation == -1) {
+                    cerr << "Error parsing variation" << endl;
+                    exit(99);
+                }
                 break;
             case 'o':
                 opt.output_fmt = optarg;
@@ -478,8 +482,7 @@ int main (int argc, char* argv[]) {
     clock_t clocksPerMsec = CLOCKS_PER_SEC / 1000;
     
     if (opts.variation < 0) opts.variation = var;
-    char code[Variation::maxStringLength];
-    Variation::toString(opts.variation, code, false);
+    std::string code = Variation::toString(opts.variation, ' ', false);
     
     CommandLineSystem system(opts.quiet);
     
