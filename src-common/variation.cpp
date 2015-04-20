@@ -88,10 +88,12 @@ int Variation::recommendedMin() { return 1; }
 int Variation::recommendedMax(int letters) 
 {
     int range = 0;
-    int value = 26;
+    int value = 1;
+    if (letters < 1) letters = 1;
+    if (letters > 6) letters = 6;
     for (int i = 0; i < letters; i++) {
-        range += value;
         value *= 26;
+        range += value;
     }
     return range;
 }
