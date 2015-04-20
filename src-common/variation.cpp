@@ -30,17 +30,20 @@
 #include "variation.h"
 #include "Rand64.h"
 #include <random>
+#include <limits>
+#include <cstdint>
 
 int
 Variation::fromString(const char* str)
 {
-    int value = 0;
-    int offset = 0;
-    int range = 1;
+    std::uint64_t value = 0;
+    std::uint64_t offset = 0;
+    std::uint64_t range = 1;
     
     while (char c = *str++) {
-        if (range < 1)
+        if (range > std::numeric_limits<int>::max())
             return -1;
+        
         offset += range;
         
         value *= 26;
@@ -51,20 +54,19 @@ Variation::fromString(const char* str)
         range *= 26;
     }
     
-    return offset + value;
+    return (offset + value > std::numeric_limits<int>::max()) ?
+                    -1 : static_cast<int>(offset + value);
 }
 
 
 std::string
-Variation::toString(int var, bool lowerCase)
+Variation::toString(int v, bool lowerCase)
 {
     int length = 0;
-    int range = 1;
+    std::uint64_t range = 1;
+    std::uint64_t var = v < 1 ? 1 : static_cast<std::uint64_t>(v);
     
-    if (var < 1)
-        var = 1;
-    
-    while (var >= range && range > 0) {
+    while (var >= range && range < std::numeric_limits<int>::max()) {
         length += 1;
         var -= range;
         range *= 26;
