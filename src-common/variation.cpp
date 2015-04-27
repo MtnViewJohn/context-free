@@ -60,11 +60,11 @@ Variation::fromString(const char* str)
 
 
 std::string
-Variation::toString(int v, bool lowerCase)
+Variation::toString(int ivar, bool lowerCase)
 {
     int length = 0;
     std::uint64_t range = 1;
-    std::uint64_t var = v < 1 ? 1 : static_cast<std::uint64_t>(v);
+    std::uint64_t var = ivar < 1 ? 1 : static_cast<std::uint64_t>(ivar);
     
     while (var >= range && range < std::numeric_limits<int>::max()) {
         length += 1;
