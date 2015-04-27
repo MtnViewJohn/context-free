@@ -34,6 +34,8 @@
 #include <time.h>
 #ifdef _WIN32
 #include "getopt.h"
+#else
+#include <unistd.h>
 #endif
 #include <cstdlib>
 #include <cstdio>
