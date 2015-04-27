@@ -33,6 +33,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
+#include <cstdio>
 
 #include <iostream>
 
@@ -100,7 +101,7 @@ void
 TempFile::erase()
 {
     mSystem->message("Deleting %s temp file %d", mTypeName.c_str(), mNum);
-    if (unlink(mPath.c_str()))
+    if (remove(mPath.c_str()))
         mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
 }
 

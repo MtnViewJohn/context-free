@@ -34,11 +34,9 @@
 #include <time.h>
 #ifdef _WIN32
 #include "getopt.h"
-#include <stdio.h>
-#else
-#include <unistd.h>
 #endif
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstdio>
 #include "cfdg.h"
 #include "variation.h"
 #ifdef _WIN32
@@ -495,7 +493,7 @@ int main (int argc, char* argv[]) {
             if (opts.deleteTemps) {
                 cerr << "Old temporary files deleted:\n";
                 for (string& temp: temps)
-                    if (unlink(temp.c_str()))
+                    if (remove(temp.c_str()))
                         cerr << "Failed to delete: " << temp << '\n';
                     else
                         cerr << temp << '\n';
