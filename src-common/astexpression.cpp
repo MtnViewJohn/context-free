@@ -761,7 +761,7 @@ namespace AST {
                     *res = r[0];
                     break;
                 case 'X':
-                    *res = ((l[0] == 0.0 && r[0] != 0.0) || (l[0] != 0.0 && r[0] == 0.0)) ? 1.0 : 0.0;
+                    *res = ((l[0] != 0.0 && r[0] == 0.0) || (l[0] == 0.0 && r[0] != 0.0)) ? 1.0 : 0.0;
                     break;
                 case '^':
                     *res = pow(l[0], r[0]);
@@ -3080,7 +3080,7 @@ namespace AST {
         selector->evaluate(&select, 1, rti);
 
         if (ifSelect)
-            return select == 0.0 ? 0 : 1;
+            return (select != 0.0) ? 0 : 1;
         
         if (select < 0.0)
             return 0;
