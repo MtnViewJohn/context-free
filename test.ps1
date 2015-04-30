@@ -1,4 +1,10 @@
 $cfdgs = Get-ChildItem -Path '.\input\tests\*.cfdg'
+$cfdgs += Get-ChildItem -Path '.\input\*.cfdg'
+
+if ( -Not (Test-Path "output"))
+{
+ New-Item -Path "output" -ItemType Directory
+}
 
 foreach ($cfdg in $cfdgs) {
   Write-Host -NoNewLine -foregroundcolor white $cfdg.Name
