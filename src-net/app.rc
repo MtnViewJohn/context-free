@@ -52,8 +52,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,8,37
- PRODUCTVERSION 3,0,8,37
+ FILEVERSION 3,0,9,38
+ PRODUCTVERSION 3,0,9,38
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "OzoneSoft"
             VALUE "FileDescription", "ContextFree Application"
-            VALUE "FileVersion", "3.0.8.37"
+            VALUE "FileVersion", "3.0.9.38"
             VALUE "InternalName", "ContextFree"
-            VALUE "LegalCopyright", "Copyright (C) 2005-2014 John Horigan and Mark Lentczner"
+            VALUE "LegalCopyright", "Copyright (C) 2005-2015 John Horigan and Mark Lentczner"
             VALUE "OriginalFilename", "ContextFree.exe"
             VALUE "ProductName", "ContextFree"
-            VALUE "ProductVersion", "3.0.8.37"
+            VALUE "ProductVersion", "3.0.9.38"
         END
     END
     BLOCK "VarFileInfo"
@@ -103,8 +103,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-
-
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

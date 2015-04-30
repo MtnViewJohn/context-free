@@ -266,6 +266,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(SolutionDir)/src-ffmpeg/lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
@@ -337,6 +338,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalLibraryDirectories>$(SolutionDir)/src-ffmpeg/lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -415,7 +417,9 @@
     <ClInclude Include="src-win\WinPngCanvas.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src-agg\src\agg_bezier_arc.cpp" />
+    <ClCompile Include="src-agg\src\agg_bezier_arc.cpp">
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</WholeProgramOptimization>
+    </ClCompile>
     <ClCompile Include="src-agg\src\agg_color_rgba.cpp" />
     <ClCompile Include="src-agg\src\agg_curves.cpp" />
     <ClCompile Include="src-agg\src\agg_trans_affine.cpp" />
