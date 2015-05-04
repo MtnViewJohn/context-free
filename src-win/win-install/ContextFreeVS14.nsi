@@ -105,8 +105,9 @@ SectionIn RO
     File "..\\..\\src-net\\Release64\\Controls.dll" 
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
-    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\vcruntime140.dll"
-    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\msvcp140.dll"
+    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\1033\vcredist_x64.exe"
+    ExecWait '$INSTDIR\vcredist_x64.exe'
+    Delete $INSTDIR\vcredist_x64.exe
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
     File "..\\..\\Release\\ContextFreeCLI.exe" 
@@ -114,8 +115,9 @@ SectionIn RO
     File "..\\..\\src-net\\release\\Controls.dll" 
     File "..\\..\\src-net\\release\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.dll" 
-    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\vcruntime140.dll"
-    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\msvcp140.dll"
+    File "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\1033\vcredist_x86.exe"
+    ExecWait '$INSTDIR\vcredist_x86.exe'
+    Delete $INSTDIR\vcredist_x86.exe
   ${EndIf}
 
 SectionEnd
@@ -167,9 +169,18 @@ Function .onInit
   ${If} $0 == ""
     MessageBox \
       MB_YESNO|MB_ICONSTOP \
-      ".Net framework v4.0 is required. Install Context Free anyway?" \
+      ".Net framework v4.5 is required. Install Context Free anyway?" \
       IDYES okgo
     Abort
+  ${Else}
+    ${VersionCompare} "$0" "4.5" $R0
+    ${If} $R0 == 2
+      MessageBox \
+        MB_YESNO|MB_ICONSTOP \
+        ".Net framework v4.5 is required. Install Context Free anyway?" \
+        IDYES okgo
+      Abort
+    ${EndIf}
   ${EndIf}
 
 okgo:
@@ -194,8 +205,6 @@ Section "Uninstall"
   Delete '$INSTDIR\Controls.dll'
   Delete '$INSTDIR\FileDlgExtenders.dll'
   Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.dll'
-  Delete '$INSTDIR\msvcr100.dll'
-  Delete '$INSTDIR\msvcp100.dll'
   Delete '$INSTDIR\license.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
   RMDir  '$INSTDIR'
