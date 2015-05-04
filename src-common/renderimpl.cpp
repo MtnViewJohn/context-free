@@ -781,7 +781,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
                                   use = mUnfinishedShapes.end();
     usi += count;
     
-    if (f1->good() && f2->good()) {
+    if (f1 && f1->good() && f2 && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
         outStats.outputCount = static_cast<int>(count);
         outStats.outputDone = 0;
@@ -893,7 +893,7 @@ RendererImpl::moveFinishedToFile()
     
     unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
-    if (f->good()) {
+    if (f && f->good()) {
         if (mFinishedShapes.size() > 10000)
             system()->message("Sorting shapes...");
         std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
@@ -975,6 +975,11 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
                     merger.addTempFile(*it);
                 
                 std::unique_ptr<ostream> f(t.forWrite());
+                if (!f) {
+                    system()->message("Cannot open temporary file for shapes");
+                    requestStop = true;
+                    return;
+                }
                 system()->message("Merging temp files %d through %d",
                                   begin->number(), last->number());
                 
