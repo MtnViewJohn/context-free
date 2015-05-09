@@ -41,6 +41,7 @@ class qtCanvas : public aggCanvas {
         qtCanvas(NSString* name, BitmapImageHolder* bits, 
                  int fps, int qual, bool mpeg4);
         ~qtCanvas() override;
+        qtCanvas& operator=(const qtCanvas& c) = delete;
     
         NSError* getError() const;
         void enterThread();
@@ -51,7 +52,6 @@ class qtCanvas : public aggCanvas {
     private:
         class Impl;
         std::unique_ptr<Impl> impl;
-        qtCanvas& operator=(qtCanvas& c) { return c; }
 };
 
 #endif // INCLUDE_QTCANVAS_H

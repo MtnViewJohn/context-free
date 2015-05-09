@@ -94,6 +94,7 @@ CfdgError::what() const NOEXCEPT
 CfdgError&
 CfdgError::operator=(const CfdgError& e) NOEXCEPT
 {
+    if (this == &e) return *this;
     mMsg = e.mMsg;
     where = e.where;
     return *this;

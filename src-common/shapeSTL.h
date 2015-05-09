@@ -52,6 +52,7 @@ class OutputMerge
 public:
     OutputMerge() { }
     ~OutputMerge();
+    OutputMerge& operator=(const OutputMerge&) = delete;
     
     typedef chunk_vector<FinishedShape, 10> ShapeSource;
     typedef ShapeSource::iterator           ShapeIter;
@@ -95,7 +96,6 @@ private:
     Sieve       mSieve;
     
     void insertNext(size_t i);
-    OutputMerge& operator=(const OutputMerge&) { return *this; }
 };
 
 #endif // INCLUDE_SHAPESTL_H

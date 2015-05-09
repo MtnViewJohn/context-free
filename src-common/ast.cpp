@@ -151,6 +151,7 @@ namespace AST {
     ASTparameter&
     ASTparameter::operator=(const ASTparameter& from)
     {
+        if (this == &from) return *this;
         mType = from.mType;
         isParameter = from.isParameter;
         isLoopIndex = from.isLoopIndex;
@@ -168,6 +169,7 @@ namespace AST {
     ASTparameter&
     ASTparameter::operator=(ASTparameter&& from) NOEXCEPT
     {
+        if (this == &from) return *this;
         mType = from.mType;
         isParameter = from.isParameter;
         isLoopIndex = from.isLoopIndex;

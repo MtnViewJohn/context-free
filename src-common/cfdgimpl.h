@@ -85,15 +85,14 @@ class CFDGImpl : public CFDG {
                   argSize(from.argSize), shouldHaveNoParams(from.shouldHaveNoParams) { }
 
             ShapeType& operator=(ShapeType&& from) NOEXCEPT {
+                if (this == &from) return *this;
                 name = std::move(from.name); hasRules = from.hasRules; isShape = from.isShape;
                 shapeType = from.shapeType; parameters = std::move(from.parameters); 
                 argSize = from.argSize; shouldHaveNoParams = from.shouldHaveNoParams;
                 return *this;
             }
-
-        private:
-            ShapeType(const ShapeType&);
-            ShapeType& operator=(const ShapeType&);
+            ShapeType(const ShapeType&) = delete;
+            ShapeType& operator=(const ShapeType&) = delete;
         };
         
         std::vector<ShapeType> m_shapeTypes;

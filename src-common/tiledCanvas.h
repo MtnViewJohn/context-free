@@ -48,6 +48,7 @@ public:
     
     tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
     ~tiledCanvas() override = default;
+    tiledCanvas& operator=(const tiledCanvas&) = delete;
     
     void scale(double scaleFactor);
     
@@ -61,7 +62,6 @@ private:
     agg::trans_affine mOffset;
     agg::trans_affine mInvert;
     std::vector<agg::point_d> mTileList;
-    tiledCanvas& operator=(const tiledCanvas&);
 };
 
 #endif  // INCLUDE_TILEDCANVAS_H

@@ -93,6 +93,7 @@ public:
     
     StackTypeIterator& operator=(const StackTypeIterator& o)
     {
+        if (this == &o) return *this;
         _Ptr = o._Ptr;
         _Iter = o._Iter;
         _End = o._End;

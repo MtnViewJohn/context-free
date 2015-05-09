@@ -88,6 +88,7 @@ namespace AST {
     CommandInfo&
     CommandInfo::operator=(CommandInfo&& from) NOEXCEPT
     {
+        if (this == &from) return *this;
         mFlags = from.mFlags;
         mMiterLimit = from.mMiterLimit;
         mStrokeWidth = from.mStrokeWidth;
@@ -100,6 +101,7 @@ namespace AST {
     CommandInfo&
     CommandInfo::operator=(const CommandInfo& from)
     {
+        if (this == &from) return *this;
         mFlags = from.mFlags;
         mMiterLimit = from.mMiterLimit;
         mStrokeWidth = from.mStrokeWidth;

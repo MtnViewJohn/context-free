@@ -77,6 +77,7 @@ TempFile::TempFile(TempFile&& from) NOEXCEPT
 TempFile&
 TempFile::operator=(TempFile&& from) NOEXCEPT
 {
+    if (this == &from) return *this;
     if (mWritten && mPath.length())
         erase();
     mSystem = from.mSystem;

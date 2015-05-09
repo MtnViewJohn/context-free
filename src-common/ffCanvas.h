@@ -32,6 +32,7 @@ class ffCanvas : public aggCanvas {
 public:
     ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps);
     ~ffCanvas() override;
+    ffCanvas& operator=(const ffCanvas& c) = delete;
     
     const char* mErrorMsg;
     
@@ -40,7 +41,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl;
-    ffCanvas& operator=(ffCanvas& c) { return c; }
 };
 
 #endif // INCLUDE_FFCANVAS_H

@@ -107,6 +107,7 @@ public:
     Shape(Shape&&) = default;
     ~Shape() = default;
     Shape& operator=(const Shape& o) {
+        if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;
         mAreaCache = o.mAreaCache;
@@ -114,6 +115,7 @@ public:
         return *this;
     }
     Shape& operator=(Shape&& o) {
+        if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;
         mAreaCache = o.mAreaCache;
@@ -160,6 +162,7 @@ public:
     FinishedShape(const FinishedShape&) = default;
     FinishedShape(FinishedShape&&) = default;
     FinishedShape& operator=(const FinishedShape& o) {
+        if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;
         mAreaCache = o.mAreaCache;
@@ -168,6 +171,7 @@ public:
         return *this;
     }
     FinishedShape& operator=(FinishedShape&& o) {
+        if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;
         mAreaCache = o.mAreaCache;
