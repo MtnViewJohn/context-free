@@ -583,7 +583,7 @@ namespace AST {
                 int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pm symmetry mirror axis argument must be 0 or 1");
-                else if (axis < 2 || axis > 3)
+                else if (square45 && (axis < 2 || axis > 3))
                     CfdgError::Error(where, "pm symmetry mirror axis argument must be 2 or 3");
                 switch (axis) {
                     case 0:         // mirror on x axis
@@ -632,7 +632,7 @@ namespace AST {
                 int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pg symmetry mirror axis argument must be 0 or 1");
-                else if (axis < 2 || axis > 3)
+                else if (square45 && (axis < 2 || axis > 3))
                     CfdgError::Error(where, "pg symmetry mirror axis argument must be 2 or 3");
                 switch (axis) {
                     case 0:         // mirror on x axis
@@ -679,9 +679,9 @@ namespace AST {
                 agg::trans_affine tr;
                 addUnique(syms, tr);
                 int axis = static_cast<int>(data[1]);
-                if (rectangular && (axis < 0 || axis > 1))
+                if (rhombic && (axis < 0 || axis > 1))
                     CfdgError(where, "cm symmetry mirror axis argument must be 0 or 1");
-                else if (axis < 2 || axis > 3)
+                else if (square && (axis < 2 || axis > 3))
                     CfdgError::Error(where, "cm symmetry mirror axis argument must be 2 or 3");
                 switch (axis) {
                     case 0:         // mirror on x axis
@@ -748,7 +748,7 @@ namespace AST {
                 int axis = static_cast<int>(data[1]);
                 if (rectangular && (axis < 0 || axis > 1))
                     CfdgError(where, "pmg symmetry mirror axis argument must be 0 or 1");
-                else if (axis < 2 || axis > 3)
+                else if (square45 && (axis < 2 || axis > 3))
                     CfdgError::Error(where, "pmg symmetry mirror axis argument must be 2 or 3");
                 switch (axis) {
                     case 0: {       // mirror on x axis
