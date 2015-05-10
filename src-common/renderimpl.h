@@ -143,7 +143,6 @@ class RendererImpl : public RendererAST {
         double mShapeBorder;
         double mTotalArea;
     
-        agg::point_d mCurrentCentroid;
         double mCurrentArea;
         Bounds mPathBounds;
 

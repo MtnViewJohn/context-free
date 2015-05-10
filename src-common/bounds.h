@@ -53,15 +53,13 @@ class Bounds {
         Bounds() : mMin_X(std::numeric_limits<double>::infinity()) {}
 
         Bounds(const agg::trans_affine& trans, pathIterator& helper, 
-               double scale, const AST::CommandInfo& attr,
-               agg::point_d* cent = nullptr, double* area = nullptr);
+               double scale, const AST::CommandInfo& attr);
                 // set bounds to be the bounds of this shape, transformed
 
         bool valid() const { return myfinite(mMin_X) && myfinite(mMax_X) &&
                                     myfinite(mMin_Y) && myfinite(mMax_Y); }
         void invalidate() { mMin_X = std::numeric_limits<double>::infinity(); }
     
-        Bounds dilate(agg::point_d& cent, double dilation) const;
         Bounds dilate(double dilation) const;
 
         void merge(const Bounds& b)
@@ -126,8 +124,7 @@ class Bounds {
         void gather(const Bounds& other, double weight);
         
         void update(const agg::trans_affine& trns, pathIterator& helper, 
-                    double scale, const AST::CommandInfo& attr,
-                    agg::point_d* cent = nullptr, double* area = nullptr);
+                    double scale, const AST::CommandInfo& attr);
     
         double  mMin_X, mMin_Y, mMax_X, mMax_Y;
 };

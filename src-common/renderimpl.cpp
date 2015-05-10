@@ -663,7 +663,7 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
         mScale = (m_width + m_height) / sqrt(fabs(s.mWorldState.m_transform.determinant()));
     }
     if (path || s.mShapeType != primShape::fillType) {
-        mCurrentCentroid.x = mCurrentCentroid.y = mCurrentArea = 0.0;
+        mCurrentArea = 0.0;
         mPathBounds.invalidate();
         m_drawingMode = false;
         if (path) {
@@ -1129,15 +1129,9 @@ RendererImpl::processPathCommand(const Shape& s, const AST::CommandInfo* attr)
         }
     } else {
         if (attr) {
-            double area = 0.0;
-            agg::point_d cent(0.0, 0.0);
-            mPathBounds.update(s.mWorldState.m_transform, m_pathIter, mScale, *attr, 
-                               &cent, &area);
-            mCurrentCentroid.x = (mCurrentCentroid.x * mCurrentArea + cent.x * area) /
-                                  (mCurrentArea + area);
-            mCurrentCentroid.y = (mCurrentCentroid.x * mCurrentArea + cent.y * area) /
-                                  (mCurrentArea + area);
-            mCurrentArea = mCurrentArea + area;
+            mPathBounds.update(s.mWorldState.m_transform, m_pathIter, mScale, *attr);
+            mCurrentArea = fabs((mPathBounds.mMax_X - mPathBounds.mMin_X) *
+                                (mPathBounds.mMax_Y - mPathBounds.mMin_Y));
         }
     }
 }

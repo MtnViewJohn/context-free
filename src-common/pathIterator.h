@@ -32,7 +32,6 @@
 #include "agg_conv_curve.h"
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
-#include "agg_conv_centroid.h"
 
 namespace AST {
     struct CommandInfo;
@@ -48,10 +47,6 @@ public:
                                                     CurvedTrans;
     typedef agg::conv_stroke<CurvedTrans>           CurvedTransStroked;
     
-    typedef agg::conv_centroid<CurvedTrans>         CurvedTransCentroid;
-    typedef agg::conv_centroid<CurvedStrokedTrans>  CurvedStrokedTransCentroid;
-    typedef agg::conv_centroid<CurvedTransStroked>  CurvedTransStrokedCentroid;
-    
     agg::trans_affine   unitTrans;
     CurvedPath          curved;
     CurvedStroked       curvedStroked;
@@ -59,10 +54,6 @@ public:
     CurvedTrans         curvedTrans;
     CurvedTransStroked  curvedTransStroked;
     
-    CurvedTransCentroid         curvedTransCentroid;
-    CurvedStrokedTransCentroid  curvedStrokedTransCentroid;
-    CurvedTransStrokedCentroid  curvedTransStrokedCentroid;
-
     pathIterator();
     ~pathIterator() = default;
     
@@ -73,7 +64,7 @@ public:
                  const AST::CommandInfo& attr);
     bool boundingRect(const agg::trans_affine& tr, const AST::CommandInfo& attr,
                       double& minx, double& miny, double& maxx, double& maxy,
-                      double scale, agg::point_d* cent = nullptr, double* area = nullptr);
+                      double scale);
 };
 
 #endif

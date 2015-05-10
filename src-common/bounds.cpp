@@ -39,10 +39,9 @@
 // This constructor iterates the transformed path and computes the exact bounds.
 // This can be expensive for curved paths.
 Bounds::Bounds(const agg::trans_affine& trans, pathIterator& helper, double scale, 
-               const AST::CommandInfo& attr, agg::point_d* cent, double* area)
+               const AST::CommandInfo& attr)
 {
-    if (!helper.boundingRect(trans, attr, mMin_X, mMin_Y, mMax_X, mMax_Y,
-                             scale, cent, area))
+    if (!helper.boundingRect(trans, attr, mMin_X, mMin_Y, mMax_X, mMax_Y, scale))
     {
         invalidate();
     }
@@ -62,17 +61,6 @@ Bounds::interpolate(const Bounds& other, double alpha) const
     r.mMin_Y = beta * mMin_Y + alpha * other.mMin_Y;
     
     return r;
-}
-
-Bounds
-Bounds::dilate(agg::point_d& cent, double dilation) const
-{
-    Bounds b;
-    b.mMin_X = dilation * (mMin_X - cent.x) + cent.x;
-    b.mMax_X = dilation * (mMax_X - cent.x) + cent.x;
-    b.mMin_Y = dilation * (mMin_Y - cent.y) + cent.y;
-    b.mMax_Y = dilation * (mMax_Y - cent.y) + cent.y;
-    return b;
 }
 
 Bounds
@@ -181,9 +169,9 @@ Bounds::computeScale(int& width, int& height, double borderX, double borderY,
 
 void
 Bounds::update(const agg::trans_affine& trns, pathIterator& helper, double scale,
-               const AST::CommandInfo& attr, agg::point_d* cent, double* area)
+               const AST::CommandInfo& attr)
 {
-    Bounds b(trns, helper, scale, attr, cent, area);
+    Bounds b(trns, helper, scale, attr);
     merge(b);
 }
 

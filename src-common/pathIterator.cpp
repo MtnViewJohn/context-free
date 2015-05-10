@@ -33,10 +33,7 @@ static primShape dummy;
 pathIterator::pathIterator() 
 : curved(dummy), 
   curvedStroked(curved), curvedStrokedTrans(curvedStroked, unitTrans),
-  curvedTrans(curved, unitTrans), curvedTransStroked(curvedTrans),
-  curvedTransCentroid(curvedTrans), 
-  curvedStrokedTransCentroid(curvedStrokedTrans),
-  curvedTransStrokedCentroid(curvedTransStroked)
+  curvedTrans(curved, unitTrans), curvedTransStroked(curvedTrans)
 { }
 
 void
@@ -117,25 +114,19 @@ pathIterator::boundingRect(const agg::trans_affine& tr,
                            const AST::CommandInfo& attr,
                            double& minx, double& miny, 
                            double& maxx, double& maxy,
-                           double scale, agg::point_d* cent, double* area)
+                           double scale)
 {
     apply(attr, tr, scale * 0.1);
     
     bool ret;
     
     if (attr.mFlags & AST::CF_FILL) {
-        ret = agg::bounding_rect_single(curvedTransCentroid, attr.mIndex, &minx, &miny, &maxx, &maxy);
-        if (cent) *cent = curvedTransCentroid.m_centroid;
-        if (area) *area = curvedTransCentroid.m_area;
+        ret = agg::bounding_rect_single(curvedTrans, attr.mIndex, &minx, &miny, &maxx, &maxy);
     } else {
         if (attr.mFlags & AST::CF_ISO_WIDTH) {
-            ret = agg::bounding_rect_single(curvedTransStrokedCentroid, attr.mIndex, &minx, &miny, &maxx, &maxy);
-            if (cent) *cent = curvedTransStrokedCentroid.m_centroid;
-            if (area) *area = curvedTransStrokedCentroid.m_area;
+            ret = agg::bounding_rect_single(curvedTransStroked, attr.mIndex, &minx, &miny, &maxx, &maxy);
         } else {
-            ret = agg::bounding_rect_single(curvedStrokedTransCentroid, attr.mIndex, &minx, &miny, &maxx, &maxy);
-            if (cent) *cent = curvedStrokedTransCentroid.m_centroid;
-            if (area) *area = curvedStrokedTransCentroid.m_area;
+            ret = agg::bounding_rect_single(curvedStrokedTrans, attr.mIndex, &minx, &miny, &maxx, &maxy);
         }
     }
     return ret;
