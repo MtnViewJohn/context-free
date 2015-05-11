@@ -355,7 +355,6 @@
     <ClInclude Include="src-agg\include\agg_conv_stroke.h" />
     <ClInclude Include="src-agg\include\agg_conv_transform.h" />
     <ClInclude Include="src-common\abstractPngCanvas.h" />
-    <ClInclude Include="src-common\agg-extras\agg_conv_centroid.h" />
     <ClInclude Include="src-common\agg-extras\agg_copy_rect.h" />
     <ClInclude Include="src-agg\include\agg_curves.h" />
     <ClInclude Include="src-agg\include\agg_ellipse.h" />
