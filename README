@@ -1,5 +1,5 @@
 *** Context Free
-*** version 3.0.8
+*** version 3.0.9
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
@@ -57,8 +57,8 @@ FILE TREE
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 MACINTOSH BUILD NOTES
 
-Requires Xcode 6 & Mac OS X 10.6 (Snow Leopard).
-Developed with XCode 6.2 and Mac OS X 10.10 (Yosemite), has not been tested
+Requires Xcode 6 & Mac OS X 10.7 (Lion).
+Developed with XCode 6.3 and Mac OS X 10.10 (Yosemite), has not been tested
 with older versions of XCode or Mac OS X.
 
 The Xcode project file is in the top directory:
@@ -68,24 +68,26 @@ The Xcode project file is in the top directory:
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS GUI BUILD NOTES
 
-Requires Visual Studio 2013 or later.
+Requires Visual Studio 2015 or later.
 
-The VS2013 Express solution file is at ./src-net/ContextFreeNetVS11.sln
+The VS2015 solution file is at ./src-net/ContextFreeNetVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
-in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
-or Mac system then cd to src-win/derived and type 'make'.
+in src-win/derived. If you have Cygwin or a similar Posix environment 
+installed or have access to a Unix/Linux or Mac system then cd to 
+src-win/derived and type 'make' (you will need bison and flex too).
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS CLI (command line) BUILD NOTES
 
-Requires Visual Studio 2013 or later.
+Requires Visual Studio 2015 or later.
 
-The VS2013 Express CLI solution file is at ./ContextFreeCLIVS11.sln
+The VS2015 CLI solution file is at ./ContextFreeCLIVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
-in src-win/derived. If you have Cygwin installed or have access to a Unix/Linux
-or Mac system then cd to src-win/derived and type 'make'.
+in src-win/derived. If you have Cygwin or a similar Posix environment 
+installed or have access to a Unix/Linux or Mac system then cd to 
+src-win/derived and type 'make' (you will need bison and flex too).
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
