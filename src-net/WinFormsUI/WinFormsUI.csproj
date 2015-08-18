@@ -188,7 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
