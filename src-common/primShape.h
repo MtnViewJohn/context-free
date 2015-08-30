@@ -48,13 +48,9 @@ public:
     }
     primShape() = default;
     
-    static const primShape circle;
-    static const primShape square;
-    static const primShape triangle;
-    static const primShape* shapeMap[numTypes];
+    static const std::array<primShape, numTypes> shapeMap;
     static const std::array<std::string, numTypes> shapeNames;
     static bool isPrimShape(unsigned v) { return v < numTypes; }
-    static bool isPrimShape(agg::path_storage* p);
 };
 
 class primIter

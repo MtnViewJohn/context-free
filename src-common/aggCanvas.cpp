@@ -170,9 +170,9 @@ class aggCanvas::impl {
         std::set<agg::int64u> pixelSet;
         
         impl(aggCanvas* canvas)
-            : buffer(), mCanvas(canvas), unitSquare(primShape::square),
-              shapeSquare(unitSquare, unitTrans), 
-              shapeEllipse(unitEllipse, unitTrans), unitTriangle(primShape::triangle),
+            : buffer(), mCanvas(canvas), unitSquare(primShape::shapeMap[primShape::squareType]),
+              shapeSquare(unitSquare, unitTrans),
+              shapeEllipse(unitEllipse, unitTrans), unitTriangle(primShape::shapeMap[primShape::triangleType]),
               shapeTriangle(unitTriangle, unitTrans), 
               cropWidth(0), cropHeight(0)
         {

@@ -37,44 +37,34 @@ static const double hp = h;
 static const double hn = -h / 2.0;
 static const double t = sqrt(2.0) / 4.0;
 
-const primShape primShape::square = {
-    {  0.5,  0.5 },
-    { -0.5,  0.5 },
-    { -0.5, -0.5 },
-    {  0.5, -0.5 }
-};
-
-const primShape primShape::triangle = {
-    { 0.0, hp },
-    {-0.5, hn },
-    { 0.5, hn }
-};
-
-const primShape primShape::circle = {
-    { 0.5,  0.0 },
-    {   t,    t },
-    { 0.0,  0.5 },
-    {  -t,    t },
-    {-0.5,  0.0 },
-    {  -t,   -t },
-    { 0.0, -0.5 },
-    {   t,   -t }
-};
-const primShape* primShape::shapeMap[numTypes] = { 
-    &primShape::circle, 
-    &primShape::square, 
-    &primShape::triangle,
-    0
-};
+decltype(primShape::shapeMap) primShape::shapeMap = { {
+    {   // circle pseudo-vertices
+        { 0.5,  0.0 },
+        {   t,    t },
+        { 0.0,  0.5 },
+        {  -t,    t },
+        {-0.5,  0.0 },
+        {  -t,   -t },
+        { 0.0, -0.5 },
+        {   t,   -t }
+    },
+    {   // square vertices
+        {  0.5,  0.5 },
+        { -0.5,  0.5 },
+        { -0.5, -0.5 },
+        {  0.5, -0.5 }
+    },
+    {   // triangle vertices
+        { 0.0, hp },
+        {-0.5, hn },
+        { 0.5, hn }
+    },
+    {{}}
+} };
 
 decltype(primShape::shapeNames) primShape::shapeNames = {
     { "CIRCLE", "SQUARE", "TRIANGLE", "FILL" }
 };
-
-bool primShape::isPrimShape(agg::path_storage* p)
-{
-    return (p == &circle) || (p == &square) || (p == &triangle);
-}
 
 unsigned
 primIter::vertex(double* x, double* y)

@@ -69,8 +69,7 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
       m_maxShapes(500000000), mVariation(variation), m_border(border), 
       mScaleArea(0.0), mScale(0.0), m_currScale(0.0), m_currArea(0.0), 
       m_minSize(minSize), mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),
-      circleCopy(primShape::circle), squareCopy(primShape::square), triangleCopy(primShape::triangle),
-      shapeMap{}
+      shapeCopies(primShape::shapeMap), shapeMap{}
 {
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
@@ -88,7 +87,8 @@ RendererImpl::RendererImpl(CFDGImpl* cfdg,
 #endif
     }
     
-    shapeMap = { { CommandInfo(&circleCopy), CommandInfo(&squareCopy), CommandInfo(&triangleCopy)} };
+    for (size_t i = 0; i < shapeMap.size(); ++i)
+        shapeMap[i] = CommandInfo(&shapeCopies[i]);
 
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
     m_cfdg->hasParameter(CFG::Frame, mCurrentFrame, nullptr);

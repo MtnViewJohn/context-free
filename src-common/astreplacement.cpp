@@ -203,13 +203,13 @@ namespace AST {
     : ASTreplacement(nullptr, CfdgError::Default, rule), mCachedPath(nullptr),
       mWeight(1.0), isPath(true), mNameIndex(i), weightType(NoWeight)
     {
-        if (primShape::shapeMap[i]) {
+        if (primShape::shapeMap[i].total_vertices() > 0) {
             static const std::string  move_op("MOVETO");
             static const std::string  line_op("LINETO");
             static const std::string   arc_op("ARCTO");
             static const std::string close_op("CLOSEPOLY");
             if (i != primShape::circleType) {
-                primIter shape(primShape::shapeMap[i]);
+                primIter shape(&primShape::shapeMap[i]);
                 double x = 0, y = 0;
                 unsigned cmd;
                 while (!agg::is_stop(cmd = shape.vertex(&x, &y))) {

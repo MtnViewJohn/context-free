@@ -37,6 +37,7 @@
 #include <deque>
 #include <set>
 #include <array>
+#include <type_traits>
 
 #include "agg_trans_affine.h"
 #include "agg_trans_affine_time.h"
@@ -161,10 +162,8 @@ class RendererImpl : public RendererAST {
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;
     
-        primShape        circleCopy;
-        primShape        squareCopy;
-        primShape        triangleCopy;
-        std::array<AST::CommandInfo, 3> shapeMap;
+        std::remove_const<decltype(primShape::shapeMap)>::type shapeCopies;
+        std::array<AST::CommandInfo, primShape::numTypes> shapeMap;
     
         static unsigned int MoveFinishedAt;     // when this many, move to file
         static unsigned int MoveUnfinishedAt;   // when this many, move to files

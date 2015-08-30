@@ -175,11 +175,6 @@ Builder::system()
     return m_CFDG->system();
 }
 
-static bool
-stringcompare(const char *lhs, const char *rhs) {
-    return std::strcmp(lhs, rhs) < 0;
-}
-
 int
 Builder::StringToShape(const std::string& name, const yy::location& loc,
                        bool colonsAllowed)
@@ -188,13 +183,11 @@ Builder::StringToShape(const std::string& name, const yy::location& loc,
     if (mCurrentNameSpace.length() == 0) {
         return m_CFDG->encodeShapeName(name);
     } else {
-        static const char* const Globals[] = {
-            "CIRCLE", "FILL", "SQUARE", "TRIANGLE"
-        };
-        bool maybeGlobal = std::binary_search(Globals, Globals + 4, name.c_str(), stringcompare);
+        bool maybePrimitive = std::find(primShape::shapeNames.begin(), primShape::shapeNames.end(), name) != primShape::shapeNames.end();
+
         std::string n(mCurrentNameSpace);
         n.append(name);
-        if (maybeGlobal && m_CFDG->tryEncodeShapeName(n) == -1)
+        if (maybePrimitive && m_CFDG->tryEncodeShapeName(n) == -1)
             return m_CFDG->encodeShapeName(name);
         else
             return m_CFDG->encodeShapeName(n);
