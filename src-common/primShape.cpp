@@ -67,6 +67,10 @@ const primShape* primShape::shapeMap[numTypes] = {
     0
 };
 
+decltype(primShape::shapeNames) primShape::shapeNames = {
+    { "CIRCLE", "SQUARE", "TRIANGLE", "FILL" }
+};
+
 bool primShape::isPrimShape(agg::path_storage* p)
 {
     return (p == &circle) || (p == &square) || (p == &triangle);

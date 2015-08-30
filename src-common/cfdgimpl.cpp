@@ -58,25 +58,13 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
   mInitShape(nullptr), m_system(m), m_Parameters(0),
   ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
-{ 
-    // These have to be encoded first so that their type number will fit
-    // within an unsigned char
-    string circle_name = "CIRCLE";
-    string square_name = "SQUARE";
-    string triangle_name = "TRIANGLE";
-    string fill_name = "FILL";
-    
-    // ensure these four get the first four shape numbers
-    int circle_num = encodeShapeName(circle_name);
-    int square_num = encodeShapeName(square_name);
-    int triangle_num = encodeShapeName(triangle_name);
-    int fill_num = encodeShapeName(fill_name);
-
-    // Make sure that the shape numbers correspond to the order of primShape::shapeMap[]
-    assert(circle_num == primShape::circleType);
-    assert(square_num == primShape::squareType);
-    assert(triangle_num == primShape::triangleType);
-    assert(fill_num == primShape::fillType);
+{
+    // Initialize the shape table with the primitive shapes so that they get the
+    // shape number that matches their primitive shape number.
+    for (auto&& name: primShape::shapeNames) {
+        int num = encodeShapeName(name);
+        assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
+    }
     
     mCFDGcontents.isGlobal = true;
 }

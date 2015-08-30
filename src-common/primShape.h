@@ -29,6 +29,8 @@
 #include <initializer_list>
 #include <utility>
 #include <cassert>
+#include <string>
+#include <array>
 
 class primShape : public agg::path_storage
 {
@@ -50,6 +52,7 @@ public:
     static const primShape square;
     static const primShape triangle;
     static const primShape* shapeMap[numTypes];
+    static const std::array<std::string, numTypes> shapeNames;
     static bool isPrimShape(unsigned v) { return v < numTypes; }
     static bool isPrimShape(agg::path_storage* p);
 };
