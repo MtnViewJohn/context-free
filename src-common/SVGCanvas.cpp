@@ -39,8 +39,9 @@
 
 using namespace std;
 
-void SVGCanvas::start(bool , const agg::rgba& , int width, int height)
+void SVGCanvas::start(bool clear, const agg::rgba& bk, int width, int height)
 {
+    Canvas::start(clear, bk, width, height);
     //assert(clear);
 
     if (mCropped) {
@@ -77,6 +78,7 @@ void SVGCanvas::end() {
 
     mError = mError || !(mOutputFile.is_open() && mOutputFile.good());
     if (mOutputFile.is_open()) mOutputFile.close();
+    Canvas::end();
 }
 
 void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding, 
