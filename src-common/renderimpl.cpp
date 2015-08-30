@@ -1039,25 +1039,14 @@ RendererImpl::drawShape(const FinishedShape& s)
         rule->traversePath(s, this);
     } else {
         RGBA8 color = m_cfdg->getColor(s.mWorldState.m_Color);
-        switch(s.mShapeType) {
-            case primShape::circleType:
-                m_canvas->circle(color, tr);
-                break;
-            case primShape::squareType:
-                m_canvas->square(color, tr);
-                break;
-            case primShape::triangleType:
-                m_canvas->triangle(color, tr);
-                break;
-            case primShape::fillType:
-                m_canvas->fill(color);
-                break;
-            default:
-                system()->error();
-                system()->message("Non drawable shape with no rules: %s",
-                    m_cfdg->decodeShapeName(s.mShapeType).c_str());
-                requestStop = true;
-                throw Stopped();
+        if (primShape::isPrimShape(s.mShapeType)) {
+            m_canvas->primitive(s.mShapeType, color, tr);
+        } else {
+            system()->error();
+            system()->message("Non drawable shape with no rules: %s",
+                              m_cfdg->decodeShapeName(s.mShapeType).c_str());
+            requestStop = true;
+            throw Stopped();
         }
     }
 }

@@ -141,11 +141,8 @@ class Canvas {
         virtual void end()
         { mTime = clock() - mTime; }
 
-        virtual void circle(RGBA8 , agg::trans_affine ) = 0;
-        virtual void square(RGBA8 , agg::trans_affine ) = 0;
-        virtual void triangle(RGBA8 , agg::trans_affine ) = 0;
-        virtual void fill(RGBA8) = 0;
-        virtual void path(RGBA8 , agg::trans_affine, const AST::CommandInfo& ) = 0;
+        virtual void primitive(int, RGBA8 , agg::trans_affine ) = 0;
+        virtual void path(RGBA8, agg::trans_affine, const AST::CommandInfo& ) = 0;
 
         Canvas(int width, int height) 
         : mWidth(width), mHeight(height), mError(false) {}

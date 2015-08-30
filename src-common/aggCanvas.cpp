@@ -92,8 +92,13 @@ const std::map<aggCanvas::PixelFormat, int> aggCanvas::BytesPerPixel = {
 
 namespace {
     inline double
-    adjustShapeSize(agg::trans_affine& tr, double adjustment)
+    adjustShapeSize(agg::trans_affine& tr, int shape)
     {
+        static const double adjs[3] = {ADJ_CIRCLE_SIZE, ADJ_SQUARE_SIZE, ADJ_TRIANGLE_SIZE};
+        double adjustment = 0.5;
+        if (shape >= 0 && shape < 3)
+            adjustment = adjs[shape];
+        
         double origx = 0;
         double origy = 0;
         tr.transform(&origx, &origy);
@@ -116,24 +121,6 @@ namespace {
         tr.premultiply(sc); 
 
         return (sizex + sizey) / 2;
-    }
-
-    inline double
-    adjustCircleSize(agg::trans_affine& tr)
-    {
-        return adjustShapeSize(tr, ADJ_CIRCLE_SIZE);
-    }
-
-    inline double
-    adjustSquareSize(agg::trans_affine& tr)
-    {
-        return adjustShapeSize(tr, ADJ_SQUARE_SIZE);
-    }
-
-    inline double
-    adjustTriangleSize(agg::trans_affine& tr)
-    {
-        return adjustShapeSize(tr, ADJ_TRIANGLE_SIZE);
     }
 };
 
@@ -366,46 +353,34 @@ aggCanvas::end()
 { Canvas::end(); }
 
 void
-aggCanvas::circle(RGBA8 c, agg::trans_affine tr)
+aggCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
 {
-    double size = adjustCircleSize(tr) / 2.0;
+    double size = adjustShapeSize(tr, shape) / 2.0;
     tr *= m->offset;
     
-    m->shapeEllipse.transformer(tr);
-    m->unitEllipse.init(0.0, 0.0, 0.5, 0.5, int(size)+8);
+    switch (shape) {
+        case primShape::circleType:
+            m->shapeEllipse.transformer(tr);
+            m->unitEllipse.init(0.0, 0.0, 0.5, 0.5, int(size)+8);
+            m->rasterizer.add_path(m->shapeEllipse);
+            break;
+        case primShape::squareType:
+            m->shapeSquare.transformer(tr);
+            m->rasterizer.add_path(m->shapeSquare);
+            break;
+        case primShape::triangleType:
+            m->shapeTriangle.transformer(tr);
+            m->rasterizer.add_path(m->shapeTriangle);
+            break;
+        case primShape::fillType:
+            m->fill(c);
+            return;
+            
+        default:
+            break;
+    }
 
-    m->rasterizer.add_path(m->shapeEllipse);
     m->draw(c);
-}
-
-void
-aggCanvas::square(RGBA8 c, agg::trans_affine tr)
-{
-    adjustSquareSize(tr);
-    tr *= m->offset;
-    
-    m->shapeSquare.transformer(tr);
-    
-    m->rasterizer.add_path(m->shapeSquare);
-    m->draw(c);
-}
-
-void
-aggCanvas::triangle(RGBA8 c, agg::trans_affine tr)
-{
-    adjustTriangleSize(tr);
-    tr *= m->offset;
-    
-    m->shapeTriangle.transformer(tr);
- 
-    m->rasterizer.add_path(m->shapeTriangle);
-    m->draw(c);
-}
-
-void
-aggCanvas::fill(RGBA8 c)
-{
-    m->fill(c);
 }
 
 void

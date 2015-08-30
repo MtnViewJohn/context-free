@@ -41,39 +41,18 @@ void tiledCanvas::end()
     mTile->end();
 }
 
-void tiledCanvas::circle(RGBA8 c, agg::trans_affine tr)
+void tiledCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
 {
+    if (shape == primShape::fillType) {
+        mTile->primitive(shape, c, tr);
+        return;
+    }
     for (unsigned int i = 0; i < mTileList.size(); ++i) {
         agg::trans_affine t(tr);
         t.tx += mTileList[i].x;
         t.ty += mTileList[i].y;
-        mTile->circle(c, t);
+        mTile->primitive(shape, c, t);
     }
-}
-
-void tiledCanvas::square(RGBA8 c, agg::trans_affine tr)
-{
-    for (unsigned int i = 0; i < mTileList.size(); ++i) {
-        agg::trans_affine t(tr);
-        t.tx += mTileList[i].x;
-        t.ty += mTileList[i].y;
-        mTile->square(c, t);
-    }
-}
-
-void tiledCanvas::triangle(RGBA8 c, agg::trans_affine tr)
-{
-    for (unsigned int i = 0; i < mTileList.size(); ++i) {
-        agg::trans_affine t(tr);
-        t.tx += mTileList[i].x;
-        t.ty += mTileList[i].y;
-        mTile->triangle(c, t);
-    }
-}
-
-void tiledCanvas::fill(RGBA8 c)
-{
-    mTile->fill(c);
 }
 
 void tiledCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr)

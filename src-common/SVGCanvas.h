@@ -40,10 +40,7 @@ public:
     void complete(RGBA8 c, agg::trans_affine tr, int padding, 
                   const AST::CommandInfo& attr,
                   bool g = false);
-    void circle(RGBA8 c, agg::trans_affine tr) override;
-    void square(RGBA8 c, agg::trans_affine tr) override;
-    void triangle(RGBA8 c, agg::trans_affine tr) override;
-    void fill(RGBA8 c) override;
+    void primitive(int shape, RGBA8 c, agg::trans_affine tr) override;
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
 
     SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);

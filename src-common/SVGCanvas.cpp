@@ -151,30 +151,26 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
     indent(-padding); 
 }
 
-void SVGCanvas::circle(RGBA8 c, agg::trans_affine tr)
+void SVGCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
 {
     tr *= mOffset;
-    mOutput << mEndline << "<circle r=\"0.5\"";
-    complete(c, tr, 8, AST::CommandInfo::Default);
-}
-
-void SVGCanvas::square(RGBA8 c, agg::trans_affine tr)
-{
-    tr *= mOffset;
-    mOutput << mEndline << "<rect x=\"-0.5\" y=\"-0.5\" width=\"1\" height=\"1\" " ;
-    complete(c, tr, 6, AST::CommandInfo::Default);
-}
-
-void SVGCanvas::triangle(RGBA8 c, agg::trans_affine tr)
-{
-    tr *= mOffset;
-    mOutput << mEndline << "<use xlink:href=\"#TRIANGLE\"";
-    complete(c, tr, 5, AST::CommandInfo::Default);
-}
-
-void SVGCanvas::fill(RGBA8)
-{
-    // Can't do this in SVG
+    static const int padding[3] = { 8, 6, 5 };
+    
+    switch (shape) {
+        case primShape::circleType:
+            mOutput << mEndline << "<circle r=\"0.5\"";
+            break;
+        case primShape::squareType:
+            mOutput << mEndline << "<rect x=\"-0.5\" y=\"-0.5\" width=\"1\" height=\"1\" " ;
+            break;
+        case primShape::triangleType:
+            mOutput << mEndline << "<use xlink:href=\"#TRIANGLE\"";
+            break;
+            
+        default:
+            return;
+    }
+    complete(c, tr, padding[shape], AST::CommandInfo::Default);
 }
 
 void SVGCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr)

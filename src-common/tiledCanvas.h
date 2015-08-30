@@ -40,10 +40,7 @@ public:
     void start(bool clear, const agg::rgba& bk, int width, int height) override;
     void end() override;
     
-    void circle(RGBA8 c, agg::trans_affine tr) override;
-    void square(RGBA8 c, agg::trans_affine tr) override;
-    void triangle(RGBA8 c, agg::trans_affine tr) override;
-    void fill(RGBA8 c) override;
+    void primitive(int shape, RGBA8 c, agg::trans_affine tr) override;
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
     
     tiledCanvas(Canvas* tile, const agg::trans_affine& tr, CFDG::frieze_t f); 
