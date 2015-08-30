@@ -71,6 +71,7 @@ class CFDGImpl : public CFDG {
             bool    hasRules;
             bool    isShape;
             int    shapeType;
+            // Heap allocated so that address survives vector reallocations
             std::unique_ptr<AST::ASTparameters> parameters;
             int     argSize;
             bool    shouldHaveNoParams;
@@ -79,18 +80,8 @@ class CFDGImpl : public CFDG {
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
               parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
 
-            ShapeType(ShapeType&& from) NOEXCEPT
-                : name(std::move(from.name)), hasRules(from.hasRules), isShape(from.isShape),
-                  shapeType(from.shapeType), parameters(std::move(from.parameters)), 
-                  argSize(from.argSize), shouldHaveNoParams(from.shouldHaveNoParams) { }
-
-            ShapeType& operator=(ShapeType&& from) NOEXCEPT {
-                if (this == &from) return *this;
-                name = std::move(from.name); hasRules = from.hasRules; isShape = from.isShape;
-                shapeType = from.shapeType; parameters = std::move(from.parameters); 
-                argSize = from.argSize; shouldHaveNoParams = from.shouldHaveNoParams;
-                return *this;
-            }
+            ShapeType(ShapeType&& from) NOEXCEPT = default;
+            ShapeType& operator=(ShapeType&& from) NOEXCEPT = default;
             ShapeType(const ShapeType&) = delete;
             ShapeType& operator=(const ShapeType&) = delete;
         };
