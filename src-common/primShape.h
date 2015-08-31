@@ -40,7 +40,7 @@ public:
     primShape(std::initializer_list<std::pair<double, double>> l)
     {
         auto p = l.begin();
-        assert(p != l.end());
+        if (p == l.end()) return;   // just default init for an empty list
         move_to(p->first, p->second);
         for (++p; p != l.end(); ++p)
             line_to(p->first, p->second);
