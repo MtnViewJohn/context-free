@@ -58,8 +58,7 @@ decltype(primShape::shapeMap) primShape::shapeMap = { {
         { 0.0, hp },
         {-0.5, hn },
         { 0.5, hn }
-    },
-    {{}}
+    }
 } };
 
 decltype(primShape::shapeNames) primShape::shapeNames = {
