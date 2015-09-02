@@ -109,29 +109,18 @@ namespace AST {
         mDefinition = nullptr;
     }
     
-    ASTparameter::ASTparameter()
-    : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      mLocality(UnknownLocal), mName(-1), mDefinition(nullptr), mStackIndex(-1),
-      mTuplesize(1)
-    { }
-    
     ASTparameter::ASTparameter(const std::string& typeName, int nameIndex,
                  const yy::location& where)
-    : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      mLocality(PureNonlocal), mName(-1), mLocation(where), mDefinition(nullptr),
-      mStackIndex(-1), mTuplesize(1)
+    : mLocality(PureNonlocal), mLocation(where)
     { init(typeName, nameIndex); }
     
     ASTparameter::ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where)
-    : mType(NoType), isParameter(false), isLoopIndex(false), isNatural(false),
-      mLocality(UnknownLocal), mName(-1), mLocation(where), mDefinition(nullptr),
-      mStackIndex(-1), mTuplesize(1)
+    : mLocation(where)
     { init(nameIndex, def); }
     
     ASTparameter::ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
-    : mType(NumericType), isParameter(false), isLoopIndex(true), isNatural(natural),
-      mLocality(UnknownLocal), mName(nameIndex), mLocation(where), mDefinition(nullptr),
-      mStackIndex(-1), mTuplesize(1)
+    : mType(NumericType), isLoopIndex(true), isNatural(natural),
+      mName(nameIndex), mLocation(where)
     { }     // ctor for loop variables
     
     ASTparameter::ASTparameter(const ASTparameter& from)
@@ -140,13 +129,6 @@ namespace AST {
       mLocation(from.mLocation), mDefinition(nullptr), mStackIndex(from.mStackIndex),
       mTuplesize(from.mTuplesize)
     { assert(!from.mDefinition); }          // only used with parameters
-    
-    ASTparameter::ASTparameter(ASTparameter&& from) NOEXCEPT
-    : mType(from.mType), isParameter(from.isParameter), isLoopIndex(from.isLoopIndex),
-      isNatural(from.isNatural), mLocality(from.mLocality), mName(from.mName),
-      mLocation(from.mLocation), mDefinition(std::move(from.mDefinition)),
-      mStackIndex(from.mStackIndex), mTuplesize(from.mTuplesize)
-    { }
     
     ASTparameter&
     ASTparameter::operator=(const ASTparameter& from)
@@ -163,23 +145,6 @@ namespace AST {
         mStackIndex = from.mStackIndex;
         mTuplesize = from.mTuplesize;
         mDefinition = nullptr;
-        return *this;
-    }
-    
-    ASTparameter&
-    ASTparameter::operator=(ASTparameter&& from) NOEXCEPT
-    {
-        if (this == &from) return *this;
-        mType = from.mType;
-        isParameter = from.isParameter;
-        isLoopIndex = from.isLoopIndex;
-        isNatural = from.isNatural;
-        mLocality = from.mLocality;
-        mName = from.mName;
-        mLocation = from.mLocation;
-        mDefinition = from.mDefinition;
-        mStackIndex = from.mStackIndex;
-        mTuplesize = from.mTuplesize;
         return *this;
     }
     

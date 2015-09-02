@@ -99,20 +99,20 @@ namespace AST {
     
     class ASTparameter {
     public:
-        expType     mType;
-        bool        isParameter;
-        bool        isLoopIndex;
-        bool        isNatural;
-        Locality_t  mLocality;
-        int         mName;
+        expType     mType = NoType;
+        bool        isParameter = false;
+        bool        isLoopIndex = false;
+        bool        isNatural = false;
+        Locality_t  mLocality = UnknownLocal;
+        int         mName = -1;
         yy::location mLocation;
-        ASTdefine*  mDefinition;        // weak pointer
-        int         mStackIndex;
-        int         mTuplesize;
+        ASTdefine*  mDefinition = nullptr;        // weak pointer
+        int         mStackIndex = -1;
+        int         mTuplesize = 1;
         
         static bool Impure;
         
-        ASTparameter();
+        ASTparameter() = default;
         ASTparameter(const std::string& typeName, int nameIndex,
                      const yy::location& where);
         ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where);
@@ -120,10 +120,10 @@ namespace AST {
                 // ctor for loop variables
         ASTparameter(const ASTparameter&);
                 // ctor for copying parameter lists, never used after definitions are added
-        ASTparameter(ASTparameter&&) NOEXCEPT;
+        ASTparameter(ASTparameter&&) NOEXCEPT = default;
         ASTparameter& operator=(const ASTparameter&);
                 // method for copying parameter lists, never used after definitions are added
-        ASTparameter& operator=(ASTparameter&&) NOEXCEPT;
+        ASTparameter& operator=(ASTparameter&&) NOEXCEPT = default;
         void init(const std::string& typeName, int nameIndex);
         void init(int nameIndex, ASTdefine*  def);
         void checkParam(const yy::location& typeLoc, const yy::location& nameLoc);
