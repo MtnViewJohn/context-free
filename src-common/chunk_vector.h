@@ -47,7 +47,7 @@ struct chunk_vector_iterator
     typedef ptrdiff_t                       difference_type;
     
 private:
-    enum consts_e {
+    enum consts_e : unsigned {
         _chunk_size = 1 << _power2,
         _chunk_mask = _chunk_size - 1
     };

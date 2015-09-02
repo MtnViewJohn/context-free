@@ -122,9 +122,9 @@ HSBColor::HSBColor(const agg::rgba& c)
 
 void
 HSBColor::Adjust(HSBColor& dest, HSBColor& destTarget,
-                 const HSBColor& adj, const HSBColor& adjTarg, int assign)
+                 const HSBColor& adj, const HSBColor& adjTarg, unsigned assign)
 {
-    int current = assign & HueMask; bool twoValue = current == Hue2Value;
+    unsigned current = assign & HueMask; bool twoValue = current == Hue2Value;
     dest.h = adjustHue(dest.h, adj.h, current, twoValue ? adjTarg.h : destTarget.h);
     if (!twoValue) destTarget.h = adjustHue(destTarget.h, adjTarg.h);
 

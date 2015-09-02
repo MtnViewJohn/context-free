@@ -53,7 +53,7 @@ class Modification {
         
         HSBColor m_Color;
         HSBColor m_ColorTarget;
-        int      m_ColorAssignment;
+        unsigned m_ColorAssignment;
 
         Rand64 mRand64Seed;
 
@@ -155,7 +155,7 @@ public:
     {
         mShapeType = s.mShapeType;
         mWorldState = s.mWorldState;
-        mWorldState.m_ColorAssignment = order;
+        mWorldState.m_ColorAssignment = static_cast<unsigned>(order);
         mParameters = s.mParameters;
         mBounds = b;
     }

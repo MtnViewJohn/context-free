@@ -60,7 +60,7 @@ namespace AST {
 
 %union
 {
-    int modToken;
+    unsigned modToken;
     std::string*  string;
     const std::string*  cstring;
     AST::ASTexpression* expression;

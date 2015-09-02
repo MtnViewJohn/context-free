@@ -1319,7 +1319,7 @@ namespace AST {
         
         double *color = &m.m_Color.h, *target = &m.m_ColorTarget.h;
         bool hue = true;
-        int mask = HSBColor::HueMask;
+        unsigned mask = HSBColor::HueMask;
         
         switch (modType) {
             case ASTmodTerm::x: {

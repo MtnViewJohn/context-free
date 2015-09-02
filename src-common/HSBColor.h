@@ -39,7 +39,7 @@ namespace agg {
 
 struct HSBColor
 {
-    enum AssignmentTypes {
+    enum AssignmentTypes : unsigned {
         ColorTarget = 1,
         Color2Value = 3,
         ColorMask = 3,
@@ -65,7 +65,7 @@ struct HSBColor
     HSBColor(const agg::rgba&);
 
     static void Adjust(HSBColor& dest, HSBColor& destTarget,
-                       const HSBColor& adj, const HSBColor& adjTarg, int assign);
+                       const HSBColor& adj, const HSBColor& adjTarg, unsigned assign);
 
     void getRGBA(agg::rgba& c) const;
     
@@ -76,16 +76,16 @@ struct HSBColor
     double h, s, b, a;
     
     static inline double adjust(const double& base, const double& adjustment, 
-                                int useTarget = 0, const double& target = 0.0);
+                                unsigned useTarget = 0, const double& target = 0.0);
     static inline double adjustHue(const double& base, const double& adjustment, 
-                                   int useTarget = 0, const double& target = 0.0);
+                                   unsigned useTarget = 0, const double& target = 0.0);
     static double delta(double to, double from, unsigned int steps = 1);
     static double deltaHue(double to, double from, unsigned int steps = 1);
 };
 
 inline double
 HSBColor::adjust(const double& base, const double& adjustment, 
-                 int useTarget, const double& target)
+                 unsigned useTarget, const double& target)
 {
     if (adjustment == 0.0)
         return base;
@@ -113,7 +113,7 @@ HSBColor::adjust(const double& base, const double& adjustment,
 
 inline double
 HSBColor::adjustHue(const double& base, const double& adjustment, 
-                    int useTarget, const double& target)
+                    unsigned useTarget, const double& target)
 {
     if (adjustment == 0.0)
         return base;

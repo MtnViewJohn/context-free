@@ -137,7 +137,7 @@ namespace AST {
                             const yy::location& where, bool checkNumber);
     };
 
-    enum FlagTypes {
+    enum FlagTypes : unsigned {
         CF_NONE = 0,
         CF_MITER_JOIN = agg::miter_join,
         CF_ROUND_JOIN = agg::round_join,
