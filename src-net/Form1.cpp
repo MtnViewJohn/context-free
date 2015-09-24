@@ -318,10 +318,10 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     std::vector<std::string> temps = sys->findTempFiles();
     delete sys;
     if (!temps.empty()) {
-        cli::array<String^>^ names = gcnew  cli::array<String^>(temps.size());
+        cli::array<String^>^ names = gcnew  cli::array<String^>(static_cast<int>(temps.size()));
         int i = 0;
         for (std::string& temp: temps) {
-            String^ name = gcnew String(temp.c_str(), 0, temp.length(), System::Text::Encoding::UTF8);
+            String^ name = gcnew String(temp.c_str(), 0, static_cast<int>(temp.length()), System::Text::Encoding::UTF8);
             names[i++] = name;
         }
         ::DialogResult dlgr = MessageBox::Show(this, "Should they be deleted?", 

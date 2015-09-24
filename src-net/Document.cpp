@@ -787,7 +787,7 @@ void Document::WndProc( Message% m )
         case WinSystem::WM_USER_MESSAGE_UPDATE: 
             {
                 char* msg = (char*)m.WParam.ToPointer();
-                String^ msgText = gcnew String(msg, 0, strlen(msg), System::Text::Encoding::UTF8);
+                String^ msgText = gcnew String(msg, 0, static_cast<int>(strlen(msg)), System::Text::Encoding::UTF8);
                 delete[] msg;
                 setMessageText(msgText);
                 break;
