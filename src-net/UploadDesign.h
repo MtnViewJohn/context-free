@@ -82,7 +82,7 @@ namespace ContextFreeNet {
                 heightLabel->Visible = false;
             }
             outputMultiplier = mult;
-            checkTiled->Checked = u->mTiled;
+            checkTiled->Checked = u->mTiled != 0;
             titleBox->Text = name;
             fileNameBox->Text = name;
             std::string vChars = Variation::toString(u->mVariation, false);
