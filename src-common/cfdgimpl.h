@@ -2,7 +2,7 @@
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2006-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2006-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -80,8 +80,8 @@ class CFDGImpl : public CFDG {
             : name(s), hasRules(false), isShape(false), shapeType(newShape), 
               parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
 
-            ShapeType(ShapeType&& from) NOEXCEPT = default;
-            ShapeType& operator=(ShapeType&& from) NOEXCEPT = default;
+            ShapeType(ShapeType&& from) noexcept = default;
+            ShapeType& operator=(ShapeType&& from) noexcept(noexcept(name = std::string())) = default;
             ShapeType(const ShapeType&) = delete;
             ShapeType& operator=(const ShapeType&) = delete;
         };
