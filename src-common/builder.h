@@ -47,7 +47,7 @@
 #include "astreplacement.h"
 
 class CFDGImpl;
-typedef std::unique_ptr<CFDGImpl> cfdgi_ptr;
+using cfdgi_ptr = std::unique_ptr<CFDGImpl>;
 namespace yy {
     class location;
 }
@@ -85,7 +85,7 @@ public:
     
     bool        mAllowOverlap;
     
-    typedef std::deque<AST::ASTrepContainer*> ContainerStack_t;
+    using ContainerStack_t = std::deque<AST::ASTrepContainer*>;
     ContainerStack_t    mContainerStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);

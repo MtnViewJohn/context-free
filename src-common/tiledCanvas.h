@@ -33,7 +33,7 @@
 #include <vector>
 #include "pathIterator.h"
 
-typedef std::vector<agg::point_i> tileList;
+using tileList = std::vector<agg::point_i>;
 
 class tiledCanvas : public Canvas {
 public:

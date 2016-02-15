@@ -43,8 +43,7 @@ namespace AST {
     class ASTcompiledPath;
     
     struct CommandInfo {
-        typedef std::atomic<UIDdatatype>
-                            UIDtype;
+        using UIDtype = std::atomic<UIDdatatype>;
         
         int                 mFlags;
         double              mMiterLimit;
@@ -74,7 +73,7 @@ namespace AST {
         void init(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     };
 
-    typedef std::deque<CommandInfo> InfoCache;
+    using InfoCache = std::deque<CommandInfo>;
 }
 
 #endif //INCLUDE_CMDINFO_H

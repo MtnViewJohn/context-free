@@ -31,7 +31,7 @@
 
 class Rand64 {
 public:
-    typedef XORshift64star::result_type result_type;
+    using result_type = XORshift64star::result_type;
     Rand64(result_type seed = XORshift64star::RAND64_SEED) : mSeed(seed) { }
     Rand64(const Rand64& r) : mSeed(r.mSeed) { }
     // Return double in [0,1)

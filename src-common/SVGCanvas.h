@@ -47,7 +47,7 @@ public:
     ~SVGCanvas() override = default;
 
 private:
-    typedef std::pair<AST::UIDdatatype, unsigned> uniquePath;
+    using uniquePath = std::pair<AST::UIDdatatype, unsigned>;
     
     int mPadding;
     char mEndline[82];

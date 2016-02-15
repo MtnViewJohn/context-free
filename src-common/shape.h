@@ -200,7 +200,7 @@ inline std::istream& operator>>(std::istream& is, FinishedShape& s) { s.read(is)
 const double MY_PI =  3.14159265358979323846;
 const int ModificationSize = (sizeof(Modification) + 7) >> 3;
 
-typedef std::function<void (const FinishedShape&)> ShapeFunction;
+using ShapeFunction = std::function<void (const FinishedShape&)>;
         
 
 #endif // INCLUDE_SHAPE_H

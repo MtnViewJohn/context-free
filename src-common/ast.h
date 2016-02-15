@@ -38,8 +38,8 @@
 class RendererAST;
 
 namespace AST {
-    typedef std::vector<agg::trans_affine> SymmList;
-    typedef uint_fast32_t UIDdatatype;
+    using SymmList = std::vector<agg::trans_affine>;
+    using UIDdatatype = uint_fast32_t;
 
     class ASTpath;
     class ASTreplacement;
@@ -58,24 +58,24 @@ namespace AST {
     class ASTdefine;
     class ASTcompiledPath;
 
-    typedef std::unique_ptr<std::string>      str_ptr;
-    typedef std::unique_ptr<ASTexpression>    exp_ptr;
-    typedef std::unique_ptr<ASTreplacement>   rep_ptr;
-    typedef std::unique_ptr<ASTruleSpecifier> ruleSpec_ptr;
-    typedef std::unique_ptr<ASTrule>          rule_ptr;
-    typedef std::unique_ptr<ASTloop>          loop_ptr;
-    typedef std::unique_ptr<ASTif>            if_ptr;
-    typedef std::unique_ptr<ASTswitch>        switch_ptr;
-    typedef std::unique_ptr<ASTmodTerm>       term_ptr;
-    typedef std::unique_ptr<ASTmodification>  mod_ptr;
-    typedef std::unique_ptr<ASTrepContainer>  cont_ptr;
-    typedef std::unique_ptr<ASTdefine>        def_ptr;
-    typedef std::unique_ptr<ASTcompiledPath>  cpath_ptr;
+    using str_ptr      = std::unique_ptr<std::string>;
+    using exp_ptr      = std::unique_ptr<ASTexpression>;
+    using rep_ptr      = std::unique_ptr<ASTreplacement>;
+    using ruleSpec_ptr = std::unique_ptr<ASTruleSpecifier>;
+    using rule_ptr     = std::unique_ptr<ASTrule>;
+    using loop_ptr     = std::unique_ptr<ASTloop>;
+    using if_ptr       = std::unique_ptr<ASTif>;
+    using switch_ptr   = std::unique_ptr<ASTswitch>;
+    using term_ptr     = std::unique_ptr<ASTmodTerm>;
+    using mod_ptr      = std::unique_ptr<ASTmodification>;
+    using cont_ptr     = std::unique_ptr<ASTrepContainer>;
+    using def_ptr      = std::unique_ptr<ASTdefine>;
+    using cpath_ptr    = std::unique_ptr<ASTcompiledPath>;
     
-    typedef std::vector<rep_ptr>              ASTbody;
-    typedef std::vector<exp_ptr>              ASTexpArray;
-    typedef std::vector<term_ptr>             ASTtermArray;
-    typedef std::vector<ASTparameter>         ASTparameters;
+    using ASTbody       = std::vector<rep_ptr>;
+    using ASTexpArray   = std::vector<exp_ptr>;
+    using ASTtermArray  = std::vector<term_ptr>;
+    using ASTparameters = std::vector<ASTparameter>;
     
     enum expType {
         NoType = 0, NumericType = 1, ModType = 2, RuleType = 4, FlagType = 8,

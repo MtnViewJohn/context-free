@@ -41,7 +41,7 @@
 // This class  implements the xorshift64* PRNG.
 class XORshift64star {
 public:
-    typedef std::uint64_t result_type;
+    using result_type = std::uint64_t;
     
     enum e_consts : result_type {
         RAND64_MULT = 2685821657736338717ULL,
@@ -99,8 +99,8 @@ private:
     template <class _CharT, class _Traits>
     class __save_flags
     {
-        typedef std::basic_ios<_CharT, _Traits> __stream_type;
-        typedef typename __stream_type::fmtflags fmtflags;
+        using __stream_type = std::basic_ios<_CharT, _Traits>;
+        using fmtflags = typename __stream_type::fmtflags;
         
         __stream_type& __stream_;
         fmtflags       __fmtflags_;

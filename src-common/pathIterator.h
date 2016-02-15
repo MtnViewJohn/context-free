@@ -39,13 +39,11 @@ namespace AST {
 
 class pathIterator {
 public:
-    typedef agg::conv_curve<agg::path_storage>      CurvedPath;
-    typedef agg::conv_stroke<CurvedPath>            CurvedStroked;
-    typedef agg::conv_transform<CurvedStroked, const agg::trans_affine>
-                                                    CurvedStrokedTrans;
-    typedef agg::conv_transform<CurvedPath, const agg::trans_affine>
-                                                    CurvedTrans;
-    typedef agg::conv_stroke<CurvedTrans>           CurvedTransStroked;
+    using CurvedPath         = agg::conv_curve<agg::path_storage>;
+    using CurvedStroked      = agg::conv_stroke<CurvedPath>;
+    using CurvedStrokedTrans = agg::conv_transform<CurvedStroked, const agg::trans_affine>;
+    using CurvedTrans        = agg::conv_transform<CurvedPath, const agg::trans_affine>;
+    using CurvedTransStroked = agg::conv_stroke<CurvedTrans>;
     
     agg::trans_affine   unitTrans;
     CurvedPath          curved;

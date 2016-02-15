@@ -46,10 +46,10 @@
 #include <memory>
 #include <cstdint>
 
-typedef agg::rgba16 RGBA8;
+using RGBA8 = agg::rgba16;
 
 namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter;
-    typedef std::vector<agg::trans_affine> SymmList;
+    using SymmList = std::vector<agg::trans_affine>;
     struct CommandInfo;
 }
 namespace agg { struct trans_affine_time; }

@@ -148,7 +148,7 @@ namespace AST {
     };
     class ASTswitch: public ASTreplacement {
     public:
-        typedef std::map<int, cont_ptr> switchMap;
+        using switchMap = std::map<int, cont_ptr>;
         
         exp_ptr mSwitchExp;
         switchMap mCaseStatements;

@@ -48,23 +48,23 @@
 #include <cassert>
 
 #ifdef _WIN32
-typedef agg::pixfmt_bgra64_pre  color64_pixel_fmt;
-typedef agg::pixfmt_bgr48_pre   color48_pixel_fmt;
-typedef agg::pixfmt_bgra32_pre  color32_pixel_fmt;
-typedef agg::pixfmt_bgr24_pre   color24_pixel_fmt;
+using color64_pixel_fmt = agg::pixfmt_bgra64_pre;
+using color48_pixel_fmt = agg::pixfmt_bgr48_pre;
+using color32_pixel_fmt = agg::pixfmt_bgra32_pre;
+using color24_pixel_fmt = agg::pixfmt_bgr24_pre;
 #else
-typedef agg::pixfmt_rgba64_pre  color64_pixel_fmt;
-typedef agg::pixfmt_rgb48_pre   color48_pixel_fmt;
-typedef agg::pixfmt_rgba32_pre  color32_pixel_fmt;
-typedef agg::pixfmt_rgb24_pre   color24_pixel_fmt;
+using color64_pixel_fmt = agg::pixfmt_rgba64_pre;
+using color48_pixel_fmt = agg::pixfmt_rgb48_pre;
+using color32_pixel_fmt = agg::pixfmt_rgba32_pre;
+using color24_pixel_fmt = agg::pixfmt_rgb24_pre;
 #endif
 
-typedef agg::pixfmt_argb32_pre  ff_pixel_fmt;
-typedef agg::pixfmt_rgb24_pre   ff24_pixel_fmt;
-typedef agg::pixfmt_rgba32_pre  qt_pixel_fmt;
+using ff_pixel_fmt = agg::pixfmt_argb32_pre;
+using ff24_pixel_fmt = agg::pixfmt_rgb24_pre;
+using qt_pixel_fmt = agg::pixfmt_rgba32_pre;
 
-typedef agg::pixfmt_gray8_pre  gray_pixel_fmt;
-typedef agg::pixfmt_gray16_pre gray16_pixel_fmt;
+using gray_pixel_fmt = agg::pixfmt_gray8_pre;
+using gray16_pixel_fmt = agg::pixfmt_gray16_pre;
 
 #ifndef M_PI
 #define M_PI        3.14159265358979323846
@@ -127,11 +127,11 @@ namespace {
 
 class aggCanvas::impl {
     public:
-        typedef agg::conv_transform<agg::path_storage>          TransSquare;
-        typedef agg::conv_transform<agg::path_storage>          TransTriangle;
-        typedef agg::conv_transform<agg::fast_ellipse>          TransEllipse;
+        using TransSquare   = agg::conv_transform<agg::path_storage>;
+        using TransTriangle = agg::conv_transform<agg::path_storage>;
+        using TransEllipse  = agg::conv_transform<agg::fast_ellipse>;
 
-    agg::rendering_buffer   buffer;
+        agg::rendering_buffer   buffer;
         aggCanvas*          mCanvas;
     
         agg::fast_ellipse   unitEllipse;
@@ -181,8 +181,8 @@ class aggCanvas::impl {
 
 template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
     public:
-        typedef agg::renderer_base<pixel_fmt>                   renderer_base;
-        typedef agg::renderer_scanline_aa_solid<renderer_base>  renderer_solid;
+        using renderer_base  = agg::renderer_base<pixel_fmt>;
+        using renderer_solid = agg::renderer_scanline_aa_solid<renderer_base>;
 
         pixel_fmt               pixFmt;
         renderer_base           rendBase;
@@ -220,7 +220,7 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::clear(const agg::rgba& bk)
 {
-    typedef typename pixel_fmt::color_type color_type;
+    using color_type = pixel_fmt::color_type;
     agg::rgba bk_pre = bk;
     bk_pre.premultiply();
     rendBase.clear(color_type(bk_pre));
@@ -230,8 +230,8 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::fill(RGBA8 bk)
 {
-    typedef typename pixel_fmt::color_type color_type;
-    typedef agg::ColorConverter<RGBA8, color_type> Converter_type;
+    using color_type = pixel_fmt::color_type;
+    using Converter_type = agg::ColorConverter<RGBA8, color_type>;
     color_type c = Converter_type::f(bk);
     rendBase.fill(c.premultiply());
 }
@@ -240,8 +240,8 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::draw(RGBA8 col, agg::filling_rule_e fr)
 {
-    typedef typename pixel_fmt::color_type color_type;
-    typedef agg::ColorConverter<RGBA8, color_type> Converter_type;
+    using color_type = pixel_fmt::color_type;
+    using Converter_type = agg::ColorConverter<RGBA8, color_type>;
     if (pixelSet.size() < PNG8Limit) {
         agg::int64u pixel = 
             static_cast<agg::int64u>(col.r) << 48 |

@@ -858,7 +858,7 @@ RendererImpl::fixupHeap()
     // Restore heap property to mUnfinishedShapes
     auto first = mUnfinishedShapes.begin();
     auto last = mUnfinishedShapes.end();
-    typedef UnfinishedContainer::iterator::difference_type difference_type;
+    using difference_type = UnfinishedContainer::iterator::difference_type;
     difference_type n = last - first;
     if (n < 2)
         return;

@@ -39,12 +39,12 @@
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
 {
-    typedef std::random_access_iterator_tag iterator_category;
-    typedef _valType                        value_type;
-    typedef _valType*                       pointer;
-    typedef _valType&                       reference;
-    typedef size_t                          size_type;
-    typedef ptrdiff_t                       difference_type;
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type        = _valType;
+    using pointer           = _valType*;
+    using reference         = _valType&;
+    using size_type         = size_t;
+    using difference_type   = ptrdiff_t;
     
 private:
     enum consts_e : unsigned {
@@ -285,18 +285,18 @@ private:
     };
 
 public:
-    typedef _valType                                        value_type;
-    typedef typename _Alloc::pointer                        pointer;
-    typedef typename _Alloc::const_pointer                  const_pointer;
-    typedef typename _Alloc::reference                      reference;
-    typedef typename _Alloc::const_reference                const_reference;
-    typedef chunk_vector_iterator<_valType, _power2>        iterator;
-    typedef chunk_vector_iterator<const _valType, _power2>  const_iterator;
-    typedef std::reverse_iterator<const_iterator>           const_reverse_iterator;
-    typedef std::reverse_iterator<iterator>                 reverse_iterator;
-    typedef size_t                                          size_type;
-    typedef ptrdiff_t                                       difference_type;
-    typedef _Alloc                                          allocator_type;
+    using value_type             = _valType;
+    using pointer                = typename _Alloc::pointer;
+    using const_pointer          = typename _Alloc::const_pointer;
+    using reference              = typename _Alloc::reference;
+    using const_reference        = typename _Alloc::const_reference;
+    using iterator               = chunk_vector_iterator<_valType, _power2>;
+    using const_iterator         = chunk_vector_iterator<const _valType, _power2>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+    using reverse_iterator       = std::reverse_iterator<iterator>;
+    using size_type              = size_t;
+    using difference_type        = ptrdiff_t;
+    using allocator_type         = _Alloc;
 
     chunk_vector()
         : _start(0), _end(0)

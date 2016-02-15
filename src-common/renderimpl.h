@@ -124,9 +124,9 @@ class RendererImpl : public RendererAST {
         bool m_drawingMode;
         bool mFinal;
 
-        typedef chunk_vector<FinishedShape, 10> FinishedContainer;
+        using FinishedContainer = chunk_vector<FinishedShape, 10>;
         FinishedContainer mFinishedShapes;
-        typedef chunk_vector<Shape, 10> UnfinishedContainer;
+        using UnfinishedContainer = chunk_vector<Shape, 10>;
         UnfinishedContainer mUnfinishedShapes;
 
         std::deque<TempFile> m_finishedFiles;

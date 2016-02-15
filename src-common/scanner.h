@@ -62,7 +62,7 @@ class Scanner : public CfdgFlexLexer
 {
 public:
     enum LocAction_t { normalAction, pushLoc, popLoc };
-    typedef std::map<CfdgParser::token_type, const char*> tokenMap;
+    using tokenMap = std::map<CfdgParser::token_type, const char*>;
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */

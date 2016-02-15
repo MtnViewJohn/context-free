@@ -54,7 +54,7 @@ enum class CFG {
 template <typename _T>
 struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
 {
-    typedef std::array<_T, static_cast<size_t>(CFG::_NumberOf)> base_t;
+    using base_t = std::array<_T, static_cast<size_t>(CFG::_NumberOf)>;
     CfgArray() : base_t() {}
    
     CfgArray(std::initializer_list<_T> l) : base_t()

@@ -150,8 +150,8 @@ public:
 struct StackRule {
     enum const_t : uint32_t { MaxRefCount = UINT32_MAX, HeaderSize = 2 };
 
-    typedef StackTypeIterator<StackType> iterator;
-    typedef StackTypeIterator<const StackType> const_iterator;
+    using iterator       = StackTypeIterator<StackType>;
+    using const_iterator = StackTypeIterator<const StackType>;
     
     int16_t     mRuleName;
     uint16_t    mParamCount;
@@ -199,9 +199,9 @@ private:
 #endif
 
 union StackType {
-    typedef StackTypeIterator<StackType> iterator;
-    typedef StackTypeIterator<const StackType> const_iterator;
-    
+	using iterator = StackTypeIterator<StackType>;
+	using const_iterator = StackTypeIterator<const StackType>;
+
     StackType() { }
     ~StackType() { }
     

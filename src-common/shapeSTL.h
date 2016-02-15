@@ -54,8 +54,8 @@ public:
     ~OutputMerge();
     OutputMerge& operator=(const OutputMerge&) = delete;
     
-    typedef chunk_vector<FinishedShape, 10> ShapeSource;
-    typedef ShapeSource::iterator           ShapeIter;
+    using ShapeSource = chunk_vector<FinishedShape, 10>;
+    using ShapeIter   = ShapeSource::iterator;
     
     void addShapes(ShapeIter begin, ShapeIter end);
 
@@ -77,10 +77,10 @@ public:
     
     
 private:
-    typedef std::unique_ptr<std::istream>           file_ptr;
-    typedef std::istream_iterator<FinishedShape>    FileIter;
-    typedef std::vector<file_ptr>                   FileStreams;
-    typedef std::vector<FileIter>                   FileIters;
+    using file_ptr    = std::unique_ptr<std::istream>;
+    using FileIter    = std::istream_iterator<FinishedShape>;
+    using FileStreams = std::vector<file_ptr>;
+    using FileIters   = std::vector<FileIter>;
     
     FileStreams mStreams;
     FileIters   mIters;
@@ -90,8 +90,8 @@ private:
     ShapeIter   mShapesNext;
     ShapeIter   mShapesEnd;
 
-    typedef std::map<FinishedShape, size_t> Sieve;
-    typedef Sieve::value_type               SievePair;
+    using Sieve     = std::map<FinishedShape, size_t>;
+    using SievePair = Sieve::value_type;
     
     Sieve       mSieve;
     
