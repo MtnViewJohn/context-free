@@ -89,9 +89,11 @@ namespace {
 
         NSString* pathStr =
             [NSString stringWithUTF8String: path.c_str() ];
+        
+        NSURL* pathURL = [NSURL fileURLWithPath: pathStr];
             
         return [[NSDocumentController sharedDocumentController]
-                    documentForFileName: pathStr];
+                    documentForURL: pathURL];
     }
     
     
