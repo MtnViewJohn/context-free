@@ -220,7 +220,7 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::clear(const agg::rgba& bk)
 {
-    using color_type = pixel_fmt::color_type;
+    using color_type = typename pixel_fmt::color_type;
     agg::rgba bk_pre = bk;
     bk_pre.premultiply();
     rendBase.clear(color_type(bk_pre));
@@ -230,7 +230,7 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::fill(RGBA8 bk)
 {
-    using color_type = pixel_fmt::color_type;
+    using color_type = typename pixel_fmt::color_type;
     using Converter_type = agg::ColorConverter<RGBA8, color_type>;
     color_type c = Converter_type::f(bk);
     rendBase.fill(c.premultiply());
@@ -240,7 +240,7 @@ template <class pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::draw(RGBA8 col, agg::filling_rule_e fr)
 {
-    using color_type = pixel_fmt::color_type;
+    using color_type = typename pixel_fmt::color_type;
     using Converter_type = agg::ColorConverter<RGBA8, color_type>;
     if (pixelSet.size() < PNG8Limit) {
         agg::int64u pixel = 
