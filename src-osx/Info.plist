@@ -28,7 +28,7 @@
 	<key>CFBundleIconFile</key>
 	<string>app.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ozonehouse.ContextFree</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -46,13 +46,6 @@
 	<key>NSServices</key>
 	<array>
 		<dict>
-			<key>NSPortName</key>
-			<string>Context Free</string>
-			<key>NSSendTypes</key>
-			<array>
-				<string>NSStringPboardType</string>
-				<string>NSURLPboardType</string>
-			</array>
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
@@ -60,10 +53,17 @@
 			</dict>
 			<key>NSMessage</key>
 			<string>displayGalleryCfdg</string>
+			<key>NSPortName</key>
+			<string>Context Free</string>
 			<key>NSSendFileTypes</key>
 			<array>
 				<string>public.url</string>
 				<string>public.utf8-plain-text</string>
+			</array>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+				<string>NSURLPboardType</string>
 			</array>
 		</dict>
 	</array>

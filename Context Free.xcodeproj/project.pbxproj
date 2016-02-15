@@ -784,7 +784,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0720;
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
 						DevelopmentTeam = 23E5SF7D5S;
@@ -999,6 +999,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1188,6 +1189,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1233,7 +1235,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
@@ -1257,6 +1259,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1295,6 +1298,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"MACOSX_DEPLOYMENT_TARGET[arch=x86_64]" = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1317,6 +1321,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_FAST_MATH = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
