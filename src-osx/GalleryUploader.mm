@@ -31,7 +31,6 @@
 #import "GView.h"
 #import "VariationFormatter.h"
 #import <WebKit/WebFrame.h>
-#import <WebKit/WebPolicyDelegate.h>
 #import <WebKit/DOMCore.h>
 
 #include <string>

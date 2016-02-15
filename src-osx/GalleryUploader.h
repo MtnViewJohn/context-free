@@ -28,11 +28,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebView.h>
+#import <WebKit/WebPolicyDelegate.h>
 
 @class CFDGDocument;
 @class GView;
 
-@interface GalleryUploader : NSWindowController {
+@interface GalleryUploader : NSWindowController <WebPolicyDelegate> {
     CFDGDocument*               mDocument;
     GView*                      mView;
     NSInteger                   mStatus;
