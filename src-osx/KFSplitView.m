@@ -901,7 +901,7 @@ static BOOL kfScaleUInts(NSUInteger *integers, NSUInteger numInts, NSUInteger ta
     {
         for (i = 0; i < numAutoRegNotifications; i++)
         {
-            methodSelector = sel_registerName([[delegateMethodNames objectAtIndex:i] cString]);
+            methodSelector = sel_registerName([[delegateMethodNames objectAtIndex:i] cStringUsingEncoding: NSASCIIStringEncoding]);
             if ([kfDelegate respondsToSelector:methodSelector])
             {
                 [kfNotificationCenter addObserver:kfDelegate
