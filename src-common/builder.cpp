@@ -388,8 +388,13 @@ Builder::MakeConfig(ASTdefine* cfg)
             mAllowOverlap = v != 0.0;
         }
     }
-    if (cfg->mName == "CF::StartShape" && cfg->mExpression &&
-        typeid(*(cfg->mExpression)) != typeid(ASTstartSpecifier))
+    
+    // Accessing this pointer via unique_ptr<>::operator*() inside typeid() causes
+    // problems with latest clang. So grab an unmanaged copy ahead of time and use the copy.
+    const ASTexpression* cfgExp = cfg->mExpression.get();
+    
+    if (cfg->mName == "CF::StartShape" && cfgExp &&
+        typeid(*cfgExp) != typeid(ASTstartSpecifier))
     {
         // This code supports setting the startshape with a config statement:
         //    CF::StartShape = foo(foo params), [mods]
