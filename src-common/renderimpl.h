@@ -66,16 +66,16 @@ class RendererImpl : public RendererAST {
                         int variation, double border);
         ~RendererImpl();
     
-        virtual void storeParams(const StackRule* p);
+        virtual void storeParams(const StackRule* p) override;
     
-        void setMaxShapes(int n);
-        void resetBounds();
-        void resetSize(int x, int y);
+        void setMaxShapes(int n) override;
+        void resetBounds() override;
+        void resetSize(int x, int y) override;
         void initBounds();
         
-        double run(Canvas* canvas, bool partialDraw);
-        void draw(Canvas* canvas);
-        void animate(Canvas* canvas, int frames, bool zoom);
+        double run(Canvas* canvas, bool partialDraw) override;
+        void draw(Canvas* canvas) override;
+        void animate(Canvas* canvas, int frames, bool zoom) override;
         void processPathCommand(const Shape& s, const AST::CommandInfo* attr) override;
         void processShape(const Shape& s) override;
         void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) override;

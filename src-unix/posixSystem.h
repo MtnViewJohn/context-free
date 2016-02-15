@@ -34,7 +34,7 @@
 class PosixSystem : public AbstractSystem
 {
 protected:
-    virtual void clearAndCR();
+    virtual void clearAndCR() override;
 public:
     PosixSystem() = default;
     ~PosixSystem() override = default;
