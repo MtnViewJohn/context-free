@@ -307,7 +307,6 @@
 		52E950A31367D3B600BB2D96 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		52E95226136933C200BB2D96 /* qtCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qtCanvas.h; sourceTree = "<group>"; };
 		52F014EF108D6AEA00A329BE /* agg_trans_affine_1D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_trans_affine_1D.h; sourceTree = "<group>"; };
-		52F51D8C1952AB68002026F6 /* mynoexcept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mynoexcept.h; sourceTree = "<group>"; };
 		52FB6B8009ECB3E60008CE6E /* tiledCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiledCanvas.h; sourceTree = "<group>"; };
 		52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tiledCanvas.cpp; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Context Free.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Context Free.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -507,7 +506,6 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
-				52F51D8C1952AB68002026F6 /* mynoexcept.h */,
 				52D06C1E17667BB400F8D94C /* config.h */,
 				5298ED5216A216CB00C5726D /* chunk_vector.h */,
 				528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */,
@@ -1014,6 +1012,7 @@
 		52086FBB0ABD19F6005EBDC1 /* Performance */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1203,6 +1202,7 @@
 		FD6A132409B25B3000F4E1BC /* Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1312,6 +1312,7 @@
 		FDB0D3D4085CEE00002FBEED /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1345,6 +1346,7 @@
 		FDB0D3D5085CEE00002FBEED /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
