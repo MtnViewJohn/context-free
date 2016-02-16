@@ -42,7 +42,6 @@
 #include "Rand64.h"
 #include "config.h"
 #include <exception>
-#include "mynoexcept.h"
 #include <memory>
 #include <cstdint>
 
@@ -59,8 +58,8 @@ class tiledCanvas;
 class DeferUntilRuntime {};
 class CfdgError : public std::exception {
 public:
-    virtual const char* what() const NOEXCEPT;
-    CfdgError& operator=(const CfdgError& e) NOEXCEPT;
+    virtual const char* what() const noexcept;
+    CfdgError& operator=(const CfdgError& e) noexcept;
     yy::location    where;
     static yy::location Default;
     

@@ -65,7 +65,7 @@ TempFile::TempFile(AbstractSystem* system, AbstractSystem::TempType t, const cha
     : mSystem(system), mType(t), mTypeName(type), mNum(num), mWritten(false)
     { }
 
-TempFile::TempFile(TempFile&& from) NOEXCEPT
+TempFile::TempFile(TempFile&& from) noexcept
 : mSystem(from.mSystem), mPath(std::move(from.mPath)), mType(std::move(from.mType)),
   mNum(from.mNum), mWritten(from.mWritten)
 {
@@ -75,7 +75,7 @@ TempFile::TempFile(TempFile&& from) NOEXCEPT
 }
 
 TempFile&
-TempFile::operator=(TempFile&& from) NOEXCEPT
+TempFile::operator=(TempFile&& from) noexcept
 {
     if (this == &from) return *this;
     if (mWritten && mPath.length())

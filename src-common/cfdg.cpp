@@ -86,13 +86,13 @@ CfdgError::CfdgError(const char* msg)
 }
 
 const char*
-CfdgError::what() const NOEXCEPT
+CfdgError::what() const noexcept
 {
     return mMsg;
 }
 
 CfdgError&
-CfdgError::operator=(const CfdgError& e) NOEXCEPT
+CfdgError::operator=(const CfdgError& e) noexcept
 {
     if (this == &e) return *this;
     mMsg = e.mMsg;

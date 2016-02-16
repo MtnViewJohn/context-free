@@ -36,7 +36,6 @@
 #include <stdint.h>
 #include <atomic>
 #include "ast.h"
-#include "mynoexcept.h"
 
 namespace AST {
     class ASTpathCommand;
@@ -60,13 +59,13 @@ namespace AST {
         : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(nullptr), 
           mPathUID(PathUIDDefault) {};
         CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
-        CommandInfo(CommandInfo&&) NOEXCEPT;
+        CommandInfo(CommandInfo&&) noexcept;
         CommandInfo(const CommandInfo&);
         CommandInfo(agg::path_storage* p)
         : mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), mMiterLimit(4.0),
           mStrokeWidth(0.1), mIndex(0), mPath(p), mPathUID(0) {}
         CommandInfo& operator=(const CommandInfo&);
-        CommandInfo& operator=(CommandInfo&&) NOEXCEPT;
+        CommandInfo& operator=(CommandInfo&&) noexcept;
         void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
     private:
         CommandInfo(unsigned i, agg::path_storage* p);

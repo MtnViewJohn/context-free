@@ -32,7 +32,6 @@
 #include <vector>
 #include <iosfwd>
 #include "ast.h"
-#include "mynoexcept.h"
 
 //#define EXTREME_PARAM_DEBUG
 
@@ -88,8 +87,8 @@ public:
         return tmp;
     }
     
-    bool operator==(const StackTypeIterator& o) const NOEXCEPT { return _Ptr == o._Ptr; }
-    bool operator!=(const StackTypeIterator& o) const NOEXCEPT { return _Ptr != o._Ptr; }
+    bool operator==(const StackTypeIterator& o) const noexcept { return _Ptr == o._Ptr; }
+    bool operator!=(const StackTypeIterator& o) const noexcept { return _Ptr != o._Ptr; }
     
     StackTypeIterator& operator=(const StackTypeIterator& o)
     {
