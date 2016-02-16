@@ -35,6 +35,7 @@
 #include <list>
 #include <map>
 #include <deque>
+#include <type_traits>
 
 #include "agg_color_rgba.h"
 #include "cfdg.h"
@@ -81,7 +82,16 @@ class CFDGImpl : public CFDG {
               parameters(nullptr), argSize(0), shouldHaveNoParams(false) { }
 
             ShapeType(ShapeType&& from) noexcept = default;
-            ShapeType& operator=(ShapeType&& from) noexcept(noexcept(name = std::string())) = default;
+            ShapeType& operator=(ShapeType&& from) noexcept(std::is_nothrow_move_assignable<std::string>::value)
+            {
+                name = from.name;
+                hasRules = from.hasRules;
+                isShape = from.isShape;
+                parameters.reset(from.parameters.release());
+                argSize = from.argSize;
+                shouldHaveNoParams = from.shouldHaveNoParams;
+                return *this;
+            }
             ShapeType(const ShapeType&) = delete;
             ShapeType& operator=(const ShapeType&) = delete;
         };
