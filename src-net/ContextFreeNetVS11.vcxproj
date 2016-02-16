@@ -1353,7 +1353,6 @@
     <ClInclude Include="..\src-common\CmdInfo.h" />
     <ClInclude Include="..\src-common\config.h" />
     <ClInclude Include="..\src-common\ffCanvas.h" />
-    <ClInclude Include="..\src-common\myrandom.h" />
     <ClInclude Include="..\src-common\rendererAST.h" />
     <ClInclude Include="..\src-common\stacktype.h" />
     <ClInclude Include="..\src-common\xorshift64star.h" />
