@@ -300,10 +300,13 @@ namespace {
     // cfdg text drop
     NSError* err = nil;
     id doc = [[NSDocumentController sharedDocumentController]
-              openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
+              openUntitledDocumentAndDisplay: NO error: nil];
     
     if (doc) {
-        [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding] ofType: [CFDGDocument documentType] error: &err];
+        [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding]
+                   ofType: [CFDGDocument documentType]
+                    error: &err];
+        [doc makeWindowControllers];
         [doc showWindows];
     } else {
         NSBeep();
@@ -316,11 +319,12 @@ namespace {
         return;
     
     id doc = [[NSDocumentController sharedDocumentController]
-              openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
+              openUntitledDocumentAndDisplay: NO error: nil];
 
     if (doc) {
         [doc readDesign: downloader->fileName
                cfdgText: downloader->cfdgContents];
+        [doc makeWindowControllers];
         [doc showWindows];
         [doc setVariation: downloader->variation];
         [downloader release];
@@ -397,10 +401,11 @@ namespace {
 - (void)openExampleFromPath:(NSString*)path
 {
     id doc = [[NSDocumentController sharedDocumentController]
-                openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
+                openUntitledDocumentAndDisplay: NO error: nil];
 
     if (doc) {
         [doc readFromExample: path];
+        [doc makeWindowControllers];
         [doc showWindows];
     } else {
         NSBeep();
