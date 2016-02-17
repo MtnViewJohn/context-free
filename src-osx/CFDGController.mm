@@ -271,23 +271,42 @@ namespace {
 }
 
 -(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
+    static NSArray* CFAdomains = [[NSArray alloc] initWithObjects:
+                                  @"http://www.contextfreeart.org/gallery/",
+                                  @"http://contextfreeart.org/gallery/",
+                                  @"https://www.contextfreeart.org/gallery/",
+                                  @"https://contextfreeart.org/gallery/",
+                                  nil];
     NSString * pboardString = [pboard stringForType:NSStringPboardType];
-    
+
+    // File drop
     if ([pboardString hasPrefix: @"file://"]) {
         [[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: pboardString]];
-    } else if ([pboardString hasPrefix: @"http://www.contextfreeart.org/gallery/"]) {
-        NSRange idLoc = [pboardString rangeOfString: @"id="];
-        if (idLoc.location != NSNotFound) {
-            int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
-            [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
+        return;
+    }
+    
+    // CFA gallery URL drop
+    for (id cfaurl in CFAdomains) {
+        if ([pboardString hasPrefix: cfaurl]) {
+            NSRange idLoc = [pboardString rangeOfString: @"id="];
+            if (idLoc.location != NSNotFound) {
+                int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
+                [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
+            }
+            return;
         }
-    } else {
-        NSError* err = nil;
-        id doc = [[NSDocumentController sharedDocumentController]
-                  openUntitledDocumentOfType: [CFDGDocument documentType]
-                  display: NO];
+    }
+    
+    // cfdg text drop
+    NSError* err = nil;
+    id doc = [[NSDocumentController sharedDocumentController]
+              openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
+    
+    if (doc) {
         [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding] ofType: [CFDGDocument documentType] error: &err];
         [doc showWindows];
+    } else {
+        NSBeep();
     }
 }
 
@@ -297,14 +316,17 @@ namespace {
         return;
     
     id doc = [[NSDocumentController sharedDocumentController]
-              openUntitledDocumentOfType: [CFDGDocument documentType]
-              display: NO];
-    
-    [doc readDesign: downloader->fileName
-           cfdgText: downloader->cfdgContents];
-    [doc showWindows];
-    [doc setVariation: downloader->variation];
-    [downloader release];
+              openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
+
+    if (doc) {
+        [doc readDesign: downloader->fileName
+               cfdgText: downloader->cfdgContents];
+        [doc showWindows];
+        [doc setVariation: downloader->variation];
+        [downloader release];
+    } else {
+        NSBeep();
+    }
 }
 @end
 
@@ -375,14 +397,17 @@ namespace {
 - (void)openExampleFromPath:(NSString*)path
 {
     id doc = [[NSDocumentController sharedDocumentController]
-                openUntitledDocumentOfType: [CFDGDocument documentType]
-                display: NO];
+                openUntitledDocumentOfType: [CFDGDocument documentType] display: NO];
 
-    [doc readFromExample: path];
-    [doc showWindows];
+    if (doc) {
+        [doc readFromExample: path];
+        [doc showWindows];
+    } else {
+        NSBeep();
+    }
 }
 
-- (void)updateFontDisplay:(NSFont*)font 
+- (void)updateFontDisplay:(NSFont*)font
 {
     double size = static_cast<double>([font pointSize]);
     NSString* name;
