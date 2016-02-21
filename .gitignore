@@ -25,3 +25,4 @@ Release64/
 *.dSYM*
 *.ipch
 *.db
+*.opendb
