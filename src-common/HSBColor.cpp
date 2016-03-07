@@ -40,7 +40,7 @@ void HSBColor::getRGBA(agg::rgba& c) const
     double hue = h / 60.0;; 
     double remainder, hex; 
     
-    for(;;) {
+    for(int i = 0; i < 2; ++i) {
         // try splitting the hue into an integer hextant in [0,6) and
         // a real remainder in [0,1)
         remainder = modf(hue, &hex);
@@ -48,10 +48,9 @@ void HSBColor::getRGBA(agg::rgba& c) const
             break;
         
         // We didn't get the ranges that we wanted. Adjust hue and try again.
-            if (hex < 0 || remainder < 0)
-                hue += 6.0;
-            if (hex > 5.5)
-                hue -= 6.0;
+        hue = fmod(hue, 6.0);
+        if (hue < 0.0)
+            hue += 6.0;
     }
     
     int hextant = static_cast<int>(hex + 0.5); // guaranteed to be in 0..5
