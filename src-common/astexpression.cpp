@@ -572,8 +572,8 @@ namespace AST {
         }
         
         int count = 0;
-        for (size_t i = 0; i < children.size(); ++i) {
-            int num = children[i]->evaluate(res, length, rti);
+        for (auto&& child: children) {
+            int num = child->evaluate(res, length, rti);
             if (num <= 0)
                 return -1;
             count += num;
@@ -1229,8 +1229,8 @@ namespace AST {
     void
     ASTcons::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
-        for (size_t i = 0; i < children.size(); ++i)
-            children[i]->evaluate(m, shapeDest, rti);
+        for (auto&& child: children)
+            child->evaluate(m, shapeDest, rti);
     }
     
     void
@@ -1651,8 +1651,8 @@ namespace AST {
     void
     ASTcons::entropy(std::string& ent) const
     {
-        for (size_t i = 0; i < children.size(); ++i)
-            children[i]->entropy(ent);
+        for (auto&& child: children)
+            child->entropy(ent);
         ent.append("\xC5\x60\xA5\xC5\xC8\x74");
     }
     
@@ -1828,8 +1828,8 @@ namespace AST {
     {
         if (arguments) {
             if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
-                for (size_t i = 0; i < carg->children.size(); ++i)
-                    Simplify(carg->children[i]);
+                for (auto&& child: carg->children)
+                    Simplify(child);
             } else {
                 Simplify(arguments);
             }
@@ -1883,8 +1883,8 @@ namespace AST {
             delete this;
             return ret;
         }
-        for (size_t i = 0; i < children.size(); ++i)
-            Simplify(children[i]);
+        for (auto&& child: children)
+            Simplify(child);
         return this;
     }
     
@@ -1896,8 +1896,8 @@ namespace AST {
                 // Can't use ASTcons::simplify() because it will collapse the
                 // ASTcons if it only has one child and that will break the
                 // function arguments.
-                for (size_t i = 0; i < carg->children.size(); ++i)
-                    Simplify(carg->children[i]);
+                for (auto&& child: carg->children)
+                    Simplify(child);
             } else {
                 Simplify(arguments);
             }
@@ -2232,16 +2232,16 @@ namespace AST {
                 mType = arguments[0]->mType;
                 isNatural = arguments[0]->isNatural;
                 tupleSize = (mType == NumericType) ? arguments[0]->evaluate(nullptr, 0) : 1;
-                for (size_t i = 1; i < arguments.size(); ++i) {
-                    if (mType != arguments[i]->mType) {
-                        CfdgError::Error(arguments[i]->where, "select()/if() choices must be of same type");
+                for (auto&& argument: arguments) {
+                    if (mType != argument->mType) {
+                        CfdgError::Error(argument->where, "select()/if() choices must be of same type");
                     } else if (mType == NumericType && tupleSize != -1 &&
-                               arguments[i]->evaluate(nullptr, 0) != tupleSize)
+                               argument->evaluate(nullptr, 0) != tupleSize)
                     {
-                        CfdgError::Error(arguments[i]->where, "select()/if() choices must be of same length");
+                        CfdgError::Error(argument->where, "select()/if() choices must be of same length");
                         tupleSize = -1;
                     }
-                    isNatural = isNatural && arguments[i]->isNatural;
+                    isNatural = isNatural && argument->isNatural;
                 }
                 
                 if (ifSelect && arguments.size() != 2) {

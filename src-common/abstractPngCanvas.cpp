@@ -27,6 +27,7 @@
 #include "makeCFfilename.h"
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -94,12 +95,11 @@ abstractPngCanvas::end()
     if (mRenderer && mRenderer->m_tiledCanvas) {
         tileList points = mRenderer->m_tiledCanvas->getTesselation(mFullWidth, mFullHeight,
                                                                    mOriginX, mOriginY, true);
+        std::reverse(points.begin(), points.end());     // could use reverse adapter
         
-        for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
-             pt != ept; ++pt)
-        {
-            if (pt->x != mOriginX || pt->y != mOriginY)
-                copyImageUnscaled(pt->x, pt->y);
+        for (auto&& pt: points) {
+            if (pt.x != mOriginX || pt.y != mOriginY)
+                copyImageUnscaled(pt.x, pt.y);
         }
         
     }

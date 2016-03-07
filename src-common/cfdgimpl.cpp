@@ -362,11 +362,9 @@ CFDGImpl::rulesLoaded()
     vector<double> unitweightsums( m_shapeTypes.size(), 0.0 );
     vector<int> rulecounts( m_shapeTypes.size(), 0 );
     vector<int> weightTypes( m_shapeTypes.size(), 0 );
-    unsigned int i;
 
     // first pass: sum all the weights for each shape type
-    for ( i = 0; i < mRules.size(); i++ ) {
-        ASTrule* r = mRules[i];
+    for (auto&& r: mRules) {
         if (r->weightType == ASTrule::PercentWeight) {
             percentweightsums[ r->mNameIndex ] += r->mWeight;
             if (percentweightsums[ r->mNameIndex ] > 1.0001)
@@ -380,8 +378,7 @@ CFDGImpl::rulesLoaded()
 
     // second pass: normalize each weight by dividing by the
     // total weight for that shape type
-    for ( i = 0; i < mRules.size(); i++ ) {
-        ASTrule* r = mRules[i];
+    for (auto&& r: mRules) {
         double weight = r->mWeight / weightsums[ r->mNameIndex ];   // may be infinity or NaN
         if (weightTypes[r->mNameIndex ] & static_cast<int>(ASTrule::PercentWeight)) {
             if (r->weightType == ASTrule::PercentWeight)

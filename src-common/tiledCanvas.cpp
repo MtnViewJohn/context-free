@@ -47,20 +47,20 @@ void tiledCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
         mTile->primitive(shape, c, tr);
         return;
     }
-    for (unsigned int i = 0; i < mTileList.size(); ++i) {
+    for (auto&& tile: mTileList) {
         agg::trans_affine t(tr);
-        t.tx += mTileList[i].x;
-        t.ty += mTileList[i].y;
+        t.tx += tile.x;
+        t.ty += tile.y;
         mTile->primitive(shape, c, t);
     }
 }
 
 void tiledCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr)
 {
-    for (unsigned int i = 0; i < mTileList.size(); ++i) {
+    for (auto&& tile: mTileList) {
         agg::trans_affine t(tr);
-        t.tx += mTileList[i].x;
-        t.ty += mTileList[i].y;
+        t.tx += tile.x;
+        t.ty += tile.y;
         mTile->path(c, t, attr);
     }
 }
@@ -89,7 +89,7 @@ tiledCanvas::tileTransform(const Bounds& b)
         centx += centy;
         for (int offset = 1; ; ++offset) {
             bool hit = false;
-            for (int side = -1; side <= 1; side += 2) {
+            for (int side: {-1, 1}) {
                 dx = offset * side - centx;
                 dy = dx;
                 mOffset.transform(&dx, &dy);
@@ -176,7 +176,7 @@ tileList tiledCanvas::getTesselation(int w, int h, int x1, int y1, bool flipY)
     if (mFrieze) {
         for (int offset = 1; ; ++offset) {
             bool hit = false;
-            for (int side = -1; side <= 1; side += 2) {
+            for (int side: {-1, 1}) {
                 double dx = offset * side;
                 double dy = dx;
                 tess.transform(&dx, &dy);
