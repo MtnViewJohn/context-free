@@ -107,15 +107,17 @@ tiledCanvas::tileTransform(const Bounds& b)
                 
     for (int ring = 1; ; ring++) {
         bool hit = false;
-        for (int y = -ring; y <= ring; y++) {
-            for (int x = -ring; x <= ring; x++) {
-                // These loops enumerate all tile units on and within the ring.
-                // Skip tile units that are within (not on) the ring.
-                if (abs(x) < ring && abs(y) < ring) continue;
-                
+        for (int pos = -ring; pos < ring; pos++) {
+            std::array<std::pair<int, int>, 4> points = {{
+                {pos, -ring},
+                {ring, pos},
+                {-pos, ring},
+                {-ring, -pos}
+            }};
+            for (auto&& point: points) {
                 // Find where this tile is on the canvas
-                dx = x - centx;
-                dy = y - centy;
+                dx = point.first - centx;
+                dy = point.second - centy;
                 mOffset.transform(&dx, &dy);
                 
                 // If the tile might touch the canvas then record it
@@ -196,15 +198,17 @@ tileList tiledCanvas::getTesselation(int w, int h, int x1, int y1, bool flipY)
     // ring that doesn't have any tile units that intersect the screen. Then stop.
     for (int ring = 1; ; ring++) {
         bool hit = false;
-        for (int y = -ring; y <= ring; y++) {
-            for (int x = -ring; x <= ring; x++) {
-                // These loops enumerate all tile units on and within the ring.
-                // Skip tile units that are within (not on) the ring.
-                if (abs(x) < ring && abs(y) < ring) continue;
-                
+        for (int pos = -ring; pos < ring; pos++) {
+            std::array<std::pair<int, int>, 4> points = {{
+                {pos, -ring},
+                {ring, pos},
+                {-pos, ring},
+                {-ring, -pos}
+            }};
+            for (auto&& point: points) {
                 // Find where this tile is on the screen
-                double dx = x;
-                double dy = y;
+                double dx = point.first;
+                double dy = point.second;
                 tess.transform(&dx, &dy);
                 int px = static_cast<int>(floor(dx + 0.5));
                 int py = static_cast<int>(floor(dy + 0.5));
