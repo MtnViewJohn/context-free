@@ -1,7 +1,7 @@
 // chunk_vector.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2012-2013 John Horigan - john@glyphic.com
+// Copyright (C) 2012-2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 #include <utility>
 #include <stdexcept>
 #include <type_traits>
+#include <initializer_list>
 
 template <typename _valType, unsigned _power2>
 struct chunk_vector_iterator
@@ -42,8 +43,8 @@ struct chunk_vector_iterator
     using value_type        = _valType;
     using pointer           = _valType*;
     using reference         = _valType&;
-    using size_type         = size_t;
-    using difference_type   = ptrdiff_t;
+    using size_type         = std::size_t;
+    using difference_type   = std::ptrdiff_t;
     
 private:
     enum consts_e : unsigned {
@@ -51,10 +52,10 @@ private:
         _chunk_mask = _chunk_size - 1
     };
     
-    pointer*    _chunksPtr;
-    size_type   _index;
+    pointer const * _chunksPtr;
+    size_type       _index;
     
-    chunk_vector_iterator(_valType** vals, size_t index)
+    chunk_vector_iterator(pointer const * vals, std::size_t index)
         : _chunksPtr(vals), _index(index)
     {
     }
@@ -99,6 +100,12 @@ public:
         _chunksPtr = rhs._chunksPtr;
         _index = rhs._index;
         return *this;
+    }
+    
+    void swap(chunk_vector_iterator& o)
+    {
+        auto _ti  = _index;     _index     = o._index;     o._index     = _ti;
+        auto _tcp = _chunksPtr; _chunksPtr = o._chunksPtr; o._chunksPtr = _tcp;
     }
 
     reference operator*() const
@@ -164,9 +171,7 @@ public:
 
     reference operator[](difference_type n) const
     {
-        chunk_vector_iterator tmp = *this;
-        tmp += n;
-        return *tmp;
+        return *_get_current(n);
     }
     
     bool operator<(const chunk_vector_iterator& rhs) const noexcept
@@ -200,9 +205,9 @@ public:
     }
     
 private:
-    pointer _get_current() const
+    pointer _get_current(difference_type n = 0) const
     {
-        return _chunksPtr[_index >> _power2] + (_index & _chunk_mask);
+        return _chunksPtr[(_index + n) >> _power2] + ((_index + n) & _chunk_mask);
     }
 };
 
@@ -267,15 +272,19 @@ inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
 }
 
 template<typename _valType, unsigned _power2>
-inline chunk_vector_iterator<_valType, _power2> operator+(ptrdiff_t __n,
+inline chunk_vector_iterator<_valType, _power2> operator+(std::ptrdiff_t __n,
                        const chunk_vector_iterator<_valType, _power2>& __x) noexcept
 { return __x + __n; }
 
+template<typename _valType, unsigned _power2>
+void swap(chunk_vector_iterator<_valType, _power2>& s, chunk_vector_iterator<_valType, _power2>& t)
+{ s.swap(t); }
+    
 template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>
 class chunk_vector {
 private:
-    size_t _start;
-    size_t _end;
+    std::size_t _start = 0;
+    std::size_t _end = 0;
     std::vector<_valType*> _chunks;
     _Alloc _valAlloc;
     enum consts_e : size_t {
@@ -293,27 +302,76 @@ public:
     using const_iterator         = chunk_vector_iterator<const _valType, _power2>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
     using reverse_iterator       = std::reverse_iterator<iterator>;
-    using size_type              = size_t;
-    using difference_type        = ptrdiff_t;
+    using size_type              = std::size_t;
+    using difference_type        = std::ptrdiff_t;
     using allocator_type         = _Alloc;
 
     chunk_vector()
-        : _start(0), _end(0)
     {
         assert(_valAlloc.max_size() >= _chunk_size);
     }
+    chunk_vector(std::initializer_list<value_type> l)
+    {
+        assert(_valAlloc.max_size() >= _chunk_size);
+        reserve(l.size());
+        for (auto&& v: l)
+            push_back(v);
+    }
+    chunk_vector(const chunk_vector& o)
+    {
+        assert(_valAlloc.max_size() >= _chunk_size);
+        reserve(o.size());
+        for (auto&& v: o)
+            push_back(v);
+    }
+    chunk_vector(chunk_vector&& o)
+    {
+        assert(_valAlloc.max_size() >= _chunk_size);
+        _start = o._start;  o._start = 0;
+        _end = o._end;      o._end = 0;
+        _chunks.swap(o._chunks);
+    }
+    
+    chunk_vector& operator=(const chunk_vector& o)
+    {
+        clear();
+        reserve(o.size());
+        for (auto&& v: o)
+            push_back(v);
+        return *this;
+    }
+    
+    chunk_vector& operator=(chunk_vector&& o)
+    {
+        clear();
+        shrink_to_fit();
+        _start = o._start;  o._start = 0;
+        _end = o._end;      o._end = 0;
+        _chunks.swap(o._chunks);
+        return *this;
+    }
+    
+    chunk_vector& operator=(std::initializer_list<value_type> l)
+    {
+        clear();
+        reserve(l.size());
+        for (auto&& v: l)
+            push_back(v);
+        return *this;
+    }
+    
     ~chunk_vector() { clear(); _shrink_to_fit(true); }
 
     void push_back(const value_type& x)
     {
-        _valType* endVal = _alloc_back();
+        auto endVal = _alloc_back();
         _valAlloc.construct(endVal, x);
         ++_end;
     }
     
     void push_back(value_type&& x)
     {
-        _valType* endVal = _alloc_back();
+        auto endVal = _alloc_back();
         _valAlloc.construct(endVal, std::move(x));
         ++_end;
     }
@@ -321,30 +379,29 @@ public:
     template<typename... Args>
     void emplace_back(Args&&... args)
     {
-        _valType* endVal = _alloc_back();
+        auto endVal = _alloc_back();
         _valAlloc.construct(endVal, std::forward<Args>(args)...);
         ++_end;
-        
     }
     
     void pop_back()
     {
         if (_start == _end) return;
         --_end;
-        _valType* endVal = _chunks[_end >> _power2] + (_end & _chunk_mask);
+        auto endVal = _chunks[_end >> _power2] + (_end & _chunk_mask);
         _valAlloc.destroy(endVal);
     }
     
     void push_front(const value_type& x)
     {
-        _valType* frontVal = _alloc_front();
+        auto frontVal = _alloc_front();
         _valAlloc.construct(frontVal, x);
         --_start;
     }
     
     void push_front(value_type&& x)
     {
-        _valType* frontVal = _alloc_front();
+        auto frontVal = _alloc_front();
         _valAlloc.construct(frontVal, std::move(x));
         --_start;
     }
@@ -352,7 +409,7 @@ public:
     template<typename... Args>
     void emplace_front(Args&&... args)
     {
-        _valType* frontVal = _alloc_front();
+        auto frontVal = _alloc_front();
         _valAlloc.construct(frontVal, std::forward<Args>(args)...);
         --_start;
         
@@ -361,7 +418,7 @@ public:
     void pop_front()
     {
         if (_start == _end) return;
-        _valType* frontVal = _chunks[_start >> _power2] + (_start & _chunk_mask);
+        auto frontVal = _chunks[_start >> _power2] + (_start & _chunk_mask);
         ++_start;
         _valAlloc.destroy(frontVal);
     }
@@ -425,16 +482,11 @@ public:
     
     void swap(chunk_vector<_valType, _power2, _Alloc>& with)
     {
-        size_t tempstart = _start;
-        size_t tempend = _end;
-        _Alloc tempalloc = _valAlloc;
-        _start = with._start;
-        _end = with._size;
-        _valAlloc = with._valAlloc;
-        with._start = tempstart;
-        with._end = tempend;
-        with._valAlloc = tempalloc;
-        _chunks.swap(with._chunks);
+        using std::swap;
+        swap(_start, with._start);
+        swap(_end, with._end);
+        swap(_valAlloc, with._valAlloc);
+        swap(_chunks, with._chunks);
         _shrink_to_fit(false);   // no reallocation of _chunks, iterators stay valid
         with._shrink_to_fit(false);
     }
@@ -486,26 +538,26 @@ public:
         return _chunks.size() << _power2;
     }
 
-    reference operator[](size_t i)
+    reference operator[](std::size_t i)
     {
         i += _start;
         _valType* chunk = _chunks[i >> _power2];
         return chunk[i & _chunk_mask];
     }
-    const_reference operator[](size_t i) const
+    const_reference operator[](std::size_t i) const
     {
         i += _start;
         _valType* chunk = _chunks[i >> _power2];
         return chunk[i & _chunk_mask];
     }
     
-    reference at(size_t i)
+    reference at(std::size_t i)
     {
         if (i >= size())
             throw std::out_of_range("chunk_vector::at() range exceeded");
         return (*this)[i];
     }
-    const_reference at(size_t i) const
+    const_reference at(std::size_t i) const
     {
         if (i >= size())
             throw std::out_of_range("chunk_vector::at() range exceeded");
@@ -535,14 +587,14 @@ public:
 private:
     void push_back()
     {
-        _valType* endVal = _alloc_back();
+        auto endVal = _alloc_back();
         ::new((void*)endVal) value_type();
         ++_end;
     }
     
     void push_front()
     {
-        _valType* frontVal = _alloc_front();
+        auto frontVal = _alloc_front();
         ::new((void*)frontVal) value_type();
         --_start;
     }
@@ -550,7 +602,7 @@ private:
     pointer _alloc_back()
     // return a pointer to an allocated, uninitialized block of memory at the back
     {
-        size_t _chunkNum = _end >> _power2;
+        std::size_t _chunkNum = _end >> _power2;
         if (_chunks.size() <= _chunkNum) {
             pointer newChunk = nullptr;
             if (_start >= _chunk_size) {
@@ -584,24 +636,40 @@ private:
             _start += _chunk_size;
             _end += _chunk_size;
         }
-        size_t _front = _start - 1;
-        size_t _chunkNum = _front >> _power2;
+        std::size_t _front = _start - 1;
+        std::size_t _chunkNum = _front >> _power2;
         return _chunks[_chunkNum] + (_front & _chunk_mask);
     }
     
     void _shrink_to_fit(bool shrinkFront)
     {
+        // Special case for empty container
+        if (empty()) {
+            for (auto&& chunk: _chunks)
+                _valAlloc.deallocate(chunk, _chunk_size);
+            _chunks.clear();
+            _start = _end = 0;
+            return;
+        }
+        // Remove unused chunks from the front
         while (shrinkFront && _start >= _chunk_size) {
             _valAlloc.deallocate(_chunks.front(), _chunk_size);
             _chunks.erase(_chunks.begin());
             _start -= _chunk_size;
             _end -= _chunk_size;
         }
+        // Remove unused chunks from the back
         while (capacity() - _end >= _chunk_size) {
             _valAlloc.deallocate(_chunks.back(), _chunk_size);
             _chunks.pop_back();
         }
     }
 };
+
+template <typename _valType, unsigned _power2, typename _Alloc = std::allocator<_valType>>
+void swap(chunk_vector<_valType, _power2, _Alloc>& s, chunk_vector<_valType, _power2, _Alloc>& t)
+{
+    s.swap(t);
+}
 
 #endif  // INCLUDE_CHUNK_VECTOR_H
