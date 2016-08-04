@@ -91,6 +91,12 @@ CfdgError::what() const noexcept
     return mMsg;
 }
 
+const char*
+DeferUntilRuntime::what() const noexcept
+{
+    return "Compile time action should be deferred to run time.";
+}
+
 CfdgError&
 CfdgError::operator=(const CfdgError& e) noexcept
 {

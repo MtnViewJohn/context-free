@@ -55,7 +55,10 @@ namespace agg { struct trans_affine_time; }
 class Shape;
 class tiledCanvas;
 
-class DeferUntilRuntime {};
+class DeferUntilRuntime : public std::exception {
+public:
+    virtual const char* what() const noexcept;
+};
 class CfdgError : public std::exception {
 public:
     virtual const char* what() const noexcept;
