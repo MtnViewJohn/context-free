@@ -149,7 +149,7 @@ namespace yy {
     {
     #line 62 "../../src-common/cfdg.ypp" // lalr1.cc:392
 
-    int modToken;
+    unsigned modToken;
     std::string*  string;
     const std::string*  cstring;
     AST::ASTexpression* expression;
