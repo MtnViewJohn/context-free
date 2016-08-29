@@ -162,16 +162,16 @@ namespace AST {
     {
         double data[3];
         switch (e->evaluate(data, 3, rti)) {
-        case 1:
-            data[1] = data[0];
-            data[0] = 0.0;
-        case 2:
-            data[2] = 1.0;
-        case 3:
-            break;
-        default:
-            CfdgError::Error(loc, "A loop must have one to three index parameters.");
-            break;
+            case 1:
+                data[1] = data[0];
+                data[0] = 0.0;
+            case 2:
+                data[2] = 1.0;
+            case 3:
+                break;
+            default:
+                CfdgError::Error(loc, "A loop must have one to three index parameters.");
+                break;
         }
         start = data[0];
         end = data[1];

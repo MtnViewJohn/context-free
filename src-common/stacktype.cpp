@@ -218,16 +218,16 @@ StackRule::read(std::istream& is)
     is.read(reinterpret_cast<char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
-        case AST::NumericType:
-        case AST::ModType:
-            is.read(reinterpret_cast<char*>(&*it), it.type().mTuplesize * sizeof(StackType));
-            break;
-        case AST::RuleType:
-            new (&(it->rule)) param_ptr(Read(is));
-            break;
-        default:
-            assert(false);
-            break;
+            case AST::NumericType:
+            case AST::ModType:
+                is.read(reinterpret_cast<char*>(&*it), it.type().mTuplesize * sizeof(StackType));
+                break;
+            case AST::RuleType:
+                new (&(it->rule)) param_ptr(Read(is));
+                break;
+            default:
+                assert(false);
+                break;
         }
     }
 }
@@ -245,16 +245,16 @@ StackRule::write(std::ostream& os) const
     os.write(reinterpret_cast<const char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (const_iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
-        case AST::NumericType:
-        case AST::ModType:
-            os.write(reinterpret_cast<const char*>(&*it), it.type().mTuplesize * sizeof(StackType));
-            break;
-        case AST::RuleType:
-            Write(os, it->rule.get());
-            break;
-        default:
-            assert(false);
-            break;
+            case AST::NumericType:
+            case AST::ModType:
+                os.write(reinterpret_cast<const char*>(&*it), it.type().mTuplesize * sizeof(StackType));
+                break;
+            case AST::RuleType:
+                Write(os, it->rule.get());
+                break;
+            default:
+                assert(false);
+                break;
         }
     }
 }

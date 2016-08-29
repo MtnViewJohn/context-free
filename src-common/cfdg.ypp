@@ -361,16 +361,16 @@ directive_string:
         |
         MODTYPE {
             switch ($1) {
-            case ASTmodTerm::size:
-                $directive_string = &CFDG::ParamNames[CFG::Size];
-                break;
-            case ASTmodTerm::time:
-                $directive_string = &CFDG::ParamNames[CFG::Time];
-                break;
-            default:
-                $directive_string = &CFDG::ParamNames[CFG::Size];
-                error(@MODTYPE, "Syntax error");
-                break;
+                case ASTmodTerm::size:
+                    $directive_string = &CFDG::ParamNames[CFG::Size];
+                    break;
+                case ASTmodTerm::time:
+                    $directive_string = &CFDG::ParamNames[CFG::Time];
+                    break;
+                default:
+                    $directive_string = &CFDG::ParamNames[CFG::Size];
+                    error(@MODTYPE, "Syntax error");
+                    break;
             }
         }
         ;

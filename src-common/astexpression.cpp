@@ -189,40 +189,40 @@ namespace AST {
     ASTruleSpecifier::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
         switch (argSource) {
-        case NoArgs:
-        case SimpleArgs:
-            return simpleRule;
-        case StackArgs: {
-            assert(rti);
-            const StackType* stackItem = rti->stackItem(mStackIndex);
-            return stackItem->rule;
-        }
-        case ParentArgs:
-            assert(parent);
-            assert(rti);
-            if (shapeType != parent->mRuleName) {
-                // Child shape is different from parent, even though parameters are reused,
-                // and we can't finesse it in ASTreplacement::traverse(). Just
-                // copy the parameters with the correct shape type.
-                StackRule* ret = StackRule::alloc(parent);
-                ret->mRuleName = static_cast<int16_t>(shapeType);
+            case NoArgs:
+            case SimpleArgs:
+                return simpleRule;
+            case StackArgs: {
+                assert(rti);
+                const StackType* stackItem = rti->stackItem(mStackIndex);
+                return stackItem->rule;
+            }
+            case ParentArgs:
+                assert(parent);
+                assert(rti);
+                if (shapeType != parent->mRuleName) {
+                    // Child shape is different from parent, even though parameters are reused,
+                    // and we can't finesse it in ASTreplacement::traverse(). Just
+                    // copy the parameters with the correct shape type.
+                    StackRule* ret = StackRule::alloc(parent);
+                    ret->mRuleName = static_cast<int16_t>(shapeType);
+                    return param_ptr(ret);
+                }
+            case SimpleParentArgs:
+                assert(parent);
+                assert(rti);
+                parent->retain();
+                return param_ptr(parent);
+            case DynamicArgs: {
+                StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
+                ret->evalArgs(rti, arguments.get(), parent);
                 return param_ptr(ret);
             }
-        case SimpleParentArgs:
-            assert(parent);
-            assert(rti);
-            parent->retain();
-            return param_ptr(parent);
-        case DynamicArgs: {
-            StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
-            ret->evalArgs(rti, arguments.get(), parent);
-            return param_ptr(ret);
-        }
-        case ShapeArgs:
-            return arguments->evalArgs(rti, parent);
-        default:
-            assert(false);
-            return nullptr;
+            case ShapeArgs:
+                return arguments->evalArgs(rti, parent);
+            default:
+                assert(false);
+                return nullptr;
         }
     }
     
