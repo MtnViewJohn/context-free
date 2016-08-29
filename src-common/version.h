@@ -28,6 +28,9 @@
 const char* APP_NAME(const char* argv0);
 const char* APP_VERSION();
 int APP_BUILD();
-char APP_OPTCHAR();
+const char* APP_OPTCHAR();
+const char* APP_OPTLONG();
+const char* APP_OPTSEP();
+      char  APP_DIRCHAR();
 
 #endif //INCLUDE_VERSION_H

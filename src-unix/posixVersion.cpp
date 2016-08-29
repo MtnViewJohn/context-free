@@ -27,7 +27,7 @@
 
 const char* APP_NAME(const char* argv0)
 {
-    if (argv0 == nullptr) return "cfdg";
+    if (argv0 == nullptr || *argv0 == '\0') return "cfdg";
     
     const char* dir = strrchr(argv0, '/');
     
@@ -45,8 +45,22 @@ int APP_BUILD()
 { 
     return 26;
 }
-char APP_OPTCHAR()
+const char* APP_OPTCHAR()
 { 
-    return '-'; 
+    return "-";
 }
 
+const char* APP_OPTLONG()
+{
+    return "--";
+}
+
+const char* APP_OPTSEP()
+{
+    return "=";
+}
+
+char APP_DIRCHAR()
+{
+    return '/';
+}

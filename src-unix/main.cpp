@@ -32,11 +32,7 @@
 #include <sstream>
 #include <fstream>
 #include <time.h>
-#ifdef _WIN32
-#include "getopt.h"
-#else
-#include <unistd.h>
-#endif
+#include "args.hxx"
 #include <cstdlib>
 #include <cstdio>
 #include "cfdg.h"
@@ -55,18 +51,18 @@
 #include <cassert>
 #include <memory>
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::endl;
 
-void setupTimer(shared_ptr<Renderer>& renderer);
+void setupTimer(std::shared_ptr<Renderer>& renderer);
 void cleanupTimer();
 
 const char* prettyInt(unsigned long);
 
-ostream* myCout = &cerr;
+std::ostream* myCout = &cerr;
 
-const char* invokeName = "";
-
-static weak_ptr<Renderer> gRenderer;
+static std::weak_ptr<Renderer> gRenderer;
 
 static bool processInterrupt()
 {
@@ -126,83 +122,6 @@ prettyInt(unsigned long v)
     }
 }
 
-void
-usage(bool inError)
-{
-    ostream& out = inError ? cerr : *myCout;
-    
-    out << APP_NAME(invokeName) << " - " << APP_VERSION() << "(v" << APP_BUILD() << ")" << endl;
-    out << endl;
-    out << "Usage: " << endl << APP_NAME(invokeName)
-        << " [options] input.cfdg [output.png/svg]" << endl;
-    out << "    or to pipe a cfdg file on standard input:" << endl;
-    out << APP_NAME(invokeName)
-        << " [options] - [output.png/svg]" << endl;
-    out << "If the output file name is omitted and the " << APP_OPTCHAR() << "o option and the " << APP_OPTCHAR() << "C option are not used" << endl;
-    out << "then the output will be sent to stdout." << endl << endl;
-    out << "Options: " << endl;
-    out << "    " << APP_OPTCHAR()
-        << "w num    width in pixels(png) or mm(svg) (default 500)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "h num    height in pixels(png) or mm(svg) (default 500)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "s num    set both width and height in pixels/mm" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "s WIDTHxHEIGHT" << endl;
-    out << "              set width to WIDTH and height to HEIGHT in pixels/mm" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "T num    multiply tiled output size by num in width and height" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "T WIDTHxHEIGHT" << endl;
-    out << "              multiply tiled output size by WIDTH in width and HEIGHT in height" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "m num    maximum number of shapes (default none)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "x float  minimum size of shapes in pixels/mm (default 0.3)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "b float  border size [-1,2]: -1=-8 pixel border, 0=no border," << endl;
-    out << "              1=8 pixel border, 2=variable-sized border" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "v str    set the variation code (default is random)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "o str    set the output file name, supports variable expansion" << endl;
-    out << "              %f expands to the animation frame number," << endl;
-    out << "              %v and %V expands to the variation code in lower or upper case," << endl;
-    out << "              %% expands to %" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "a num    generate num animation frames at 15fps (PNG or Quicktime only)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "a TIMExFPS" << endl;
-    out << "              generate TIMExFPS animation frames at specified fps (PNG or Quicktime only)" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "z        zoom out during animation" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "V        generate SVG (vector) output" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "Q        generate Quicktime movie output" << endl;
-#ifdef _WIN32
-    out << "    " << APP_OPTCHAR()
-        << "W        generate desktop wallpaper output" << endl;
-#endif
-    out << "    " << APP_OPTCHAR()
-        << "c        crop image output" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "q        quiet mode, suppress non-error output" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "C        Check syntax, check syntax of cfdg file and exit" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "t        time output, output the time taken to render the cfdg file" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "P        Parameter allocation debug, test whether all the parameter blocks were cleaned up" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "d        Delete old temporary files" << endl;
-    out << "    " << APP_OPTCHAR()
-        << "?        show this message, then exit" << endl;
-    out << endl;
-    
-    exit(inError ? 2 : 0);
-}
-
 struct options {
     enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3 };
     int   width;
@@ -221,9 +140,8 @@ struct options {
     int   animationFPS;
     bool  animationZoom;
     
-    const char* input;
-    const char* output;
-    const char* output_fmt;
+    std::string input;
+    std::string output;
     OutputFormat format;
     
     bool quiet;
@@ -237,36 +155,31 @@ struct options {
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-      input(nullptr), output(nullptr), output_fmt(nullptr), format(PNGfile), quiet(false),
+      format(PNGfile), quiet(false),
       outputTime(false), outputStdout(false), outputWallpaper(false),
       paramTest(false), deleteTemps(false)
     { }
 };
 
 int
-intArg2(char arg, const char* str, int& x, int& y)
+intArg2(const std::string& arg, const std::string& sstr, int& x, int& y)
 {
     char* end;
+    const char* str = sstr.c_str();
     long int v = -1;
     
     v = strtol(str, &end, 10);
     if (end == str || v <= 0) {
-        if (arg == '-')
-            cerr << "Argument must be a positive integer or a pair of positive integers (e.g., 500x300)" << endl;
-        else
-            cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
-        usage(true);
+        cerr << "Option " << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
+        return 0;
     }
     x = static_cast<int>(v);
     if (*end == 'x') {
         str = end + 1;
         v = strtol(str, &end, 10);
         if (end == str || v <= 0) {
-            if (arg == '-')
-                cerr << "Argument must be a positive integer or a pair of positive integers (e.g., 500x300)" << endl;
-            else
-                cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
-            usage(true);
+            cerr << "Option -" << arg << " takes a positive integer argument or a pair of positive integers (e.g., 500x300)" << endl;
+            return 0;
         }
         y = static_cast<int>(v);
     } else {
@@ -276,182 +189,196 @@ intArg2(char arg, const char* str, int& x, int& y)
     return 2;
 }
 
-int
-intArg(char arg, const char* str)
-{
-    char* end;
-    long int v = -1;
-    
-    v = strtol(str, &end, 10);
-    if (end == str || v <= 0) {
-        if (arg == '-')
-            cerr << "Argument must be a positive integer" << endl;
-        else
-            cerr << "Option -" << arg << " takes a positive integer argument" << endl;
-        usage(true);
-    }
-    return static_cast<int>(v);
-}
-
-double
-floatArg(char arg, const char* str)
-{
-    double v = atof(str);
-    
-    if (v < 0) {
-        if (arg == '-')
-            cerr << "Argument must be a positive float" << endl;
-        else
-            cerr << "Option -" << arg << " takes a positive float argument" << endl;
-        usage(true);
-    }
-    return v;
-}
-
-#ifdef _WIN32
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCdVzqQPtW?"
-#else
-#define OPTCHARS ":w:h:s:m:x:b:v:a:o:T:cCdVzqQPt?"
-#endif
-
 void
 processCommandLine(int argc, char* argv[], options& opt)
 {
-    extern char *optarg;
-    extern int optind, optopt;
+    std::ostringstream name, epilog;
+    name << APP_NAME(argv[0]) << " - " << APP_VERSION() << "(v" << APP_BUILD()
+         << ") - Context Free Design Grammar";
+    epilog << "If '-' is specified for the CFDG FILE then the input cfdg file is piped "
+              "from standard input. If the output file name is omitted and the "
+           << APP_OPTCHAR() << "o option and the " << APP_OPTCHAR()
+           << "C option are not used then the output will be sent to stdout.";
+    args::ArgumentParser parser(name.str(), epilog.str());
+    parser.ShortPrefix(APP_OPTCHAR());      // Set Windows/posix command syntax
+    parser.LongPrefix(APP_OPTLONG());
+    parser.LongSeparator(APP_OPTSEP());
+    parser.Terminator(APP_OPTLONG());
+    parser.Prog(APP_NAME(argv[0]));         // Set app name minus path
+    args::HelpFlag help(parser, "HELP", "Show this help menu.", {'?', "help"});
+    args::Flag version(parser, "version", "Output version and quit.", {"version"});
+    args::ValueFlag<int> width(parser, "WIDTH", "Output width", {'w', "width"}, 500);
+    args::ValueFlag<int> height(parser, "HEIGHT", "Output height", {'h', "height"}, 500);
+    args::ValueFlag<string> size(parser, "SIZE or WIDTHxHEIGHT",
+                                 "Set output size to SIZExSIZE or WIDTHxHEIGHT",
+                                 {'s', "size"}, "");
+    args::ValueFlag<string> tile(parser, "SIZE or WIDTHxHEIGHT",
+                                 "Multiply output by SIZExSIZE or WIDTHxHEIGHT",
+                                 {'T', "tile"}, "");
+    args::ValueFlag<int> maxShapes(parser, "MAXSHAPES",
+                                   "Maximum number of shapes", {'m', "maxshapes"}, 0);
+    args::ValueFlag<double> minSize(parser, "MINIMUM SIZE",
+                                    "Minimum size of shapes in pixels/mm (default 0.3)",
+                                    {'x', "minimumsize"}, 0.3);
+    args::ValueFlag<double> borderSize(parser, "BORDER SIZE", "Border size [-1,2]: "
+                                       "-1=-8 pixel border, 0=no border, 1=8 pixel "
+                                       "border, 2=variable-sized border",
+                                       {'b', "bordersize"}, 2.0);
+    args::ValueFlag<string> variation(parser, "VARIATION",
+        "Set the variation code (default is random)", {'v', "variation"}, "");
+    args::ValueFlag<string> outputFileTemplate(parser, "NAME TEMPLATE",
+        "Set the output file name, supports variable expansion %f expands to the "
+        "animation frame number, %v and %V expands to the variation code in lower "
+        "or upper case, %% expands to %", {'o', "outputtemplate"}, "");
+    args::ValueFlag<string> animation(parser, "NUM or TIMExFPS",
+        "Generate NUM animation frames at 15fps or TIMExFPS animation frames",
+        {'a',"animate"}, "");
+    args::Flag zoom(parser, "zoom", "Zoom out during animation", {'z', "zoom"});
+    args::Flag makeSVG(parser, "SVG", "Generate SVG output (not allowed for animation)",
+                       {'V', "svg"});
+    args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
+#ifdef _WIN32
+    args::Flag wallpaper(parser, "wallpaper", "Generate desktop wallpaper output",
+                         {'W', "wallpaper"});
+#else
+    const bool wallpaper = false;
+#endif
+    args::Flag crop(parser, "crop", "Crop output", {'c', "crop"});
+    args::Flag quiet(parser, "quiet", "Quiet mode, suppress non-error output", {'q', "quiet"});
+    args::Flag check(parser, "check", "Check syntax of cfdg file and exit", {'C', "check"});
+    args::Flag time(parser, "time", "Output the time taken to render the cfdg file", {'t', "time"});
+    args::Flag paramDebug(parser, "param debug", "Parameter allocation debug, test "
+        "whether all the parameter blocks were cleaned up", {'P', "paramdebug"});
+    args::Flag cleanup(parser, "cleanup", "Delete old temporary files", {'d', "cleanup"});
+    args::Positional<std::string> inputFile(parser, "CFDG FILE", "Input cfdg file", "");
+    args::Positional<std::string> outputFile(parser, "OUTPUT FILE", "Output image file", "");
     
-    invokeName = argv[0];
+    auto bailout = [&](const char * msg) {
+        if (msg && *msg)
+            cerr << msg << endl;
+        cerr << parser;
+        exit(2);
+    };
     
-    int i;
-    while ((i = getopt(argc, argv, OPTCHARS)) != -1) {
-        char c = static_cast<char>(i);
-        switch(c) {
-            case 'w':
-                opt.width = intArg(c, optarg);
+    try {
+        if (!parser.ParseCLI(argc, argv))
+            bailout("Too many arguments.");
+    } catch (args::Help) {
+        std::cout << parser;
+        exit(0);
+    } catch (args::Error& e) {
+        bailout(e.what());
+    }
+    
+    if (version) {
+        std::cout << name.str() << endl;
+        exit(0);
+    }
+    if (width) opt.width = args::get(width);
+    if (height) opt.height = args::get(height);
+    if (opt.width < 10 || opt.height < 10)
+        bailout("Minimum output dimensions are 10 pixels.");
+    if (size && intArg2(parser.ShortPrefix() + 's', args::get(size), opt.width, opt.height) < 1)
+        bailout(nullptr);
+    if (tile && intArg2(parser.ShortPrefix() + 'T', args::get(tile), opt.widthMult, opt.heightMult) < 1)
+        bailout(nullptr);
+    if (maxShapes) {
+        opt.maxShapes = args::get(maxShapes);
+        if (opt.maxShapes < 1)
+            bailout("Must specify at least one shape.");
+    }
+    if (minSize) opt.minSize = args::get(minSize);
+    if (borderSize) {
+        opt.borderSize = args::get(borderSize);
+        if (opt.borderSize < -1.0 || opt.borderSize > 2.0)
+            bailout("Border size must be between -1 and 2");
+    }
+    if (variation) {
+        opt.variation = Variation::fromString(args::get(variation).c_str());
+        if (opt.variation == -1)
+            bailout("Error parsing variation");
+    }
+    if (outputFileTemplate) opt.output = args::get(outputFileTemplate);
+    if (animation) {
+        if (makeSVG) bailout("Animation cannot output to SVG files.");
+        if (crop) bailout("Animation cannot output cropped files.");
+        if (makeQT) opt.format = options::MOVfile;
+        opt.animationZoom = zoom;
+        int fps = 15, time = 0;
+        switch (intArg2(parser.ShortPrefix() + 'a', args::get(animation), time, fps)) {
+            case 2:
+                opt.animationTime = time;
+                opt.animationFPS = fps;
+                opt.animationFrames = time * fps;
                 break;
-            case 'h':
-                opt.height = intArg(c, optarg);
+            case 1:
+                opt.animationTime = time / opt.animationFPS;
+                opt.animationFrames = opt.animationTime * opt.animationFPS;
                 break;
-            case 's':
-                intArg2(c, optarg, opt.width, opt.height);
-                break;
-            case 'T':
-                intArg2(c, optarg, opt.widthMult, opt.heightMult);
-                break;
-            case 'm':
-                opt.maxShapes = intArg(c, optarg);
-                break;
-            case 'x':
-                opt.minSize = floatArg(c, optarg);
-                break;
-            case 'b':
-                opt.borderSize = atof(optarg);
-                if (opt.borderSize < -1 || opt.borderSize > 2) usage(true);
-                break;
-            case 'v':
-                opt.variation = Variation::fromString(optarg);
-                if (opt.variation == -1) {
-                    cerr << "Error parsing variation" << endl;
-                    exit(99);
-                }
-                break;
-            case 'o':
-                opt.output_fmt = optarg;
-                break;
-            case 'a': {
-                int fps = 15, time = 0;
-                if (opt.format == options::SVGfile) usage(true);
-                if (intArg2(c, optarg, time, fps) == 2) {
-                    opt.animationTime = time;
-                    opt.animationFPS = fps;
-                    opt.animationFrames = time * fps;
-                } else {
-                    opt.animationTime = time / opt.animationFPS;
-                    opt.animationFrames = time;
-                }
-                break;
+            default:
+                bailout(nullptr);
+        }
+    } else {
+        if (makeQT)
+            bailout("QuickTime output is only available when animating.");
+        if (zoom)
+            bailout("Zoomed output is only available when animating.");
+    }
+    if (makeSVG) opt.format = options::SVGfile;
+    if (wallpaper) {
+        if (makeSVG || animation || crop)
+            bailout("Wallpaper output must be uncropped, not animated, and not SVG.");
+        opt.format = options::BMPfile;
+        opt.outputWallpaper = true;
+    }
+    opt.crop = crop;
+    opt.check = check;
+    opt.quiet = quiet;
+    opt.outputTime = time;
+    opt.paramTest = paramDebug;
+    opt.deleteTemps = cleanup;
+    if (quiet && cleanup)
+        bailout("Cannot clean up temporary files quietly.");
+    if (inputFile) opt.input = args::get(inputFile);
+    if (outputFile) {
+        if (!opt.output.empty())
+            bailout("Two output files specified.");
+        
+        // If a static output file name is provided then generate an output
+        // file name format string by escaping any '%' characters. If this is
+        // an animation run with PNG output then add "_%f" before the extension.
+        opt.output.reserve(args::get(outputFile).length());
+        for (char c: args::get(outputFile)) {
+            opt.output.append(c == '%' ? 2 : 1, c);
+        }
+        if (opt.animationFrames && opt.format != options::MOVfile) {
+            size_t ext = opt.output.find_last_of('.');
+            size_t dir = opt.output.find_last_of(APP_DIRCHAR());
+            if (ext != string::npos && (dir == string::npos || ext > dir)) {
+                opt.output.insert(ext, "_%f");
+            } else {
+                opt.output.append("_%f");
             }
-            case 'V':
-                if (opt.format != options::PNGfile) usage(true);
-                opt.format = options::SVGfile;
-                break;
-            case 'Q':
-                if (opt.format != options::PNGfile || opt.crop) usage(true);
-                opt.format = options::MOVfile;
-                break;
-            case 'W':
-                if (opt.format != options::PNGfile || opt.crop) usage(true);
-                opt.format = options::BMPfile;
-                opt.outputWallpaper = true;
-                break;
-            case 'c':
-                if (opt.format == options::MOVfile) usage(true);
-                opt.crop = true;
-                break;
-            case 'C':
-                opt.check = true;
-                break;
-            case 'z':
-                opt.animationZoom = true;
-                break;
-            case ':':
-                cerr << "Option -" << static_cast<char>(optopt) << " requires an argument" << endl;
-                usage(true);
-                break;
-            case '?':
-                if (optopt == '?')
-                    usage(false);
-                cerr << "Unrecognized option: -" << optopt << endl;
-                usage(true);
-                break;
-            case 'q':
-                opt.quiet = true;
-                break;
-            case 't':
-                opt.outputTime = true;
-                break;
-            case 'P':
-                opt.paramTest = true;
-                break;
-            case 'd':
-                opt.deleteTemps = true;
-                break;
         }
     }
-    
-    if (optind < argc) {
-        opt.input = argv[optind++];
-    }
-    if (optind < argc && !opt.output_fmt) {
-        opt.output = argv[optind++];
-    }
-    if (optind < argc) {
-        cerr << "Too many arguments" << endl;
-        usage(true);
-    }
-    
-    if (!opt.input && !opt.deleteTemps) {
-        cerr << "Missing input file" << endl;
-        usage(true);
-    }
-    if ((!opt.output || strcmp(opt.output, "-") == 0) && 
-        !opt.output_fmt && !opt.check)
-    {
+    if (!inputFile && !check)
+        bailout("Missing input file.");
+    if ((!outputFile || opt.output == "-") && !outputFileTemplate && !check) {
         opt.outputStdout = true;
-        opt.output_fmt = "-";
+        opt.output = "-";
         opt.quiet = true;
     }
 }
 
-class nullstreambuf : public streambuf
+class nullstreambuf : public std::streambuf
 {
 protected:
     int overflow(int c) { return c; }
 };
-class nullostream : public ostream
+class nullostream : public std::ostream
 {
 public:
-    nullostream() : ostream (new nullstreambuf()) {}
+    nullostream() : std::ostream(new nullstreambuf()) {}
 };
 
 static nullostream cnull;
@@ -487,7 +414,7 @@ int main (int argc, char* argv[]) {
     CommandLineSystem system(opts.quiet);
     
     if (!opts.quiet || opts.deleteTemps) {
-        vector<string> temps = system.findTempFiles();
+        std::vector<string> temps = system.findTempFiles();
         if (temps.empty()) {
             if (opts.deleteTemps)
                 cerr << "No temporary files found." << endl;
@@ -508,10 +435,10 @@ int main (int argc, char* argv[]) {
             }
         }
         
-        if (!opts.input) exit(0);
+        if (opts.input.empty()) exit(0);
     }
     
-    CFDG* myDesign = CFDG::ParseFile(opts.input, &system, opts.variation);
+    CFDG* myDesign = CFDG::ParseFile(opts.input.c_str(), &system, opts.variation);
     if (!myDesign) return 3;
     if (opts.check) return 0;
     if (opts.widthMult != 1 || opts.heightMult != 1) {
@@ -525,41 +452,6 @@ int main (int argc, char* argv[]) {
         }
     }
 
-    // If a static output file name is provided then generate an output
-    // file name format string by escaping any '%' characters. If this is 
-    // an animation run then add "_%f" before the extension.
-    string newOutput;
-    if (!opts.output_fmt) {
-        stringstream escname(stringstream::out);
-        for (const char* p = opts.output; *p; ) {
-            const char* perc = strchr(p, '%');
-            if (perc) {
-                escname.write(p, perc-p);
-                escname << "%%";
-                p = perc + 1;
-            } else {
-                escname << p;
-                break;
-            }
-        }
-        newOutput = escname.str();
-        if (opts.animationFrames && opts.format != options::MOVfile) {
-#ifdef _WIN32
-            const char dirchar = '\\';
-#else
-            const char dirchar = '/';
-#endif
-            size_t ext = newOutput.find_last_of('.');
-            size_t dir = newOutput.find_last_of(dirchar);
-            if (ext != string::npos && (dir == string::npos || ext > dir)) {
-                newOutput.insert(ext, "_%f");
-            } else {
-                newOutput.append("_%f");
-            }
-        }
-        opts.output_fmt = newOutput.c_str();
-    }
-    
     bool useRGBA = myDesign->usesColor;
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
     bool use16bit = (pixfmt & aggCanvas::Has_16bit_Color) != 0;
@@ -572,13 +464,13 @@ int main (int argc, char* argv[]) {
         << code << "..." << endl;
     
     { // Scope for canvas & renderer
-    unique_ptr<pngCanvas> png;
-    unique_ptr<SVGCanvas> svg;
-    unique_ptr<ffCanvas>  mov;
+    std::unique_ptr<pngCanvas> png;
+    std::unique_ptr<SVGCanvas> svg;
+    std::unique_ptr<ffCanvas>  mov;
     Canvas* myCanvas = nullptr;
         
-    shared_ptr<Renderer> TheRenderer(myDesign->renderer(opts.width, opts.height, opts.minSize,
-                                     opts.variation, opts.borderSize));
+    std::shared_ptr<Renderer> TheRenderer(myDesign->renderer(opts.width, opts.height, opts.minSize,
+                                          opts.variation, opts.borderSize));
     
     if (TheRenderer == nullptr) {
         return 9;
@@ -598,7 +490,7 @@ int main (int argc, char* argv[]) {
     switch (opts.format) {
         case options::BMPfile:
         case options::PNGfile: {
-            png.reset(new pngCanvas(opts.output_fmt, opts.quiet, opts.width, opts.height,
+            png.reset(new pngCanvas(opts.output.c_str(), opts.quiet, opts.width, opts.height,
                                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
                                     opts.format == options::BMPfile, TheRenderer.get(),
                                     opts.widthMult, opts.heightMult));
@@ -611,7 +503,7 @@ int main (int argc, char* argv[]) {
             break;
         }
         case options::SVGfile: {
-            string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
+            string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             svg.reset(new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop));
             myCanvas = static_cast<Canvas*>(svg.get());
             if (svg->mError)
@@ -619,7 +511,7 @@ int main (int argc, char* argv[]) {
             break;
         }
         case options::MOVfile: {
-            string name = makeCFfilename(opts.output_fmt, 0, 0, opts.variation);
+            string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             mov.reset(new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height,
                                    opts.animationFPS));
             if (mov->mErrorMsg) {
@@ -655,7 +547,7 @@ int main (int argc, char* argv[]) {
     
     *myCout << "DONE!" << endl;
     *myCout << "The output file name is " << 
-    makeCFfilename(opts.output_fmt, 0, 0, opts.variation) << endl;
+    makeCFfilename(opts.output.c_str(), 0, 0, opts.variation) << endl;
     
     if (opts.outputTime) {
         clock_t toTime = clock();
