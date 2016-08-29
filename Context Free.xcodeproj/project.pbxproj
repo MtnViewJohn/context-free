@@ -296,6 +296,7 @@
 		529A79530B7C373200D45C38 /* agg_scanline_p.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = agg_scanline_p.h; sourceTree = "<group>"; };
 		529CC95515A393820079C2B5 /* ffCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffCanvas.h; sourceTree = "<group>"; };
 		529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffCanvasDummy.cpp; sourceTree = "<group>"; };
+		52A1B8171D72073700A310F0 /* args.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = args.hxx; path = "src-unix/args.hxx"; sourceTree = "<group>"; };
 		52BA888A155F30490026AF04 /* ast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cpp; sourceTree = "<group>"; };
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
@@ -491,6 +492,7 @@
 		524D22DB13BA01D8002732C2 /* src-unix */ = {
 			isa = PBXGroup;
 			children = (
+				52A1B8171D72073700A310F0 /* args.hxx */,
 				5205AE8C14455E4C00245A6F /* version.h */,
 				524D22DC13BA0200002732C2 /* main.cpp */,
 				524D22DD13BA0200002732C2 /* pngCanvas.cpp */,
