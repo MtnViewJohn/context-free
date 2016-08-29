@@ -1070,6 +1070,12 @@
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wshadow",
+					"-Wunreachable-code",
+					"-Wshadow-ivar",
+				);
 			};
 			name = Development;
 		};
@@ -1100,6 +1106,12 @@
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wshadow",
+					"-Wunreachable-code",
+					"-Wshadow-ivar",
+				);
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -1129,6 +1141,12 @@
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wshadow",
+					"-Wunreachable-code",
+					"-Wshadow-ivar",
+				);
 			};
 			name = Universal;
 		};
@@ -1157,6 +1175,12 @@
 				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wshadow",
+					"-Wunreachable-code",
+					"-Wshadow-ivar",
+				);
 			};
 			name = Performance;
 		};
