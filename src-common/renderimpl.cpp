@@ -321,7 +321,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         if (requestFinishUp) break;
         
         if (mUnfinishedShapes.empty()) break;
-        if ((m_stats.shapeCount + m_stats.toDoCount) > m_maxShapes)
+        if (std::max(m_stats.shapeCount, m_stats.toDoCount) > m_maxShapes)
             break;
 
         // Get the largest unfinished shape
