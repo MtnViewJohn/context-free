@@ -45,8 +45,22 @@ int APP_BUILD()
 { 
     return 39;
 }
-char APP_OPTCHAR()
+const char* APP_OPTCHAR()
 { 
-    return '/'; 
+    return "/"; 
 }
 
+const char* APP_OPTLONG()
+{
+	return "//";
+}
+
+const char* APP_OPTSEP()
+{
+	return ":";
+}
+
+char APP_DIRCHAR()
+{
+	return '\\';
+}

@@ -393,10 +393,10 @@
     <ClInclude Include="src-common\rendererAST.h" />
     <ClInclude Include="src-common\stacktype.h" />
     <ClInclude Include="src-common\xorshift64star.h" />
+    <ClInclude Include="src-unix\args.hxx" />
     <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
     <ClInclude Include="src-common\cfdgimpl.h" />
     <ClInclude Include="src-win\derived\FlexLexer.h" />
-    <ClInclude Include="src-win\getopt.h" />
     <ClInclude Include="src-common\HSBColor.h" />
     <ClInclude Include="src-common\makeCFfilename.h" />
     <ClInclude Include="src-common\primShape.h" />
@@ -449,7 +449,6 @@
     <ClCompile Include="src-common\stacktype.cpp" />
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
-    <ClCompile Include="src-win\getopt.c" />
     <ClCompile Include="src-common\HSBColor.cpp" />
     <ClCompile Include="src-win\derived\lex.yy.cpp" />
     <ClCompile Include="src-unix\main.cpp" />

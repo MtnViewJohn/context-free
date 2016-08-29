@@ -246,7 +246,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag crop(parser, "crop", "Crop output", {'c', "crop"});
     args::Flag quiet(parser, "quiet", "Quiet mode, suppress non-error output", {'q', "quiet"});
     args::Flag check(parser, "check", "Check syntax of cfdg file and exit", {'C', "check"});
-    args::Flag time(parser, "time", "Output the time taken to render the cfdg file", {'t', "time"});
+    args::Flag timer(parser, "time", "Output the time taken to render the cfdg file", {'t', "time"});
     args::Flag paramDebug(parser, "param debug", "Parameter allocation debug, test "
         "whether all the parameter blocks were cleaned up", {'P', "paramdebug"});
     args::Flag cleanup(parser, "cleanup", "Delete old temporary files", {'d', "cleanup"});
@@ -334,7 +334,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     opt.crop = crop;
     opt.check = check;
     opt.quiet = quiet;
-    opt.outputTime = time;
+    opt.outputTime = timer;
     opt.paramTest = paramDebug;
     opt.deleteTemps = cleanup;
     if (quiet && cleanup)
