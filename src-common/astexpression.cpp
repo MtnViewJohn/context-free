@@ -2804,6 +2804,10 @@ namespace AST {
                                 argcount == 1)
                             {
                                 (*term)->args.reset((*term)->args.release()->append((*next)->args.release()));
+                                (*term)->isConstant = (*term)->args->isConstant;
+                                (*term)->isNatural = (*term)->args->isNatural;
+                                (*term)->mLocality = (*term)->args->mLocality;
+                                (*term)->where += (*term)->args->where;
                                 (*term)->argCount = 2;
                                 modExp.emplace_back(std::move(*term));
                                 term = next;
@@ -2866,11 +2870,16 @@ namespace AST {
                                 (*term)->args.reset(xyargs);
                                 (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
                                     ASTmodTerm::x : ASTmodTerm::size;
+                                (*term)->isConstant = (*term)->args->isConstant;
+                                (*term)->isNatural = (*term)->args->isNatural;
+                                (*term)->mLocality = (*term)->args->mLocality;
                                 (*term)->argCount = 2;
                                 
                                 ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                                     ASTmodTerm::zsize : ASTmodTerm::z;
                                 ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                                zmod->isNatural = zargs->isNatural;
+                                zmod->mLocality = zargs->mLocality;
                                 zmod->argCount = 1;
                                 
                                 if ((*term)->modType == ASTmodTerm::size && xyargs->isConstant &&
