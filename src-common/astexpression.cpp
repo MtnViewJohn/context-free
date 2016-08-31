@@ -1967,7 +1967,81 @@ namespace AST {
     ASTexpression*
     ASTmodification::simplify()
     {
-        evalConst();
+        static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
+            { ASTmodTerm::unknownType,  ASTmodification::NotAClass },
+            { ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::z,            ASTmodification::ZClass },
+            { ASTmodTerm::xyz,          ASTmodification::GeomClass | ASTmodification::ZClass },
+            { ASTmodTerm::transform,    ASTmodification::GeomClass },
+            { ASTmodTerm::size,         ASTmodification::GeomClass },
+            { ASTmodTerm::sizexyz,      ASTmodification::GeomClass | ASTmodification::ZClass },
+            { ASTmodTerm::rot,          ASTmodification::GeomClass | ASTmodification::PathOpClass },
+            { ASTmodTerm::skew,         ASTmodification::GeomClass },
+            { ASTmodTerm::flip,         ASTmodification::GeomClass },
+            { ASTmodTerm::zsize,        ASTmodification::ZClass },
+            { ASTmodTerm::hue,          ASTmodification::HueClass },
+            { ASTmodTerm::sat,          ASTmodification::SatClass },
+            { ASTmodTerm::bright,       ASTmodification::BrightClass },
+            { ASTmodTerm::alpha,        ASTmodification::AlphaClass },
+            { ASTmodTerm::hueTarg,      ASTmodification::HueClass },
+            { ASTmodTerm::satTarg,      ASTmodification::SatClass },
+            { ASTmodTerm::brightTarg,   ASTmodification::BrightClass },
+            { ASTmodTerm::alphaTarg,    ASTmodification::AlphaClass },
+            { ASTmodTerm::targHue,      ASTmodification::HueTargetClass },
+            { ASTmodTerm::targSat,      ASTmodification::SatTargetClass },
+            { ASTmodTerm::targBright,   ASTmodification::BrightTargetClass },
+            { ASTmodTerm::targAlpha,    ASTmodification::AlphaTargetClass },
+            { ASTmodTerm::time,         ASTmodification::TimeClass },
+            { ASTmodTerm::timescale,    ASTmodification::TimeClass },
+            { ASTmodTerm::stroke,       ASTmodification::StrokeClass },
+            { ASTmodTerm::param,        ASTmodification::ParamClass },
+            { ASTmodTerm::x1,           ASTmodification::PathOpClass },
+            { ASTmodTerm::y1,           ASTmodification::PathOpClass },
+            { ASTmodTerm::x2,           ASTmodification::PathOpClass },
+            { ASTmodTerm::y2,           ASTmodification::PathOpClass },
+            { ASTmodTerm::xrad,         ASTmodification::PathOpClass },
+            { ASTmodTerm::yrad,         ASTmodification::PathOpClass },
+            { ASTmodTerm::modification, -1 }
+        };
+        
+        int nonConstant = 0;
+        
+        ASTtermArray temp;
+        temp.swap(modExp);
+        
+        for (term_ptr& mod: temp) {
+            if (!mod) {
+                CfdgError::Error(where, "Unknown term in shape adjustment");
+                continue;
+            }
+            
+            // Put in code for separating color changes and target color changes
+            
+            int mc = ClassMap.at(mod->modType);
+            modClass |= mc;
+            if (!mod->isConstant)
+                nonConstant |= mc;
+            bool keepThisOne = (mc & nonConstant) != 0;
+            
+            if (Builder::CurrentBuilder->mInPathContainer && (mc & ZClass))
+                CfdgError::Warning(mod->where, "Z changes are not supported within paths");
+            if (Builder::CurrentBuilder->mInPathContainer && (mc & TimeClass))
+                CfdgError::Warning(mod->where, "Time changes are not supported within paths");
+            
+            try {
+                if (!keepThisOne)
+                    mod->evaluate(modData, false, nullptr);
+            } catch (DeferUntilRuntime&) {
+                keepThisOne = true;
+            }
+            
+            if (keepThisOne) {
+                assert(mod->modType != ASTmodTerm::param);
+                Simplify(mod->args);
+                modExp.push_back(std::move(mod));
+            }
+        }
         return this;
     }
     
@@ -2991,86 +3065,6 @@ namespace AST {
                 break;
         }
         return nullptr;
-    }
-    
-    void
-    ASTmodification::evalConst()
-    {
-        static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
-            { ASTmodTerm::unknownType,  ASTmodification::NotAClass },
-            { ASTmodTerm::x,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
-            { ASTmodTerm::y,            ASTmodification::GeomClass | ASTmodification::PathOpClass },
-            { ASTmodTerm::z,            ASTmodification::ZClass },
-            { ASTmodTerm::xyz,          ASTmodification::GeomClass | ASTmodification::ZClass },
-            { ASTmodTerm::transform,    ASTmodification::GeomClass },
-            { ASTmodTerm::size,         ASTmodification::GeomClass },
-            { ASTmodTerm::sizexyz,      ASTmodification::GeomClass | ASTmodification::ZClass },
-            { ASTmodTerm::rot,          ASTmodification::GeomClass | ASTmodification::PathOpClass },
-            { ASTmodTerm::skew,         ASTmodification::GeomClass },
-            { ASTmodTerm::flip,         ASTmodification::GeomClass },
-            { ASTmodTerm::zsize,        ASTmodification::ZClass },
-            { ASTmodTerm::hue,          ASTmodification::HueClass },
-            { ASTmodTerm::sat,          ASTmodification::SatClass },
-            { ASTmodTerm::bright,       ASTmodification::BrightClass },
-            { ASTmodTerm::alpha,        ASTmodification::AlphaClass },
-            { ASTmodTerm::hueTarg,      ASTmodification::HueClass },
-            { ASTmodTerm::satTarg,      ASTmodification::SatClass },
-            { ASTmodTerm::brightTarg,   ASTmodification::BrightClass },
-            { ASTmodTerm::alphaTarg,    ASTmodification::AlphaClass },
-            { ASTmodTerm::targHue,      ASTmodification::HueTargetClass },
-            { ASTmodTerm::targSat,      ASTmodification::SatTargetClass },
-            { ASTmodTerm::targBright,   ASTmodification::BrightTargetClass },
-            { ASTmodTerm::targAlpha,    ASTmodification::AlphaTargetClass },
-            { ASTmodTerm::time,         ASTmodification::TimeClass },
-            { ASTmodTerm::timescale,    ASTmodification::TimeClass },
-            { ASTmodTerm::stroke,       ASTmodification::StrokeClass },
-            { ASTmodTerm::param,        ASTmodification::ParamClass },
-            { ASTmodTerm::x1,           ASTmodification::PathOpClass },
-            { ASTmodTerm::y1,           ASTmodification::PathOpClass },
-            { ASTmodTerm::x2,           ASTmodification::PathOpClass },
-            { ASTmodTerm::y2,           ASTmodification::PathOpClass },
-            { ASTmodTerm::xrad,         ASTmodification::PathOpClass },
-            { ASTmodTerm::yrad,         ASTmodification::PathOpClass },
-            { ASTmodTerm::modification, -1 }
-        };
-        
-        int nonConstant = 0;
-        
-        ASTtermArray temp;
-        temp.swap(modExp);
-
-        for (term_ptr& mod: temp) {
-            if (!mod) {
-                CfdgError::Error(where, "Unknown term in shape adjustment");
-                continue;
-            }
-            
-            // Put in code for separating color changes and target color changes
-                        
-            int mc = ClassMap.at(mod->modType);
-            modClass |= mc;
-            if (!mod->isConstant)
-                nonConstant |= mc;
-            bool keepThisOne = (mc & nonConstant) != 0;
-            
-            if (Builder::CurrentBuilder->mInPathContainer && (mc & ZClass))
-                CfdgError::Warning(mod->where, "Z changes are not supported within paths");
-            if (Builder::CurrentBuilder->mInPathContainer && (mc & TimeClass))
-                CfdgError::Warning(mod->where, "Time changes are not supported within paths");
-            
-            try {
-                if (!keepThisOne)
-                    mod->evaluate(modData, false, nullptr);
-            } catch (DeferUntilRuntime&) {
-                keepThisOne = true;
-            }
-            
-            if (keepThisOne) {
-                assert(mod->modType != ASTmodTerm::param);
-                Simplify(mod->args);
-                modExp.push_back(std::move(mod));
-            }
-        }
     }
     
     void

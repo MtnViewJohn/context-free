@@ -365,7 +365,6 @@ namespace AST {
         ASTexpression* compile(CompilePhase ph) override;
         void setVal(Modification& m, RendererAST* = nullptr) const;
         void addEntropy(const std::string& name);
-        void evalConst();
         void makeCanonical();
         void grab(ASTmodification* m);
     };
