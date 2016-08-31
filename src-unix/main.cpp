@@ -361,7 +361,7 @@ processCommandLine(int argc, char* argv[], options& opt)
             }
         }
     }
-    if (!inputFile && !check)
+    if (!inputFile && !cleanup)
         bailout("Missing input file.");
     if ((!outputFile || opt.output == "-") && !outputFileTemplate && !check) {
         opt.outputStdout = true;
