@@ -1,8 +1,7 @@
-// qtCanvas.h
+// AVcanvas.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2006-2008 Mark Lentczner - markl@glyphic.com
-// Copyright (C) 2008-2011 John Horigan - john@glyphic.com
+// Copyright (C) 2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,42 +16,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// 
+//
 // John Horigan can be contacted at john@glyphic.com or at
 // John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
 //
-// Mark Lentczner can be contacted at markl@glyphic.com or at
-// Mark Lentczner, 1209 Villa St., Mountain View, CA 94041-1123, USA
-//
 //
 
 
-#ifndef INCLUDE_QTCANVAS_H
-#define INCLUDE_QTCANVAS_H
-
-#include "aggCanvas.h"
-#import "BitmapImageHolder.h"
+#ifndef INCLUDE_AVcanvas_h
+#define INCLUDE_AVcanvas_h
 
 @class NSString;
 @class NSError;
+@class AVimpl;
+@class BitmapImageHolder;
 
-class qtCanvas : public aggCanvas {
-    public:
-        qtCanvas(NSString* name, BitmapImageHolder* bits, 
-                 int fps, int qual, bool mpeg4);
-        ~qtCanvas() override;
-        qtCanvas& operator=(const qtCanvas& c) = delete;
+#include "aggCanvas.h"
+
+class AVcanvas : public aggCanvas {
+public:
+    enum VideoFormat {
+        H264, ProRes422, ProRes4444
+    };
+    AVcanvas(NSString* name, BitmapImageHolder* bits, int fps, VideoFormat format);
+    ~AVcanvas() override;
+    AVcanvas& operator=(const AVcanvas& c) = delete;
     
-        NSError* getError() const;
-        void enterThread();
-        void exitThread();
-        
-        void end() override;
-
-    private:
-        class Impl;
-        std::unique_ptr<Impl> impl;
+    void end() override;
+    
+private:
+    AVimpl* impl;
 };
 
-#endif // INCLUDE_QTCANVAS_H
 
+#endif /* INCLUDE_AVcanvas_h */

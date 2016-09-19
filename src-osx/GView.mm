@@ -35,7 +35,7 @@
 #include "cfdg.h"
 #include "SVGCanvas.h"
 #include "ImageCanvas.h"
-#include "qtCanvas.h"
+#include "AVcanvas.h"
 #include "tiledCanvas.h"
 #include "Rand64.h"
 #include <tgmath.h>
@@ -174,7 +174,6 @@ namespace {
     NSString* PrefKeyMovieLength = @"MovieLength";
     NSString* PrefKeyMovieFrameRate = @"MovieFrameRate";
     NSString* PrefKeyMovieFormat = @"MovieFormat";
-    NSString* PrefKeyMovieQuality = @"MovieQuality";
 
 
     class RenderParameters
@@ -489,6 +488,16 @@ namespace {
 
 - (IBAction)saveAsMovie:(id)sender
 {
+    if ([mRenderBitmap pixelsWide] & 7) {
+        NSAlert* nonono = [[[NSAlert alloc] init] autorelease];
+        [nonono setAlertStyle: NSAlertStyleWarning];
+        [nonono setMessageText: @"Cannot create animation movie"];
+        [nonono setInformativeText: @"Rendered width must be a multiple of 8 pixels"];
+        [nonono addButtonWithTitle: @"OK"];
+        [nonono beginSheetModalForWindow: [self window]
+                       completionHandler: ^(NSModalResponse returnCode){}];
+        return;
+    }
     [self showSavePanelTitle: NSLocalizedString(@"Save as Animation", @"")
         fileType: @"mov"
         accessoryView: mSaveAnimationAccessory
@@ -849,13 +858,13 @@ namespace {
         if (parameters.render) 
             mScale = mRenderer->run(mCanvas, parameters.periodicUpdate);
         else if (parameters.animate) {
-            qtCanvas* qt = dynamic_cast<qtCanvas*> (mCanvas);
-            assert(qt);
-            qt->enterThread();
+            AVcanvas* av = dynamic_cast<AVcanvas*> (mCanvas);
+            assert(av);
             mRenderer->animate(mCanvas,
                                parameters.animateFrameCount, 
                                parameters.animateZoom);
-            qt->exitThread();
+            if (av->mError)
+                NSBeep();
         }
         else {
             mRenderer->draw(mCanvas);
@@ -1249,8 +1258,17 @@ namespace {
     parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
-    bool mpeg4 = (bool)[defaults integerForKey: PrefKeyMovieFormat];
-    int qual = (int)[defaults floatForKey: PrefKeyMovieQuality];
+    auto fmt = AVcanvas::H264;
+    switch ([defaults integerForKey: PrefKeyMovieFormat]) {
+        case 2:
+            fmt = AVcanvas::ProRes422;
+            break;
+        case 3:
+            fmt = AVcanvas::ProRes4444;
+            break;
+        default:
+            break;
+    }
     
     parameters.animateFrameCount = static_cast<int>(movieLength * movieFrameRate * 0.01);
     
@@ -1266,11 +1284,10 @@ namespace {
         return;
     }
     
-    mAnimationCanvas = new qtCanvas([filename path], [bits autorelease],
-                                    static_cast<int>(movieFrameRate), qual, mpeg4);
+    mAnimationCanvas = new AVcanvas([filename path], [bits autorelease],
+                                    static_cast<int>(movieFrameRate), fmt);
     
-    bool movieOK = mAnimationCanvas->getError() == nil;
-    if (movieOK) {
+    if (!mAnimationCanvas->mError) {
         mCanvas = mAnimationCanvas;
         mAnimationCanvas = nullptr;
         

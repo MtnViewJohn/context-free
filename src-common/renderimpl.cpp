@@ -590,6 +590,11 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
         
         if (ftime)
             cleanup();
+        
+        if (canvas->mError) {
+            system()->message("An error occurred generating frame %d", frameCount);
+            break;
+        }
 
         if (requestStop || requestFinishUp) break;
     }

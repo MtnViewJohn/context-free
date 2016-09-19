@@ -36,7 +36,7 @@
 class CFDG;
 class Canvas;
 class Renderer;
-class qtCanvas;
+class AVcanvas;
 
 @interface GView : NSView<NSWindowDelegate> {
     CFDG*       mEngine;
@@ -87,7 +87,7 @@ class qtCanvas;
     
     NSMenuItem*    mFullScreenMenu;
     
-    qtCanvas*      mAnimationCanvas;
+    AVcanvas*      mAnimationCanvas;
 
     bool    mTiled;
     double  mScale;

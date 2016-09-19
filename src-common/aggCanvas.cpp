@@ -61,7 +61,7 @@ using color24_pixel_fmt = agg::pixfmt_rgb24_pre;
 
 using ff_pixel_fmt = agg::pixfmt_argb32_pre;
 using ff24_pixel_fmt = agg::pixfmt_rgb24_pre;
-using qt_pixel_fmt = agg::pixfmt_rgba32_pre;
+using av_pixel_fmt = agg::pixfmt_bgra32_pre;
 
 using gray_pixel_fmt = agg::pixfmt_gray8_pre;
 using gray16_pixel_fmt = agg::pixfmt_gray16_pre;
@@ -84,7 +84,7 @@ const std::map<aggCanvas::PixelFormat, int> aggCanvas::BytesPerPixel = {
     { RGB8_Blend, 3 },
     { FF_Blend, 4 },
     { FF24_Blend, 3 },
-    { QT_Blend, 4 },
+    { AV_Blend, 4 },
     { Gray16_Blend, 2 },
     { RGBA16_Blend, 8 },
     { RGB16_Blend, 6 }
@@ -304,7 +304,7 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
         
         case aggCanvas::FF_Blend:
         case aggCanvas::FF24_Blend:
-        case aggCanvas::QT_Blend:
+        case aggCanvas::AV_Blend:
             assert(false);
             break;
             
@@ -325,7 +325,7 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case RGB16_Blend:   m.reset(new aggPixelPainter<color48_pixel_fmt>(this)); break;
         case FF_Blend:      m.reset(new aggPixelPainter<ff_pixel_fmt>(this)); break;
         case FF24_Blend:    m.reset(new aggPixelPainter<ff24_pixel_fmt>(this)); break;
-        case QT_Blend:      m.reset(new aggPixelPainter<qt_pixel_fmt>(this)); break;
+        case AV_Blend:      m.reset(new aggPixelPainter<av_pixel_fmt>(this)); break;
         default: break;
     }
 }
