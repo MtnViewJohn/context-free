@@ -75,20 +75,20 @@
     if (!self) return self;
     
     _imageData = [bits retain];
-    _error = nil;
-    _isWaitingForInputReady = NO;
-    _frame = 0;
     _frameRate = fps;
     _writeSemaphore = dispatch_semaphore_create(0);
+
+    NSURL* _writeURL = [NSURL fileURLWithPath: name];
+    [[NSFileManager defaultManager] removeItemAtPath:[_writeURL path] error:NULL];
+    
     auto codec = AVVideoCodecH264;
     if (fmt == AVcanvas::ProRes422) codec = AVVideoCodecAppleProRes422;
     if (fmt == AVcanvas::ProRes4444) codec = AVVideoCodecAppleProRes4444;
-    NSURL* _writeURL = [NSURL fileURLWithPath: name];
-    [[NSFileManager defaultManager] removeItemAtPath:[_writeURL path] error:NULL];
-    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    codec, AVVideoCodecKey,
-                                    [NSNumber numberWithInteger: [bits pixelsWide]], AVVideoWidthKey,
-                                    [NSNumber numberWithInteger: [bits pixelsHigh]], AVVideoHeightKey, nil];
+    NSDictionary *outputSettings = @{
+        AVVideoCodecKey:  codec,
+        AVVideoWidthKey:  [NSNumber numberWithInteger: [bits pixelsWide]],
+        AVVideoHeightKey: [NSNumber numberWithInteger: [bits pixelsHigh]]
+    };
 
     _assetInput = [[AVAssetWriterInput assetWriterInputWithMediaType: AVMediaTypeVideo
                                                       outputSettings: outputSettings]
