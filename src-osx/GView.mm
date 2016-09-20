@@ -92,6 +92,7 @@ enum {
     
     switch (fmt) {
         case aggCanvas::RGBA8_Blend:
+        case aggCanvas::AV_Blend:
         case aggCanvas::RGBA16_Blend:
             self = [super initWithBitmapDataPlanes: nullptr
                                         pixelsWide: width
@@ -1275,7 +1276,7 @@ namespace {
     NSSize* sz = mTiled ? &mRenderedRect.size : &mRenderSize;
     
     BitmapAndFormat* bits = [BitmapAndFormat alloc];
-    [bits initWithAggPixFmt: aggCanvas::RGBA8_Blend
+    [bits initWithAggPixFmt: aggCanvas::AV_Blend
                  pixelsWide: (NSInteger)sz->width
                  pixelsHigh: (NSInteger)sz->height];
     if (!bits) {
