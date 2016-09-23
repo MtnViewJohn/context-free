@@ -103,6 +103,7 @@ namespace AST {
             { "frame",      ASTfunction::Frame },
             { "rand_static",        ASTfunction::Rand_Static },
             { "rand",               ASTfunction::Rand },
+            { "rand.",              ASTfunction::RandOp },
             { "rand+/-",            ASTfunction::Rand2 },
             { "rand::exponential",  ASTfunction::RandExponential },
             { "rand::gamma",        ASTfunction::RandGamma },
@@ -1021,7 +1022,8 @@ namespace AST {
             case Rand_Static: 
                 *res = random * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
                 break;
-            case Rand: 
+            case Rand:
+            case RandOp:
                 if (rti == nullptr) throw DeferUntilRuntime();
                 rti->mRandUsed = true;
                 *res = rti->mCurrentSeed.getDouble() * fabs(a[1] - a[0]) + fmin(a[0], a[1]);
@@ -1603,6 +1605,7 @@ namespace AST {
             { ASTfunction::Frame,       "\x90\x70\x6A\xBB\xBA\xB0" },
             { ASTfunction::Rand_Static, "\xC8\xF7\xE5\x3E\x05\xA3" },
             { ASTfunction::Rand,        "\xDA\x18\x5B\xE2\xDB\x79" },
+            { ASTfunction::RandOp,      "\xDA\x18\x5B\xE2\xDB\x79" },
             { ASTfunction::Rand2,       "\xDC\x8D\x09\x15\x8A\xC4" },
             { ASTfunction::RandExponential, "\x32\xDF\x4A\xFD\x00\x1F" },
             { ASTfunction::RandGamma,       "\xC9\xD5\x57\x4F\xE6\x77" },
@@ -2185,6 +2188,7 @@ namespace AST {
                         arguments.reset(new ASTreal(1.0, argsLoc));
                         break;
                     case Rand:
+                    case RandOp:
                     case Rand2:
                     case RandInt:
                         isConstant = false;
