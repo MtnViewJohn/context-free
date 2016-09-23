@@ -2,16 +2,18 @@ startshape switchtest
 
 shape switchtest
 {
-  switch (randint(3)) {
-    case 0:
-      SQUARE []
-    case 1:
-      TRIANGLE []
-    case 2: {
-      CIRCLE []
+  loop j=9 [x 2] {
+    switch (j) {
+      case 0,1,2:
+        SQUARE []
+      case 3,4…5:
+        TRIANGLE []
+      case 6..8: {
+        CIRCLE []
+      }
     }
-  }
 
-  if (randint(2))
-    CIRCLE [size 0.5 b 1]
+    if (randint(2))
+      CIRCLE [size 0.5 b 1]
+  }
 }

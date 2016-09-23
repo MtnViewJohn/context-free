@@ -1023,27 +1023,47 @@ caseHeader:
         CASE exp2 ':' {
             exp_ptr valExp($exp2); $exp2 = nullptr;
             
-            double val = 0.0;
-            try {
-                if (valExp->evaluate(&val, 1) != 1) {
-                    driver.error(@exp2, "Case expression is not a single, numeric expression");
-                } else {
-                    int intval = static_cast<int>(floor(val));
-                    ASTswitch::switchMap& caseMap = driver.switchStack.top()->mCaseStatements;
-                    
-                    if (caseMap.count(intval)) {
-                        driver.error(@exp2, "Case value already in use");
-                        driver.push_repContainer(*(caseMap[intval]));
-                    } else {
-                        cont_ptr caseBody(new ASTrepContainer());
-                        driver.push_repContainer(*(caseBody.get()));
-                        std::pair<int, cont_ptr> p(intval, std::move(caseBody));
-                        caseMap.insert(std::move(p));
+            double val[2] = { 0.0 };
+            ASTswitch* _switch = driver.switchStack.top();
+            cont_ptr caseBody(new ASTrepContainer());
+            ASTrepContainer* body = caseBody.get();
+            driver.push_repContainer(*body);
+            _switch->mCaseBodies.push_back(std::move(caseBody));
+            
+            for (size_t i = 0; i < valExp->size(); ++i) {
+                try {
+                    ASTswitch::caseType high = 0, low = 0;
+                    if (const ASTfunction* f = dynamic_cast<const ASTfunction*>(valExp->getChild(i))) {
+                        if (f->functype != ASTfunction::RandOp || f->arguments->evaluate(val, 2) != 2) {
+                            driver.error(f->where, "Case range cannot be evaluated");
+                            continue;
+                        } else {
+                            low = static_cast<ASTswitch::caseType>(floor(val[0]));
+                            high = static_cast<ASTswitch::caseType>(floor(val[1]));
+                            if (high <= low) {
+                                driver.error(f->where, "Case range is reversed");
+                                continue;
+                            }
+                        }
+                    } else {    // Not a range, must be a single value
+                        if (valExp->getChild(i)->evaluate(val, 1) != 1) {
+                            driver.error(valExp->getChild(i)->where, "Case value cannot be evaluated");
+                            continue;
+                        } else {
+                            low = high = static_cast<ASTswitch::caseType>(floor(val[0]));
+                        }
                     }
+                    
+                    ASTswitch::caseRange hl{low, high};
+                    if (_switch->mCaseMap.count(hl)) {
+                        driver.error(valExp->getChild(i)->where, "Case value already in use");
+                        break;
+                    } else {
+                        _switch->mCaseMap[hl] = body;
+                    }
+                } catch (DeferUntilRuntime&) {
+                    driver.error(valExp->getChild(i)->where, "Case expression is not constant");
                 }
-            }
-            catch (DeferUntilRuntime&) {
-                driver.error(@exp2, "Case expression is not constant");
             }
             $caseHeader = 0;
         }
@@ -1187,7 +1207,7 @@ exp[res]:
         |
         exp[start] RANGEOP exp[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand", std::move(pair), driver.mSeed, @start, @res);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res);
         }
         |
         exp[center] PLUSMINUSOP exp[range] {
@@ -1217,7 +1237,7 @@ exp3[res]:
         |
         exp3[start] RANGEOP exp3[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand", std::move(pair), driver.mSeed, @start, @res);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res);
         }
         |
         exp3[center] PLUSMINUSOP exp3[range] {

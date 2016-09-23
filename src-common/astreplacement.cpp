@@ -194,8 +194,8 @@ namespace AST {
     ASTswitch::unify()
     {
         if (mElseBody.mPathOp != mPathOp) mPathOp = unknownPathop;
-        for (switchMap::value_type& caseEntry: mCaseStatements)
-            if (caseEntry.second->mPathOp != mPathOp)
+        for (auto&& caseBody: mCaseBodies)
+            if (caseBody->mPathOp != mPathOp)
                 mPathOp = unknownPathop;
     }
 
@@ -440,8 +440,11 @@ namespace AST {
             return;
         }
         
-        switchMap::const_iterator it = mCaseStatements.find(static_cast<int>(floor(caseValue)));
-        if (it != mCaseStatements.end()) (*it).second->traverse(parent, tr, r);
+        caseType i = static_cast<caseType>(floor(caseValue));
+        caseRange cr{i, i};
+        
+        switchMap::const_iterator it = mCaseMap.find(cr);
+        if (it != mCaseMap.end()) (*it).second->traverse(parent, tr, r);
         else mElseBody.traverse(parent, tr, r);
     }
     
@@ -763,8 +766,8 @@ namespace AST {
     {
         ASTreplacement::compile(ph);
         Compile(mSwitchExp, ph);
-        for (auto& casepair: mCaseStatements)
-            casepair.second->compile(ph);
+        for (auto&& casebody: mCaseBodies)
+            casebody->compile(ph);
         mElseBody.compile(ph);
         
         switch (ph) {

@@ -148,10 +148,18 @@ namespace AST {
     };
     class ASTswitch: public ASTreplacement {
     public:
-        using switchMap = std::map<int, cont_ptr>;
+        using caseType = std::int64_t;
+        using caseRange = std::pair<caseType, caseType>;
+        struct compareRange {
+            bool operator()(const caseRange& a, const caseRange& b) const {
+                return a.second < b.first;
+            }
+        };
+        using switchMap = std::map<caseRange, const ASTrepContainer*, compareRange>;
         
         exp_ptr mSwitchExp;
-        switchMap mCaseStatements;
+        switchMap mCaseMap;
+        std::vector<cont_ptr> mCaseBodies;
         ASTrepContainer mElseBody;
         
         ASTswitch(exp_ptr switchExp, const yy::location& expLoc);
