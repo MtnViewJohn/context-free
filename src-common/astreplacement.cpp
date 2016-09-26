@@ -785,7 +785,7 @@ namespace AST {
                     for (size_t i = 0; i < valExp->size(); ++i) {
                         const ASTexpression* term = valExp->getChild(i);
                         const ASTfunction* func = dynamic_cast<const ASTfunction*>(term);
-                        ASTswitch::caseType high = 0, low = 0;
+                        caseType high = 0, low = 0;
                         try {
                             if (func && func->functype == ASTfunction::RandOp) {
                                 // The term is a range, get the bounds
@@ -793,8 +793,8 @@ namespace AST {
                                     CfdgError::Error(func->where, "Case range cannot be evaluated");
                                     continue;
                                 } else {
-                                    low = static_cast<ASTswitch::caseType>(floor(val[0]));
-                                    high = static_cast<ASTswitch::caseType>(floor(val[1]));
+                                    low = static_cast<caseType>(floor(val[0]));
+                                    high = static_cast<caseType>(floor(val[1]));
                                     if (high <= low) {
                                         CfdgError::Error(func->where, "Case range is reversed");
                                         continue;
@@ -806,11 +806,11 @@ namespace AST {
                                     CfdgError::Error(term->where, "Case value cannot be evaluated");
                                     continue;
                                 } else {
-                                    low = high = static_cast<ASTswitch::caseType>(floor(val[0]));
+                                    low = high = static_cast<caseType>(floor(val[0]));
                                 }
                             }
                             
-                            ASTswitch::caseRange range{low, high};
+                            caseRange range{low, high};
                             if (mCaseMap.count(range)) {
                                 CfdgError::Error(term->where, "Case value already in use");
                             } else {
