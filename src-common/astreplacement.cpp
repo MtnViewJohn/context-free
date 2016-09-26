@@ -194,8 +194,8 @@ namespace AST {
     ASTswitch::unify()
     {
         if (mElseBody.mPathOp != mPathOp) mPathOp = unknownPathop;
-        for (auto&& caseBody: mCaseBodies)
-            if (caseBody->mPathOp != mPathOp)
+        for (auto&& _case: mCases)
+            if (_case.second->mPathOp != mPathOp)
                 mPathOp = unknownPathop;
     }
 
@@ -766,15 +766,63 @@ namespace AST {
     {
         ASTreplacement::compile(ph);
         Compile(mSwitchExp, ph);
-        for (auto&& casebody: mCaseBodies)
-            casebody->compile(ph);
+        for (auto&& _case: mCases) {
+            Compile(_case.first, ph);
+            _case.second->compile(ph);
+        }
         mElseBody.compile(ph);
         
         switch (ph) {
-            case CompilePhase::TypeCheck:
+            case CompilePhase::TypeCheck: {
                 if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(nullptr, 0) != 1)
                     CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
+                
+                // Build the switch map from the stored case value expressions
+                double val[2] = { 0.0 };
+                for (auto&& _case: mCases) {
+                    const ASTexpression* valExp = _case.first.get();
+                    ASTrepContainer* body = _case.second.get();
+                    for (size_t i = 0; i < valExp->size(); ++i) {
+                        const ASTexpression* term = valExp->getChild(i);
+                        const ASTfunction* func = dynamic_cast<const ASTfunction*>(term);
+                        ASTswitch::caseType high = 0, low = 0;
+                        try {
+                            if (func && func->functype == ASTfunction::RandOp) {
+                                // The term is a range, get the bounds
+                                if (func->arguments->evaluate(val, 2) != 2) {
+                                    CfdgError::Error(func->where, "Case range cannot be evaluated");
+                                    continue;
+                                } else {
+                                    low = static_cast<ASTswitch::caseType>(floor(val[0]));
+                                    high = static_cast<ASTswitch::caseType>(floor(val[1]));
+                                    if (high <= low) {
+                                        CfdgError::Error(func->where, "Case range is reversed");
+                                        continue;
+                                    }
+                                }
+                            } else {
+                                // Not a range, must be a single value
+                                if (term->evaluate(val, 1) != 1) {
+                                    CfdgError::Error(term->where, "Case value cannot be evaluated");
+                                    continue;
+                                } else {
+                                    low = high = static_cast<ASTswitch::caseType>(floor(val[0]));
+                                }
+                            }
+                            
+                            ASTswitch::caseRange range{low, high};
+                            if (mCaseMap.count(range)) {
+                                CfdgError::Error(term->where, "Case value already in use");
+                            } else {
+                                mCaseMap[range] = body;
+                            }
+                        } catch (DeferUntilRuntime&) {
+                            CfdgError::Error(term->where, "Case expression is not constant");
+                        }
+                    }
+                }
                 break;
+            }
             case CompilePhase::Simplify:
                 Simplify(mSwitchExp);
                 break;

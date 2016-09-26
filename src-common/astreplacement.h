@@ -159,7 +159,7 @@ namespace AST {
         
         exp_ptr mSwitchExp;
         switchMap mCaseMap;
-        std::vector<cont_ptr> mCaseBodies;
+        std::vector<std::pair<exp_ptr, cont_ptr>> mCases;
         ASTrepContainer mElseBody;
         
         ASTswitch(exp_ptr switchExp, const yy::location& expLoc);
