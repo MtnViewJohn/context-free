@@ -655,14 +655,14 @@ namespace AST {
                     mLoopData[1] + mLoopData[2] < 9007199254740992.;
                     mLoopArgs.reset();
                 } else {
-                    int c = mLoopArgs->evaluate(nullptr, 0);
+                    int c = mLoopArgs->evaluate();
                     if (c < 1 || c > 3) {
                         CfdgError::Error(mLoopArgs->where, "A loop must have one to three index parameters.");
                     }
                     
                     for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
                         const ASTexpression* loopArg = mLoopArgs->getChild(i);
-                        int num = loopArg->evaluate(nullptr, 0);
+                        int num = loopArg->evaluate();
                         switch (count) {
                             case 0:
                                 if (loopArg->isNatural)
@@ -752,7 +752,7 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck:
-                if (mCondition->mType != NumericType || mCondition->evaluate(nullptr, 0) != 1)
+                if (mCondition->mType != NumericType || mCondition->evaluate() != 1)
                     CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
                 break;
             case CompilePhase::Simplify:
@@ -774,7 +774,7 @@ namespace AST {
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate(nullptr, 0) != 1)
+                if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate() != 1)
                     CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
                 
                 // Build the switch map from the stored case value expressions
@@ -864,7 +864,7 @@ namespace AST {
                 expType t = mExpression ? mExpression->mType : ModType;
                 int sz = 1;
                 if (t == NumericType)
-                    sz = mExpression->evaluate(nullptr, 0);
+                    sz = mExpression->evaluate();
                 if (t == ModType)
                     sz = ModificationSize;
                 if (mDefineType == FunctionDefine) {
@@ -980,7 +980,7 @@ namespace AST {
                 if (w) {
                     if (mParameters)
                         CfdgError::Error(w->where, "Cannot have a stroke adjustment in a v3 path command");
-                    else if (w->size() != 1 || w->mType != NumericType || w->evaluate(nullptr, 0) != 1)
+                    else if (w->size() != 1 || w->mType != NumericType || w->evaluate() != 1)
                         CfdgError::Error(w->where, "Stroke adjustment is ill-formed");
                     else
                         mParameters = std::move(w);
@@ -1020,7 +1020,7 @@ namespace AST {
                 if (stroke) {
                     if (mFlags & CF_FILL)
                         CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
-                    if (stroke->mType != NumericType || stroke->evaluate(nullptr, 0) != 1) {
+                    if (stroke->mType != NumericType || stroke->evaluate() != 1) {
                         CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
                     } else if (!stroke->isConstant ||
                                stroke->evaluate(&mStrokeWidth, 1) != 1)
@@ -1281,7 +1281,7 @@ namespace AST {
     ASTpathOp::checkArguments()
     {
         if (mArguments)
-            mArgCount = mArguments->evaluate(nullptr, 0);
+            mArgCount = mArguments->evaluate();
 
         for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
             const ASTexpression* temp = mArguments->getChild(i);
@@ -1344,7 +1344,7 @@ namespace AST {
             ax.reset(new ASTreal(def, loc));
         int sz = 0;
         if (ax->mType == NumericType)
-            sz = ax->evaluate(nullptr, 0);
+            sz = ax->evaluate();
         else
             CfdgError::Error(ax->where, "Path argument must be a scalar value");
         
@@ -1353,7 +1353,7 @@ namespace AST {
         
         if (ay && sz >= 0) {
             if (ay->mType == NumericType)
-                sz += ay->evaluate(nullptr, 0);
+                sz += ay->evaluate();
             else
                 CfdgError::Error(ay->where, "Path argument must be a scalar value");
         }
@@ -1460,7 +1460,7 @@ namespace AST {
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
                     
-                    if (angle->mType != NumericType || angle->evaluate(nullptr, 0) != 1)
+                    if (angle->mType != NumericType || angle->evaluate() != 1)
                         CfdgError(angle->where, "Arc angle must be a scalar value");
                     
                     mArguments.reset(xy->append(rxy)->append(angle));
@@ -1469,7 +1469,7 @@ namespace AST {
                     if (!radius)
                         radius = new ASTreal(1.0, mLocation);
                     
-                    if (radius->mType != NumericType || radius->evaluate(nullptr, 0) != 1)
+                    if (radius->mType != NumericType || radius->evaluate() != 1)
                         CfdgError::Error(radius->where, "Arc radius must be a scalar value");
                     
                     mArguments.reset(xy->append(radius));
@@ -1506,7 +1506,7 @@ namespace AST {
         rejectTerm(ax2);
         rejectTerm(ay2);
         
-        mArgCount = mArguments ? mArguments->evaluate(nullptr, 0) : 0;
+        mArgCount = mArguments ? mArguments->evaluate() : 0;
         mOldStyleArguments.reset();
     }
 }

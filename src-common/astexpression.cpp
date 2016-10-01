@@ -2094,7 +2094,7 @@ namespace AST {
                     if (mLocality == PureNonlocal)
                         mLocality = ImpureNonlocal;
                     if (arguments->mType == NumericType)
-                        argcount = arguments->evaluate(nullptr, 0);
+                        argcount = arguments->evaluate();
                     else
                         CfdgError::Error(argsLoc, "function arguments must be numeric");
                 }
@@ -2153,8 +2153,8 @@ namespace AST {
                         if (argnum != 2) {
                             CfdgError::Error(argsLoc, "Dot/cross product takes two vectors");
                         } else {
-                            int l = arguments->getChild(0)->evaluate(nullptr, 0);
-                            int r = arguments->getChild(1)->evaluate(nullptr, 0);
+                            int l = arguments->getChild(0)->evaluate();
+                            int r = arguments->getChild(1)->evaluate();
                             if (functype == Dot && (l != r || l < 2))
                                 CfdgError::Error(argsLoc, "Dot product takes two vectors of the same length");
                             if (functype == Cross && (l != 3 || r != 3))
@@ -2298,7 +2298,7 @@ namespace AST {
                 selector = std::move(arguments[0]);
                 arguments.erase(arguments.begin());
                 
-                if (selector->mType != NumericType || selector->evaluate(nullptr, 0) != 1) {
+                if (selector->mType != NumericType || selector->evaluate() != 1) {
                     CfdgError::Error(selector->where, "if()/select() selector must be a numeric scalar");
                     return nullptr;
                 }
@@ -2309,12 +2309,12 @@ namespace AST {
                 
                 mType = arguments[0]->mType;
                 isNatural = arguments[0]->isNatural;
-                tupleSize = (mType == NumericType) ? arguments[0]->evaluate(nullptr, 0) : 1;
+                tupleSize = (mType == NumericType) ? arguments[0]->evaluate() : 1;
                 for (auto&& argument: arguments) {
                     if (mType != argument->mType) {
                         CfdgError::Error(argument->where, "select()/if() choices must be of same type");
                     } else if (mType == NumericType && tupleSize != -1 &&
-                               argument->evaluate(nullptr, 0) != tupleSize)
+                               argument->evaluate() != tupleSize)
                     {
                         CfdgError::Error(argument->where, "select()/if() choices must be of same length");
                         tupleSize = -1;
@@ -2685,8 +2685,8 @@ namespace AST {
                     mLocality = ImpureNonlocal;
                 mType = right ? static_cast<expType>(left->mType | right->mType) : left->mType;
                 if (mType == NumericType) {
-                    int ls = left ? left->evaluate(nullptr, 0) : 0;
-                    int rs = right ? right->evaluate(nullptr, 0) : 0;
+                    int ls = left ? left->evaluate() : 0;
+                    int rs = right ? right->evaluate() : 0;
                     switch (op) {
                         case 'N':
                         case 'P':
@@ -2773,7 +2773,7 @@ namespace AST {
                 mLocality = args->mLocality;
                 switch (args->mType) {
                     case NumericType: {
-                        argCount = args->evaluate(nullptr, 0);
+                        argCount = args->evaluate();
                         int minCount = 1;
                         int maxCount = 1;
                         
@@ -2869,7 +2869,7 @@ namespace AST {
                         modExp.emplace_back(std::move(*term));
                         continue;
                     }
-                    int argcount = (*term)->args->evaluate(nullptr, 0);
+                    int argcount = (*term)->args->evaluate();
                     switch ((*term)->modType) {
                             // Try to merge consecutive x and y adjustments
                         case ASTmodTerm::x:
@@ -2893,7 +2893,7 @@ namespace AST {
                             }               // next stays in temp
                             /* if ((*term)->modType == ASTmodTerm::y &&
                                 (*next)->modType == ASTmodTerm::x &&
-                                (*next)->args->evaluate(nullptr, 0) == 1)
+                                (*next)->args->evaluate() == 1)
                             {
                                 (*next)->args.reset((*next)->args.release()->append((*term)->args.release()));
                                 (*term)->argCount = 2;
@@ -2937,13 +2937,13 @@ namespace AST {
                             ASTexpression* xyargs = nullptr;
                             ASTexpression* zargs = nullptr;
                             for (exp_ptr& arg: xyzargs) {
-                                if (!xyargs || xyargs->evaluate(nullptr, 0) < 2) {
+                                if (!xyargs || xyargs->evaluate() < 2) {
                                     xyargs = Append(xyargs, arg.release());
                                 } else {
                                     zargs = Append(zargs, arg.release());
                                 }
                             }
-                            if (xyargs && zargs && xyargs->evaluate(nullptr, 0) == 2) {
+                            if (xyargs && zargs && xyargs->evaluate() == 2) {
                                 // We have successfully split the 3-tuple into a 2-tuple and a scalar
                                 (*term)->args.reset(xyargs);
                                 (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
@@ -3053,7 +3053,7 @@ namespace AST {
                     mLength = static_cast<int>(data);
                 }
                 
-                if (mArgs->mType != NumericType || mArgs->evaluate(nullptr, 0) != 1)
+                if (mArgs->mType != NumericType || mArgs->evaluate() != 1)
                     CfdgError::Error(mArgs->where, "Vector index must be a scalar numeric expression");
 
                 if (mStride < 0 || mLength < 0)

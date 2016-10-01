@@ -57,7 +57,7 @@ namespace AST {
         ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
         : isConstant(c), isNatural(n), mLocality(UnknownLocal), mType(t), where(loc) {};
         virtual ~ASTexpression() = default;
-        virtual int evaluate(double* , int, RendererAST* = nullptr) const
+        virtual int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const
         { return 0; }
         virtual void evaluate(Modification&, bool, RendererAST*) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
@@ -107,7 +107,7 @@ namespace AST {
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                     const yy::location& nameLoc, const yy::location& argsLoc);
         ~ASTfunction() override = default;
-        int evaluate(double* r, int size, RendererAST* rti = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph) override;
         ASTexpression* simplify() override;
@@ -124,7 +124,7 @@ namespace AST {
         
         ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
         ~ASTselect() override;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& e) const override;
@@ -169,7 +169,7 @@ namespace AST {
             simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
             parentSignature(nullptr) {};
         ~ASTruleSpecifier() override;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         param_ptr evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
@@ -200,7 +200,7 @@ namespace AST {
         ASTcons() = delete;
         ASTcons(std::initializer_list<ASTexpression*> kids);
         ~ASTcons() override;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
@@ -228,7 +228,7 @@ namespace AST {
                         floor(v) == v && v >= 0.0 && v < 9007199254740992.,
                         NumericType), value(v) { mLocality = PureLocal; };
         ~ASTreal() override = default;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
     };
     class ASTvariable : public ASTexpression {
@@ -241,7 +241,7 @@ namespace AST {
         
         ASTvariable() = delete;
         ASTvariable(int stringNum, const std::string& str, const yy::location& loc);
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph) override;
@@ -255,7 +255,7 @@ namespace AST {
         
         ASTuserFunction(int name, ASTexpression* args, ASTdefine* func, const yy::location& nameLoc);
         ~ASTuserFunction() override = default;
-        int evaluate(double* , int, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string&) const override;
@@ -291,7 +291,7 @@ namespace AST {
         ASToperator() = delete;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
         ~ASToperator() override = default;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
@@ -305,7 +305,7 @@ namespace AST {
                                                     e1->mType), e(e1)
         { };
         ~ASTparen() override = default;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& ent) const override;
@@ -333,7 +333,7 @@ namespace AST {
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0) {};
         ~ASTmodTerm() override = default;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
@@ -359,7 +359,7 @@ namespace AST {
         ASTmodification(const ASTmodification& m, const yy::location& loc);
         ASTmodification(mod_ptr m, const yy::location& loc);
         ~ASTmodification() override;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;
@@ -384,7 +384,7 @@ namespace AST {
         ASTarray(const ASTarray&) = delete;
         ASTarray& operator=(const ASTarray&) = delete;
         ~ASTarray() override;
-        int evaluate(double* r, int size, RendererAST* = nullptr) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;
         ASTexpression* compile(CompilePhase ph) override;

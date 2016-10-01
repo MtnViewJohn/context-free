@@ -170,7 +170,7 @@ namespace AST {
     {
         if (mType != e.mType) return true;
         if (mType == AST::NumericType &&
-            mTuplesize != e.evaluate(nullptr, 0)) return true;
+            mTuplesize != e.evaluate()) return true;
         return false;
     }
     
@@ -220,7 +220,7 @@ namespace AST {
                 return -1;
             }
             if (param_it->mType == AST::NumericType &&
-                param_it->mTuplesize != arg->evaluate(nullptr, 0))
+                param_it->mTuplesize != arg->evaluate())
             {
                 if (param_it->mTuplesize == 1)
                     CfdgError::Error(arg->where, "This argument should be scalar");
@@ -1016,7 +1016,7 @@ namespace AST {
                 case NumericType: {
                     if (symmSpec.empty() && cit->mType != FlagType)
                         CfdgError::Error(cit->where, "Symmetry flag expected here");
-                    int sz = cit->evaluate(nullptr, 0);
+                    int sz = cit->evaluate();
                     if (sz < 1) {
                         CfdgError::Error(cit->where, "Could not evaluate this");
                     } else {
