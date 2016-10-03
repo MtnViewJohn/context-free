@@ -408,13 +408,12 @@ namespace AST {
     inline ASTexpArray Extract(exp_ptr exp)
     // Extract children from exp, leaving it empty
     {
-        if (ASTcons* c = dynamic_cast<ASTcons*>(exp.get())) {
-            return std::move(c->children);
-        } else {
-            ASTexpArray ret;
+        ASTexpArray ret;
+        if (ASTcons* c = dynamic_cast<ASTcons*>(exp.get()))
+            ret.swap(c->children);
+        else
             ret.emplace_back(std::move(exp));
-            return ret;
-        }
+        return ret;
     }
 }
 
