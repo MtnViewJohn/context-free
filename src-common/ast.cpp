@@ -254,16 +254,17 @@ namespace AST {
                 std::vector<double> data(mTuplesize);
                 bool natural = isNatural;
                 int valCount = mDefinition->mExpression->evaluate(data.data(), mTuplesize);
-                if (valCount != mTuplesize)
+                if (valCount != mTuplesize || valCount == 0)
                     CfdgError::Error(where, "Unexpected compile error.");                   // this also shouldn't happen
+                if (valCount < 1 || data.empty())
+                    return new ASTreal(0.0, where);     // shouldn't happen, but we don't want to crash if it does
                 
                 // Create a new cons-list based on the evaluated variable's expression
-                ASTreal* top = new ASTreal(data[0], mDefinition->mExpression->where);
-                top->text = entropy;                // use variable name for entropy
-                ASTexpression* list = top;
-                for (int i = 1; i < valCount; ++i) {
-                    ASTreal* next = new ASTreal(data[i], where);
-                    list = list->append(next);
+                ASTexpression* list = nullptr;
+                for (auto value: data) {
+                    ASTreal* r = new ASTreal(value, where);
+                    if (!list) r->text = entropy;
+                    list = list ? list->append(r) : r;
                 }
                 list->isNatural = natural;
                 list->mLocality = mLocality;

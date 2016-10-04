@@ -1772,22 +1772,17 @@ namespace AST {
     static ASTexpression*
     MakeResult(const double* result, int length, const ASTexpression* from)
     {
-        ASTreal* r = new ASTreal(result[0], from->where);
-        r->mType = from->mType;
-        r->isNatural = from->isNatural;
-        
-        if (length > 1) {
-            ASTcons* l = new ASTcons{r};
-            for (int i = 1; i < length; ++i) {
-                r = new ASTreal(result[i], from->where);
-                r->mType = from->mType;
-                r->isNatural = from->isNatural;
-                l->append(r);
-            }
-            return l;
+        ASTexpression* ret = nullptr;
+        // Can't use range for with decayed array pointers :(
+        for (auto val = result; val < result + length; ++val) {
+            ASTreal* r = new ASTreal(*val, from->where);
+            r->mType = from->mType;
+            r->isNatural = from->isNatural;
+            
+            ret = ret ? ret->append(r) : r;
         }
         
-        return r;
+        return ret;
     }
     
     ASTexpression*
