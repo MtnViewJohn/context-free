@@ -1289,8 +1289,6 @@ namespace AST {
     void
     ASTmodTerm::evaluate(Modification& m, bool shapeDest, RendererAST* rti) const
     {
-        double modArgs[6] = {0.0};
-        int argcount = 0;
         static_assert(offsetof(HSBColor, s) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::sat - ASTmodTerm::hue), "Unexpected HSBcolor layout");
         static_assert(offsetof(HSBColor, b) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::bright - ASTmodTerm::hue), "Unexpected HSBcolor layout");
         static_assert(offsetof(HSBColor, a) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::alpha - ASTmodTerm::hue), "Unexpected HSBcolor layout");
@@ -1301,10 +1299,38 @@ namespace AST {
         static_assert(offsetof(HSBColor, b) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::targBright - ASTmodTerm::targHue), "Unexpected HSBcolor layout");
         static_assert(offsetof(HSBColor, a) - offsetof(HSBColor, h) == sizeof(double) * (ASTmodTerm::targAlpha - ASTmodTerm::targHue), "Unexpected HSBcolor layout");
         
+        if (modType == modification) {
+            if (!args || args->mType != ModType) {
+                CfdgError::Error(where, "transform adjustments require an adjustment argument");
+                return;
+            }
+            if (rti == nullptr) {
+                const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
+                // Color adjustments are not associative like geometry adjustments,
+                // so they must be done in order at run-time
+                if (!mod || (mod->modClass & (ASTmodification::HueClass |
+                                              ASTmodification::HueTargetClass |
+                                              ASTmodification::BrightClass |
+                                              ASTmodification::BrightTargetClass |
+                                              ASTmodification::SatClass |
+                                              ASTmodification::SatTargetClass |
+                                              ASTmodification::AlphaClass |
+                                              ASTmodification::AlphaTargetClass)))
+                {
+                    throw DeferUntilRuntime();
+                }
+            }
+            args->evaluate(m, shapeDest, rti);
+            return;
+        }
+        
+        double modArgs[6] = {0.0};
+        int argcount = 0;
+
         if (args) {
-            if (modType != modification && args->mType == NumericType) {
+            if (args->mType == NumericType) {
                 argcount = args->evaluate(modArgs, 6, rti);
-            } else if (modType == modification && args->mType != ModType){
+            } else {
                 CfdgError::Error(where, "Adjustments require numeric arguments");
                 return;
             }
@@ -1534,22 +1560,7 @@ namespace AST {
                 CfdgError::Error(where, "Unrecognized adjustment type");
                 break;
             case ASTmodTerm::modification: {
-                if (rti == nullptr) {
-                    const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
-                    if (!mod || (mod->modClass & (ASTmodification::HueClass |
-                                                  ASTmodification::HueTargetClass |
-                                                  ASTmodification::BrightClass |
-                                                  ASTmodification::BrightTargetClass |
-                                                  ASTmodification::SatClass |
-                                                  ASTmodification::SatTargetClass |
-                                                  ASTmodification::AlphaClass |
-                                                  ASTmodification::AlphaTargetClass)))
-                    {
-                        throw DeferUntilRuntime();
-                    }
-                }
-                args->evaluate(m, shapeDest, rti);
-                break;
+                break;      // supress warning, never happens
             }
         }
     }
