@@ -2864,7 +2864,7 @@ namespace AST {
     ASTmodification::compile(AST::CompilePhase ph)
     {
         for (auto& term: modExp)
-            term->compile(ph);          // ASTterm always return this
+            term->compile(ph);          // ASTterm::compile() always return nullptr
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
