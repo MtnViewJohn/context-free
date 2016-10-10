@@ -2871,6 +2871,7 @@ namespace AST {
                 ASTtermArray temp;
                 temp.swap(modExp);
                 for (auto term = temp.begin(); term != temp.end(); ++term) {
+                    if (!(*term)) continue;     // skip deleted terms
                     if (!(*term)->args || (*term)->args->mType != NumericType) {
                         modExp.emplace_back(std::move(*term));
                         continue;
@@ -2893,9 +2894,8 @@ namespace AST {
                                 (*term)->mLocality = (*term)->args->mLocality;
                                 (*term)->where += (*term)->args->where;
                                 (*term)->argCount = 2;
-                                modExp.emplace_back(std::move(*term));
-                                term = next;
-                                continue;
+                                (*next).reset();    // delete the empty y term
+                                break;
                             }               // next stays in temp
                             /* if ((*term)->modType == ASTmodTerm::y &&
                                 (*next)->modType == ASTmodTerm::x &&
@@ -2926,17 +2926,16 @@ namespace AST {
                                 ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
                                 zmod->argCount = 1;
                                 
-                                // Check if xy part is the identity transform and only save it if it is not
+                                // Check if sizexy part is the identity transform and only save it if it is not
                                 if (d[0] == 1.0 && d[1] == 1.0 && (*term)->modType == ASTmodTerm::size)
                                 {
-                                    // Drop xy term and just save z term if xy term
+                                    // Drop sizexy term and just save sizez term if sizexy term
                                     // is the identity transform
                                     (*term).reset(zmod);
                                 } else {
                                     modExp.emplace_back(zmod);
                                 }
-                                modExp.emplace_back(std::move(*term));
-                                continue;
+                                break;
                             }
                             
                             ASTexpArray xyzargs = Extract(std::move((*term)->args));
@@ -2979,8 +2978,7 @@ namespace AST {
                                 xyargs = Append(xyargs, zargs);
                                 (*term)->args.reset(xyargs);
                             }
-                            modExp.emplace_back(std::move(*term));
-                            continue;
+                            break;
                         }
                         default:
                             break;
