@@ -897,7 +897,7 @@ namespace AST {
                     ASTparameter& param = Builder::CurrentBuilder->
                         mContainerStack.back()->
                         addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
-                    if (param.isParameter || !param.mDefinition) {
+                    if (mDefineType == StackDefine) {
                         param.mStackIndex = Builder::CurrentBuilder->mLocalStackDepth;
                         Builder::CurrentBuilder->mContainerStack.back()->mStackCount += param.mTuplesize;
                         Builder::CurrentBuilder->mLocalStackDepth += param.mTuplesize;
