@@ -91,7 +91,7 @@ double Builder:: MaxNatural = 1000.0;
 
 Builder::Builder(cfdgi_ptr cfdg, int variation)
 : m_CFDG(std::move(cfdg)), m_currentPath(nullptr), m_pathCount(1),
-  mInPathContainer(false), mCurrentShape(-1),
+  mInPathContainer(false), mCurrentShape(-1), mParamSize(0),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)
 { 
@@ -265,14 +265,14 @@ Builder::SetShape(std::string* name, const yy::location& nameLoc, bool isPath)
         CfdgError::Error(def->mLocation, "    the function is here");
         return;
     }
-    const char* err = m_CFDG->setShapeParams(mCurrentShape, mParamDecls, mParamDecls.mStackCount, isPath);
+    const char* err = m_CFDG->setShapeParams(mCurrentShape, mParamDecls, mParamSize, isPath);
     if (err) {
         mErrorOccured = true;
         warning(nameLoc, err);
     }
-    mLocalStackDepth -= mParamDecls.mStackCount;
+    mLocalStackDepth -= mParamSize;
     mParamDecls.mParameters.clear();
-    mParamDecls.mStackCount = 0;
+    mParamSize = 0;
 }
 
 void
@@ -310,7 +310,7 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
     mParamDecls.addParameter(type, nameIndex, typeLoc, nameLoc);
     ASTparameter& param = mParamDecls.mParameters.back();
     param.mStackIndex = mLocalStackDepth;
-    mParamDecls.mStackCount += param.mTuplesize;
+    mParamSize += param.mTuplesize;
     mLocalStackDepth += param.mTuplesize;
 }
 
@@ -352,10 +352,10 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
         for (ASTparameter& param: mParamDecls.mParameters)
             param.mLocality = PureNonlocal;
         def->mParameters = mParamDecls.mParameters;     // copy
-        def->mStackCount = mParamDecls.mStackCount;
+        def->mParamSize = mParamSize;
         def->mDefineType = ASTdefine::FunctionDefine;
-        mLocalStackDepth -= mParamDecls.mStackCount;
-        mParamDecls.mStackCount = 0;
+        mLocalStackDepth -= mParamSize;
+        mParamSize = 0;
         
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         assert(prev == def);    // since findFunction() didn't find it
@@ -681,17 +681,16 @@ void
 Builder::push_repContainer(ASTrepContainer& c)
 {
     mContainerStack.push_back(&c);
+    mStackStack.push_back(mLocalStackDepth);
     process_repContainer(c);
 }
 
 void
 Builder::process_repContainer(ASTrepContainer& c)
 {
-    c.mStackCount = 0;
     for (ASTparameter& param: c.mParameters) {
         if (param.isParameter || param.isLoopIndex) {
             param.mStackIndex = mLocalStackDepth;
-            c.mStackCount += param.mTuplesize;
             mLocalStackDepth += param.mTuplesize;
         } else {
             break;  // the parameters are all in front
@@ -705,13 +704,14 @@ Builder::pop_repContainer(ASTreplacement* r)
     if (m_CFDG) m_CFDG->reportStackDepth(mLocalStackDepth);
     assert(!mContainerStack.empty());
     ASTrepContainer* lastContainer = mContainerStack.back();
-    mLocalStackDepth -= lastContainer->mStackCount;
+    mLocalStackDepth = mStackStack.back();
     if (r) {
         r->mRepType |= lastContainer->mRepType;
         if (r->mPathOp == unknownPathop)
             r->mPathOp = lastContainer->mPathOp;
     }
     mContainerStack.pop_back();
+    mStackStack.pop_back();
 }
 
 static bool badContainer(int containerType)

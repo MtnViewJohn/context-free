@@ -76,6 +76,7 @@ public:
     Rand64          mSeed;
     
     AST::ASTrepContainer mParamDecls;
+    unsigned             mParamSize;
     
     static const std::map<std::string, int> FlagNames;
 
@@ -87,6 +88,7 @@ public:
     
     using ContainerStack_t = std::deque<AST::ASTrepContainer*>;
     ContainerStack_t    mContainerStack;
+    std::deque<int>     mStackStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);
     void                push_rep(AST::ASTreplacement* r, bool global = false);

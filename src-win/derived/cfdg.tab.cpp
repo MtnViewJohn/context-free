@@ -1292,7 +1292,7 @@ namespace yy {
                     case ASTdefine::FunctionDefine:
                         driver.pop_repContainer(nullptr);
                         driver.mParamDecls.mParameters.clear();
-                        driver.mParamDecls.mStackCount = 0;
+                        driver.mParamSize = 0;
                         // fall through
                     default:
                         var->mExpression = std::move(exp);
@@ -1382,7 +1382,7 @@ namespace yy {
             } else {
                 // An error occurred
                 driver.mParamDecls.mParameters.clear();
-                driver.mParamDecls.mStackCount = 0;
+                driver.mParamSize = 0;
             }
             (yylhs.value.defObj) = (yystack_[0].value.defObj);
         }

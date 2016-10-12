@@ -253,10 +253,10 @@ namespace AST {
     : mFunc(func), mRTI(rti),
       mOldTop(rti->mLogicalStackTop), mOldSize(rti->mStackSize)
     {
-        if (mFunc->definition->mStackCount) {
-            if (mOldSize + mFunc->definition->mStackCount > mRTI->mCFstack.size())
+        if (mFunc->definition->mParamSize) {
+            if (mOldSize + mFunc->definition->mParamSize > mRTI->mCFstack.size())
                 CfdgError::Error(mFunc->where, "Maximum stack size exceeded");
-            mRTI->mStackSize += mFunc->definition->mStackCount;
+            mRTI->mStackSize += mFunc->definition->mParamSize;
             mRTI->mCFstack[mOldSize].evalArgs(mRTI, mFunc->arguments.get(), &(mFunc->definition->mParameters), mFunc->isLet);
             mRTI->mLogicalStackTop = mRTI->mCFstack.data() + mRTI->mStackSize;
         }
@@ -264,7 +264,7 @@ namespace AST {
     
     ASTuserFunction::StackSetup::~StackSetup()
     {
-        if (mFunc->definition->mStackCount) {
+        if (mFunc->definition->mParamSize) {
             mRTI->mCFstack[mOldSize].release(&(mFunc->definition->mParameters));
             mRTI->mStackSize = mOldSize;
             mRTI->mLogicalStackTop = mOldTop;
@@ -2650,7 +2650,7 @@ namespace AST {
                 for (auto& rep: mDefinitions->mBody) {
                     if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get()))
                         if (def->mDefineType == ASTdefine::StackDefine) {
-                            definition->mStackCount += def->mTuplesize;
+                            definition->mParamSize += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
                         }
                 }

@@ -75,11 +75,10 @@ namespace AST {
         ASTbody mBody;
         ASTparameters mParameters;
         bool isGlobal;
-        unsigned mStackCount;
         
         ASTrepContainer() 
         : mPathOp(unknownPathop), mRepType(ASTreplacement::empty),
-          isGlobal(false), mStackCount(0) {};
+          isGlobal(false) {};
         ASTrepContainer(const ASTrepContainer&) = delete;
         ASTrepContainer& operator=(const ASTrepContainer&) = delete;
         ASTrepContainer(ASTrepContainer&&) = delete;
@@ -178,7 +177,7 @@ namespace AST {
         AST::expType mType;
         bool isNatural;
         ASTparameters mParameters;
-        unsigned mStackCount;
+        unsigned mParamSize;
         std::string mName;
         int mConfigDepth;
         

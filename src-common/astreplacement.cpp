@@ -64,7 +64,6 @@ namespace AST {
     {
         mParameters.emplace_back(index, natural, local, nameLoc);
         mParameters.back().checkParam(nameLoc, nameLoc);
-        mStackCount += mParameters.back().mTuplesize;
     }
     
     void
@@ -72,11 +71,8 @@ namespace AST {
     {
         // Delete all of the incomplete parameters inserted during parse
         if (ph == CompilePhase::TypeCheck) {
-            mStackCount = 0;
             for (size_t i = 0; i < mParameters.size(); ++i)
-                if (mParameters[i].isParameter  || mParameters[i].isLoopIndex) {
-                    mStackCount += mParameters[i].mTuplesize;
-                } else {
+                if (!mParameters[i].isParameter  && !mParameters[i].isLoopIndex) {
                     mParameters.resize(i);
                     break;
                 }
@@ -147,7 +143,7 @@ namespace AST {
     
     ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
     : ASTreplacement(nullptr, loc, empty), mDefineType(StackDefine),
-      mType(NoType), isNatural(false), mStackCount(0), mName(std::move(name)),
+      mType(NoType), isNatural(false), mParamSize(0), mName(std::move(name)),
       mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
@@ -835,7 +831,6 @@ namespace AST {
         if (mDefineType == FunctionDefine || mDefineType == LetDefine) {
             ASTrepContainer tempCont;
             tempCont.mParameters = mParameters;     // copy
-            tempCont.mStackCount = mStackCount;
             Builder::CurrentBuilder->push_repContainer(tempCont);
             ASTreplacement::compile(ph);
             Compile(mExpression, ph);
@@ -899,7 +894,6 @@ namespace AST {
                         addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
                     if (mDefineType == StackDefine) {
                         param.mStackIndex = Builder::CurrentBuilder->mLocalStackDepth;
-                        Builder::CurrentBuilder->mContainerStack.back()->mStackCount += param.mTuplesize;
                         Builder::CurrentBuilder->mLocalStackDepth += param.mTuplesize;
                     }
                 }
