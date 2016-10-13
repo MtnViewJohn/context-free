@@ -99,11 +99,6 @@ StackRule::alloc(const StackRule* from)
     const StackType* src = reinterpret_cast<const StackType*>(from);
     const AST::ASTparameters* ti = from->mParamCount ? src[1].typeInfo : nullptr;
     StackRule* ret = alloc(from->mRuleName, from->mParamCount, ti);
-#ifdef EXTREME_PARAM_DEBUG
-    ParamMap[ret] = ++ParamUID;
-    if (ParamUID == ParamOfInterest)
-        ParamMap[ret] = ParamOfInterest;
-#endif
     if (ret->mParamCount) {
         StackType* data = reinterpret_cast<StackType*>(ret);
         data[1].typeInfo = ti;

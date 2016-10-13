@@ -205,13 +205,6 @@ RendererImpl::~RendererImpl()
     cleanup();
     if (AbortEverything)
         return;
-#ifdef EXTREME_PARAM_DEBUG
-    AbstractSystem* sys = system();
-    for (auto &p: StackRule::ParamMap) {
-        if (p.second > 0)
-            sys->message("Parameter at %p is still alive, it is param number %d\n", p.first, p.second);
-    }
-#endif
 }
 
 class Stopped { };

@@ -1,0 +1,14 @@
+startshape curve1(0.95…0.99, 0±5)
+
+shape curve1(shrink, turn)
+{
+  SQUARE[]
+  curve2(=)[[y 0.5 s shrink r turn y 0.5]]
+}
+
+shape curve2(shrink, turn)
+{
+  SQUARE[]
+  curve1(=)[[y 0.5 s shrink r turn y 0.5]]
+}
+

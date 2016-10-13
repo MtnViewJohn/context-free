@@ -54,7 +54,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
-: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
+: mPostDtorCleanup(m), m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
   ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
@@ -67,14 +67,14 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     }
     
     mCFDGcontents.isGlobal = true;
-}
-
-CFDGImpl::~CFDGImpl()
-{
 #ifdef EXTREME_PARAM_DEBUG
     StackRule::ParamMap.clear();
     StackRule::ParamUID = 0;
 #endif
+}
+
+CFDGImpl::~CFDGImpl()
+{
 }
 
 const Shape&

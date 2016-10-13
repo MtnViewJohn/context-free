@@ -42,13 +42,27 @@
 #include "shape.h"
 #include "astreplacement.h"
 #include "config.h"
+#include "stacktype.h"
 
 class CFDGImpl : public CFDG {
     enum consts_t: unsigned { NoParameter = static_cast<unsigned>(-1) };
     public:
         enum {newShape = 0, ruleType = 1, pathType = 2};
     private:
+        struct PostDtorCleanup {
+            AbstractSystem* msys;
+            PostDtorCleanup(AbstractSystem* s) : msys(s) {}
+            ~PostDtorCleanup() {
+    #ifdef EXTREME_PARAM_DEBUG
+                for (auto &p: StackRule::ParamMap) {
+                    if (p.second > 0)
+                        msys->message("Parameter at %p is still alive, it is param number %d\n", p.first, p.second);
+                }
+    #endif
+            }
+        };
     
+        PostDtorCleanup mPostDtorCleanup;
         agg::rgba m_backgroundColor;
     
         int mStackSize;
