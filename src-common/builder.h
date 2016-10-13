@@ -99,8 +99,6 @@ public:
     
     std::stack<AST::ASTswitch*> switchStack;
 
-    void storeParams(const StackRule* p);
-    
     yy::Scanner*    lexer;
     void    warning(const yy::location& errLoc, const std::string& msg);
     void    error(const yy::location& errLoc, const std::string& msg);

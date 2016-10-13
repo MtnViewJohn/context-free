@@ -66,8 +66,6 @@ class RendererImpl : public RendererAST {
                         int variation, double border);
         ~RendererImpl();
     
-        virtual void storeParams(const StackRule* p) override;
-    
         void setMaxShapes(int n) override;
         void resetBounds() override;
         void resetSize(int x, int y) override;

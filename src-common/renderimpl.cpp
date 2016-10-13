@@ -1130,9 +1130,3 @@ RendererImpl::processPathCommand(const Shape& s, const AST::CommandInfo* attr)
     }
 }
 
-void
-RendererImpl::storeParams(const StackRule* p)
-{
-    p->mRefCount = StackRule::MaxRefCount;
-    m_cfdg->mLongLivedParams.push_back(p);
-}

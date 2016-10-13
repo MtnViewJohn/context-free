@@ -54,7 +54,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
-: mCleanupLLP(this), m_backgroundColor(1, 1, 1, 1), mStackSize(0),
+: m_backgroundColor(1, 1, 1, 1), mStackSize(0),
   mInitShape(nullptr), m_system(m), m_Parameters(0),
   ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
@@ -71,14 +71,6 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
 
 CFDGImpl::~CFDGImpl()
 {
-    // Release everything owned by the long-lived params
-    for (auto&& param: mLongLivedParams) {
-        for (auto it = param[0].begin(), e = param[0].end(); it != e; ++it) {
-            if (it.type().mType == AST::RuleType)
-                it->rule.~param_ptr();
-        }
-        if (Renderer::AbortEverything) return;
-    }
 #ifdef EXTREME_PARAM_DEBUG
     StackRule::ParamMap.clear();
     StackRule::ParamUID = 0;

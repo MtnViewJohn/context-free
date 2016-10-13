@@ -561,10 +561,12 @@ int main (int argc, char* argv[]) {
     }   // delete canvas & renderer
     
     if (opts.paramTest) {
-        if (Renderer::ParamCount)
+        if (Renderer::ParamCount) {
             cerr << "Left-over parameter blocks in memory:" << prettyInt(static_cast<unsigned long>(Renderer::ParamCount)) << endl;
-        else
+			return 88;
+		} else {
             *myCout << "All parameter blocks deleted" << endl;
+		}
     }
     
     return 0;

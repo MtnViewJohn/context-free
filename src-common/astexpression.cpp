@@ -2482,7 +2482,6 @@ namespace AST {
                             if (arguments->isConstant) {
                                 simpleRule = evalArgs();
                                 argSource = SimpleArgs;
-                                Builder::CurrentBuilder->storeParams(simpleRule.get());
                                 isConstant = true;
                                 mLocality = PureLocal;
                             } else {
@@ -2495,7 +2494,6 @@ namespace AST {
                             simpleRule = StackRule::alloc(shapeType, 0, typeSignature);
                             isConstant = true;
                             mLocality = PureLocal;
-                            Builder::CurrentBuilder->storeParams(simpleRule.get());
                         }
                         break;
                     }
