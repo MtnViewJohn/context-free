@@ -212,7 +212,6 @@ namespace AST {
             case SimpleParentArgs:
                 assert(parent);
                 assert(rti);
-                parent->retain();
                 return param_ptr(parent);
             case DynamicArgs: {
                 StackRule* ret = StackRule::alloc(shapeType, argSize, typeSignature);
