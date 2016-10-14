@@ -212,6 +212,7 @@ namespace AST {
         ASTrule(int i);
         ~ASTrule() override;
         void traversePath(const Shape& parent, RendererAST* r) const;
+        void traverseRule(Shape& parent, RendererAST* r) const;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
     };

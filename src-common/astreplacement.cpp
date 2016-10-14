@@ -481,12 +481,18 @@ namespace AST {
     void
     ASTrule::traverse(const Shape& parent, bool tr, RendererAST* r) const
     {
+        assert(false);
+    }
+    
+    void
+    ASTrule::traverseRule(Shape& parent, RendererAST* r) const
+    {
         r->mCurrentSeed = parent.mWorldState.mRand64Seed;
         
         if (isPath) {
             r->processPrimShape(parent, this);
         } else {
-            mRuleBody.traverse(parent, tr, r, true);
+            mRuleBody.traverse(parent, false, r, true);
         }
     }
     

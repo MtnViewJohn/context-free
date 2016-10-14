@@ -65,8 +65,8 @@ public:
         static bool isNatural(RendererAST* r, double n);
         static void ColorConflict(RendererAST* r, const yy::location& w);
         virtual void processPathCommand(const Shape& s, const AST::CommandInfo* attr) = 0;
-        virtual void processShape(const Shape& s) = 0;
-        virtual void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) = 0;
+        virtual void processShape(Shape& s) = 0;
+        virtual void processPrimShape(Shape& s, const AST::ASTrule* attr = nullptr) = 0;
         virtual void processSubpath(const Shape& s, bool tr, int) = 0;
     
     protected:

@@ -326,7 +326,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         try {
             const ASTrule* rule = m_cfdg->findRule(s.mShapeType, s.mWorldState.mRand64Seed.getDouble());
             m_drawingMode = false;      // shouldn't matter
-            rule->traverse(s, false, this);
+            rule->traverseRule(s, this);
         } catch (CfdgError& e) {
             requestStop = true;
             system()->error();
@@ -599,7 +599,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
 }
 
 void
-RendererImpl::processShape(const Shape& s)
+RendererImpl::processShape(Shape& s)
 {
     double area = s.area();
     if (!isfinite(area)) {
@@ -619,7 +619,7 @@ RendererImpl::processShape(const Shape& s)
         // only add it if it's big enough (or if there are no finished shapes yet)
         if (!mBounds.valid() || (area * mScaleArea >= m_minArea)) {
             m_stats.toDoCount++;
-            mUnfinishedShapes.push_back(s);
+            mUnfinishedShapes.push_back(std::move(s));
             push_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
         }
     } else if (m_cfdg->getShapeType(s.mShapeType) == CFDGImpl::pathType) {
@@ -636,12 +636,11 @@ RendererImpl::processShape(const Shape& s)
 }
 
 void
-RendererImpl::processPrimShape(const Shape& s, const ASTrule* path)
+RendererImpl::processPrimShape(Shape& s, const ASTrule* path)
 {
     size_t num = mSymmetryOps.size();
     if (num == 0 || s.mShapeType == primShape::fillType) {
-        Shape copy(s);
-        processPrimShapeSiblings(std::move(copy), path);
+        processPrimShapeSiblings(std::move(s), path);
     } else {
         for (size_t i = 0; i < num; ++i) {
             Shape sym(s);

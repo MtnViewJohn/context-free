@@ -75,8 +75,8 @@ class RendererImpl : public RendererAST {
         void draw(Canvas* canvas) override;
         void animate(Canvas* canvas, int frames, bool zoom) override;
         void processPathCommand(const Shape& s, const AST::CommandInfo* attr) override;
-        void processShape(const Shape& s) override;
-        void processPrimShape(const Shape& s, const AST::ASTrule* attr = nullptr) override;
+        void processShape(Shape& s) override;
+        void processPrimShape(Shape& s, const AST::ASTrule* attr = nullptr) override;
         void processSubpath(const Shape& s, bool tr, int) override;
         
     private:
