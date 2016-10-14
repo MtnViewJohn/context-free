@@ -176,6 +176,7 @@ class CFDG {
         bool usesTime;
         bool usesFrameTime;
         static const CfgArray<std::string>  ParamNames;
+        static CFG lookupCfg(const std::string& name);
         virtual bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;

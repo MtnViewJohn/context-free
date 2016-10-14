@@ -71,6 +71,16 @@ const CfgArray<std::string> CFDG::ParamNames = {
     "CF::Time"
 };
 
+CFG
+CFDG::lookupCfg(const std::string& name)
+{
+    auto nameIt = std::find(ParamNames.begin(), ParamNames.end(), name);
+    if (nameIt == ParamNames.end())
+        return CFG::Unknown;
+    
+    return static_cast<CFG>(nameIt - ParamNames.begin());
+}
+
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
 : where(loc), mMsg(msg)
 {

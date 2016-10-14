@@ -173,7 +173,7 @@ class CFDGImpl : public CFDG {
 
         enum Parameter {Color = 1, Alpha = 2, Time = 4, FrameTime = 8};
         void addParameter(Parameter);
-        bool addParameter(std::string name, AST::exp_ptr e, unsigned depth);
+        void addParameter(CFG var, AST::exp_ptr e, unsigned depth);
 
         AST::ASTrepContainer    mCFDGcontents;
     

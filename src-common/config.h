@@ -48,7 +48,8 @@ enum class CFG {
     Symmetry,
     Tile,
     Time,
-    _NumberOf
+    _NumberOf,
+    Unknown = -1
 };
 
 template <typename _T>

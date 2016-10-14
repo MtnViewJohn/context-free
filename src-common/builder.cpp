@@ -371,8 +371,14 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
 void
 Builder::MakeConfig(ASTdefine* cfg)
 {
+    CFG cfgNum = CFDG::lookupCfg(cfg->mName);
+    if (cfgNum == CFG::Unknown) {
+        warning(cfg->mLocation, "Unknown configuration parameter");
+        return;
+    }
+    
     yy::location expLoc = cfg->mExpression ? cfg->mExpression->where : cfg->mLocation;
-    if (cfg->mName == "CF::Impure") {
+    if (cfgNum == CFG::Impure) {
         double v = 0.0;
         if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
             CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
@@ -380,7 +386,7 @@ Builder::MakeConfig(ASTdefine* cfg)
             ASTparameter::Impure = v != 0.0;
         }
     }
-    if (cfg->mName == "CF::AllowOverlap") {
+    if (cfgNum == CFG::AllowOverlap) {
         double v = 0.0;
         if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
             CfdgError::Error(expLoc, "CF::AllowOverlap requires a constant numeric expression");
@@ -393,7 +399,7 @@ Builder::MakeConfig(ASTdefine* cfg)
     // problems with latest clang. So grab an unmanaged copy ahead of time and use the copy.
     const ASTexpression* cfgExp = cfg->mExpression.get();
     
-    if (cfg->mName == "CF::StartShape" && cfgExp &&
+    if (cfgNum == CFG::StartShape && cfgExp &&
         typeid(*cfgExp) != typeid(ASTstartSpecifier))
     {
         // This code supports setting the startshape with a config statement:
@@ -431,9 +437,8 @@ Builder::MakeConfig(ASTdefine* cfg)
         cfg->mExpression.reset(new ASTstartSpecifier(std::move(*rule), std::move(mod)));
     }
     ASTexpression* current = cfg->mExpression.get();
-    if (!m_CFDG->addParameter(cfg->mName, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth)))
-        warning(cfg->mLocation, "Unknown configuration parameter");
-    if (cfg->mName == "CF::MaxNatural") {
+    m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth));
+    if (cfgNum == CFG::MaxNatural) {
         const ASTexpression* max = m_CFDG->hasParameter(CFG::MaxNatural);
         if (max != current || !max)
             return;                             // only process if we are changing it

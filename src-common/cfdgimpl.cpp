@@ -326,23 +326,13 @@ CFDGImpl::hasParameter(CFG name) const
     return ParamExp[name].get();
 }
 
-bool
-CFDGImpl::addParameter(std::string name, exp_ptr e, unsigned depth)
+void
+CFDGImpl::addParameter(CFG var, exp_ptr e, unsigned depth)
 {
-    size_t varNum = 0;
-    for (; varNum < ParamNames.size(); ++varNum)
-        if (name == ParamNames[varNum])
-            break;
-    if (varNum >= ParamNames.size())
-        return false;
-    
-    CFG var = static_cast<CFG>(varNum);
-
     if (depth < ParamDepth[var]) {
         ParamDepth[var] = depth;
         ParamExp[var] = std::move(e);
     }
-    return true;
 }
 
 void
