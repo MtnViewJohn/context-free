@@ -264,7 +264,7 @@ namespace AST {
     ASTuserFunction::StackSetup::~StackSetup()
     {
         if (mFunc->definition->mParamSize) {
-            mRTI->mCFstack[mOldSize].release(&(mFunc->definition->mParameters));
+            mRTI->mCFstack[mOldSize].destroy(&(mFunc->definition->mParameters));
             mRTI->mStackSize = mOldSize;
             mRTI->mLogicalStackTop = mOldTop;
         }

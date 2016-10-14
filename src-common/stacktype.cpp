@@ -152,7 +152,7 @@ StackRule::release() const
     if (mRefCount == 0) {
         if (mParamCount) {
             const StackType* data = reinterpret_cast<const StackType*>(this);
-            data[HeaderSize].release(data[1].typeInfo);
+            data[HeaderSize].destroy(data[1].typeInfo);
         }
 #ifdef EXTREME_PARAM_DEBUG
         (*f).second = -n;
@@ -165,7 +165,7 @@ StackRule::release() const
 
 // Release arguments on the stack
 void
-StackType::release(const AST::ASTparameters* p) const
+StackType::destroy(const AST::ASTparameters* p) const
 {
     for (const_iterator it = begin(p), e = end(); it != e; ++it)
         if (it.type().mType == AST::RuleType)

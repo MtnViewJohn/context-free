@@ -212,7 +212,7 @@ union StackType {
     StackRule   ruleHeader;
     const AST::ASTparameters* typeInfo;
 
-    void        release(const AST::ASTparameters* p) const;
+    void        destroy(const AST::ASTparameters* p) const;
 
     void        evalArgs(RendererAST* rti, const AST::ASTexpression* arguments,
                          const AST::ASTparameters* p, bool sequential);
