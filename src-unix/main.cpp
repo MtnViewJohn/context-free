@@ -480,7 +480,8 @@ int main (int argc, char* argv[]) {
 
     if (!opts.quiet) setupTimer(TheRenderer);
     
-    TheRenderer->setMaxShapes(opts.maxShapes);
+    if (opts.maxShapes > 0)
+        TheRenderer->setMaxShapes(opts.maxShapes);
     TheRenderer->run(nullptr, false);
     
     opts.width = TheRenderer->m_width;
