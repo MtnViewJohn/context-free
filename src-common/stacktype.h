@@ -108,7 +108,7 @@ class param_ptr {
 public:
     param_ptr() = default;
     param_ptr(std::nullptr_t) { }
-    param_ptr(const StackRule* r) : mPtr(r) { }
+    param_ptr(const StackRule* r);
     param_ptr(const param_ptr& o);
     param_ptr(param_ptr&& o) : mPtr(o.mPtr)
     { o.mPtr = nullptr; }
@@ -256,6 +256,12 @@ StackRule::cbegin()
         return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();
+}
+
+inline param_ptr::param_ptr(const StackRule* r) : mPtr(r)
+{
+    if (mPtr)
+        mPtr->retain();
 }
 
 inline param_ptr::param_ptr(const param_ptr& o) : mPtr(o.mPtr)

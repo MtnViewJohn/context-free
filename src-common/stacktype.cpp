@@ -137,6 +137,10 @@ StackRule::copyParams(StackType* dest) const
 void
 StackRule::release() const
 {
+    assert(mRefCount > 0);
+    if (mRefCount < MaxRefCount)
+        --mRefCount;
+    
 #ifdef EXTREME_PARAM_DEBUG
     auto f = ParamMap.find(this);
     assert(f != ParamMap.end());
@@ -157,9 +161,6 @@ StackRule::release() const
         delete[] this;
         return;
     }
-    
-    if (mRefCount < MaxRefCount)
-        --mRefCount;
 }
 
 // Release arguments on the stack
