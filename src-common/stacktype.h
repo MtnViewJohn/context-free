@@ -161,8 +161,11 @@ struct StackRule {
     
     static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
     static StackRule*  alloc(const StackRule* from);
+private:
     void        release() const;
     void        retain() const;
+public:
+    friend class param_ptr;     // only param_ptr can change the refcount
     void        copyParams(StackType* dest) const;
     
     
