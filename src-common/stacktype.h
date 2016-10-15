@@ -160,7 +160,7 @@ struct StackRule {
     static bool Equal(const StackRule* a, const StackRule* b);
     
     static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
-    static StackRule*  alloc(const StackRule* from);
+    static StackRule*  alloc(const StackRule* from, int newName = -1);
 private:
     void        release() const;
     void        retain() const;

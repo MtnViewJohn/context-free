@@ -92,16 +92,15 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 }
 
 StackRule*
-StackRule::alloc(const StackRule* from)
+StackRule::alloc(const StackRule* from, int newName)
 {
     if (from == nullptr)
         return nullptr;
     const StackType* src = reinterpret_cast<const StackType*>(from);
     const AST::ASTparameters* ti = from->mParamCount ? src[1].typeInfo : nullptr;
-    StackRule* ret = alloc(from->mRuleName, from->mParamCount, ti);
+    StackRule* ret = alloc(newName >= 0 ? newName : from->mRuleName, from->mParamCount, ti);
     if (ret->mParamCount) {
         StackType* data = reinterpret_cast<StackType*>(ret);
-        data[1].typeInfo = ti;
         from->copyParams(data + HeaderSize);
     }
     return ret;
