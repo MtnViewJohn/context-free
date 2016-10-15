@@ -1012,25 +1012,27 @@ namespace AST {
             const ASTexpression* cit = e->getChild(i);
             switch (cit->mType) {
                 case FlagType:
-                    processSymmSpec(syms, tile, tiled, symmSpec, where);
+                    // Snarf and process the numeric arguments for the symmetry spec
                     where = cit->where;
-                case NumericType: {
-                    if (symmSpec.empty() && cit->mType != FlagType)
-                        CfdgError::Error(cit->where, "Symmetry flag expected here");
-                    int sz = cit->evaluate();
-                    if (sz < 1) {
-                        CfdgError::Error(cit->where, "Could not evaluate this");
-                    } else {
-                        size_t oldsize = symmSpec.size();
-                        symmSpec.resize(oldsize + sz);
-                        if (cit->evaluate(symmSpec.data() + oldsize, sz, r) != sz)
+                    do {
+                        int sz = cit->evaluate();
+                        if (sz < 1) {
                             CfdgError::Error(cit->where, "Could not evaluate this");
-                    }
-                    where = where + cit->where;
-                    break;
-                }
-                case ModType:
+                        } else {
+                            size_t oldsize = symmSpec.size();
+                            symmSpec.resize(oldsize + sz);
+                            if (cit->evaluate(symmSpec.data() + oldsize, sz, r) != sz)
+                                CfdgError::Error(cit->where, "Could not evaluate this");
+                        }
+                        where += cit->where;
+                    } while (++i < e->size() && (cit = e->getChild(i))->mType == NumericType);
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
+                    --i;    // back-up loop variable to end of symmetry spec
+                    break;
+                case NumericType:
+                    CfdgError::Error(cit->where, "Symmetry flag expected here");
+                    break;
+                case ModType:
                     if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit)) {
                         if ((m->modClass &
                              (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
@@ -1051,7 +1053,6 @@ namespace AST {
                     break;
             }
         }
-        processSymmSpec(syms, tile, tiled, symmSpec, where);
         return ret;
     }
 }
