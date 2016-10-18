@@ -203,8 +203,6 @@ RendererImpl::resetSize(int x, int y)
 RendererImpl::~RendererImpl()
 {
     cleanup();
-    if (AbortEverything)
-        return;
 }
 
 class Stopped { };
@@ -216,22 +214,11 @@ RendererImpl::cleanup()
     m_finishedFiles.clear();
     m_unfinishedFiles.clear();
 
-    try {
-        std::function <void (const Shape& s)> checkStop([](const Shape& s) {
-            if (Renderer::AbortEverything)
-                throw Stopped();
-        });
-        for_each(mUnfinishedShapes.begin(), mUnfinishedShapes.end(), checkStop);
-        for_each(mFinishedShapes.begin(), mFinishedShapes.end(), checkStop);
-    } catch (Stopped&) {
-        return;
-    } catch (exception& e) {
-        system()->catastrophicError(e.what());
-        return;
-    }
+    // Delete all shapes and parameters (except those in the AST)
     mUnfinishedShapes.clear();
     mFinishedShapes.clear();
     
+    // Delete the global definitions
     unwindStack(0, m_cfdg->mCFDGcontents.mParameters);
     
     mCurrentPath.reset();
