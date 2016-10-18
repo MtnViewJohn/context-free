@@ -625,13 +625,12 @@ RendererImpl::processShape(Shape& s)
 void
 RendererImpl::processPrimShape(Shape& s, const ASTrule* path)
 {
-    size_t num = mSymmetryOps.size();
-    if (num == 0 || s.mShapeType == primShape::fillType) {
+    if (mSymmetryOps.empty() || s.mShapeType == primShape::fillType) {
         processPrimShapeSiblings(std::move(s), path);
     } else {
-        for (size_t i = 0; i < num; ++i) {
+        for (auto&& xform: mSymmetryOps) {
             Shape sym(s);
-            sym.mWorldState.m_transform.multiply(mSymmetryOps[i]);
+            sym.mWorldState.m_transform.multiply(xform);
             processPrimShapeSiblings(std::move(sym), path);
         }
     }
