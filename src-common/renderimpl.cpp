@@ -978,11 +978,8 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         
         OutputMerge merger;
         
-        begin = m_finishedFiles.begin();
-        end = m_finishedFiles.end();
-        
-        for (auto it = begin; it != end; ++it)
-            merger.addTempFile(*it);
+        for (auto&& file: m_finishedFiles)
+            merger.addTempFile(file);
         
         merger.addShapes(mFinishedShapes.begin(), mFinishedShapes.end());
         merger.merge(op);
