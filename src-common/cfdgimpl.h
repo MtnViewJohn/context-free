@@ -98,8 +98,6 @@ class CFDGImpl : public CFDG {
         
         std::vector<ShapeType> m_shapeTypes;
     
-        Shape m_initialShape;
-
     public:
         AST::rep_ptr mInitShape;
         std::vector<AST::ASTrule*> mRules;
@@ -145,7 +143,7 @@ class CFDGImpl : public CFDG {
     public:
         AbstractSystem* system() { return m_system; }
         
-        const Shape& getInitialShape(RendererAST* r);
+        Shape getInitialShape(RendererAST* r);
     
         RGBA8 getColor(const HSBColor& hsb);
         

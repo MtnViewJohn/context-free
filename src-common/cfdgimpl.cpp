@@ -77,7 +77,7 @@ CFDGImpl::~CFDGImpl()
 {
 }
 
-const Shape&
+Shape
 CFDGImpl::getInitialShape(RendererAST* r)
 {
     Shape init;
@@ -87,8 +87,7 @@ CFDGImpl::getInitialShape(RendererAST* r)
     mInitShape->replace(init, r);
     init.mWorldState.m_transform.tx += mTileOffset.x;
     init.mWorldState.m_transform.ty += mTileOffset.y;
-    m_initialShape = std::move(init);
-    return m_initialShape; 
+    return init;
 }
 
 const agg::rgba&
