@@ -207,8 +207,6 @@ namespace {
 {
     self = [super initWithFrame:frame];
     if (self) {
-        mCanvas = nullptr;
-        
         mRenderBitmap = nil;
         mDrawingImage = nil;
         mRestartRenderer = false;
@@ -223,8 +221,6 @@ namespace {
         
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
-
-        mAnimationCanvas = nullptr;
 
         mTiled = false;
         
@@ -855,24 +851,23 @@ namespace {
 
     if (mEngine && mRenderer && mCanvas) {
         if (parameters.render) 
-            mScale = mRenderer->run(mCanvas, parameters.periodicUpdate);
+            mScale = mRenderer->run(mCanvas.get(), parameters.periodicUpdate);
         else if (parameters.animate) {
-            AVcanvas* av = dynamic_cast<AVcanvas*> (mCanvas);
-            assert(av);
-            mRenderer->animate(mCanvas,
+            assert(dynamic_cast<AVcanvas*>(mCanvas.get()));
+            mRenderer->animate(mCanvas.get(),
                                parameters.animateFrameCount, 
                                parameters.animateZoom);
-            if (av->mError)
+            if (mCanvas->mError)
                 NSBeep();
         }
         else {
-            mRenderer->draw(mCanvas);
+            mRenderer->draw(mCanvas.get());
             [mDocument performSelectorOnMainThread: @selector(noteStatus:)
                                         withObject: @"Drawing operation complete"
                                      waitUntilDone: NO];
         }
         
-        if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas))
+        if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas.get()))
             mCanvasColor256 = ic->colorCount256();
     }
     
@@ -897,8 +892,7 @@ namespace {
     mRendererFinishing = false;
     mRendererStopping = false;
 
-    delete mCanvas;
-    mCanvas = nullptr;
+    mCanvas.reset();
     
 #ifndef PROGRESS_ANIMATE_DIRECTLY
     [mProgress stopAnimation: self];
@@ -1098,7 +1092,7 @@ namespace {
     mRenderedRect.origin.y = 0.0;
     mRenderedRect.size = mRenderSize;
 
-    mCanvas = new ImageCanvas(self, mRenderBitmap, [bm aggPixelFormat]);
+    mCanvas.reset(new ImageCanvas(self, mRenderBitmap, [bm aggPixelFormat]));
 
     mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 }
@@ -1226,15 +1220,14 @@ namespace {
 
 - (void)saveSvgtoFile:(NSURL*)filename
 {
-    mCanvas = new SVGCanvas([[filename path] UTF8String],
+    mCanvas.reset(new SVGCanvas([[filename path] UTF8String],
         (int)mRenderedRect.size.width, (int)mRenderedRect.size.height,
-        false);
+        false));
     
     if (mCanvas->mError) {
         [mDocument noteStatus: @"An error occured while writing the SVG file."];
         NSBeep();
-        delete mCanvas;
-        mCanvas = nullptr;
+        mCanvas.reset();
         return;
     }
     
@@ -1285,17 +1278,13 @@ namespace {
         return;
     }
     
-    mAnimationCanvas = new AVcanvas([filename path], [bits autorelease],
-                                    static_cast<int>(movieFrameRate), fmt);
+    mCanvas.reset(new AVcanvas([filename path], [bits autorelease],
+                               static_cast<int>(movieFrameRate), fmt));
     
-    if (!mAnimationCanvas->mError) {
-        mCanvas = mAnimationCanvas;
-        mAnimationCanvas = nullptr;
-        
+    if (!mCanvas->mError) {
         [self renderBegin: &parameters];
     } else {
-        delete mAnimationCanvas;
-        mAnimationCanvas = nullptr;
+        mCanvas.reset();
         [mDocument noteStatus: @"An error occured while initializing the movie file."];
         NSBeep();
     }

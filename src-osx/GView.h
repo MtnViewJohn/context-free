@@ -46,7 +46,7 @@ using canvas_ptr = std::unique_ptr<Canvas>;
 @interface GView : NSView<NSWindowDelegate> {
     cfdg_ptr     mEngine;
     renderer_ptr mRenderer;
-    Canvas*      mCanvas;
+    canvas_ptr   mCanvas;
     
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
@@ -92,8 +92,6 @@ using canvas_ptr = std::unique_ptr<Canvas>;
     
     NSMenuItem*    mFullScreenMenu;
     
-    AVcanvas*      mAnimationCanvas;
-
     bool    mTiled;
     double  mScale;
 }
