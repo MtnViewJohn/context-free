@@ -40,28 +40,6 @@
 #include "Rand64.h"
 #include <tgmath.h>
 
-// Provide the forward-declarations of new 10.7 SDK symbols so they can be
-// called when building with the 10.5 SDK.
-#if !defined(MAC_OS_X_VERSION_10_7) || \
-MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
-
-@interface NSWindow (LionSDKDeclarations)
-- (void)toggleFullScreen:(id)sender;
-@end
-
-enum {
-    NSWindowCollectionBehaviorFullScreenPrimary = 1 << 7,
-    NSWindowCollectionBehaviorFullScreenAuxiliary = 1 << 8
-};
-
-enum {
-    NSWindowFullScreenButton = 7
-};
-
-enum {
-    NSFullScreenWindowMask = 1 << 14
-};
-#endif  // MAC_OS_X_VERSION_10_7
 
 //#define PROGRESS_ANIMATE_DIRECTLY
 //#define USE_SAVE_GRAPHICS_STATE
