@@ -33,9 +33,6 @@
 @class GView;
 @class CfdgErrorWrapper;
 
-class CFDG;
-class AbstractSystem;
-
 @interface CFDGDocument : NSDocument {
     AbstractSystem*         mSystem;
     NSData*                 mContent;
@@ -70,7 +67,7 @@ class AbstractSystem;
 - (IBAction) closeAll:(id)sender;
 - (IBAction) enterFullscreen:(id)sender;
 
-- (CFDG*)buildEngine;
+- (cfdg_ptr)buildEngine;
 
 - (void)showContent;
 - (NSData*)getContent;

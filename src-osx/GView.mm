@@ -207,7 +207,6 @@ namespace {
 {
     self = [super initWithFrame:frame];
     if (self) {
-        mEngine = nullptr;
         mRenderer = nullptr;
         mCanvas = nullptr;
         
@@ -1070,11 +1069,13 @@ namespace {
     if (!mEngine) return;
     
     assert(mRenderer == nullptr);
-    mRenderer = mEngine->renderer(
+    mRenderer = mEngine->renderer(mEngine,
         (int)size.width, (int)size.height,
         minSize,
         mCurrentVariation,
         [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]);
+    if (!mRenderer)
+        mEngine.reset();
 }
 
 - (void)buildImageCanvasSize
@@ -1082,7 +1083,7 @@ namespace {
     if (!mRenderer || !mEngine) return;
     
     BitmapAndFormat* bm = [[BitmapAndFormat alloc] 
-                             initWithAggPixFmt: aggCanvas::SuggestPixelFormat(mEngine)
+                             initWithAggPixFmt: aggCanvas::SuggestPixelFormat(mEngine.get())
                                     pixelsWide: mRenderer->m_width
                                     pixelsHigh: mRenderer->m_height];
     
@@ -1303,7 +1304,7 @@ namespace {
 
 - (void)deleteRenderer
 {
-    mEngine = nullptr;
+    mEngine.reset();
     if (mRenderer == nullptr) return;
 #ifdef EXTREME_PARAM_DEBUG
     delete mRenderer; mRenderer = nullptr;

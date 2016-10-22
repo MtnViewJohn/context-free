@@ -28,6 +28,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "KFSplitView.h"
+#include <memory>
 
 @class CFDGDocument;
 @class TopBar;
@@ -38,8 +39,12 @@ class Canvas;
 class Renderer;
 class AVcanvas;
 
+using cfdg_ptr = std::shared_ptr<CFDG>;
+using renderer_ptr = std::unique_ptr<Renderer>;
+using canvas_ptr = std::unique_ptr<Canvas>;
+
 @interface GView : NSView<NSWindowDelegate> {
-    CFDG*       mEngine;
+    cfdg_ptr    mEngine;
     Renderer*   mRenderer;
     Canvas*     mCanvas;
     

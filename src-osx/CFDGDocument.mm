@@ -317,7 +317,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [super close];
 }
 
-- (CFDG*)buildEngine
+- (cfdg_ptr)buildEngine
 {
     [[[mStatusText textStorage] mutableString] setString: @""];
     
@@ -326,7 +326,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     static NSLock* parseLock = [[NSLock alloc] init];
     
-    CFDG* result = nullptr;
+    cfdg_ptr result;
     if ([parseLock lockBeforeDate: [NSDate dateWithTimeIntervalSinceNow: 2.0]]) {
         result = CFDG::ParseFile(fileName, mSystem, [mGView variation]);
         [parseLock unlock];
