@@ -89,8 +89,8 @@ const std::map<std::string, int> Builder::FlagNames = {
 Builder* Builder::CurrentBuilder = nullptr;
 double Builder:: MaxNatural = 1000.0;
 
-Builder::Builder(cfdgi_ptr cfdg, int variation)
-: m_CFDG(std::move(cfdg)), m_currentPath(nullptr), m_pathCount(1),
+Builder::Builder(const cfdgi_ptr& cfdg, int variation)
+: m_CFDG(cfdg), m_currentPath(nullptr), m_pathCount(1),
   mInPathContainer(false), mCurrentShape(-1), mParamSize(0),
   mLocalStackDepth(0), mIncludeDepth(0), mAllowOverlap(false), lexer(nullptr),
   mErrorOccured(false)

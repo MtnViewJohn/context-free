@@ -123,7 +123,7 @@ class CFDGImpl : public CFDG {
         CFDGImpl(AbstractSystem*);
         ~CFDGImpl() override;
         
-        Renderer* renderer(
+        Renderer* renderer(const cfdg_ptr& ptr,
                 int width, int height, double minSize,
                 int variation, double border = 2.0) override;
         
@@ -178,6 +178,6 @@ class CFDGImpl : public CFDG {
         std::list<std::string> fileNames;
 };
 
-typedef std::unique_ptr<CFDGImpl> cfdgi_ptr;
+using cfdgi_ptr = std::shared_ptr<CFDGImpl>;
 
 #endif // INCLUDE_CFDGIMPL_H

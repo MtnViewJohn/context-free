@@ -560,7 +560,7 @@ CFDGImpl::findFunction(int nameIndex)
 }
 
 Renderer*
-CFDGImpl::renderer(int width, int height, double minSize,
+CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
                     int variation, double border)
 {
     ASTexpression* startExp = ParamExp[CFG::StartShape].get();
@@ -584,7 +584,7 @@ CFDGImpl::renderer(int width, int height, double minSize,
 
     std::unique_ptr<RendererImpl> r;
     try {
-        r.reset(new RendererImpl(this, width, height, minSize, variation, border));
+        r.reset(new RendererImpl(ptr, width, height, minSize, variation, border));
         Modification tiled;
         Modification sized;
         Modification timed;

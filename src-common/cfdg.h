@@ -157,14 +157,17 @@ class Canvas {
 };
 
 class Renderer;
+class CFDG;
+
+using cfdg_ptr = std::shared_ptr<CFDG>;
 
 class CFDG {
     public:
         enum frieze_t { no_frieze = 0, frieze_x, frieze_y };
-        static CFDG* ParseFile(const char* fname, AbstractSystem*, int variation);
+        static cfdg_ptr ParseFile(const char* fname, AbstractSystem*, int variation);
         virtual ~CFDG();
 
-        virtual Renderer* renderer(
+        virtual Renderer* renderer(const cfdg_ptr& ptr,
                 int width, int height, double minSize,
                 int variation, double border = 2.0
             ) = 0;

@@ -62,10 +62,11 @@ unsigned int RendererImpl::MaxMergeFiles = 0;      // maximum number of files to
 const double SHAPE_BORDER = 1.0; // multiplier of shape size when calculating bounding box
 const double FIXED_BORDER = 8.0; // fixed extra border, in pixels
 
-RendererImpl::RendererImpl(CFDGImpl* cfdg,
+RendererImpl::RendererImpl( const cfdg_ptr& cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
-    : RendererAST(width, height), m_cfdg(cfdg), m_canvas(nullptr), mColorConflict(false), 
+    : RendererAST(width, height), m_cfdg(cfdg, dynamic_cast<CFDGImpl*>(cfdg.get())),
+      m_canvas(nullptr), mColorConflict(false),
       m_maxShapes(500000000), mVariation(variation), m_border(border), 
       mScaleArea(0.0), mScale(0.0), m_currScale(0.0), m_currArea(0.0), 
       m_minSize(minSize), mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),

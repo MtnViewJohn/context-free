@@ -61,9 +61,9 @@ namespace AST {
 
 class RendererImpl : public RendererAST {
     public:
-        RendererImpl(CFDGImpl* cfdg,    // takes ownership w/o move semantics
-                        int width, int height, double minSize,
-                        int variation, double border);
+        RendererImpl(const cfdg_ptr& cfdg,
+                     int width, int height, double minSize,
+                     int variation, double border);
         ~RendererImpl();
     
         void setMaxShapes(int n) override;

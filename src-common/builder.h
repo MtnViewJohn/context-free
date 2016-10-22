@@ -47,7 +47,7 @@
 #include "astreplacement.h"
 
 class CFDGImpl;
-using cfdgi_ptr = std::unique_ptr<CFDGImpl>;
+using cfdgi_ptr = std::shared_ptr<CFDGImpl>;
 namespace yy {
     class location;
 }
@@ -105,7 +105,7 @@ public:
     void    error(int line, const char* msg);
     bool    mErrorOccured;
     
-    Builder(cfdgi_ptr cfdg, int variation);
+    Builder(const cfdgi_ptr& cfdg, int variation);
     ~Builder();
     
     int             StringToShape(const std::string& name, const yy::location& loc,

@@ -168,14 +168,14 @@ Renderer::~Renderer() = default;
 CFDG::~CFDG() = default;
 
 
-CFDG*
+cfdg_ptr
 CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
 {
     cfdgi_ptr pCfdg;
     for (int version = 2; version <= 3; ++version) {
         if (!pCfdg)
             pCfdg.reset(new CFDGImpl(system));
-        Builder b(std::move(pCfdg), variation);
+        Builder b(pCfdg, variation);
 
         yy::Scanner lexer;
         b.lexer = &lexer;
@@ -232,7 +232,6 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             b.m_CFDG->rulesLoaded();
             if (b.mErrorOccured)
                 return nullptr;
-            pCfdg = std::move(b.m_CFDG);
             break;
         }
         if (lexer.maybeVersion == 0 || 
@@ -246,5 +245,5 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
     if (pCfdg)
         system->message("%d rules loaded", pCfdg->numRules());
     
-    return pCfdg.release();
+    return cfdg_ptr(pCfdg);
 }
