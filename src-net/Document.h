@@ -26,11 +26,10 @@
 
 #include "Form1.h"
 #include "RenderSizeDialog.h"
+#include <memory>
+#include "cfdg.h"
 
 class WinCanvas;
-class Canvas;
-class CFDG;
-class Renderer;
 class tiledCanvas;
 class WinSystem;
 class SVGCanvas;
@@ -60,7 +59,7 @@ namespace ContextFreeNet {
               mSystem(0),
               mRenderButtonIndex(0),
               mUserChangedVariation(true),
-              mEngine(0),
+              mEngine(new cfdg_ptr()),
               mRenderer(0),
               mCanvas(0),
               mTempCanvas(0),
@@ -216,6 +215,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem1;
 				delete components;
 			}
             DestroyStuff();
+			delete mEngine;
 		}
 	private: System::Windows::Forms::ToolStrip^  toolStrip1;
 	private: System::Windows::Forms::SplitContainer^  documentSplitter;
@@ -1378,7 +1378,7 @@ protected:
     bool mUserChangedVariation;
     int imageListBase;
 
-    CFDG* mEngine;
+    cfdg_ptr* mEngine;
     Renderer* mRenderer;
     WinCanvas* mCanvas;
     WinCanvas* mTempCanvas;

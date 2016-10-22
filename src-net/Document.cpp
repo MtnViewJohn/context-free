@@ -118,7 +118,7 @@ void Document::InitializeStuff()
 void Document::DestroyStuff()
 {
     delete mCanvas;
-    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; mEngine = nullptr;
+    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; mEngine->reset();
     if (mSystem) mSystem->orphan();
     delete mSVGCanvas;
     delete mAnimationCanvas;
@@ -433,7 +433,7 @@ System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArg
         return;
     }
 
-    SaveImage saveImageDlg(mEngine->isFrieze(), mTiled ? mOutputMultiplier : nullptr,
+    SaveImage saveImageDlg((*mEngine)->isFrieze(), mTiled ? mOutputMultiplier : nullptr,
         Path::GetFileNameWithoutExtension(Text) + ".png",
         ((Form1^)MdiParent)->saveDirectory);
 
@@ -614,7 +614,7 @@ System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArg
         pin_ptr<Byte> pathutf8pin = &pathutf8[0];
         const char* path = reinterpret_cast<const char*>(pathutf8pin);
 
-        mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine),
+        mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine->get()),
                                         renderParams->width, renderParams->height,
                                         Form1::prefs->AnimateFrameRate);
 
@@ -649,7 +649,7 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
     u.mTextLen = strlen(u.mText);
 
     UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u,
-                           mEngine->isFrieze(), mTiled ? mOutputMultiplier : nullptr);
+		(*mEngine)->isFrieze(), mTiled ? mOutputMultiplier : nullptr);
 
     uploadWiz.ShowDialog(this);
     u.mText = 0;
@@ -951,7 +951,8 @@ void Document::updateRenderButton()
 
 void Document::DoRender()
 {
-    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; mEngine = nullptr;
+    Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; 
+	mEngine->reset();
     setMessageText(nullptr);
 
     if (!mSystem)
@@ -964,8 +965,8 @@ void Document::DoRender()
     }
     mUserChangedVariation = false;
 
-    mEngine = CFDG::ParseFile(mSystem->mName.c_str(), mSystem, currentVariation);
-    if (!mEngine) {
+    *mEngine = CFDG::ParseFile(mSystem->mName.c_str(), mSystem, currentVariation);
+    if (!(*mEngine)) {
         System::Media::SystemSounds::Beep->Play();
         return;
     }
@@ -973,20 +974,23 @@ void Document::DoRender()
     if (renderParams->width == 0 || renderParams->height == 0) {
         renderParams->width = renderBox->Size.Width;
         renderParams->height = renderBox->Size.Height;
-        if (mEngine->isTiled()) {
+        if ((*mEngine)->isTiled()) {
             renderParams->width = (renderParams->width * 9) / 10;
             renderParams->height = (renderParams->height * 9) / 10;
         }
     }
 
-    mRenderer = mEngine->renderer(renderParams->width, renderParams->height, 
+    mRenderer = (*mEngine)->renderer(*mEngine, renderParams->width, renderParams->height,
         (float)renderParams->minimumSize, currentVariation, renderParams->borderSize);
-    if (!mRenderer) return;
+	if (!mRenderer) {
+		mEngine->reset();
+		return;
+	}
 
     renderParams->width = mRenderer->m_width;
     renderParams->height = mRenderer->m_height;
 
-    mTiled = mEngine->isTiled() || mEngine->isFrieze();
+    mTiled = (*mEngine)->isTiled() || (*mEngine)->isFrieze();
 
     delete mCanvas;
     mCanvas = nullptr;
@@ -1168,8 +1172,8 @@ void Document::setupCanvas(Renderer* r)
         renderSizeChanged();
 
     if (!mCanvas) {
-        mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine), 
-            renderParams->width, renderParams->height, mEngine->getBackgroundColor());
+        mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()), 
+            renderParams->width, renderParams->height, (*mEngine)->getBackgroundColor());
     }
 }
 
