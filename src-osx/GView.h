@@ -44,9 +44,9 @@ using renderer_ptr = std::unique_ptr<Renderer>;
 using canvas_ptr = std::unique_ptr<Canvas>;
 
 @interface GView : NSView<NSWindowDelegate> {
-    cfdg_ptr    mEngine;
-    Renderer*   mRenderer;
-    Canvas*     mCanvas;
+    cfdg_ptr     mEngine;
+    renderer_ptr mRenderer;
+    Canvas*      mCanvas;
     
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered

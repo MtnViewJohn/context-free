@@ -207,7 +207,6 @@ namespace {
 {
     self = [super initWithFrame:frame];
     if (self) {
-        mRenderer = nullptr;
         mCanvas = nullptr;
         
         mRenderBitmap = nil;
@@ -1068,12 +1067,12 @@ namespace {
 {
     if (!mEngine) return;
     
-    assert(mRenderer == nullptr);
-    mRenderer = mEngine->renderer(mEngine,
+    assert(!mRenderer);
+    mRenderer.reset(mEngine->renderer(mEngine,
         (int)size.width, (int)size.height,
         minSize,
         mCurrentVariation,
-        [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]);
+        [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]));
     if (!mRenderer)
         mEngine.reset();
 }
@@ -1305,12 +1304,12 @@ namespace {
 - (void)deleteRenderer
 {
     mEngine.reset();
-    if (mRenderer == nullptr) return;
+    if (!mRenderer) return;
 #ifdef EXTREME_PARAM_DEBUG
-    delete mRenderer; mRenderer = nullptr;
+    mRenderer.reset();
 #else
-    NSValue* r = [NSValue valueWithPointer: (const void*)mRenderer];
-    mRenderer = nullptr;
+    NSValue* r = [NSValue valueWithPointer: (const void*)mRenderer.get()];
+    mRenderer.release();
     [NSThread detachNewThreadSelector:@selector(rendererDeleteThread:) toTarget:[GView class] withObject:r];
 #endif
 }
