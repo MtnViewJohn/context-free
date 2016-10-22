@@ -438,7 +438,7 @@ int main (int argc, char* argv[]) {
         if (opts.input.empty()) exit(0);
     }
     
-    CFDG* myDesign = CFDG::ParseFile(opts.input.c_str(), &system, opts.variation);
+    cfdg_ptr myDesign = CFDG::ParseFile(opts.input.c_str(), &system, opts.variation);
     if (!myDesign) return 3;
     if (opts.check) return 0;
     if (opts.widthMult != 1 || opts.heightMult != 1) {
@@ -453,7 +453,7 @@ int main (int argc, char* argv[]) {
     }
 
     bool useRGBA = myDesign->usesColor;
-    aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
+    aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign.get());
     bool use16bit = (pixfmt & aggCanvas::Has_16bit_Color) != 0;
     const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
     
@@ -469,7 +469,8 @@ int main (int argc, char* argv[]) {
     std::unique_ptr<ffCanvas>  mov;
     Canvas* myCanvas = nullptr;
         
-    std::shared_ptr<Renderer> TheRenderer(myDesign->renderer(opts.width, opts.height, opts.minSize,
+    std::shared_ptr<Renderer> TheRenderer(myDesign->renderer(myDesign,
+                                          opts.width, opts.height, opts.minSize,
                                           opts.variation, opts.borderSize));
     
     if (TheRenderer == nullptr) {
@@ -562,6 +563,7 @@ int main (int argc, char* argv[]) {
     }   // delete canvas & renderer
     
     if (opts.paramTest) {
+        myDesign.reset();   // Delete the AST and its parameters before checking
         if (Renderer::ParamCount) {
             cerr << "Left-over parameter blocks in memory:" << prettyInt(static_cast<unsigned long>(Renderer::ParamCount)) << endl;
 			return 88;
