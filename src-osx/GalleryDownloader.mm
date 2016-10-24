@@ -41,7 +41,7 @@
         designID = design;
         variation = Variation::random();
         controller = ctrl;
-        NSString* urlstring = [NSString stringWithFormat: @"http://www.contextfreeart.org/gallery/data.php?type=cfdg&id=%d", designID];
+        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php?type=cfdg&id=%d", designID];
         NSURL* url = [NSURL URLWithString: urlstring];
         NSURLRequest* req = [NSURLRequest requestWithURL: url];
         galleryConnection = [[NSURLConnection alloc] initWithRequest: req delegate: self];

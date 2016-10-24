@@ -329,7 +329,7 @@ namespace {
 - (IBAction)goToCreateAccount:(id)sender
 {
     NSURL* url = [NSURL URLWithString: 
-        @"http://www.contextfreeart.org/phpbb/profile.php?mode=register"];
+        @"https://www.contextfreeart.org/phpbb/profile.php?mode=register"];
     
     [[NSWorkspace sharedWorkspace] openURL: url];
 }
@@ -404,7 +404,7 @@ decisionListener:(id)listener
     
     NSMutableURLRequest* request =
         [NSMutableURLRequest requestWithURL:
-                [NSURL URLWithString: @"http://www.contextfreeart.org/gallery/upload.php"]
+                [NSURL URLWithString: @"https://www.contextfreeart.org/gallery/upload.php"]
                 //[NSURL URLWithString: @"http://aluminium.local/~john/cfa2/gallery/upload.php"]
             cachePolicy: NSURLRequestReloadIgnoringCacheData
             timeoutInterval: 120.0
