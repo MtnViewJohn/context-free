@@ -29,12 +29,14 @@
 #include "commandLineSystem.h"
 
 #include <cstdlib>
-#include "stdarg.h"
+#include <stdarg.h>
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include "bounds.h"
 
 using namespace std;
 
@@ -106,7 +108,7 @@ CommandLineSystem::stats(const Stats& s)
         static const char prog[] = "**************************************************";
         static const char todo[] = "..................................................";
         if (v < 0.0) v = 0.0;
-        if (v > 1.0) v = 1.0;
+        if (v > 1.0 || !myfinite(v)) v = 1.0;
         int progress = static_cast<int>(v * 50.0 + 0.5);
         cerr << '[';
         cerr << &(prog[50 - progress]);
