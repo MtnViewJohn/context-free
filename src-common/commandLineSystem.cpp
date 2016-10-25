@@ -102,7 +102,7 @@ CommandLineSystem::stats(const Stats& s)
     if (mQuiet || mErrorMode) return;
     
     if (s.inOutput || s.showProgress) {
-        double v = static_cast<double>(s.outputDone) / s.outputCount;
+        double v = s.outputCount ? static_cast<double>(s.outputDone) / s.outputCount : 1.0;
         static const char prog[] = "**************************************************";
         static const char todo[] = "..................................................";
         if (v < 0.0) v = 0.0;
