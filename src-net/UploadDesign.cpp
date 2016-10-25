@@ -39,7 +39,7 @@ using namespace System::Runtime::InteropServices;
 
 System::Void UploadDesign::accountButton_Click(System::Object^  sender, System::EventArgs^  e)
 {
-    System::Diagnostics::Process::Start("http://www.contextfreeart.org/phpbb/profile.php?mode=register");
+    System::Diagnostics::Process::Start("https://www.contextfreeart.org/phpbb/ucp.php?mode=register");
 }
 
 System::Void UploadDesign::uploadDesignLoaded(System::Object^  sender, System::EventArgs^  e)
@@ -247,7 +247,7 @@ System::Void UploadDesign::wizardPage_afterChange(System::Object^ sender,
         statusLabelUpload->Text = "Upload in progress.";
         wizard1->CancelEnabled = false;
 
-        uploadBrowser->Navigate("http://www.contextfreeart.org/gallery/upload.php", 
+        uploadBrowser->Navigate("https://www.contextfreeart.org/gallery/upload.php", 
             String::Empty, postData, header);
     }
 }
