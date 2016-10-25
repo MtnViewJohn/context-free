@@ -36,13 +36,13 @@ using namespace std;
 string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
 {
     stringstream namestream(stringstream::out);
-    int numLength = 1;
     
     if (strcmp(fmt, "-") == 0)
         return namestream.str();        // empty string becomes stdout
     
-    if (frameCount)
-        numLength = static_cast<int>(log10(static_cast<double>(frameCount))) + 1;
+    int numLength = 0;
+    for (int c = frameCount; c > 0; c /= 10)
+        ++numLength;
 
     const char* p = fmt;
     while (*p) {
