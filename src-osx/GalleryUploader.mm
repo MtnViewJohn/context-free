@@ -329,7 +329,7 @@ namespace {
 - (IBAction)goToCreateAccount:(id)sender
 {
     NSURL* url = [NSURL URLWithString: 
-        @"https://www.contextfreeart.org/phpbb/profile.php?mode=register"];
+        @"https://www.contextfreeart.org/phpbb/ucp.php?mode=register"];
     
     [[NSWorkspace sharedWorkspace] openURL: url];
 }
