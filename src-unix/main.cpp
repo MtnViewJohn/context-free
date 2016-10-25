@@ -313,7 +313,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 break;
             case 1:
                 opt.animationTime = time / opt.animationFPS;
-                opt.animationFrames = opt.animationTime * opt.animationFPS;
+                opt.animationFrames = time;
                 break;
             default:
                 bailout(nullptr);
