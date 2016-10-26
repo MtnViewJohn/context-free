@@ -454,7 +454,15 @@ decisionListener:(id)listener
 }
 
 
-
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+             willSendRequest:(NSURLRequest *)request
+            redirectResponse:(NSURLResponse *)redirectresponse
+{
+    if (redirectresponse)
+        return nil;     // Reject redirects
+    else
+        return request;
+}
 
 - (IBAction)cancel:(id)sender
 {
