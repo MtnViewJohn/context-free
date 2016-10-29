@@ -59,6 +59,10 @@ private:
     agg::trans_affine mOffset;
     agg::trans_affine mInvert;
     std::vector<agg::point_d> mTileList;
+    inline bool checkTile(const Bounds& b, const agg::rect_d& canvas, double dx, double dy);
+    inline bool checkTileInt(const agg::rect_i& screen,
+                             const agg::trans_affine& screenTessellation,
+                             int px, int py, tileList& points);
 };
 
 #endif  // INCLUDE_TILEDCANVAS_H

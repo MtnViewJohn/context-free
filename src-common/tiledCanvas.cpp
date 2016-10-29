@@ -1,7 +1,7 @@
 // tiledCanvas.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2006-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2006-2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -65,17 +65,27 @@ void tiledCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& at
     }
 }
 
+inline bool
+tiledCanvas::checkTile(const Bounds& b, const agg::rect_d& canvas, double dx, double dy)
+{
+    mOffset.transform(&dx, &dy);
+    
+    // If the tile might touch the canvas then record it
+    agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
+    bool hit = shape.overlaps(canvas);
+    if (hit)
+        mTileList.emplace_back(dx, dy);
+    return hit;
+}
+
 void
 tiledCanvas::tileTransform(const Bounds& b)
-// Adjust the translation part of the transform so that it falls within the 
-// tile parallelogram at the origin. 
-//
-// Returns whether the shape is close to the edge of the canvas 
-// (true=not close, false=close/overlapping).
+// Compute a list of tiling offsets for all tiled copies of the shape that overlap
+// the canvas. Used for subsequent drawing.
 {
     double centx = (b.mMin_X + b.mMax_X) * 0.5;
     double centy = (b.mMin_Y + b.mMax_Y) * 0.5;
-    mInvert.transform(&centx, &centy);          // transform to unit square tesselation
+    mInvert.transform(&centx, &centy);          // transform to unit square tessellation
     centx = floor(centx + 0.5);                 // round to nearest integer
     centy = floor(centy + 0.5);                 // round to nearest integer
 
@@ -85,47 +95,21 @@ tiledCanvas::tileTransform(const Bounds& b)
     mTileList.emplace_back(dx, dy);
     agg::rect_d canvas(-5, -5, static_cast<double>(mWidth + 9), static_cast<double>(mHeight + 9));
     
-    if (mFrieze) {
-        centx += centy;
-        for (int offset = 1; ; ++offset) {
-            bool hit = false;
-            for (int side: {-1, 1}) {
-                dx = offset * side - centx;
-                dy = dx;
-                mOffset.transform(&dx, &dy);
-                
-                // If the tile might touch the canvas then record it
-                agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
-                if (shape.overlaps(canvas)) {
-                    hit = true;
-                    mTileList.emplace_back(dx, dy);
-                }
-            }
-            if (!hit) return;
-        }
-    }
-                
+    if (mFrieze)
+        centx = centy = centx + centy;      // one will be zero, set them both to the other one
+    
     for (int ring = 1; ; ring++) {
         bool hit = false;
-        for (int pos = -ring; pos < ring; pos++) {
-            std::array<std::pair<int, int>, 4> points = {{
-                {pos, -ring},
-                {ring, pos},
-                {-pos, ring},
-                {-ring, -pos}
-            }};
-            for (auto&& point: points) {
-                // Find where this tile is on the canvas
-                dx = point.first - centx;
-                dy = point.second - centy;
-                mOffset.transform(&dx, &dy);
-                
-                // If the tile might touch the canvas then record it
-                agg::rect_d shape(b.mMin_X + dx, b.mMin_Y + dy, b.mMax_X + dx, b.mMax_Y + dy);
-                if (shape.overlaps(canvas)) {
-                    hit = true;
-                    mTileList.emplace_back(dx, dy);
-                }
+        if (mFrieze) {
+            // Works for x frieze and y frieze, the other dimension gets zeroed
+            hit = checkTile(b, canvas,  ring - centx,  ring - centy);
+            hit = checkTile(b, canvas, -ring - centx, -ring - centy) || hit;
+        } else {
+            for (int pos = -ring; pos < ring; pos++) {
+                hit = checkTile(b, canvas,   pos - centx, -ring - centy) || hit;
+                hit = checkTile(b, canvas,  ring - centx,   pos - centy) || hit;
+                hit = checkTile(b, canvas,  -pos - centx,  ring - centy) || hit;
+                hit = checkTile(b, canvas, -ring - centx,  -pos - centy) || hit;
             }
         }
         
@@ -159,6 +143,25 @@ void tiledCanvas::scale(double scaleFactor)
     }
 }
 
+inline bool
+tiledCanvas::checkTileInt(const agg::rect_i& screen,
+                          const agg::trans_affine& screenTessellation,
+                          int x, int y, tileList& points)
+{
+    double dx = x;
+    double dy = y;
+    screenTessellation.transform(&dx, &dy);
+    int px = static_cast<int>(floor(dx + 0.5));
+    int py = static_cast<int>(floor(dy + 0.5));
+    
+    // If the tile is visible then record it
+    agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
+    bool hit = tile.overlaps(screen);
+    if (hit)
+        points.emplace_back(px, py);
+    return hit;
+}
+
 tileList tiledCanvas::getTesselation(int w, int h, int x1, int y1, bool flipY)
 {
     tileList tessPoints;
@@ -173,52 +176,19 @@ tileList tiledCanvas::getTesselation(int w, int h, int x1, int y1, bool flipY)
     
     tessPoints.push_back(agg::point_i(x1, y1));   // always include the center tile
     
-    if (mFrieze) {
-        for (int offset = 1; ; ++offset) {
-            bool hit = false;
-            for (int side: {-1, 1}) {
-                double dx = offset * side;
-                double dy = dx;
-                tess.transform(&dx, &dy);
-                int px = static_cast<int>(floor(dx + 0.5));
-                int py = static_cast<int>(floor(dy + 0.5));
-                
-                // If the tile is visible then record it
-                agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
-                if (tile.overlaps(screen)) {
-                    hit = true;
-                    tessPoints.emplace_back(px, py);
-                }
-            }
-            if (!hit) return tessPoints;
-        }
-    }
-    
     // examine rings of tile units around the center unit until you encounter a
     // ring that doesn't have any tile units that intersect the screen. Then stop.
     for (int ring = 1; ; ring++) {
         bool hit = false;
-        for (int pos = -ring; pos < ring; pos++) {
-            std::array<std::pair<int, int>, 4> points = {{
-                {pos, -ring},
-                {ring, pos},
-                {-pos, ring},
-                {-ring, -pos}
-            }};
-            for (auto&& point: points) {
-                // Find where this tile is on the screen
-                double dx = point.first;
-                double dy = point.second;
-                tess.transform(&dx, &dy);
-                int px = static_cast<int>(floor(dx + 0.5));
-                int py = static_cast<int>(floor(dy + 0.5));
-                
-                // If the tile is visible then record it
-                agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);
-                if (tile.overlaps(screen)) {
-                    hit = true;
-                    tessPoints.emplace_back(px, py);
-                }
+        if (mFrieze) {
+            hit = checkTileInt(screen, tess,  ring,  ring, tessPoints);
+            hit = checkTileInt(screen, tess, -ring, -ring, tessPoints) || hit;
+        } else {
+            for (int pos = -ring; pos < ring; pos++) {
+                hit = checkTileInt(screen, tess,   pos, -ring, tessPoints) || hit;
+                hit = checkTileInt(screen, tess,  ring,   pos, tessPoints) || hit;
+                hit = checkTileInt(screen, tess,  -pos,  ring, tessPoints) || hit;
+                hit = checkTileInt(screen, tess, -ring,  -pos, tessPoints) || hit;
             }
         }
         
