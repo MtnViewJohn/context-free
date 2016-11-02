@@ -1250,8 +1250,8 @@ namespace AST {
     bool
     ASTrule::compareLT(const ASTrule* a, const ASTrule* b)
     {
-        return  (a->mNameIndex == b->mNameIndex) ? 
-        (a->mWeight < b->mWeight) : (a->mNameIndex < b->mNameIndex);
+        return a->mNameIndex < b->mNameIndex || (a->mNameIndex == b->mNameIndex &&
+                                                 a->mWeight < b->mWeight);
     }
     
     void
