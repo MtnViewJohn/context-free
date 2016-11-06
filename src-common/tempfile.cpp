@@ -36,6 +36,7 @@
 #include <cstdio>
 
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -47,7 +48,7 @@ TempFile::forWrite()
         cerr << "TempFile::forWrite already wrote to " << mPath << endl;
     }
     mWritten = true;
-    mSystem->message("Writing %s temp file %d", mTypeName.c_str(), mNum);
+    mSystem->message("Writing %s temp file %d", type().c_str(), mNum);
     return mSystem->tempFileForWrite(mType, mPath);
 }
 
@@ -57,12 +58,23 @@ TempFile::forRead()
     if (!mWritten) {
         cerr << "TempFile::forRead temp file never written, " << mPath << endl;
     }
-    mSystem->message("Reading %s temp file %d", mTypeName.c_str(), mNum);
+    mSystem->message("Reading %s temp file %d", type().c_str(), mNum);
     return mSystem->tempFileForRead(mPath);
 }
 
-TempFile::TempFile(AbstractSystem* system, AbstractSystem::TempType t, const char* type, int num)
-    : mSystem(system), mType(t), mTypeName(type), mNum(num), mWritten(false)
+const std::string&
+TempFile::type()
+{
+    static const std::string typeStrings[AbstractSystem::NumberofTempTypes] = {
+        "shapes", "expansion", "merge"
+    };
+    
+    assert(mType >= 0 && mType < AbstractSystem::NumberofTempTypes);
+    return typeStrings[mType];
+}
+
+TempFile::TempFile(AbstractSystem* system, AbstractSystem::TempType type, int num)
+    : mSystem(system), mType(type), mNum(num), mWritten(false)
     { }
 
 TempFile::TempFile(TempFile&& from) noexcept
@@ -83,7 +95,6 @@ TempFile::operator=(TempFile&& from) noexcept
     mSystem = from.mSystem;
     mPath = std::move(from.mPath);
     mType = from.mType;
-    mTypeName = std::move(from.mTypeName);
     mNum = from.mNum;
     mWritten = from.mWritten;
     // Prevent old TempFile from triggering an unlink
@@ -101,7 +112,7 @@ TempFile::~TempFile()
 void
 TempFile::erase()
 {
-    mSystem->message("Deleting %s temp file %d", mTypeName.c_str(), mNum);
+    mSystem->message("Deleting %s temp file %d", type().c_str(), mNum);
     if (remove(mPath.c_str()))
         mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
 }

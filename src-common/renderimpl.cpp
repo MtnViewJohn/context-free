@@ -747,12 +747,12 @@ void
 RendererImpl::moveUnfinishedToTwoFiles()
 {
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
-                                   "expansion", ++mUnfinishedFileCount);
+                                   ++mUnfinishedFileCount);
     unique_ptr<ostream> f1(m_unfinishedFiles.back().forWrite());
     int num1 = m_unfinishedFiles.back().number();
 
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
-                                   "expansion", ++mUnfinishedFileCount);
+                                   ++mUnfinishedFileCount);
     unique_ptr<ostream> f2(m_unfinishedFiles.back().forWrite());
     int num2 = m_unfinishedFiles.back().number();
     
@@ -873,7 +873,7 @@ RendererImpl::fixupHeap()
 void
 RendererImpl::moveFinishedToFile()
 {
-    m_finishedFiles.emplace_back(system(), AbstractSystem::ShapeTemp, "shapes", ++mFinishedFileCount);
+    m_finishedFiles.emplace_back(system(), AbstractSystem::ShapeTemp, ++mFinishedFileCount);
     
     unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
 
@@ -946,7 +946,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         deque<TempFile>::iterator begin, last, end;
         
         while (m_finishedFiles.size() > MaxMergeFiles) {
-            TempFile t(system(), AbstractSystem::MergeTemp, "merge", ++mFinishedFileCount);
+            TempFile t(system(), AbstractSystem::MergeTemp, ++mFinishedFileCount);
             
             {
                 OutputMerge merger;
