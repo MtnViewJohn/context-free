@@ -746,12 +746,12 @@ RendererImpl::fileIfNecessary()
 void
 RendererImpl::moveUnfinishedToTwoFiles()
 {
-    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpensionTemp,
+    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    "expansion", ++mUnfinishedFileCount);
     unique_ptr<ostream> f1(m_unfinishedFiles.back().forWrite());
     int num1 = m_unfinishedFiles.back().number();
 
-    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpensionTemp,
+    m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    "expansion", ++mUnfinishedFileCount);
     unique_ptr<ostream> f2(m_unfinishedFiles.back().forWrite());
     int num2 = m_unfinishedFiles.back().number();
