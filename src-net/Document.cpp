@@ -1285,8 +1285,8 @@ void Document::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g,
     if (!mRenderer || !mRenderer->m_tiledCanvas)
         return;
 
-    tileList points = mRenderer->m_tiledCanvas->getTesselation(dest->Width, dest->Height,
-                                                               x, y, true);
+    tileList points = mRenderer->m_tiledCanvas->getTessellation(dest->Width, dest->Height,
+                                                                x, y, true);
 
     for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
         pt != ept; ++pt)

@@ -162,7 +162,7 @@ tiledCanvas::checkTileInt(const agg::rect_i& screen,
     return hit;
 }
 
-tileList tiledCanvas::getTesselation(int w, int h, int x1, int y1, bool flipY)
+tileList tiledCanvas::getTessellation(int w, int h, int x1, int y1, bool flipY)
 {
     tileList tessPoints;
     // Produce an integer version of mOffset that is centered in the w x h screen

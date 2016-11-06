@@ -93,8 +93,8 @@ abstractPngCanvas::end()
     aggCanvas::end();
     
     if (mRenderer && mRenderer->m_tiledCanvas) {
-        tileList points = mRenderer->m_tiledCanvas->getTesselation(mFullWidth, mFullHeight,
-                                                                   mOriginX, mOriginY, true);
+        tileList points = mRenderer->m_tiledCanvas->getTessellation(mFullWidth, mFullHeight,
+                                                                    mOriginX, mOriginY, true);
         std::reverse(points.begin(), points.end());     // could use reverse adapter
         
         for (auto&& pt: points) {

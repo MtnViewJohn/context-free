@@ -49,7 +49,7 @@ public:
     
     void scale(double scaleFactor);
     
-    tileList getTesselation(int width, int height, int x, int y, bool flipY = false);
+    tileList getTessellation(int width, int height, int x, int y, bool flipY = false);
     void tileTransform(const Bounds& b);
     
 private:
