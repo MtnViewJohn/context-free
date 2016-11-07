@@ -29,6 +29,7 @@
 #import "CFDGController.h"
 #import "CFDGDocument.h"
 #import "GalleryDownloader.h"
+#import "GalleryUploader.h"
 #include "SystemConfiguration/SCNetwork.h"
 #include <SystemConfiguration/SCNetworkReachability.h>
 #include "cfdg.h"
@@ -37,6 +38,7 @@
 + (void)setupURLs;
 + (void)setupExamples;
 + (void)setupDefaults;
++ (void)migrateCredentials;
 
 - (void)buildExamplesMenu;
 - (void)buildHelpMenu;
@@ -98,6 +100,9 @@ namespace {
     
     static NSString* prefKeyEditorFontName = @"EditorFontName";
     static NSString* prefKeyEditorFontSize = @"EditorFontSize";
+    
+    static NSString* prefKeyUserName = @"UserName";
+    static NSString* prefKeyPassword = @"UserPassword";
 
 
     void addFileMenuItems(NSArray* filePaths, NSMenu* menu,
@@ -141,6 +146,7 @@ namespace {
     [CFDGController setupURLs];
     [CFDGController setupExamples];
     [CFDGController setupDefaults];
+    [CFDGController migrateCredentials];
 }
 
 - (void)awakeFromNib
@@ -369,6 +375,18 @@ namespace {
         setInitialValues: userDefaultsValuesDict];
 }
 
++ (void)migrateCredentials
+{
+    NSString* name = [[NSUserDefaults standardUserDefaults] stringForKey: prefKeyUserName];
+    NSString* password = [[NSUserDefaults standardUserDefaults] stringForKey: prefKeyPassword];
+    
+    // Move plain-text password into the keychain
+    if (password) {
+        if (name)
+            [GalleryUploader savePassword: password forUser: name];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey: prefKeyPassword];
+    }
+}
 
 - (void)buildExamplesMenu
 {

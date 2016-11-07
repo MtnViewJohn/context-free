@@ -37,6 +37,8 @@
     CFDGDocument*               mDocument;
     GView*                      mView;
     NSInteger                   mStatus;
+    NSString*                   mOrigPassword;
+    NSString*                   mOrigName;
 
     IBOutlet NSView*    mContentView;
 
@@ -95,5 +97,8 @@
 decisionListener:(id)listener;
 
 - (void) updateCCInfo;
+
++ (NSString*) copyPassword:(NSString *)forUser;
++ (void) savePassword:(NSString*)password forUser:(NSString*)user;
 
 @end

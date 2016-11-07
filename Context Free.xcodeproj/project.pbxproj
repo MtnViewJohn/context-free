@@ -13,6 +13,7 @@
 		5200D96A1D8C972C00F60731 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9691D8C972C00F60731 /* CoreVideo.framework */; };
 		520EC5F60A0C61DC00853FF3 /* i_polygons.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 520EC5C00A0C3BA800853FF3 /* i_polygons.cfdg */; };
 		52100A7F0D3A9F1800F7070D /* Rand64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52100A7E0D3A9F1800F7070D /* Rand64.cpp */; };
+		52154E811DD038690031905B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52154E801DD038690031905B /* Security.framework */; };
 		521F8125105607F10096D22C /* agg_color_rgba.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 521F8124105607F10096D22C /* agg_color_rgba.cpp */; };
 		5226EFAE1071BB7600A30CC3 /* BitmapImageHolder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */; };
 		523311110CF7F6260087307A /* agg_curves.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5233110E0CF7F6260087307A /* agg_curves.cpp */; };
@@ -234,6 +235,7 @@
 		520EC5C00A0C3BA800853FF3 /* i_polygons.cfdg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = i_polygons.cfdg; sourceTree = "<group>"; };
 		52100A7D0D3A9F1800F7070D /* Rand64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rand64.h; sourceTree = "<group>"; };
 		52100A7E0D3A9F1800F7070D /* Rand64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rand64.cpp; sourceTree = "<group>"; };
+		52154E801DD038690031905B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		521B94EB0BA507B800BD9A09 /* agg_pixfmt_rgb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = agg_pixfmt_rgb.h; sourceTree = "<group>"; };
 		521F8124105607F10096D22C /* agg_color_rgba.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = agg_color_rgba.cpp; sourceTree = "<group>"; };
 		5226EFAA1071BB3900A30CC3 /* BitmapImageHolder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = BitmapImageHolder.h; sourceTree = "<group>"; };
@@ -426,6 +428,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52154E811DD038690031905B /* Security.framework in Frameworks */,
 				5200D96A1D8C972C00F60731 /* CoreVideo.framework in Frameworks */,
 				5200D9681D8C96F400F60731 /* CoreMedia.framework in Frameworks */,
 				5200D9661D8C96BF00F60731 /* AVFoundation.framework in Frameworks */,
@@ -484,6 +487,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				52154E801DD038690031905B /* Security.framework */,
 				5200D9691D8C972C00F60731 /* CoreVideo.framework */,
 				5200D9671D8C96F400F60731 /* CoreMedia.framework */,
 				5200D9651D8C96BF00F60731 /* AVFoundation.framework */,
