@@ -1,7 +1,7 @@
 // PreferenceManager.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2008 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -56,11 +56,14 @@ namespace OzoneUtil {
         bool    GetPrefBool(System::String^ name, bool defValue);
         double  GetPrefDouble(System::String^ name, double defValue);
         System::String^ GetPrefString(System::String^ name, System::String^ defValue);
-        array<System::Byte>^ GetPrefBinary(System::String^ name, array<System::Byte>^ defValue);
+        System::String^ GetPrefProtectedString(System::String^ name, array<System::Byte>^ entropy, System::String^ defValue);
+		array<System::Byte>^ GetPrefBinary(System::String^ name, array<System::Byte>^ defValue);
         void SetPrefInt(System::String^ name, int value);
         void SetPrefBool(System::String^ name, bool value);
         void SetPrefDouble(System::String^ name, double value);
         void SetPrefString(System::String^ name, System::String^ value);
-        void SetPrefBinary(System::String^ name, array<System::Byte>^ defValue);
+        void SetPrefProtectedString(System::String^ name, array<System::Byte>^ entropy, System::String^ value);
+		void SetPrefBinary(System::String^ name, array<System::Byte>^ defValue);
+        void DeletePref(System::String^ name);
     };
 }

@@ -1,7 +1,7 @@
 // PreferenceManager.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2008 John Horigan - john@glyphic.com
+// Copyright (C) 2008-2016 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 
 #include "StdAfx.h"
 #include "PreferenceManager.h"
+#using <System.Security.dll>
 
 using namespace OzoneUtil;
 using namespace System;
@@ -33,6 +34,7 @@ using namespace Microsoft::Win32;
 //using namespace System::ComponentModel;
 using namespace System::Collections;
 //using namespace System::Windows::Forms;
+using namespace System::Security::Cryptography;
 
 int PreferenceManager::GetPrefInt(String^ name, int defValue)
 {
@@ -85,7 +87,26 @@ String^ PreferenceManager::GetPrefString(String^ name, String^ defValue)
     return (String^)obj;
 }
 
-array<System::Byte>^ PreferenceManager::GetPrefBinary(System::String^ name, 
+String^ PreferenceManager::GetPrefProtectedString(String^ name, array<Byte>^ entropy, String^ defValue)
+{
+    Object^ obj = baseKey->GetValue(name);
+    if (obj == nullptr ||
+        baseKey->GetValueKind(name) != RegistryValueKind::Binary)
+    {
+        if (defValue != nullptr) SetPrefProtectedString(name, entropy, defValue);
+        return defValue;
+    }
+    try {
+        array<Byte>^ unprotectedblob = ProtectedData::Unprotect((array<System::Byte>^)obj,
+            entropy, DataProtectionScope::CurrentUser);
+        return System::Text::Encoding::UTF8->GetString(unprotectedblob);
+    } catch (Exception^) {
+        if (defValue != nullptr) SetPrefProtectedString(name, entropy, defValue);
+        return defValue;
+    }
+}
+
+array<System::Byte>^ PreferenceManager::GetPrefBinary(System::String^ name,
                                                       array<System::Byte>^ defValue)
 {
     Object^ obj = baseKey->GetValue(name);
@@ -118,8 +139,23 @@ void PreferenceManager::SetPrefString(String^ name, String^ value)
     baseKey->SetValue(name, value, RegistryValueKind::String);
 }
 
+void PreferenceManager::SetPrefProtectedString(String^ name, array<Byte>^ entropy, String^ value)
+{
+    try {
+        array<Byte>^ blob = System::Text::Encoding::UTF8->GetBytes(value);
+        array<Byte>^ protectedblob = ProtectedData::Protect(blob, entropy,
+            DataProtectionScope::CurrentUser);
+        baseKey->SetValue(name, protectedblob, RegistryValueKind::Binary);
+    } catch (Exception^)
+    {}
+}
+
 void PreferenceManager::SetPrefBinary(String^ name, array<System::Byte>^ value)
 {
     baseKey->SetValue(name, value, RegistryValueKind::Binary);
 }
 
+void PreferenceManager::DeletePref(String^ name)
+{
+    baseKey->DeleteValue(name);
+}

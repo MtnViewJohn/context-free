@@ -58,7 +58,8 @@ namespace ContextFreeNet {
             gotoDesignPage = Form1::prefs->SkipAccount;
             checkSkipAcct->Checked = Form1::prefs->SkipAccount;
             usernameBox->Text = Form1::prefs->GalUsername;
-            passwordBox->Text = Form1::prefs->GalPassword;
+            if (System::String^ password = Form1::prefs->GalPassword)
+                passwordBox->Text = password;
             checkCrop->Checked = Form1::prefs->ImageCrop;
             if (u->mCompression == Upload::CompressJPEG) {
                 radioJPEG->Checked = true;

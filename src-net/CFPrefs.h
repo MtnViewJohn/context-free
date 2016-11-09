@@ -40,6 +40,18 @@ namespace ContextFreeNet {
 
     public:
         enum class OpenAction { Welcome = 0, New = 1, Nothing = 2 };
+        // These random bytes are courtesy of http://www.fourmilab.ch/hotbits/
+        static array<System::Byte>^ CFentropy = {
+            210, 61, 229, 177, 254, 52, 150, 62, 81, 246, 248, 185, 59, 89, 93, 117,
+            142, 120, 64, 79, 229, 71, 195, 27, 181, 140, 195, 78, 123, 167, 45,
+            224, 108, 172, 164, 130, 68, 64, 103, 98, 136, 132, 14, 3, 240, 232,
+            152, 220, 29, 154, 78, 181, 92, 109, 92, 176, 46, 128, 13, 79, 108, 144,
+            83, 219, 42, 161, 158, 81, 213, 120, 13, 198, 163, 40, 14, 135, 30, 13,
+            117, 128, 172, 184, 61, 69, 50, 233, 116, 202, 161, 204, 223, 52, 126,
+            151, 223, 14, 123, 12, 29, 100, 71, 22, 247, 41, 231, 97, 116, 58, 168,
+            125, 92, 26, 4, 3, 228, 182, 204, 43, 185, 79, 118, 137, 173, 163, 215,
+            111, 60, 253
+        };
         property bool AnimateZoom {
             void set(bool setTo) { SetPrefBool("AnimateZoom", setTo); }
             bool get() { return GetPrefBool("AnimateZoom", true); }
@@ -121,8 +133,18 @@ namespace ContextFreeNet {
             System::String^ get() { return GetPrefString("GalUsername", "please specify"); }
         }
         property System::String^ GalPassword {
-            void set(System::String^ setTo) { SetPrefString("GalPassword", setTo); }
-            System::String^ get() { return GetPrefString("GalPassword", ""); }
+            void set(System::String^ setTo) { SetPrefProtectedString("GalPassword", CFentropy, setTo); }
+            System::String^ get() { return GetPrefProtectedString("GalPassword", CFentropy, nullptr); }
+        }
+        property System::String^ GalPasswordCleartext {
+            // No setter, destructive getter
+            System::String^ get()
+            { 
+                System::String^ ret = GetPrefString("GalPassword", nullptr);
+                if (ret)
+                    DeletePref("GalPassword");
+                return ret;
+            }
         }
         property System::String^ ccLicense {
             void set(System::String^ setTo) { SetPrefString("ccLicense", setTo); }

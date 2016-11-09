@@ -46,6 +46,10 @@ void Form1::StaticInitialization()
 {
     prefs = gcnew CFPrefs();
 
+    // Move gallery password from cleartext to encrypted
+    if (System::String^ password = prefs->GalPasswordCleartext)
+        prefs->GalPassword = password;
+
     busyList = gcnew cli::array<Bitmap^>(9);
     exampleSet = gcnew System::Collections::SortedList();
     widgetHTML = String::Empty;
