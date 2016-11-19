@@ -160,7 +160,7 @@ class RendererImpl : public RendererAST {
         AbstractSystem::Stats m_stats;
         int m_unfinishedInFilesCount;
     
-        std::remove_const<decltype(primShape::shapeMap)>::type shapeCopies;
+        primShape::primShapes_t shapeCopies;
         std::array<AST::CommandInfo, primShape::numTypes> shapeMap;
     
         static unsigned int MoveFinishedAt;     // when this many, move to file

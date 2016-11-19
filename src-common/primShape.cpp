@@ -37,7 +37,7 @@ static const double hp = h;
 static const double hn = -h / 2.0;
 static const double t = sqrt(2.0) / 4.0;
 
-decltype(primShape::shapeMap) primShape::shapeMap = { {
+const primShape::primShapes_t primShape::shapeMap = { {
     {   // circle pseudo-vertices
         { 0.5,  0.0 },
         {   t,    t },
@@ -61,7 +61,7 @@ decltype(primShape::shapeMap) primShape::shapeMap = { {
     }
 } };
 
-decltype(primShape::shapeNames) primShape::shapeNames = {
+const primShape::primNames_t primShape::shapeNames = {
     { "CIRCLE", "SQUARE", "TRIANGLE", "FILL" }
 };
 

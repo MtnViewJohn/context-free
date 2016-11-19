@@ -37,6 +37,8 @@ class primShape : public agg::path_storage
 public:
     enum {circleType = 0, squareType = 1, triangleType = 2, fillType = 3,
     numTypes = 4};
+    using primShapes_t = std::array<primShape, numTypes>;
+    using primNames_t = std::array<std::string, numTypes>;
     primShape(std::initializer_list<std::pair<double, double>> l)
     {
         auto p = l.begin();
@@ -48,8 +50,8 @@ public:
     }
     primShape() = default;
     
-    static const std::array<primShape, numTypes> shapeMap;
-    static const std::array<std::string, numTypes> shapeNames;
+    static const primShapes_t shapeMap;
+    static const primNames_t shapeNames;
     static bool isPrimShape(unsigned v) { return v < numTypes; }
 };
 
