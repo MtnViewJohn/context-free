@@ -134,7 +134,7 @@ StackRule::copyParams(StackType* dest) const
 
 // Release arguments on the heap
 void
-StackRule::release() const
+StackRule::release() const noexcept
 {
     assert(mRefCount > 0);
     if (mRefCount < MaxRefCount)
@@ -172,7 +172,7 @@ StackType::destroy(const AST::ASTparameters* p) const
 }
 
 void
-StackRule::retain() const
+StackRule::retain() const noexcept
 {
 #ifdef EXTREME_PARAM_DEBUG
     auto f = ParamMap.find(this);

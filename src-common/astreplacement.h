@@ -60,7 +60,7 @@ namespace AST {
         ASTreplacement(const ASTreplacement&) = delete;
         ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
-                       repElemListEnum t = replacement);
+                       repElemListEnum t = replacement) noexcept;
         ASTreplacement(mod_ptr mods, const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement);
         ASTreplacement(const std::string& s, const yy::location& loc);

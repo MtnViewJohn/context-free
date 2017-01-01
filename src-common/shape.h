@@ -59,7 +59,7 @@ class Modification {
 
     Modification() : m_ColorAssignment(0)
         { }
-        
+    
         double area() const { return fabs(m_transform.determinant()); }
         bool isFinite() const;
         
@@ -104,7 +104,9 @@ class Shape : public ShapeBase {
 public:
     Shape() : ShapeBase() { }
     Shape(const Shape&) = default;
-    Shape(Shape&&) = default;
+    Shape(Shape&& s) noexcept
+    : ShapeBase(s), mParameters(std::move(s.mParameters))
+    { }
     ~Shape() = default;
     Shape& operator=(const Shape& o) {
         if (this == &o) return *this;
@@ -114,7 +116,7 @@ public:
         mParameters = o.mParameters;
         return *this;
     }
-    Shape& operator=(Shape&& o) {
+    Shape& operator=(Shape&& o) noexcept {
         if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;
@@ -151,7 +153,7 @@ class FinishedShape : public Shape {
 public:
     Bounds mBounds;
     FinishedShape() = default;
-    FinishedShape(Shape&& s, int order, const Bounds& b)
+    FinishedShape(Shape&& s, int order, const Bounds& b) noexcept
     {
         mShapeType = s.mShapeType;
         mWorldState = s.mWorldState;
@@ -160,7 +162,7 @@ public:
         mBounds = b;
     }
     FinishedShape(const FinishedShape&) = default;
-    FinishedShape(FinishedShape&&) = default;
+    FinishedShape(FinishedShape&&) noexcept = default;
     FinishedShape& operator=(const FinishedShape& o) {
         if (this == &o) return *this;
         mShapeType = o.mShapeType;
@@ -170,7 +172,7 @@ public:
         mBounds = o.mBounds;
         return *this;
     }
-    FinishedShape& operator=(FinishedShape&& o) {
+    FinishedShape& operator=(FinishedShape&& o) noexcept {
         if (this == &o) return *this;
         mShapeType = o.mShapeType;
         mWorldState = o.mWorldState;

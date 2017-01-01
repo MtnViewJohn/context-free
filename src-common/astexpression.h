@@ -160,7 +160,7 @@ namespace AST {
                          const ASTparameters* parent);
         ASTruleSpecifier(int t, const std::string& name, const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
-        ASTruleSpecifier(ASTruleSpecifier&& r);
+        ASTruleSpecifier(ASTruleSpecifier&& r) noexcept;
         ASTruleSpecifier(const ASTruleSpecifier&) = delete;
         ASTruleSpecifier& operator=(const ASTruleSpecifier&) = delete;
         explicit ASTruleSpecifier()
@@ -188,7 +188,7 @@ namespace AST {
         : ASTruleSpecifier(nameIndex, name, loc), mModification(std::move(mod)) { };
         ASTstartSpecifier(exp_ptr args, const yy::location& loc, mod_ptr mod)
         : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
-        ASTstartSpecifier(ASTruleSpecifier&& r, mod_ptr m)
+        ASTstartSpecifier(ASTruleSpecifier&& r, mod_ptr m) noexcept
         : ASTruleSpecifier(std::move(r)), mModification(std::move(m)) { };
         void entropy(std::string& e) const override;
         ASTexpression* simplify() override;

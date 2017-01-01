@@ -110,12 +110,12 @@ public:
     param_ptr(std::nullptr_t) { }
     param_ptr(const StackRule* r);
     param_ptr(const param_ptr& o);
-    param_ptr(param_ptr&& o) : mPtr(o.mPtr)
+    param_ptr(param_ptr&& o) noexcept : mPtr(o.mPtr)
     { o.mPtr = nullptr; }
     ~param_ptr();
     
     param_ptr& operator=(const param_ptr& o);
-    param_ptr& operator=(param_ptr&& o);
+    param_ptr& operator=(param_ptr&& o) noexcept;
     param_ptr& operator=(std::nullptr_t);
     
     explicit operator bool() const
@@ -162,8 +162,8 @@ struct StackRule {
     static StackRule*  alloc(int name, int size, const AST::ASTparameters* ti);
     static StackRule*  alloc(const StackRule* from, int newName = -1);
 private:
-    void        release() const;
-    void        retain() const;
+    void        release() const noexcept;
+    void        retain() const noexcept;
 public:
     friend class param_ptr;     // only param_ptr can change the refcount
     void        copyParams(StackType* dest) const;
@@ -291,7 +291,7 @@ inline param_ptr& param_ptr::operator=(const param_ptr& o)
     return *this;
 }
 
-inline param_ptr& param_ptr::operator=(param_ptr&& o)
+inline param_ptr& param_ptr::operator=(param_ptr&& o) noexcept
 {
     if (this == &o || mPtr == o.mPtr)
         return *this;

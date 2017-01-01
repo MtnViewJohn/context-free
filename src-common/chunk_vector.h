@@ -324,7 +324,7 @@ public:
         for (auto&& v: o)
             push_back(v);
     }
-    chunk_vector(chunk_vector&& o)
+    chunk_vector(chunk_vector&& o) noexcept(noexcept(_chunks.swap(o._chunks)))
     {
         assert(_valAlloc.max_size() >= _chunk_size);
         _start = o._start;  o._start = 0;
@@ -341,7 +341,7 @@ public:
         return *this;
     }
     
-    chunk_vector& operator=(chunk_vector&& o)
+    chunk_vector& operator=(chunk_vector&& o) noexcept(noexcept(_chunks.swap(o._chunks)))
     {
         clear();
         shrink_to_fit();

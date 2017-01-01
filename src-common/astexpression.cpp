@@ -149,7 +149,7 @@ namespace AST {
     {
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r)
+    ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r) noexcept
     : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
       argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
       arguments(std::move(r.arguments)), simpleRule(std::move(r.simpleRule)),
