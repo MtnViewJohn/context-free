@@ -85,7 +85,7 @@ namespace {
 
     // Update location
     static NSString* updateURL
-        = @"http://www.ozonehouse.com/ContextFree/ContextFreeMacOSXVersion.xml";
+        = @"https://www.contextfreeart.org/ContextFreeMacOSXVersion.xml";
     static const char* updateServer
         = "www.ozonehouse.com";
         
