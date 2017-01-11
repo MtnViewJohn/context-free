@@ -232,7 +232,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
         size_t len = strlen(utf8chars[tok]);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(1);
-        yyless(len);
+        yyless(static_cast<int>(len));
         return tok;
     }
     
@@ -242,7 +242,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
         yylval->string->resize(pos);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(utf8length(yytext, pos));
-        yyless(pos);
+        yyless(static_cast<int>(pos));
         return token::USER_STRING;
     }
     int c = yyinput();

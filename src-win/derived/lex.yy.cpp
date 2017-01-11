@@ -1519,7 +1519,7 @@ YY_RULE_SETUP
         size_t len = strlen(utf8chars[tok]);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(1);
-        yyless(len);
+        yyless(static_cast<int>(len));
         return tok;
     }
     
@@ -1529,7 +1529,7 @@ YY_RULE_SETUP
         yylval->string->resize(pos);
         (yylloc->end) = (yylloc->begin);
         yylloc->columns(utf8length(yytext, pos));
-        yyless(pos);
+        yyless(static_cast<int>(pos));
         return token::USER_STRING;
     }
     int c = yyinput();
