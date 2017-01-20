@@ -86,7 +86,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
                                                                 
     int c;
     
-    while ((c = yyinput()) != EOF) {
+    while ((c = yyinput()) != YY_NULL) {
         if (c == '\n') break;
     }
 
@@ -99,7 +99,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
     bool lastCharWasAStar = false;
  
     // stop when we get to */ or end-of-file
-    while ((c = yyinput()) != EOF) {
+    while ((c = yyinput()) != YY_NULL) {
         if (c == '\n') 
             yylloc->lines(1);
         else 
