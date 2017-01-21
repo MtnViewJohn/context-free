@@ -1063,7 +1063,7 @@ YY_RULE_SETUP
                                                                 
     int c;
     
-    while ((c = yyinput()) != EOF) {
+    while ((c = yyinput()) != YY_NULL) {
         if (c == '\n') break;
     }
 
@@ -1079,7 +1079,7 @@ YY_RULE_SETUP
     bool lastCharWasAStar = false;
  
     // stop when we get to */ or end-of-file
-    while ((c = yyinput()) != EOF) {
+    while ((c = yyinput()) != YY_NULL) {
         if (c == '\n') 
             yylloc->lines(1);
         else 
@@ -1091,7 +1091,7 @@ YY_RULE_SETUP
         lastCharWasAStar = c == '*';
     }
     
-    if (c == EOF) {
+    if (c == YY_NULL) {
         LexerError("end-of-file in block comment");
         return token::BADEOF;
     }
@@ -1533,7 +1533,7 @@ YY_RULE_SETUP
         return token::USER_STRING;
     }
     int c = yyinput();
-    if (c != EOF) unput(c);
+    if (c != YY_NULL) unput(c);
     return c == '[' ? token::USER_ARRAYNAME : token::USER_STRING;
 }
 	YY_BREAK

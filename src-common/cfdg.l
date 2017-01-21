@@ -111,7 +111,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
         lastCharWasAStar = c == '*';
     }
     
-    if (c == EOF) {
+    if (c == YY_NULL) {
         LexerError("end-of-file in block comment");
         return token::BADEOF;
     }
@@ -246,7 +246,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
         return token::USER_STRING;
     }
     int c = yyinput();
-    if (c != EOF) unput(c);
+    if (c != YY_NULL) unput(c);
     return c == '[' ? token::USER_ARRAYNAME : token::USER_STRING;
 }
 {RATIONAL}  {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
