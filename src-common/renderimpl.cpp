@@ -1005,8 +1005,8 @@ RendererImpl::drawShape(const FinishedShape& s)
     agg::trans_affine tr = s.mWorldState.m_transform;
     tr *= m_currTrans;
     double a = s.mWorldState.m_Z.sz * m_currArea; //fabs(tr.determinant());
-    if ((!isfinite(a) && s.mShapeType != primShape::fillType) || 
-        a < m_minArea) return;
+    if (s.mShapeType != primShape::fillType && (!isfinite(a) || a < m_minArea))
+        return;
     
     if (m_tiledCanvas && s.mShapeType != primShape::fillType) {
         Bounds b = s.mBounds;
