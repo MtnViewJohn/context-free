@@ -577,7 +577,7 @@ namespace {
         }
     }
     else {
-        if (mOutputProgress > 0) {
+        if (![mOutputProgress isHidden]) {
             [mOutputProgress setHidden: YES];
             [mTopBar relayout];
             mOutputProgressDelay = 0;
