@@ -116,11 +116,21 @@ class AbstractSystem {
             clock_t outputTime;
 
             bool    animating;      // inside the animation loop
+            AbstractSystem* mSystem;
 
             Stats()
                 : shapeCount(0), toDoCount(0), inOutput(false),
                   fullOutput(false), finalOutput(false), showProgress(false),
-                  outputCount(0), outputDone(0), outputTime(0), animating(false) {}
+                  outputCount(0), outputDone(0), outputTime(0), animating(false),
+                  mSystem(nullptr) {}
+            ~Stats()
+            {
+                // Cancel system progress bar if it is being displayed
+                if (mSystem && (showProgress || inOutput)) {
+                    showProgress = inOutput = false;
+                    mSystem->stats(*this);
+                }
+            }
         };
 
         virtual void orphan() = 0;

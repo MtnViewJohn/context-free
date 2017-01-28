@@ -342,11 +342,9 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
         outputFinal();
     }
     
-    if (!requestStop) {
-        outputStats();
-        if (m_canvas)
-            system()->message("Done.");
-    }
+    outputStats();
+    if (m_canvas)
+        system()->message("Done.");
     
     if (!m_canvas && m_frieze)
         rescaleOutput(m_width, m_height, true);
@@ -768,6 +766,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
     
     if (f1 && f1->good() && f2 && f2->good()) {
         AbstractSystem::Stats outStats = m_stats;
+        outStats.mSystem = system();
         outStats.outputCount = static_cast<int>(count);
         outStats.outputDone = 0;
         *f1 << outStats.outputCount;
@@ -811,6 +810,7 @@ RendererImpl::getUnfinishedFromFile()
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
+        outStats.mSystem = system();
         *f >> outStats.outputCount;
         outStats.outputDone = 0;
         outStats.showProgress = true;
@@ -849,6 +849,7 @@ RendererImpl::fixupHeap()
         return;
 
     AbstractSystem::Stats outStats = m_stats;
+    outStats.mSystem = system();
     outStats.outputCount = static_cast<int>(n);
     outStats.outputDone = 0;
     outStats.showProgress = true;
@@ -883,6 +884,7 @@ RendererImpl::moveFinishedToFile()
             system()->message("Sorting shapes...");
         std::sort(mFinishedShapes.begin(), mFinishedShapes.end());
         AbstractSystem::Stats outStats = m_stats;
+        outStats.mSystem = system();
         outStats.outputCount = static_cast<int>(mFinishedShapes.size());
         outStats.outputDone = 0;
         outStats.showProgress = true;
