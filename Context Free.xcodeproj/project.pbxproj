@@ -984,7 +984,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1191,7 +1191,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1263,7 +1263,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1300,7 +1300,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CODE_SIGN_IDENTITY = "Mac Developer";
