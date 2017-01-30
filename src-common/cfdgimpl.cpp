@@ -66,6 +66,14 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
         assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
     }
     
+    const string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
+    int pi_num = encodeShapeName(pi_name);
+    def_ptr pi = std::make_unique<ASTdefine>(pi_name, CfdgError::Default);
+    pi->mExpression = std::make_unique<ASTreal>(M_PI, CfdgError::Default);
+    pi->mShapeSpec.shapeType = pi_num;
+    mCFDGcontents.addDefParameter(pi_num, pi.get(), CfdgError::Default, CfdgError::Default);
+    mCFDGcontents.mBody.push_back(std::move(pi));
+    
     mCFDGcontents.isGlobal = true;
 #ifdef EXTREME_PARAM_DEBUG
     StackRule::ParamMap.clear();
