@@ -143,7 +143,7 @@ namespace AST {
     
     ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
     : ASTreplacement(nullptr, loc, empty), mDefineType(StackDefine),
-      mType(NoType), isNatural(false), mParamSize(0), mName(std::move(name)),
+      mType(NoType), isNatural(false), mParamSize(0), mName(name),
       mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
