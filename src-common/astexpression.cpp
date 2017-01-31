@@ -722,11 +722,11 @@ namespace AST {
                     break;
                 case '*':
                     for (int i = 0 ; i < tupleSize; ++i)
-                        res[i] = l[i] * r[i];
+                        res[i] = l[i] * r[0];
                     break;
                 case '/':
                     for (int i = 0 ; i < tupleSize; ++i)
-                        res[i] = l[i] / r[i];
+                        res[i] = l[i] / r[0];
                     break;
                 case '<':
                     *res = (l[0] < r[0]) ? 1.0 : 0.0;
@@ -2699,11 +2699,21 @@ namespace AST {
                             if (rs != 0 || ls != 1)
                                 CfdgError::Error(where, "Unitary operators must have only one scalar operand");
                             break;
+                        case '/':
+                        case '*':
+                            if (ls < 1 || rs < 1)
+                                CfdgError::Error(where, "Binary operators must have two operands");
+                            else if (std::min(ls, rs) > 1)
+                                CfdgError::Error(where, "At least one operand must be scalar");
+                            else if (rs > 1 && op == '/')
+                                CfdgError::Error(right->where, "Divisor must be scalar");
+                            else if (rs > 1 && ls == 1)
+                                std::swap(left, right);     // Make right one be the scalar one
+                            tupleSize = std::max(ls, rs);
+                            break;
                         case '+':
                         case '-':
                         case '_':
-                        case '/':
-                        case '*':
                             tupleSize = ls;
                         case '=':
                         case 'n':
