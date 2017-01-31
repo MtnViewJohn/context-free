@@ -849,11 +849,11 @@ namespace AST {
                 return 3;
             }
             case Vec: {
-                double l[AST::MaxVectorSize];
-                int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
-                if (lc >= 1)
+                double l[AST::MaxVectorSize + 1];
+                int lc = arguments->evaluate(l, AST::MaxVectorSize + 1, rti);
+                if (lc > 1)
                     for (int i = 0; i < destLength; ++i)
-                        res[i] = l[i % lc];
+                        res[i] = l[i % (lc - 1) + 1];
                 return destLength;
             }
             case Hsb2Rgb: {
@@ -2170,11 +2170,11 @@ namespace AST {
                             CfdgError::Error(argsLoc, "RGB/HSB conversion function takes 3 arguments");
                         break;
                     case Vec:
-                        if (argnum != 2) {
-                            CfdgError::Error(argsLoc, "vec() function takes two arguments");
-                        } else if (!arguments->getChild(1)->isConstant ||
-                                   !arguments->getChild(1)->isNatural ||
-                                    arguments->getChild(1)->evaluate(&random, 1) != 1)
+                        if (argnum < 2) {
+                            CfdgError::Error(argsLoc, "vec() function at least two arguments");
+                        } else if (!arguments->getChild(0)->isConstant ||
+                                   !arguments->getChild(0)->isNatural ||
+                                    arguments->getChild(0)->evaluate(&random, 1) != 1)
                         {
                             CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be a scalar constant");
                         } else if (static_cast<int>(floor(random)) < 2 ||
