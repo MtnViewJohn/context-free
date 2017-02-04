@@ -84,10 +84,10 @@ class CFDGImpl : public CFDG {
             ShapeType(ShapeType&& from) noexcept = default;
             ShapeType& operator=(ShapeType&& from) noexcept(std::is_nothrow_move_assignable<std::string>::value)
             {
-                name = from.name;
+                name = std::move(from.name);
                 hasRules = from.hasRules;
                 isShape = from.isShape;
-                parameters.reset(from.parameters.release());
+                parameters = std::move(from.parameters);
                 argSize = from.argSize;
                 shouldHaveNoParams = from.shouldHaveNoParams;
                 return *this;
