@@ -317,15 +317,15 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
 
 aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) { 
     switch (pixfmt) {
-        case Gray8_Blend:   m.reset(new aggPixelPainter<gray_pixel_fmt>(this)); break;
-        case RGBA8_Blend:   m.reset(new aggPixelPainter<color32_pixel_fmt>(this)); break;
-        case RGB8_Blend:    m.reset(new aggPixelPainter<color24_pixel_fmt>(this)); break;
-        case Gray16_Blend:  m.reset(new aggPixelPainter<gray16_pixel_fmt>(this)); break;
-        case RGBA16_Blend:  m.reset(new aggPixelPainter<color64_pixel_fmt>(this)); break;
-        case RGB16_Blend:   m.reset(new aggPixelPainter<color48_pixel_fmt>(this)); break;
-        case FF_Blend:      m.reset(new aggPixelPainter<ff_pixel_fmt>(this)); break;
-        case FF24_Blend:    m.reset(new aggPixelPainter<ff24_pixel_fmt>(this)); break;
-        case AV_Blend:      m.reset(new aggPixelPainter<av_pixel_fmt>(this)); break;
+        case Gray8_Blend:   m = std::make_unique<aggPixelPainter<gray_pixel_fmt>>(this); break;
+        case RGBA8_Blend:   m = std::make_unique<aggPixelPainter<color32_pixel_fmt>>(this); break;
+        case RGB8_Blend:    m = std::make_unique<aggPixelPainter<color24_pixel_fmt>>(this); break;
+        case Gray16_Blend:  m = std::make_unique<aggPixelPainter<gray16_pixel_fmt>>(this); break;
+        case RGBA16_Blend:  m = std::make_unique<aggPixelPainter<color64_pixel_fmt>>(this); break;
+        case RGB16_Blend:   m = std::make_unique<aggPixelPainter<color48_pixel_fmt>>(this); break;
+        case FF_Blend:      m = std::make_unique<aggPixelPainter<ff_pixel_fmt>>(this); break;
+        case FF24_Blend:    m = std::make_unique<aggPixelPainter<ff24_pixel_fmt>>(this); break;
+        case AV_Blend:      m = std::make_unique<aggPixelPainter<av_pixel_fmt>>(this); break;
         default: break;
     }
 }

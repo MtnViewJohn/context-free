@@ -157,7 +157,7 @@ RendererImpl::init()
                             "CF::MaxNatural must be < 9007199254740992");
     }
     
-    mCurrentPath.reset(new AST::ASTcompiledPath());
+    mCurrentPath = std::make_unique<AST::ASTcompiledPath>();
     
     m_cfdg->getSymmetry(mSymmetryOps, this);
     m_cfdg->setBackgroundColor(this);
@@ -252,7 +252,7 @@ RendererImpl::outputPrep(Canvas* canvas)
             agg::trans_affine tr;
             m_cfdg->isTiled(&tr);
             m_cfdg->isFrieze(&tr);
-            m_tiledCanvas.reset(new tiledCanvas(canvas, tr, m_frieze));
+            m_tiledCanvas = std::make_unique<tiledCanvas>(canvas, tr, m_frieze);
             m_tiledCanvas->scale(m_currScale);
             m_canvas = m_tiledCanvas.get();
         }

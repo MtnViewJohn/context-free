@@ -492,10 +492,11 @@ int main (int argc, char* argv[]) {
     switch (opts.format) {
         case options::BMPfile:
         case options::PNGfile: {
-            png.reset(new pngCanvas(opts.output.c_str(), opts.quiet, opts.width, opts.height,
+            png = std::make_unique<pngCanvas>(
+                                    opts.output.c_str(), opts.quiet, opts.width, opts.height,
                                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
                                     opts.format == options::BMPfile, TheRenderer.get(),
-                                    opts.widthMult, opts.heightMult));
+                                    opts.widthMult, opts.heightMult);
             myCanvas = static_cast<Canvas*>(png.get());
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
                 TheRenderer->resetSize(png->mWidth, png->mHeight);
@@ -506,7 +507,7 @@ int main (int argc, char* argv[]) {
         }
         case options::SVGfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
-            svg.reset(new SVGCanvas(name.c_str(), opts.width, opts.height, opts.crop));
+            svg = std::make_unique<SVGCanvas>(name.c_str(), opts.width, opts.height, opts.crop);
             myCanvas = static_cast<Canvas*>(svg.get());
             if (svg->mError)
                 cerr << "Failed to open SVG file." << endl;
@@ -514,8 +515,8 @@ int main (int argc, char* argv[]) {
         }
         case options::MOVfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
-            mov.reset(new ffCanvas(name.c_str(), pixfmt, opts.width, opts.height,
-                                   opts.animationFPS));
+            mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
+                                             opts.animationFPS);
             if (mov->mErrorMsg) {
                 cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
                 exit(8);

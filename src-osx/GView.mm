@@ -1070,7 +1070,7 @@ namespace {
     mRenderedRect.origin.y = 0.0;
     mRenderedRect.size = mRenderSize;
 
-    mCanvas.reset(new ImageCanvas(self, mRenderBitmap, [bm aggPixelFormat]));
+    mCanvas = std::make_unique<ImageCanvas>(self, mRenderBitmap, [bm aggPixelFormat]);
 
     mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 }
@@ -1198,9 +1198,11 @@ namespace {
 
 - (void)saveSvgtoFile:(NSURL*)filename
 {
-    mCanvas.reset(new SVGCanvas([[filename path] UTF8String],
+    mCanvas = std::make_unique<SVGCanvas>(
+        [[filename path] UTF8String],
         (int)mRenderedRect.size.width, (int)mRenderedRect.size.height,
-        false));
+        false
+    );
     
     if (mCanvas->mError) {
         [mDocument noteStatus: @"An error occured while writing the SVG file."];
@@ -1256,8 +1258,8 @@ namespace {
         return;
     }
     
-    mCanvas.reset(new AVcanvas([filename path], [bits autorelease],
-                               static_cast<int>(movieFrameRate), fmt));
+    mCanvas = std::make_unique<AVcanvas>([filename path], [bits autorelease],
+                                         static_cast<int>(movieFrameRate), fmt);
     
     if (!mCanvas->mError) {
         [self renderBegin: &parameters];

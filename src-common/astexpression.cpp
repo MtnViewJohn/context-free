@@ -286,7 +286,7 @@ namespace AST {
         return definition->mExpression->evalArgs(rti, parent);
     }   // saveIt dtor cleans up the stack
     
-    ASTcons::ASTcons(std::initializer_list<ASTexpression*> kids)
+    ASTcons::ASTcons(exp_list kids)
     : ASTexpression((*(kids.begin()))->where, true, true, NoType)
     // Must have at least one kid or else undefined behavior
     {
@@ -2109,7 +2109,7 @@ namespace AST {
                         break;
                     case Infinity:
                         if (argcount == 0) {
-                            arguments.reset(new ASTreal(1.0, argsLoc));
+                            arguments = std::make_unique<ASTreal>(1.0, argsLoc);
                             argcount = 1;
                         }   // fall through
                     case Cos:
@@ -2188,7 +2188,7 @@ namespace AST {
                         if (arguments)
                             CfdgError::Error(argsLoc, "ftime()/frame() functions takes no arguments");
                         isConstant = false;
-                        arguments.reset(new ASTreal(1.0, argsLoc));
+                        arguments = std::make_unique<ASTreal>(1.0, argsLoc);
                         break;
                     case Rand:
                     case RandOp:
@@ -2198,11 +2198,16 @@ namespace AST {
                     case Rand_Static:
                         switch (argcount) {
                             case 0:
-                                arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc),
-                                                             new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc) });
+                                arguments = std::make_unique<ASTcons>(exp_list({
+                                    new ASTreal(0.0, argsLoc),
+                                    new ASTreal(functype == RandInt ? 2.0 : 1.0, argsLoc)
+                                }));
                                 break;
                             case 1:
-                                arguments.reset(new ASTcons{ new ASTreal(0.0, argsLoc), arguments.release() });
+                                arguments = std::make_unique<ASTcons>(exp_list({
+                                    new ASTreal(0.0, argsLoc),
+                                    arguments.release()
+                                }));
                                 break;
                             case 2:
                                 break;
@@ -2413,7 +2418,7 @@ namespace AST {
                         if (func) {
                             if (func->mType == RuleType) {
                                 argSource = ShapeArgs;
-                                arguments.reset(new ASTuserFunction(shapeType, arguments.release(), func, where));
+                                arguments = std::make_unique<ASTuserFunction>(shapeType, arguments.release(), func, where);
                                 Compile(arguments, ph);
                                 isConstant = false;
                                 mLocality = arguments->mLocality;
@@ -2921,14 +2926,17 @@ namespace AST {
                         case ASTmodTerm::sizexyz: {
                             double d[3];
                             if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
-                                (*term)->args.reset(new ASTcons{ new ASTreal(d[0], (*term)->where), new ASTreal(d[1], (*term)->where) });
+                                (*term)->args = std::make_unique<ASTcons>(exp_list({
+                                    new ASTreal(d[0], (*term)->where),
+                                    new ASTreal(d[1], (*term)->where)
+                                }));
                                 (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
                                     ASTmodTerm::x : ASTmodTerm::size;
                                 (*term)->argCount = 2;
                                 
                                 ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                                     ASTmodTerm::zsize : ASTmodTerm::z;
-                                ASTmodTerm* zmod = new ASTmodTerm(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
+                                term_ptr zmod = std::make_unique<ASTmodTerm>(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
                                 zmod->argCount = 1;
                                 
                                 // Check if sizexy part is the identity transform and only save it if it is not
@@ -2936,9 +2944,9 @@ namespace AST {
                                 {
                                     // Drop sizexy term and just save sizez term if sizexy term
                                     // is the identity transform
-                                    (*term).reset(zmod);
+                                    (*term) = std::move(zmod);
                                 } else {
-                                    modExp.emplace_back(zmod);
+                                    modExp.emplace_back(std::move(zmod));
                                 }
                                 break;
                             }
@@ -2965,7 +2973,7 @@ namespace AST {
                                 
                                 ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
                                     ASTmodTerm::zsize : ASTmodTerm::z;
-                                ASTmodTerm* zmod = new ASTmodTerm(ztype, zargs, (*term)->where);
+                                term_ptr zmod = std::make_unique<ASTmodTerm>(ztype, zargs, (*term)->where);
                                 zmod->isNatural = zargs->isNatural;
                                 zmod->mLocality = zargs->mLocality;
                                 zmod->argCount = 1;
@@ -2975,9 +2983,9 @@ namespace AST {
                                 {
                                     // Drop xy term and just save z term if xy term
                                     // is the identity transform
-                                    (*term).reset(zmod);
+                                    (*term) = std::move(zmod);
                                 } else {
-                                    modExp.emplace_back(zmod);
+                                    modExp.emplace_back(std::move(zmod));
                                 }
                             } else {    // No dice, put it all back
                                 xyargs = Append(xyargs, zargs);
@@ -3038,7 +3046,7 @@ namespace AST {
                 
                 mArgs->entropy(entString);
                 if (bound->mStackIndex == -1) {
-                    mData.reset(new double[mCount]);
+                    mData = std::make_unique<double[]>(mCount);
                     if (bound->mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
                         CfdgError::Error(where, "Error computing vector data");
                         isConstant = false;

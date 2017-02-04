@@ -210,31 +210,40 @@ namespace AST {
                 unsigned cmd;
                 while (!agg::is_stop(cmd = shape.vertex(&x, &y))) {
                     if (agg::is_vertex(cmd)) {
-                        exp_ptr a(new ASTcons{ new ASTreal(x, CfdgError::Default),
-                                               new ASTreal(y, CfdgError::Default) });
-                        ASTpathOp* op = new ASTpathOp(agg::is_move_to(cmd) ? move_op : line_op,
+                        exp_ptr a = std::make_unique<ASTcons>(exp_list({
+                            new ASTreal(x, CfdgError::Default),
+                            new ASTreal(y, CfdgError::Default)
+                        }));
+                        rep_ptr op = std::make_unique<ASTpathOp>(agg::is_move_to(cmd) ? move_op : line_op,
                             std::move(a), CfdgError::Default);
-                        mRuleBody.mBody.emplace_back(op);
+                        mRuleBody.mBody.emplace_back(std::move(op));
                     }
                 }
             } else {
-                exp_ptr a(new ASTcons{ new ASTreal(0.5, CfdgError::Default),
-                                       new ASTreal(0.0, CfdgError::Default) });
-                ASTpathOp* op = new ASTpathOp(move_op, std::move(a), CfdgError::Default);
-                mRuleBody.mBody.emplace_back(op);
-                a.reset(new ASTcons{ new ASTreal(-0.5, CfdgError::Default),
-                                     new ASTreal( 0.0, CfdgError::Default),
-                                     new ASTreal( 0.5, CfdgError::Default) });
-                op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                mRuleBody.mBody.emplace_back(op);
-                a.reset(new ASTcons{ new ASTreal( 0.5, CfdgError::Default),
-                                     new ASTreal( 0.0, CfdgError::Default),
-                                     new ASTreal( 0.5, CfdgError::Default) });
-                op = new ASTpathOp(arc_op, std::move(a), CfdgError::Default);
-                mRuleBody.mBody.emplace_back(op);
+                exp_ptr a = std::make_unique<ASTcons>(exp_list({
+                    new ASTreal(0.5, CfdgError::Default),
+                    new ASTreal(0.0, CfdgError::Default)
+                }));
+                rep_ptr op = std::make_unique<ASTpathOp>(move_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(std::move(op));
+                a = std::make_unique<ASTcons>(exp_list({
+                    new ASTreal(-0.5, CfdgError::Default),
+                    new ASTreal( 0.0, CfdgError::Default),
+                    new ASTreal( 0.5, CfdgError::Default)
+                }));
+                op = std::make_unique<ASTpathOp>(arc_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(std::move(op));
+                a = std::make_unique<ASTcons>(exp_list({
+                    new ASTreal( 0.5, CfdgError::Default),
+                    new ASTreal( 0.0, CfdgError::Default),
+                    new ASTreal( 0.5, CfdgError::Default)
+                }));
+                op = std::make_unique<ASTpathOp>(arc_op, std::move(a), CfdgError::Default);
+                mRuleBody.mBody.emplace_back(std::move(op));
             }
-            mRuleBody.mBody.emplace_back(new ASTpathOp(close_op, exp_ptr(),
-                CfdgError::Default));
+            rep_ptr op = std::make_unique<ASTpathOp>(close_op, exp_ptr(),
+                                                     CfdgError::Default);
+            mRuleBody.mBody.emplace_back(std::move(op));
             mRuleBody.mRepType = ASTreplacement::op;
             mRuleBody.mPathOp = AST::MOVETO;
         }
@@ -575,7 +584,7 @@ namespace AST {
                 mCachedPath = std::move(r->mCurrentPath);
                 mCachedPath->mCached = true;
                 mCachedPath->mParameters = parent.mParameters;
-                r->mCurrentPath.reset(new ASTcompiledPath());
+                r->mCurrentPath = std::make_unique<ASTcompiledPath>();
             } else {
                 r->mCurrentPath->mPath.remove_all();
                 r->mCurrentPath->mCommandInfo.clear();
@@ -1341,7 +1350,7 @@ namespace AST {
     parseXY(exp_ptr ax, exp_ptr ay, double def, const yy::location& loc)
     {
         if (!ax)
-            ax.reset(new ASTreal(def, loc));
+            ax = std::make_unique<ASTreal>(def, loc);
         int sz = 0;
         if (ax->mType == NumericType)
             sz = ax->evaluate();
@@ -1349,7 +1358,7 @@ namespace AST {
             CfdgError::Error(ax->where, "Path argument must be a scalar value");
         
         if (sz == 1 && !ay)
-            ay.reset(new ASTreal(def, loc));
+            ay = std::make_unique<ASTreal>(def, loc);
         
         if (ay && sz >= 0) {
             if (ay->mType == NumericType)

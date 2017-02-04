@@ -198,7 +198,7 @@ namespace AST {
     public:
         ASTexpArray children;
         ASTcons() = delete;
-        ASTcons(std::initializer_list<ASTexpression*> kids);
+        ASTcons(exp_list kids);
         ~ASTcons() override;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;

@@ -432,9 +432,9 @@ Builder::MakeConfig(ASTdefine* cfg)
         }
         
         if (!mod)
-            mod.reset(new ASTmodification(expLoc));
+            mod = std::make_unique<ASTmodification>(expLoc);
         
-        cfg->mExpression.reset(new ASTstartSpecifier(std::move(*rule), std::move(mod)));
+        cfg->mExpression = std::make_unique<ASTstartSpecifier>(std::move(*rule), std::move(mod));
     }
     ASTexpression* current = cfg->mExpression.get();
     m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth));
@@ -513,7 +513,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
     static const std::string name("let");
     int nameIndex = StringToShape(name, letLoc, false);
     yy::location defLoc = exp->where;
-    def_ptr def(new ASTdefine(name, defLoc));
+    def_ptr def = std::make_unique<ASTdefine>(name, defLoc);
     def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
     def->mDefineType = ASTdefine::LetDefine;
@@ -528,7 +528,7 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
         // if and let are handled by the parser, select is handled here
         if (name == "select") {
             yy::location argsLoc = args->where;
-            args.reset(new ASTselect(std::move(args), argsLoc, false));
+            args = std::make_unique<ASTselect>(std::move(args), argsLoc, false);
         }
         if (makeStart)
             return new ASTstartSpecifier(std::move(args), loc, std::move(mod));

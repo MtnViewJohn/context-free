@@ -60,9 +60,9 @@ void pngCanvas::output(const char* outfilename, int frame)
     std::unique_ptr<png_byte[]> row;
     std::unique_ptr<png_uint_16[]> row16;
     if (mPixelFormat & Has_16bit_Color)
-        row16.reset(new png_uint_16[mStride]);
+        row16 = std::make_unique<png_uint_16[]>(mStride);
     else
-        row.reset(new png_byte[mStride]);
+        row = std::make_unique<png_byte[]>(mStride);
     
     try {
         png_ptr = png_create_write_struct(

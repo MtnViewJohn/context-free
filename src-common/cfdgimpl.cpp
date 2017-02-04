@@ -508,7 +508,7 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
     if (shape.shapeType != newShape)
         return "Shape name already in use by another rule or path";
     
-    shape.parameters.reset(new AST::ASTparameters(p.mParameters));
+    shape.parameters = std::make_unique<AST::ASTparameters>(p.mParameters);
     shape.isShape = true;
     shape.argSize = argSize;
     shape.shapeType = isPath ? pathType : newShape;
@@ -581,7 +581,7 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
 
     if (ASTstartSpecifier* startSpec = dynamic_cast<ASTstartSpecifier*>(startExp)) {
         ParamExp[CFG::StartShape].release();
-        mInitShape.reset(new ASTreplacement(std::move(*startSpec), std::move(startSpec->mModification)));
+        mInitShape = std::make_unique<ASTreplacement>(std::move(*startSpec), std::move(startSpec->mModification));
         mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
     } else {
         CfdgError err(startExp->where, "Type error in startshape");
@@ -592,7 +592,7 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
 
     std::unique_ptr<RendererImpl> r;
     try {
-        r.reset(new RendererImpl(ptr, width, height, minSize, variation, border));
+        r = std::make_unique<RendererImpl>(ptr, width, height, minSize, variation, border);
         Modification tiled;
         Modification sized;
         Modification timed;

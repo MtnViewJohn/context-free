@@ -174,7 +174,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
     cfdgi_ptr pCfdg;
     for (int version = 2; version <= 3; ++version) {
         if (!pCfdg)
-            pCfdg.reset(new CFDGImpl(system));
+            pCfdg = std::make_unique<CFDGImpl>(system);
         Builder b(pCfdg, variation);
 
         yy::Scanner lexer;
@@ -201,9 +201,9 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
 #endif
             auto dirptr = b.m_currentPath->find_last_of(dirchar);
             if (dirptr == std::string::npos)
-                b.m_basePath.reset(new std::string(*b.m_currentPath));
+                b.m_basePath = std::make_unique<std::string>(*b.m_currentPath);
             else
-                b.m_basePath.reset(new std::string(*b.m_currentPath, 0, dirptr+1));
+                b.m_basePath = std::make_unique<std::string>(*b.m_currentPath, 0, dirptr+1);
         }
         b.m_filesToLoad.push(b.m_currentPath);
         b.m_streamsToLoad.push(std::move(input));

@@ -91,7 +91,7 @@ CommandLineSystem::openFileForRead(const string& path)
         if (!mInputBuffer) {
             std::ostringstream ss;
             ss << cin.rdbuf();
-            mInputBuffer.reset(new string(ss.str()));
+            mInputBuffer = std::make_unique<string>(ss.str());
         }
         return new istringstream(*mInputBuffer, ios::binary);
     }
