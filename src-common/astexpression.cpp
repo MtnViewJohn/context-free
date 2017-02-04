@@ -1802,15 +1802,13 @@ namespace AST {
             double result[AST::MaxVectorSize];
             int len = evaluate(result, AST::MaxVectorSize);
             if (len < 0) {
-                return this;
+                return nullptr;
             }
             
-            ASTexpression* r = MakeResult(result, len, this);
-            delete this;
-            return r;
+            return MakeResult(result, len, this);
         }
         
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -1820,13 +1818,11 @@ namespace AST {
             for (auto& arg: arguments)
                 Simplify(arg);
             Simplify(selector);
-            return this;
+            return nullptr;
         }
         
-        ASTexpression* chosenOne = arguments[indexCache].release();
-        
-        delete this;
-        return chosenOne->simplify();
+        Simplify(arguments[indexCache]);
+        return arguments[indexCache].release();
     }
     
     ASTexpression*
@@ -1834,7 +1830,7 @@ namespace AST {
     {
         if (arguments) {
             if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
-                for (auto&& child: carg->children)
+                for (auto& child: carg->children)
                     Simplify(child);
             } else {
                 Simplify(arguments);
@@ -1845,7 +1841,7 @@ namespace AST {
             const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
             assert(bound);
             if (bound->mType != RuleType)
-                return this;
+                return nullptr;
             if (bound->mStackIndex == -1) {
                 assert(bound->mDefinition);
                 if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
@@ -1867,7 +1863,7 @@ namespace AST {
                 }
             }
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -1878,20 +1874,19 @@ namespace AST {
             ASTexpression* m = mModification->simplify();
             assert(m == mModification.get());
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
     ASTcons::simplify()
     {
-        if (children.size() == 1) {
-            ASTexpression* ret = children[0].release()->simplify();
-            delete this;
-            return ret;
-        }
-        for (auto&& child: children)
+        for (auto& child: children)
             Simplify(child);
-        return this;
+        
+        if (children.size() == 1)
+            return children[0].release();
+        
+        return nullptr;
     }
     
     ASTexpression*
@@ -1902,13 +1897,13 @@ namespace AST {
                 // Can't use ASTcons::simplify() because it will collapse the
                 // ASTcons if it only has one child and that will break the
                 // function arguments.
-                for (auto&& child: carg->children)
+                for (auto& child: carg->children)
                     Simplify(child);
             } else {
                 Simplify(arguments);
             }
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -1922,14 +1917,10 @@ namespace AST {
             ASTparameter p(-1, definition, where);
             p.mDefinition = definition;     // ctor won't do this
             ASTexpression* ret = p.constCopy(where, ent);
-            if (ret) {
-                delete this;
+            if (ret)
                 return ret;
-            }
         } else if (!arguments) {
-            ASTexpression* ret = definition->mExpression.release();
-            delete this;
-            return ret;
+            return definition->mExpression.release();
         }
         return ASTuserFunction::simplify();
     }
@@ -1943,31 +1934,27 @@ namespace AST {
         if (isConstant && (mType == NumericType || mType == FlagType)) {
             double result[AST::MaxVectorSize];
             if (evaluate(result, tupleSize) != tupleSize) {
-                return this;
+                return nullptr;
             }
             
-            ASTexpression* r = MakeResult(result, tupleSize, this);
-            delete this;
-            return r;
+            return MakeResult(result, tupleSize, this);
         }
         
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
     ASTparen::simplify()
     {
-        ASTexpression* e2 = e.release()->simplify();
-        
-        delete this;
-        return e2;
+        Simplify(e);
+        return e.release();
     }
     
     ASTexpression*
     ASTmodTerm::simplify()
     {
         Simplify(args);
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2048,7 +2035,7 @@ namespace AST {
                 modExp.push_back(std::move(mod));
             }
         }
-        return this;
+        return nullptr;
     }
     
     ASTexpression*
@@ -2056,24 +2043,23 @@ namespace AST {
     {
         if (!mData || !isConstant || mLength > 1) {
             Simplify(mArgs);
-            return this;
+            return nullptr;
         }
         
         double i;
         if (mArgs->evaluate(&i, 1) != 1) {
             CfdgError::Error(mArgs->where, "Cannot evaluate array index");
-            return this;
+            return nullptr;
         }
         int index = static_cast<int>(i);
         if (index >= mCount || index < 0) {
             CfdgError::Error(where, "Array index exceeds bounds");
-            return this;
+            return nullptr;
         }
         
         ASTreal* top = new ASTreal(mData[index], where);
         top->text = entString;                // use variable name for entropy
         top->isNatural = isNatural;
-        delete this;
         return top;
     }
 

@@ -625,10 +625,10 @@ namespace AST {
                 }
                 break;
             case CompilePhase::Simplify:
-                r = mShapeSpec.simplify();          // always returns this
-                assert(r == &mShapeSpec);
+                r = mShapeSpec.simplify();          // always returns nullptr
+                assert(r == nullptr);
                 r = mChildChange.simplify();        // ditto
-                assert(r == &mChildChange);
+                assert(r == nullptr);
                 break;
         }
     }

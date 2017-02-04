@@ -64,7 +64,7 @@ namespace AST {
         virtual param_ptr evalArgs(RendererAST* = nullptr, const StackRule* = nullptr) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return nullptr; }
         virtual void entropy(std::string&) const {};
-        virtual ASTexpression* simplify() { return this; }
+        virtual ASTexpression* simplify() { return nullptr; }
         
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
@@ -401,8 +401,9 @@ namespace AST {
     inline void Simplify(exp_ptr& exp)
     {
         if (!exp) return;
-        ASTexpression* r = exp.release()->simplify();
-        exp.reset(r);
+        ASTexpression* r = exp->simplify();
+        if (r)
+            exp.reset(r);
     }
     
     inline ASTexpArray Extract(exp_ptr exp)
