@@ -520,7 +520,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
     return new ASTlet(std::move(vars), std::move(def), letLoc, defLoc);
 }
 
-ASTruleSpecifier*  
+ruleSpec_ptr
 Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
                       const yy::location& loc, mod_ptr mod, bool makeStart)
 {
@@ -531,9 +531,9 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
             args = std::make_unique<ASTselect>(std::move(args), argsLoc, false);
         }
         if (makeStart)
-            return new ASTstartSpecifier(std::move(args), loc, std::move(mod));
+            return std::make_unique<ASTstartSpecifier>(std::move(args), loc, std::move(mod));
         else
-            return new ASTruleSpecifier(std::move(args), loc);
+            return std::make_unique<ASTruleSpecifier>(std::move(args), loc);
     }
 
     int nameIndex = StringToShape(name, loc, true);
@@ -544,16 +544,16 @@ Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
         warning(loc, "Shape name binds to global variable and current shape, using current shape");
     
     if (bound && bound->isParameter && bound->mType == RuleType)
-        return new ASTruleSpecifier(nameIndex, name, loc);
+        return std::make_unique<ASTruleSpecifier>(nameIndex, name, loc);
     
-    ASTruleSpecifier* ret = nullptr;
+    ruleSpec_ptr ret;
     m_CFDG->setShapeHasNoParams(nameIndex, args.get());
     if (makeStart)
-        ret = new ASTstartSpecifier(nameIndex, name, std::move(args), loc,
-                                    std::move(mod));
+        ret = std::make_unique<ASTstartSpecifier>(nameIndex, name, std::move(args),
+                                                  loc, std::move(mod));
     else
-        ret = new ASTruleSpecifier(nameIndex, name, std::move(args), loc,
-                                   m_CFDG->getShapeParams(mCurrentShape));
+        ret = std::make_unique<ASTruleSpecifier>(nameIndex, name, std::move(args),
+                                                 loc, m_CFDG->getShapeParams(mCurrentShape));
     if (ret->arguments && ret->arguments->mType == ReuseType) {
         if (makeStart)
             CfdgError::Error(loc, "Startshape cannot reuse parameters");
@@ -589,7 +589,7 @@ Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params,
     if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
         return new ASTpathCommand(s, std::move(mods), std::move(params), loc);
     
-    ruleSpec_ptr r(MakeRuleSpec(s, std::move(params), loc));
+    ruleSpec_ptr r = MakeRuleSpec(s, std::move(params), loc);
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;
@@ -651,7 +651,7 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
     
     // If args are parameter reuse args then it must be a rule spec
     if (args && args->mType == ReuseType)
-        return MakeRuleSpec(*name, std::move(args), nameLoc + argsLoc);
+        return MakeRuleSpec(*name, std::move(args), nameLoc + argsLoc).release();
     
     // At this point we don't know if this is a typo or a to-be-defined shape or
     // user function. Return an ASTuserFunction and fix it up during type check.

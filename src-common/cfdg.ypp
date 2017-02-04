@@ -307,7 +307,7 @@ initialization:
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @shapeName, std::move(mod), true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), @shapeName, std::move(mod), true);
             $initialization = cfg;
         }
         |
@@ -317,7 +317,7 @@ initialization:
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @shapeName, std::move(mod), true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, @shapeName, std::move(mod), true);
             $initialization = cfg;
         }
         |
@@ -327,7 +327,7 @@ initialization:
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), @shapeName, nullptr, true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), @shapeName, nullptr, true);
             $initialization = cfg;
         }
         ;
@@ -338,7 +338,7 @@ initialization_v2:
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization_v2, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, @shapeName, nullptr, true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, @shapeName, nullptr, true);
             $initialization_v2 = cfg;
         }
         ;

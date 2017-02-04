@@ -124,7 +124,7 @@ public:
                                       const yy::location& typeLoc, const yy::location& nameLoc);
     AST::ASTexpression*  
                     MakeVariable(const std::string& name, const yy::location& loc);
-    AST::ASTruleSpecifier*  
+    AST::ruleSpec_ptr
                     MakeRuleSpec(const std::string& name, AST::exp_ptr a,
                                  const yy::location& loc, AST::mod_ptr mod = nullptr,
                                  bool makeStart = false);

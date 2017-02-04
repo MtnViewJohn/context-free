@@ -1182,7 +1182,7 @@ namespace yy {
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], yylhs.location, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), yystack_[2].location, std::move(mod), true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), yystack_[2].location, std::move(mod), true);
             (yylhs.value.component) = cfg;
         }
 #line 1189 "cfdg.tab.cpp" // lalr1.cc:859
@@ -1196,7 +1196,7 @@ namespace yy {
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], yylhs.location, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, yystack_[1].location, std::move(mod), true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, yystack_[1].location, std::move(mod), true);
             (yylhs.value.component) = cfg;
         }
 #line 1203 "cfdg.tab.cpp" // lalr1.cc:859
@@ -1210,7 +1210,7 @@ namespace yy {
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], yylhs.location, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, std::move(p), yystack_[1].location, nullptr, true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), yystack_[1].location, nullptr, true);
             (yylhs.value.component) = cfg;
         }
 #line 1217 "cfdg.tab.cpp" // lalr1.cc:859
@@ -1223,7 +1223,7 @@ namespace yy {
             driver.SetShape(nullptr);
             ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], yylhs.location, false);
             if (cfg)
-                cfg->mExpression.reset(driver.MakeRuleSpec(*name, nullptr, yystack_[0].location, nullptr, true));
+                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, yystack_[0].location, nullptr, true);
             (yylhs.value.component) = cfg;
         }
 #line 1230 "cfdg.tab.cpp" // lalr1.cc:859
