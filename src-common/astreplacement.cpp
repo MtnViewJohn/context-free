@@ -141,15 +141,15 @@ namespace AST {
     {
     }
     
-    ASTdefine::ASTdefine(const std::string& name, const yy::location& loc)
+    ASTdefine::ASTdefine(std::string&& name, const yy::location& loc)
     : ASTreplacement(nullptr, loc, empty), mDefineType(StackDefine),
-      mType(NoType), isNatural(false), mParamSize(0), mName(name),
+      mType(NoType), isNatural(false), mParamSize(0), mName(std::move(name)),
       mConfigDepth(-1)
     {
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
         mChildChange.modData.mRand64Seed.seed();
-        mChildChange.modData.mRand64Seed.xorString(name.c_str(), i);
+        mChildChange.modData.mRand64Seed.xorString(mName.c_str(), i);
     }
     
     void

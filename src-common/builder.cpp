@@ -37,12 +37,10 @@
 #include "agg_basics.h"
 #include "cfdgimpl.h"
 #include "primShape.h"
-#include <string.h>
-#include <math.h>
+#include <cmath>
 #include <cassert>
 #include <limits>
 #include "scanner.h"
-#include <cstring>
 #include <typeinfo>
 
 using namespace AST;
@@ -315,7 +313,22 @@ Builder::NextParameterDecl(const std::string& type, const std::string& name,
 }
 
 ASTdefine*
-Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
+Builder::MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, exp_ptr exp)
+{
+    if (!mContainerStack.back()->isGlobal) {
+        CfdgError::Error(cfgLoc, "Configuration parameters must be at global scope");
+        return nullptr;
+    }
+    std::string name(CFDG::ParamNames[cfgnum]);     // copy the name
+    ASTdefine* cfg = new ASTdefine(std::move(name), cfgLoc);
+    cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
+    cfg->mDefineType = ASTdefine::ConfigDefine;
+    cfg->mExpression = std::move(exp);
+    return cfg;
+}
+
+ASTdefine*
+Builder::MakeDefinition(std::string& name, const yy::location& nameLoc,
                         bool isFunction)
 {
     if (strncmp(name.c_str(), "CF::", 4) == 0) {
@@ -327,7 +340,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
             CfdgError::Error(nameLoc, "Configuration parameters must be at global scope");
             return nullptr;
         }
-        ASTdefine* cfg = new ASTdefine(name, nameLoc);
+        ASTdefine* cfg = new ASTdefine(std::move(name), nameLoc);
         cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
         cfg->mDefineType = ASTdefine::ConfigDefine;
         return cfg;
@@ -346,7 +359,7 @@ Builder::MakeDefinition(const std::string& name, const yy::location& nameLoc,
     }
 
     CheckVariableName(nameIndex, nameLoc, false);
-    ASTdefine* def = new ASTdefine(name, nameLoc);
+    ASTdefine* def = new ASTdefine(std::move(name), nameLoc);
     def->mShapeSpec.shapeType = nameIndex;
     if (isFunction) {
         for (ASTparameter& param: mParamDecls.mParameters)
@@ -510,10 +523,10 @@ Builder::MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nam
 ASTexpression*
 Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
 {
-    static const std::string name("let");
+    std::string name("let");
     int nameIndex = StringToShape(name, letLoc, false);
     yy::location defLoc = exp->where;
-    def_ptr def = std::make_unique<ASTdefine>(name, defLoc);
+    def_ptr def = std::make_unique<ASTdefine>(std::move(name), defLoc);
     def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
     def->mDefineType = ASTdefine::LetDefine;

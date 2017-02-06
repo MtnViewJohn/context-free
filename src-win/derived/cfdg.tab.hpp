@@ -44,24 +44,8 @@
 
 #include "builder.h"
 #include <string>
-namespace AST {
-    class ASTexpression;
-    class ASTmodTerm;
-    class ASTmodification;
-    class ASTpath;
-    class ASTreplacement;
-    class ASTbodyContainer;
-    class ASTloop;
-    class ASTif;
-    class ASTswitch;
-    class ASTpathBody;
-    class ASTpathLoop;
-    class ASTruleSpecifier;
-    class ASTrule;
-    class ASTdefine;
-}
 
-#line 65 "cfdg.tab.hpp" // lalr1.cc:392
+#line 49 "cfdg.tab.hpp" // lalr1.cc:392
 
 
 # include <cstdlib> // std::abort
@@ -133,7 +117,7 @@ namespace AST {
 
 
 namespace yy {
-#line 137 "cfdg.tab.hpp" // lalr1.cc:392
+#line 121 "cfdg.tab.hpp" // lalr1.cc:392
 
 
 
@@ -147,11 +131,11 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 62 "../../src-common/cfdg.ypp" // lalr1.cc:392
+    #line 46 "../../src-common/cfdg.ypp" // lalr1.cc:392
 
     unsigned modToken;
     std::string*  string;
-    const std::string*  cstring;
+    CFG cfgenum;
     AST::ASTexpression* expression;
     AST::ASTmodTerm* term;
     AST::ASTmodification* mod;
@@ -164,7 +148,7 @@ namespace yy {
     AST::ASTrepContainer* bodyObj;
     AST::ASTdefine* defObj;
 
-#line 168 "cfdg.tab.hpp" // lalr1.cc:392
+#line 152 "cfdg.tab.hpp" // lalr1.cc:392
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -552,11 +536,11 @@ namespace yy {
 
 
 } // yy
-#line 556 "cfdg.tab.hpp" // lalr1.cc:392
+#line 540 "cfdg.tab.hpp" // lalr1.cc:392
 
 
 // //                    "%code provides" blocks.
-#line 179 "../../src-common/cfdg.ypp" // lalr1.cc:392
+#line 163 "../../src-common/cfdg.ypp" // lalr1.cc:392
 
 #include "scanner.h"
 #include "math.h"
@@ -566,7 +550,7 @@ namespace yy {
 #undef yylex
 #define yylex driver.lexer->lex
 
-#line 570 "cfdg.tab.hpp" // lalr1.cc:392
+#line 554 "cfdg.tab.hpp" // lalr1.cc:392
 
 
 #endif // !YY_YY_CFDG_TAB_HPP_INCLUDED

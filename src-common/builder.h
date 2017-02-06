@@ -139,11 +139,12 @@ public:
                     MakeArray(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
                                 const yy::location& argsLoc);
     AST::ASTexpression*
-    MakeLet(const yy::location& letLoc, AST::cont_ptr vars, AST::exp_ptr exp);
+                    MakeLet(const yy::location& letLoc, AST::cont_ptr vars, AST::exp_ptr exp);
     AST::ASTmodification*
                     MakeModification(AST::mod_ptr modExp, const yy::location& loc,
                                      bool canonical);
-    AST::ASTdefine* MakeDefinition(const std::string& name, const yy::location& nameLoc,
+    AST::ASTdefine* MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, AST::exp_ptr exp);
+    AST::ASTdefine* MakeDefinition(std::string& name, const yy::location& nameLoc,
                                    bool isFunction);
     std::string     GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*& p);
     const AST::ASTrule*

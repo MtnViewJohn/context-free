@@ -181,7 +181,7 @@ namespace AST {
         std::string mName;
         int mConfigDepth;
         
-        ASTdefine(const std::string& name, const yy::location& loc);
+        ASTdefine(std::string&& name, const yy::location& loc);
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph) override;
         ~ASTdefine() override = default;

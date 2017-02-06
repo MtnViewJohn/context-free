@@ -40,29 +40,13 @@
 %code requires {
 #include "builder.h"
 #include <string>
-namespace AST {
-    class ASTexpression;
-    class ASTmodTerm;
-    class ASTmodification;
-    class ASTpath;
-    class ASTreplacement;
-    class ASTbodyContainer;
-    class ASTloop;
-    class ASTif;
-    class ASTswitch;
-    class ASTpathBody;
-    class ASTpathLoop;
-    class ASTruleSpecifier;
-    class ASTrule;
-    class ASTdefine;
-}
 }
 
 %union
 {
     unsigned modToken;
     std::string*  string;
-    const std::string*  cstring;
+    CFG cfgenum;
     AST::ASTexpression* expression;
     AST::ASTmodTerm* term;
     AST::ASTmodification* mod;
@@ -153,13 +137,13 @@ namespace AST {
 %type <switchObj> switchHeader
 %type <ruleObj> rule_header path_header rule_header_v2 path_header_v2 shape_singleton_header
 %type <string> fileString fileNameSpace shapeName
-%type <cstring> directive_string
+%type <cfgenum> directive_num
 %type <modToken> caseHeader
 %type <bodyObj> letHeader
 %type <defObj> definition_header global_definition_header function_definition_header global_definition definition
 
 %destructor { delete $$; } USER_STRING USER_FILENAME USER_QSTRING USER_PATHOP USER_ARRAYNAME fileString fileNameSpace shapeName
-%destructor { } directive_string
+%destructor { } directive_num
 %destructor { delete $$; } definition_header global_definition_header function_definition_header global_definition definition
 %destructor { delete $$; } exp exp2 exp3 expfunc explist arglist parameter_spec letBody
 %destructor { delete $$; } adjustment
@@ -305,30 +289,24 @@ initialization:
             exp_ptr p($parameter_spec); $parameter_spec = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
             driver.SetShape(nullptr);
-            ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
-            if (cfg)
-                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), @shapeName, std::move(mod), true);
-            $initialization = cfg;
+            $initialization = driver.MakeDefinition(CFG::StartShape, @initialization,
+                                                    driver.MakeRuleSpec(*name, std::move(p), @shapeName, std::move(mod), true));
         }
         |
         STARTSHAPE USER_ARRAYNAME[shapeName] modification {
             str_ptr name($shapeName);   $shapeName = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
             driver.SetShape(nullptr);
-            ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
-            if (cfg)
-                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, @shapeName, std::move(mod), true);
-            $initialization = cfg;
+            $initialization = driver.MakeDefinition(CFG::StartShape, @initialization,
+                                                    driver.MakeRuleSpec(*name, nullptr, @shapeName, std::move(mod), true));
         }
         |
         STARTSHAPE USER_STRING[shapeName] parameter_spec {
             str_ptr name($shapeName);   $shapeName = nullptr;
             exp_ptr p($parameter_spec); $parameter_spec = nullptr;
             driver.SetShape(nullptr);
-            ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization, false);
-            if (cfg)
-                cfg->mExpression = driver.MakeRuleSpec(*name, std::move(p), @shapeName, nullptr, true);
-            $initialization = cfg;
+            $initialization = driver.MakeDefinition(CFG::StartShape, @initialization,
+                                                    driver.MakeRuleSpec(*name, std::move(p), @shapeName, nullptr, true));
         }
         ;
 
@@ -336,39 +314,34 @@ initialization_v2:
         STARTSHAPE USER_STRING[shapeName] {
             str_ptr name($shapeName); $shapeName = nullptr;
             driver.SetShape(nullptr);
-            ASTdefine* cfg = driver.MakeDefinition(CFDG::ParamNames[CFG::StartShape], @initialization_v2, false);
-            if (cfg)
-                cfg->mExpression = driver.MakeRuleSpec(*name, nullptr, @shapeName, nullptr, true);
-            $initialization_v2 = cfg;
+            $initialization_v2 = driver.MakeDefinition(CFG::StartShape, @initialization_v2,
+                                                       driver.MakeRuleSpec(*name, nullptr, @shapeName, nullptr, true));
         }
         ;
 
 directive_v2:
-        directive_string modification_v2 {
+        directive_num modification_v2 {
             exp_ptr mod($modification_v2); $modification_v2 = nullptr;
-            ASTdefine* cfg = driver.MakeDefinition(*$directive_string, @directive_v2, false);
-            if (cfg)
-                cfg->mExpression = std::move(mod);
             driver.lexer->maybeVersion = token::CFDG2;
-            $directive_v2 = cfg;
+            $directive_v2 = driver.MakeDefinition($directive_num, @directive_v2, std::move(mod));
         }
         ;
 
-directive_string:
-        BACKGROUND { $directive_string = &CFDG::ParamNames[CFG::Background]; }
+directive_num:
+        BACKGROUND { $directive_num = CFG::Background; }
         |
-        TILE { $directive_string = &CFDG::ParamNames[CFG::Tile]; }
+        TILE { $directive_num = CFG::Tile; }
         |
         MODTYPE {
             switch ($1) {
                 case ASTmodTerm::size:
-                    $directive_string = &CFDG::ParamNames[CFG::Size];
+                    $directive_num = CFG::Size;
                     break;
                 case ASTmodTerm::time:
-                    $directive_string = &CFDG::ParamNames[CFG::Time];
+                    $directive_num = CFG::Time;
                     break;
                 default:
-                    $directive_string = &CFDG::ParamNames[CFG::Size];
+                    $directive_num = CFG::Size;
                     error(@MODTYPE, "Syntax error");
                     break;
             }
