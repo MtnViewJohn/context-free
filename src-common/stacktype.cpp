@@ -76,7 +76,7 @@ StackRule*
 StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
 {
     ++Renderer::ParamCount;
-    StackType* newrule = reinterpret_cast<StackType*>(new double[size ? size + HeaderSize : 1]);
+    StackType* newrule = size ? new StackType[size + HeaderSize] : new StackType;
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
     newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
@@ -149,15 +149,17 @@ StackRule::release() const noexcept
         (*f).second = ParamOfInterest;
 #endif
     if (mRefCount == 0) {
-        if (mParamCount) {
-            const StackType* data = reinterpret_cast<const StackType*>(this);
+        const StackType* data = reinterpret_cast<const StackType*>(this);
+        if (mParamCount)
             data[HeaderSize].destroy(data[1].typeInfo);
-        }
 #ifdef EXTREME_PARAM_DEBUG
         (*f).second = -n;
 #endif
         --Renderer::ParamCount;
-        delete[] this;
+        if (mParamCount)
+            delete[] data;
+        else
+            delete data;
         return;
     }
 }
