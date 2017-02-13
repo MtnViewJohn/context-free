@@ -53,9 +53,14 @@ const char* prettyInt(unsigned long);
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
-    FILE *out = nullptr;
-    png_structp png_ptr = 0;
-    png_infop info_ptr = 0;
+    unique_ptr<FILE, void(*)(FILE*)> out(nullptr, [](FILE* f)
+    {   // f is not null
+        if (f != stdout)
+            if (fclose(f) != 0)
+                throw "file I/O error";
+    });
+    png_structp png_ptr = nullptr;
+    png_infop info_ptr = nullptr;
 
     std::unique_ptr<png_byte[]> row;
     std::unique_ptr<png_uint_16[]> row16;
@@ -70,13 +75,13 @@ void pngCanvas::output(const char* outfilename, int frame)
             0, pngWriteError, pngWriteWarning);
         if (!png_ptr) throw "couldn't create png write struct";
 
-        png_infop info_ptr = png_create_info_struct(png_ptr);
+        info_ptr = png_create_info_struct(png_ptr);
         if (!info_ptr) throw "couldn't create png info struct";
 
         if (*outfilename) {
-            out = fopen(outfilename, "wb");
+            out.reset(fopen(outfilename, "wb"));
         } else {
-            out = stdout;
+            out.reset(stdout);
 #ifdef WIN32
             setmode(fileno(stdout), O_BINARY);
 #endif
@@ -86,7 +91,7 @@ void pngCanvas::output(const char* outfilename, int frame)
             throw false;
         }
 
-        png_init_io(png_ptr, out);
+        png_init_io(png_ptr, out.get());
         
         int pngFormat;
         switch (mPixelFormat) {
@@ -181,18 +186,12 @@ void pngCanvas::output(const char* outfilename, int frame)
         }
 
         png_write_end(png_ptr, 0);
-
-        if (out != stdout) {
-            if (fclose(out) != 0) throw "File I/O error!?!?!";
-            out = nullptr;
-        }
     }
     catch (const char* msg) {
         cerr << "***" << msg << endl;
     }
     catch (bool) { }
     
-    if (out && out != stdout)        fclose(out), out = nullptr;
     if (png_ptr)    png_destroy_write_struct(&png_ptr, &info_ptr);
 }
 
