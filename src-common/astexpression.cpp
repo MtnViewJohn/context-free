@@ -721,12 +721,20 @@ namespace AST {
                         res[i] = ((l[i] - r[i]) > 0.0) ? (l[i] - r[i]) : 0.0;
                     break;
                 case '*':
-                    for (int i = 0 ; i < tupleSize; ++i)
-                        res[i] = leftnum == 1 ? l[0] * r[i] : l[i] * r[0];
+                    if (leftnum == rightnum)
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = l[i] * r[i];
+                    else
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = leftnum == 1 ? l[0] * r[i] : l[i] * r[0];
                     break;
                 case '/':
-                    for (int i = 0 ; i < tupleSize; ++i)
-                        res[i] = leftnum == 1 ? l[0] / r[i] : l[i] / r[0];
+                    if (leftnum == rightnum)
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = l[i] / r[i];
+                    else
+                        for (int i = 0 ; i < tupleSize; ++i)
+                            res[i] = leftnum == 1 ? l[0] / r[i] : l[i] / r[0];
                     break;
                 case '<':
                     *res = (l[0] < r[0]) ? 1.0 : 0.0;
@@ -2694,8 +2702,8 @@ namespace AST {
                         case '*':
                             if (ls < 1 || rs < 1)
                                 CfdgError::Error(where, "Binary operators must have two operands");
-                            else if (std::min(ls, rs) > 1)
-                                CfdgError::Error(where, "At least one operand must be scalar");
+                            else if (ls != rs && std::min(ls, rs) > 1)
+                                CfdgError::Error(where, "At least one operand must be scalar (or both same size)");
                             tupleSize = std::max(ls, rs);
                             break;
                         case '+':
