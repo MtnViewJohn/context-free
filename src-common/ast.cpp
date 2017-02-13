@@ -82,6 +82,7 @@ namespace AST {
                 // Must make sure next char is not +/-, whitespace or 0 before
                 // we can use strtol()
                 char* tail = nullptr;
+                errno = 0;
                 long sz = std::strtol(typeName.c_str() + 6, &tail, 10);
                 if ((tail && *tail != '\0') || errno == ERANGE) {
                     CfdgError::Error(mLocation, "Illegal vector type specification");

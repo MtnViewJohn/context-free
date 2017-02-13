@@ -113,6 +113,7 @@ void
 TempFile::erase()
 {
     mSystem->message("Deleting %s temp file %d", type().c_str(), mNum);
+    errno = 0;
     if (remove(mPath.c_str()))
         mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
 }
