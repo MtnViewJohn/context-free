@@ -33,6 +33,7 @@
 #include <iosfwd>
 #include <string>
 #include <memory>
+#include <map>
 
 #ifdef _WIN32
 #include "Win32System.h"
@@ -64,6 +65,8 @@ public:
     
     void stats(const Stats&) override;
     void orphan() override {};
+private:
+    static const std::map<std::string, const char*> ExamplesMap;
 };
 
 #endif // INCLUDE_COMMANDLINE_SYSTEM
