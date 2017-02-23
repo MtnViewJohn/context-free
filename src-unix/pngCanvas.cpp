@@ -56,8 +56,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     unique_ptr<FILE, void(*)(FILE*)> out(nullptr, [](FILE* f)
     {   // f is not null
         if (f != stdout)
-            if (fclose(f) != 0)
-                throw "file I/O error";
+            fclose(f);
     });
     png_structp png_ptr = nullptr;
     png_infop info_ptr = nullptr;
