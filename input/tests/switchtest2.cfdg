@@ -1,0 +1,9 @@
+startshape test
+
+shape test {
+  switch (2…2.01) {
+    case 1: error[]
+    case 3: error[]
+    else:   TRIANGLE[]
+  }
+}
