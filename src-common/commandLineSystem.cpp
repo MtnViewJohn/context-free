@@ -1148,7 +1148,8 @@ rule {
     SQUARE [ ]
     curveleft_1_02_2 [ rotate 2 size 1.02 x -0.0274871 y 0.991892 ]
 }
-
+)&&&"
+R"&&&(
 shape curveleft_1_02_3
 rule {
     SQUARE [ ]
