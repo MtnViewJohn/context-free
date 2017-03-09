@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{054D21FC-98E9-4249-819D-190218C1FE7C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>src-common;src-win;src-win/derived;src-agg/include;src-common/agg-extras;src-ffmpeg/include;$(IncludePath)</IncludePath>
+    <LibraryPath>src-ffmpeg\lib32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>src-common;src-win;src-win/derived;src-agg/include;src-common/agg-extras;src-ffmpeg/include;$(IncludePath)</IncludePath>
+    <LibraryPath>src-ffmpeg\lib32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>src-common;src-win;src-win/derived;src-agg/include;src-common/agg-extras;src-ffmpeg/include;$(IncludePath)</IncludePath>
+    <LibraryPath>src-ffmpeg\lib64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>src-common;src-win;src-win/derived;src-agg/include;src-common/agg-extras;src-ffmpeg/include;$(IncludePath)</IncludePath>
+    <LibraryPath>src-ffmpeg\lib64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src-common;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <DisableSpecificWarnings>4146;4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>libavcodec.a;libavformat.a;libavutil.a;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src-common;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4146;4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libavcodec.a;libavformat.a;libavutil.a;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <DisableSpecificWarnings>4146;4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavcodec.a;libavformat.a;libavutil.a;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <DisableSpecificWarnings>4146;4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavcodec.a;libavformat.a;libavutil.a;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src-common\abstractPngCanvas.h" />
+    <ClInclude Include="src-common\aggCanvas.h" />
+    <ClInclude Include="src-common\ast.h" />
+    <ClInclude Include="src-common\astexpression.h" />
+    <ClInclude Include="src-common\astreplacement.h" />
+    <ClInclude Include="src-common\bounds.h" />
+    <ClInclude Include="src-common\builder.h" />
+    <ClInclude Include="src-common\cfdg.h" />
+    <ClInclude Include="src-common\cfdgimpl.h" />
+    <ClInclude Include="src-common\chunk_vector.h" />
+    <ClInclude Include="src-common\CmdInfo.h" />
+    <ClInclude Include="src-common\commandLineSystem.h" />
+    <ClInclude Include="src-common\config.h" />
+    <ClInclude Include="src-common\ffCanvas.h" />
+    <ClInclude Include="src-common\HSBColor.h" />
+    <ClInclude Include="src-common\makeCFfilename.h" />
+    <ClInclude Include="src-common\myrandom.h" />
+    <ClInclude Include="src-common\pathIterator.h" />
+    <ClInclude Include="src-common\primShape.h" />
+    <ClInclude Include="src-common\Rand64.h" />
+    <ClInclude Include="src-common\rendererAST.h" />
+    <ClInclude Include="src-common\renderimpl.h" />
+    <ClInclude Include="src-common\scanner.h" />
+    <ClInclude Include="src-common\shape.h" />
+    <ClInclude Include="src-common\shapeSTL.h" />
+    <ClInclude Include="src-common\stacktype.h" />
+    <ClInclude Include="src-common\SVGCanvas.h" />
+    <ClInclude Include="src-common\tempfile.h" />
+    <ClInclude Include="src-common\test.h" />
+    <ClInclude Include="src-common\tiledCanvas.h" />
+    <ClInclude Include="src-common\variation.h" />
+    <ClInclude Include="src-common\version.h" />
+    <ClInclude Include="src-common\xorshift64star.h" />
+    <ClInclude Include="src-unix\args.hxx" />
+    <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
+    <ClInclude Include="src-win\derived\FlexLexer.h" />
+    <ClInclude Include="src-win\derived\location.hh" />
+    <ClInclude Include="src-win\derived\position.hh" />
+    <ClInclude Include="src-win\derived\stack.hh" />
+    <ClInclude Include="src-win\inttypes.h" />
+    <ClInclude Include="src-win\resource.h" />
+    <ClInclude Include="src-win\Win32System.h" />
+    <ClInclude Include="src-win\WinCanvas.h" />
+    <ClInclude Include="src-win\WinPngCanvas.h" />
+    <ClInclude Include="src-win\WinSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src-agg\src\agg_bezier_arc.cpp" />
+    <ClCompile Include="src-agg\src\agg_color_rgba.cpp" />
+    <ClCompile Include="src-agg\src\agg_curves.cpp" />
+    <ClCompile Include="src-agg\src\agg_trans_affine.cpp" />
+    <ClCompile Include="src-agg\src\agg_vcgen_contour.cpp" />
+    <ClCompile Include="src-agg\src\agg_vcgen_stroke.cpp" />
+    <ClCompile Include="src-common\abstractPngCanvas.cpp" />
+    <ClCompile Include="src-common\aggCanvas.cpp" />
+    <ClCompile Include="src-common\ast.cpp" />
+    <ClCompile Include="src-common\astexpression.cpp" />
+    <ClCompile Include="src-common\astreplacement.cpp" />
+    <ClCompile Include="src-common\bounds.cpp" />
+    <ClCompile Include="src-common\builder.cpp" />
+    <ClCompile Include="src-common\cfdg.cpp" />
+    <ClCompile Include="src-common\cfdgimpl.cpp" />
+    <ClCompile Include="src-common\CmdInfo.cpp" />
+    <ClCompile Include="src-common\commandLineSystem.cpp" />
+    <ClCompile Include="src-common\ffCanvas.cpp" />
+    <ClCompile Include="src-common\HSBColor.cpp" />
+    <ClCompile Include="src-common\makeCFfilename.cpp" />
+    <ClCompile Include="src-common\pathIterator.cpp" />
+    <ClCompile Include="src-common\primShape.cpp" />
+    <ClCompile Include="src-common\Rand64.cpp" />
+    <ClCompile Include="src-common\rendererAST.cpp" />
+    <ClCompile Include="src-common\renderimpl.cpp" />
+    <ClCompile Include="src-common\shape.cpp" />
+    <ClCompile Include="src-common\shapeSTL.cpp" />
+    <ClCompile Include="src-common\stacktype.cpp" />
+    <ClCompile Include="src-common\SVGCanvas.cpp" />
+    <ClCompile Include="src-common\tempfile.cpp" />
+    <ClCompile Include="src-common\tiledCanvas.cpp" />
+    <ClCompile Include="src-common\variation.cpp" />
+    <ClCompile Include="src-unix\main.cpp" />
+    <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
+    <ClCompile Include="src-win\derived\lex.yy.cpp" />
+    <ClCompile Include="src-win\Win32System.cpp" />
+    <ClCompile Include="src-win\WinCanvas.cpp" />
+    <ClCompile Include="src-win\WinPngCanvas.cpp" />
+    <ClCompile Include="src-win\WinSystem.cpp" />
+    <ClCompile Include="src-win\winTimer.cpp" />
+    <ClCompile Include="src-win\winVersion.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
