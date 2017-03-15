@@ -519,7 +519,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 }
 
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
     SEL action = [anItem action];
     

@@ -477,7 +477,7 @@ namespace {
         didEndSelector: @selector(saveMovietoFile:)];
 }
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
     SEL action = [anItem action];
     
@@ -606,7 +606,7 @@ namespace {
     return (mTiled && mEngine) ? mEngine->isFrieze() : 0;
 }
 
-- (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
+- (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult
 {
     NSBitmapImageRep* bits;
     
@@ -775,7 +775,7 @@ namespace {
 @end
 
 @implementation GView (renderThread)
-- (void) renderBegin:(RenderParameters*)parameters;
+- (void) renderBegin:(RenderParameters*)parameters
 {
     [self useVariation];
     

@@ -168,7 +168,7 @@ namespace {
     }
 }
 
-- (id)initForDocument:(CFDGDocument*)document andView:(GView*)view;
+- (id)initForDocument:(CFDGDocument*)document andView:(GView*)view
 {
     self = [self initWithWindowNibName: @"GalleryUploader"];
     if (!self) return self;

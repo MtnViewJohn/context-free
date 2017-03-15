@@ -143,7 +143,7 @@ static BOOL kfScaleUInts(NSUInteger *integers, NSUInteger numInts, NSUInteger ta
     kfInUsePositionNames = [[NSMutableSet alloc] init];
 }
 
-- initWithFrame:(NSRect)frameRect
+- (id)initWithFrame:(NSRect)frameRect
 {
     if ((self = [super initWithFrame:frameRect]))
     {
@@ -153,7 +153,7 @@ static BOOL kfScaleUInts(NSUInteger *integers, NSUInteger numInts, NSUInteger ta
     return self;
 }
 
-- initWithCoder:(NSCoder *)coder
+- (id)initWithCoder:(NSCoder *)coder
 {
     if ((self = [super initWithCoder:coder]))
     {

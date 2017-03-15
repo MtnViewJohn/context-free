@@ -36,7 +36,7 @@ namespace {
 
 @implementation ColorCalc
 
-- init
+- (id)init
 {
     if ((self = [super init])) {
         deltaSteps = 1;
@@ -70,7 +70,7 @@ namespace {
     return [NSSet setWithObjects:@"startHue", @"startSaturation", @"startBrightness", nil];
 }
 
-- (NSColor*) finishColor;
+- (NSColor*) finishColor
 {
     return [NSColor colorWithCalibratedHue: finishHue / 360.0
                 saturation: finishSaturation
@@ -90,7 +90,7 @@ namespace {
     startBrightness = [c brightnessComponent];
 }
 
-- (void)  setFinishColor: (NSColor*) c;
+- (void)  setFinishColor: (NSColor*) c
 {
     finishHue = [c hueComponent] * 360.0;
     finishSaturation = [c saturationComponent];
@@ -103,7 +103,7 @@ namespace {
 + (NSSet *)keyPathsForValuesAffectingStartText
     { return [NSSet setWithObjects:@"startHue", @"startSaturation", @"startBrightness", nil]; }
 
-- (NSString*)   finishText;
+- (NSString*)   finishText
     { return buildText(finishHue, finishSaturation, finishBrightness); }
 
 + (NSSet *)keyPathsForValuesAffectingFinishText

@@ -1014,6 +1014,7 @@
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -1231,6 +1232,7 @@
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -1305,6 +1307,7 @@
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1344,6 +1347,7 @@
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
