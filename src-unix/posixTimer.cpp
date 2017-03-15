@@ -30,7 +30,7 @@
 static std::weak_ptr<Renderer> gRenderer;
 
 void
-statusTimer(int signal)
+statusTimer(int)
 {
   if (auto runningRenderer = gRenderer.lock())
       runningRenderer->requestUpdate = true;

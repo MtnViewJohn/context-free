@@ -143,7 +143,7 @@ test: cfdg
 #
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O3 -Wall -march=native -Wno-parentheses -std=c++14
+CPPFLAGS += -O3 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
 #CPPFLAGS += -g
 
 # Add this for clang

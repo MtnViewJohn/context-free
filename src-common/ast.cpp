@@ -119,9 +119,8 @@ namespace AST {
     : mLocation(where)
     { init(nameIndex, def); }
     
-    ASTparameter::ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where)
-    : mType(NumericType), isLoopIndex(true), isNatural(natural),
-      mName(nameIndex), mLocation(where)
+    ASTparameter::ASTparameter(int nameIndex, const yy::location& where)
+    : mType(NumericType), isLoopIndex(true), mName(nameIndex), mLocation(where)
     { }     // ctor for loop variables
     
     ASTparameter::ASTparameter(const ASTparameter& from)
@@ -151,7 +150,7 @@ namespace AST {
     
     
     void
-    ASTparameter::checkParam(const yy::location& typeLoc, const yy::location& nameLoc)
+    ASTparameter::checkParam(const yy::location&, const yy::location& nameLoc)
     {
         if (mName == -1)
             CfdgError::Error(nameLoc, "Reserved keyword used for parameter name");

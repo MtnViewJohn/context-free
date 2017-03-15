@@ -59,10 +59,9 @@ namespace AST {
     }
     
     void
-    ASTrepContainer::addLoopParameter(int index, bool natural, bool local,
-                                      const yy::location& nameLoc)
+    ASTrepContainer::addLoopParameter(int index, const yy::location& nameLoc)
     {
-        mParameters.emplace_back(index, natural, local, nameLoc);
+        mParameters.emplace_back(index, nameLoc);
         mParameters.back().checkParam(nameLoc, nameLoc);
     }
     
@@ -132,8 +131,8 @@ namespace AST {
     : ASTreplacement(std::move(mods), nameLoc + argsLoc, empty), mLoopArgs(std::move(args)),
       mLoopModHolder(nullptr), mLoopIndexName(nameIndex), mLoopName(name)
     {
-        mLoopBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
-        mFinallyBody.addLoopParameter(mLoopIndexName, false, false, mLocation);
+        mLoopBody.addLoopParameter(mLoopIndexName, mLocation);
+        mFinallyBody.addLoopParameter(mLoopIndexName, mLocation);
     }
     
     ASTtransform::ASTtransform(const yy::location& loc, exp_ptr mods)
@@ -488,7 +487,7 @@ namespace AST {
     }
     
     void
-    ASTrule::traverse(const Shape& parent, bool tr, RendererAST* r) const
+    ASTrule::traverse(const Shape&, bool, RendererAST*) const
     {
         assert(false);
     }

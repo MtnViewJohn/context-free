@@ -1011,6 +1011,10 @@
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
 				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -1081,6 +1085,7 @@
 					"-Wshadow",
 					"-Wunreachable-code",
 					"-Wshadow-ivar",
+					"-Wextra",
 				);
 			};
 			name = Development;
@@ -1116,6 +1121,7 @@
 					"-Wshadow",
 					"-Wunreachable-code",
 					"-Wshadow-ivar",
+					"-Wextra",
 				);
 				ZERO_LINK = NO;
 			};
@@ -1150,6 +1156,7 @@
 					"-Wshadow",
 					"-Wunreachable-code",
 					"-Wshadow-ivar",
+					"-Wextra",
 				);
 			};
 			name = Universal;
@@ -1183,6 +1190,7 @@
 					"-Wshadow",
 					"-Wunreachable-code",
 					"-Wshadow-ivar",
+					"-Wextra",
 				);
 			};
 			name = Performance;
@@ -1220,6 +1228,10 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
 				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -1290,7 +1302,10 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
 				VERSIONING_SYSTEM = "apple-generic";
-				WARNING_CFLAGS = "-Wall";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -1326,6 +1341,10 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
 				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};

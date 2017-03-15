@@ -36,14 +36,14 @@ using namespace std;
 
 namespace {
     void
-    pngWriteError(png_structp png_ptr, png_const_charp message)
+    pngWriteError(png_structp, png_const_charp message)
     {
         cerr << message << endl;
         throw false;
     }
 
     void
-    pngWriteWarning(png_structp png_ptr, png_const_charp message)
+    pngWriteWarning(png_structp, png_const_charp message)
     {
         cerr << message << endl;
     }

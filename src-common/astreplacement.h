@@ -98,8 +98,7 @@ namespace AST {
                           const yy::location& typeLoc, const yy::location& nameLoc);
         ASTparameter& addDefParameter(int index, ASTdefine* def,
                           const yy::location& nameLoc, const yy::location& expLoc);
-        void addLoopParameter(int index, bool natural, bool local,
-                              const yy::location& nameLoc);
+        void addLoopParameter(int index, const yy::location& nameLoc);
     };
     class ASTloop: public ASTreplacement {
     public:

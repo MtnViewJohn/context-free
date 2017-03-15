@@ -57,7 +57,7 @@ namespace AST {
         ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
         : isConstant(c), isNatural(n), mLocality(UnknownLocal), mType(t), where(loc) {};
         virtual ~ASTexpression() = default;
-        virtual int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const
+        virtual int evaluate(double* = nullptr, int = 0, RendererAST* = nullptr) const
         { return 0; }
         virtual void evaluate(Modification&, bool, RendererAST*) const
         { CfdgError::Error(where, "Cannot convert this expression into an adjustment"); }
@@ -69,7 +69,7 @@ namespace AST {
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual ASTexpression* compile(CompilePhase ph) { return nullptr; }
+        virtual ASTexpression* compile(CompilePhase) { return nullptr; }
         // Always returns nullptr except during type check in the following cases:
         // * An ASTvariable bound to a constant returns a copy of the constant
         // * An ASTvariable bound to a rule spec returns an ASTruleSpec that

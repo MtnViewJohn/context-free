@@ -93,7 +93,7 @@ BOOL CtrlHandler(DWORD ctrlType)
 #else
 #include <csignal>
 
-void termination_handler(int signum)
+void termination_handler(int)
 {
     processInterrupt();
 }

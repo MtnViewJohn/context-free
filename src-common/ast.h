@@ -117,7 +117,7 @@ namespace AST {
         ASTparameter(const std::string& typeName, int nameIndex,
                      const yy::location& where);
         ASTparameter(int nameIndex, ASTdefine* def, const yy::location& where);
-        ASTparameter(int nameIndex, bool natural, bool local, const yy::location& where);
+        ASTparameter(int nameIndex, const yy::location& where);
                 // ctor for loop variables
         ASTparameter(const ASTparameter&);
                 // ctor for copying parameter lists, never used after definitions are added
