@@ -26,7 +26,7 @@
 //
 //
 
-#import "imagecanvas.h"
+#import "ImageCanvas.h"
 
 #import <Cocoa/Cocoa.h>
 
