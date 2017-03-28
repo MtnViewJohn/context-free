@@ -610,7 +610,37 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
             mSizeMod.m_transform.tx = mSizeMod.m_transform.ty = 0.0;
         }
         if (hasParameter(CFG::Time, timed, nullptr)) {
+            if (timed.m_time.tend <= timed.m_time.tbegin ||
+                !myfinite(timed.m_time.tbegin) ||
+                !myfinite(timed.m_time.tend) ||
+                !myfinite(timed.m_time.st))
+            {
+                yy::location loc;
+                hasParameter(CFG::Time, AST::ModType, loc);
+                CfdgError err(loc, "Illegal CF::Time specification");
+                m_system->error();
+                m_system->syntaxError(err);
+                return nullptr;
+            }
             mTimeMod = timed;
+            double frame_v, ftime_v;
+            bool frame = hasParameter(CFG::Frame, frame_v, nullptr);
+            bool ftime = hasParameter(CFG::FrameTime, ftime_v, nullptr);
+            if (frame || ftime) {
+                if (frame && ftime) {
+                    m_system->message("It is not necessary to specify both CF::Frame and CF::FrameTime");
+                } else if (frame) {
+                    ftime_v = (timed.m_time.tend - timed.m_time.tbegin) * frame_v + timed.m_time.tbegin;
+                    exp_ptr e = std::make_unique<AST::ASTreal>(ftime_v, CfdgError::Default);
+                    addParameter(CFG::FrameTime, std::move(e), 0);
+                    m_system->message("Setting CF::FrameTime to %f from CF::Frame", ftime_v);
+                } else /* if (ftime) */ {
+                    frame_v = (ftime_v - timed.m_time.tbegin) / (timed.m_time.tend - timed.m_time.tbegin);
+                    exp_ptr e = std::make_unique<AST::ASTreal>(frame_v, CfdgError::Default);
+                    addParameter(CFG::Frame, std::move(e), 0);
+                    m_system->message("Setting CF::Frame to %f from CF::FrameTime", frame_v);
+                }
+            }
         }
         if (hasParameter(CFG::MaxShapes, maxShape, r.get())) {
             if (maxShape > 1)
