@@ -703,7 +703,10 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
         system()->message("A shape got too big.");
         return;
     }
-    mFinishedShapes.push_back(fs);
+    // Drop shapes outside the current frame if we are animating and rerunning
+    // the cfdg file for every frame.
+    if (!m_cfdg->usesFrameTime || fs.mWorldState.m_time.overlaps(mFrameTimeBounds))
+        mFinishedShapes.push_back(fs);
 }
 
 void
