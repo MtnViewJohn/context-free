@@ -639,7 +639,6 @@ RendererImpl::processPrimShape(Shape& s, const ASTrule* path)
 void
 RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
 {
-    m_stats.shapeCount++;
     if (mScale == 0.0) {
         // If we don't know the approximate scale yet then just
         // make an educated guess.
@@ -657,6 +656,10 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
             if (s.mShapeType < 3) attr = &(shapeMap[s.mShapeType]);
             processPathCommand(s, attr);
         }
+        // Drop off-canvas shapes if CF::Size is specified, or any shape where
+        // something weird happened while determining its bounds
+        if (!mPathBounds.valid() || (m_sized && !mPathBounds.overlaps(mBounds)))
+            return;
         mTotalArea += mCurrentArea;
         if (!m_tiled && !m_sized) {
             mBounds.merge(mPathBounds.dilate(mShapeBorder));
@@ -671,6 +674,7 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
     } else {
         mCurrentArea = 1.0;
     }
+    m_stats.shapeCount++;
     FinishedShape fs(std::move(s), m_stats.shapeCount, mPathBounds);
     fs.mWorldState.m_Z.sz = mCurrentArea;
     if (!m_cfdg->usesTime) {

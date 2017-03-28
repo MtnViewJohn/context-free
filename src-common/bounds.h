@@ -126,6 +126,13 @@ class Bounds {
         void update(const agg::trans_affine& trns, pathIterator& helper, 
                     double scale, const AST::CommandInfo& attr);
     
+        bool overlaps(const Bounds& other) const
+        {
+            return !(other.mMin_X > mMax_X || other.mMax_X < mMin_X ||
+                     other.mMin_Y > mMax_Y || other.mMax_Y < mMin_Y);
+
+        }
+    
         double  mMin_X, mMin_Y, mMax_X, mMax_Y;
 };
 
