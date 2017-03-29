@@ -158,11 +158,12 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
         t.push_back('/');
     t.append(TempPrefixes[tt]);
     t.append("XXXXXX");
+    t.append(TempSuffixes[tt]);
     
     ostream* f = nullptr;
     
     unique_ptr<char, decltype(&free)> b(strdup(t.c_str()), &free);
-    int tfd = mkstemp(b.get());
+    int tfd = mkstemps(b.get(), (int)strlen(TempSuffixes[tt]));
     if (tfd != -1) {
         f = new boost::fdostream(tfd);
         nameOut.assign(b.get());

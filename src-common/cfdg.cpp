@@ -133,11 +133,17 @@ CfdgError::Warning(const yy::location& errLoc, const char* msg)
 }
 
 const char* AbstractSystem::TempPrefixes[AbstractSystem::NumberofTempTypes] = {
-    "cfdg-temp-fin-", "cfdg-temp-unfin-", "cfdg-temp-mrg-"
+    "cfdg-temp-fin-", "cfdg-temp-unfin-", "cfdg-temp-mrg-", "cfdg-temp-movie-"
+};
+const char* AbstractSystem::TempSuffixes[AbstractSystem::NumberofTempTypes] = {
+    "", "", "", ".mov"
 };
 const char* AbstractSystem::TempPrefixAll = "cfdg-temp-";
 const wchar_t* AbstractSystem::TempPrefixes_w[AbstractSystem::NumberofTempTypes] = {
-    L"cfdg-temp-fin-", L"cfdg-temp-unfin-", L"cfdg-temp-mrg-"
+    L"cfdg-temp-fin-", L"cfdg-temp-unfin-", L"cfdg-temp-mrg-", L"cfdg-temp-movie"
+};
+const wchar_t* AbstractSystem::TempSuffixes_w[AbstractSystem::NumberofTempTypes] = {
+    L"", L"", L"", L".mov"
 };
 const wchar_t* AbstractSystem::TempPrefixAll_w = L"cfdg-temp-";
 

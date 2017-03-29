@@ -77,7 +77,7 @@ private:
 
 class AbstractSystem {
     public:
-        enum TempType { ShapeTemp = 0, ExpansionTemp = 1, MergeTemp = 2, NumberofTempTypes = 3 };
+        enum TempType { ShapeTemp = 0, ExpansionTemp = 1, MergeTemp = 2, MovieTemp = 3, NumberofTempTypes = 4 };
         enum SystemSize : std::uint64_t {
 #if defined(_WIN64) || defined(__x86_64__)
             MaximumMemory = 17179869184ULL,     // 16GB
@@ -140,8 +140,10 @@ class AbstractSystem {
         virtual ~AbstractSystem();
     protected:
         static const char* TempPrefixes[NumberofTempTypes];
+        static const char* TempSuffixes[NumberofTempTypes];
         static const char* TempPrefixAll;
         static const wchar_t* TempPrefixes_w[NumberofTempTypes];
+        static const wchar_t* TempSuffixes_w[NumberofTempTypes];
         static const wchar_t* TempPrefixAll_w;
         virtual void clearAndCR() {};
 };
