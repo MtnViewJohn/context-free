@@ -493,23 +493,20 @@ OutputBounds::smooth(int window)
 void
 RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
 {
-    outputPrep(canvas);
-    
     const bool ftime = m_cfdg->usesFrameTime;
     zoom = zoom && !ftime;
-    if (ftime)
-        cleanup();
 
-    // start with a blank frame
-    
+    if (zoom || !m_timed || !ftime){
+        system()->message("Precomputing time/space bounds");
+        run(nullptr, false);
+    }
+
     int curr_width = m_width;
     int curr_height = m_height;
     rescaleOutput(curr_width, curr_height, true);
     
-    m_canvas->start(true, m_cfdg->getBackgroundColor(),
-        curr_width, curr_height);
-    m_canvas->end();
-
+    outputPrep(canvas);
+    
     double frameInc = (mTimeBounds.tend - mTimeBounds.tbegin) / frames;
     
     OutputBounds outputBounds(frames, mTimeBounds, curr_width, curr_height, *this);
@@ -520,6 +517,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
             forEachShape(true, [&](const FinishedShape& s) {
                 outputBounds.apply(s);
             });
+            m_outputSoFar = 0;  // gets set by forEachShape, must be cleared
             //outputBounds.finalAccumulate();
             outputBounds.backwardFilter(10.0);
             //outputBounds.smooth(3);
@@ -562,7 +560,6 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
                 return;
             }
             run(canvas, false);
-            m_canvas = canvas;
         } else {
             outputFinal();
             outputStats();
