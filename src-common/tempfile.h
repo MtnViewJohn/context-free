@@ -39,7 +39,9 @@ public:
     std::istream* forRead();
 
     const std::string& type();
+    const std::string& name() { return mPath; }
     int         number() { return mNum; }
+    void        release() { mWritten = false; }
     
     TempFile(AbstractSystem*, AbstractSystem::TempType type, int num);
     TempFile(TempFile&&) noexcept;

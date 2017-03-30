@@ -48,7 +48,10 @@ TempFile::forWrite()
         cerr << "TempFile::forWrite already wrote to " << mPath << endl;
     }
     mWritten = true;
-    mSystem->message("Writing %s temp file %d", type().c_str(), mNum);
+    if (mNum > 0)
+        mSystem->message("Writing %s temp file %d", type().c_str(), mNum);
+    else
+        mSystem->message("Writing %s temp file", type().c_str());
     return mSystem->tempFileForWrite(mType, mPath);
 }
 
@@ -66,7 +69,7 @@ const std::string&
 TempFile::type()
 {
     static const std::string typeStrings[AbstractSystem::NumberofTempTypes] = {
-        "shapes", "expansion", "merge"
+        "shapes", "expansion", "merge", "movie"
     };
     
     assert(mType >= 0 && mType < AbstractSystem::NumberofTempTypes);
@@ -112,7 +115,10 @@ TempFile::~TempFile()
 void
 TempFile::erase()
 {
-    mSystem->message("Deleting %s temp file %d", type().c_str(), mNum);
+    if (mNum > 0)
+        mSystem->message("Deleting %s temp file %d", type().c_str(), mNum);
+    else
+        mSystem->message("Deleting %s temp file", type().c_str());
     errno = 0;
     if (remove(mPath.c_str()))
         mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
