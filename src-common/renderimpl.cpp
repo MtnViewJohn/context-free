@@ -491,7 +491,7 @@ OutputBounds::smooth(int window)
 
 
 void
-RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
+RendererImpl::animate(Canvas* canvas, int frames, int frame, bool zoom)
 {
     const bool ftime = m_cfdg->usesFrameTime;
     zoom = zoom && !ftime;
@@ -538,6 +538,7 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
 
     for (int frameCount = 1; frameCount <= frames; ++frameCount)
     {
+        if (frame && frameCount != frame) continue;
         system()->message("Generating frame %d of %d", frameCount, frames);
         
         if (zoom) mBounds = outputBounds.frameBounds(frameCount - 1);
@@ -579,7 +580,8 @@ RendererImpl::animate(Canvas* canvas, int frames, bool zoom)
     mBounds = saveBounds;
     m_stats.animating = false;
     outputStats();
-    system()->message("Animation of %d frames complete", frames);
+    if (frame == 0)
+        system()->message("Animation of %d frames complete", frames);
 }
 
 void

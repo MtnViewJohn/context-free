@@ -217,7 +217,7 @@ class Renderer {
 
         virtual double run(Canvas* canvas, bool partialDraw) = 0;
         virtual void draw(Canvas* canvas) = 0;
-        virtual void animate(Canvas* canvas, int frames, bool zoom) = 0;
+        virtual void animate(Canvas* canvas, int frames, int frame, bool zoom) = 0;
 
         volatile bool requestStop;     // stop ASAP
         volatile bool requestFinishUp; // stop expanding, and do final output
