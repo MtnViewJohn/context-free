@@ -66,7 +66,7 @@ TempFile::forRead()
 }
 
 const std::string&
-TempFile::type()
+TempFile::type() const
 {
     static const std::string typeStrings[AbstractSystem::NumberofTempTypes] = {
         "shapes", "expansion", "merge", "movie"
