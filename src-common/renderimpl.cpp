@@ -496,7 +496,7 @@ RendererImpl::animate(Canvas* canvas, int frames, int frame, bool zoom)
     const bool ftime = m_cfdg->usesFrameTime;
     zoom = zoom && !ftime;
 
-    if (zoom || !m_timed || !ftime){
+    if (!ftime){
         system()->message("Precomputing time/space bounds");
         run(nullptr, false);
     }
@@ -510,7 +510,7 @@ RendererImpl::animate(Canvas* canvas, int frames, int frame, bool zoom)
     double frameInc = (mTimeBounds.tend - mTimeBounds.tbegin) / frames;
     
     OutputBounds outputBounds(frames, mTimeBounds, curr_width, curr_height, *this);
-    if (zoom) {
+    if (!ftime) {
         system()->message("Computing zoom");
 
         try {
