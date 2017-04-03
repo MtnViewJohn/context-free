@@ -1024,7 +1024,7 @@ namespace AST {
                             if (cit->evaluate(symmSpec.data() + oldsize, sz, r) != sz)
                                 CfdgError::Error(cit->where, "Could not evaluate this");
                         }
-                        where += cit->where;
+                        where = where + cit->where;
                     } while (++i < e->size() && (cit = e->getChild(i))->mType == NumericType);
                     processSymmSpec(syms, tile, tiled, symmSpec, where);
                     --i;    // back-up loop variable to end of symmetry spec

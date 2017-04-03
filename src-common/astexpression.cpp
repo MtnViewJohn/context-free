@@ -2892,7 +2892,7 @@ namespace AST {
                                 (*term)->isConstant = (*term)->args->isConstant;
                                 (*term)->isNatural = (*term)->args->isNatural;
                                 (*term)->mLocality = (*term)->args->mLocality;
-                                (*term)->where += (*term)->args->where;
+                                (*term)->where = (*term)->where + (*term)->args->where;
                                 (*term)->argCount = 2;
                                 (*next).reset();    // delete the empty y term
                                 break;
