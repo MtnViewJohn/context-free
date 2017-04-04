@@ -41,8 +41,15 @@
     IBOutlet NSTextField*   mStatus;
     IBOutlet NSTextView*    mStatusText;
     
+    IBOutlet NSTextField*   mAnimationFrame;
+    IBOutlet NSTextField*   mFrameLabel;
+    IBOutlet NSPopUpButton* mAnimationCodec;
+    IBOutlet NSTextField*   mCodecLabel;
+    
     IBOutlet GView*         mGView;
     IBOutlet NSPanel*       mHiresSheet;
+    IBOutlet NSPanel*       mAnimateSheet;
+    IBOutlet NSTextField*   mSheetLabel;
     
     GalleryUploader*        mUploader;
 
@@ -53,9 +60,7 @@
 - (IBAction) repeatRender:(id)sender;
 - (IBAction) finishRender:(id)sender;
 - (IBAction) stopRender:(id)sender;
-- (IBAction) saveImage:(id)sender;
 - (IBAction) saveAsSVG:(id)sender;
-- (IBAction) saveAsMovie:(id)sender;
 - (IBAction) uploadToGallery:(id)sender;
 - (IBAction) insertUnicode:(id)sender;
 
@@ -64,10 +69,15 @@
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) startHiresRender:(id)sender;
 - (IBAction) cancelHiresRender:(id)sender;
+- (IBAction) showAnimateSheet:(id)sender;
+- (IBAction) showAnimateFrameSheet:(id)sender;
+- (IBAction) startAnimation:(id)sender;
+- (IBAction) cancelAnimation:(id)sender;
 - (IBAction) closeAll:(id)sender;
 - (IBAction) enterFullscreen:(id)sender;
 
 - (cfdg_ptr)buildEngine;
+- (AbstractSystem*)system;
 
 - (void)showContent;
 - (NSData*)getContent;

@@ -1,23 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
         <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CFDGDocument">
             <connections>
+                <outlet property="mAnimateSheet" destination="q9K-Ov-cQO" id="4c0-fU-ePe"/>
+                <outlet property="mAnimationCodec" destination="YRu-Mv-rrL" id="8gi-6o-x80"/>
+                <outlet property="mAnimationFrame" destination="DRm-l9-Glf" id="Dhh-8U-YGM"/>
+                <outlet property="mCodecLabel" destination="sUj-8i-vHY" id="vgB-2j-VbR"/>
                 <outlet property="mEditor" destination="13" id="34"/>
+                <outlet property="mFrameLabel" destination="4eq-9n-7No" id="NOv-Ei-OHl"/>
                 <outlet property="mGView" destination="19" id="35"/>
                 <outlet property="mHiresSheet" destination="86" id="100"/>
+                <outlet property="mSheetLabel" destination="Pa7-Cu-daJ" id="nLu-Jg-rbV"/>
                 <outlet property="mStatus" destination="57" id="62"/>
                 <outlet property="mStatusText" destination="450" id="455"/>
                 <outlet property="window" destination="5" id="8"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="CFDG Document" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="CFDG window" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
@@ -166,7 +173,7 @@
                                                 <outlet property="nextKeyView" destination="68" id="79"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="67">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="67">
                                             <rect key="frame" x="90" y="4" width="95" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="next variation:" id="402">
@@ -175,7 +182,7 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" id="68">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="68">
                                             <rect key="frame" x="190" y="2" width="92" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <string key="toolTip">The variation code determines the random choices used to generate the image.  Using the same variation code will allow you to reproduce the same image as before.
@@ -212,7 +219,7 @@ The variation code is a one to six letter sequence.</string>
                                 <rect key="frame" x="1176" y="10" width="16" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
-                            <textField verticalHuggingPriority="750" id="61">
+                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="61">
                                 <rect key="frame" x="815" y="12" width="280" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
@@ -221,7 +228,7 @@ The variation code is a one to six letter sequence.</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField toolTip="Status Messages" verticalHuggingPriority="750" id="57">
+                            <textField toolTip="Status Messages" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="57">
                                 <rect key="frame" x="5" y="12" width="421" height="14"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" placeholderString="Status Messages" id="399">
@@ -257,6 +264,9 @@ The variation code is a one to six letter sequence.</string>
                     <connections>
                         <action selector="showHiresRenderSheet:" target="19" id="118"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Animate" id="XAR-w8-R9H">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem title="Stop Rendering" id="47">
                     <connections>
@@ -296,13 +306,13 @@ The variation code is a one to six letter sequence.</string>
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="175" y="404" width="427" height="371"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1200"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="85">
                 <rect key="frame" x="0.0" y="0.0" width="427" height="371"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="87">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="87">
                         <rect key="frame" x="117" y="176" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="405">
@@ -315,7 +325,7 @@ The variation code is a one to six letter sequence.</string>
                             <outlet property="formatter" destination="145" id="146"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="88">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="88">
                         <rect key="frame" x="213" y="178" width="19" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="×" id="406">
@@ -324,7 +334,7 @@ The variation code is a one to six letter sequence.</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="89">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="89">
                         <rect key="frame" x="237" y="176" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="407">
@@ -337,7 +347,7 @@ The variation code is a one to six letter sequence.</string>
                             <outlet property="formatter" destination="145" id="147"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="90">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="90">
                         <rect key="frame" x="114" y="206" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Width" id="408">
@@ -346,7 +356,7 @@ The variation code is a one to six letter sequence.</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="91">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="91">
                         <rect key="frame" x="234" y="206" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Height" id="409">
@@ -355,7 +365,7 @@ The variation code is a one to six letter sequence.</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="92">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="92">
                         <rect key="frame" x="333" y="178" width="62" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="in pixels" id="410">
@@ -364,7 +374,7 @@ The variation code is a one to six letter sequence.</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="93">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="93">
                         <rect key="frame" x="99" y="334" width="281" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Render image with dimensions" id="411">
@@ -406,7 +416,7 @@ Gw
                             <action selector="cancelHiresRender:" target="-2" id="102"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="108">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="108">
                         <rect key="frame" x="99" y="228" width="311" height="98"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="415">
@@ -418,7 +428,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="183">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="183">
                         <rect key="frame" x="117" y="140" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="416">
@@ -431,7 +441,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <outlet property="formatter" destination="167" id="186"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="184">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="184">
                         <rect key="frame" x="213" y="142" width="167" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="size of smallest element" id="417">
@@ -450,7 +460,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <binding destination="119" name="value" keyPath="values.BorderSize" id="242"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" id="237">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="237">
                         <rect key="frame" x="99" y="111" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Image border size:" id="419">
@@ -459,7 +469,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="238">
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="238">
                         <rect key="frame" x="101" y="57" width="49" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="negative" id="420">
@@ -468,7 +478,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="239">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="239">
                         <rect key="frame" x="167" y="60" width="30" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="none" id="421">
@@ -477,7 +487,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="240">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="240">
                         <rect key="frame" x="224" y="60" width="30" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="fixed" id="422">
@@ -486,7 +496,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="241">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="241">
                         <rect key="frame" x="273" y="60" width="43" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="variable" id="423">
@@ -497,7 +507,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="1.5" y="844.5"/>
+            <point key="canvasLocation" x="-162" y="834"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="119" userLabel="Shared Defaults"/>
         <window title="Save Image Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="137" userLabel="Save Image Accessory" customClass="NSPanel">
@@ -540,7 +550,9 @@ To speed up the process of larger renders, no updates will occur in the window w
             <attributedString key="attributedStringForNotANumber">
                 <fragment content="NaN"/>
             </attributedString>
-            <string key="attributedStringForZero">0.00</string>
+            <attributedString key="attributedStringForZero">
+                <fragment content="0.00"/>
+            </attributedString>
             <real key="minimum" value="0.0"/>
             <decimal key="maximum" value="NaN"/>
         </numberFormatter>
@@ -561,7 +573,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <rect key="frame" x="0.0" y="0.0" width="451" height="90"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="220">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="220">
                                     <rect key="frame" x="13" y="57" width="123" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Length in seconds:" id="425">
@@ -570,7 +582,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="471">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="471">
                                     <rect key="frame" x="227" y="57" width="53" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Format:" id="472">
@@ -579,7 +591,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="469">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="469">
                                     <rect key="frame" x="12" y="29" width="127" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Frames per second:" id="470">
@@ -588,7 +600,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="221">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="221">
                                     <rect key="frame" x="144" y="55" width="78" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="10.0" drawsBackground="YES" id="426">
@@ -606,7 +618,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="462" id="427">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="223">
                                             <items>
                                                 <menuItem title="8" tag="800" id="225"/>
@@ -656,7 +668,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="476" id="474">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="475">
                                             <items>
                                                 <menuItem title="H.264" state="on" id="476"/>
@@ -685,7 +697,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="2" y="1247"/>
+            <point key="canvasLocation" x="5" y="1292"/>
         </window>
         <numberFormatter formatterBehavior="10_0" positiveFormat="0.##" negativeFormat="-0.##" hasThousandSeparators="NO" thousandSeparator="," id="229" userLabel="LengthFormatter">
             <attributedString key="attributedStringForZero">
@@ -704,7 +716,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                 <rect key="frame" x="0.0" y="0.0" width="305" height="56"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="497">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="497">
                         <rect key="frame" x="17" y="39" width="116" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Output Multiplier:" id="498">
@@ -713,7 +725,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="500">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="500">
                         <rect key="frame" x="17" y="14" width="38" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="501">
@@ -722,7 +734,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="502">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="502">
                         <rect key="frame" x="60" y="11" width="75" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="503">
@@ -732,7 +744,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="505">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="505">
                         <rect key="frame" x="140" y="14" width="45" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Height" id="506">
@@ -741,7 +753,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="507">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="507">
                         <rect key="frame" x="190" y="11" width="75" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="508">
@@ -753,6 +765,368 @@ To speed up the process of larger renders, no updates will occur in the window w
                     </textField>
                 </subviews>
             </view>
+        </window>
+        <window title="Animate" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="q9K-Ov-cQO" userLabel="Animation Sheet" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="175" y="404" width="427" height="439"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1200"/>
+            <value key="minSize" type="size" width="213" height="107"/>
+            <view key="contentView" misplaced="YES" id="ao4-GS-fc9">
+                <rect key="frame" x="0.0" y="0.0" width="427" height="439"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="QsU-AJ-kPP">
+                        <rect key="frame" x="116" y="300" width="91" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="640" drawsBackground="YES" usesSingleLineMode="YES" id="rz3-BU-9Ma">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.MovieWidth" id="Zy8-VE-7wC"/>
+                            <outlet property="formatter" destination="145" id="jCK-Hv-bSo"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="rPm-pU-VzE">
+                        <rect key="frame" x="212" y="302" width="19" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="×" id="9xU-nj-HLU">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Yb3-b6-DrP">
+                        <rect key="frame" x="236" y="300" width="91" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="480" drawsBackground="YES" usesSingleLineMode="YES" id="PAR-xs-1EG">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.MovieHeight" id="8mQ-7W-HbH"/>
+                            <outlet property="formatter" destination="145" id="nna-yr-sKx"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="VjQ-Kq-0AJ">
+                        <rect key="frame" x="113" y="330" width="97" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Width" id="SyK-Bw-VgG">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="0aV-3T-QT6">
+                        <rect key="frame" x="233" y="330" width="97" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Height" id="Wmr-2Z-J5r">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="QrW-GG-Lbe">
+                        <rect key="frame" x="332" y="302" width="62" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="in pixels" id="mCu-nH-OYe">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Pa7-Cu-daJ">
+                        <rect key="frame" x="98" y="402" width="281" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Start Animation" id="Ygh-op-330">
+                            <font key="font" metaFont="systemBold"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="zoo-iL-Npj">
+                        <rect key="frame" x="327" y="13" width="85" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Animate" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Obd-1o-pDj">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="startAnimation:" target="-2" id="cqj-TY-9JG"/>
+                        </connections>
+                    </button>
+                    <imageView misplaced="YES" id="8na-Ks-W82">
+                        <rect key="frame" x="19" y="355" width="64" height="64"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="doc" id="Z7A-yh-05y"/>
+                    </imageView>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="76Z-eK-jbY">
+                        <rect key="frame" x="242" y="13" width="85" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="K6z-Cr-YKT">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancelAnimation:" target="-2" id="Z5y-hZ-q3s"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="l0A-Hc-dvP">
+                        <rect key="frame" x="98" y="352" width="311" height="42"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="U04-rX-pI1">
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="title">The image will be animated to fit the dimensions entered here, using the current variation.  When complete, the movie or frame will be displayed scaled within the window.</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="qdm-9A-zD1">
+                        <rect key="frame" x="116" y="264" width="91" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" usesSingleLineMode="YES" id="8Xv-HM-A8b">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.HiresMinimumSize" id="vV7-Zd-M3I"/>
+                            <outlet property="formatter" destination="167" id="9OC-mm-sDY"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="tH3-sn-4ai">
+                        <rect key="frame" x="212" y="266" width="167" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="size of smallest element" id="BHy-07-B0S">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <slider verticalHuggingPriority="750" misplaced="YES" id="hm1-mN-b0n">
+                        <rect key="frame" x="114" y="203" width="190" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <sliderCell key="cell" alignment="left" minValue="-1" maxValue="2" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="n1o-gN-GPS">
+                            <font key="font" size="12" name="Helvetica"/>
+                        </sliderCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.BorderSize" id="bo5-lN-mHR"/>
+                        </connections>
+                    </slider>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="FBZ-po-INh">
+                        <rect key="frame" x="98" y="235" width="123" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Image border size:" id="46P-cb-vsN">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="Gva-gg-BMN">
+                        <rect key="frame" x="100" y="181" width="49" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="negative" id="ohB-Yd-gJ2">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="moN-wO-Ho8">
+                        <rect key="frame" x="166" y="184" width="30" height="11"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="none" id="eGg-eh-Z8Q">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="VCl-g3-NeI">
+                        <rect key="frame" x="223" y="184" width="30" height="11"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="fixed" id="jXj-ek-EWT">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="bH1-vI-WcV">
+                        <rect key="frame" x="272" y="184" width="43" height="11"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="variable" id="jGg-YL-O2V">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="lAB-Qz-gJ8">
+                        <rect key="frame" x="98" y="121" width="123" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Length in seconds:" id="XGo-qH-HEj">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="kmv-6K-TSP">
+                        <rect key="frame" x="98" y="93" width="127" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Frames per second:" id="fs0-6a-8Wh">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="gP9-TH-bgu">
+                        <rect key="frame" x="229" y="119" width="78" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="10.0" drawsBackground="YES" id="xTl-KN-iWU">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.MovieLength" id="W1V-8y-JXI"/>
+                            <outlet property="formatter" destination="229" id="NYi-Rj-9Q4"/>
+                        </connections>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" id="dLO-tY-Ek3">
+                        <rect key="frame" x="227" y="87" width="84" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="hpR-EU-fGD" id="duC-Mg-zdl">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="rMz-Ei-B63">
+                                <items>
+                                    <menuItem title="8" tag="800" id="mQR-xP-yMQ"/>
+                                    <menuItem title="10" tag="1000" id="cJd-3A-UCp"/>
+                                    <menuItem title="12" tag="1200" id="K4L-Vh-v4O">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="12.5" tag="1250" id="loE-i2-bch">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="15" state="on" tag="1500" id="hpR-EU-fGD">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="23.98" tag="2398" id="wIg-89-ER4">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="24" tag="2400" id="0c2-ok-Phb">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="25" tag="2500" id="Rd1-YU-bn4">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="29.97" tag="2997" id="isF-3z-V5O">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="30" tag="3000" id="f3L-gJ-yEM">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="50" tag="5000" id="RWh-AG-GD8">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="59.94" tag="5994" id="EXS-ny-8th">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="60" tag="6000" id="Fq6-EA-4Lj">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="119" name="selectedTag" keyPath="values.MovieFrameRate" id="GFz-Bp-TL8"/>
+                        </connections>
+                    </popUpButton>
+                    <button misplaced="YES" id="gmi-ca-S6R">
+                        <rect key="frame" x="112" y="147" width="127" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Zoom Animation" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="TbS-7c-nK2">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="119" name="value" keyPath="values.MovieZoom" id="uOk-dT-wcJ"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="sUj-8i-vHY">
+                        <rect key="frame" x="100" y="63" width="53" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Format:" id="eRV-rA-lJ0">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" id="YRu-Mv-rrL">
+                        <rect key="frame" x="155" y="57" width="157" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Gbf-tD-ief" id="Vip-dp-Dwn">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="del-9h-lpq">
+                                <items>
+                                    <menuItem title="H.264" state="on" id="Gbf-tD-ief"/>
+                                    <menuItem title="ProRes 422" tag="2" id="Qv7-kj-C9X"/>
+                                    <menuItem title="ProRes 4444" tag="3" id="RCR-YZ-DQg"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="119" name="selectedTag" keyPath="values.MovieFormat" id="eaO-SM-E1d"/>
+                        </connections>
+                    </popUpButton>
+                    <textField hidden="YES" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="DRm-l9-Glf">
+                        <rect key="frame" x="229" y="61" width="78" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="5mk-Hb-LsF">
+                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="#,##0" negativeFormat="-#,##0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="Bo3-ab-xQG">
+                                <attributedString key="attributedStringForNotANumber">
+                                    <fragment content="NaN">
+                                        <attributes>
+                                            <font key="NSFont" size="12" name="Helvetica"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <attributedString key="attributedStringForZero">
+                                    <fragment content="0">
+                                        <attributes>
+                                            <font key="NSFont" size="12" name="Helvetica"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <real key="minimum" value="1"/>
+                                <decimal key="maximum" value="NaN"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="4eq-9n-7No">
+                        <rect key="frame" x="98" y="64" width="125" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Frame to Animate:" id="pMu-6v-Jhb">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="327.5" y="861.5"/>
         </window>
     </objects>
     <resources>

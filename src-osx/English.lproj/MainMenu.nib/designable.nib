@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,7 +13,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="MainMenu" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
                 <menuItem title="Context Free" id="56">
@@ -641,6 +641,18 @@
                                     <action selector="showHiresRenderSheet:" target="-1" id="229"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Animate..." keyEquivalent="a" id="zgD-cW-opx">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="showAnimationSheet:" target="-1" id="bMH-3a-KkL"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Animate a frame..." id="vGO-nw-rki">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showAnimationFrameSheet:" target="-1" id="eX0-fe-Ets"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Stop rendering" keyEquivalent="/" id="223">
                                 <connections>
                                     <action selector="finishRender:" target="-1" id="316"/>
@@ -649,19 +661,15 @@
                             <menuItem isSeparatorItem="YES" id="224">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Save Image…" id="221">
+                            <menuItem title="Save Output..." id="HKI-Zb-hfj">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="saveImage:" target="-1" id="227"/>
+                                    <action selector="saveOutput:" target="-1" id="J0S-PZ-RmZ"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Save as SVG…" id="388">
                                 <connections>
                                     <action selector="saveAsSVG:" target="-1" id="389"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Save as Animation…" id="390">
-                                <connections>
-                                    <action selector="saveAsMovie:" target="-1" id="391"/>
                                 </connections>
                             </menuItem>
                         </items>

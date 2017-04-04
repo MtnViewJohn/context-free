@@ -58,6 +58,12 @@
 namespace {
     using namespace std;
     
+    NSString* PrefKeyMovieWidth = @"MovieWidth";
+    NSString* PrefKeyMovieHeight = @"MovieHeight";
+    NSString* PrefKeyHiresWidth = @"HiresWidth";
+    NSString* PrefKeyHiresHeight = @"HiresHeight";
+    NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
+    
     class CocoaSystem : public PosixSystem
     {
     public:
@@ -334,6 +340,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return result;
 }
 
+- (AbstractSystem*)system
+{
+    return mSystem;
+}
+
 - (void)noteStatus:(NSString*)s
 {
     if (mStatus != nil) {
@@ -502,9 +513,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (IBAction) repeatRender:(id)sender{ [mGView repeatRender: sender]; }
 - (IBAction) finishRender:(id)sender{ [mGView finishRender: sender]; }
 - (IBAction) stopRender:(id)sender  { [mGView stopRender: sender]; }
-- (IBAction) saveImage:(id)sender   { [mGView saveImage: sender]; }
 - (IBAction) saveAsSVG:(id)sender   { [mGView saveAsSVG: sender]; }
-- (IBAction) saveAsMovie:(id)sender { [mGView saveAsMovie: sender]; }
 
 - (IBAction) insertUnicode:(id)sender
 {
@@ -530,10 +539,10 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     ||  action == @selector(repeatRender:)
     ||  action == @selector(finishRender:)
     ||  action == @selector(stopRender:)
-    ||  action == @selector(saveImage:)
     ||  action == @selector(saveAsSVG:)
-    ||  action == @selector(saveAsMovie:)
     ||  action == @selector(showHiresRenderSheet:)
+    ||  action == @selector(showAnimationFrameSheet:)
+    ||  action == @selector(showAnimationSheet:)
     ||  action == @selector(uploadToGallery:))
     {
         return [mGView validateMenuItem: anItem];
@@ -555,9 +564,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return;
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    float hiresWidth = [defaults floatForKey: @"HiresWidth"];
-    float hiresHeight = [defaults floatForKey: @"HiresHeight"];
-    double hiresMinSize = [defaults doubleForKey: @"HiresMinimumSize"];
+    float hiresWidth = [defaults floatForKey: PrefKeyHiresWidth];
+    float hiresHeight = [defaults floatForKey: PrefKeyHiresHeight];
+    double hiresMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
 
     [mGView startHiresRender: NSMakeSize(hiresWidth, hiresHeight)
                 minimum: hiresMinSize];
@@ -568,6 +577,89 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     [NSApp endSheet: mHiresSheet];
     [mHiresSheet orderOut: sender];
+}
+
+- (IBAction) showAnimateSheet:(id)sender
+{
+    [mSheetLabel setStringValue: @"Start Animation"];
+    [mFrameLabel setHidden: YES];
+    [mAnimationFrame setHidden: YES];
+    [mCodecLabel setHidden: NO];
+    [mAnimationCodec setHidden: NO];
+    [NSApp beginSheet: mAnimateSheet
+       modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
+        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+}
+
+- (IBAction) showAnimateFrameSheet:(id)sender
+{
+    [mSheetLabel setStringValue: @"Animate a Frame"];
+    [mFrameLabel setHidden: NO];
+    [mAnimationFrame setHidden: NO];
+    [mCodecLabel setHidden: YES];
+    [mAnimationCodec setHidden: YES];
+    [NSApp beginSheet: mAnimateSheet
+       modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
+        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+}
+
+- (IBAction) startAnimation:(id)sender
+{
+    if (![mAnimateSheet makeFirstResponder: nil])
+        return;
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
+    float movieHeight = [defaults floatForKey: PrefKeyMovieHeight];
+    double movieMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
+    float movieFrame =  0.0;
+    NSString* message = nil;
+    NSString* problem = nil;
+    if (![mAnimationFrame isHidden]) {
+        // If animating a frame then check if frame is legal
+        float intpart;
+        float movieLength = [defaults floatForKey: PrefKeyMovieLength];
+        NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
+        float animateFrameCount = movieLength * movieFrameRate * 0.01f;
+        movieFrame = [mAnimationFrame floatValue];
+        if (movieFrame < 1.0 || modff(movieFrame, &intpart) != 0.0)
+            problem = @"Frame must be a positive integer";
+        if (movieFrame > animateFrameCount)
+            problem = @"Specified frame is after the end of the movie";
+        message = @"Cannot create animation movie frame";
+    } else {
+        message = @"Cannot create animation movie";
+    }
+    
+    if ((int)movieWidth & 7) {
+        if (problem)
+            problem = [NSString stringWithFormat: @"%@, also the rendered width must be a multiple of 8 pixels", problem];
+        else
+            problem = @"Rendered width must be a multiple of 8 pixels";
+    }
+    
+    if (problem) {
+        NSAlert* nonono = [[[NSAlert alloc] init] autorelease];
+        [nonono setAlertStyle: NSAlertStyleWarning];
+        [nonono setMessageText: message];
+        [nonono setInformativeText: problem];
+        [nonono addButtonWithTitle: @"OK"];
+        [nonono beginSheetModalForWindow: mAnimateSheet
+                       completionHandler: ^(NSModalResponse returnCode){}];
+        return;
+    }
+
+    
+    [mGView startAnimation: NSMakeSize(movieWidth, movieHeight)
+                   minimum: movieMinSize
+                     frame: movieFrame];
+    [self cancelAnimation:sender];
+}
+
+- (IBAction) cancelAnimation:(id)sender
+{
+    [NSApp endSheet: mAnimateSheet];
+    [mAnimateSheet orderOut: sender];
 }
 
 - (IBAction) uploadToGallery:(id)sender
