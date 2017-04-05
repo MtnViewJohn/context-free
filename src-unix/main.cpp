@@ -139,6 +139,7 @@ struct options {
     int   animationTime;
     int   animationFPS;
     bool  animationZoom;
+    int   animateFrame;
     
     std::string input;
     std::string output;
@@ -155,7 +156,7 @@ struct options {
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-      format(PNGfile), quiet(false),
+      animateFrame(0), format(PNGfile), quiet(false),
       outputTime(false), outputStdout(false), outputWallpaper(false),
       paramTest(false), deleteTemps(false)
     { }
@@ -233,6 +234,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::ValueFlag<string> animation(parser, "NUM or TIMExFPS",
         "Generate NUM animation frames at 15fps or TIMExFPS animation frames",
         {'a',"animate"}, "");
+    args::ValueFlag<int> frame(parser, "FRAME", "Animate a particular frame", {'f', "frame"}, 0);
     args::Flag zoom(parser, "zoom", "Zoom out during animation", {'z', "zoom"});
     args::Flag makeSVG(parser, "SVG", "Generate SVG output (not allowed for animation)",
                        {'V', "svg"});
@@ -318,11 +320,22 @@ processCommandLine(int argc, char* argv[], options& opt)
             default:
                 bailout(nullptr);
         }
+        if (frame) {
+            if (makeQT)
+                bailout("Single frame animation only outputs PNG files.");
+            opt.animateFrame = args::get(frame);
+            if (opt.animateFrame < 1)
+                bailout("Animation frame must be a positive integer.");
+            if (opt.animateFrame > opt.animationFrames)
+                bailout("Animation frame is after the end of the animation.");
+        }
     } else {
         if (makeQT)
             bailout("QuickTime output is only available when animating.");
         if (zoom)
             bailout("Zoomed output is only available when animating.");
+        if (frame)
+            bailout("Animation frame can only be rendered when animating.");
     }
     if (makeSVG) opt.format = options::SVGfile;
     if (wallpaper) {
@@ -351,7 +364,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         for (char c: args::get(outputFile)) {
             opt.output.append(c == '%' ? 2 : 1, c);
         }
-        if (opt.animationFrames && opt.format != options::MOVfile) {
+        if (opt.animationFrames && opt.animateFrame == 0 && opt.format != options::MOVfile) {
             size_t ext = opt.output.find_last_of('.');
             size_t dir = opt.output.find_last_of(APP_DIRCHAR());
             if (ext != string::npos && (dir == string::npos || ext > dir)) {
@@ -483,7 +496,9 @@ int main (int argc, char* argv[]) {
     
     if (opts.maxShapes > 0)
         TheRenderer->setMaxShapes(opts.maxShapes);
-    TheRenderer->run(nullptr, false);
+        
+    if (opts.animationFrames == 0)
+        TheRenderer->run(nullptr, false);
     
     opts.width = TheRenderer->m_width;
     opts.height = TheRenderer->m_height;
@@ -540,7 +555,7 @@ int main (int argc, char* argv[]) {
     }
     
     if (opts.animationFrames) {
-        TheRenderer->animate(myCanvas, opts.animationFrames, opts.animationZoom);
+        TheRenderer->animate(myCanvas, opts.animationFrames, opts.animateFrame, opts.animationZoom);
     } else {
         TheRenderer->draw(myCanvas);
     }
