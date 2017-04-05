@@ -37,7 +37,7 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
                                      int variation, bool wallpaper, Renderer *r, int mx, int my)
 : aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
-  mCurrentFrame(0), mVariation(variation), mPixelFormat(pixfmt),
+  mCurrentFrame(1), mVariation(variation), mPixelFormat(pixfmt),
   mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
   mFullHeight(height), mOriginX(0), mOriginY(0)
 {
