@@ -88,6 +88,7 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
         return nullptr;
 
     wchar_t* b = _wtempnam(wtempdir, TempPrefixes_w[tt]);
+    wcscat(b, TempSuffixes_w[tt]);
     if (b) {
         char buf[32768];
         f = new ofstream;

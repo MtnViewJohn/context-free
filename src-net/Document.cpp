@@ -26,6 +26,7 @@
 #include "Document.h"
 #include "Form1.h"
 #include "RenderSizeDialog.h"
+#include "AnimateDialog.h"
 #include "variation.h"
 #include "WinCanvas.h"
 #include "WinSystem.h"
@@ -38,6 +39,7 @@
 #include "ffCanvas.h"
 #include "UploadDesign.h"
 #include "upload.h"
+#include "tempfile.h"
 
 using namespace ContextFreeNet;
 using namespace System;
@@ -123,6 +125,7 @@ void Document::DestroyStuff()
     delete mSVGCanvas;
     delete mAnimationCanvas;
     delete renderParams;
+    delete mMovieFile;
 }
 
 System::Void Document::moreInitialization(System::Object^ sender, System::EventArgs^ e)
@@ -392,6 +395,42 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
             renderParams->saveToPrefs();
         renderParams->action = RenderParameters::RenderActions::Render;
         lastRenderWasSized = true;
+        DoRender();
+    }
+}
+
+System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    if (renderThread->IsBusy) {
+        postAction = PostRenderAction::Animate;
+        return;
+    }
+
+    renderParams->animateFrame = false;
+    AnimateDialog an(renderParams);
+
+    if (sender != menuRAnimate || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
+        if (sender != menuRAnimate)
+            renderParams->saveToPrefs();
+        renderParams->action = RenderParameters::RenderActions::Animate;
+        DoRender();
+    }
+}
+
+System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    if (renderThread->IsBusy) {
+        postAction = PostRenderAction::AnimateFrame;
+        return;
+    }
+
+    renderParams->animateFrame = true;
+    AnimateDialog an(renderParams);
+
+    if (sender != menuRAnimateFrame || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
+        if (sender != menuRAnimateFrame)
+            renderParams->saveToPrefs();
+        renderParams->action = RenderParameters::RenderActions::Animate;
         DoRender();
     }
 }
@@ -954,6 +993,7 @@ void Document::DoRender()
     Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; 
 	mEngine->reset();
     setMessageText(nullptr);
+    delete mMovieFile; mMovieFile = nullptr;
 
     if (!mSystem)
         mSystem = new WinSystem(this->Handle.ToPointer());
@@ -971,7 +1011,9 @@ void Document::DoRender()
         return;
     }
 
-    if (renderParams->width == 0 || renderParams->height == 0) {
+    if (renderParams->action == RenderParameters::RenderActions::Render && 
+        (renderParams->width == 0 || renderParams->height == 0))
+    {
         renderParams->width = renderBox->Size.Width;
         renderParams->height = renderBox->Size.Height;
         if ((*mEngine)->isTiled()) {
@@ -980,23 +1022,54 @@ void Document::DoRender()
         }
     }
 
-    mRenderer = (*mEngine)->renderer(*mEngine, renderParams->width, renderParams->height,
+    int width = renderParams->width;
+    int height = renderParams->height;
+    if (renderParams->action == RenderParameters::RenderActions::Animate) {
+        width = renderParams->animateWidth;
+        height = renderParams->animateHeight;
+    }
+
+    mRenderer = (*mEngine)->renderer(*mEngine, width, height,
         (float)renderParams->minimumSize, currentVariation, renderParams->borderSize);
 	if (!mRenderer) {
 		mEngine->reset();
 		return;
 	}
 
-    renderParams->width = mRenderer->m_width;
-    renderParams->height = mRenderer->m_height;
+    if (renderParams->action == RenderParameters::RenderActions::Render) {
+        renderParams->width = mRenderer->m_width;
+        renderParams->height = mRenderer->m_height;
+    }
 
     mTiled = (*mEngine)->isTiled() || (*mEngine)->isFrieze();
 
     delete mCanvas;
     mCanvas = nullptr;
 
-    if (renderParams->periodicUpdate)
+    if ((renderParams->action == RenderParameters::RenderActions::Animate) ? 
+            renderParams->animateFrame : renderParams->periodicUpdate)
+    {
         setupCanvas(mRenderer);
+    }
+
+    if (renderParams->action == RenderParameters::RenderActions::Animate &&
+        !renderParams->animateFrame)
+    {
+        mMovieFile = new TempFile(mSystem, AbstractSystem::MovieTemp, 0);
+        auto stream = mMovieFile->forWrite();
+        delete stream;
+
+        mAnimationCanvas = new ffCanvas(mMovieFile->name().c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
+            renderParams->animateWidth, renderParams->animateHeight,
+            renderParams->frameRate);
+
+        if (mAnimationCanvas->mError) {
+            delete mAnimationCanvas;
+            mAnimationCanvas = nullptr;
+            System::Media::SystemSounds::Beep->Play();
+            return;
+        }
+    }
 
     if (!mCanvas || mCanvas->mWidth) {
         postAction = PostRenderAction::DoNothing;
@@ -1031,8 +1104,11 @@ void Document::RunRenderThread(Object^ sender, DoWorkEventArgs^ e)
     mProgressDelay = 0;
     switch (renderParams->action) {
         case RenderParameters::RenderActions::Animate: 
-            {
-                mRenderer->animate(mAnimationCanvas, renderParams->animateFrameCount, 
+            if (renderParams->animateFrame) {
+                mRenderer->animate(mCanvas, renderParams->animateFrameCount,
+                    renderParams->frame, renderParams->animateZoom && !mTiled);
+            } else {
+                mRenderer->animate(mAnimationCanvas, renderParams->animateFrameCount, 0,
                     renderParams->animateZoom && !mTiled);
 
                 delete mAnimationCanvas;
@@ -1078,7 +1154,7 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
                 setMessageText("Done!");
             break;
         case RenderParameters::RenderActions::Animate:
-            setMessageText("Movie save complete.");
+            setMessageText(renderParams->animateFrame ? "Done!" : "Movie complete.");
             break;
         case RenderParameters::RenderActions::SaveSVG:
             setMessageText("SVG save complete.");
@@ -1099,6 +1175,12 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
             break;
         case PostRenderAction::RenderSize:
             menuRRenderSize->PerformClick();
+            break;
+        case PostRenderAction::Animate:
+            menuRAnimate->PerformClick();
+            break;
+        case PostRenderAction::AnimateFrame:
+            menuRAnimateFrame->PerformClick();
             break;
         case PostRenderAction::SaveImage:
             menuRImage->PerformClick();
@@ -1172,8 +1254,12 @@ void Document::setupCanvas(Renderer* r)
         renderSizeChanged();
 
     if (!mCanvas) {
+        int width = renderParams->action == RenderParameters::RenderActions::Render ?
+            renderParams->width : renderParams->animateWidth;
+        int height = renderParams->action == RenderParameters::RenderActions::Render ?
+            renderParams->height : renderParams->animateHeight;
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()), 
-            renderParams->width, renderParams->height, (*mEngine)->getBackgroundColor());
+            width, height, (*mEngine)->getBackgroundColor());
     }
 }
 

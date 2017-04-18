@@ -715,6 +715,7 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
     </ClCompile>
+    <ClCompile Include="AnimateDialog.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="..\src-common\astexpression.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -1400,6 +1401,9 @@
     <ClInclude Include="..\src-common\builder.h" />
     <ClInclude Include="..\src-common\cfdg.h" />
     <ClInclude Include="..\src-common\cfdgimpl.h" />
+    <ClInclude Include="AnimateDialog.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="CFPrefs.h" />
     <ClInclude Include="ColorCalculator.h">
       <FileType>CppForm</FileType>
@@ -1426,6 +1430,7 @@
     <ClInclude Include="..\src-common\primShape.h" />
     <ClInclude Include="..\src-common\Rand64.h" />
     <ClInclude Include="..\src-common\renderimpl.h" />
+    <ClInclude Include="RenderParameters.h" />
     <ClInclude Include="RenderSizeDialog.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -1489,6 +1494,9 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AnimateDialog.resx">
+      <DependentUpon>AnimateDialog.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CFresources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

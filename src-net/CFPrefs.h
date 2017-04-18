@@ -84,6 +84,14 @@ namespace ContextFreeNet {
             void set(double setTo) { SetPrefDouble("MinimumSize", setTo); }
             double get() { return GetPrefDouble("MinimumSize", 0.3); }
         }
+        property int AnimateHeight {
+            void set(int setTo) { SetPrefInt("AnimateHeight", setTo); }
+            int get() { return GetPrefInt("AnimateHeight", 480); }
+        }
+        property int AnimateWidth {
+            void set(int setTo) { SetPrefInt("AnimateWidth", setTo); }
+            int get() { return GetPrefInt("AnimateWidth", 640); }
+        }
         property int AnimateLength {
             void set(int setTo) { SetPrefInt("AnimateLength", setTo); }
             int get() { return GetPrefInt("AnimateLength", 10); }

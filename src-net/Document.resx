@@ -124,7 +124,7 @@
   <data name="toolStripRenderButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABwSURBVDhPlYxbCsAgDAS9/73qp3ijVqWBzcOsDghJdtaS
+        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAABwSURBVDhPlYxbCsAgDAS9/73qp3ijVqWBzcOsDghJdtaS
         0dvzzvevd0j56hOUsWxvc3agLFI0403BBJYv0nCwzVnRonxZ1DHB+e5ACH21HNBbHX71PvsozSXcSSwP
         hWjGmwNDlO1tzhQsH5csvFzKB7sJRNJg6UNJAAAAAElFTkSuQmCC
 </value>
@@ -132,7 +132,7 @@
   <data name="toolStripSaveButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIDSURBVDhPpZLrS5NhGMb3j4SWh0oRQVExD4gonkDpg4hG
+        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAAIDSURBVDhPpZLrS5NhGMb3j4SWh0oRQVExD4gonkDpg4hG
         YKxG6WBogkMZKgPNCEVJFBGdGETEvgwyO9DJE5syZw3PIlPEE9pgBCLZ5XvdMB8Ew8gXbl54nuf63dd9
         0OGSnwCahxbPRNPAPMw9Xpg6ZmF46kZZ0xSKzJPIrhpDWsVnpBhGkKx3nAX8Pv7z1zg8OoY/cITdn4fw
         bf/C0kYAN3Ma/w3gWfZL5kzTKBxjWyK2DftwI9tyMYCZKXbNHaD91bLYJrDXsYbrWfUKwJrPE9M2M1Oc
@@ -147,14 +147,14 @@
   <data name="toolStripPrevVar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAkSURBVDhPYxiG4MCBA/+BFAwTD9A0Eq95CGmEgeFnwPAA
+        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAAAkSURBVDhPYxiG4MCBA/+BFAwTD9A0Eq95CGmEgeFnwPAA
         DAwAZvI2H8ErOTUAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="toolStripNextVar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVDhPYxhe4D8IHzhwAESTDMCaQXgEGjCENIIA2RoH
+        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAAAmSURBVDhPYxhe4D8IHzhwAESTDMCaQXgEGjCENIIA2RoH
         PWBgAADHVDYfUBoQtwAAAABJRU5ErkJggg==
 </value>
   </data>

@@ -24,46 +24,9 @@
 
 #pragma once
 
-#include "Form1.h"
+#include "RenderParameters.h"
 
 namespace ContextFreeNet {
-
-    public value class RenderParameters
-    {
-    public:
-        enum class RenderActions { Render, Animate, SaveSVG };
-        RenderActions action;
-        bool    periodicUpdate;
-        bool	animateZoom;
-        bool    suppressDisplay;
-        int		animateFrameCount;
-        int     width;
-        int     height;
-        double  minimumSize;
-        double  borderSize;
-
-        void initFromPrefs()
-        {
-            periodicUpdate = Form1::prefs->ProgressiveRender;
-            suppressDisplay = Form1::prefs->DontDisplay;
-            animateZoom = Form1::prefs->AnimateZoom;
-            width = Form1::prefs->RenderWidth;
-            height = Form1::prefs->RenderHeight;
-            borderSize = Form1::prefs->BorderWidth;
-            minimumSize = Form1::prefs->MinimumSize;
-        }
-
-        void saveToPrefs()
-        {
-            Form1::prefs->ProgressiveRender = periodicUpdate;
-            Form1::prefs->DontDisplay = suppressDisplay;
-            Form1::prefs->AnimateZoom = animateZoom;
-            Form1::prefs->RenderWidth = width;
-            Form1::prefs->RenderHeight = height;
-            Form1::prefs->BorderWidth = borderSize;
-            Form1::prefs->MinimumSize = minimumSize;
-        }
-    };
 
 	/// <summary>
 	/// Summary for RenderSizeDialog
