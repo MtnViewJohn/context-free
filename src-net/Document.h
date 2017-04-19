@@ -83,7 +83,7 @@ namespace ContextFreeNet {
         bool lastRenderWasSized;
 
         enum class PostRenderAction { DoNothing, Render, RenderSize, RenderRepeat, 
-            Animate, AnimateFrame, SaveImage, SaveMovie, Close, Exit };
+            Animate, AnimateFrame, SaveOutput, Close, Exit };
         property PostRenderAction postAction {
             void set(PostRenderAction a) {
                 if (a == PostRenderAction::DoNothing || a == PostRenderAction::Exit) {
@@ -266,8 +266,9 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
 
 
     private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator3;
-    private: System::Windows::Forms::ToolStripMenuItem^  menuRImage;
-    private: System::Windows::Forms::ToolStripMenuItem^  menuRMovie;
+private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
+
+
     private: System::Windows::Forms::ToolStripMenuItem^  menuRUpload;
 
 
@@ -406,8 +407,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             this->menuRAnimateFrame = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRStop = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
-            this->menuRImage = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->menuRMovie = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->menuROutput = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRUpload = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStrip1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->documentSplitter))->BeginInit();
@@ -459,9 +459,9 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             this->toolStripSaveButton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripSaveButton.Image")));
             this->toolStripSaveButton->ImageTransparentColor = System::Drawing::Color::Magenta;
             this->toolStripSaveButton->Name = L"toolStripSaveButton";
-            this->toolStripSaveButton->Size = System::Drawing::Size(142, 36);
-            this->toolStripSaveButton->Text = L"Save Image";
-            this->toolStripSaveButton->Click += gcnew System::EventHandler(this, &Document::menuRImage_Click);
+            this->toolStripSaveButton->Size = System::Drawing::Size(152, 36);
+            this->toolStripSaveButton->Text = L"Save Output";
+            this->toolStripSaveButton->Click += gcnew System::EventHandler(this, &Document::menuRSaveOutput_Click);
             // 
             // toolStripProgressBar
             // 
@@ -551,7 +551,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
             this->editorSplitter->Size = System::Drawing::Size(386, 769);
-            this->editorSplitter->SplitterDistance = 603;
+            this->editorSplitter->SplitterDistance = 602;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -561,7 +561,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(386, 603);
+            this->cfdgText->Size = System::Drawing::Size(386, 602);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -574,7 +574,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             this->cfdgMessage->Location = System::Drawing::Point(0, 0);
             this->cfdgMessage->MinimumSize = System::Drawing::Size(20, 20);
             this->cfdgMessage->Name = L"cfdgMessage";
-            this->cfdgMessage->Size = System::Drawing::Size(386, 162);
+            this->cfdgMessage->Size = System::Drawing::Size(386, 163);
             this->cfdgMessage->TabIndex = 0;
             // 
             // renderBox
@@ -1220,10 +1220,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             // 
             // menuRender
             // 
-            this->menuRender->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {
+            this->menuRender->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(9) {
                 this->menuRRender,
                     this->menuRRenderSize, this->menuRRenderAgain, this->menuRAnimate, this->menuRAnimateFrame, this->menuRStop, this->toolStripSeparator3,
-                    this->menuRImage, this->menuRMovie, this->menuRUpload
+                    this->menuROutput, this->menuRUpload
             });
             this->menuRender->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuRender->MergeIndex = 2;
@@ -1297,25 +1297,15 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
             this->toolStripSeparator3->Name = L"toolStripSeparator3";
             this->toolStripSeparator3->Size = System::Drawing::Size(407, 6);
             // 
-            // menuRImage
+            // menuROutput
             // 
-            this->menuRImage->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRImage.Image")));
-            this->menuRImage->Name = L"menuRImage";
-            this->menuRImage->ShortcutKeyDisplayString = L"Ctrl-I";
-            this->menuRImage->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::I));
-            this->menuRImage->Size = System::Drawing::Size(410, 38);
-            this->menuRImage->Text = L"Save &image...";
-            this->menuRImage->Click += gcnew System::EventHandler(this, &Document::menuRImage_Click);
-            // 
-            // menuRMovie
-            // 
-            this->menuRMovie->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRMovie.Image")));
-            this->menuRMovie->Name = L"menuRMovie";
-            this->menuRMovie->ShortcutKeyDisplayString = L"Ctrl-M";
-            this->menuRMovie->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::M));
-            this->menuRMovie->Size = System::Drawing::Size(410, 38);
-            this->menuRMovie->Text = L"Save &movie...";
-            this->menuRMovie->Click += gcnew System::EventHandler(this, &Document::menuRMovie_Click);
+            this->menuROutput->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuROutput.Image")));
+            this->menuROutput->Name = L"menuROutput";
+            this->menuROutput->ShortcutKeyDisplayString = L"Ctrl-O";
+            this->menuROutput->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
+            this->menuROutput->Size = System::Drawing::Size(410, 38);
+            this->menuROutput->Text = L"Save &output...";
+            this->menuROutput->Click += gcnew System::EventHandler(this, &Document::menuRSaveOutput_Click);
             // 
             // menuRUpload
             // 
@@ -1383,9 +1373,7 @@ private:
 
     System::Void menuRStop_Click(System::Object^  sender, System::EventArgs^  e);
 
-    System::Void menuRImage_Click(System::Object^  sender, System::EventArgs^  e);
-
-    System::Void menuRMovie_Click(System::Object^  sender, System::EventArgs^  e);
+    System::Void menuRSaveOutput_Click(System::Object^  sender, System::EventArgs^  e);
 
     System::Void menuRUpload_Click(System::Object^  sender, System::EventArgs^  e);
 

@@ -1073,7 +1073,6 @@
     </ClCompile>
     <ClCompile Include="RenderSizeDialog.cpp" />
     <ClCompile Include="SaveImage.cpp" />
-    <ClCompile Include="SaveMovie.cpp" />
     <ClCompile Include="..\src-common\shape.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -1438,9 +1437,6 @@
     <ClInclude Include="SaveImage.h">
       <FileType>CppControl</FileType>
     </ClInclude>
-    <ClInclude Include="SaveMovie.h">
-      <FileType>CppControl</FileType>
-    </ClInclude>
     <ClInclude Include="..\src-common\scanner.h" />
     <ClInclude Include="..\src-common\shape.h" />
     <ClInclude Include="..\src-common\shapeSTL.h" />
@@ -1534,10 +1530,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SaveImage.resx">
       <DependentUpon>SaveImage.h</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SaveMovie.resx">
-      <DependentUpon>SaveMovie.h</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UploadDesign.resx">

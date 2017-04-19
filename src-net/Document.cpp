@@ -35,7 +35,6 @@
 #include "resource.h"
 #include "SaveImage.h"
 #include "SVGCanvas.h"
-#include "SaveMovie.h"
 #include "ffCanvas.h"
 #include "UploadDesign.h"
 #include "upload.h"
@@ -459,19 +458,67 @@ System::Void Document::menuRStop_Click(System::Object^ sender, System::EventArgs
     }
 }
 
-System::Void Document::menuRImage_Click(System::Object^ sender, System::EventArgs^ e)
-{ 
-    if (!mCanvas) {
-        setMessageText("There is no image to save.");
+System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    if (!mCanvas && !mMovieFile) {
+        setMessageText("There is nothing to save.");
         System::Console::Beep();
         return;
     }
 
     if (renderThread->IsBusy) {
-        postAction = PostRenderAction::SaveImage;
+        postAction = PostRenderAction::SaveOutput;
         return;
     }
 
+    if (mMovieFile) {
+        if (!mMovieFile->written()) {
+            setMessageText("Movie file already saved.");
+            System::Console::Beep();
+            return;
+        }
+
+        SaveFileDialog^ saveMovieDlg = gcnew SaveFileDialog();
+        saveMovieDlg->Filter = "MOV files (*.mov)|*.mov|All files (*.*)|*.*";
+        if (saveMovieDlg->ShowDialog() == ::DialogResult::OK) {
+            int pathLen = static_cast<int>(mMovieFile->name().size());
+            array<Byte>^ data = gcnew array<Byte>(pathLen);
+            System::Runtime::InteropServices::Marshal::Copy(IntPtr((void*)(mMovieFile->name().data())), data, 0, pathLen);
+            String^ oldPath = nullptr;
+            try {
+                oldPath = System::Text::Encoding::UTF8->GetString(data);
+                if (!File::Exists(oldPath)) {
+                    setMessageText("Temporary movie file is missing.");
+                    System::Console::Beep();
+                    return;
+                }
+            } catch (Exception^) {
+                setMessageText("Problem with temporary movie file.");
+                System::Console::Beep();
+                return;
+            }
+            if (File::Exists(saveMovieDlg->FileName)) {
+                try {
+                    File::Delete(saveMovieDlg->FileName);
+                } catch (Exception^) {
+                    setMessageText("Cannot overwrite destination.");
+                    System::Console::Beep();
+                    return;
+                }
+            }
+            try {
+                File::Move(oldPath, saveMovieDlg->FileName);
+                mMovieFile->release();
+            } catch (Exception^) {
+                setMessageText("Movie save failed.");
+                System::Console::Beep();
+                return;
+            }
+        }
+        return;
+    }       // end of Saving movie
+
+    // Saving image
     SaveImage saveImageDlg((*mEngine)->isFrieze(), mTiled ? mOutputMultiplier : nullptr,
         Path::GetFileNameWithoutExtension(Text) + ".png",
         ((Form1^)MdiParent)->saveDirectory);
@@ -609,65 +656,6 @@ void Document::saveToSVG(String^ path)
     updateRenderButton();
 }
 
-
-System::Void Document::menuRMovie_Click(System::Object^ sender, System::EventArgs^ e)
-{ 
-    if (!mCanvas || !mRenderer) {
-        setMessageText("There is no movie to save.");
-        System::Console::Beep();
-        return;
-    }
-
-    if (renderThread->IsBusy) {
-        postAction = PostRenderAction::SaveMovie;
-        return;
-    }
-
-    SaveMovie saveMovieDlg(Path::GetFileNameWithoutExtension(Text) + ".mov",
-                           ((Form1^)MdiParent)->saveDirectory);
-    saveMovieDlg.checkZoom->Enabled = !mTiled;
-
-    if (saveMovieDlg.ShowTheDialog(this) == System::Windows::Forms::DialogResult::OK) {
-        ((Form1^)MdiParent)->saveDirectory = 
-            Path::GetDirectoryName(saveMovieDlg.FileDlgFileName);
-
-        String^ fileName = saveMovieDlg.FileDlgFileName;
-        if (Form1::prefs->ImageAppendVariation) {
-            fileName = Path::GetDirectoryName(fileName) + "\\" +
-                Path::GetFileNameWithoutExtension(fileName) +
-                "-" + variationEdit->Text->ToLower() +  
-                Path::GetExtension(fileName);
-        }
-
-        setMessageText("Saving QuickTime movie.");
-
-        renderParams->animateFrameCount = Form1::prefs->AnimateLength * Form1::prefs->AnimateFrameRate;
-        renderParams->animateZoom = Form1::prefs->AnimateZoom;
-        renderParams->action = RenderParameters::RenderActions::Animate;
-
-        array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(fileName);
-        if (pathutf8->Length == 0) {
-            setMessageText("Bad file name");
-            return;
-        }
-        pin_ptr<Byte> pathutf8pin = &pathutf8[0];
-        const char* path = reinterpret_cast<const char*>(pathutf8pin);
-
-        mAnimationCanvas = new ffCanvas(path, WinCanvas::SuggestPixelFormat(mEngine->get()),
-                                        renderParams->width, renderParams->height,
-                                        Form1::prefs->AnimateFrameRate);
-
-        if (mAnimationCanvas->mError) {
-            delete mAnimationCanvas;
-            mAnimationCanvas = nullptr;
-        } else {
-            postAction = PostRenderAction::DoNothing;
-            renderThread->RunWorkerAsync();
-            statusTimer->Start();
-            updateRenderButton();
-        }
-    }
-}
 
 System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventArgs^ e)
 {
@@ -1171,7 +1159,7 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
             menuRRender->PerformClick();
             break;
         case PostRenderAction::RenderRepeat:
-            this->menuRRenderAgain->PerformClick();
+            menuRRenderAgain->PerformClick();
             break;
         case PostRenderAction::RenderSize:
             menuRRenderSize->PerformClick();
@@ -1182,11 +1170,8 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
         case PostRenderAction::AnimateFrame:
             menuRAnimateFrame->PerformClick();
             break;
-        case PostRenderAction::SaveImage:
-            menuRImage->PerformClick();
-            break;
-        case PostRenderAction::SaveMovie:
-            menuRMovie->PerformClick();
+        case PostRenderAction::SaveOutput:
+            menuROutput->PerformClick();
             break;
     }
 }
