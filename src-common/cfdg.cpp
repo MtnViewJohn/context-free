@@ -153,7 +153,7 @@ void AbstractSystem::stats(const Stats&)
     { }
 
 istream*
-AbstractSystem::tempFileForRead(const string& path)
+AbstractSystem::tempFileForRead(const FileString& path)
 {
     return new ifstream(path.c_str(), ios::binary);
 }

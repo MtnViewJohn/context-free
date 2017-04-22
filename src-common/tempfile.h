@@ -39,7 +39,7 @@ public:
     std::istream* forRead();
 
     const std::string& type() const;
-    const std::string& name() const { return mPath; }
+    const AbstractSystem::FileString& name() const { return mPath; }
     int         number() const { return mNum; }
     void        release() { mWritten = false; }
     bool        written() const { return mWritten; }
@@ -53,7 +53,7 @@ public:
 
 private:
     AbstractSystem*     mSystem;
-    std::string mPath;
+    AbstractSystem::FileString mPath;
     AbstractSystem::TempType mType;
     int         mNum;
     bool        mWritten;

@@ -44,9 +44,8 @@ using namespace std;
 std::ostream*
 TempFile::forWrite()
 {
-    if (mWritten) {
-        cerr << "TempFile::forWrite already wrote to " << mPath << endl;
-    }
+    if (mWritten)
+        mSystem->message("TempFile::forWrite already wrote to, " FileFormat "\n", mPath.c_str());
     mWritten = true;
     if (mNum > 0)
         mSystem->message("Writing %s temp file %d", type().c_str(), mNum);
@@ -58,9 +57,8 @@ TempFile::forWrite()
 std::istream*
 TempFile::forRead()
 {
-    if (!mWritten) {
-        cerr << "TempFile::forRead temp file never written, " << mPath << endl;
-    }
+    if (!mWritten)
+        mSystem->message("TempFile::forRead temp file never written, " FileFormat "\n", mPath.c_str());
     mSystem->message("Reading %s temp file %d", type().c_str(), mNum);
     return mSystem->tempFileForRead(mPath);
 }
@@ -120,7 +118,7 @@ TempFile::erase()
     else
         mSystem->message("Deleting %s temp file", type().c_str());
     errno = 0;
-    if (remove(mPath.c_str()))
-        mSystem->message("Failed to delete %s, %d", mPath.c_str(), errno);
+    if (mSystem->deleteTempFile(mPath))
+        mSystem->message("Failed to delete " FileFormat ", %d", mPath.c_str(), errno);
 }
 

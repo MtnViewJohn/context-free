@@ -87,17 +87,29 @@ class AbstractSystem {
             SystemIs64bit = 0
 #endif
         };
+
+#ifdef _WIN32
+        using FileChar = wchar_t;
+        using FileString = std::wstring;
+#define FileFormat "%S"
+#else
+        using FileChar = char;
+        using FileString = std::string;
+#define FileFormat "%s"
+#endif
+
         virtual void message(const char* fmt, ...) = 0;
         virtual void syntaxError(const CfdgError& err) = 0;
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
         virtual void catastrophicError(const char* what) = 0;
     
         virtual std::istream* openFileForRead(const std::string& path) = 0;
-        virtual std::istream* tempFileForRead(const std::string& path);
-        virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) = 0;
-        virtual const char* tempFileDirectory() = 0;
+        virtual std::istream* tempFileForRead(const FileString& path);
+        virtual std::ostream* tempFileForWrite(TempType tt, FileString& nameOut) = 0;
+        virtual const FileChar* tempFileDirectory() = 0;
             // caller must delete returned streams when done
-        virtual std::vector<std::string> findTempFiles() = 0;
+        virtual std::vector<FileString> findTempFiles() = 0;
+        virtual int deleteTempFile(const FileString& name) = 0;
         virtual size_t getPhysicalMemory() = 0;
     
         virtual std::string relativeFilePath(
