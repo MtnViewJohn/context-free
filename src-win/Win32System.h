@@ -41,11 +41,12 @@ public:
 
     virtual void catastrophicError(const char* what);
 
-    virtual std::istream* tempFileForRead(const std::string& path);
-    virtual std::ostream* tempFileForWrite(TempType tt, std::string& nameOut);
-    virtual const char* tempFileDirectory();
-    virtual std::vector<std::string> findTempFiles();
-    virtual size_t getPhysicalMemory();
+    virtual std::istream* tempFileForRead(const FileString& path) override;
+    virtual std::ostream* tempFileForWrite(TempType tt, FileString& nameOut) override;
+    virtual const FileChar* tempFileDirectory() override;
+    virtual std::vector<FileString> findTempFiles() override;
+    virtual int deleteTempFile(const FileString& name) override;
+    virtual size_t getPhysicalMemory() override;
 
     virtual std::string relativeFilePath(
         const std::string& base, const std::string& rel);

@@ -319,15 +319,13 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     }
 
     WinSystem* sys = new WinSystem(nullptr);
-    std::vector<std::string> temps = sys->findTempFiles();
+    auto temps = sys->findTempFiles();
     delete sys;
     if (!temps.empty()) {
         cli::array<String^>^ names = gcnew  cli::array<String^>(static_cast<int>(temps.size()));
         int i = 0;
-        for (std::string& temp: temps) {
-            String^ name = gcnew String(temp.c_str(), 0, static_cast<int>(temp.length()), System::Text::Encoding::UTF8);
-            names[i++] = name;
-        }
+        for (auto&& temp: temps)
+            names[i++] = gcnew String(temp.c_str());
         ::DialogResult dlgr = MessageBox::Show(this, "Should they be deleted?", 
             "Old temporary files found", 
             MessageBoxButtons::YesNo, MessageBoxIcon::Question, 

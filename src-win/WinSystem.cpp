@@ -119,7 +119,7 @@ std::istream* WinSystem::openFileForRead(const std::string& path)
     } else if (exText != ExampleMap.end()) {
         return new stringstream(exText->second, ios_base::in);
     } else {
-        return tempFileForRead(path);
+        return new ifstream(path.c_str(), ios::binary);
     }
 }
 

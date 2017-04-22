@@ -481,22 +481,7 @@ System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::Eve
         SaveFileDialog^ saveMovieDlg = gcnew SaveFileDialog();
         saveMovieDlg->Filter = "MOV files (*.mov)|*.mov|All files (*.*)|*.*";
         if (saveMovieDlg->ShowDialog() == ::DialogResult::OK) {
-            int pathLen = static_cast<int>(mMovieFile->name().size());
-            array<Byte>^ data = gcnew array<Byte>(pathLen);
-            System::Runtime::InteropServices::Marshal::Copy(IntPtr((void*)(mMovieFile->name().data())), data, 0, pathLen);
-            String^ oldPath = nullptr;
-            try {
-                oldPath = System::Text::Encoding::UTF8->GetString(data);
-                if (!File::Exists(oldPath)) {
-                    setMessageText("Temporary movie file is missing.");
-                    System::Console::Beep();
-                    return;
-                }
-            } catch (Exception^) {
-                setMessageText("Problem with temporary movie file.");
-                System::Console::Beep();
-                return;
-            }
+            String^ oldPath = gcnew String(mMovieFile->name().c_str());
             if (File::Exists(saveMovieDlg->FileName)) {
                 try {
                     File::Delete(saveMovieDlg->FileName);
@@ -509,6 +494,7 @@ System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::Eve
             try {
                 File::Move(oldPath, saveMovieDlg->FileName);
                 mMovieFile->release();
+                setMessageText("Movie saved.");
             } catch (Exception^) {
                 setMessageText("Movie save failed.");
                 System::Console::Beep();
@@ -1047,7 +1033,13 @@ void Document::DoRender()
         auto stream = mMovieFile->forWrite();
         delete stream;
 
-        mAnimationCanvas = new ffCanvas(mMovieFile->name().c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
+        String^ tname = gcnew String(mMovieFile->name().c_str());
+        array<Byte>^ bytes = System::Text::Encoding::UTF8->GetBytes(tname);
+        std::string str;
+        str.resize(bytes->Length);
+        Marshal::Copy(bytes, 0, IntPtr(&str[0]), bytes->Length);
+
+        mAnimationCanvas = new ffCanvas(str.c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
             renderParams->animateWidth, renderParams->animateHeight,
             renderParams->frameRate);
 

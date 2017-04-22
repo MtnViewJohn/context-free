@@ -50,7 +50,7 @@ public:
     virtual bool error(bool errorOccurred = true);
     virtual void catastrophicError(const char* what);
 
-    virtual std::istream* openFileForRead(const std::string& path);
+    virtual std::istream* openFileForRead(const std::string& path) override;
     // caller must delete returned streams when done
     
     virtual void orphan();

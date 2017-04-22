@@ -55,47 +55,34 @@ Win32System::catastrophicError(const char* what)
     cerr << "\n\nUnexpected error: " << what << endl;
 }
 
-const char*
+const AbstractSystem::FileChar*
 Win32System::tempFileDirectory()
 {
     static wchar_t tempPathBufferW[32768];
-    static char tempPathBuffer[32768];
 
     GetTempPathW(32768, tempPathBufferW);
-    if (::WideCharToMultiByte(CP_UTF8, 0, tempPathBufferW, -1, tempPathBuffer, 32768, NULL, NULL))
-        return tempPathBuffer;
-    else
-        return "";
+    return tempPathBufferW;
 }
 
 istream*
-Win32System::tempFileForRead(const string& path)
+Win32System::tempFileForRead(const FileString& path)
 {
-    wchar_t wpath[32768];
-    if (::MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, wpath, 32768))
-        return new ifstream(wpath, ios::binary);
-    message("Could not open this file: %s", path.c_str());
-    return new stringstream(ios_base::in);
+    return new ifstream(path.c_str(), ios::binary);
 }
 
 ostream*
-Win32System::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
+Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {    
-    ofstream* f = nullptr;
-    
-    wchar_t wtempdir[32768];
-    if (!::MultiByteToWideChar(CP_UTF8, 0, tempFileDirectory(), -1, wtempdir, 32768))
-        return nullptr;
+    const FileChar* wtempdir = tempFileDirectory();
 
     wchar_t* b = _wtempnam(wtempdir, TempPrefixes_w[tt]);
-    wcscat(b, TempSuffixes_w[tt]);
-    if (b) {
-        char buf[32768];
-        f = new ofstream;
-        f->open(b, ios::binary | ios::trunc | ios::out);
-        if (::WideCharToMultiByte(CP_UTF8, 0, b, -1, buf, 32768, NULL, NULL))
-            nameOut.assign(buf);
-    }
+    if (b == NULL)
+        return nullptr;
+    FileString bcopy = b;
+    bcopy.append(TempSuffixes_w[tt]);
+    ofstream* f = new ofstream;
+    f->open(bcopy.c_str(), ios::binary | ios::trunc | ios::out);
+    nameOut.assign(bcopy);
     free(b);
     
     return f;
@@ -121,15 +108,14 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
     }
 }
 
-vector<string>
+vector<AbstractSystem::FileString>
 Win32System::findTempFiles()
 {
-    vector<string> ret;
-    const char* tempdir = tempFileDirectory();
+    vector<FileString> ret;
+    const FileChar* tempdir = tempFileDirectory();
 
     wchar_t wtempdir[32768];
-    char buf[32768];
-    if (!::MultiByteToWideChar(CP_UTF8, 0, tempdir, -1, wtempdir, 32768) ||
+    if (wcscpy_s(wtempdir, 32768, tempFileDirectory()) ||
         !::PathAppendW(wtempdir, TempPrefixAll_w) || 
         wcsncat_s(wtempdir, 32768, L"*", 1))
         return ret;
@@ -142,15 +128,18 @@ Win32System::findTempFiles()
     }
 
     do {
-        if (::WideCharToMultiByte(CP_UTF8, 0, ffd.cFileName, -1, buf, 32768, NULL, NULL)) {
-            std::string name(tempdir);
-            if (name.back() != '\\')
-                name.push_back('\\');
-            name.append(buf);
-            ret.push_back(std::move(name));
-        }
+        ret.emplace_back(tempdir);
+        if (ret.back().back() != L'\\')
+            ret.back().append(L"\\");
+        ret.back().append(ffd.cFileName);
     } while (::FindNextFileW(fff.get(), &ffd));
     return ret;
+}
+
+int
+Win32System::deleteTempFile(const FileString& name)
+{
+    return _wremove(name.c_str());
 }
 
 size_t
