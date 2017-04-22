@@ -74,7 +74,7 @@ namespace {
         void catastrophicError(const char* what) override;
         
         istream* openFileForRead(const string& path) override;
-        const char* tempFileDirectory() override;
+        const FileChar* tempFileDirectory() override;
         string relativeFilePath(const string& base, const string& rel) override;
         
         void stats(const Stats& s) override;
@@ -169,7 +169,7 @@ namespace {
         return new ifstream(path.c_str(), ios::in);
     }
     
-    const char*
+    const AbstractSystem::FileChar*
     CocoaSystem::tempFileDirectory()
     {
         return [NSTemporaryDirectory() UTF8String];
@@ -266,11 +266,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     NSMutableArray* files = nil;
     
     CocoaSystem sys(nil);
-    std::vector<std::string> temps = sys.findTempFiles();
+    auto temps = sys.findTempFiles();
     if (!temps.empty())
         files = [NSMutableArray arrayWithCapacity: temps.size()];
 
-    for (string& temp: temps)
+    for (auto&& temp: temps)
         [files addObject: [NSString stringWithUTF8String: temp.c_str()]];
     
     return files;
