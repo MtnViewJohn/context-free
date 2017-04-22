@@ -427,23 +427,23 @@ int main (int argc, char* argv[]) {
     CommandLineSystem system(opts.quiet);
     
     if (!opts.quiet || opts.deleteTemps) {
-        std::vector<string> temps = system.findTempFiles();
+        auto temps = system.findTempFiles();
         if (temps.empty()) {
             if (opts.deleteTemps)
                 cerr << "No temporary files found." << endl;
         } else {
             if (opts.deleteTemps) {
                 cerr << "Old temporary files deleted:\n";
-                for (string& temp: temps)
-                    if (remove(temp.c_str()))
-                        cerr << "Failed to delete: " << temp << '\n';
-                    else
-                        cerr << temp << '\n';
+                for (auto&& temp : temps)
+                    if (system.deleteTempFile(temp))
+                        fprintf(stderr, "Failed to delete: " FileFormat "\n", temp.c_str());
+                    else 
+                        fprintf(stderr, FileFormat "\n", temp.c_str());
                 cerr << endl;
             } else {
                 cerr << "Old temporary files found:\n";
-                for (string& temp: temps)
-                    cerr << temp << '\n';
+                for (auto&& temp: temps)
+                    fprintf(stderr, FileFormat "\n", temp.c_str());
                 cerr << endl;
             }
         }

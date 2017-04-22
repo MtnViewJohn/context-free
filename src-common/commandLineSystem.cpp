@@ -116,7 +116,7 @@ CommandLineSystem::openFileForRead(const string& path)
     if (example != ExamplesMap.end())
         return new imemstream(example->second, strlen(example->second));
 
-    return tempFileForRead(path);
+    return new ifstream(path.c_str(), ios::binary);
 }
 
 void
