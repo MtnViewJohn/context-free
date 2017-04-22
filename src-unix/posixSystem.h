@@ -41,12 +41,13 @@ public:
     
     void catastrophicError(const char* what) override;
     
-    std::ostream* tempFileForWrite(TempType tt, std::string& nameOut) override;
-    const char* tempFileDirectory() override;
-    std::vector<std::string> findTempFiles() override;
+    std::ostream* tempFileForWrite(TempType tt, FileString& nameOut) override;
+    const FileChar* tempFileDirectory() override;
+    std::vector<FileString> findTempFiles() override;
     
     std::string relativeFilePath(
         const std::string& base, const std::string& rel) override;
+    int deleteTempFile(const FileString& name) override;
     size_t getPhysicalMemory() override;
 };
 

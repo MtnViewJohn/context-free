@@ -139,7 +139,7 @@ PosixSystem::catastrophicError(const char* what)
     cerr << "\n\nUnexpected error: " << what << endl;
 }
 
-const char*
+const AbstractSystem::FileChar*
 PosixSystem::tempFileDirectory()
 {
     struct stat sb;
@@ -151,7 +151,7 @@ PosixSystem::tempFileDirectory()
 }
 
 ostream*
-PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, string& nameOut)
+PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {
     string t(tempFileDirectory());
     if (t.back() != '/')
@@ -186,10 +186,16 @@ PosixSystem::relativeFilePath(const string& base, const string& rel)
     return s;
 }
 
-vector<string>
+int
+PosixSystem::deleteTempFile(const FileString& name)
+{
+    return remove(name.c_str());
+}
+
+vector<AbstractSystem::FileString>
 PosixSystem::findTempFiles()
 {
-    vector<string> ret;
+    vector<FileString> ret;
     const char* dirname = tempFileDirectory();
     size_t len = strlen(TempPrefixAll);
     unique_ptr<DIR, decltype(&closedir)> dirp(opendir(dirname), &closedir);
