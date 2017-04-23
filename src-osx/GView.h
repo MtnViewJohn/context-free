@@ -34,6 +34,9 @@ extern NSString* PrefKeyMovieZoom;
 extern NSString* PrefKeyMovieLength;
 extern NSString* PrefKeyMovieFrameRate;
 extern NSString* PrefKeyMovieFormat;
+extern NSString* PrefKeyMovieWidth;
+extern NSString* PrefKeyMovieHeight;
+extern NSString* PrefKeyMinumumSize;
 
 @class CFDGDocument;
 @class TopBar;
@@ -49,6 +52,13 @@ using cfdg_ptr = std::shared_ptr<CFDG>;
 using renderer_ptr = std::unique_ptr<Renderer>;
 using canvas_ptr = std::unique_ptr<Canvas>;
 using tempfile_ptr = std::unique_ptr<TempFile>;
+
+typedef NS_ENUM(NSInteger, ActionType) {
+    StopAction          = 0,
+    RenderAction        = 1,
+    AnimateAction       = 2,
+    AnimateFrameAction  = 3
+};
 
 @interface GView : NSView<NSWindowDelegate> {
     cfdg_ptr     mEngine;
@@ -74,19 +84,22 @@ using tempfile_ptr = std::unique_ptr<TempFile>;
     
     NSSize mLastRenderSize;
     double mLastRenderMin;
+    float  mLastAnimateFrame;
     
     bool mCanvasColor256;
 
     IBOutlet CFDGDocument*          mDocument;
 
     IBOutlet TopBar*                mTopBar;
-    IBOutlet NSButton*              mRenderControl;
+    IBOutlet NSSegmentedControl*    mActionControl;
+    IBOutlet NSPopUpButton*         mActionSelect;
     IBOutlet NSTextField*           mStatus;
     IBOutlet NSProgressIndicator*   mProgress;
     IBOutlet NSProgressIndicator*   mOutputProgress;
     
     int     mCurrentVariation;
     bool    mIncrementVariationOnRender;
+    ActionType mCurrentAction;
     
     IBOutlet NSTextField*           mVariationLabel;
     IBOutlet NSTextField*           mVariationField;
@@ -107,6 +120,7 @@ using tempfile_ptr = std::unique_ptr<TempFile>;
 - (id)initWithFrame:(NSRect)frame;
 
 - (IBAction)toggleRender:(id)sender;
+- (IBAction)selectAction:(id)sender;
 - (IBAction)saveOutput:(id)sender;
 - (IBAction)saveTileImage:(id)sender;
 - (IBAction)saveAsSVG:(id)sender;

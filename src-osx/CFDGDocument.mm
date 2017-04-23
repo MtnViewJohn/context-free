@@ -55,14 +55,15 @@
 @end
 
 
+NSString* PrefKeyMovieWidth = @"MovieWidth";
+NSString* PrefKeyMovieHeight = @"MovieHeight";
+NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
+
 namespace {
     using namespace std;
     
-    NSString* PrefKeyMovieWidth = @"MovieWidth";
-    NSString* PrefKeyMovieHeight = @"MovieHeight";
     NSString* PrefKeyHiresWidth = @"HiresWidth";
     NSString* PrefKeyHiresHeight = @"HiresHeight";
-    NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
     
     class CocoaSystem : public PosixSystem
     {

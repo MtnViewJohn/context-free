@@ -167,7 +167,8 @@ namespace {
             : render(true), periodicUpdate(true), animate(false)
             { }
     };
-        
+    
+    NSArray*    ActionStrings = @[@"Stop", @"Render", @"Animate", @"Frame"];
 }
 
 
@@ -240,6 +241,8 @@ namespace {
         mFullScreenMenu = [[winMenu submenu] itemWithTag: (NSInteger)420];
     }
     [window setDelegate: self];
+    mCurrentAction = ActionType::RenderAction;
+    mLastAnimateFrame = 1.0;
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
@@ -408,8 +411,45 @@ namespace {
 
 - (IBAction)toggleRender:(id)sender
 {
-    if (mRendering)     [self finishRender: sender];
-    else                [self startRender: sender];
+    if ([mActionControl selectedSegment] == 1) {
+        [[mActionSelect cell] performClickWithFrame:[sender frame]
+                                             inView:[sender superview]];
+        return;
+    }
+    
+    if (mRendering) {
+        [self finishRender: sender];
+    } else {
+        float frame = 0.0;
+        switch (mCurrentAction) {
+            case RenderAction:
+                [self startRender: sender];
+                break;
+                
+            case AnimateFrameAction:
+                frame = mLastAnimateFrame;
+            case AnimateAction: {
+                NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+                float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
+                float movieHeight = [defaults floatForKey: PrefKeyMovieHeight];
+                double movieMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
+                [self startAnimation: NSMakeSize(movieWidth, movieHeight)
+                             minimum: movieMinSize
+                               frame: frame];
+                break;
+            }
+            case StopAction:
+                break;
+        }
+    }
+}
+
+- (IBAction)selectAction:(id)sender
+{
+    NSInteger newAction = [mActionSelect selectedTag];
+    mCurrentAction = (ActionType)newAction;
+    [mActionControl setLabel: ActionStrings[newAction]
+                  forSegment: 0];
 }
 
 - (IBAction)saveOutput:(id)sender
@@ -691,6 +731,7 @@ namespace {
 
 - (IBAction) startRender:(id)sender
 {
+    mCurrentAction = ActionType::RenderAction;
     mLastRenderWasHires = false;
     
     if (mRendering) {
@@ -737,7 +778,7 @@ namespace {
             mRenderer->requestFinishUp = true;
         
         mRendererFinishing = true;
-        [mRenderControl setTitle: NSLocalizedString(@"Stop Now", @"")];
+        [mActionControl setLabel: NSLocalizedString(@"Stop Now", @"") forSegment: 0];
     }
 }
 
@@ -748,7 +789,7 @@ namespace {
             mRenderer->requestStop = true;
 
         mRendererStopping = true;
-        [mRenderControl setEnabled: NO];
+        [mActionControl setEnabled: NO];
     }
 }
 
@@ -758,6 +799,7 @@ namespace {
     mLastRenderWasHires = true;
     mLastRenderSize = size;
     mLastRenderMin = minSize;
+    mCurrentAction = ActionType::RenderAction;
     
     if (mRendering)
         return;
@@ -812,6 +854,7 @@ namespace {
     if (!mRenderer) return;
     
     if (parameters.animateFrame == 0) {
+        mCurrentAction = ActionType::AnimateAction;
         mRenderSize.width = (CGFloat)mRenderer->m_width;
         mRenderSize.height = (CGFloat)mRenderer->m_height;
         mRenderedRect.origin.x = 0.0;
@@ -844,6 +887,8 @@ namespace {
             NSBeep();
         }
     } else {
+        mLastAnimateFrame = fr;
+        mCurrentAction = ActionType::AnimateFrameAction;
         mMovieFile.reset();
         [self buildImageCanvasSize];
         [self renderBegin: &parameters];
@@ -862,7 +907,7 @@ namespace {
     mRendererFinishing = false;
     mRendererStopping = false;
     
-    [mRenderControl setTitle: NSLocalizedString(@"Stop", @"")];
+    [mActionControl setLabel: NSLocalizedString(@"Stop", @"") forSegment: 0];
     
     [mStatus setStringValue: @""];
 
@@ -960,8 +1005,8 @@ namespace {
 
     [self setNeedsDisplay: YES];
 
-    [mRenderControl setTitle: NSLocalizedString(@"Render", @"")];
-    [mRenderControl setEnabled: YES];
+    [mActionControl setLabel: ActionStrings[mCurrentAction] forSegment: 0];
+    [mActionControl setEnabled: YES];
 
     if (mRestartRenderer && !mCloseOnRenderStopped) {
         mRestartRenderer = false;
