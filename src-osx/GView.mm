@@ -209,6 +209,7 @@ namespace {
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     [mSaveImageAccessory retain];
     [mSaveTileAccessory retain];
     [mSaveAnimationAccessory retain];
@@ -243,6 +244,7 @@ namespace {
     [window setDelegate: self];
     mCurrentAction = ActionType::RenderAction;
     mLastAnimateFrame = 1.0;
+    self.wantsLayer = YES;
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
