@@ -32,6 +32,7 @@
     IBOutlet NSView*    mRightStatus;
     IBOutlet NSView*    mProgressOne;
     IBOutlet NSView*    mProgressTwo;
+    IBOutlet NSView*    mMovieControls;
 }
 
 - (void)relayout;

@@ -87,6 +87,11 @@ namespace {
     rightNew.origin.x = midNew.origin.x + midNew.size.width + xSpace;
     rightNew.size.width = rightEdge - xSpace - rightNew.origin.x;
     moveView(self, mRightStatus, rightOld, rightNew);
+    
+    rightOld = [mMovieControls frame];
+    rightNew = rightOld;
+    rightNew.origin.x = rightEdge - xSpace - rightNew.size.width;
+    moveView(self, mMovieControls, rightOld, rightNew);
 }
 
 @end

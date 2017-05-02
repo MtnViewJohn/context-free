@@ -125,15 +125,21 @@
                                 <connections>
                                     <outlet property="mActionControl" destination="bIH-dW-BZL" id="CY1-bn-3N6"/>
                                     <outlet property="mActionSelect" destination="N40-Ev-FF7" id="QLg-kq-juE"/>
+                                    <outlet property="mCurrentTime" destination="RXc-Hd-mgh" id="3jx-9g-AiG"/>
                                     <outlet property="mDocument" destination="-2" id="42"/>
+                                    <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
+                                    <outlet property="mRewindButton" destination="ZZH-fi-HFl" id="yCW-Hq-6uV"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
                                     <outlet property="mSaveTileAccessory" destination="305" id="499"/>
                                     <outlet property="mSaveTileHeight" destination="507" id="511"/>
                                     <outlet property="mSaveTileWidth" destination="502" id="510"/>
+                                    <outlet property="mStartStopButton" destination="BOb-PW-Ohi" id="BNM-U6-AP0"/>
                                     <outlet property="mStatus" destination="61" id="65"/>
+                                    <outlet property="mTimeLabel" destination="bNs-Sr-c94" id="RMY-JY-vmq"/>
+                                    <outlet property="mTimeSlider" destination="255-aH-Z3p" id="1VZ-hA-ifd"/>
                                     <outlet property="mTopBar" destination="126" id="136"/>
                                     <outlet property="mVariationField" destination="68" id="71"/>
                                     <outlet property="mVariationLabel" destination="67" id="70"/>
@@ -259,10 +265,84 @@ The variation code is a one to six letter sequence.</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <box hidden="YES" misplaced="YES" borderType="none" title="MovieBox" titlePosition="noTitle" id="NKb-OZ-zg6">
+                                <rect key="frame" x="802" y="0.0" width="232" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <view key="contentView" id="Hbp-dZ-A4c">
+                                    <rect key="frame" x="0.0" y="0.0" width="232" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="BOb-PW-Ohi">
+                                            <rect key="frame" x="-6" y="0.0" width="39" height="38"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="round" bezelStyle="circular" image="RemotePlay_norm.tif" imagePosition="overlaps" alignment="center" alternateImage="RemotePlay_press.tif" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3qn-hH-uZw">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="toggleMovieStartStop:" target="19" id="wMY-ql-oyl"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="ZZH-fi-HFl">
+                                            <rect key="frame" x="22" y="0.0" width="39" height="38"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="round" bezelStyle="circular" image="rewind.norm" imagePosition="overlaps" alignment="center" alternateImage="rewind.press" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pFT-b1-ADs">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="movieRewind:" target="19" id="zlh-sz-VN8"/>
+                                            </connections>
+                                        </button>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" id="255-aH-Z3p">
+                                            <rect key="frame" x="60" y="19" width="174" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="UlB-il-bj9"/>
+                                            <connections>
+                                                <action selector="movieTimeChange:" target="19" id="jjl-Ka-jMC"/>
+                                            </connections>
+                                        </slider>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="q7E-1c-gJL">
+                                            <rect key="frame" x="60" y="8" width="38" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0" id="9ep-fS-FTM">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="RXc-Hd-mgh">
+                                            <rect key="frame" x="128" y="8" width="38" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="0" id="wrh-9d-w2T">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <outlet property="formatter" destination="Ga5-0a-PI5" id="mcm-CK-Q3H"/>
+                                            </connections>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="bNs-Sr-c94">
+                                            <rect key="frame" x="196" y="8" width="38" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="10" id="x7Y-SU-clC">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <outlet property="formatter" destination="Ga5-0a-PI5" id="P4F-b8-kAn"/>
+                                            </connections>
+                                        </textField>
+                                    </subviews>
+                                </view>
+                            </box>
                         </subviews>
                         <connections>
                             <outlet property="mCenterControls" destination="81" id="128"/>
                             <outlet property="mLeftStatus" destination="57" id="127"/>
+                            <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="4iX-Dd-vYY"/>
                             <outlet property="mProgressOne" destination="60" id="130"/>
                             <outlet property="mProgressTwo" destination="111" id="131"/>
                             <outlet property="mRightStatus" destination="61" id="129"/>
@@ -727,6 +807,9 @@ To speed up the process of larger renders, no updates will occur in the window w
             <decimal key="minimum" value="1"/>
             <decimal key="maximum" value="NaN"/>
         </numberFormatter>
+        <numberFormatter formatterBehavior="custom10_4" positiveFormat="0.0" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="1" maximumFractionDigits="1" id="Ga5-0a-PI5" userLabel="TimeFormatter">
+            <real key="minimum" value="0.0"/>
+        </numberFormatter>
         <window title="Save Tile Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="304" userLabel="Save Tile Accessory" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -1151,6 +1234,10 @@ Gw
         </window>
     </objects>
     <resources>
+        <image name="RemotePlay_norm.tif" width="32" height="32"/>
+        <image name="RemotePlay_press.tif" width="32" height="32"/>
         <image name="doc" width="128" height="128"/>
+        <image name="rewind.norm" width="32" height="32"/>
+        <image name="rewind.press" width="32" height="32"/>
     </resources>
 </document>

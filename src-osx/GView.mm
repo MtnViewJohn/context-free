@@ -126,10 +126,17 @@
 - (void)buildImageCanvasSize;
 
 - (void)invalidateDrawingImage;
-- (void)validateDrawingImage;
+- (bool)validateDrawingImage;
 
 - (void)noteProgress;
 - (void)requestRenderUpdate;
+
+- (void)setupPlayer:(NSURL*)movie;
+- (void)tearDownPlayer;
+- (void)stopLoadingAnimationAndHandleError:(NSError *)error;
+
+- (bool)setupTimeSlider:(AVPlayerItem*)playerItem;
+- (void)setUpPlaybackOfAsset:(AVURLAsset *)asset withKeys:(NSArray *)keys;
 
 - (void)showSavePanelTitle:(NSString *)title
                   fileType:(NSArray *)fileType
@@ -151,7 +158,14 @@ NSString* PrefKeyMovieFrameRate = @"MovieFrameRate";
 NSString* PrefKeyMovieFormat = @"MovieFormat";
 
 namespace {
-    NSURL*    saveImageDirectory = nil;
+    NSURL*      saveImageDirectory = nil;
+    void*       ItemStatusContext = &ItemStatusContext;
+    void*       LayerStatusContext = &LayerStatusContext;
+    void*       ItemDurationContext = &ItemDurationContext;
+    NSImage*    PlayNormalImage = nil;
+    NSImage*    PlayPressImage = nil;
+    NSImage*    PauseNormalImage = nil;
+    NSImage*    PausePressImage = nil;
 
     class RenderParameters
     {
@@ -180,6 +194,15 @@ namespace {
 
 
 @implementation GView
+
++ (void)initialize {
+    if (self == [GView self]) {
+        PlayNormalImage =   [[NSImage imageNamed:@"RemotePlay_norm.tif.icns"] retain];
+        PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
+        PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
+        PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
+    }
+}
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -261,6 +284,7 @@ namespace {
 }
 - (BOOL)windowShouldClose:(id)sender
 {
+    [self tearDownPlayer];
     if (mRendering && mRenderer) {
         mRenderer->requestStop = true;
         mCloseOnRenderStopped = true;
@@ -271,6 +295,7 @@ namespace {
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    [self tearDownPlayer];
     [self deleteRenderer];
 }
 
@@ -286,6 +311,7 @@ namespace {
 
 - (void)dealloc
 {
+    [self tearDownPlayer];
     [self deleteRenderer];
     [mDocument release];            mDocument = nil;
     [mDrawingImage release];        mDrawingImage = nil;
@@ -308,11 +334,241 @@ namespace {
     return YES;
 }
 
+- (void)setupPlayer:(NSURL*)movie
+{
+    if (!mMoviePlayer) {
+        mMoviePlayer = [[AVPlayer alloc] init];
+        mTimeObserverToken = [mMoviePlayer addPeriodicTimeObserverForInterval: CMTimeMake(1, 10)
+                                                                        queue: dispatch_get_main_queue()
+                                                                   usingBlock: ^(CMTime time) {
+            if ([[mMoviePlayer currentItem] status] == AVPlayerItemStatusReadyToPlay) {
+                double now = CMTimeGetSeconds([mMoviePlayer currentTime]);
+                mTimeSlider.doubleValue = now;
+                mCurrentTime.doubleValue = now;
+                [mTimeSlider setEnabled: YES];
+            } else {
+                [mTimeSlider setEnabled: NO];
+            }
+        }];
+        mEndMovieToken = nil;
+    }
+    
+    // Create an asset with our URL, asychronously load its tracks and whether it's playable or protected.
+    // When that loading is complete, configure a player to play the asset.
+    AVURLAsset *asset = [AVURLAsset assetWithURL: movie];
+    NSArray *assetKeysToLoadAndTest = @[@"playable", @"hasProtectedContent", @"tracks", @"duration"];
+    [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
+        // The asset invokes its completion handler on an arbitrary queue when loading is complete.
+        // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [self setUpPlaybackOfAsset:asset withKeys:assetKeysToLoadAndTest];
+        });
+    }];
+}
+
+- (void)tearDownPlayer
+{
+    if (!mMoviePlayer) return;
+    [mMoviePlayer pause];
+    
+    if (mMoviePlayerLayer) {
+        [mMoviePlayerLayer removeFromSuperlayer];
+        mMoviePlayerLayer = nil;
+    }
+    
+    if (mTimeObserverToken)
+        [mMoviePlayer removeTimeObserver: mTimeObserverToken];
+    if (mEndMovieToken)
+        [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
+    mEndMovieToken = nil;
+    mTimeObserverToken = nil;
+    
+    [mMoviePlayer replaceCurrentItemWithPlayerItem: nil];
+    
+    [mMoviePlayer release]; mMoviePlayer = nil;
+
+    [mMovieControls setHidden: YES];
+    [mStatus setHidden: NO];
+}
+
+- (void)setUpPlaybackOfAsset:(AVURLAsset *)asset withKeys:(NSArray *)keys
+{
+    // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
+    // We set up playback of the asset here.
+    AVPlayerItem* playerItem = nil;
+    
+    // First test whether the values of each of the keys we need have been successfully loaded.
+    for (NSString *key in keys) {
+        NSError *error = nil;
+        
+        if ([asset statusOfValueForKey:key error:&error] == AVKeyValueStatusFailed) {
+            // We can fail here even though the movie media is OK. Try a different
+            // method for loading the item and hope for the best.
+            playerItem = [AVPlayerItem playerItemWithURL: [asset URL]];
+            if ([playerItem status] == AVPlayerItemStatusFailed) {
+                [self stopLoadingAnimationAndHandleError: [playerItem error]];
+                return;
+            }
+            [playerItem addObserver:self forKeyPath:@"duration" options:0 context:ItemDurationContext];
+            break;
+        }
+    }
+    
+    if (!playerItem) {      // Only test if the keys all loaded the first time
+        if (![asset isPlayable] || [asset hasProtectedContent] ||
+            [[asset tracksWithMediaType:AVMediaTypeVideo] count] == 0)
+        {
+            [mDocument noteStatus: @"Cannot play movie."];
+            return;
+        }
+    }
+    
+    // We can play this asset.
+    AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
+    newPlayerLayer.frame = self.layer.bounds;
+    newPlayerLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+    [self.layer addSublayer:newPlayerLayer];
+    mMoviePlayerLayer = newPlayerLayer;
+    [mMoviePlayerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:LayerStatusContext];
+    
+    // Create a new AVPlayerItem and make it our player's current item.
+    if (!playerItem)
+        playerItem = [AVPlayerItem playerItemWithAsset:asset];
+
+    if (mEndMovieToken) {
+        [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
+        mEndMovieToken = nil;
+    }
+    
+    if (playerItem) {
+        [self setupTimeSlider: playerItem];
+        
+        if ([playerItem status] != AVPlayerItemStatusReadyToPlay)
+            [playerItem addObserver:self forKeyPath:@"status" options:0 context:ItemStatusContext];
+        
+        // Subscribe to the AVPlayerItem's DidPlayToEndTime notification.
+        mEndMovieToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
+                                                                           object:playerItem
+                                                                            queue:[NSOperationQueue mainQueue]
+                                                                       usingBlock:^(NSNotification *note) {
+                                                                           mAtEndofMovie = true;
+                                                                           mStartStopButton.image = PlayNormalImage;
+                                                                           mStartStopButton.alternateImage = PlayPressImage;
+                                                                       }
+                          ];
+    }
+    [mMoviePlayer replaceCurrentItemWithPlayerItem:playerItem];
+    mMoviePlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
+
+    mAtEndofMovie = false;
+}
+
+- (bool)setupTimeSlider:(AVPlayerItem*)playerItem
+{
+    CMTime lengthTime = [playerItem duration];
+    double length = CMTimeGetSeconds(lengthTime);
+    if (isfinite(length)) {
+        mTimeSlider.maxValue = length;
+        mTimeLabel.doubleValue = length;
+        return true;
+    }
+    return false;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    if (context == ItemDurationContext) {
+        AVPlayerItem* playerItem = (AVPlayerItem*)object;
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           if ([self setupTimeSlider: playerItem])
+                               [playerItem removeObserver:self forKeyPath:keyPath context:context];
+                       });
+        return;
+    }
+    if (context == ItemStatusContext) {
+        AVPlayerItem* playerItem = (AVPlayerItem*)object;
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           AVPlayerItemStatus stat = [playerItem status];
+                           if (stat != AVPlayerItemStatusUnknown)
+                               [playerItem removeObserver:self forKeyPath:keyPath context:context];
+                           if (stat == AVPlayerItemStatusReadyToPlay &&
+                               [mMoviePlayerLayer isReadyForDisplay])
+                           {
+                               [mMovieControls setHidden: NO];
+                               [mStatus setHidden: YES];
+                           }
+                           if (stat == AVPlayerItemStatusFailed)
+                               [self stopLoadingAnimationAndHandleError: [playerItem error]];
+                       });
+        return;
+    }
+    if (context == LayerStatusContext) {
+        AVPlayerLayer* playerLayer = (AVPlayerLayer*)object;
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           [playerLayer removeObserver:self forKeyPath:keyPath context:context];
+                           AVPlayerItemStatus stat = [[[playerLayer player] currentItem] status];
+                           if (stat == AVPlayerItemStatusReadyToPlay &&
+                               [playerLayer isReadyForDisplay])
+                           {
+                               [mMovieControls setHidden: NO];
+                               [mStatus setHidden: YES];
+                           }
+                       });
+        return;
+    }
+
+    [super observeValueForKeyPath:keyPath ofObject:object
+                           change:change context:context];
+}
+
+- (void)stopLoadingAnimationAndHandleError:(NSError *)error
+{
+    if (error) {
+        [mDocument noteStatus: [error localizedDescription]];
+        NSString* fail = [error localizedFailureReason];
+        if (fail)
+            [mDocument noteStatus: fail];
+    }
+    NSBeep();
+}
+
+- (IBAction) toggleMovieStartStop:(id)sender
+{
+    if ([mMoviePlayer rate] == 0.0f) {
+        if (mAtEndofMovie)
+            [mMoviePlayer seekToTime: kCMTimeZero];
+        [mMoviePlayer play];
+        mAtEndofMovie = false;
+        mStartStopButton.image = PauseNormalImage;
+        mStartStopButton.alternateImage = PausePressImage;
+    } else {
+        [mMoviePlayer pause];
+        mStartStopButton.image = PlayNormalImage;
+        mStartStopButton.alternateImage = PlayPressImage;
+    }
+}
+
+- (IBAction) movieRewind:(id)sender
+{
+    [mMoviePlayer seekToTime: kCMTimeZero];
+    mAtEndofMovie = false;
+}
+
+- (IBAction) movieTimeChange:(id)sender
+{
+    auto scale = mMoviePlayer.currentItem.duration.timescale;
+    double time = [mTimeSlider doubleValue];
+    CMTime t = CMTimeMakeWithSeconds(time, scale);
+    [mMoviePlayer seekToTime:t toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+}
+
 - (void)drawRect:(NSRect)rect
 {
-    [self validateDrawingImage];
-    
-    if (!mDrawingImage) {
+    if (mMoviePlayer || ![self validateDrawingImage]) {
         [[NSColor whiteColor] set];
         [NSBezierPath fillRect: rect];
         return;
@@ -735,6 +991,7 @@ namespace {
 {
     mCurrentAction = ActionType::RenderAction;
     mLastRenderWasHires = false;
+    [self tearDownPlayer];
     
     if (mRendering) {
         if (!mRestartRenderer) {
@@ -802,6 +1059,7 @@ namespace {
     mLastRenderSize = size;
     mLastRenderMin = minSize;
     mCurrentAction = ActionType::RenderAction;
+    [self tearDownPlayer];
     
     if (mRendering)
         return;
@@ -873,6 +1131,7 @@ namespace {
             return;
         }
         
+        [self tearDownPlayer];
         mMovieFile = std::make_unique<TempFile>([mDocument system], AbstractSystem::MovieTemp, 0);
         auto stream = mMovieFile->forWrite();
         delete stream;  // close the temp file, we need its name
@@ -914,6 +1173,8 @@ namespace {
     [mStatus setStringValue: @""];
 
     [mProgress setHidden: NO];
+    [mMovieControls setHidden: YES];
+    [mStatus setHidden: NO];
     [mTopBar relayout];
 #ifndef PROGRESS_ANIMATE_DIRECTLY
     [mProgress setUsesThreadedAnimation: YES];
@@ -1013,6 +1274,12 @@ namespace {
     if (mRestartRenderer && !mCloseOnRenderStopped) {
         mRestartRenderer = false;
         [self startRender: self];
+    }
+    
+    if (mMovieFile && mMovieFile->written()) {
+        NSString* tempPath = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
+        NSURL* tempURL = [NSURL fileURLWithPath: tempPath];
+        [self setupPlayer: tempURL];
     }
     
     // can let everyone go if they really want
@@ -1211,9 +1478,9 @@ namespace {
     }
 }
 
-- (void)validateDrawingImage
+- (bool)validateDrawingImage
 {
-    if (mDrawingImage || !mRenderBitmap) return;
+    if (mDrawingImage || !mRenderBitmap) return mDrawingImage != nil;
     
     mDrawingImage = [[NSImage alloc] initWithSize: mRenderedRect.size];
     
@@ -1221,6 +1488,8 @@ namespace {
     
     if (bitmap)
         [mDrawingImage addRepresentation: bitmap];
+    
+    return mDrawingImage != nil;
 }
 
 - (void)noteProgress
@@ -1362,6 +1631,7 @@ namespace {
     }
     
     NSError* fileErr = nil;
+    [self tearDownPlayer];   // disconnect player from temp file
     NSString* tempPath = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
     NSURL* tempURL = [NSURL fileURLWithPath: tempPath];
     if ([[NSFileManager defaultManager] moveItemAtURL:tempURL

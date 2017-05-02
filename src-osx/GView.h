@@ -27,6 +27,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <AVFoundation/AVFoundation.h>
 #import "KFSplitView.h"
 #include <memory>
 
@@ -75,6 +76,12 @@ typedef NS_ENUM(NSInteger, ActionType) {
     NSTimer*    mUpdateTimer;
     int         mOutputProgressDelay;
     
+    AVPlayer*       mMoviePlayer;
+    AVPlayerLayer*  mMoviePlayerLayer;
+    id              mTimeObserverToken;
+    bool            mAtEndofMovie;
+    id              mEndMovieToken;
+    
     bool mRendering;
     bool mRestartRenderer;
     bool mRendererFinishing;
@@ -105,6 +112,13 @@ typedef NS_ENUM(NSInteger, ActionType) {
     IBOutlet NSTextField*           mVariationField;
     IBOutlet NSStepper*             mVariationStepper;
     
+    IBOutlet NSBox*                 mMovieControls;
+    IBOutlet NSButton*              mStartStopButton;
+    IBOutlet NSButton*              mRewindButton;
+    IBOutlet NSSlider*              mTimeSlider;
+    IBOutlet NSTextField*           mTimeLabel;
+    IBOutlet NSTextField*           mCurrentTime;
+    
     IBOutlet NSView*                mSaveImageAccessory;
     IBOutlet NSView*                mSaveTileAccessory;
     IBOutlet NSTextField*           mSaveTileWidth;
@@ -131,6 +145,10 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) showAnimationSheet:(id)sender;
 - (IBAction) showAnimationFrameSheet:(id)sender;
+
+- (IBAction) toggleMovieStartStop:(id)sender;
+- (IBAction) movieRewind:(id)sender;
+- (IBAction) movieTimeChange:(id)sender;
 
 - (void)noteStats:(NSValue*)v;
 - (void)redisplayImage:(NSValue*)sizeObj;
