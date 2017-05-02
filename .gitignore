@@ -27,3 +27,4 @@ Release64/
 *.db
 *.opendb
 packages*
+src-net/.vs/
