@@ -114,6 +114,8 @@ void Document::InitializeStuff()
     mOutputMultiplier = gcnew array<double>(2);
     mOutputMultiplier[0] = 1.0;
     mOutputMultiplier[1] = 1.0;
+
+	mRenderButtonAction = RenderButtonAction::Render;
 }
 
 void Document::DestroyStuff()
@@ -366,7 +368,9 @@ System::Void Document::modifiedCFDG(System::Object^ sender, System::EventArgs^ e
 
 System::Void Document::menuRRender_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    if (renderThread->IsBusy) {
+	mRenderButtonAction = RenderButtonAction::Render;
+
+	if (renderThread->IsBusy) {
         postAction = PostRenderAction::Render;
         return;
     }
@@ -382,10 +386,16 @@ System::Void Document::menuRRender_Click(System::Object^ sender, System::EventAr
 
 System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	RenderButtonAction oldAction = mRenderButtonAction;
+	mRenderButtonAction = RenderButtonAction::Render;
+
     if (renderThread->IsBusy) {
         postAction = PostRenderAction::RenderSize;
         return;
     }
+
+	if (oldAction != mRenderButtonAction)
+		updateRenderButton();
 
     RenderSizeDialog rs(renderParams);
 
@@ -400,12 +410,18 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
 
 System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    if (renderThread->IsBusy) {
+	RenderButtonAction oldAction = mRenderButtonAction;
+	mRenderButtonAction = RenderButtonAction::Animate;
+
+	if (renderThread->IsBusy) {
         postAction = PostRenderAction::Animate;
         return;
     }
 
-    renderParams->animateFrame = false;
+	if (oldAction != mRenderButtonAction)
+		updateRenderButton();
+
+	renderParams->animateFrame = false;
     AnimateDialog an(renderParams);
 
     if (sender != menuRAnimate || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
@@ -418,12 +434,18 @@ System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventA
 
 System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    if (renderThread->IsBusy) {
+	RenderButtonAction oldAction = mRenderButtonAction;
+	mRenderButtonAction = RenderButtonAction::AnimateFrame;
+
+	if (renderThread->IsBusy) {
         postAction = PostRenderAction::AnimateFrame;
         return;
     }
 
-    renderParams->animateFrame = true;
+	if (oldAction != mRenderButtonAction)
+		updateRenderButton();
+
+	renderParams->animateFrame = true;
     AnimateDialog an(renderParams);
 
     if (sender != menuRAnimateFrame || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
@@ -769,7 +791,17 @@ System::Void Document::RenderButton_Click(System::Object^ sender, System::EventA
             updateRenderButton();
         }
     } else {
-        menuRRender_Click(sender, e);
+		switch (mRenderButtonAction) {
+		case RenderButtonAction::Render:
+			menuRRender_Click(sender, e);
+			break;
+		case RenderButtonAction::Animate:
+			menuRAnimate_Click(sender, e);
+			break;
+		case RenderButtonAction::AnimateFrame:
+			menuRAnimateFrame_Click(sender, e);
+			break;
+		}
     }
 }
 
@@ -953,7 +985,17 @@ void Document::updateRenderButton()
             toolStripRenderButton->Text = "Stop";
         }
     } else {
-        toolStripRenderButton->Text = "Render";
+		switch (mRenderButtonAction) {
+		case RenderButtonAction::Render:
+			toolStripRenderButton->Text = "Render";
+			break;
+		case RenderButtonAction::Animate:
+			toolStripRenderButton->Text = "Animate";
+			break;
+		case RenderButtonAction::AnimateFrame:
+			toolStripRenderButton->Text = "Frame";
+			break;
+		}
         mRenderButtonIndex = 0;
     }
 

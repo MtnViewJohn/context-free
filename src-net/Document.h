@@ -84,6 +84,7 @@ namespace ContextFreeNet {
 
         enum class PostRenderAction { DoNothing, Render, RenderSize, RenderRepeat, 
             Animate, AnimateFrame, SaveOutput, Close, Exit };
+		enum class RenderButtonAction { Render, Animate, AnimateFrame };
         property PostRenderAction postAction {
             void set(PostRenderAction a) {
                 if (a == PostRenderAction::DoNothing || a == PostRenderAction::Exit) {
@@ -102,6 +103,7 @@ namespace ContextFreeNet {
 
     private:
         PostRenderAction mPostAction;
+		RenderButtonAction mRenderButtonAction;
         bool nonAlphaInVariation;
         WinSystem* mSystem;
         System::ComponentModel::BackgroundWorker^ renderThread;
