@@ -1091,7 +1091,6 @@ namespace {
     parameters.animateFrame = static_cast<int>(fr);
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     auto fmt = AVcanvas::H264;
@@ -1112,7 +1111,8 @@ namespace {
     if (!mEngine) return;
     [self buildRendererSize: size minimum: minSize];
     if (!mRenderer) return;
-    
+    parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
+
     if (parameters.animateFrame == 0) {
         mCurrentAction = ActionType::AnimateAction;
         mRenderSize.width = (CGFloat)mRenderer->m_width;
@@ -1426,7 +1426,7 @@ namespace {
 {
     [self deleteRenderer];
     mEngine = [mDocument buildEngine];
-    mTiled = false;
+    mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 }
 
 - (void)buildRendererSize:(NSSize)size minimum:(double)minSize
@@ -1465,8 +1465,6 @@ namespace {
     mRenderedRect.size = mRenderSize;
 
     mCanvas = std::make_unique<ImageCanvas>(self, mRenderBitmap, [bm aggPixelFormat]);
-
-    mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
 }
 
 
