@@ -1113,18 +1113,32 @@ namespace {
     if (!mRenderer) return;
     parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
 
+    auto width = mRenderer->m_width;
+    auto height = mRenderer->m_height;
+    if (width & 7)
+        width = (width + 8) & (~7);
+    if (height & 7)
+        height = (height + 8) & (~7);
+    mRenderSize.width = (CGFloat)width;
+    mRenderSize.height = (CGFloat)height;
+    mRenderedRect.origin.x = 0.0;
+    mRenderedRect.origin.y = 0.0;
+    mRenderedRect.size = mRenderSize;
+    
+    if (!NSEqualSizes(size, mRenderSize))
+        [mDocument noteStatus: [NSString stringWithFormat:@"Size reduced to %dx%d",
+                                width, height]];
+    if (width != mRenderer->m_width || height != mRenderer->m_height)
+        [mDocument noteStatus: [NSString stringWithFormat:@"TiledCanvas desired size was %dx%d",
+                                mRenderer->m_width, mRenderer->m_height]];
+
     if (parameters.animateFrame == 0) {
         mCurrentAction = ActionType::AnimateAction;
-        mRenderSize.width = (CGFloat)mRenderer->m_width;
-        mRenderSize.height = (CGFloat)mRenderer->m_height;
-        mRenderedRect.origin.x = 0.0;
-        mRenderedRect.origin.y = 0.0;
-        mRenderedRect.size = mRenderSize;
 
         BitmapAndFormat* bits = [BitmapAndFormat alloc];
         [bits initWithAggPixFmt: aggCanvas::AV_Blend
-                     pixelsWide: (NSInteger)size.width
-                     pixelsHigh: (NSInteger)size.height];
+                     pixelsWide: (NSInteger)width
+                     pixelsHigh: (NSInteger)height];
         if (!bits) {
             [mDocument noteStatus: @"An error occured while initializing the movie canvas."];
             NSBeep();
