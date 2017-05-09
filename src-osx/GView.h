@@ -28,7 +28,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <AVFoundation/AVFoundation.h>
-#import "KFSplitView.h"
 #include <memory>
 
 extern NSString* PrefKeyMovieZoom;

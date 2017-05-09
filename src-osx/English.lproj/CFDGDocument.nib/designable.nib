@@ -14,8 +14,10 @@
                 <outlet property="mAnimationFrame" destination="DRm-l9-Glf" id="Dhh-8U-YGM"/>
                 <outlet property="mCodecLabel" destination="sUj-8i-vHY" id="vgB-2j-VbR"/>
                 <outlet property="mEditor" destination="13" id="34"/>
+                <outlet property="mEditorSplitter" destination="451" id="3zy-r1-qiK"/>
                 <outlet property="mFrameLabel" destination="4eq-9n-7No" id="NOv-Ei-OHl"/>
                 <outlet property="mGView" destination="19" id="35"/>
+                <outlet property="mGViewSplitter" destination="452" id="zNv-um-O2L"/>
                 <outlet property="mHiresSheet" destination="86" id="100"/>
                 <outlet property="mSheetLabel" destination="Pa7-Cu-daJ" id="nLu-Jg-rbV"/>
                 <outlet property="mStatus" destination="57" id="62"/>
@@ -43,11 +45,11 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                     </box>
-                    <splitView autosaveName="CFDG editor splitter" vertical="YES" id="452" customClass="KFSplitView">
+                    <splitView autosaveName="CFDG editor splitter" vertical="YES" id="452" customClass="DMSplitView">
                         <rect key="frame" x="0.0" y="-2" width="1200" height="760"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <splitView autosaveName="CFDG status splitter" id="451" customClass="KFSplitView">
+                            <splitView autosaveName="CFDG status splitter" id="451" customClass="DMSplitView">
                                 <rect key="frame" x="0.0" y="0.0" width="415" height="760"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
@@ -829,8 +831,8 @@ To speed up the process of larger renders, no updates will occur in the window w
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" id="500">
-                        <rect key="frame" x="17" y="14" width="38" height="17"/>
+                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" id="500">
+                        <rect key="frame" x="17" y="14" width="47" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="501">
                             <font key="font" metaFont="system"/>
