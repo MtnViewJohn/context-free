@@ -41,6 +41,12 @@
 #include <tgmath.h>
 #include <tempfile.h>
 
+using cfdg_ptr = std::shared_ptr<CFDG>;
+using renderer_ptr = std::unique_ptr<Renderer>;
+using canvas_ptr = std::unique_ptr<Canvas>;
+using tempfile_ptr = std::unique_ptr<TempFile>;
+
+
 //#define PROGRESS_ANIMATE_DIRECTLY
 //#define USE_SAVE_GRAPHICS_STATE
 //#define TIME_AND_LOG_RENDER
@@ -115,6 +121,14 @@
 
 - (aggCanvas::PixelFormat) aggPixelFormat { return _aggPixFmt; }
 
+@end
+
+@interface GView () {
+cfdg_ptr     mEngine;
+renderer_ptr mRenderer;
+canvas_ptr   mCanvas;
+tempfile_ptr mMovieFile;
+}
 @end
 
 @interface GView (internal)

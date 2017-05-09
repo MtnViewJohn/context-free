@@ -42,17 +42,6 @@ extern NSString* PrefKeyMinumumSize;
 @class TopBar;
 @class BitmapImageHolder;
 
-class CFDG;
-class Canvas;
-class Renderer;
-class AVcanvas;
-class TempFile;
-
-using cfdg_ptr = std::shared_ptr<CFDG>;
-using renderer_ptr = std::unique_ptr<Renderer>;
-using canvas_ptr = std::unique_ptr<Canvas>;
-using tempfile_ptr = std::unique_ptr<TempFile>;
-
 typedef NS_ENUM(NSInteger, ActionType) {
     StopAction          = 0,
     RenderAction        = 1,
@@ -61,11 +50,6 @@ typedef NS_ENUM(NSInteger, ActionType) {
 };
 
 @interface GView : NSView<NSWindowDelegate> {
-    cfdg_ptr     mEngine;
-    renderer_ptr mRenderer;
-    canvas_ptr   mCanvas;
-    tempfile_ptr mMovieFile;
-    
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
     BitmapImageHolder*  mRenderBitmap;  // this bitmap must never be drawn
