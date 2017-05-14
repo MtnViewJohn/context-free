@@ -116,6 +116,8 @@ void Document::InitializeStuff()
     mOutputMultiplier[1] = 1.0;
 
 	mRenderButtonAction = RenderButtonAction::Render;
+
+    menuRAnimate->Enabled = ffCanvas::Available();
 }
 
 void Document::DestroyStuff()

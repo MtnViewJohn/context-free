@@ -320,6 +320,8 @@ processCommandLine(int argc, char* argv[], options& opt)
             default:
                 bailout(nullptr);
         }
+        if (makeQT && !ffCanvas::Available())
+            bailout("FFmpeg DLLs not found, QuickTime output is unavailable.");
         if (frame) {
             if (makeQT)
                 bailout("Single frame animation only outputs PNG files.");

@@ -37,6 +37,8 @@ public:
     const char* mErrorMsg;
     
     void end() override;
+
+    static bool Available();
     
 private:
     class Impl;
