@@ -1086,6 +1086,7 @@ void Document::DoRender()
             renderParams->frameRate);
 
         if (mAnimationCanvas->mError) {
+            setMessageText(gcnew String(mAnimationCanvas->mErrorMsg));
             delete mAnimationCanvas;
             mAnimationCanvas = nullptr;
             System::Media::SystemSounds::Beep->Play();
