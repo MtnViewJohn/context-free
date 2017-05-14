@@ -1,6 +1,4 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -18,23 +16,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_HWCONTEXT_VDPAU_H
+#define AVUTIL_HWCONTEXT_VDPAU_H
 
-#include <stdint.h>
-#include "attributes.h"
+#include <vdpau/vdpau.h>
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+/**
+ * @file
+ * An API-specific header for AV_HWDEVICE_TYPE_VDPAU.
+ *
+ * This API supports dynamic frame pools. AVHWFramesContext.pool must return
+ * AVBufferRefs whose data pointer is a VdpVideoSurface.
+ */
 
-attribute_deprecated double av_int2dbl(int64_t v) av_const;
-attribute_deprecated float av_int2flt(int32_t v) av_const;
-attribute_deprecated double av_ext2dbl(const AVExtFloat ext) av_const;
-attribute_deprecated int64_t av_dbl2int(double d) av_const;
-attribute_deprecated int32_t av_flt2int(float d) av_const;
-attribute_deprecated AVExtFloat av_dbl2ext(double d) av_const;
+/**
+ * This struct is allocated as AVHWDeviceContext.hwctx
+ */
+typedef struct AVVDPAUDeviceContext {
+    VdpDevice          device;
+    VdpGetProcAddress *get_proc_address;
+} AVVDPAUDeviceContext;
 
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+/**
+ * AVHWFramesContext.hwctx is currently not used
+ */
+
+#endif /* AVUTIL_HWCONTEXT_VDPAU_H */

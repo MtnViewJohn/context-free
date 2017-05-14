@@ -1,7 +1,7 @@
 // ffCanvas.cpp
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011-2012 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2017 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,27 +30,30 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#undef PixelFormat
 }
+
+extern void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl);
 
 class ffCanvas::Impl
 {
 public:
     Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-         char* bits, int fps);
+        std::unique_ptr<char[]> bits, int fps);
     ~Impl();
     
-    void addFrame();
+    void addFrame(bool end);
     
     int             mWidth;
     int             mHeight;
     int             mStride;
     std::unique_ptr<char[]> mBuffer;
     int             mFrameRate;
+    int				mLineSize;
     const char*     mError;
     
     AVFormatContext *mOutputCtx;
     AVFrame         *mFrame;
+    AVPacket		*mPacket;
     
     static const uint32_t
                     dummyPalette[256];
@@ -61,10 +64,14 @@ public:
 const uint32_t ffCanvas::Impl::dummyPalette[256] = { 0 };
 
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-                     char* bits, int fps)
-: mWidth(width), mHeight(height), mStride(stride), mBuffer(bits), mFrameRate(fps),
-  mError(NULL), mOutputCtx(NULL), mFrame(NULL)
+                     std::unique_ptr<char[]> bits, int fps)
+: mWidth(width), mHeight(height), mStride(stride), mBuffer(std::move(bits)), mFrameRate(fps),
+  mError(nullptr), mOutputCtx(nullptr), mFrame(nullptr), mPacket(nullptr)
 {
+#ifdef DEBUG
+    av_log_set_callback(log_callback_debug);
+#endif
+
     avcodec_register_all();
     av_register_all();
 
@@ -74,8 +81,8 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
     
-    AVCodec *codec = avcodec_find_encoder(CODEC_ID_QTRLE);
-    if (codec == NULL) {
+    AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_QTRLE);
+    if (!codec) {
         mError = "codec not found";
         return;
     }
@@ -85,11 +92,15 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         mError = "out of memory";
         return;
     }
-    
-    AVCodecContext *codecCtx = stream->codec;
 
-    avcodec_get_context_defaults3(codecCtx, codec);
-    
+    AVCodecContext* codecCtx = stream->codec;
+
+    mPacket = av_packet_alloc();
+    if (!mPacket) {
+        mError = "Out of memory";
+        return;
+    }
+
     /* put sample parameters */
     codecCtx->bit_rate = height * stride * fps * 8;
     /* resolution must be a multiple of two */
@@ -104,13 +115,16 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     
     switch (fmt) {
         case aggCanvas::Gray8_Blend:
-            codecCtx->pix_fmt = PIX_FMT_GRAY8;
+            codecCtx->pix_fmt = AV_PIX_FMT_GRAY8;
+            mLineSize = mWidth;
             break;
         case aggCanvas::FF24_Blend:
-            codecCtx->pix_fmt = PIX_FMT_RGB24;
+            codecCtx->pix_fmt = AV_PIX_FMT_RGB24;
+            mLineSize = mWidth * 3;
             break;
         case aggCanvas::FF_Blend:
-            codecCtx->pix_fmt = PIX_FMT_ARGB;
+            codecCtx->pix_fmt = AV_PIX_FMT_ARGB;
+            mLineSize = mWidth * 4;
             break;
         default:
             mError = "unknown pixel format";
@@ -121,25 +135,28 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         mError = "could not open codec";
         return;
     }
-    
-    mFrame = avcodec_alloc_frame();
+
+    mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         mError = "out of memory";
         return;
     }
-    mFrame->data[0] = (uint8_t*)bits;
-    mFrame->data[1] = codecCtx->pix_fmt == PIX_FMT_GRAY8 ? (uint8_t*)dummyPalette : NULL;
-    mFrame->data[2] = mFrame->data[3] = NULL;
-    mFrame->linesize[0] = stride;
-    mFrame->linesize[1] = codecCtx->pix_fmt == PIX_FMT_GRAY8 ? 1024 : 0;
-    mFrame->linesize[2] = mFrame->linesize[3] = 0;
+    mFrame->format = codecCtx->pix_fmt;
+    mFrame->width = width;
+    mFrame->height = height;
+
+    if (av_frame_get_buffer(mFrame, 32) < 0) {
+        mError = "Out of memory";
+        return;
+    }
     
     if (avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE) < 0) {
         mError = "failed to write video file header";
         return;
     }
     
-    if (avformat_write_header(mOutputCtx, NULL) < 0) {
+    res = avformat_write_header(mOutputCtx, NULL);
+    if (res < 0) {
         avio_close(mOutputCtx->pb);
         mError = "failed to write video file header";
         return;
@@ -149,29 +166,8 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
 ffCanvas::Impl::~Impl()
 {
     if (!mError) {
-        AVStream* stream = mOutputCtx->streams[0];
-        AVPacket pkt;
-        
-        av_init_packet(&pkt);
-        pkt.data = NULL;    // packet data will be allocated by the encoder
-        pkt.size = 0;
-        int ret = 0;
-        for (int got_output = 1; got_output; ) {
-            ret = avcodec_encode_video2(stream->codec, &pkt, NULL, &got_output);
-            if (ret < 0)
-                break;
-            if (got_output) {
-                pkt.stream_index = stream->index;
-                
-                if (stream->codec->coded_frame->key_frame)
-                    pkt.flags |= AV_PKT_FLAG_KEY;
-                ret = av_write_frame(mOutputCtx, &pkt);
-                if (ret < 0)
-                    av_free_packet(&pkt);
-                //av_free_packet(&pkt);
-            }
-        }
-        ret = av_write_trailer(mOutputCtx);
+        addFrame(true);         // flush out any packets
+        int ret = av_write_trailer(mOutputCtx);
         if (ret >= 0)
             ret = avio_close(mOutputCtx->pb);
         if (ret < 0)
@@ -185,38 +181,57 @@ ffCanvas::Impl::~Impl()
     if (mFrame) {
         av_free(mFrame); mFrame = NULL;
     }
+
+    av_packet_free(&mPacket);   // OK if NULL, sets to NULL
 }
 
 void
-ffCanvas::Impl::addFrame()
+ffCanvas::Impl::addFrame(bool end)
 {
+    AVFrame* frame = end ? nullptr : mFrame;
     AVStream* stream = mOutputCtx->streams[0];
-    AVPacket pkt;
-    int got_output;
-    
-    av_init_packet(&pkt);
-    pkt.data = NULL;    // packet data will be allocated by the encoder
-    pkt.size = 0;
-    
-    int ret = avcodec_encode_video2(stream->codec, &pkt, mFrame, &got_output);
-    
-    if (ret < 0) {
-        mError = "video encoding failed";
-        return;
-    }
-    
-    if (got_output) {
-        pkt.stream_index = stream->index;
-        
-        if (stream->codec->coded_frame->key_frame)
-            pkt.flags |= AV_PKT_FLAG_KEY;
-        if (av_write_frame(mOutputCtx, &pkt) < 0) {
-            mError = "video frame write error";
-            av_free_packet(&pkt);
+    AVCodecContext* codecCtx = stream->codec;
+    int ret;
+    bool tryAgain = false;
+
+    if (!end) {
+        if (av_frame_make_writable(frame)) {
+            mError = "Error encoding frame";
             return;
         }
-        //av_free_packet(&pkt);
+
+        const uint8_t* src = (uint8_t*)(mBuffer.get());
+        uint8_t* dest = frame->data[0];
+        for (int h = 0; h < mHeight; ++h, src += mStride, dest += frame->linesize[0])
+            memcpy(dest, src, mLineSize);
+        frame->pts = av_rescale_q(codecCtx->frame_number, codecCtx->time_base, stream->time_base);
     }
+
+    do {
+        /* send the frame to the encoder */
+        ret = avcodec_send_frame(codecCtx, frame);
+        tryAgain = false;
+        if (ret == AVERROR(EAGAIN)) {
+            tryAgain = true;
+        } else if (ret < 0) {
+            mError = "Error sending a frame for encoding";
+            return;
+        }
+
+        for (;;) {
+            ret = avcodec_receive_packet(codecCtx, mPacket);
+            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+                break;
+            } else if (ret < 0) {
+                mError = "Error during encoding";
+                return;
+            }
+
+            mPacket->stream_index = stream->index;
+            av_write_frame(mOutputCtx, mPacket);
+            av_packet_unref(mPacket);
+        }
+    } while (tryAgain);
 }
 
 static aggCanvas::PixelFormat
@@ -235,17 +250,20 @@ mapPixFmt(aggCanvas::PixelFormat in)
 }
 
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
-: aggCanvas(mapPixFmt(fmt)), mErrorMsg(NULL)
+: aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
-    width &= ~3;
-    height &= ~3;
+    if (width & 7 || height & 7) {
+        mErrorMsg = "Dimensions must be multiples of 8 pixels";
+        mError = true;
+        return;
+    }
     
     int stride = width * aggCanvas::BytesPerPixel.at(mapPixFmt(fmt));
     
-    char* bits = new char[stride * height];
-    aggCanvas::attach((void*)bits, width, height, stride);
+    std::unique_ptr<char[]> bits = std::make_unique<char[]>(stride * height);
+    aggCanvas::attach((void*)bits.get(), width, height, stride);
     
-    impl.reset(new Impl(name, mapPixFmt(fmt), width, height, stride, bits, fps));
+    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, std::move(bits), fps);
     if (impl->mError) {
         mErrorMsg = impl->mError;
         impl.reset();
@@ -261,7 +279,7 @@ ffCanvas::end()
     aggCanvas::end();
 
     if (impl) {
-        impl->addFrame();
+        impl->addFrame(false);
         if (impl->mError) {
             mErrorMsg = impl->mError;
             mError = true;
