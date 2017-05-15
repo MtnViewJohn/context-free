@@ -67,3 +67,8 @@ ffCanvas::end()
     aggCanvas::end();
 }
 
+bool
+ffCanvas::Available()
+{
+    return false;
+}
