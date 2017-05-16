@@ -48,7 +48,7 @@ namespace ContextFreeNet {
 			//
 			//TODO: Add the constructor code here
 			//
-            this->Activated += gcnew System::EventHandler(this, &AnimateDialog::setup_dialog);
+            this->Load += gcnew System::EventHandler(this, &AnimateDialog::setup_dialog);
 		}
     private: System::Windows::Forms::TextBox^  widthBox;
     public: 
@@ -68,6 +68,9 @@ namespace ContextFreeNet {
     private:
 
     private: System::Windows::Forms::Label^  frameLabel;
+    private: System::Windows::Forms::Label^  codecLabel;
+    private: System::Windows::Forms::ComboBox^  codec;
+
 
              RenderParameters* renderParameters;
 
@@ -146,6 +149,8 @@ namespace ContextFreeNet {
             this->label16 = (gcnew System::Windows::Forms::Label());
             this->frameNumber = (gcnew System::Windows::Forms::TextBox());
             this->frameLabel = (gcnew System::Windows::Forms::Label());
+            this->codecLabel = (gcnew System::Windows::Forms::Label());
+            this->codec = (gcnew System::Windows::Forms::ComboBox());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->borderTrackBar))->BeginInit();
             this->SuspendLayout();
             // 
@@ -434,6 +439,26 @@ namespace ContextFreeNet {
             this->frameLabel->TabIndex = 27;
             this->frameLabel->Text = L"Frame";
             // 
+            // codecLabel
+            // 
+            this->codecLabel->AutoSize = true;
+            this->codecLabel->Location = System::Drawing::Point(375, 456);
+            this->codecLabel->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->codecLabel->Name = L"codecLabel";
+            this->codecLabel->Size = System::Drawing::Size(74, 25);
+            this->codecLabel->TabIndex = 28;
+            this->codecLabel->Text = L"Codec";
+            // 
+            // codec
+            // 
+            this->codec->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+            this->codec->FormattingEnabled = true;
+            this->codec->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"H.264", L"ProRes" });
+            this->codec->Location = System::Drawing::Point(342, 485);
+            this->codec->Name = L"codec";
+            this->codec->Size = System::Drawing::Size(121, 33);
+            this->codec->TabIndex = 29;
+            // 
             // AnimateDialog
             // 
             this->AcceptButton = this->OKbutton;
@@ -441,6 +466,8 @@ namespace ContextFreeNet {
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->CancelButton = this->cancelButton;
             this->ClientSize = System::Drawing::Size(516, 687);
+            this->Controls->Add(this->codec);
+            this->Controls->Add(this->codecLabel);
             this->Controls->Add(this->frameNumber);
             this->Controls->Add(this->frameLabel);
             this->Controls->Add(this->label13);
@@ -498,9 +525,16 @@ private:
                 renderParameters->frame = 1;
             frameNumber->Text = renderParameters->frame.ToString();
             this->Text = L"Animate a Frame";
+            frameNumber->Visible = true;
+            frameLabel->Visible = true;
+            codecLabel->Visible = false;
+            codec->Visible = false;
         } else {
+            codec->SelectedIndex = renderParameters->codec;
             frameNumber->Visible = false;
             frameLabel->Visible = false;
+            codecLabel->Visible = true;
+            codec->Visible = true;
         }
     }
 private: 
@@ -524,6 +558,8 @@ private:
                     System::Media::SystemSounds::Asterisk->Play();
                     return;
                 }
+            } else {
+                renderParameters->codec = codec->SelectedIndex;
             }
             renderParameters->saveToPrefs();
         } catch (System::SystemException^) {

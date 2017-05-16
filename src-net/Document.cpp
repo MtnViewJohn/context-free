@@ -1085,7 +1085,7 @@ void Document::DoRender()
 
         mAnimationCanvas = new ffCanvas(str.c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
             renderParams->animateWidth, renderParams->animateHeight,
-            renderParams->frameRate);
+            renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec);
 
         if (mAnimationCanvas->mError) {
             setMessageText(gcnew String(mAnimationCanvas->mErrorMsg));
