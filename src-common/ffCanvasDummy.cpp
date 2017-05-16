@@ -51,7 +51,7 @@ public:
 };
 
 
-ffCanvas::ffCanvas(const char*, PixelFormat fmt, int width, int height, int)
+ffCanvas::ffCanvas(const char*, PixelFormat fmt, int width, int height, int, QTcodec)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg("Quicktime support not compiled in")
 {
     width &= ~3;

@@ -1,7 +1,7 @@
 // ffCanvas.h
 // this file is part of Context Free
 // ---------------------
-// Copyright (C) 2011 John Horigan - john@glyphic.com
+// Copyright (C) 2011-2017 John Horigan - john@glyphic.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,7 +30,8 @@
 
 class ffCanvas : public aggCanvas {
 public:
-    ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps);
+    enum QTcodec { H264 = 0, ProRes = 1};
+    ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps, QTcodec codec);
     ~ffCanvas() override;
     ffCanvas& operator=(const ffCanvas& c) = delete;
     

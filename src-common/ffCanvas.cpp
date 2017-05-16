@@ -30,6 +30,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 }
 
 #ifdef _WIN32
@@ -44,7 +45,7 @@ void my_avcodec_register_all(void);
 void my_av_register_all(void);
 int my_avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat,
     const char *format_name, const char *filename);
-AVCodec *my_avcodec_find_encoder(enum AVCodecID id);
+AVCodec *my_avcodec_find_encoder_by_name(const char*);
 AVStream *my_avformat_new_stream(AVFormatContext *s, const AVCodec *c);
 AVPacket *my_av_packet_alloc(void);
 int my_avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
@@ -64,9 +65,18 @@ int my_avcodec_send_frame(AVCodecContext *avctx, const AVFrame *frame);
 int my_avcodec_receive_packet(AVCodecContext *avctx, AVPacket *avpkt);
 int my_av_write_frame(AVFormatContext *s, AVPacket *pkt);
 void my_av_packet_unref(AVPacket *pkt);
+struct SwsContext *my_sws_getContext(int srcW, int srcH, enum AVPixelFormat srcFormat,
+    int dstW, int dstH, enum AVPixelFormat dstFormat,
+    int flags, SwsFilter *srcFilter,
+    SwsFilter *dstFilter, const double *param);
+void my_sws_freeContext(struct SwsContext *swsContext);
+int my_sws_scale(struct SwsContext *c, const uint8_t *const srcSlice[],
+    const int srcStride[], int srcSliceY, int srcSliceH,
+    uint8_t *const dst[], const int dstStride[]);
+int my_av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
 #else
 void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl)
-{}
+{ av_log_default_callback(ptr, level, fmt, vl); }
 bool ffCanvas::Available()
 {
     return true;
@@ -75,7 +85,7 @@ bool ffCanvas::Available()
 #define my_avcodec_register_all avcodec_register_all
 #define my_av_register_all av_register_all
 #define my_avformat_alloc_output_context2 avformat_alloc_output_context2
-#define my_avcodec_find_encoder avcodec_find_encoder
+#define my_avcodec_find_encoder_by_name avcodec_find_encoder_by_name
 #define my_avformat_new_stream avformat_new_stream
 #define my_av_packet_alloc av_packet_alloc
 #define my_avcodec_open2 avcodec_open2
@@ -93,13 +103,17 @@ bool ffCanvas::Available()
 #define my_avcodec_send_frame avcodec_send_frame
 #define my_av_write_frame av_write_frame
 #define my_av_packet_unref av_packet_unref
+#define my_sws_getContext sws_getContext
+#define my_sws_freeContext sws_freeContext
+#define my_sws_scale sws_scale
+#define my_av_dict_set av_dict_set
 #endif
 
 class ffCanvas::Impl
 {
 public:
     Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-        std::unique_ptr<char[]> bits, int fps);
+        std::unique_ptr<char[]> bits, int fps, QTcodec codec);
     ~Impl();
     
     void addFrame(bool end);
@@ -115,6 +129,7 @@ public:
     AVFormatContext *mOutputCtx;
     AVFrame         *mFrame;
     AVPacket		*mPacket;
+    SwsContext      *mSwsCtx;
     
     static const uint32_t
                     dummyPalette[256];
@@ -125,9 +140,9 @@ public:
 const uint32_t ffCanvas::Impl::dummyPalette[256] = { 0 };
 
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-                     std::unique_ptr<char[]> bits, int fps)
+                     std::unique_ptr<char[]> bits, int fps, QTcodec _codec)
 : mWidth(width), mHeight(height), mStride(stride), mBuffer(std::move(bits)), mFrameRate(fps),
-  mError(nullptr), mOutputCtx(nullptr), mFrame(nullptr), mPacket(nullptr)
+  mError(nullptr), mOutputCtx(nullptr), mFrame(nullptr), mPacket(nullptr), mSwsCtx(nullptr)
 {
 #ifdef DEBUG
     my_av_log_set_callback(log_callback_debug);
@@ -142,14 +157,14 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
     
-    AVCodec *codec = my_avcodec_find_encoder(AV_CODEC_ID_QTRLE);
+    AVCodec *codec = my_avcodec_find_encoder_by_name(_codec ? "prores_ks" : "libx264");
     if (!codec) {
         mError = "codec not found";
         return;
     }
     
     AVStream* stream = my_avformat_new_stream(mOutputCtx, codec);
-    if (stream == NULL) {
+    if (stream == nullptr) {
         mError = "out of memory";
         return;
     }
@@ -164,8 +179,8 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
 
     /* put sample parameters */
     codecCtx->bit_rate = height * stride * fps * 8;
-    /* resolution must be a multiple of two */
-    assert(((width & 3) | (height & 3)) == 0);
+    /* resolution must be a multiple of 8 */
+    assert(((width & 7) | (height & 7)) == 0);
     codecCtx->width = width;
     codecCtx->height = height;
     /* frames per second */
@@ -173,32 +188,55 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     codecCtx->time_base.den = fps;
     codecCtx->gop_size = 10; /* emit one intra frame every ten frames */
     codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    codecCtx->profile = _codec ? 2 : FF_PROFILE_H264_MAIN;  // ProRes422 main profile is 2
     
+    AVPixelFormat srcFormat;
+    AVPixelFormat dstFormat = _codec ? AV_PIX_FMT_YUV422P10LE : AV_PIX_FMT_YUV420P;
+
     switch (fmt) {
         case aggCanvas::Gray8_Blend:
-            codecCtx->pix_fmt = AV_PIX_FMT_GRAY8;
+            srcFormat = AV_PIX_FMT_GRAY8;
             mLineSize = mWidth;
             break;
         case aggCanvas::FF24_Blend:
-            codecCtx->pix_fmt = AV_PIX_FMT_RGB24;
+            srcFormat = AV_PIX_FMT_RGB24;
             mLineSize = mWidth * 3;
             break;
         case aggCanvas::FF_Blend:
-            codecCtx->pix_fmt = AV_PIX_FMT_ARGB;
+            srcFormat = AV_PIX_FMT_ARGB;
             mLineSize = mWidth * 4;
+            if (_codec) {   // switch from ProRes422 to ProRes4444
+                dstFormat = AV_PIX_FMT_YUVA444P10LE;
+                codecCtx->profile = 4;
+            }
             break;
         default:
             mError = "unknown pixel format";
             return;
     }
+
+    codecCtx->pix_fmt = dstFormat;
+
+    AVDictionary* opt = nullptr;
+    my_av_dict_set(&opt, "preset", "slow", 0);
+    my_av_dict_set(&opt, "crf", "20.0", 0);
+    my_av_dict_set(&opt, "maxrate", "400k", 0);
     
-    if (my_avcodec_open2(codecCtx, codec, NULL) < 0) {
+    if (my_avcodec_open2(codecCtx, codec, &opt) < 0) {
         mError = "could not open codec";
         return;
     }
 
+    mSwsCtx = my_sws_getContext(mWidth, mHeight, srcFormat, 
+                                mWidth, mHeight, dstFormat, 
+                                0, nullptr, nullptr, nullptr);
+    if (mSwsCtx == nullptr) {
+        mError = "pixel conversion error";
+        return;
+    }
+
     mFrame = my_av_frame_alloc();
-    if (mFrame == NULL) {
+    if (mFrame == nullptr) {
         mError = "out of memory";
         return;
     }
@@ -236,11 +274,15 @@ ffCanvas::Impl::~Impl()
     }
     
     if (mOutputCtx) {
-        my_avformat_free_context(mOutputCtx); mOutputCtx = NULL;
+        my_avformat_free_context(mOutputCtx); mOutputCtx = nullptr;
     }
     
     if (mFrame) {
-        my_av_free(mFrame); mFrame = NULL;
+        my_av_free(mFrame); mFrame = nullptr;
+    }
+
+    if (mSwsCtx) {
+        my_sws_freeContext(mSwsCtx); mSwsCtx = nullptr;
     }
 
     my_av_packet_free(&mPacket);   // OK if NULL, sets to NULL
@@ -262,9 +304,8 @@ ffCanvas::Impl::addFrame(bool end)
         }
 
         const uint8_t* src = (uint8_t*)(mBuffer.get());
-        uint8_t* dest = frame->data[0];
-        for (int h = 0; h < mHeight; ++h, src += mStride, dest += frame->linesize[0])
-            memcpy(dest, src, mLineSize);
+        if (my_sws_scale(mSwsCtx, &src, &mLineSize, 0, mHeight, frame->data, frame->linesize) < mHeight)
+            mError = "Error recoding frame";
         frame->pts = my_av_rescale_q(codecCtx->frame_number, codecCtx->time_base, stream->time_base);
     }
 
@@ -310,7 +351,7 @@ mapPixFmt(aggCanvas::PixelFormat in)
     }
 }
 
-ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps)
+ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps, QTcodec codec)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
     if (width & 7 || height & 7) {
@@ -324,7 +365,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int
     std::unique_ptr<char[]> bits = std::make_unique<char[]>(stride * height);
     aggCanvas::attach((void*)bits.get(), width, height, stride);
     
-    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, std::move(bits), fps);
+    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, std::move(bits), fps, codec);
     if (impl->mError) {
         mErrorMsg = impl->mError;
         impl.reset();
