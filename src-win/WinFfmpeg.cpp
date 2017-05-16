@@ -28,6 +28,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 }
 
 
@@ -35,6 +36,7 @@ static HMODULE avcodecMod = NULL;
 static HMODULE avformatMod = NULL;
 static HMODULE avutilMod = NULL;
 static HMODULE swresampleMod = NULL;
+static HMODULE swscaleMod = NULL;
 
 void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl)
 {
@@ -74,9 +76,10 @@ bool av_load_dlls(void)
         avformatMod = LoadLibraryW(L"avformat-57.dll");
         avutilMod = LoadLibraryW(L"avutil-55.dll");
         swresampleMod = LoadLibraryW(L"swresample-2.dll");
+        swscaleMod = LoadLibraryW(L"swscale-4.dll");
     }
 
-    return avcodecMod && avformatMod && avutilMod && swresampleMod;
+    return avcodecMod && avformatMod && avutilMod && swresampleMod && swscaleMod;
 }
 
 using av_log_set_callback_ptr = void (__cdecl *)(void(*callback)(void*, int, const char*, va_list));
@@ -84,7 +87,7 @@ using avcodec_register_all_ptr = void (__cdecl *)(void);
 using av_register_all_ptr = void (__cdecl *)(void);
 using avformat_alloc_output_context2_ptr = int (__cdecl *)(AVFormatContext **ctx, AVOutputFormat *oformat,
     const char *format_name, const char *filename);
-using avcodec_find_encoder_ptr = AVCodec* (__cdecl *)(enum AVCodecID id);
+using avcodec_find_encoder_by_name_ptr = AVCodec* (__cdecl *)(const char* name);
 using avformat_new_stream_ptr = AVStream* (__cdecl *)(AVFormatContext *s, const AVCodec *c);
 using av_packet_alloc_ptr = AVPacket* (__cdecl *)(void);
 using avcodec_open2_ptr = int (__cdecl *)(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
@@ -103,6 +106,15 @@ using avcodec_send_frame_ptr = int (__cdecl *)(AVCodecContext *avctx, const AVFr
 using avcodec_receive_packet_ptr = int (__cdecl *)(AVCodecContext *avctx, AVPacket *avpkt);
 using av_write_frame_ptr = int (__cdecl *)(AVFormatContext *s, AVPacket *pkt);
 using av_packet_unref_ptr = void (__cdecl *)(AVPacket *pkt);
+using sws_getContext_ptr = struct SwsContext* (__cdecl *)(int srcW, int srcH, enum AVPixelFormat srcFormat,
+    int dstW, int dstH, enum AVPixelFormat dstFormat,
+    int flags, SwsFilter *srcFilter,
+    SwsFilter *dstFilter, const double *param);
+using sws_freeContext_ptr = void (__cdecl *)(struct SwsContext *swsContext);
+using sws_scale_ptr = int (__cdecl *)(struct SwsContext *c, const uint8_t *const srcSlice[],
+    const int srcStride[], int srcSliceY, int srcSliceH,
+    uint8_t *const dst[], const int dstStride[]);
+using av_dict_set_ptr = int (__cdecl *)(AVDictionary **pm, const char *key, const char *value, int flags);
 
 
 void my_av_log_set_callback(void(*callback)(void*, int, const char*, va_list))
@@ -147,14 +159,14 @@ int my_avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *ofo
     return avformat_alloc_output_context2 ? (avformat_alloc_output_context2)(ctx, oformat, format_name, filename) : -EACCES;
 }
 
-AVCodec* my_avcodec_find_encoder(enum AVCodecID id)
+AVCodec* my_avcodec_find_encoder_by_name(const char* name)
 {
-    static avcodec_find_encoder_ptr avcodec_find_encoder = nullptr;
+    static avcodec_find_encoder_by_name_ptr avcodec_find_encoder_by_name = nullptr;
 
-    if (avcodecMod && !avcodec_find_encoder)
-        avcodec_find_encoder = (avcodec_find_encoder_ptr)GetProcAddress(avcodecMod, "avcodec_find_encoder");
+    if (avcodecMod && !avcodec_find_encoder_by_name)
+        avcodec_find_encoder_by_name = (avcodec_find_encoder_by_name_ptr)GetProcAddress(avcodecMod, "avcodec_find_encoder_by_name");
 
-    return avcodec_find_encoder ? (avcodec_find_encoder)(id) : nullptr;
+    return avcodec_find_encoder_by_name ? (avcodec_find_encoder_by_name)(name) : nullptr;
 }
 
 AVStream *my_avformat_new_stream(AVFormatContext *s, const AVCodec *c)
@@ -341,3 +353,51 @@ void my_av_packet_unref(AVPacket *pkt)
         (av_packet_unref)(pkt);
 }
 
+struct SwsContext* my_sws_getContext(int srcW, int srcH, enum AVPixelFormat srcFormat,
+    int dstW, int dstH, enum AVPixelFormat dstFormat,
+    int flags, SwsFilter *srcFilter,
+    SwsFilter *dstFilter, const double *param)
+{
+    static sws_getContext_ptr sws_getContext = nullptr;
+
+    if (swscaleMod && !sws_getContext)
+        sws_getContext = (sws_getContext_ptr)GetProcAddress(swscaleMod, "sws_getContext");
+
+    return sws_getContext ? (sws_getContext)(srcW, srcH, srcFormat,
+        dstW, dstH, dstFormat, flags, srcFilter, dstFilter, param)
+                          : nullptr;
+}
+
+void my_sws_freeContext(struct SwsContext *swsContext)
+{
+    static sws_freeContext_ptr sws_freeContext = nullptr;
+
+    if (swscaleMod && !sws_freeContext)
+        sws_freeContext = (sws_freeContext_ptr)GetProcAddress(swscaleMod, "sws_freeContext");
+
+    if (sws_freeContext)
+        (sws_freeContext)(swsContext);
+}
+
+int my_sws_scale(struct SwsContext *c, const uint8_t *const srcSlice[],
+    const int srcStride[], int srcSliceY, int srcSliceH,
+    uint8_t *const dst[], const int dstStride[])
+{
+    static sws_scale_ptr sws_scale = nullptr;
+
+    if (swscaleMod && !sws_scale)
+        sws_scale = (sws_scale_ptr)GetProcAddress(swscaleMod, "sws_scale");
+
+    return sws_scale ? (sws_scale)(c, srcSlice, srcStride, srcSliceY, srcSliceH, dst, dstStride)
+                     : 0;
+}
+
+int my_av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags)
+{
+    static av_dict_set_ptr av_dict_set = nullptr;
+
+    if (avutilMod && !av_dict_set)
+        av_dict_set = (av_dict_set_ptr)GetProcAddress(avutilMod, "av_dict_set");
+
+    return av_dict_set ? (av_dict_set)(pm, key, value, flags) : -EACCES;
+}
