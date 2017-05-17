@@ -1240,6 +1240,7 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
     </ClCompile>
+    <ClCompile Include="TempFileDeleter.cpp" />
     <ClCompile Include="TrackPoint.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -1471,6 +1472,7 @@
     <ClInclude Include="..\src-common\SVGCanvas.h" />
     <ClInclude Include="..\src-common\tempfile.h" />
     <ClInclude Include="..\src-common\tiledCanvas.h" />
+    <ClInclude Include="TempFileDeleter.h" />
     <ClInclude Include="TrackPoint.h" />
     <ClInclude Include="..\src-common\upload.h" />
     <ClInclude Include="UploadDesign.h">

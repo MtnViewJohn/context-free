@@ -26,6 +26,7 @@
 #include "stdafx.h"
 #include "Form1.h"
 #include "SingletonController.h"
+#include "TempFileDeleter.h"
 
 using namespace ContextFreeNet;
 using namespace System;
@@ -47,6 +48,8 @@ int main(array<System::String ^> ^args)
         SingletonController::Send(args);
     }
     SingletonController::Cleanup();
+    if (TempFileDeleter::TempFiles->Count > 0)
+        System::Threading::Thread::Sleep(1000);     // Give TempFileDeleter extra time to clean up
     return 0;
 }
 

@@ -431,12 +431,13 @@ void Form1::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
                 userAction = userAction || doc->canceledByUser;
         }
         if (userAction)
-            return;
+            return;     // cancel form close
         for each (Form^ kid in MdiChildren) {
             Document^ doc = dynamic_cast<Document^>(kid);
             if (doc != nullptr)
                 doc->postAction = Document::PostRenderAction::Exit;
         }
+        this->Close();  // retry form close
     }
 }
 
@@ -546,6 +547,7 @@ System::Void Form1::Font_Click(System::Object^  sender, System::EventArgs^  e)
 void Form1::WndProc(Message% m)
 {
     static const Int32 WM_NCACTIVATE = 0x86;
+    Form::WndProc(m);
     // Listen for operating system messages.
     if (m.Msg == WM_NCACTIVATE && overrideMenuColor) {
         if (m.WParam.ToInt32()) {
@@ -559,5 +561,4 @@ void Form1::WndProc(Message% m)
         }
         dockPanel->AutoHideStripControl->Invalidate();
     }
-    Form::WndProc(m);
 }

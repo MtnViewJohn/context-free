@@ -1421,6 +1421,7 @@ protected:
     SVGCanvas* mSVGCanvas;
     ffCanvas* mAnimationCanvas;
     TempFile* mMovieFile;
+    System::Diagnostics::Process^ mMoviePlayer;
     bool mTiled;
     array<double>^ mOutputMultiplier;
     System::Drawing::Bitmap^ displayImage;

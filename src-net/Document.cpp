@@ -39,6 +39,7 @@
 #include "UploadDesign.h"
 #include "upload.h"
 #include "tempfile.h"
+#include "TempFileDeleter.h"
 
 using namespace ContextFreeNet;
 using namespace System;
@@ -50,7 +51,6 @@ using namespace Microsoft::Win32;
 using namespace System::Runtime::InteropServices;
 using namespace System::Collections;
 using namespace System::Windows::Forms;
-
 
 [DllImport("user32", CharSet = CharSet::Auto, SetLastError = false)]
 extern "C" int SendMessage(int hWnd, unsigned int Msg, int wParam, int* lParam);
@@ -118,6 +118,8 @@ void Document::InitializeStuff()
 	mRenderButtonAction = RenderButtonAction::Render;
 
     menuRAnimate->Enabled = ffCanvas::Available();
+
+    mMoviePlayer = nullptr;
 }
 
 void Document::DestroyStuff()
@@ -128,7 +130,11 @@ void Document::DestroyStuff()
     delete mSVGCanvas;
     delete mAnimationCanvas;
     delete renderParams;
-    delete mMovieFile;
+    if (mMovieFile || mMoviePlayer) {
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+    }
+    mMoviePlayer = nullptr;
+    mMovieFile = nullptr;
 }
 
 System::Void Document::moreInitialization(System::Object^ sender, System::EventArgs^ e)
@@ -243,6 +249,12 @@ System::Void Document::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
         e->Cancel = true;
         return;
     }
+
+    if (mMovieFile || mMoviePlayer) {
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+    }
+    mMoviePlayer = nullptr;
+    mMovieFile = nullptr;
 
     // If the thread is stopped and the cfdg file is up-to-date then close
     if (!cfdgText->Modified) return;
@@ -484,6 +496,12 @@ System::Void Document::menuRStop_Click(System::Object^ sender, System::EventArgs
 
 System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::EventArgs^ e)
 {
+    if (mMoviePlayer) {
+        // Should close and release temp file before save dialog shows
+        mMoviePlayer->CloseMainWindow();
+        mMoviePlayer = nullptr;
+    }
+
     if (!mCanvas && !mMovieFile) {
         setMessageText("There is nothing to save.");
         System::Console::Beep();
@@ -1011,7 +1029,12 @@ void Document::DoRender()
     Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; 
 	mEngine->reset();
     setMessageText(nullptr);
-    delete mMovieFile; mMovieFile = nullptr;
+
+    if (mMovieFile || mMoviePlayer) {
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+    }
+    mMoviePlayer = nullptr;
+    mMovieFile = nullptr;
 
     if (!mSystem)
         mSystem = new WinSystem(this->Handle.ToPointer());
@@ -1210,6 +1233,24 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
         case PostRenderAction::SaveOutput:
             menuROutput->PerformClick();
             break;
+    }
+
+    if (nextAction == PostRenderAction::DoNothing &&
+        renderParams->action == RenderParameters::RenderActions::Animate &&
+        !renderParams->animateFrame)
+    {
+        mMoviePlayer = gcnew System::Diagnostics::Process;
+
+        try {
+            mMoviePlayer->StartInfo->UseShellExecute = false;
+            mMoviePlayer->StartInfo->FileName = "ffplay.exe";
+            mMoviePlayer->StartInfo->CreateNoWindow = true;
+            mMoviePlayer->StartInfo->Arguments = gcnew String(mMovieFile->name().c_str());
+            mMoviePlayer->Start();
+            mMoviePlayer->EnableRaisingEvents = true;
+        } catch (Exception^ e) {
+            setMessageText(e->Message);
+        }
     }
 }
 
