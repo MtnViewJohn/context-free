@@ -530,6 +530,7 @@ private:
         heightBox->Text = renderParameters->animateHeight.ToString();
         borderTrackBar->Value = (int)((renderParameters->borderSize + 1.0) * 33.0);
         minimumSizeBox->Text = renderParameters->minimumSize.ToString();
+        zoom->Checked = renderParameters->animateZoom;
         lengthBox->Text = renderParameters->length.ToString();
         int i = frameRate->FindStringExact(renderParameters->frameRate.ToString());
         frameRate->SelectedIndex = i < 0 ? 3 : i;
@@ -563,6 +564,7 @@ private:
             renderParameters->minimumSize = System::Single::Parse(minimumSizeBox->Text);
             renderParameters->length = System::Int32::Parse(lengthBox->Text);
             renderParameters->frameRate = System::Int32::Parse(frameRate->Text);
+            renderParameters->animateZoom = zoom->Checked;
             renderParameters->animateFrameCount = renderParameters->length * renderParameters->frameRate;
             if (renderParameters->animateFrame) {
                 renderParameters->frame = System::Int32::Parse(frameNumber->Text);
