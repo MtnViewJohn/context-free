@@ -131,7 +131,7 @@ void Document::DestroyStuff()
     delete mAnimationCanvas;
     delete renderParams;
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
@@ -251,7 +251,7 @@ System::Void Document::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
     }
 
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
@@ -1031,7 +1031,7 @@ void Document::DoRender()
     setMessageText(nullptr);
 
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;

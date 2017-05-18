@@ -28,10 +28,12 @@
 
 using namespace System::Collections::Generic;
 class TempFile;
+#include <memory>
+using tempfile_ptr = std::unique_ptr<TempFile>;
 
 public ref class TempFileDeleter {
 public:
-    TempFileDeleter(TempFile* file, System::Diagnostics::Process^ viewer);
+    TempFileDeleter(tempfile_ptr file, System::Diagnostics::Process^ viewer);
 
     static List<TempFileDeleter^>^ TempFiles = gcnew List<TempFileDeleter^>();
 private:

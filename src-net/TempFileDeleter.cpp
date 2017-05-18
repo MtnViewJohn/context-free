@@ -27,20 +27,19 @@
 #include "TempFileDeleter.h"
 #include "tempfile.h"
 
-TempFileDeleter::TempFileDeleter(TempFile* file, System::Diagnostics::Process^ viewer)
+TempFileDeleter::TempFileDeleter(tempfile_ptr file, System::Diagnostics::Process^ viewer)
     : mTempFile(nullptr), mViewer(viewer)
 {
-    if (file) {
-        if (!viewer || viewer->HasExited || !file->written()) {
-            delete file;
-        } else {
-            mTempFile = gcnew System::String(file->name().c_str());
-            TempFiles->Add(this);
-            viewer->Exited += gcnew System::EventHandler(this, &TempFileDeleter::DeleteIt);
-        }
+    if (viewer && !viewer->HasExited && file && file->written()) {
+        mTempFile = gcnew System::String(file->name().c_str());
+        file->release();    // this object owns the file now
+        TempFiles->Add(this);
+        viewer->Exited += gcnew System::EventHandler(this, &TempFileDeleter::DeleteIt);
     }
     if (viewer && !viewer->HasExited)
         viewer->CloseMainWindow();
+    // tempfile_ptr file goes out of scope and is deleted, temp file is deleted
+    // too unless this object takes over ownership of the file
 }
 
 void
@@ -48,8 +47,9 @@ TempFileDeleter::DeleteIt(Object^ sender, System::EventArgs^ e)
 {
     try {
         System::IO::File::Delete(mTempFile);
+        System::Diagnostics::Debugger::Log(3, "Delete success: ", mTempFile);
     } catch (System::Exception^) {
-
+        System::Diagnostics::Debugger::Log(1, "Delete failed: ", mTempFile);
     }
     mViewer = nullptr;
     TempFiles->Remove(this);
