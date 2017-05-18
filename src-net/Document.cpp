@@ -1237,7 +1237,7 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
 
     if (nextAction == PostRenderAction::DoNothing &&
         renderParams->action == RenderParameters::RenderActions::Animate &&
-        !renderParams->animateFrame)
+        !renderParams->animateFrame && renderParams->preview)
     {
         mMoviePlayer = gcnew System::Diagnostics::Process;
 

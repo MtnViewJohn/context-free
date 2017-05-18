@@ -70,6 +70,7 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::Label^  frameLabel;
     private: System::Windows::Forms::Label^  codecLabel;
     private: System::Windows::Forms::ComboBox^  codec;
+    private: System::Windows::Forms::CheckBox^  showPreview;
 
 
              RenderParameters* renderParameters;
@@ -151,6 +152,7 @@ namespace ContextFreeNet {
             this->frameLabel = (gcnew System::Windows::Forms::Label());
             this->codecLabel = (gcnew System::Windows::Forms::Label());
             this->codec = (gcnew System::Windows::Forms::ComboBox());
+            this->showPreview = (gcnew System::Windows::Forms::CheckBox());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->borderTrackBar))->BeginInit();
             this->SuspendLayout();
             // 
@@ -302,7 +304,7 @@ namespace ContextFreeNet {
             this->OKbutton->Margin = System::Windows::Forms::Padding(6);
             this->OKbutton->Name = L"OKbutton";
             this->OKbutton->Size = System::Drawing::Size(150, 44);
-            this->OKbutton->TabIndex = 23;
+            this->OKbutton->TabIndex = 26;
             this->OKbutton->Text = L"OK";
             this->OKbutton->UseVisualStyleBackColor = true;
             this->OKbutton->Click += gcnew System::EventHandler(this, &AnimateDialog::OKbutton_Click);
@@ -314,7 +316,7 @@ namespace ContextFreeNet {
             this->cancelButton->Margin = System::Windows::Forms::Padding(6);
             this->cancelButton->Name = L"cancelButton";
             this->cancelButton->Size = System::Drawing::Size(150, 44);
-            this->cancelButton->TabIndex = 24;
+            this->cancelButton->TabIndex = 27;
             this->cancelButton->Text = L"Cancel";
             this->cancelButton->UseVisualStyleBackColor = true;
             this->cancelButton->Click += gcnew System::EventHandler(this, &AnimateDialog::cancelButton_Click);
@@ -425,7 +427,7 @@ namespace ContextFreeNet {
             this->frameNumber->MaxLength = 5;
             this->frameNumber->Name = L"frameNumber";
             this->frameNumber->Size = System::Drawing::Size(106, 31);
-            this->frameNumber->TabIndex = 20;
+            this->frameNumber->TabIndex = 24;
             this->frameNumber->Text = L"1";
             this->frameNumber->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
             // 
@@ -457,7 +459,17 @@ namespace ContextFreeNet {
             this->codec->Location = System::Drawing::Point(342, 485);
             this->codec->Name = L"codec";
             this->codec->Size = System::Drawing::Size(121, 33);
-            this->codec->TabIndex = 29;
+            this->codec->TabIndex = 23;
+            // 
+            // showPreview
+            // 
+            this->showPreview->AutoSize = true;
+            this->showPreview->Location = System::Drawing::Point(30, 619);
+            this->showPreview->Name = L"showPreview";
+            this->showPreview->Size = System::Drawing::Size(120, 29);
+            this->showPreview->TabIndex = 25;
+            this->showPreview->Text = L"Preview";
+            this->showPreview->UseVisualStyleBackColor = true;
             // 
             // AnimateDialog
             // 
@@ -466,6 +478,7 @@ namespace ContextFreeNet {
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->CancelButton = this->cancelButton;
             this->ClientSize = System::Drawing::Size(516, 687);
+            this->Controls->Add(this->showPreview);
             this->Controls->Add(this->codec);
             this->Controls->Add(this->codecLabel);
             this->Controls->Add(this->frameNumber);
@@ -527,12 +540,15 @@ private:
             this->Text = L"Animate a Frame";
             frameNumber->Visible = true;
             frameLabel->Visible = true;
+            showPreview->Visible = false;
             codecLabel->Visible = false;
             codec->Visible = false;
         } else {
             codec->SelectedIndex = renderParameters->codec;
+            showPreview->Checked = renderParameters->preview;
             frameNumber->Visible = false;
             frameLabel->Visible = false;
+            showPreview->Visible = true;
             codecLabel->Visible = true;
             codec->Visible = true;
         }
@@ -560,6 +576,7 @@ private:
                 }
             } else {
                 renderParameters->codec = codec->SelectedIndex;
+                renderParameters->preview = showPreview->Checked;
             }
             renderParameters->saveToPrefs();
         } catch (System::SystemException^) {

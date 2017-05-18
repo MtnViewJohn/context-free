@@ -104,6 +104,10 @@ namespace ContextFreeNet {
             void set(int setTo) { SetPrefInt("AnimateCodec", setTo); }
             int get() { return GetPrefInt("AnimateCodec", 0); }
         }
+        property bool AnimatePreview {
+            void set(bool setTo) { SetPrefBool("AnimatePreview", setTo); }
+            bool get() { return GetPrefBool("AnimatePreview", true); }
+        }
         property int JPEGQuality {
             void set(int setTo) { SetPrefInt("JPEGQuality", setTo); }
             int get() { return GetPrefInt("JPEGQuality", 90); }
