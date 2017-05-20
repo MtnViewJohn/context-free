@@ -77,7 +77,6 @@ namespace ContextFreeNet {
 		}
 
     public: OzoneUtil::MRUManager^ mruManager;
-            bool overrideMenuColor;
     public: FindReplaceForm^ findForm;
     public: System::String^ saveDirectory;
     public: static CFPrefs^ prefs;
@@ -146,7 +145,6 @@ namespace ContextFreeNet {
 
 
     protected: 
-    virtual void WndProc(System::Windows::Forms::Message% m) override;
 
 	private:
 		/// <summary>
@@ -162,21 +160,6 @@ namespace ContextFreeNet {
 		void InitializeComponent(void)
 		{
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
-            WeifenLuo::WinFormsUI::Docking::DockPanelSkin^  dockPanelSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelSkin());
-            WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin^  autoHideStripSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::AutoHideStripSkin());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin^  dockPaneStripSkin1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripSkin());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient^  dockPaneStripGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient2 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient3 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient^  dockPaneStripToolWindowGradient1 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPaneStripToolWindowGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient4 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient5 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::DockPanelGradient^  dockPanelGradient3 = (gcnew WeifenLuo::WinFormsUI::Docking::DockPanelGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient6 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
-            WeifenLuo::WinFormsUI::Docking::TabGradient^  tabGradient7 = (gcnew WeifenLuo::WinFormsUI::Docking::TabGradient());
             this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
             this->menuFile = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuFNew = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -207,162 +190,178 @@ namespace ContextFreeNet {
             // menuStrip1
             // 
             this->menuStrip1->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
-            this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->menuFile, this->menuExamples, 
-                this->menuWindow, this->helpToolStripMenuItem});
+            this->menuStrip1->ImageScalingSize = System::Drawing::Size(32, 32);
+            this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+                this->menuFile, this->menuExamples,
+                    this->menuWindow, this->helpToolStripMenuItem
+            });
             this->menuStrip1->Location = System::Drawing::Point(0, 0);
             this->menuStrip1->MdiWindowListItem = this->menuWindow;
             this->menuStrip1->Name = L"menuStrip1";
+            this->menuStrip1->Padding = System::Windows::Forms::Padding(12, 4, 0, 4);
             this->menuStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::Professional;
-            this->menuStrip1->Size = System::Drawing::Size(1100, 24);
+            this->menuStrip1->Size = System::Drawing::Size(2200, 46);
             this->menuStrip1->TabIndex = 1;
             this->menuStrip1->Text = L"menuStrip1";
             // 
             // menuFile
             // 
-            this->menuFile->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->menuFNew, this->menuFOpen, 
-                this->menuFRecent, this->menuFmruSeparator, this->menuFPrefs, this->menuFExit});
+            this->menuFile->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {
+                this->menuFNew, this->menuFOpen,
+                    this->menuFRecent, this->menuFmruSeparator, this->menuFPrefs, this->menuFExit
+            });
             this->menuFile->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFile->Name = L"menuFile";
-            this->menuFile->Size = System::Drawing::Size(37, 20);
+            this->menuFile->Size = System::Drawing::Size(64, 38);
             this->menuFile->Text = L"&File";
             // 
             // menuFNew
             // 
-            this->menuFNew->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuFNew.Image")));
+            this->menuFNew->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuFNew.Image")));
+            this->menuFNew->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuFNew->Name = L"menuFNew";
             this->menuFNew->ShortcutKeyDisplayString = L"Ctrl-N";
             this->menuFNew->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-            this->menuFNew->Size = System::Drawing::Size(173, 22);
+            this->menuFNew->Size = System::Drawing::Size(314, 38);
             this->menuFNew->Text = L"&New";
             this->menuFNew->Click += gcnew System::EventHandler(this, &Form1::menuFNew_Click);
             // 
             // menuFOpen
             // 
-            this->menuFOpen->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuFOpen.Image")));
+            this->menuFOpen->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuFOpen.Image")));
+            this->menuFOpen->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuFOpen->Name = L"menuFOpen";
             this->menuFOpen->ShortcutKeyDisplayString = L"Ctrl-O";
             this->menuFOpen->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-            this->menuFOpen->Size = System::Drawing::Size(173, 22);
+            this->menuFOpen->Size = System::Drawing::Size(314, 38);
             this->menuFOpen->Text = L"&Open";
             this->menuFOpen->Click += gcnew System::EventHandler(this, &Form1::menuFOpen_Click);
             // 
             // menuFRecent
             // 
             this->menuFRecent->Name = L"menuFRecent";
-            this->menuFRecent->Size = System::Drawing::Size(173, 22);
+            this->menuFRecent->Size = System::Drawing::Size(314, 38);
             this->menuFRecent->Text = L"Recent files";
             this->menuFRecent->Visible = false;
             // 
             // menuFmruSeparator
             // 
             this->menuFmruSeparator->Name = L"menuFmruSeparator";
-            this->menuFmruSeparator->Size = System::Drawing::Size(170, 6);
+            this->menuFmruSeparator->Size = System::Drawing::Size(311, 6);
             // 
             // menuFPrefs
             // 
-            this->menuFPrefs->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuFPrefs.Image")));
+            this->menuFPrefs->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuFPrefs.Image")));
+            this->menuFPrefs->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuFPrefs->Name = L"menuFPrefs";
             this->menuFPrefs->ShortcutKeyDisplayString = L"Ctrl-P";
             this->menuFPrefs->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::P));
-            this->menuFPrefs->Size = System::Drawing::Size(173, 22);
+            this->menuFPrefs->Size = System::Drawing::Size(314, 38);
             this->menuFPrefs->Text = L"Preferences";
             this->menuFPrefs->Click += gcnew System::EventHandler(this, &Form1::menuFPrefs_Click);
             // 
             // menuFExit
             // 
             this->menuFExit->Name = L"menuFExit";
-            this->menuFExit->Size = System::Drawing::Size(173, 22);
+            this->menuFExit->Size = System::Drawing::Size(314, 38);
             this->menuFExit->Text = L"E&xit";
             this->menuFExit->Click += gcnew System::EventHandler(this, &Form1::menuFExit_Click);
             // 
             // menuExamples
             // 
             this->menuExamples->Name = L"menuExamples";
-            this->menuExamples->Size = System::Drawing::Size(68, 20);
+            this->menuExamples->Size = System::Drawing::Size(126, 38);
             this->menuExamples->Text = L"E&xamples";
             // 
             // menuWindow
             // 
-            this->menuWindow->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->menuRColor, 
-                this->menuWMsgConsole, this->toolStripSeparator2});
+            this->menuWindow->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+                this->menuRColor,
+                    this->menuWMsgConsole, this->toolStripSeparator2
+            });
             this->menuWindow->Name = L"menuWindow";
-            this->menuWindow->Size = System::Drawing::Size(63, 20);
+            this->menuWindow->Size = System::Drawing::Size(114, 38);
             this->menuWindow->Text = L"&Window";
+            this->menuWindow->DropDownOpened += gcnew System::EventHandler(this, &Form1::Window_DropDown_Opening);
             // 
             // menuRColor
             // 
-            this->menuRColor->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuRColor.Image")));
+            this->menuRColor->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRColor.Image")));
+            this->menuRColor->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRColor->Name = L"menuRColor";
-            this->menuRColor->Size = System::Drawing::Size(164, 22);
+            this->menuRColor->Size = System::Drawing::Size(298, 38);
             this->menuRColor->Text = L"&Color calculator";
             this->menuRColor->Click += gcnew System::EventHandler(this, &Form1::menuRColor_Click);
             // 
             // menuWMsgConsole
             // 
-            this->menuWMsgConsole->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuWMsgConsole.Image")));
+            this->menuWMsgConsole->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuWMsgConsole.Image")));
+            this->menuWMsgConsole->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuWMsgConsole->Name = L"menuWMsgConsole";
-            this->menuWMsgConsole->Size = System::Drawing::Size(164, 22);
+            this->menuWMsgConsole->Size = System::Drawing::Size(298, 38);
             this->menuWMsgConsole->Text = L"&Message console";
             this->menuWMsgConsole->Click += gcnew System::EventHandler(this, &Form1::menuWMsgConsole_Click);
             // 
             // toolStripSeparator2
             // 
             this->toolStripSeparator2->Name = L"toolStripSeparator2";
-            this->toolStripSeparator2->Size = System::Drawing::Size(161, 6);
+            this->toolStripSeparator2->Size = System::Drawing::Size(295, 6);
             // 
             // helpToolStripMenuItem
             // 
-            this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(7) {this->contextFreeSiteToolStripMenuItem, 
-                this->galleryToolStripMenuItem, this->forumsToolStripMenuItem, this->writingCFDGFilesToolStripMenuItem, this->toolStripSeparator1, 
-                this->sendFeedbackToolStripMenuItem, this->aboutContextFreeToolStripMenuItem});
+            this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(7) {
+                this->contextFreeSiteToolStripMenuItem,
+                    this->galleryToolStripMenuItem, this->forumsToolStripMenuItem, this->writingCFDGFilesToolStripMenuItem, this->toolStripSeparator1,
+                    this->sendFeedbackToolStripMenuItem, this->aboutContextFreeToolStripMenuItem
+            });
             this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
-            this->helpToolStripMenuItem->Size = System::Drawing::Size(44, 20);
+            this->helpToolStripMenuItem->Size = System::Drawing::Size(77, 38);
             this->helpToolStripMenuItem->Text = L"&Help";
             // 
             // contextFreeSiteToolStripMenuItem
             // 
             this->contextFreeSiteToolStripMenuItem->Name = L"contextFreeSiteToolStripMenuItem";
-            this->contextFreeSiteToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->contextFreeSiteToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->contextFreeSiteToolStripMenuItem->Tag = L"http://www.contextfreeart.org/index.html";
             this->contextFreeSiteToolStripMenuItem->Text = L"&Context Free Site...";
             // 
             // galleryToolStripMenuItem
             // 
             this->galleryToolStripMenuItem->Name = L"galleryToolStripMenuItem";
-            this->galleryToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->galleryToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->galleryToolStripMenuItem->Tag = L"http://www.contextfreeart.org/gallery/";
             this->galleryToolStripMenuItem->Text = L"&Gallery...";
             // 
             // forumsToolStripMenuItem
             // 
             this->forumsToolStripMenuItem->Name = L"forumsToolStripMenuItem";
-            this->forumsToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->forumsToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->forumsToolStripMenuItem->Tag = L"http://www.contextfreeart.org/phpbb/index.php";
             this->forumsToolStripMenuItem->Text = L"&Forums...";
             // 
             // writingCFDGFilesToolStripMenuItem
             // 
             this->writingCFDGFilesToolStripMenuItem->Name = L"writingCFDGFilesToolStripMenuItem";
-            this->writingCFDGFilesToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->writingCFDGFilesToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->writingCFDGFilesToolStripMenuItem->Tag = L"http://www.contextfreeart.org/mediawiki/index.php/CFDG_HOWTO";
             this->writingCFDGFilesToolStripMenuItem->Text = L"&Writing CFDG files...";
             // 
             // toolStripSeparator1
             // 
             this->toolStripSeparator1->Name = L"toolStripSeparator1";
-            this->toolStripSeparator1->Size = System::Drawing::Size(176, 6);
+            this->toolStripSeparator1->Size = System::Drawing::Size(322, 6);
             // 
             // sendFeedbackToolStripMenuItem
             // 
             this->sendFeedbackToolStripMenuItem->Name = L"sendFeedbackToolStripMenuItem";
-            this->sendFeedbackToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->sendFeedbackToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->sendFeedbackToolStripMenuItem->Tag = L"mailto:info@contextfreeart.org";
             this->sendFeedbackToolStripMenuItem->Text = L"&Send feedback...";
             // 
             // aboutContextFreeToolStripMenuItem
             // 
             this->aboutContextFreeToolStripMenuItem->Name = L"aboutContextFreeToolStripMenuItem";
-            this->aboutContextFreeToolStripMenuItem->Size = System::Drawing::Size(179, 22);
+            this->aboutContextFreeToolStripMenuItem->Size = System::Drawing::Size(325, 38);
             this->aboutContextFreeToolStripMenuItem->Text = L"&About Context Free";
             this->aboutContextFreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::aboutContextFreeToolStripMenuItem_Click);
             // 
@@ -372,75 +371,28 @@ namespace ContextFreeNet {
             // 
             // dockPanel
             // 
-            this->dockPanel->ActiveAutoHideContent = nullptr;
-            this->dockPanel->AllowEndUserNestedDocking = false;
             this->dockPanel->BackColor = System::Drawing::SystemColors::GradientInactiveCaption;
             this->dockPanel->Dock = System::Windows::Forms::DockStyle::Fill;
             this->dockPanel->DockBackColor = System::Drawing::SystemColors::GradientInactiveCaption;
             this->dockPanel->DockBottomPortion = 85;
             this->dockPanel->DockLeftPortion = 100;
             this->dockPanel->DockRightPortion = 365;
-            this->dockPanel->Location = System::Drawing::Point(0, 24);
+            this->dockPanel->Location = System::Drawing::Point(0, 46);
+            this->dockPanel->Margin = System::Windows::Forms::Padding(6);
             this->dockPanel->Name = L"dockPanel";
-            this->dockPanel->Size = System::Drawing::Size(1100, 691);
-            dockPanelGradient1->EndColor = System::Drawing::SystemColors::ControlLight;
-            dockPanelGradient1->StartColor = System::Drawing::SystemColors::ControlLight;
-            autoHideStripSkin1->DockStripGradient = dockPanelGradient1;
-            tabGradient1->EndColor = System::Drawing::SystemColors::Control;
-            tabGradient1->StartColor = System::Drawing::SystemColors::Control;
-            tabGradient1->TextColor = System::Drawing::SystemColors::ControlDarkDark;
-            autoHideStripSkin1->TabGradient = tabGradient1;
-            autoHideStripSkin1->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-            dockPanelSkin1->AutoHideStripSkin = autoHideStripSkin1;
-            tabGradient2->EndColor = System::Drawing::SystemColors::ControlLightLight;
-            tabGradient2->StartColor = System::Drawing::SystemColors::ControlLightLight;
-            tabGradient2->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripGradient1->ActiveTabGradient = tabGradient2;
-            dockPanelGradient2->EndColor = System::Drawing::SystemColors::Control;
-            dockPanelGradient2->StartColor = System::Drawing::SystemColors::Control;
-            dockPaneStripGradient1->DockStripGradient = dockPanelGradient2;
-            tabGradient3->EndColor = System::Drawing::SystemColors::ControlLight;
-            tabGradient3->StartColor = System::Drawing::SystemColors::ControlLight;
-            tabGradient3->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripGradient1->InactiveTabGradient = tabGradient3;
-            dockPaneStripSkin1->DocumentGradient = dockPaneStripGradient1;
-            dockPaneStripSkin1->TextFont = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-            tabGradient4->EndColor = System::Drawing::SystemColors::ActiveCaption;
-            tabGradient4->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
-            tabGradient4->StartColor = System::Drawing::SystemColors::GradientActiveCaption;
-            tabGradient4->TextColor = System::Drawing::SystemColors::ActiveCaptionText;
-            dockPaneStripToolWindowGradient1->ActiveCaptionGradient = tabGradient4;
-            tabGradient5->EndColor = System::Drawing::SystemColors::Control;
-            tabGradient5->StartColor = System::Drawing::SystemColors::Control;
-            tabGradient5->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripToolWindowGradient1->ActiveTabGradient = tabGradient5;
-            dockPanelGradient3->EndColor = System::Drawing::SystemColors::ControlLight;
-            dockPanelGradient3->StartColor = System::Drawing::SystemColors::ControlLight;
-            dockPaneStripToolWindowGradient1->DockStripGradient = dockPanelGradient3;
-            tabGradient6->EndColor = System::Drawing::SystemColors::GradientInactiveCaption;
-            tabGradient6->LinearGradientMode = System::Drawing::Drawing2D::LinearGradientMode::Vertical;
-            tabGradient6->StartColor = System::Drawing::SystemColors::GradientInactiveCaption;
-            tabGradient6->TextColor = System::Drawing::SystemColors::ControlText;
-            dockPaneStripToolWindowGradient1->InactiveCaptionGradient = tabGradient6;
-            tabGradient7->EndColor = System::Drawing::Color::Transparent;
-            tabGradient7->StartColor = System::Drawing::Color::Transparent;
-            tabGradient7->TextColor = System::Drawing::SystemColors::ControlDarkDark;
-            dockPaneStripToolWindowGradient1->InactiveTabGradient = tabGradient7;
-            dockPaneStripSkin1->ToolWindowGradient = dockPaneStripToolWindowGradient1;
-            dockPanelSkin1->DockPaneStripSkin = dockPaneStripSkin1;
-            this->dockPanel->Skin = dockPanelSkin1;
-            this->dockPanel->TabIndex = 3;
+            this->dockPanel->Size = System::Drawing::Size(2200, 1329);
+            this->dockPanel->TabIndex = 4;
             // 
             // Form1
             // 
-            this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-            this->ClientSize = System::Drawing::Size(1100, 715);
+            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
+            this->ClientSize = System::Drawing::Size(2200, 1375);
             this->Controls->Add(this->dockPanel);
             this->Controls->Add(this->menuStrip1);
-            this->Icon = (cli::safe_cast<System::Drawing::Icon^  >(resources->GetObject(L"$this.Icon")));
+            this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
             this->IsMdiContainer = true;
             this->MainMenuStrip = this->menuStrip1;
+            this->Margin = System::Windows::Forms::Padding(6);
             this->Name = L"Form1";
             this->Text = L"Context Free";
             this->menuStrip1->ResumeLayout(false);
@@ -465,6 +417,8 @@ private: System::Void Example_Click(System::Object^  sender, System::EventArgs^ 
 private: System::Void Font_Click(System::Object^  sender, System::EventArgs^  e);
 
 private: System::Void Form_Loaded(System::Object^  sender, System::EventArgs^  e);
+
+private: System::Void Window_DropDown_Opening(System::Object^  sender, System::EventArgs^  e);
 
 private: void MoreInitialization();
 private: static void StaticInitialization();

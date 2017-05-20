@@ -193,6 +193,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  cFIsoWidthToolStripMenuItem
 private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem1;
 private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimate;
 private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
+
     public:
 
 
@@ -433,7 +434,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar,
                     this->toolStripNextVar, this->toolStripSeparator2, this->toolStripStatus
             });
-            this->toolStrip1->Location = System::Drawing::Point(0, 0);
+            this->toolStrip1->Location = System::Drawing::Point(0, 42);
             this->toolStrip1->Name = L"toolStrip1";
             this->toolStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::System;
             this->toolStrip1->Size = System::Drawing::Size(1162, 39);
@@ -467,8 +468,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             // toolStripProgressBar
             // 
+            this->toolStripProgressBar->AutoSize = false;
+            this->toolStripProgressBar->Margin = System::Windows::Forms::Padding(5, 2, 5, 1);
             this->toolStripProgressBar->Name = L"toolStripProgressBar";
-            this->toolStripProgressBar->Size = System::Drawing::Size(100, 36);
+            this->toolStripProgressBar->Size = System::Drawing::Size(100, 30);
             // 
             // toolStripSeparator1
             // 
@@ -487,9 +490,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripPrevVar->AutoToolTip = false;
             this->toolStripPrevVar->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
             this->toolStripPrevVar->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripPrevVar.Image")));
+            this->toolStripPrevVar->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->toolStripPrevVar->ImageTransparentColor = System::Drawing::Color::Magenta;
             this->toolStripPrevVar->Name = L"toolStripPrevVar";
-            this->toolStripPrevVar->Size = System::Drawing::Size(36, 36);
+            this->toolStripPrevVar->Size = System::Drawing::Size(23, 36);
             this->toolStripPrevVar->Text = L"toolStripButton3";
             this->toolStripPrevVar->ToolTipText = L"Previous Variation";
             this->toolStripPrevVar->Click += gcnew System::EventHandler(this, &Document::PrevVar_Click);
@@ -499,9 +503,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripNextVar->AutoToolTip = false;
             this->toolStripNextVar->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
             this->toolStripNextVar->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripNextVar.Image")));
+            this->toolStripNextVar->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->toolStripNextVar->ImageTransparentColor = System::Drawing::Color::Magenta;
             this->toolStripNextVar->Name = L"toolStripNextVar";
-            this->toolStripNextVar->Size = System::Drawing::Size(36, 36);
+            this->toolStripNextVar->Size = System::Drawing::Size(23, 36);
             this->toolStripNextVar->Text = L"toolStripButton4";
             this->toolStripNextVar->ToolTipText = L"Next Variation";
             this->toolStripNextVar->Click += gcnew System::EventHandler(this, &Document::NextVar_Click);
@@ -523,7 +528,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // documentSplitter
             // 
             this->documentSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
-            this->documentSplitter->Location = System::Drawing::Point(0, 39);
+            this->documentSplitter->FixedPanel = System::Windows::Forms::FixedPanel::Panel1;
+            this->documentSplitter->Location = System::Drawing::Point(0, 81);
             this->documentSplitter->Name = L"documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -534,13 +540,14 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->documentSplitter->Panel2->BackColor = System::Drawing::SystemColors::Window;
             this->documentSplitter->Panel2->Controls->Add(this->renderBox);
-            this->documentSplitter->Size = System::Drawing::Size(1162, 769);
+            this->documentSplitter->Size = System::Drawing::Size(1162, 727);
             this->documentSplitter->SplitterDistance = 386;
             this->documentSplitter->TabIndex = 1;
             // 
             // editorSplitter
             // 
             this->editorSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
+            this->editorSplitter->FixedPanel = System::Windows::Forms::FixedPanel::Panel2;
             this->editorSplitter->Location = System::Drawing::Point(0, 0);
             this->editorSplitter->Name = L"editorSplitter";
             this->editorSplitter->Orientation = System::Windows::Forms::Orientation::Horizontal;
@@ -552,8 +559,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // editorSplitter.Panel2
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
-            this->editorSplitter->Size = System::Drawing::Size(386, 769);
-            this->editorSplitter->SplitterDistance = 602;
+            this->editorSplitter->Size = System::Drawing::Size(386, 727);
+            this->editorSplitter->SplitterDistance = 560;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -563,7 +570,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(386, 602);
+            this->cfdgText->Size = System::Drawing::Size(386, 560);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -585,7 +592,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->renderBox->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"renderBox.InitialImage")));
             this->renderBox->Location = System::Drawing::Point(0, 0);
             this->renderBox->Name = L"renderBox";
-            this->renderBox->Size = System::Drawing::Size(772, 769);
+            this->renderBox->Size = System::Drawing::Size(772, 727);
             this->renderBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
             this->renderBox->TabIndex = 0;
             this->renderBox->TabStop = false;
@@ -620,6 +627,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuFSave
             // 
             this->menuFSave->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuFSave.Image")));
+            this->menuFSave->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuFSave->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFSave->MergeIndex = 2;
             this->menuFSave->Name = L"menuFSave";
@@ -632,6 +640,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuFSaveAs
             // 
             this->menuFSaveAs->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuFSaveAs.Image")));
+            this->menuFSaveAs->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuFSaveAs->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFSaveAs->MergeIndex = 3;
             this->menuFSaveAs->Name = L"menuFSaveAs";
@@ -674,6 +683,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuEUndo
             // 
             this->menuEUndo->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuEUndo.Image")));
+            this->menuEUndo->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEUndo->Name = L"menuEUndo";
             this->menuEUndo->ShortcutKeyDisplayString = L"Ctrl-Z";
             this->menuEUndo->Size = System::Drawing::Size(341, 38);
@@ -683,6 +693,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuERedo
             // 
             this->menuERedo->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuERedo.Image")));
+            this->menuERedo->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuERedo->Name = L"menuERedo";
             this->menuERedo->ShortcutKeyDisplayString = L"Ctrl-Y";
             this->menuERedo->Size = System::Drawing::Size(341, 38);
@@ -697,6 +708,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuECut
             // 
             this->menuECut->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuECut.Image")));
+            this->menuECut->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuECut->Name = L"menuECut";
             this->menuECut->ShortcutKeyDisplayString = L"Ctrl-X";
             this->menuECut->Size = System::Drawing::Size(341, 38);
@@ -706,6 +718,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuECopy
             // 
             this->menuECopy->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuECopy.Image")));
+            this->menuECopy->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuECopy->Name = L"menuECopy";
             this->menuECopy->ShortcutKeyDisplayString = L"Ctrl-C";
             this->menuECopy->Size = System::Drawing::Size(341, 38);
@@ -715,6 +728,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuEPaste
             // 
             this->menuEPaste->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuEPaste.Image")));
+            this->menuEPaste->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEPaste->Name = L"menuEPaste";
             this->menuEPaste->ShortcutKeyDisplayString = L"Ctrl-V";
             this->menuEPaste->Size = System::Drawing::Size(341, 38);
@@ -724,6 +738,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuEDelete
             // 
             this->menuEDelete->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuEDelete.Image")));
+            this->menuEDelete->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEDelete->Name = L"menuEDelete";
             this->menuEDelete->ShortcutKeyDisplayString = L"DEL";
             this->menuEDelete->Size = System::Drawing::Size(341, 38);
@@ -1236,6 +1251,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuRRender
             // 
             this->menuRRender->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRRender.Image")));
+            this->menuRRender->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRRender->Name = L"menuRRender";
             this->menuRRender->ShortcutKeyDisplayString = L"Ctrl-R";
             this->menuRRender->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::R));
@@ -1256,6 +1272,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuRRenderAgain
             // 
             this->menuRRenderAgain->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRRenderAgain.Image")));
+            this->menuRRenderAgain->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRRenderAgain->Name = L"menuRRenderAgain";
             this->menuRRenderAgain->ShortcutKeyDisplayString = L"Ctrl-Alt-R";
             this->menuRRenderAgain->ShortcutKeys = static_cast<System::Windows::Forms::Keys>(((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Alt)
@@ -1287,6 +1304,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuRStop
             // 
             this->menuRStop->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRStop.Image")));
+            this->menuRStop->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRStop->Name = L"menuRStop";
             this->menuRStop->ShortcutKeyDisplayString = L"Ctrl-END";
             this->menuRStop->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::End));
@@ -1302,6 +1320,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuROutput
             // 
             this->menuROutput->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuROutput.Image")));
+            this->menuROutput->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuROutput->Name = L"menuROutput";
             this->menuROutput->ShortcutKeyDisplayString = L"Ctrl-O";
             this->menuROutput->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
@@ -1312,6 +1331,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // menuRUpload
             // 
             this->menuRUpload->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRUpload.Image")));
+            this->menuRUpload->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRUpload->Name = L"menuRUpload";
             this->menuRUpload->ShortcutKeyDisplayString = L"Ctrl-U";
             this->menuRUpload->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::U));
@@ -1321,8 +1341,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             // Document
             // 
-            this->AutoScaleDimensions = System::Drawing::SizeF(13, 26);
-            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
             this->ClientSize = System::Drawing::Size(1162, 808);
             this->Controls->Add(this->documentSplitter);
             this->Controls->Add(this->toolStrip1);

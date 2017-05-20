@@ -103,6 +103,8 @@ void Form1::StaticInitialization()
 
 void Form1::MoreInitialization()
 {
+    dockPanel->Theme = gcnew WeifenLuo::WinFormsUI::Docking::VS2015LightTheme();
+
     findForm = gcnew FindReplaceForm();
     mruManager = gcnew OzoneUtil::MRUManager();
     mruManager->Initialize(this, gcnew System::EventHandler(this, &Form1::MRU_Click), 
@@ -123,13 +125,6 @@ void Form1::MoreInitialization()
         example->Click += exampleHandler;
         menuExamples->DropDownItems->Add(example);
         if (name == "welcome") menuWelcome = example;
-    }
-
-    if (SystemColors::MenuBar.GetBrightness() - SystemColors::GradientActiveCaption.GetBrightness() > 0.2) {
-        this->menuStrip1->BackColor = System::Drawing::SystemColors::MenuBar;
-        overrideMenuColor = false;
-    } else {
-        overrideMenuColor = true;
     }
 
     Load += gcnew EventHandler(this, &Form1::Form_Loaded);
@@ -194,6 +189,18 @@ void Form1::MoreInitialization()
         newKey->Close();
         classKey->Close();
     } catch (Exception^) {}
+}
+
+System::Void Form1::Window_DropDown_Opening(System::Object^  sender, System::EventArgs^  e)
+{
+    if (ToolStripMenuItem^ window = dynamic_cast<ToolStripMenuItem^>(sender)) {
+        auto items = window->DropDownItems;
+        for each (ToolStripItem^ item in items) {
+            if (ToolStripMenuItem^ menu = dynamic_cast<ToolStripMenuItem^>(item)) {
+                menu->ImageScaling = ToolStripItemImageScaling::None;
+            }
+        }
+    }
 }
 
 System::Void Form1::menuFNew_Click(System::Object^  sender, System::EventArgs^  e) 
@@ -281,7 +288,7 @@ void Form1::OpenDoc(String^ name)
     newMDIchild->Text = newMDIchild->TabText;
     newMDIchild->MdiParent = this;
     newMDIchild->Closing += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::File_Closed);
-    newMDIchild->Show(dockPanel);
+    newMDIchild->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::Document);
 
     if (newMDIchild->isNamed && File::Exists(name)) {
         mruManager->currentDirectory = Path::GetDirectoryName(name);
@@ -294,15 +301,6 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
     messagePane->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::DockRightAutoHide);
     colorCalc->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::DockRightAutoHide);
     dockPanel->ActiveAutoHideContent = nullptr;
-
-    // Change the color of the autohide strip to match the color of the menu bar
-    if (overrideMenuColor) {
-        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
-        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
-    } else {
-        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::MenuBar;
-        dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::MenuBar;
-    }
 
     if (StartArgs != nullptr && StartArgs->Length > 1) {
         processArgs(StartArgs);
@@ -544,21 +542,3 @@ System::Void Form1::Font_Click(System::Object^  sender, System::EventArgs^  e)
     }
 }
 
-void Form1::WndProc(Message% m)
-{
-    static const Int32 WM_NCACTIVATE = 0x86;
-    Form::WndProc(m);
-    // Listen for operating system messages.
-    if (m.Msg == WM_NCACTIVATE && overrideMenuColor) {
-        if (m.WParam.ToInt32()) {
-            dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientActiveCaption;
-            dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientActiveCaption;
-            menuStrip1->BackColor = SystemColors::GradientActiveCaption;
-        } else {
-            dockPanel->Skin->AutoHideStripSkin->DockStripGradient->StartColor = SystemColors::GradientInactiveCaption;
-            dockPanel->Skin->AutoHideStripSkin->DockStripGradient->EndColor = SystemColors::GradientInactiveCaption;
-            menuStrip1->BackColor = SystemColors::GradientInactiveCaption;
-        }
-        dockPanel->AutoHideStripControl->Invalidate();
-    }
-}
