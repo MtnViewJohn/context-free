@@ -119,7 +119,9 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator5;
     private: System::Windows::Forms::ToolStripMenuItem^  menuEDelete;
     private: System::Windows::Forms::ToolStripButton^  toolStripSaveButton;
-	private: System::Windows::Forms::SplitContainer^  editorSplitter;
+    public: System::Windows::Forms::SplitContainer^  editorSplitter;
+    private:
+
 
 	private: 
 	private: System::Windows::Forms::WebBrowser^  cfdgMessage;
@@ -224,7 +226,9 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
 			delete mEngine;
 		}
 	private: System::Windows::Forms::ToolStrip^  toolStrip1;
-	private: System::Windows::Forms::SplitContainer^  documentSplitter;
+public: System::Windows::Forms::SplitContainer^  documentSplitter;
+private:
+
 
 	public:  System::Windows::Forms::RichTextBox^  cfdgText;
 
@@ -434,7 +438,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar,
                     this->toolStripNextVar, this->toolStripSeparator2, this->toolStripStatus
             });
-            this->toolStrip1->Location = System::Drawing::Point(0, 42);
+            this->toolStrip1->Location = System::Drawing::Point(0, 0);
             this->toolStrip1->Name = L"toolStrip1";
             this->toolStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::System;
             this->toolStrip1->Size = System::Drawing::Size(1162, 39);
@@ -529,7 +533,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->documentSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
             this->documentSplitter->FixedPanel = System::Windows::Forms::FixedPanel::Panel1;
-            this->documentSplitter->Location = System::Drawing::Point(0, 81);
+            this->documentSplitter->Location = System::Drawing::Point(0, 39);
             this->documentSplitter->Name = L"documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -540,7 +544,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->documentSplitter->Panel2->BackColor = System::Drawing::SystemColors::Window;
             this->documentSplitter->Panel2->Controls->Add(this->renderBox);
-            this->documentSplitter->Size = System::Drawing::Size(1162, 727);
+            this->documentSplitter->Size = System::Drawing::Size(1162, 769);
             this->documentSplitter->SplitterDistance = 386;
             this->documentSplitter->TabIndex = 1;
             // 
@@ -559,8 +563,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // editorSplitter.Panel2
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
-            this->editorSplitter->Size = System::Drawing::Size(386, 727);
-            this->editorSplitter->SplitterDistance = 560;
+            this->editorSplitter->Size = System::Drawing::Size(386, 769);
+            this->editorSplitter->SplitterDistance = 602;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -570,7 +574,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(386, 560);
+            this->cfdgText->Size = System::Drawing::Size(386, 602);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -592,7 +596,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->renderBox->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"renderBox.InitialImage")));
             this->renderBox->Location = System::Drawing::Point(0, 0);
             this->renderBox->Name = L"renderBox";
-            this->renderBox->Size = System::Drawing::Size(772, 727);
+            this->renderBox->Size = System::Drawing::Size(772, 769);
             this->renderBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
             this->renderBox->TabIndex = 0;
             this->renderBox->TabStop = false;

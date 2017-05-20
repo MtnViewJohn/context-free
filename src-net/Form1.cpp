@@ -189,6 +189,8 @@ void Form1::MoreInitialization()
         newKey->Close();
         classKey->Close();
     } catch (Exception^) {}
+
+    isResizing = iResized = false;
 }
 
 System::Void Form1::Window_DropDown_Opening(System::Object^  sender, System::EventArgs^  e)
@@ -202,6 +204,44 @@ System::Void Form1::Window_DropDown_Opening(System::Object^  sender, System::Eve
         }
     }
 }
+
+System::Void Form1::resize_start(System::Object^  sender, System::EventArgs^  e)
+{
+    isResizing = true;
+    iResized = false;
+}
+
+System::Void Form1::resize_end(System::Object^  sender, System::EventArgs^  e)
+{
+    isResizing = false;
+    if (iResized) {
+        prefs->FormWidth = ClientSize.Width;
+        prefs->FormHeight = ClientSize.Height;
+
+        if (Document^ kid = dynamic_cast<Document^>(this->ActiveMdiChild)) {
+            Form1::prefs->DocumentSplitter = kid->documentSplitter->SplitterDistance;
+            Form1::prefs->EditorSplitter = kid->editorSplitter->SplitterDistance;
+        }
+
+        iResized = false;
+    }
+}
+
+System::Void Form1::resize_event(System::Object^  sender, System::EventArgs^  e)
+{
+    iResized = true;
+}
+
+System::Void Form1::child_activate(System::Object^  sender, System::EventArgs^  e)
+{
+    if (Document^ kid = dynamic_cast<Document^>(this->ActiveMdiChild)) {
+        try {
+            kid->documentSplitter->SplitterDistance = Form1::prefs->DocumentSplitter;
+            kid->editorSplitter->SplitterDistance = Form1::prefs->EditorSplitter;
+        } catch (Exception^) {}
+    }
+}
+
 
 System::Void Form1::menuFNew_Click(System::Object^  sender, System::EventArgs^  e) 
 {
@@ -418,9 +458,6 @@ bool Form1::fileAlreadyOpen(String^ filename)
 
 void Form1::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
 {
-    prefs->FormWidth = ClientSize.Width;
-    prefs->FormHeight = ClientSize.Height;
-
     if (e->Cancel) {
         bool userAction = false;
         for each (Form^ kid in MdiChildren) {

@@ -88,10 +88,6 @@ void Document::InitializeStuff()
     minVariation = Variation::recommendedMin();
 
     // Setup splitters
-    documentSplitter->SplitterDistance = (int)(documentSplitter->Size.Width * 
-                                         Form1::prefs->DocumentSplitter);
-    editorSplitter->SplitterDistance = (int)(editorSplitter->Size.Height *
-                                       Form1::prefs->EditorSplitter);
     SplitterEventHandler^ splitterHandler = gcnew SplitterEventHandler(this, &Document::splitterMoved);
     documentSplitter->SplitterMoved += splitterHandler;
     editorSplitter->SplitterMoved += splitterHandler;
@@ -947,10 +943,13 @@ void Document::renderSizeChanged()
 
 System::Void Document::splitterMoved(Object^ sender, SplitterEventArgs^ e)
 {
-    Form1::prefs->DocumentSplitter = (double)(documentSplitter->SplitterDistance) /
-                                     (double)(documentSplitter->Size.Width);
-    Form1::prefs->EditorSplitter = (double)(editorSplitter->SplitterDistance) /
-                                   (double)(editorSplitter->Size.Height);
+    Form1^ parent = (Form1^)MdiParent;
+
+    if (parent->isResizing || parent->ActiveMdiChild != static_cast<Form^>(this))
+        return;
+
+    Form1::prefs->DocumentSplitter = documentSplitter->SplitterDistance;
+    Form1::prefs->EditorSplitter = editorSplitter->SplitterDistance;
 }
 
 System::Void Document::variationKeyDown(Object^ sender, System::Windows::Forms::KeyEventArgs^ e)

@@ -76,6 +76,8 @@ namespace ContextFreeNet {
 			delete mruManager;
 		}
 
+    public: bool isResizing;
+    public: bool iResized;
     public: OzoneUtil::MRUManager^ mruManager;
     public: FindReplaceForm^ findForm;
     public: System::String^ saveDirectory;
@@ -200,7 +202,7 @@ namespace ContextFreeNet {
             this->menuStrip1->Name = L"menuStrip1";
             this->menuStrip1->Padding = System::Windows::Forms::Padding(12, 4, 0, 4);
             this->menuStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::Professional;
-            this->menuStrip1->Size = System::Drawing::Size(2200, 46);
+            this->menuStrip1->Size = System::Drawing::Size(2200, 44);
             this->menuStrip1->TabIndex = 1;
             this->menuStrip1->Text = L"menuStrip1";
             // 
@@ -212,7 +214,7 @@ namespace ContextFreeNet {
             });
             this->menuFile->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFile->Name = L"menuFile";
-            this->menuFile->Size = System::Drawing::Size(64, 38);
+            this->menuFile->Size = System::Drawing::Size(64, 36);
             this->menuFile->Text = L"&File";
             // 
             // menuFNew
@@ -270,7 +272,7 @@ namespace ContextFreeNet {
             // menuExamples
             // 
             this->menuExamples->Name = L"menuExamples";
-            this->menuExamples->Size = System::Drawing::Size(126, 38);
+            this->menuExamples->Size = System::Drawing::Size(126, 36);
             this->menuExamples->Text = L"E&xamples";
             // 
             // menuWindow
@@ -280,7 +282,7 @@ namespace ContextFreeNet {
                     this->menuWMsgConsole, this->toolStripSeparator2
             });
             this->menuWindow->Name = L"menuWindow";
-            this->menuWindow->Size = System::Drawing::Size(114, 38);
+            this->menuWindow->Size = System::Drawing::Size(114, 36);
             this->menuWindow->Text = L"&Window";
             this->menuWindow->DropDownOpened += gcnew System::EventHandler(this, &Form1::Window_DropDown_Opening);
             // 
@@ -315,7 +317,7 @@ namespace ContextFreeNet {
                     this->sendFeedbackToolStripMenuItem, this->aboutContextFreeToolStripMenuItem
             });
             this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
-            this->helpToolStripMenuItem->Size = System::Drawing::Size(77, 38);
+            this->helpToolStripMenuItem->Size = System::Drawing::Size(77, 36);
             this->helpToolStripMenuItem->Text = L"&Help";
             // 
             // contextFreeSiteToolStripMenuItem
@@ -377,10 +379,10 @@ namespace ContextFreeNet {
             this->dockPanel->DockBottomPortion = 85;
             this->dockPanel->DockLeftPortion = 100;
             this->dockPanel->DockRightPortion = 365;
-            this->dockPanel->Location = System::Drawing::Point(0, 46);
+            this->dockPanel->Location = System::Drawing::Point(0, 44);
             this->dockPanel->Margin = System::Windows::Forms::Padding(6);
             this->dockPanel->Name = L"dockPanel";
-            this->dockPanel->Size = System::Drawing::Size(2200, 1329);
+            this->dockPanel->Size = System::Drawing::Size(2200, 1331);
             this->dockPanel->TabIndex = 4;
             // 
             // Form1
@@ -395,6 +397,10 @@ namespace ContextFreeNet {
             this->Margin = System::Windows::Forms::Padding(6);
             this->Name = L"Form1";
             this->Text = L"Context Free";
+            this->MdiChildActivate += gcnew System::EventHandler(this, &Form1::child_activate);
+            this->ResizeBegin += gcnew System::EventHandler(this, &Form1::resize_start);
+            this->ResizeEnd += gcnew System::EventHandler(this, &Form1::resize_end);
+            this->Resize += gcnew System::EventHandler(this, &Form1::resize_event);
             this->menuStrip1->ResumeLayout(false);
             this->menuStrip1->PerformLayout();
             this->ResumeLayout(false);
@@ -433,6 +439,9 @@ private: System::EventHandler^ idleHandler;
          System::Void appIsIdle(System::Object^  sender, System::EventArgs^  e);
          System::Void appIsExiting(System::Object^  sender, System::EventArgs^  e);
 private: System::Void urlMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void resize_start(System::Object^  sender, System::EventArgs^  e);
+private: System::Void resize_end(System::Object^  sender, System::EventArgs^  e);
+private: System::Void resize_event(System::Object^  sender, System::EventArgs^  e);
 private: System::Void aboutContextFreeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) ;
 private: System::Void menuRColor_Click(System::Object^  sender, System::EventArgs^  e);
 public: void AddMessage(System::String^ sender, System::String^ msg);
@@ -443,5 +452,6 @@ private: void updateFontDisplay();
 private: System::Void saveFileDialog1_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
          }
 public:  System::Void FindReplace_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void child_activate(System::Object^  sender, System::EventArgs^  e);
 };
 }

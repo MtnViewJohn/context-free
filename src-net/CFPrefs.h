@@ -128,13 +128,13 @@ namespace ContextFreeNet {
             void set(int setTo) { SetPrefInt("FormWidth", setTo); }
             int get() { return GetPrefInt("FormWidth", 1100); }
         }
-        property double EditorSplitter {
-            void set(double setTo) { SetPrefDouble("EditorSplitter", setTo); }
-            double get() { return GetPrefDouble("EditorSplitter", 0.80); }
+        property int EditorSplitter {
+            void set(int setTo) { SetPrefInt("EditorSplitterInt", setTo); }
+            int get() { return GetPrefInt("EditorSplitterInt", 600); }
         }
-        property double DocumentSplitter {
-            void set(double setTo) { SetPrefDouble("DocumentSplitter", setTo); }
-            double get() { return GetPrefDouble("DocumentSplitter", 0.33); }
+        property int DocumentSplitter {
+            void set(int setTo) { SetPrefInt("DocumentSplitterInt", setTo); }
+            int get() { return GetPrefInt("DocumentSplitterInt", 300); }
         }
         property OpenAction StartupDocument {
             void set(OpenAction setTo) { SetPrefInt("StartupDocument", (int)setTo); }
