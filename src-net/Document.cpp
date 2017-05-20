@@ -118,6 +118,8 @@ void Document::InitializeStuff()
 	mRenderButtonAction = RenderButtonAction::Render;
 
     menuRAnimate->Enabled = ffCanvas::Available();
+    if (!menuRAnimate->Enabled)
+        menuRAnimate->ToolTipText = "Install FFmpeg subsystem to enable";
 
     mMoviePlayer = nullptr;
 }
