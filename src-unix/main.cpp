@@ -140,6 +140,7 @@ struct options {
     int   animationFPS;
     bool  animationZoom;
     int   animateFrame;
+    ffCanvas::QTcodec animationCodec;
     
     std::string input;
     std::string output;
@@ -156,7 +157,7 @@ struct options {
     : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-      animateFrame(0), format(PNGfile), quiet(false),
+      animateFrame(0), animationCodec(ffCanvas::H264), format(PNGfile), quiet(false),
       outputTime(false), outputStdout(false), outputWallpaper(false),
       paramTest(false), deleteTemps(false)
     { }
@@ -239,6 +240,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag makeSVG(parser, "SVG", "Generate SVG output (not allowed for animation)",
                        {'V', "svg"});
     args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
+    args::Flag makeProRes(parser, "ProRes", "Use ProRes codec for QuickTime output", { "prores" });
 #ifdef _WIN32
     args::Flag wallpaper(parser, "wallpaper", "Generate desktop wallpaper output",
                          {'W', "wallpaper"});
@@ -305,6 +307,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         if (makeSVG) bailout("Animation cannot output to SVG files.");
         if (crop) bailout("Animation cannot output cropped files.");
         if (makeQT) opt.format = options::MOVfile;
+        if (makeProRes) opt.animationCodec = ffCanvas::ProRes;
         opt.animationZoom = zoom;
         int fps = 15, time = 0;
         switch (intArg2(parser.ShortPrefix() + 'a', args::get(animation), time, fps)) {
@@ -322,6 +325,8 @@ processCommandLine(int argc, char* argv[], options& opt)
         }
         if (makeQT && !ffCanvas::Available())
             bailout("FFmpeg DLLs not found, QuickTime output is unavailable.");
+        if (makeProRes && !makeQT)
+            bailout("ProRes codec only available with QuickTime output.");
         if (frame) {
             if (makeQT)
                 bailout("Single frame animation only outputs PNG files.");
@@ -533,7 +538,7 @@ int main (int argc, char* argv[]) {
         case options::MOVfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
-                                             opts.animationFPS);
+                                             opts.animationFPS, opts.animationCodec);
             if (mov->mErrorMsg) {
                 cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
                 exit(8);
