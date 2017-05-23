@@ -23,7 +23,7 @@
 !define VER_MAJOR 3
 !define VER_MINOR 0
 
-SetCompressor lzma
+SetCompressor bzip2
 RequestExecutionLevel user
 
 !define PRODUCT "ContextFree"
@@ -105,8 +105,10 @@ SectionIn RO
     File "..\\..\\src-net\\Release64\\Controls.dll" 
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
-    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x64\Microsoft.VC100.CRT\msvcr100.dll"
-    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x64\Microsoft.VC100.CRT\msvcp100.dll"
+    File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\msvcp140.dll"
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
     File "..\\..\\Release\\ContextFreeCLI.exe" 
@@ -114,8 +116,10 @@ SectionIn RO
     File "..\\..\\src-net\\release\\Controls.dll" 
     File "..\\..\\src-net\\release\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.dll" 
-    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT\msvcr100.dll"
-    File "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT\msvcp100.dll"
+    File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\msvcp140.dll"
   ${EndIf}
 
 SectionEnd
@@ -131,6 +135,8 @@ Section -post
                    "NoModify" 1
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
                    "NoRepair" 1
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{DD0B06AD-5E55-41be-88E5-E9D13BAF06F4}" \
+                   "InstallDir" '$INSTDIR'
 
   SetOutPath $INSTDIR
 
@@ -194,9 +200,21 @@ Section "Uninstall"
   Delete '$INSTDIR\Controls.dll'
   Delete '$INSTDIR\FileDlgExtenders.dll'
   Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.dll'
-  Delete '$INSTDIR\msvcr100.dll'
-  Delete '$INSTDIR\msvcp100.dll'
+  Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll'
+  Delete '$INSTDIR\avcodec-57.dll'
+  Delete '$INSTDIR\avutil-55.dll'
+  Delete '$INSTDIR\avdevice-57.dll' 
+  Delete '$INSTDIR\avfilter-6.dll'
+  Delete '$INSTDIR\avformat-57.dll'
+  Delete '$INSTDIR\ffplay.exe'
+  Delete '$INSTDIR\postproc-54.dll' 
+  Delete '$INSTDIR\swresample-2.dll' 
+  Delete '$INSTDIR\swscale-4.dll'
+  Delete '$INSTDIR\vcruntime140.dll'
+  Delete '$INSTDIR\concrt140.dll'
+  Delete '$INSTDIR\msvcp140.dll'
   Delete '$INSTDIR\license.txt'
+  Delete '$INSTDIR\COPYING.GPLv2.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
   RMDir  '$INSTDIR'
 
