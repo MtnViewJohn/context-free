@@ -24,7 +24,7 @@
 
 #include "StdAfx.h"
 #include "hsbColor.h"
-#include "math.h"
+#include <cmath>
 
 using namespace CFControls;
 using namespace System;
