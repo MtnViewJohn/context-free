@@ -169,11 +169,11 @@ Function .onInit
     StrCpy $INSTDIR "$PROGRAMFILES\OzoneSoft\${PRODUCT}"
   ${EndIf}
   
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client" "Version"
-  ${If} $0 == ""
+  ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" "Release"
+  ${If} $0 < 378389
     MessageBox \
       MB_YESNO|MB_ICONSTOP \
-      ".Net framework v4.0 is required. Install Context Free anyway?" \
+      ".NET Framework v4.5 or later is required. Install Context Free anyway?" \
       IDYES okgo
     Abort
   ${EndIf}
