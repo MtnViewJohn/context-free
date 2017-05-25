@@ -82,7 +82,7 @@ namespace agg
         unsigned m_vertex;
         unsigned m_num_vertices;
         double   m_vertices[26];
-        unsigned m_cmd;
+        path_commands_e m_cmd;
     };
 
 
