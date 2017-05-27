@@ -292,7 +292,7 @@ namespace agg
         // Dca' = 0
         // Da'  = 0
         static AGG_INLINE void blend_pix(value_type* p, 
-            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+            value_type, value_type, value_type, value_type, cover_type cover)
         {
             if (cover >= cover_full)
             {
@@ -345,8 +345,8 @@ namespace agg
 
         // Dca' = Dca.Sa + Dca.(1 - Sa) = Dca
         // Da'  = Da.Sa + Da.(1 - Sa) = Da
-        static AGG_INLINE void blend_pix(value_type* p, 
-            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+        static AGG_INLINE void blend_pix(value_type*, 
+            value_type, value_type, value_type, value_type, cover_type)
         {
             // Well, that was easy!
         }
@@ -445,7 +445,7 @@ namespace agg
         // Dca' = Dca.Sa
         // Da'  = Sa.Da 
         static AGG_INLINE void blend_pix(value_type* p, 
-            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+            value_type, value_type, value_type, value_type a, cover_type cover)
         {
             double sa = ColorT::to_double(a);
             rgba d = get(p, cover_full - cover);
@@ -495,7 +495,7 @@ namespace agg
         // Dca' = Dca.(1 - Sa) 
         // Da'  = Da.(1 - Sa) 
         static AGG_INLINE void blend_pix(value_type* p, 
-            value_type r, value_type g, value_type b, value_type a, cover_type cover)
+            value_type, value_type, value_type, value_type a, cover_type cover)
         {
             rgba d = get(p, cover_full - cover);
             rgba dc = get(p, cover);
