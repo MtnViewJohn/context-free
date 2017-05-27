@@ -109,17 +109,19 @@ SectionIn RO
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\vcruntime140.dll"
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\concrt140.dll"
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x64\\*.dll"
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
     File "..\\..\\Release\\ContextFreeCLI.exe" 
-    File "..\\..\\src-net\\release\\CFControls.dll" 
-    File "..\\..\\src-net\\release\\Controls.dll" 
-    File "..\\..\\src-net\\release\\FileDlgExtenders.dll" 
-    File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.dll" 
-    File "..\\..\\src-net\\release\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "..\\..\\src-net\\Release\\CFControls.dll" 
+    File "..\\..\\src-net\\Release\\Controls.dll" 
+    File "..\\..\\src-net\\Release\\FileDlgExtenders.dll" 
+    File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.dll" 
+    File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\vcruntime140.dll"
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\concrt140.dll"
     File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x86\\*.dll"
   ${EndIf}
 
 SectionEnd
@@ -172,13 +174,10 @@ Function .onInit
   ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" "Release"
   ${If} $0 < 378389
     MessageBox \
-      MB_YESNO|MB_ICONSTOP \
-      ".NET Framework v4.5 or later is required. Install Context Free anyway?" \
-      IDYES okgo
-    Abort
+      MB_OK|MB_USERICON \
+      ".NET Framework v4.5 or later is required. Please make sure that your system has all the latest updates."
   ${EndIf}
 
-okgo:
   SetOutPath $TEMP
   File /oname=spltmp.bmp "splash.bmp"
 
@@ -196,23 +195,7 @@ FunctionEnd
 Section "Uninstall"
   Delete '$INSTDIR\ContextFree.exe'
   Delete '$INSTDIR\ContextFreeCLI.exe'
-  Delete '$INSTDIR\CFControls.dll' 
-  Delete '$INSTDIR\Controls.dll'
-  Delete '$INSTDIR\FileDlgExtenders.dll'
-  Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.dll'
-  Delete '$INSTDIR\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll'
-  Delete '$INSTDIR\avcodec-57.dll'
-  Delete '$INSTDIR\avutil-55.dll'
-  Delete '$INSTDIR\avdevice-57.dll' 
-  Delete '$INSTDIR\avfilter-6.dll'
-  Delete '$INSTDIR\avformat-57.dll'
-  Delete '$INSTDIR\ffplay.exe'
-  Delete '$INSTDIR\postproc-54.dll' 
-  Delete '$INSTDIR\swresample-2.dll' 
-  Delete '$INSTDIR\swscale-4.dll'
-  Delete '$INSTDIR\vcruntime140.dll'
-  Delete '$INSTDIR\concrt140.dll'
-  Delete '$INSTDIR\msvcp140.dll'
+  Delete '$INSTDIR\*.dll'
   Delete '$INSTDIR\license.txt'
   Delete '$INSTDIR\COPYING.GPLv2.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
