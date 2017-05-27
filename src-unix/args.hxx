@@ -1048,7 +1048,7 @@ namespace args
 
             /** Pass the help menu into an ostream
              */
-            void Help(std::ostream &_help) const
+            void Help(std::ostream &help_) const
             {
                 bool hasoptions = false;
                 bool hasarguments = false;
@@ -1081,22 +1081,22 @@ namespace args
                 auto progit = std::begin(proglines);
                 if (progit != std::end(proglines))
                 {
-                    _help << std::string(helpParams.progindent, ' ') << *progit << '\n';
+                    help_ << std::string(helpParams.progindent, ' ') << *progit << '\n';
                     ++progit;
                 }
                 for (; progit != std::end(proglines); ++progit)
                 {
-                    _help << std::string(helpParams.progtailindent, ' ') << *progit << '\n';
+                    help_ << std::string(helpParams.progtailindent, ' ') << *progit << '\n';
                 }
 
-                _help << '\n';
+                help_ << '\n';
 
                 for (const auto &line: description_text)
                 {
-                    _help << std::string(helpParams.descriptionindent, ' ') << line << "\n";
+                    help_ << std::string(helpParams.descriptionindent, ' ') << line << "\n";
                 }
-                _help << "\n";
-                _help << std::string(helpParams.progindent, ' ') << "OPTIONS:\n\n";
+                help_ << "\n";
+                help_ << std::string(helpParams.progindent, ' ') << "OPTIONS:\n\n";
                 for (const auto &desc: GetChildDescriptions(shortprefix, longprefix, allowJoinedShortValue ? "" : " ", allowJoinedLongValue ? longseparator : " "))
                 {
                     const auto groupindent = std::get<2>(desc) * helpParams.eachgroupindent;
@@ -1108,9 +1108,9 @@ namespace args
                     {
                         if (flagsit != std::begin(flags))
                         {
-                            _help << '\n';
+                            help_ << '\n';
                         }
-                        _help << std::string(groupindent + helpParams.flagindent, ' ') << *flagsit;
+                        help_ << std::string(groupindent + helpParams.flagindent, ' ') << *flagsit;
                         flagssize = Glyphs(*flagsit);
                     }
 
@@ -1118,30 +1118,30 @@ namespace args
                     // groupindent is on both sides of this inequality, and therefore can be removed
                     if ((helpParams.flagindent + flagssize + helpParams.gutter) > helpParams.helpindent || infoit == std::end(info))
                     {
-                        _help << '\n';
+                        help_ << '\n';
                     } else
                     {
                         // groupindent is on both sides of the minus sign, and therefore doesn't actually need to be in here
-                        _help << std::string(helpParams.helpindent - (helpParams.flagindent + flagssize), ' ') << *infoit << '\n';
+                        help_ << std::string(helpParams.helpindent - (helpParams.flagindent + flagssize), ' ') << *infoit << '\n';
                         ++infoit;
                     }
                     for (; infoit != std::end(info); ++infoit)
                     {
-                        _help << std::string(groupindent + helpParams.helpindent, ' ') << *infoit << '\n';
+                        help_ << std::string(groupindent + helpParams.helpindent, ' ') << *infoit << '\n';
                     }
                 }
                 if (hasoptions && hasarguments && helpParams.showTerminator)
                 {
                     for (const auto &item: Wrap(std::string("\"") + terminator + "\" can be used to terminate flag options and force all following arguments to be treated as positional options", helpParams.width - helpParams.flagindent))
                     {
-                        _help << std::string(helpParams.flagindent, ' ') << item << '\n';
+                        help_ << std::string(helpParams.flagindent, ' ') << item << '\n';
                     }
                 }
 
-                _help << "\n";
+                help_ << "\n";
                 for (const auto &line: epilog_text)
                 {
-                    _help << std::string(helpParams.descriptionindent, ' ') << line << "\n";
+                    help_ << std::string(helpParams.descriptionindent, ' ') << line << "\n";
                 }
             }
 
@@ -1151,9 +1151,9 @@ namespace args
              */
             std::string Help() const
             {
-                std::ostringstream _help;
-                Help(_help);
-                return _help.str();
+                std::ostringstream help_;
+                Help(help_);
+                return help_.str();
             }
 
             /** Parse all arguments.
@@ -1452,7 +1452,7 @@ namespace args
                 {
 #ifdef ARGS_NOEXCEPT
                     error = Error::Help;
-					return this;
+                    return this;
 #else
                     throw Help(arg);
 #endif
@@ -1466,7 +1466,7 @@ namespace args
                 {
 #ifdef ARGS_NOEXCEPT
                     error = Error::Help;
-					return this;
+                    return this;
 #else
                     throw Help(std::string(1, arg));
 #endif
