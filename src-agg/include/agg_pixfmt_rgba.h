@@ -1385,7 +1385,7 @@ namespace agg
         typedef typename color_type::calc_type calc_type;
         typedef typename color_type::long_type long_type;
 
-        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+        static AGG_INLINE void blend_pix(unsigned, value_type* p, 
             value_type r, value_type g, value_type b, value_type a, cover_type cover)
         {
             BlenderPre::blend_pix(p, 
@@ -1406,7 +1406,7 @@ namespace agg
         typedef typename color_type::calc_type calc_type;
         typedef typename color_type::long_type long_type;
 
-        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+        static AGG_INLINE void blend_pix(unsigned, value_type* p, 
             value_type r, value_type g, value_type b, value_type a, cover_type cover)
         {
             r = color_type::multiply(r, a);
@@ -1431,7 +1431,7 @@ namespace agg
         typedef typename color_type::calc_type calc_type;
         typedef typename color_type::long_type long_type;
 
-        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+        static AGG_INLINE void blend_pix(unsigned, value_type* p, 
             value_type r, value_type g, value_type b, value_type a, cover_type cover)
         {
             BlenderPre::blend_pix(p, r, g, b, a, cover);
@@ -1448,7 +1448,7 @@ namespace agg
         typedef typename color_type::calc_type calc_type;
         typedef typename color_type::long_type long_type;
 
-        static AGG_INLINE void blend_pix(unsigned op, value_type* p, 
+        static AGG_INLINE void blend_pix(unsigned, value_type* p, 
             value_type r, value_type g, value_type b, value_type a, cover_type cover)
         {
             unsigned da = p[order_type::A];
