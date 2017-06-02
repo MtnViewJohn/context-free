@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
@@ -146,7 +146,6 @@
                                     <outlet property="mVariationField" destination="68" id="71"/>
                                     <outlet property="mVariationLabel" destination="67" id="70"/>
                                     <outlet property="mVariationStepper" destination="69" id="72"/>
-                                    <outlet property="menu" destination="46" id="53"/>
                                 </connections>
                             </customView>
                         </subviews>
@@ -356,54 +355,6 @@ The variation code is a one to six letter sequence.</string>
                 <outlet property="delegate" destination="-2" id="7"/>
             </connections>
         </window>
-        <menu title="Menu" id="46" userLabel="ViewMenu">
-            <items>
-                <menuItem title="Render" id="45">
-                    <connections>
-                        <action selector="startRender:" target="19" id="113"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Render with dimensions…" id="105">
-                    <connections>
-                        <action selector="showHiresRenderSheet:" target="19" id="118"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Animate" id="XAR-w8-R9H">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem title="Stop Rendering" id="47">
-                    <connections>
-                        <action selector="finishRender:" target="19" id="117"/>
-                    </connections>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="48">
-                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                </menuItem>
-                <menuItem title="Save Image…" id="49">
-                    <connections>
-                        <action selector="saveImage:" target="19" id="116"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Save as SVG…" id="177">
-                    <connections>
-                        <action selector="saveAsSVG:" target="19" id="182"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Save as Animation…" id="188">
-                    <connections>
-                        <action selector="saveAsMovie:" target="19" id="189"/>
-                    </connections>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="298">
-                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                </menuItem>
-                <menuItem title="Upload to Gallery…" id="299">
-                    <connections>
-                        <action selector="uploadToGallery:" target="-2" id="300"/>
-                    </connections>
-                </menuItem>
-            </items>
-        </menu>
         <customObject id="76" userLabel="VariationFormatter" customClass="VariationFormatter"/>
         <window title="Render Image" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="86" userLabel="HiRes Sheet" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>

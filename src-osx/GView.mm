@@ -355,8 +355,7 @@ namespace {
         AVPlayerItem* playerItem = (AVPlayerItem*)object;
         dispatch_async(dispatch_get_main_queue(),
                        ^{
-                           if ([self setupTimeSlider: playerItem])
-                               [playerItem removeObserver:self forKeyPath:keyPath context:context];
+                           [self setupTimeSlider: playerItem];
                        });
         return;
     }
@@ -365,16 +364,15 @@ namespace {
         dispatch_async(dispatch_get_main_queue(),
                        ^{
                            AVPlayerItemStatus stat = [playerItem status];
-                           if (stat != AVPlayerItemStatusUnknown)
-                               [playerItem removeObserver:self forKeyPath:keyPath context:context];
                            if (stat == AVPlayerItemStatusReadyToPlay &&
                                [mMoviePlayerLayer isReadyForDisplay])
                            {
                                [mMovieControls setHidden: NO];
                                [mStatus setHidden: YES];
                            }
-                           if (stat == AVPlayerItemStatusFailed)
+                           if (stat == AVPlayerItemStatusFailed) {
                                [self stopLoadingAnimationAndHandleError: [playerItem error]];
+                           }
                        });
         return;
     }
@@ -382,7 +380,6 @@ namespace {
         AVPlayerLayer* playerLayer = (AVPlayerLayer*)object;
         dispatch_async(dispatch_get_main_queue(),
                        ^{
-                           [playerLayer removeObserver:self forKeyPath:keyPath context:context];
                            AVPlayerItemStatus stat = [[[playerLayer player] currentItem] status];
                            if (stat == AVPlayerItemStatusReadyToPlay &&
                                [playerLayer isReadyForDisplay])
@@ -1155,7 +1152,7 @@ namespace {
     if (mMovieFile && mMovieFile->written()) {
         NSString* tempPath = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         NSURL* tempURL = [NSURL fileURLWithPath: tempPath];
-        [self setupPlayer: tempURL];
+        [self performSelector:@selector(setupPlayer:) withObject:tempURL afterDelay:0.5];
     }
     
     // can let everyone go if they really want
@@ -1399,9 +1396,19 @@ namespace {
         mEndMovieToken = nil;
     }
     
+    if (!mMoviePlayerLayer) {
+        AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
+        newPlayerLayer.frame = self.layer.bounds;
+        newPlayerLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+        [self.layer addSublayer:newPlayerLayer];
+        mMoviePlayerLayer = [newPlayerLayer retain];
+        [mMoviePlayerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:LayerStatusContext];
+        
+    }
+    
     // Create an asset with our URL, asychronously load its tracks and whether it's playable or protected.
     // When that loading is complete, configure a player to play the asset.
-    AVURLAsset *asset = [AVURLAsset assetWithURL: movie];
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL: movie options: nil];
     NSArray *assetKeysToLoadAndTest = @[@"playable", @"hasProtectedContent", @"tracks", @"duration"];
     [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
         // The asset invokes its completion handler on an arbitrary queue when loading is complete.
@@ -1418,8 +1425,10 @@ namespace {
     [mMoviePlayer pause];
     
     if (mMoviePlayerLayer) {
+        [mMoviePlayerLayer setPlayer:nil];
         [mMoviePlayerLayer removeFromSuperlayer];
-        mMoviePlayerLayer = nil;
+        [mMoviePlayerLayer removeObserver:self forKeyPath:@"readyForDisplay" context:LayerStatusContext];
+        [mMoviePlayerLayer release]; mMoviePlayerLayer = nil;
     }
     
     if (mTimeObserverToken)
@@ -1428,6 +1437,12 @@ namespace {
         [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
     mEndMovieToken = nil;
     mTimeObserverToken = nil;
+    
+    AVPlayerItem* playerItem = [mMoviePlayer currentItem];
+    if (playerItem) {
+        [playerItem removeObserver:self forKeyPath:@"duration" context:ItemDurationContext];
+        [playerItem removeObserver:self forKeyPath:@"status" context:ItemStatusContext];
+    }
     
     [mMoviePlayer replaceCurrentItemWithPlayerItem: nil];
     
@@ -1439,6 +1454,8 @@ namespace {
 
 - (void)setUpPlaybackOfAsset:(AVURLAsset *)asset withKeys:(NSArray *)keys
 {
+    [asset autorelease];
+    
     // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
     // We set up playback of the asset here.
     AVPlayerItem* playerItem = nil;
@@ -1470,27 +1487,29 @@ namespace {
     }
     
     // We can play this asset.
-    AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
-    newPlayerLayer.frame = self.layer.bounds;
-    newPlayerLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-    [self.layer addSublayer:newPlayerLayer];
-    mMoviePlayerLayer = newPlayerLayer;
-    [mMoviePlayerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:LayerStatusContext];
-    
     // Create a new AVPlayerItem and make it our player's current item.
-    if (!playerItem)
+    if (!playerItem) {
         playerItem = [AVPlayerItem playerItemWithAsset:asset];
+        [playerItem addObserver:self forKeyPath:@"duration" options:0 context:ItemDurationContext];
+    }
     
     if (mEndMovieToken) {
         [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
         mEndMovieToken = nil;
     }
     
+    AVPlayerItem* oldPlayerItem = [mMoviePlayer currentItem];
+    if (oldPlayerItem) {
+        [oldPlayerItem removeObserver:self forKeyPath:@"duration" context:ItemDurationContext];
+        [oldPlayerItem removeObserver:self forKeyPath:@"status" context:ItemStatusContext];
+    }
+    
+
+    
     if (playerItem) {
         [self setupTimeSlider: playerItem];
         
-        if ([playerItem status] != AVPlayerItemStatusReadyToPlay)
-            [playerItem addObserver:self forKeyPath:@"status" options:0 context:ItemStatusContext];
+        [playerItem addObserver:self forKeyPath:@"status" options:0 context:ItemStatusContext];
         
         // Subscribe to the AVPlayerItem's DidPlayToEndTime notification.
         mEndMovieToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
@@ -1516,6 +1535,9 @@ namespace {
     if (isfinite(length)) {
         mTimeSlider.maxValue = length;
         mTimeLabel.doubleValue = length;
+        mTimeSlider.doubleValue = 0.0;
+        mStartStopButton.image = PlayNormalImage;
+        mStartStopButton.alternateImage = PlayPressImage;
         return true;
     }
     return false;
