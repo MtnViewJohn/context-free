@@ -62,7 +62,7 @@ endif
 #
 
 # COMMON_SRCS += ffCanvas.cpp
-# LIBS += avformat avcodec avutil
+# LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
 
 #
 # Comment out this line to enable FFmpeg support

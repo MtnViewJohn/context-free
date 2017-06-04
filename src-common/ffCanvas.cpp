@@ -107,6 +107,7 @@ bool ffCanvas::Available()
 #define my_sws_freeContext sws_freeContext
 #define my_sws_scale sws_scale
 #define my_av_dict_set av_dict_set
+#define my_avcodec_receive_packet avcodec_receive_packet
 #endif
 
 class ffCanvas::Impl
