@@ -1,9 +1,9 @@
 *** Context Free
-*** version 3.0.9
+*** version 3.0.11
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
-    Context Free Copyright 2005-2015 Mark Lentczner and John Horigan
+    Context Free Copyright 2005-2017 Mark Lentczner and John Horigan
     CFDG Copyright 2005 Chris Coyne
 	Anti-Grain Geometry library Copyright 2002-2005 Maxim Shemanarev
 
@@ -42,8 +42,6 @@ FILE TREE
 ./src-ffmpeg/   - FFmpeg resources
 ./src-ffmpeg/include/  - FFmpeg include files
 ./src-ffmpeg/lib/      - FFmpeg libraries for Linux
-./src-ffmpeg/lib32/    - FFmpeg libraries for Windows i386
-./src-ffmpeg/lib64/    - FFmpeg libraries for Windows x86_64
 ./src-net/	    - Windows .Net specific sources
 ./src-osx/      - Mac specific sources
 ./src-unix/     - Unix/Posix specific sources 
@@ -58,7 +56,7 @@ FILE TREE
 MACINTOSH BUILD NOTES
 
 Requires Xcode 6 & Mac OS X 10.7 (Lion).
-Developed with XCode 6.3 and Mac OS X 10.10 (Yosemite), has not been tested
+Developed with XCode 8.3.2 and Mac OS X 10.12 (Sierra), has not been tested
 with older versions of XCode or Mac OS X.
 
 The Xcode project file is in the top directory:
@@ -92,7 +90,7 @@ src-win/derived and type 'make' (you will need bison and flex too).
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
 
-You'll need a c++ compiler, flex (not lex), bison and the libpng Library. 
+You'll need a c++ compiler, flex (not lex), bison 2.5 and the libpng Library. 
 Most of this should be installed or easily available on any modern operating
 system distribution.  If you need it, libpng can be found here:
     http://libpng.org/pub/png/libpng.html    

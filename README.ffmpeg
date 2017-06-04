@@ -26,31 +26,34 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-The Windows and Linux builds of Context Free/cfdg use FFmpeg 2.61 to generate 
+The Windows and Linux builds of Context Free/cfdg use FFmpeg 3.3.1 to generate 
 Quicktime animation output. Earlier or later versions of ffmpeg may not work
 as the FFmpeg API is a moving target. Libav does not work, only FFmpeg.
 
-The source distribution contains prebuilt libraries and include headers for 
-Windows 32-bit and 64-bit. For all other systems, you must build the FFmpeg
-libraries to enable animation output in the command-line builds.
+The source distribution does not contain FFmpeg libraries. The Windows build
+dynamically detects the presence of FFmpeg DLLs and enables QuickTime support
+if they are found. An installer for the DLLs and ffplay.exe is at
+https://www.contextfreeart.org/download/CF_FFmpegInstall3.3.1.exe
 
-Building the libraries:
-1) For Windows, there are 32 and 64-bit builds of FFmpeg checked into the 
-   source tree. They are built using Visual Studio 2015 command line tools
-   and MSYS2 for a Posix environment.
+Linux variants:
+1) FFmpeg is required, not the libav replacement the Debian has switched to.
+   Ubuntu is not up to FFmpeg 3.3.1 yet, but the 3.0.7+ versions in Ubuntu
+   16.10 and later should work. You may need to build and install FFmpeg.
 
-2) Install the FFmpeg source at ~/ffmpeg. 
+2) FFmpeg must have libx264 and prores_ks support. If you are building
+   FFmpeg then you will need libx264-dev. When building FFmpeg you must
+   include these options in the configuration:
+     ./configure  --enable-libx264 --enable-gpl
 
-3) Create a build directory, cd into it, and execute the build script, 
-make_ffmpeg_linux. The libraries and include files will be installed at ~/software/packages/linux. 
+3) src-ffmpeg/include contains the header files for FFmpeg 3.3.1. If you are 
+   building against a different version of FFmpeg then replace src-ffmpeg/include
+   with a symlink to that versions include files. If they are installed in 
+   a system include directory then just delete the contents of src-ffmpeg/include
 
-4) Copy the include files to src-ffmpeg/include and the libraries to 
-src-ffmpeg/lib in the Context Free source tree.
-
-5) Modify the Makefile to enable FFmpeg support:
+4) Modify the Makefile to enable FFmpeg support:
 * Uncomment out COMMON_SRCS += ffCanvas.cpp
+* Uncomment out LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
 * Comment out COMMON_SRCS += ffCanvasDummy.cpp
-* Uncomment out LIBS += avformat avcodec avutil
 
-6) make clean && make
+5) make clean && make
 
