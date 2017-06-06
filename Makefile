@@ -46,13 +46,13 @@ DERIVED_SRCS = lex.yy.cpp cfdg.tab.cpp
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
 
-LIBS = png z m
+LIBS = png m
 
 # Use the first one for clang and the second one for gcc
 ifeq ($(shell uname -s), Darwin)
   LIBS += c++
 else
-  LIBS += stdc++
+  LIBS += stdc++ atomic
 endif
 
 #
