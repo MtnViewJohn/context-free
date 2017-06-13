@@ -30,7 +30,8 @@
 #define AGG_RASTERIZER_CELLS_AA_INCLUDED
 
 #include <string.h>
-#include <math.h>
+#include <cstdlib>
+#include <limits>
 #include "agg_math.h"
 #include "agg_array.h"
 
@@ -150,10 +151,10 @@ namespace agg
         m_curr_cell_ptr(0),
         m_sorted_cells(),
         m_sorted_y(),
-        m_min_x(0x7FFFFFFF),
-        m_min_y(0x7FFFFFFF),
-        m_max_x(-0x7FFFFFFF),
-        m_max_y(-0x7FFFFFFF),
+        m_min_x(std::numeric_limits<int>::max()),
+        m_min_y(std::numeric_limits<int>::max()),
+        m_max_x(std::numeric_limits<int>::min()),
+        m_max_y(std::numeric_limits<int>::min()),
         m_sorted(false)
     {
         m_style_cell.initial();
@@ -169,10 +170,10 @@ namespace agg
         m_curr_cell.initial();
         m_style_cell.initial();
         m_sorted = false;
-        m_min_x =  0x7FFFFFFF;
-        m_min_y =  0x7FFFFFFF;
-        m_max_x = -0x7FFFFFFF;
-        m_max_y = -0x7FFFFFFF;
+        m_min_x = std::numeric_limits<int>::max();
+        m_min_y = std::numeric_limits<int>::max();
+        m_max_x = std::numeric_limits<int>::min();
+        m_max_y = std::numeric_limits<int>::min();
     }
 
     //------------------------------------------------------------------------
@@ -217,7 +218,8 @@ namespace agg
         int fx1 = x1 & poly_subpixel_mask;
         int fx2 = x2 & poly_subpixel_mask;
 
-        int delta, p, first, dx;
+        int delta, p, first;
+        long long dx;
         int incr, lift, mod, rem;
 
         //trivial case. Happens often
@@ -242,7 +244,7 @@ namespace agg
         first = poly_subpixel_scale;
         incr  = 1;
 
-        dx = x2 - x1;
+        dx = (long long)x2 - (long long)x1;
 
         if(dx < 0)
         {
@@ -252,8 +254,8 @@ namespace agg
             dx    = -dx;
         }
 
-        delta = p / dx;
-        mod   = p % dx;
+        delta = (int)(p / dx);
+        mod   = (int)(p % dx);
 
         if(mod < 0)
         {
@@ -271,8 +273,8 @@ namespace agg
         if(ex1 != ex2)
         {
             p     = poly_subpixel_scale * (y2 - y1 + delta);
-            lift  = p / dx;
-            rem   = p % dx;
+            lift  = (int)(p / dx);
+            rem   = (int)(p % dx);
 
             if (rem < 0)
             {
@@ -317,17 +319,17 @@ namespace agg
     {
         enum dx_limit_e { dx_limit = 16384 << poly_subpixel_shift };
 
-        int dx = x2 - x1;
+        long long dx = (long long)x2 - (long long)x1;
 
         if(dx >= dx_limit || dx <= -dx_limit)
         {
-            int cx = (x1 + x2) >> 1;
-            int cy = (y1 + y2) >> 1;
+            int cx = (int)(((long long)x1 + (long long)x2) >> 1);
+            int cy = (int)(((long long)y1 + (long long)y2) >> 1);
             line(x1, y1, cx, cy);
             line(cx, cy, x2, y2);
         }
 
-        int dy = y2 - y1;
+        long long dy = (long long)y2 - (long long)y1;
         int ex1 = x1 >> poly_subpixel_shift;
         int ex2 = x2 >> poly_subpixel_shift;
         int ey1 = y1 >> poly_subpixel_shift;
@@ -336,7 +338,8 @@ namespace agg
         int fy2 = y2 & poly_subpixel_mask;
 
         int x_from, x_to;
-        int p, rem, mod, lift, delta, first, incr;
+        int rem, mod, lift, delta, first, incr;
+        long long p;
 
         if(ex1 < m_min_x) m_min_x = ex1;
         if(ex1 > m_max_x) m_max_x = ex1;
@@ -413,8 +416,8 @@ namespace agg
             dy    = -dy;
         }
 
-        delta = p / dy;
-        mod   = p % dy;
+        delta = (int)(p / dy);
+        mod   = (int)(p % dy);
 
         if(mod < 0)
         {
@@ -431,8 +434,8 @@ namespace agg
         if(ey1 != ey2)
         {
             p     = poly_subpixel_scale * dx;
-            lift  = p / dy;
-            rem   = p % dy;
+            lift  = (int)(p / dy);
+            rem   = (int)(p % dy);
 
             if(rem < 0)
             {
@@ -625,8 +628,8 @@ namespace agg
         if(m_sorted) return; //Perform sort only the first time.
 
         add_curr_cell();
-        m_curr_cell.x     = 0x7FFFFFFF;
-        m_curr_cell.y     = 0x7FFFFFFF;
+        m_curr_cell.x     = std::numeric_limits<int>::max();
+        m_curr_cell.y     = std::numeric_limits<int>::max();
         m_curr_cell.cover = 0;
         m_curr_cell.area  = 0;
 

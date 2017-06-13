@@ -16,6 +16,8 @@
 #ifndef AGG_RENDERER_SCANLINE_INCLUDED
 #define AGG_RENDERER_SCANLINE_INCLUDED
 
+#include <limits>
+#include <cstdlib>
 #include "agg_basics.h"
 #include "agg_renderer_base.h"
 
@@ -745,7 +747,7 @@ namespace agg
                                0, 
                                sl_len * sizeof(cover_type));
 
-                        int sl_y = 0x7FFFFFFF;
+                        int sl_y = std::numeric_limits<int>::max();
                         unsigned i;
                         for(i = 0; i < num_styles; i++)
                         {
