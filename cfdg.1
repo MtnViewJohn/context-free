@@ -1,0 +1,149 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH CONTEXTFREE 1 "2017-06-01" "3.0.11" "Context Free"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+cfdg \- image generator based on context-free grammars
+.SH SYNOPSIS
+.B cfdg
+.RI [ options "] " input.cfdg " [" output.png/svg ]
+.SH DESCRIPTION
+Context Free is a system that produces images based on context-free
+grammars.
+.B cfdg
+is the command-line program to generate the actual images (in PNG or SVG
+format) from the
+.I input.cfdg
+file containing these grammars.  If
+.I -
+is specified instead of an input file, the grammar is read from standard input.
+The output filename can be left out if the
+.B -o
+option is used.  Note that the output mode (PNG or SVG) is not detected
+depending on the specified extension, but must be explicitly set using the
+.B -V/--svg
+option.
+.SH OPTIONS
+All command-line options consist of a single letter, and an optional argument.
+A summary of options supported by
+.B cfdg
+is included below.
+.TP
+.BI \-w,\ \-\-width= WIDTH
+Set width of the output image in pixels (for PNG) or millimeters (for SVG)
+(default: 500).
+.TP
+.BI \-h,\ \-\-height= HEIGHT
+Set height of the output image in pixels (for PNG) or millimeters (for SVG)
+(default: 500).
+.TP
+.BI \-s,\ \-\-size= SIZE
+Set both width and height of the output image in pixels (for PNG) or
+millimeters (for SVG) to the same value.
+.TP
+.BI \-s,\ \-\-size= WIDTH x HEIGHT
+Set both width and height of the output image in pixels (for PNG) or
+millimeters (for SVG).
+.TP
+.BI \-T,\ \-\-tile= SIZE
+Multiply both width and height of the tiled output image by the same amount.
+.TP
+.BI \-T,\ \-\-tile= WIDTH x HEIGHT
+Multiply both width and height of the tiled output image by the given amounts.
+.TP
+.BI \-m,\ \-\-maxshapes= MAXSHAPES
+Set the maximum number of shapes rendered (default: no maximum).
+.TP
+.BI \-x,\ \-\-minimumsize= MINIMUMSIZE
+Set the minimum size for a shape to be rendered in pixels/mm (default: 0.3).
+.TP
+.BI \-b,\ \-\-bordersize= BORDERSIZE
+Set the border size: \-1 for a \-8 pixel border, 0 for no border, 1 for an 8
+pixel border, or 2 for a variable-sized border.
+.TP
+.BI \-v,\ \-\-variation= VARIATION
+Set the variation code (default: random).  This code determines what the final
+image will look like when the input contains non-deterministic rules.
+.TP
+.BI \-o,\ \-\-outputtemplate= NAMETEMPLATE
+Set the output filename.  In this filename,
+.I %f
+is replaced by the animation frame number (if any),
+.IR %v " and " %V
+are replaced by the variation code (in lower or upper case, respectively), and
+.I %%
+is replaced by a literal %.
+.TP
+.BI \-a,\ \-\-animate= NUM
+Generate
+.I NUM
+animation frames at 15 fps (only possible using PNG output).
+.TP
+.BI \-a,\ \-\-animate= TIME x FPS
+Generate
+.I TIME
+x
+.I FPS
+animation frames at the specified fps (only possible using PNG output).
+.TP
+.BI \-f,\ \-\-frame= FRAME
+Generate animation 
+.I FRAME
+only (only possible using PNG output).
+.TP
+.B \-z, \-\-zoom
+Zoom out during animation, when producing an animation using
+.BR -a .
+.TP
+.B \-V, \-\-svg
+Generate SVG (vector) output.
+.TP
+.B \-Q, \-\-quicktime
+Generate Quicktime movie output (not available in this Debian package).
+.
+.TP
+.B \-\-prores
+Generate Quicktime movie output using the ProRes codec instead of the H.264 codec (not available in this Debian package).
+.
+.TP
+.B \-c, \-\-crop
+Crop image output.
+.TP
+.B \-q, \-\-quiet
+Quiet mode; suppress non-error output.
+.TP
+.B \-C, \-\-check
+Check the syntax of the cfdg file, then exit.
+.TP
+.B \-t, \-\-time
+Time output; output the time taken to render the cfdg file.
+.TP
+.B \-d, \-\-cleanup
+Delete old temporary file.
+.TP
+.B \-P, \-\-paramdebug
+Enable debug mode to test if all parameter blocks are deallocated.
+.TP
+.B \-?, \-\-help
+Show summary of options.
+.SH SEE ALSO
+More information can be found on the Context Free website, at
+http://contextfreeart.org/.
+.SH AUTHOR
+Context Free was written by Chris Coyne, John Horigan and Mark Lentczner.
+.PP
+This manual page was written by Bram Senders <bram@luon.net>,
+for the Debian project (but may be used by others).
