@@ -39,7 +39,7 @@
 #include <string>
 #include <cstdlib>
 #include <map>
-#include "agg_basics.h"
+#include "agg2/agg_basics.h"
 #include "Rand64.h"
 
 #include "shape.h"

@@ -34,11 +34,11 @@
 #include <cmath>
 #include <functional>
 
-#include "agg_math_stroke.h"
-#include "agg_trans_affine.h"
+#include "agg2/agg_math_stroke.h"
+#include "agg2/agg_trans_affine.h"
 #include "agg_trans_affine_1D.h"
 #include "agg_trans_affine_time.h"
-#include "agg_color_rgba.h"
+#include "agg2/agg_color_rgba.h"
 #include "HSBColor.h"
 #include "Rand64.h"
 #include "bounds.h"

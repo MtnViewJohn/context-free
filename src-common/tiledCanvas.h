@@ -25,8 +25,8 @@
 #ifndef INCLUDE_TILEDCANVAS_H
 #define INCLUDE_TILEDCANVAS_H
 
-#include "agg_trans_affine.h"
-#include "agg_color_rgba.h"
+#include "agg2/agg_trans_affine.h"
+#include "agg2/agg_color_rgba.h"
 #include "cfdg.h"
 #include "bounds.h"
 #include "shape.h"

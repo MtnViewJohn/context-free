@@ -30,8 +30,8 @@
 #define __STDC_LIMIT_MACROS
 #endif
 #include <limits>
-#include <agg_basics.h>
-#include "agg_path_storage.h"
+#include "agg2/agg_basics.h"
+#include "agg2/agg_path_storage.h"
 #include <deque>
 #include <stdint.h>
 #include <atomic>

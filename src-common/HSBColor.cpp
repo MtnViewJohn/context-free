@@ -29,7 +29,7 @@
 #include "HSBColor.h"
 
 #include <math.h>
-#include <agg_color_rgba.h>
+#include "agg2/agg_color_rgba.h"
 
 
 

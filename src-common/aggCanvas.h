@@ -31,8 +31,8 @@
 #define INCLUDE_AGGCANVAS_H
 
 #include "cfdg.h"
-#include "agg_trans_affine.h"
-#include "agg_path_storage.h"
+#include "agg2/agg_trans_affine.h"
+#include "agg2/agg_path_storage.h"
 #include <map>
 
 class aggCanvas : public Canvas {

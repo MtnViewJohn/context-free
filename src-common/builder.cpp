@@ -32,9 +32,9 @@
 
 #define _USE_MATH_DEFINES
 
-#include "agg_trans_affine.h"
-#include "agg_path_storage.h"
-#include "agg_basics.h"
+#include "agg2/agg_trans_affine.h"
+#include "agg2/agg_path_storage.h"
+#include "agg2/agg_basics.h"
 #include "cfdgimpl.h"
 #include "primShape.h"
 #include <cmath>

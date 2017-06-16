@@ -30,7 +30,7 @@
 #ifndef INCLUDE_BOUNDS_H
 #define INCLUDE_BOUNDS_H
 
-#include "agg_path_storage.h"
+#include "agg2/agg_path_storage.h"
 #include <limits>
 #include <cmath>
 

@@ -39,7 +39,7 @@
 #include <array>
 #include <type_traits>
 
-#include "agg_trans_affine.h"
+#include "agg2/agg_trans_affine.h"
 #include "agg_trans_affine_time.h"
 #include "bounds.h"
 #include "rendererAST.h"

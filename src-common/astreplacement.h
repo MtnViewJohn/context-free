@@ -37,7 +37,7 @@
 #include <map>
 #include <list>
 #include "CmdInfo.h"
-#include "agg_path_storage.h"
+#include "agg2/agg_path_storage.h"
 
 namespace agg {
     struct trans_affine;

@@ -25,7 +25,7 @@
 #ifndef INCLUDE_PRIMSHAPE_H
 #define INCLUDE_PRIMSHAPE_H
 
-#include "agg_path_storage.h"
+#include "agg2/agg_path_storage.h"
 #include <initializer_list>
 #include <utility>
 #include <cassert>

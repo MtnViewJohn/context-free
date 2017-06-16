@@ -25,9 +25,9 @@
 #ifndef AGG_COPY_RECT_INCLUDED
 #define AGG_COPY_RECT_INCLUDED
 
-#include "agg_color_gray.h"
-#include "agg_color_rgba.h"
-#include "agg_renderer_base.h"
+#include "agg2/agg_color_gray.h"
+#include "agg2/agg_color_rgba.h"
+#include "agg2/agg_renderer_base.h"
 
 namespace agg
 {

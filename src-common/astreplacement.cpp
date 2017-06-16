@@ -25,7 +25,7 @@
 
 #include "astreplacement.h"
 
-#include "agg_basics.h"
+#include "agg2/agg_basics.h"
 #include "pathIterator.h"
 #include <cassert>
 #include <atomic>

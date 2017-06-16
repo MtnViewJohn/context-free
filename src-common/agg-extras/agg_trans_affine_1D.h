@@ -23,7 +23,7 @@
 #define AGG_TRANS_AFFINE_1D_INCLUDED
 
 #include <math.h>
-#include "agg_basics.h"
+#include "agg2/agg_basics.h"
 
 namespace agg
 {

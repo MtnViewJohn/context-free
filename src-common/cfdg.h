@@ -34,9 +34,9 @@
 #include <string>
 #include <time.h>
 #include <vector>
-#include "agg_trans_affine.h"
-#include "agg_color_rgba.h"
-#include "agg_path_storage.h"
+#include "agg2/agg_trans_affine.h"
+#include "agg2/agg_color_rgba.h"
+#include "agg2/agg_path_storage.h"
 #include "location.hh"
 #include "stacktype.h"
 #include "Rand64.h"

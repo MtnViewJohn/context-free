@@ -26,12 +26,12 @@
 #ifndef INCLUDE_PATHITERATOR_H
 #define INCLUDE_PATHITERATOR_H
 
-#include "agg_bounding_rect.h"
-#include "agg_rasterizer_scanline_aa.h"
-#include "agg_conv_stroke.h"
-#include "agg_conv_curve.h"
-#include "agg_trans_affine.h"
-#include "agg_path_storage.h"
+#include "agg2/agg_bounding_rect.h"
+#include "agg2/agg_rasterizer_scanline_aa.h"
+#include "agg2/agg_conv_stroke.h"
+#include "agg2/agg_conv_curve.h"
+#include "agg2/agg_trans_affine.h"
+#include "agg2/agg_path_storage.h"
 
 namespace AST {
     struct CommandInfo;

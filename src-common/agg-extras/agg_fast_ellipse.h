@@ -31,7 +31,7 @@
 #ifndef AGG_FAST_ELLIPSE_INCLUDED
 #define AGG_FAST_ELLIPSE_INCLUDED
 
-#include "agg_basics.h"
+#include "agg2/agg_basics.h"
 #include <math.h>
 #include <memory>
 

@@ -29,10 +29,10 @@
 
 #include "bounds.h"
 
-#include "agg_trans_affine.h"
+#include "agg2/agg_trans_affine.h"
 #include "primShape.h"
 #include "shape.h"
-#include "agg_basics.h"
+#include "agg2/agg_basics.h"
 #include "pathIterator.h"
 #include "ast.h"
 

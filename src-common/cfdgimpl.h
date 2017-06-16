@@ -37,7 +37,7 @@
 #include <deque>
 #include <type_traits>
 
-#include "agg_color_rgba.h"
+#include "agg2/agg_color_rgba.h"
 #include "cfdg.h"
 #include "shape.h"
 #include "astreplacement.h"

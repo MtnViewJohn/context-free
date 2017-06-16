@@ -29,8 +29,8 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "agg_math_stroke.h"
-#include "agg_trans_affine.h"
+#include "agg2/agg_math_stroke.h"
+#include "agg2/agg_trans_affine.h"
 #include "location.hh"
 #include <stdint.h>
 
