@@ -21,6 +21,15 @@ INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_
 INC_DIRS += /usr/local/include
 
 #
+# Installation directories
+#
+
+prefix = /usr/local
+
+BIN_DIR = $(DESTDIR)$(prefix)bin
+MAN_DIR = $(DESTDIR)$(prefix)/share/man
+
+#
 # Library directories for FFmpeg and libpng
 #
 
@@ -110,6 +119,7 @@ $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
 # Utility
 #
 
+.PHONY: clean distclean install uninstall
 clean :
 	rm -f $(OBJ_DIR)/*
 	rm -f cfdg
@@ -121,21 +131,24 @@ $(OBJ_DIR)/Sentry :
 	mkdir -p $(OBJ_DIR) 2> /dev/null || true
 	touch $@
 
+install: cfdg cfdg.1
+	install -d $(BIN_DIR) $(MAN_DIR)/man1
+	install -m 755 cfdg $(BIN_DIR)
+	install -m 644 cfdg.1 $(MAN_DIR)/man1
+
+uninstall:
+	-rm -f $(BIN_DIR)/cfdg
+	-rm -f $(MAN_DIR)/man1/cfdg.1
+
 #
 # Tests
 #
 
-RTEST_CFDG = input/rendering-tests.cfdg
-OUTPUT_DIR = output
-
-rtests: $(OUTPUT_DIR)/rtest-700.png $(OUTPUT_DIR)/rtest-2k.png
-
-$(OUTPUT_DIR)/rtest-700.png: cfdg $(RTEST_CFDG)
-	./cfdg -s 700 $(RTEST_CFDG) $@
-$(OUTPUT_DIR)/rtest-2k.png: cfdg $(RTEST_CFDG)
-	./cfdg -s 2000 $(RTEST_CFDG) $@
-
+.PHONY: test check
 test: cfdg
+	./runtests.sh
+
+check: cfdg
 	./runtests.sh
 
 #
