@@ -17,7 +17,7 @@ FFMPEG_DIR = src-ffmpeg
 SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
 
-INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/include $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
+INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
 INC_DIRS += /usr/local/include
 
 #
@@ -78,8 +78,21 @@ endif
 #
 
 COMMON_SRCS += ffCanvasDummy.cpp
+SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS)
 
-SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS) $(AGG_SRCS)
+#
+# Configuration for local AGG
+#
+SRCS += $(AGG_SRCS)
+INC_DIRS += $(AGG_DIR) $(AGG_DIR)/agg2
+
+
+#
+# Configuration for system AGG
+#
+#LIBS += agg
+
+
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst %.o,%.d,$(OBJS))
 
