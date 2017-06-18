@@ -26,7 +26,7 @@ INC_DIRS += /usr/local/include
 
 prefix = /usr/local
 
-BIN_DIR = $(DESTDIR)$(prefix)bin
+BIN_DIR = $(DESTDIR)$(prefix)/bin
 MAN_DIR = $(DESTDIR)$(prefix)/share/man
 
 #
@@ -101,7 +101,12 @@ LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
 
 deps: $(OBJ_DIR) $(DEPS)
+
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),distclean)
 include $(DEPS)
+endif
+endif
 
 $(OBJS): $(OBJ_DIR)/Sentry
 
@@ -123,6 +128,7 @@ $(DERIVED_DIR)/lex.yy.cpp: $(COMMON_DIR)/cfdg.l
 	flex -o $@ $^
 
 $(DERIVED_DIR)/cfdg.tab.hpp: $(DERIVED_DIR)/cfdg.tab.cpp
+$(DERIVED_DIR)/location.hh: $(DERIVED_DIR)/cfdg.tab.cpp
 $(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp
 	bison -o $(DERIVED_DIR)/cfdg.tab.cpp $(COMMON_DIR)/cfdg.ypp
 
@@ -138,7 +144,8 @@ clean :
 	rm -f cfdg
 
 distclean: clean
-	rmdir $(OBJ_DIR)
+	rmdir $(OBJ_DIR) 2> /dev/null || true
+	rm -fr output 2> /dev/null || true
 
 $(OBJ_DIR)/Sentry :
 	mkdir -p $(OBJ_DIR) 2> /dev/null || true
@@ -169,7 +176,7 @@ check: cfdg
 #
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O3 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
+CPPFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
 #CPPFLAGS += -g
 
 # Add this for clang
@@ -180,13 +187,15 @@ endif
 $(OBJ_DIR)/%.o : %.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
 
-$(OBJ_DIR)/%.d : %.cpp
+$(OBJ_DIR)/%.d : %.cpp $(OBJ_DIR)/location.hh
 	mkdir -p $(OBJ_DIR) 2> /dev/null || true
 	set -e; $(COMPILE.cpp) -MM $< \
 	| sed 's,\(.*\.o\)\( *:\),$(OBJ_DIR)/\1 $@\2,g' > $@; \
 	[ -s $@ ] || rm -f $@
 
 $(OBJ_DIR)/cfdg.tab.d:
+	mkdir -p $(OBJ_DIR) 2> /dev/null || true
 
 $(OBJ_DIR)/lex.yy.d:
+	mkdir -p $(OBJ_DIR) 2> /dev/null || true
 
