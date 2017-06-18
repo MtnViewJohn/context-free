@@ -3052,7 +3052,7 @@ shape CHAPTER7
     // braces then they are applied
     // in the order they are found
     // and there can be multiple
-    // occurances of a given type
+    // occurrences of a given type
     // of transform.
 }
 
@@ -3093,7 +3093,7 @@ shape SquareLine
     SquareLine [[ y -0.5 s 0.75 y -0.5 ]]
     // Transforms can be specified
     // more than once and subsequent
-    // transforms are modifed by the
+    // transforms are modified by the
     // ones before them. In the above
     // idiom the squares are always
     // just touching, even when you

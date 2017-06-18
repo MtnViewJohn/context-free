@@ -536,7 +536,7 @@ namespace AST {
             info = &(*(r->mCurrentCommand++));
         } else {
             if (r->mCurrentPath->mPath.total_vertices() == 0)
-                CfdgError::Error(mLocation, "Path commands must be preceeded by at least one path operation");
+                CfdgError::Error(mLocation, "Path commands must be preceded by at least one path operation");
             
             r->mWantCommand = false;
             r->mCurrentPath->finish(false, r);
