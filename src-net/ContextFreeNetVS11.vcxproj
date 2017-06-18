@@ -168,6 +168,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -198,6 +199,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -226,6 +228,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -256,6 +259,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -283,6 +287,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -311,6 +316,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -339,6 +345,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -365,6 +372,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
