@@ -160,7 +160,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -190,7 +190,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -218,7 +218,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -248,7 +248,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -275,7 +275,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -303,7 +303,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -331,7 +331,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -357,7 +357,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg\include;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -1389,39 +1389,39 @@
     <ClInclude Include="AboutBox.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="..\src-agg\include\agg_array.h" />
-    <ClInclude Include="..\src-agg\include\agg_basics.h" />
-    <ClInclude Include="..\src-agg\include\agg_bezier_arc.h" />
-    <ClInclude Include="..\src-agg\include\agg_bounding_rect.h" />
-    <ClInclude Include="..\src-agg\include\agg_clip_liang_barsky.h" />
-    <ClInclude Include="..\src-agg\include\agg_color_gray.h" />
-    <ClInclude Include="..\src-agg\include\agg_color_rgba.h" />
-    <ClInclude Include="..\src-agg\include\agg_config.h" />
-    <ClInclude Include="..\src-agg\include\agg_conv_adaptor_vcgen.h" />
-    <ClInclude Include="..\src-agg\include\agg_conv_curve.h" />
-    <ClInclude Include="..\src-agg\include\agg_conv_stroke.h" />
-    <ClInclude Include="..\src-agg\include\agg_conv_transform.h" />
-    <ClInclude Include="..\src-agg\include\agg_curves.h" />
-    <ClInclude Include="..\src-agg\include\agg_ellipse.h" />
-    <ClInclude Include="..\src-agg\include\agg_gamma_functions.h" />
-    <ClInclude Include="..\src-agg\include\agg_math.h" />
-    <ClInclude Include="..\src-agg\include\agg_math_stroke.h" />
-    <ClInclude Include="..\src-agg\include\agg_path_storage.h" />
-    <ClInclude Include="..\src-agg\include\agg_pixfmt_gray.h" />
-    <ClInclude Include="..\src-agg\include\agg_pixfmt_rgb.h" />
-    <ClInclude Include="..\src-agg\include\agg_pixfmt_rgba.h" />
-    <ClInclude Include="..\src-agg\include\agg_rasterizer_cells_aa.h" />
-    <ClInclude Include="..\src-agg\include\agg_rasterizer_scanline_aa.h" />
-    <ClInclude Include="..\src-agg\include\agg_rasterizer_sl_clip.h" />
-    <ClInclude Include="..\src-agg\include\agg_renderer_base.h" />
-    <ClInclude Include="..\src-agg\include\agg_renderer_scanline.h" />
-    <ClInclude Include="..\src-agg\include\agg_rendering_buffer.h" />
-    <ClInclude Include="..\src-agg\include\agg_scanline_p.h" />
-    <ClInclude Include="..\src-agg\include\agg_shorten_path.h" />
-    <ClInclude Include="..\src-agg\include\agg_trans_affine.h" />
-    <ClInclude Include="..\src-agg\include\agg_vcgen_contour.h" />
-    <ClInclude Include="..\src-agg\include\agg_vcgen_stroke.h" />
-    <ClInclude Include="..\src-agg\include\agg_vertex_sequence.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_array.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_basics.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_bezier_arc.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_bounding_rect.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_clip_liang_barsky.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_color_gray.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_color_rgba.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_config.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_conv_adaptor_vcgen.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_conv_curve.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_conv_stroke.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_conv_transform.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_curves.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_ellipse.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_gamma_functions.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_math.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_math_stroke.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_path_storage.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_pixfmt_gray.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_pixfmt_rgb.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_pixfmt_rgba.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_rasterizer_cells_aa.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_rasterizer_scanline_aa.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_rasterizer_sl_clip.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_renderer_base.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_renderer_scanline.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_rendering_buffer.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_scanline_p.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_shorten_path.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_trans_affine.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_vcgen_contour.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_vcgen_stroke.h" />
+    <ClInclude Include="..\src-agg\agg2\agg_vertex_sequence.h" />
     <ClInclude Include="..\src-common\aggCanvas.h" />
     <ClInclude Include="..\src-common\ast.h" />
     <ClInclude Include="..\src-common\bounds.h" />
