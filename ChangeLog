@@ -1,0 +1,461 @@
+  Change Log
+  
+V3.0.11 - June 2017
+-------------------
+* Animation has changed from an output save option to a first-class operation. 
+  You do not need to render first to generate a movie. Instead, select the 
+  Animate command from the Render menu. You will be shown a preview of the 
+  movie.
+* Individual movie frames can also be rendered, for testing. Select Animate 
+  Frame command from the Render menu, or use the --frame option on the command 
+  line.
+* Windows, command-line: Movie output now uses the H.264 or the ProRes format. 
+  Support for Apple Animation codec is removed.
+* Windows: User interface has been updated to a more modern look.
+* Mac: Some open-source code with an insufficiently free license has been 
+  replaced with completely free code. This should satisfy a Debian bug filed on 
+  Context Free.
+* A variable named π (pi) has been defined with the expected value. An entry 
+  in the Insert Character submenu has been added.
+* It is now possible to multiply or divide a vector by scalar value and each 
+  element will be multiplied or divided by that value. Vectors can also be 
+  multiplied by divided by vectors of the same size; element by element 
+  multiplication or division will result.
+* command line: The example cfdg files have been embedded in the command-line 
+  version, just as they are in the GUI versions. They can be imported into 
+  other designs in any version.
+
+  Bug fixes:
+  
+* Improperly terminated comments could cause Context Free/cfdg to hang.
+* A spurious error, "Invalid UTF-8 encoding: ASCII null character", can be 
+  reported for valid cfdg input if a shape name is the very last token in a 
+  cfdg file.
+* Cfdg files that only have FILL shapes in them and no SQUAREs, CIRCLEs, 
+  TRIANGLEs, or paths will fail to draw anything.
+* A dependency on Bison 3.03 was accidentally introduced. Context Free/cfdg is 
+  supposed to depend on Bison 2.5.
+
+V3.0.10 - January 2017
+----------------------
+
+* Uploading from Context Free now uses HTTPS instead of HTTP, which 
+  www.contextfreeart.org now requires. Context Free also stores your password 
+  encrypted.
+
+  Bug fixes:
+  
+* Shape adjustments of the form x expr1 y expr2 are not evaluated correctly if 
+  expr2 is random or depends on a shape parameter and expr1 does not.
+* The case values in switch statements are supposed allow for arbitrary 
+  constant expressions, but anything except an integer constant produces an 
+  error.
+* fixed (command-line): Sometimes crashes while generating animation output.
+
+v3.0.9 - May 2015
+-----------------
+
+* New random distribution functions added.
+
+  Bug fixes:
+  
+* Crashes when there is a typo in a function name
+* Crashes when shapes or paths take rules as parameters under certain esoteric 
+  conditions
+* Perfectly symmetric self-intersecting paths will get silently dropped.
+* Symmetry groups pm, pg, pmg, and cm are broken.
+
+v3.0.8 - June 2014
+------------------
+
+* Errors that occur during SVG file output are reported to the user. Previously 
+  they were silent.
+
+  Bug Fixes:
+  
+* OS X: Some automatic text substitutions are occurring in the cfdg edit box. 
+  The proper subtraction operator is being converted to an m-dash.
+* Windows: SVG files cannot be saved.
+
+v3.0.7 - May 2014
+-----------------
+
+  Bug Fixes:
+  
+* OS X: Random crash while rendering tiled cfdg files
+* Parser error confuses the colon in switch statement case and else bodies with 
+  the colons used for namespaces.
+
+v3.0.6 - February 2014
+----------------------
+
+* The maximum length for vectors is increased from 9 to 99.
+
+  Bug Fixes:
+  
+* A memory leak can fill memory with parameter blocks, causing Context Free to 
+  crash.
+* Modification terms of the form x 1 1 n get silently converted to z n. The 
+  x 1 1 gets dropped.
+* Transform and clone statements with non-constant symmetry arguments cause 
+  Context Free to crash
+* Configuration variables that depend on global variables fail if the global 
+  variable is not constant
+* Windows: Color calculator generates incorrect CFDG code in locales where the 
+  decimal mark is a comma.
+* Windows: Incorrect text (or no text) in some dialog fields can trigger an 
+  uncaught exception.
+
+v3.0.5 - January 2013
+---------------------
+
+* Variable name shadowing rules have been relaxed. A variable can have the same 
+  name as a variable in an outer level of scope.
+* Windows: Performance improved for designs with many shapes.
+* Windows: Context Free properly registers for handling cfdg files.
+* Two-value color targets and stateful color targets can be used together in 
+  the same version 2 cfdg file.
+
+  Bug fixes:
+  
+* Crash when parsing version 2 paths.
+* User interface hangs for designs with many, many shapes.
+* User interface hangs for designs with very long running rules.
+* Negative brightness, saturation, and alpha adjustments work correctly in 
+  adjustment variables and parameters.
+* Crash when closing a window that had temporary files associated with it on 
+  OS X.
+* FILL primitive shape is no longer duplicated by CF::Symmetry operations.
+* Makefile references libm.
+* Crash when multiplying output vertically (Posix and Windows CLI).
+
+v3.0.4 - December 2012
+----------------------
+
+* User interface hangs have been fixed for designs with many, many shapes
+* User interface hangs have been fixed for designs with very long running rules
+* Variable name shadowing rules have been relaxed. A variable can have the same 
+  name as a variable in an outer level of scope.
+* W: Performance improved for designs with many shapes
+* W: Context Free properly registers for handling cfdg files.
+
+v3.0.3 (Windows only) - November 2012
+-------------------------------------
+
+* Works with Windows 8
+* Windows GUi and CLI versions now generate random variations
+
+v3.0.2 - October 2012
+---------------------
+
+* Switched to FFmpeg version 1.0
+* Command line versions can now properly stream output to standard out, even a 
+  stream of animation frames to ffMPEG
+
+  Bug fixes:
+  
+* Unix version does not center uncropped images.
+* Crashes on OS X versions other than Mountain Lion.
+
+v3.0.1 - September 2012
+-----------------------
+
+  Bug fixes:
+  
+* Functions with vector arguments don't work
+* let() function inside a user function fails
+* Windows command-line version reports the wrong version number
+* Memory corruption occurs if the background is not opaque, results in random 
+  errors
+* Visible seams on tiled images that have very small shapes at the tile edge
+* Variations totally broken due to uninitialized data bug
+* Command-line version cannot generate anything but QuickTime output, see 
+  https://www.contextfreeart.org/phpbb/viewtopic.php?f=10&t=968#p3683
+
+v3 - June 2012
+--------------
+
+* Parameters for rules and paths (which can be numbers, shape adjustments, or 
+  shape specifications)
+* Random number function that has a different value each time a rule is 
+  executed.
+* Local and global variables
+* Loop variables
+* Loop finally blocks, executing code at the tail end of a loop
+* Conditional expressions: the select() and if() functions. It works like the C 
+  ?: operator, but over multiple values
+* Conditional code: switch statements and if statements
+* Included files can be placed in their own namespace to prevent name collisions
+* Numeric parameters are restricted to prevent creation of context-sensitive 
+  grammars
+* The color target feature has been replaced with something that provides the 
+  same benefit but is less confusing.
+* Shape time, allows you to specify which frames a shape is visible in during 
+  movie generation
+* New FILL primitive shape, fills the canvas with the specified color at the 
+  specified Z. Similar to the background, but you can interleaves shapes and 
+  FILLs in Z.
+* 16-bit color depth
+* M, W: Compiler and run-time messages now have a window instead of flying by 
+  on the status bar
+* M, W: Remembers window size
+* M, W: Edit->Insert menues for inserting unicode characters or CF:: names
+* time() function, allows shapes to change from frame to frame in a movie
+* 64-bit
+* User-defined functions, can be recursive, mutually recursive, return multiple 
+  values
+* Bit manipulation functions
+* More symmetry options: 1-dimensional tiling and frieze group, rotational and 
+  dihedral symmetry, wallpaper group
+
+v2.2.2 - September 2010
+-----------------------
+
+  Bug Fixes:
+
+* M: Fix display error on Mac OS x 10.6 (Snow Leopard)
+* M: Fix code for handling non-ASCII characters in file names.
+* W: Restore Find/Replace function that was accidentally dropped in version 2.2
+* W: Remember window size.
+
+v2.2.1 - August 2009
+--------------------
+
+  Bug Fixes:
+
+* Typos in path operation and commands will be flagged as such.
+* W: When uploading to the gallery the actual contents of the cfdg editor 
+  window will be uploaded.
+* W: Crash during upload to gallery under Windows 7 is fixed.
+* W: Layout errors under Windows 7 in the Save Image and Save Movie dialogs 
+  fixed.
+* P: PNG file colors are not pre-multiplied against the alpha channel.
+
+v2.2 - January 2009
+-------------------
+
+* Optional size directive lets you crop your design
+* Paths for user-defined primitive shapes
+* Expressions
+* Extensions to Loops
+* Mac and Windows clients support 6-letter variation codes
+* New client for the Windows command line
+* Windows client ported from MFC framework to .NET 2.0 framework, should 
+  compile with (free) Visual Studio Express 2005
+* Ability to set a Creative Commons license for use when uploading designs
+* Stronger random number generator used for picking random variations
+* Quiet mode for Posix and Windows command line clients suppress non-error 
+  output
+* Option to insert variation code in output file names and also to change how 
+  animation frame numbers are inserted
+* Included file names can be in double quotes, which allows for spaces in file 
+  names and file names that do not end in .cfdg
+* SVG file shapes are flattened so that they can be edited in Inkscape
+
+  Disappearing Features:
+
+* Rule names cannot contain '-' or '.'
+* Rule names cannot begin with a digit
+* The following rules names are no longer allowed: path, MOVETO, LINETO, ARCTO, 
+  CURVETO, MOVEREL, LINEREL, ARCREL, CURVEREL, and CLOSEPOLY, x1, x2, y1, y2, 
+  rx, ry, p, param, width
+* Included file names must end with a .cfdg extension, be in the same directory 
+  as the original cfdg file, and contain no spaces, unless the file name is in 
+  double quotes
+
+  Bug Fixes:
+
+* variation code spinner control wraps properly between variation A and 
+  variation ZZZZZZ
+* i_curves.cfdg rule names are now legal
+* very large shapes were not tiling properly
+* variations work the same on big-endian (PowerPC) and little-endian (x86) 
+  systems. Big-endian variations are still available.
+* Proper GPLv2 copyright notices are present in all files
+* QuickTime movies with transparent backgrounds work
+* Propagated alpha computation fix from 32-bit pixel formats to 24 and 8-bit 
+  pixel formats
+* Some warnings generated by GCC 4.3 have been fixed
+* Very large bezier curves do not blow up the memory requirements
+* W: tiled animations were not working
+* P: crash case on malformed cfdg files from standard input fixed
+
+  Known Issues:
+
+* If you have a typo in a path operation or path command (e.g., moveto instead 
+  of MOVETO) then it will be treated as a FILL path command. The proper 
+  treatment should be to list it as an unrecognized path operation/command.
+* W: When uploading to the gallery, if you change the cfdg text in the edit 
+  window after rendering then the changed text will not be uploaded to the 
+  gallery. Context Free under Windows takes a snap-shot of the cfdg text each 
+  time it is rendered and this snap-shot is what is uploaded. The work-around 
+  is to re-render before uploading to the gallery.
+* W: Crashes during upload to gallery under Windows 7 RC1. This will probably 
+  force a minor release.
+* P: Images with transparent backgrounds are stored in the PNG file with 
+  pre-multiplied alpha, but the PNG specification says to use non-premultiplied 
+  alpha.
+
+v2.1 - April 2007
+-----------------
+
+* Tiled rendering for cfdg mosaics
+* W,M Tiled cfdgs will display as tiled
+* W,M If the tile transform is skewed then Context Free can save a superset of 
+  the tile unit to form a rectangular grid
+* P You can pipe a cfdg file into cfdg on stdin
+* P cfdg uses 6 letter variation codes, Context Free still uses 3 letter codes
+* W,M You can upload directly from Context Free to the gallery site
+* W The color calculator is completely revamped to be easier to use (and the 
+  code is less hideous now)
+* W Instead of installing a local copy of the runtime DLLs (always a bad idea), 
+  the Windows runtime installer is executed from the Context Free installer
+* Only generates 32-bit PNG files if the background is non-opaque, otherwise 
+  generates 8- or 24-bit PNG files
+* Upgraded from AGG 2.3 to AGG 2.5
+
+  Bug Fixes:
+
+* non-opaque shapes composited correctly
+* startshape, tile, and background directives after the first are now ignored
+* M Fixed URLs in help menu
+* P Makefile fixes for various Unix/Linux
+* W Fixed bug in registration of .cfdg file extension
+* W,M cfdg files with spaces in the file name can be uploaded
+
+v2.0 - September 2006
+---------------------
+
+* New output formats: QuickTime movies, SVG vector graphics, and JPEG (Windows 
+  only)
+* Ability to control size of border around images
+* Z-axis support for controlling which shapes go on top and which go behind.
+* Simple loop syntax to eliminate tedious repetition of shapes
+* More predictable rendering algorithm: always renders the largest shape
+* Performance improved by profiling and refactoring
+* W Migrated to Visual Studio 2005
+
+  Bug fixes:
+
+* Transparent backgrounds are now handled correctly
+* Doesn't crash with infinitely increasing cfdg files
+* Variations are now consistent across all platforms and compilers
+* W Cropped image save works
+* W Find/Replace works
+* M dialog edit control bug fixed
+* M SVG file save works
+
+v1.2 - September 2005
+---------------------
+
+* Fixed shape render ordering bug when shapes spill to temporary files.
+* W Fixed PNG save file name issues with non-English versions of Windows.
+
+v1.2 experimental - July & August 2005
+--------------------------------------
+
+* Support for color and alpha: See Announcements forum for details
+* Welcome.cfdg colorized
+* Added Rose.cfdg color example
+* Optimized finished shape memory usage (faster temporary file operations)
+* Fixed bugs in rendering size adjustment which caused some ellipses to look 
+  like polygons, and some shapes to not align correctly
+* W,M Added Color Picker / Calculator for helping to compute color adjustment 
+  values
+* M Temporary fix for Render with dimensions dialog bug: Removed thousands 
+  separator.
+* Fixed bug in hue conversion that caused black shapes. (fixed 7/28)
+
+  changes in August 5th update:
+
+* Black shape bug fixed
+* Added background syntax
+* Removed '=' syntax for hue, sat, brightness, and alpha
+* Added limit syntax for hue, sat, brightness, and alpha
+* Removed startshape parameters
+* W Color Picker matches same functionality of Mac Color Calculator
+
+v1.1 - July 2005
+----------------
+
+* Simple adjustment code replaced with general affine transform code and new 
+  transforms added: anisotropic scaling, skew (shear), and reflection
+* New syntax for controlling the order that the affine transforms are applied
+* Equilateral triangles added
+* Circle/ellipse code sped-up
+* Digits added to i_pix.cfdg, Chris' i_polygons.cfdg added
+* W,M Lesson files put in Help menu as well
+* W New status icon
+* W Opening a given example twice gives the second a unique name
+* P Missing include files added
+
+v1.0.3 - June 2005
+------------------
+
+* W Fixed a crash when trying to open a non-existent file
+* W Opening examples no longer affects the recently-used files list
+
+v1.0.2 - May 2005
+-----------------
+
+* W Fixed some crashes with Untitled and unrendered documents
+* W Increated max image size to 32768x32768 pixels
+
+v1.0 - May 2005
+---------------
+
+* Rendering with the Anti-Grain Geometry library: Looks equally incredible on 
+  all platforms!
+* Fix bug when no shapes are rendered: reported image size is reasonable
+* Images properly centered in all cases on all platforms
+* W Better display of generated images that are larger than the window
+* W Empty documents don't try to auto-render
+* W Smooth drawing during window resize
+* W Render-to-size settings are now persistent
+* P Oversampling (-x) option removed, as AGG rendering is anti-aliased
+* P Fixed bug with height option (-h), it now works
+* P Build is optimized (-O3)
+
+v0.9 beta2 - May 2005
+---------------------
+
+* W Fixed error in coordinate handling that incorrectly cropped images
+* W Cropping is now a rendering option, not a save option
+* W Fixed bug in MDI framework code
+* W Significant performance and UI enhancements when rendering very large images
+
+v0.9 beta - May 2005
+--------------------
+
+* Improved temp file handling and reporting
+* Report syntax errors in libraries with correct line number
+* Fine tuning of rendering operations for each platform
+* Many more examples
+* W,M On syntax error: high-light line with error
+* W,M New application icon (subtle)
+* M About box links now work
+* M Rendering dimensions must now be at least 32x32
+* W On Windows XP, use new user interface look
+* W MDI application with tabbed interface
+* W Support open documents from Explorer when already running
+* W Top bar dynamically adjusts
+* W Render with GDI+, looks much better and huge dimensions work (we've done 
+  10k x 10k!)
+* W Variation controls
+* W Rendering commands (menus, context menus, dialogs) improved
+* W Image cropping option on save
+* W Added user preferences
+* W Integration with shell finally works
+* P Anti-aliasing via over-sampling
+* P New command line processing and options: save cropped, over-sample rate & 
+  variation code
+
+v0.2.2 alpha - May 2005
+-----------------------
+
+* W Fixed failure to load on Windows 98/Me
+* M Fixed crash on second "Save Image" command
+* M Show cropped image size in status bar
+* M Added "Send Feedback..." to Help menu
+* Improved cropped rectangle calculation
+  
