@@ -1299,7 +1299,7 @@ namespace {
 {
     [self deleteRenderer];
     mEngine = [mDocument buildEngine];
-    mTiled = mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze;
+    mTiled = mEngine && (mEngine->isTiled() || mEngine->isFrieze() != CFDG::no_frieze);
 }
 
 - (void)buildRendererSize:(NSSize)size minimum:(double)minSize
