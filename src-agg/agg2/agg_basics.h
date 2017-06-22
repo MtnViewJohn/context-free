@@ -16,7 +16,7 @@
 #ifndef AGG_BASICS_INCLUDED
 #define AGG_BASICS_INCLUDED
 
-#include <math.h>
+#include <cmath>
 #include "agg_config.h"
 
 //---------------------------------------------------------AGG_CUSTOM_ALLOCATOR
@@ -551,7 +551,21 @@ namespace agg
     //------------------------------------------------------------is_equal_eps
     template<class T> inline bool is_equal_eps(T v1, T v2, T epsilon)
     {
-        return fabs(v1 - v2) <= double(epsilon);
+	bool neg1 = v1 < 0.0;
+	bool neg2 = v2 < 0.0;
+
+	if (neg1 != neg2)
+	    return std::fabs(v1) < epsilon && std::fabs(v2) < epsilon;
+
+        int int1, int2;
+	std::frexp(v1, &int1);
+	std::frexp(v2, &int2);
+	int min12 = int1 < int2 ? int1 : int2;
+
+	v1 = std::ldexp(v1, -min12);
+	v2 = std::ldexp(v2, -min12);
+
+	return std::fabs(v1 - v2) < epsilon;
     }
 }
 
