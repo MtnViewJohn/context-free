@@ -32,7 +32,6 @@
 @class GalleryUploader;
 @class GView;
 @class CfdgErrorWrapper;
-@class DMSplitView;
 
 @interface CFDGDocument : NSDocument {
     AbstractSystem*         mSystem;
@@ -52,8 +51,8 @@
     IBOutlet NSPanel*       mAnimateSheet;
     IBOutlet NSTextField*   mSheetLabel;
     
-    IBOutlet DMSplitView*   mGViewSplitter;
-    IBOutlet DMSplitView*   mEditorSplitter;
+    IBOutlet NSSplitView*   mGViewSplit;
+    IBOutlet NSSplitView*   mEditorSplit;
     
     GalleryUploader*        mUploader;
 

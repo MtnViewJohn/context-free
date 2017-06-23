@@ -69,7 +69,6 @@
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
-		52D159491EBF00140026A9A7 /* DMSplitView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52D159481EBF00140026A9A7 /* DMSplitView.mm */; };
 		52FB6B9409ECB8A20008CE6E /* tiledCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		FD1EF0910811ADE500FD38C6 /* cfdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF08B0811ADE500FD38C6 /* cfdg.cpp */; };
@@ -282,8 +281,6 @@
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
 		52D06C1E17667BB400F8D94C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		52D159471EBF00140026A9A7 /* DMSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMSplitView.h; sourceTree = "<group>"; };
-		52D159481EBF00140026A9A7 /* DMSplitView.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = DMSplitView.mm; sourceTree = "<group>"; };
 		52D5D8DA1ACB938B005109E5 /* myrandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myrandom.h; sourceTree = "<group>"; };
 		52D803671A69BCD800047742 /* xorshift64star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xorshift64star.h; sourceTree = "<group>"; };
 		52F014EF108D6AEA00A329BE /* agg_trans_affine_1D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_trans_affine_1D.h; sourceTree = "<group>"; };
@@ -543,8 +540,6 @@
 		FD1EF0970811AE1900FD38C6 /* src-osx */ = {
 			isa = PBXGroup;
 			children = (
-				52D159471EBF00140026A9A7 /* DMSplitView.h */,
-				52D159481EBF00140026A9A7 /* DMSplitView.mm */,
 				5226EFAA1071BB3900A30CC3 /* BitmapImageHolder.h */,
 				5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */,
 				FD879EE20B64190400FF6959 /* GalleryUploader.h */,
@@ -805,7 +800,6 @@
 				FD2D472508411CB600697CE7 /* aggCanvas.cpp in Sources */,
 				FDA77E6D099C669E00EBA6BD /* SVGCanvas.cpp in Sources */,
 				FDB2FA78081B696300901B0E /* VariationFormatter.mm in Sources */,
-				52D159491EBF00140026A9A7 /* DMSplitView.mm in Sources */,
 				FD29F41E082732FA005B4B87 /* TopBar.mm in Sources */,
 				FD32F9D30892EFE100DB40F4 /* ColorCalc.mm in Sources */,
 				FD32FA2D08934E0900DB40F4 /* GrammarTextView.mm in Sources */,

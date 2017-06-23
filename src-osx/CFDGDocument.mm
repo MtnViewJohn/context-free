@@ -29,7 +29,6 @@
 #import "CFDGDocument.h"
 #import "GView.h"
 #import "GalleryUploader.h"
-#import "DMSplitView.h"
 
 #include <fstream>
 #include <sstream>
@@ -489,12 +488,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mEditor setAutomaticSpellingCorrectionEnabled:NO];
     [mEditor setAutomaticTextReplacementEnabled:NO];
     [mEditor setAutomaticQuoteSubstitutionEnabled:NO];
-    mGViewSplitter.subviewsResizeMode = DMSplitViewResizeModePriorityBased;
-    [mGViewSplitter setPriority: 0 ofSubviewAtIndex: 1];
-    [mGViewSplitter setPriority: 1 ofSubviewAtIndex: 0];
-    mEditorSplitter.subviewsResizeMode = DMSplitViewResizeModePriorityBased;
-    [mEditorSplitter setPriority: 0 ofSubviewAtIndex: 0];
-    [mEditorSplitter setPriority: 1 ofSubviewAtIndex: 1];
+    mGViewSplit.autosaveName = @"CFDG view splitter";
+    mEditorSplit.autosaveName = @"CFDG editor splitter";
 }
 
 - (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(NSUInteger)charIndex
