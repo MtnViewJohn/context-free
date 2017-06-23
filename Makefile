@@ -50,7 +50,7 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
 
-DERIVED_SRCS = lex.yy.cpp cfdg.tab.cpp
+DERIVED_SRCS = cfdg.tab.cpp lex.yy.cpp
 
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
@@ -78,7 +78,7 @@ endif
 #
 
 COMMON_SRCS += ffCanvasDummy.cpp
-SRCS = $(COMMON_SRCS) $(UNIX_SRCS) $(DERIVED_SRCS)
+SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
 
 #
 # Configuration for local AGG
@@ -129,7 +129,7 @@ $(DERIVED_DIR)/lex.yy.cpp: $(COMMON_DIR)/cfdg.l
 
 $(DERIVED_DIR)/cfdg.tab.hpp: $(DERIVED_DIR)/cfdg.tab.cpp
 $(DERIVED_DIR)/location.hh: $(DERIVED_DIR)/cfdg.tab.cpp
-$(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp
+$(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp $(OBJ_DIR)/Sentry
 	bison -o $(DERIVED_DIR)/cfdg.tab.cpp $(COMMON_DIR)/cfdg.ypp
 
 $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
