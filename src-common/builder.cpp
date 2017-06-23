@@ -382,6 +382,25 @@ Builder::MakeDefinition(std::string& name, const yy::location& nameLoc,
 }
 
 void
+Builder::CheckConfig(ASTdefine* cfg)
+{
+    CFG cfgNum = CFDG::lookupCfg(cfg->mName);
+    if (cfgNum == CFG::AllowOverlap) {
+        double v = 0.0;
+        if (!cfg->mExpression || !cfg->mExpression->isConstant ||
+            cfg->mExpression->mType != NumericType ||
+            cfg->mExpression->evaluate(&v, 1) != 1)
+        {
+            yy::location loc = cfg->mExpression ? cfg->mExpression->where :
+                                                  cfg->mLocation;
+            CfdgError::Error(loc, "CF::AllowOverlap requires a constant numeric expression");
+        } else {
+            mAllowOverlap = v != 0.0;
+        }
+    }
+}
+
+void
 Builder::MakeConfig(ASTdefine* cfg)
 {
     CFG cfgNum = CFDG::lookupCfg(cfg->mName);
@@ -397,14 +416,6 @@ Builder::MakeConfig(ASTdefine* cfg)
             CfdgError::Error(expLoc, "CF::Impure requires a constant numeric expression");
         } else {
             ASTparameter::Impure = v != 0.0;
-        }
-    }
-    if (cfgNum == CFG::AllowOverlap) {
-        double v = 0.0;
-        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
-            CfdgError::Error(expLoc, "CF::AllowOverlap requires a constant numeric expression");
-        } else {
-            mAllowOverlap = v != 0.0;
         }
     }
     

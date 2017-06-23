@@ -150,6 +150,7 @@ public:
     const AST::ASTrule*
                     GetRule(int name);
     void            MakeConfig(AST::ASTdefine* cfg);
+    void            CheckConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();
 };

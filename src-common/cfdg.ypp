@@ -354,6 +354,10 @@ global_definition:
             exp_ptr exp($exp2);                      $exp2 = nullptr;
             if (var) {
                 switch (var->mDefineType) {
+                    case ASTdefine::ConfigDefine:
+                        var->mExpression = std::move(exp);
+                        driver.CheckConfig(var.get());
+                        break;
                     case ASTdefine::StackDefine:
                         if (ASTmodification* mod = dynamic_cast<ASTmodification*>(exp.get()))
                             var->mChildChange.grab(mod);        // emptied ASTmod gets deleted
