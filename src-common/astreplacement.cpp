@@ -541,6 +541,17 @@ namespace AST {
             r->mWantCommand = false;
             r->mCurrentPath->finish(false, r);
 
+            // Auto-align the previous set of paths ops unless the previous path
+            // command already auto-aligned them
+            if (r->mCurrentPath->mCommandInfo.empty() ||
+                r->mCurrentPath->mCommandInfo.back().mIndex != r->mIndex)
+            {
+                for (unsigned i = r->mIndex;
+                     i < r->mCurrentPath->mPath.total_vertices();
+                     i = r->mCurrentPath->mPath.align_path(i))
+                { }
+            }
+            
             mInfoCache.tryInit(r->mIndex, r->mCurrentPath.get(), width, this);
             if (mInfoCache.mPathUID == r->mCurrentPath->mPathUID && 
                 mInfoCache.mIndex   == r->mIndex) 
