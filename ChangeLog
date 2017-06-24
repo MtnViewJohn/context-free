@@ -1,5 +1,17 @@
   Change Log
   
+V3.0.11.3 - June 2017
+---------------------
+* Makefile updated to match Debian conventions.
+
+  Bug fixes:
+
+* Mac: Crash on rendering files with errors.
+* Mac: Render sub-window collapsed or set to a random size.
+* CF::AllowOverlap was not being processed at the right time to suppress 
+  overlap warnings.
+* Makefile failing to work in many situations.
+
 V3.0.11 - June 2017
 -------------------
 * Animation has changed from an output save option to a first-class operation. 
