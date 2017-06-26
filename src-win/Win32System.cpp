@@ -100,7 +100,10 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
         return string();
     }
     PathRemoveFileSpecW(wbase);
-    PathAppendW(wbase, wrel);
+    // Perform PathCombineW w/o the weird canonicalization behavior
+    if (wbase[wcslen(wbase) - 1] != L'\\')
+        wcscat_s(wbase, 32768, L"\\");
+    wcscat_s(wbase, 32768, wrel);
     if (PathFileExistsW(wbase) && ::WideCharToMultiByte(CP_UTF8, 0, wbase, -1, buf, 32768, NULL, NULL)) {
         return string(buf);
     } else {
