@@ -112,7 +112,11 @@ void WinSystem::catastrophicError(const char* what)
 
 std::istream* WinSystem::openFileForRead(const std::string& path)
 {
-    map<const string, string>::iterator exText = ExampleMap.find(path);
+    auto filepos = path.rfind('\\');
+    filepos = filepos == std::string::npos ? 0 : filepos + 1;
+    std::string exname{ path, filepos, path.length() - (filepos + 5) };
+    exname.append(cfdgVersion == 2 ? "_v2.cfdg" : ".cfdg");
+    auto exText = ExampleMap.find(exname);
 
     if (path == mName) {
         return new stringstream(mText);
