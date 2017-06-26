@@ -119,6 +119,7 @@ void Form1::MoreInitialization()
     IDictionaryEnumerator^ exampleEnum = exampleSet->GetEnumerator();
     while (exampleEnum->MoveNext()) {
         String^ name = Path::GetFileNameWithoutExtension((String^)exampleEnum->Key);
+        if (name->EndsWith("_v2")) continue;
         System::Windows::Forms::ToolStripMenuItem^ example = 
             gcnew System::Windows::Forms::ToolStripMenuItem(name);
         example->Name = "menuE" + name;

@@ -214,4 +214,67 @@
   <data name="ziggy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\input\ziggy.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ciliasun_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\ciliasun_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="demo1_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\demo1_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="demo2_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\demo2_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="funky_flower_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\funky_flower_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="i_curves_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\i_curves_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="i_pix_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\i_pix_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="i_polygons_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\i_polygons_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lesson1_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\lesson_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lesson2_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\lesson2_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="mtree_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\mtree_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="octopi_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\octopi_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="quadcity_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\quadcity_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rose_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\rose_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sierpinski_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\sierpinski_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="snowflake_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\snowflake_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tangle_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\tangle_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="triples_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\triples_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="underground_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\underground_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="weighting_demo_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\weighting_demo_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="welcome_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\welcome_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ziggy_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\input\ziggy_v2.cfdg;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
