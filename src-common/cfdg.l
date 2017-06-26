@@ -50,6 +50,7 @@ PATHOP      MOVETO|LINETO|ARCTO|CURVETO|MOVEREL|LINEREL|ARCREL|CURVEREL|CLOSEPOL
 FILENAME   [a-zA-Z\200-\377][a-zA-Z\200-\377_\-0-9\.]*\.cfdg
 STRINGLET  [a-zA-Z\200-\377_]([a-zA-Z_0-9\200-\377])*
 STRING     {STRINGLET}(::{STRINGLET})*
+EOL         \n|\r\n|\r
 
 /* calling this externally    */
 /* don't want yywrap to exist.*/
@@ -82,33 +83,32 @@ STRING     {STRINGLET}(::{STRINGLET})*
 %}
                                                                 
  /* comment line */
-"#"|"//" {
-                                                                
-    int c;
-    
-    while ((c = yyinput()) != YY_NULL) {
-        if (c == '\n') break;
-    }
-
-    yylloc->lines(1); yylloc->step();
+"#"|"//"[^\r\n]* {
+    yylloc->step();
 }
 
  /* C-style comment */
 "/*" {
     int c;
-    bool lastCharWasAStar = false;
+    char lastChar = ' ';
  
     // stop when we get to */ or end-of-file
     while ((c = yyinput()) != YY_NULL) {
-        if (c == '\n') 
+        if (c == '\n') {
+            // Unix or Windows EOL
             yylloc->lines(1);
-        else 
+        } else if (lastChar == '\r') {
+            // Previous character was a Mac OS9 EOL
+            yylloc->lines(1);
             yylloc->columns();
-            
-        if (c == '/' && lastCharWasAStar) 
+        } else {
+            yylloc->columns();
+        }
+        
+        if (c == '/' && lastChar == '*')
             break;
         
-        lastCharWasAStar = c == '*';
+        lastChar = c;
     }
     
     if (c == YY_NULL) {
@@ -120,7 +120,7 @@ STRING     {STRINGLET}(::{STRINGLET})*
 }
 
  /* Quoted string */
-\042[^\042\n]*[\042\n] {        /* \042 is " in ASCII */
+\042[^\042\r\n]*[\042\n\r] {        /* \042 is " in ASCII */
     if (yytext[yyleng - 1] != '\042') {
         LexerError("end-of-line in quoted string");
         return token::BADEOF;
@@ -261,12 +261,12 @@ STRING     {STRINGLET}(::{STRINGLET})*
 {FILENAME}  {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 
  /* gobble up white-spaces */
-[ \t\r]+ {
+[ \t]+ {
     yylloc->step();
 }
 
  /* gobble up end-of-lines */
-\n {
+{EOL} {
     yylloc->lines(1); yylloc->step();
 }
 
