@@ -83,7 +83,7 @@ EOL         \n|\r\n|\r
 %}
                                                                 
  /* comment line */
-"#"|"//"[^\r\n]* {
+"#"[^\r\n]*|"//"[^\r\n]* {
     yylloc->step();
 }
 
