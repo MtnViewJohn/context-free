@@ -152,7 +152,7 @@ $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
 src-common/examples.h: $(INPUT_SRCS)
 	./makeexamples.sh $(INPUT_SRCS) > src-common/examples.h
 	@echo
-	@echo "Remember to break up i_curves.cfdg at curveright_1_02_4 with )&&&\" R\"&&&("
+	@echo "Remember to break up i_curves.cfdg at curveright_1_03_2 with )&&&\" R\"&&&("
 
 #
 # Utility
