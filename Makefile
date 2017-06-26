@@ -16,6 +16,7 @@ FFMPEG_DIR = src-ffmpeg
 
 SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
+vpath %.cfdg input
 
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
 INC_DIRS += /usr/local/include
@@ -54,6 +55,18 @@ DERIVED_SRCS = cfdg.tab.cpp lex.yy.cpp
 
 AGG_SRCS = agg_trans_affine.cpp agg_curves.cpp agg_vcgen_contour.cpp \
     agg_vcgen_stroke.cpp agg_bezier_arc.cpp agg_color_rgba.cpp
+
+INPUT_SRCS = ciliasun_v2.cfdg demo1_v2.cfdg demo2_v2.cfdg funky_flower_v2.cfdg \
+    i_curves_v2.cfdg i_pix_v2.cfdg i_polygons_v2.cfdg lesson2_v2.cfdg \
+    lesson_v2.cfdg mtree_v2.cfdg octopi_v2.cfdg quadcity_v2.cfdg rose_v2.cfdg \
+    sierpinski_v2.cfdg snowflake_v2.cfdg tangle_v2.cfdg triples_v2.cfdg \
+    underground_v2.cfdg weighting_demo_v2.cfdg welcome_v2.cfdg ziggy_v2.cfdg \
+    ciliasun.cfdg demo1.cfdg demo2.cfdg funky_flower.cfdg i_curves.cfdg \
+    i_pix.cfdg i_polygons.cfdg lesson2.cfdg lesson.cfdg mtree.cfdg \
+    octopi.cfdg quadcity.cfdg rose.cfdg sierpinski.cfdg snowflake.cfdg \
+    tangle.cfdg triples.cfdg underground.cfdg weighting_demo.cfdg \
+    welcome.cfdg ziggy.cfdg
+
 
 LIBS = png m
 
@@ -104,7 +117,9 @@ deps: $(OBJ_DIR) $(DEPS)
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
+ifneq ($(MAKECMDGOALS),src-common/examples.h)
 include $(DEPS)
+endif
 endif
 endif
 
@@ -133,6 +148,11 @@ $(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp $(OBJ_DIR)/Sentry
 	bison -o $(DERIVED_DIR)/cfdg.tab.cpp $(COMMON_DIR)/cfdg.ypp
 
 $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
+
+src-common/examples.h: $(INPUT_SRCS)
+	./makeexamples.sh $(INPUT_SRCS) > src-common/examples.h
+	@echo
+	@echo "Remember to break up i_curves.cfdg at curveright_1_02_4 with )&&&\" R\"&&&("
 
 #
 # Utility
