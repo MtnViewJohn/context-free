@@ -179,16 +179,16 @@ Builder::StringToShape(const std::string& name, const yy::location& loc,
 {
     CheckName(name, loc, colonsAllowed);
     if (mCurrentNameSpace.length() == 0) {
-        return m_CFDG->encodeShapeName(name);
+        return m_CFDG->encodeShapeName(name, loc);
     } else {
         bool maybePrimitive = std::find(primShape::shapeNames.begin(), primShape::shapeNames.end(), name) != primShape::shapeNames.end();
 
         std::string n(mCurrentNameSpace);
         n.append(name);
         if (maybePrimitive && m_CFDG->tryEncodeShapeName(n) == -1)
-            return m_CFDG->encodeShapeName(name);
+            return m_CFDG->encodeShapeName(name, loc);
         else
-            return m_CFDG->encodeShapeName(n);
+            return m_CFDG->encodeShapeName(n, loc);
     }
 }
 

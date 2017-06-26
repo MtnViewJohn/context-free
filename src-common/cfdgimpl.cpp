@@ -62,12 +62,12 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     // Initialize the shape table with the primitive shapes so that they get the
     // shape number that matches their primitive shape number.
     for (auto&& name: primShape::shapeNames) {
-        int num = encodeShapeName(name);
+        int num = encodeShapeName(name, CfdgError::Default);
         assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
     }
     
     string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
-    int pi_num = encodeShapeName(pi_name);
+    int pi_num = encodeShapeName(pi_name, CfdgError::Default);
     def_ptr pi = std::make_unique<ASTdefine>(std::move(pi_name), CfdgError::Default);
     pi->mExpression = std::make_unique<ASTreal>(M_PI, CfdgError::Default);
     pi->mShapeSpec.shapeType = pi_num;
@@ -437,6 +437,15 @@ CFDGImpl::decodeShapeName(int shapetype)
         return ("**unnamed shape**");
 }
 
+const yy::location&
+CFDGImpl::decodeShapeLocation(int shapetype)
+{
+    if (shapetype < int(m_shapeTypes.size()))
+        return m_shapeTypes[shapetype].firstUse;
+    else
+        return CfdgError::Default;
+}
+
 int
 CFDGImpl::tryEncodeShapeName(const string& s) const
 {
@@ -450,12 +459,12 @@ CFDGImpl::tryEncodeShapeName(const string& s) const
 }
 
 int
-CFDGImpl::encodeShapeName(const string& s)
+CFDGImpl::encodeShapeName(const string& s, const yy::location& where)
 {
     int i = tryEncodeShapeName(s);
     if (i >= 0) return i;
 
-    m_shapeTypes.emplace_back(s);
+    m_shapeTypes.emplace_back(s, where);
     return static_cast<int>(m_shapeTypes.size()) - 1;
 }
 

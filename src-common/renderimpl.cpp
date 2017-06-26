@@ -614,10 +614,8 @@ RendererImpl::processShape(Shape& s)
     } else if (primShape::isPrimShape(s.mShapeType)) {
         processPrimShape(s);
     } else {
-        requestStop = true;
-        system()->error();
-        system()->message("Shape with no rules encountered: %s.", 
-            m_cfdg->decodeShapeName(s.mShapeType).c_str());
+        CfdgError::Error(m_cfdg->decodeShapeLocation(s.mShapeType),
+                         "Shape with no rules encountered.");
     }
 }
 
