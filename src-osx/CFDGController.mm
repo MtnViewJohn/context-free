@@ -113,6 +113,7 @@ namespace {
             NSString* path = [filePaths objectAtIndex: i];
             NSString* title = [[path lastPathComponent]
                                 stringByDeletingPathExtension];
+            if ([title hasSuffix:@"_v2"]) continue;
             
             NSMenuItem* item = [menu addItemWithTitle: title
                                     action: selector

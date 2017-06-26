@@ -70,6 +70,27 @@
 		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
 		52FB6B9409ECB8A20008CE6E /* tiledCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */; };
+		52FE5A741F00D44000B8ADD2 /* ciliasun_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A5F1F00D44000B8ADD2 /* ciliasun_v2.cfdg */; };
+		52FE5A751F00D44000B8ADD2 /* demo1_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A601F00D44000B8ADD2 /* demo1_v2.cfdg */; };
+		52FE5A761F00D44000B8ADD2 /* demo2_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A611F00D44000B8ADD2 /* demo2_v2.cfdg */; };
+		52FE5A771F00D44000B8ADD2 /* funky_flower_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A621F00D44000B8ADD2 /* funky_flower_v2.cfdg */; };
+		52FE5A781F00D44000B8ADD2 /* i_curves_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A631F00D44000B8ADD2 /* i_curves_v2.cfdg */; };
+		52FE5A791F00D44000B8ADD2 /* i_pix_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A641F00D44000B8ADD2 /* i_pix_v2.cfdg */; };
+		52FE5A7A1F00D44000B8ADD2 /* i_polygons_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A651F00D44000B8ADD2 /* i_polygons_v2.cfdg */; };
+		52FE5A7B1F00D44000B8ADD2 /* lesson_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A661F00D44000B8ADD2 /* lesson_v2.cfdg */; };
+		52FE5A7C1F00D44000B8ADD2 /* lesson2_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A671F00D44000B8ADD2 /* lesson2_v2.cfdg */; };
+		52FE5A7D1F00D44000B8ADD2 /* mtree_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A681F00D44000B8ADD2 /* mtree_v2.cfdg */; };
+		52FE5A7E1F00D44000B8ADD2 /* octopi_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A691F00D44000B8ADD2 /* octopi_v2.cfdg */; };
+		52FE5A7F1F00D44000B8ADD2 /* quadcity_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6A1F00D44000B8ADD2 /* quadcity_v2.cfdg */; };
+		52FE5A801F00D44000B8ADD2 /* rose_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6B1F00D44000B8ADD2 /* rose_v2.cfdg */; };
+		52FE5A811F00D44000B8ADD2 /* sierpinski_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6C1F00D44000B8ADD2 /* sierpinski_v2.cfdg */; };
+		52FE5A821F00D44000B8ADD2 /* snowflake_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6D1F00D44000B8ADD2 /* snowflake_v2.cfdg */; };
+		52FE5A831F00D44000B8ADD2 /* tangle_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6E1F00D44000B8ADD2 /* tangle_v2.cfdg */; };
+		52FE5A841F00D44000B8ADD2 /* triples_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A6F1F00D44000B8ADD2 /* triples_v2.cfdg */; };
+		52FE5A851F00D44000B8ADD2 /* underground_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A701F00D44000B8ADD2 /* underground_v2.cfdg */; };
+		52FE5A861F00D44000B8ADD2 /* weighting_demo_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A711F00D44000B8ADD2 /* weighting_demo_v2.cfdg */; };
+		52FE5A871F00D44000B8ADD2 /* welcome_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A721F00D44000B8ADD2 /* welcome_v2.cfdg */; };
+		52FE5A881F00D44000B8ADD2 /* ziggy_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A731F00D44000B8ADD2 /* ziggy_v2.cfdg */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		FD1EF0910811ADE500FD38C6 /* cfdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF08B0811ADE500FD38C6 /* cfdg.cpp */; };
 		FD1EF0930811ADE500FD38C6 /* cfdg.l in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF08D0811ADE500FD38C6 /* cfdg.l */; };
@@ -180,6 +201,27 @@
 			dstPath = Examples;
 			dstSubfolderSpec = 7;
 			files = (
+				52FE5A741F00D44000B8ADD2 /* ciliasun_v2.cfdg in CopyFiles */,
+				52FE5A751F00D44000B8ADD2 /* demo1_v2.cfdg in CopyFiles */,
+				52FE5A761F00D44000B8ADD2 /* demo2_v2.cfdg in CopyFiles */,
+				52FE5A771F00D44000B8ADD2 /* funky_flower_v2.cfdg in CopyFiles */,
+				52FE5A781F00D44000B8ADD2 /* i_curves_v2.cfdg in CopyFiles */,
+				52FE5A791F00D44000B8ADD2 /* i_pix_v2.cfdg in CopyFiles */,
+				52FE5A7A1F00D44000B8ADD2 /* i_polygons_v2.cfdg in CopyFiles */,
+				52FE5A7B1F00D44000B8ADD2 /* lesson_v2.cfdg in CopyFiles */,
+				52FE5A7C1F00D44000B8ADD2 /* lesson2_v2.cfdg in CopyFiles */,
+				52FE5A7D1F00D44000B8ADD2 /* mtree_v2.cfdg in CopyFiles */,
+				52FE5A7E1F00D44000B8ADD2 /* octopi_v2.cfdg in CopyFiles */,
+				52FE5A7F1F00D44000B8ADD2 /* quadcity_v2.cfdg in CopyFiles */,
+				52FE5A801F00D44000B8ADD2 /* rose_v2.cfdg in CopyFiles */,
+				52FE5A811F00D44000B8ADD2 /* sierpinski_v2.cfdg in CopyFiles */,
+				52FE5A821F00D44000B8ADD2 /* snowflake_v2.cfdg in CopyFiles */,
+				52FE5A831F00D44000B8ADD2 /* tangle_v2.cfdg in CopyFiles */,
+				52FE5A841F00D44000B8ADD2 /* triples_v2.cfdg in CopyFiles */,
+				52FE5A851F00D44000B8ADD2 /* underground_v2.cfdg in CopyFiles */,
+				52FE5A861F00D44000B8ADD2 /* weighting_demo_v2.cfdg in CopyFiles */,
+				52FE5A871F00D44000B8ADD2 /* welcome_v2.cfdg in CopyFiles */,
+				52FE5A881F00D44000B8ADD2 /* ziggy_v2.cfdg in CopyFiles */,
 				FD32FA480894A0CC00DB40F4 /* rose.cfdg in CopyFiles */,
 				FDD3B7C80839C7640022DE7B /* ciliasun.cfdg in CopyFiles */,
 				FDD3B7CB0839C7640022DE7B /* sierpinski.cfdg in CopyFiles */,
@@ -286,6 +328,27 @@
 		52F014EF108D6AEA00A329BE /* agg_trans_affine_1D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_trans_affine_1D.h; sourceTree = "<group>"; };
 		52FB6B8009ECB3E60008CE6E /* tiledCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiledCanvas.h; sourceTree = "<group>"; };
 		52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tiledCanvas.cpp; sourceTree = "<group>"; };
+		52FE5A5F1F00D44000B8ADD2 /* ciliasun_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ciliasun_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A601F00D44000B8ADD2 /* demo1_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = demo1_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A611F00D44000B8ADD2 /* demo2_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = demo2_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A621F00D44000B8ADD2 /* funky_flower_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = funky_flower_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A631F00D44000B8ADD2 /* i_curves_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = i_curves_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A641F00D44000B8ADD2 /* i_pix_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = i_pix_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A651F00D44000B8ADD2 /* i_polygons_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = i_polygons_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A661F00D44000B8ADD2 /* lesson_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = lesson_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A671F00D44000B8ADD2 /* lesson2_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = lesson2_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A681F00D44000B8ADD2 /* mtree_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = mtree_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A691F00D44000B8ADD2 /* octopi_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = octopi_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6A1F00D44000B8ADD2 /* quadcity_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = quadcity_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6B1F00D44000B8ADD2 /* rose_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = rose_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6C1F00D44000B8ADD2 /* sierpinski_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = sierpinski_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6D1F00D44000B8ADD2 /* snowflake_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = snowflake_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6E1F00D44000B8ADD2 /* tangle_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = tangle_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A6F1F00D44000B8ADD2 /* triples_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = triples_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A701F00D44000B8ADD2 /* underground_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = underground_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A711F00D44000B8ADD2 /* weighting_demo_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = weighting_demo_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A721F00D44000B8ADD2 /* welcome_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = welcome_v2.cfdg; sourceTree = "<group>"; };
+		52FE5A731F00D44000B8ADD2 /* ziggy_v2.cfdg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ziggy_v2.cfdg; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Context Free.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Context Free.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD1EF08B0811ADE500FD38C6 /* cfdg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfdg.cpp; sourceTree = "<group>"; };
 		FD1EF08C0811ADE500FD38C6 /* cfdg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = cfdg.h; sourceTree = "<group>"; };
@@ -600,6 +663,27 @@
 		FD3C082A08234F8300693028 /* input */ = {
 			isa = PBXGroup;
 			children = (
+				52FE5A5F1F00D44000B8ADD2 /* ciliasun_v2.cfdg */,
+				52FE5A601F00D44000B8ADD2 /* demo1_v2.cfdg */,
+				52FE5A611F00D44000B8ADD2 /* demo2_v2.cfdg */,
+				52FE5A621F00D44000B8ADD2 /* funky_flower_v2.cfdg */,
+				52FE5A631F00D44000B8ADD2 /* i_curves_v2.cfdg */,
+				52FE5A641F00D44000B8ADD2 /* i_pix_v2.cfdg */,
+				52FE5A651F00D44000B8ADD2 /* i_polygons_v2.cfdg */,
+				52FE5A661F00D44000B8ADD2 /* lesson_v2.cfdg */,
+				52FE5A671F00D44000B8ADD2 /* lesson2_v2.cfdg */,
+				52FE5A681F00D44000B8ADD2 /* mtree_v2.cfdg */,
+				52FE5A691F00D44000B8ADD2 /* octopi_v2.cfdg */,
+				52FE5A6A1F00D44000B8ADD2 /* quadcity_v2.cfdg */,
+				52FE5A6B1F00D44000B8ADD2 /* rose_v2.cfdg */,
+				52FE5A6C1F00D44000B8ADD2 /* sierpinski_v2.cfdg */,
+				52FE5A6D1F00D44000B8ADD2 /* snowflake_v2.cfdg */,
+				52FE5A6E1F00D44000B8ADD2 /* tangle_v2.cfdg */,
+				52FE5A6F1F00D44000B8ADD2 /* triples_v2.cfdg */,
+				52FE5A701F00D44000B8ADD2 /* underground_v2.cfdg */,
+				52FE5A711F00D44000B8ADD2 /* weighting_demo_v2.cfdg */,
+				52FE5A721F00D44000B8ADD2 /* welcome_v2.cfdg */,
+				52FE5A731F00D44000B8ADD2 /* ziggy_v2.cfdg */,
 				520EC5C00A0C3BA800853FF3 /* i_polygons.cfdg */,
 				FDD3B7C00839C7640022DE7B /* ciliasun.cfdg */,
 				FD3C082D08234F8300693028 /* demo1.cfdg */,

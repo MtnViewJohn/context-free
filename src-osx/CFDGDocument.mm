@@ -188,16 +188,16 @@ namespace {
             [[baseStr stringByDeletingLastPathComponent]
                 stringByAppendingPathComponent: relStr];
         
-        NSFileManager* fm = [NSFileManager defaultManager];
-        if (![fm fileExistsAtPath: newStr]) {
-            NSString* libStr =
-                [[[[NSBundle mainBundle] resourcePath]
-                    stringByAppendingPathComponent: @"Examples"]
-                        stringByAppendingPathComponent: relStr];
-            if ([fm fileExistsAtPath: libStr])
-                newStr = libStr;
-        }
+        NSString* exStr = cfdgVersion == 2 ? [[relStr stringByDeletingPathExtension] stringByAppendingString:@"_v2.cfdg"]
+                                           : relStr;
 
+        NSFileManager* fm = [NSFileManager defaultManager];
+        NSString* libStr =[[[[NSBundle mainBundle] resourcePath]
+                            stringByAppendingPathComponent: @"Examples"]
+                           stringByAppendingPathComponent: exStr];
+        if ([fm fileExistsAtPath: libStr])
+            newStr = libStr;
+        
         return string([newStr UTF8String]);
     }
     
