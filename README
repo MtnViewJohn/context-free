@@ -1,5 +1,5 @@
 *** Context Free
-*** version 3.0.11
+*** version 3.0.11.4
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
@@ -110,6 +110,9 @@ To run the program, try something like:
 
 Run it with -? to get a usage summary:
     $ ./cfdg -?
+
+'make check' will test your compiled cfdg executable. 'sudo make install'
+will install cfdg and the cfdg.1 man page in /usr/local.
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 FFmpeg BUILD NOTES

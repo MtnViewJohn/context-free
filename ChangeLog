@@ -1,5 +1,12 @@
   Change Log
   
+V3.0.11.4 - June 2017
+---------------------
+* Fix handling of Mac OS9 line endings.
+* Including examples in version 2 cfdg files includes the version 2 variant
+  of the example.
+* The missing shape rule error message now says where the problem is.
+
 V3.0.11.3 - June 2017
 ---------------------
 * Makefile updated to match Debian conventions.
