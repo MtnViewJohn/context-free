@@ -917,7 +917,7 @@ rule curveleft_1_02_5 {
  SQUARE { } 
  curveright_1_03_3 { rotate -3 size 1.03 x 0.0412475 y 0.987341 }
 }
-)&&&" R"&&&(
+
  rule curveright_1_03_2 {
  SQUARE { } 
  curveright_1_03_2 { rotate -2 size 1.03 x 0.0326598 y 0.996713 }
@@ -2338,7 +2338,7 @@ rule CHAPTER7 {
 	// braces then they are applied
 	// in the order they are found
 	// and there can be multiple
-	// occurances of a given type
+	// occurences of a given type
 	// of transform.
 }
 
@@ -2375,7 +2375,7 @@ rule SquareLine {
 	SquareLine [ y -0.5 s 0.75 y -0.5 ]
 	// Transforms can be specified
 	// more than once and subsequent
-	// transforms are modifed by the
+	// transforms are modified by the
 	// ones before them. In the above 
 	// idiom the squares are always
 	// just touching, even when you
@@ -4222,7 +4222,7 @@ rule {
  SQUARE [ ] 
  curveright_1_03_3 [ rotate -3 size 1.03 x 0.0412475 y 0.987341 ]
 }
-)&&&" R"&&&(
+
  shape curveright_1_03_2
 rule {
  SQUARE [ ] 
