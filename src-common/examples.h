@@ -957,7 +957,7 @@ rule curveleft_1_03_5 {
  SQUARE { } 
  curveleft_1_03_5 { rotate 5 size 1.03 x -0.0579246 y 0.968156 }
 }
-
+)&&&" R"&&&(
  rule curveright_1_04_5 {
  SQUARE { } 
  curveright_1_04_5 { rotate -5 size 1.04 x 0.0633425 y 0.9727 }
@@ -4216,7 +4216,7 @@ rule {
  SQUARE [ ] 
  curveright_1_03_4 [ rotate -4 size 1.03 x 0.0496704 y 0.977821 ]
 }
-
+)&&&" R"&&&(
  shape curveright_1_03_3
 rule {
  SQUARE [ ] 
