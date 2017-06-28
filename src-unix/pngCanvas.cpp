@@ -51,13 +51,19 @@ namespace {
 
 const char* prettyInt(unsigned long);
 
+namespace {
+    struct FileCloser
+    {
+        void operator()(FILE* ptr) const {
+            if (ptr != stdout)
+                fclose(ptr);        // Not called if nullptr
+        }
+    };
+}
+
 void pngCanvas::output(const char* outfilename, int frame)
 {
-    unique_ptr<FILE, void(*)(FILE*)> out(nullptr, [](FILE* f)
-    {   // f is not null
-        if (f != stdout)
-            fclose(f);
-    });
+    std::unique_ptr<FILE, FileCloser> out(nullptr);
     png_structp png_ptr = nullptr;
     png_infop info_ptr = nullptr;
 

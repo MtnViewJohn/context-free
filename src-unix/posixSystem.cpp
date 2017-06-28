@@ -150,6 +150,19 @@ PosixSystem::tempFileDirectory()
     return tmpenv;
 }
 
+namespace {
+    struct MallocDeleter {
+        void operator()(void* ptr) const {
+            free(ptr);
+        }
+    };
+    struct DirCloser {
+        void operator()(DIR* ptr) const {
+            (void)closedir(ptr);    // not called if nullptr
+        }
+    };
+}
+
 ostream*
 PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {
@@ -162,7 +175,7 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
     
     ostream* f = nullptr;
     
-    unique_ptr<char, decltype(&free)> b(strdup(t.c_str()), &free);
+    std::unique_ptr<char, MallocDeleter> b(strdup(t.c_str()));
     int tfd = mkstemps(b.get(), (int)strlen(TempSuffixes[tt]));
     if (tfd != -1) {
         f = new boost::fdostream(tfd);
@@ -198,8 +211,11 @@ PosixSystem::findTempFiles()
     vector<FileString> ret;
     const char* dirname = tempFileDirectory();
     size_t len = strlen(TempPrefixAll);
-    unique_ptr<DIR, decltype(&closedir)> dirp(opendir(dirname), &closedir);
-    while (dirent* der = readdir(dirp.get())) {
+    std::unique_ptr<DIR, DirCloser> dirp(opendir(dirname));
+    if (!dirp) return ret;
+    dirent currentEntry;
+    dirent* der;
+    while (readdir_r(dirp.get(), &currentEntry, &der) == 0 && der) {
         if (strncmp(TempPrefixAll, der->d_name, len) == 0) {
             ret.emplace_back(dirname);
             if (ret.back().back() != '/')
