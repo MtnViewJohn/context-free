@@ -111,6 +111,14 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
     }
 }
 
+namespace {
+    struct FindCloser {
+        void operator()(void* ptr) const {
+            FindClose(ptr);
+        }
+    };
+}
+
 vector<AbstractSystem::FileString>
 Win32System::findTempFiles()
 {
@@ -124,7 +132,7 @@ Win32System::findTempFiles()
         return ret;
 
     ::WIN32_FIND_DATAW ffd;
-    unique_ptr<void, decltype(&FindClose)> fff(::FindFirstFileW(wtempdir, &ffd), &FindClose);
+    unique_ptr<void, FindCloser> fff(::FindFirstFileW(wtempdir, &ffd));
     if (fff.get() == INVALID_HANDLE_VALUE) {
         fff.release();  // Don't call FindClose() if invalid
         return ret;     // Return empty
