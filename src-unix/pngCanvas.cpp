@@ -32,7 +32,8 @@
 #include <iostream>
 #include <arpa/inet.h>
 
-using namespace std;
+using std::cerr;
+using std::endl;
 
 namespace {
     void

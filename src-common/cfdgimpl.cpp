@@ -49,7 +49,6 @@
 #endif
 #include <math.h>
 
-using namespace std;
 using namespace AST;
 
 
@@ -66,7 +65,7 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
         assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
     }
     
-    string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
+    std::string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
     int pi_num = encodeShapeName(pi_name, CfdgError::Default);
     def_ptr pi = std::make_unique<ASTdefine>(std::move(pi_name), CfdgError::Default);
     pi->mExpression = std::make_unique<ASTreal>(M_PI, CfdgError::Default);
@@ -122,7 +121,7 @@ CFDGImpl::findRule(int shapetype, double r)
     needle.mNameIndex = shapetype;
     needle.mWeight = r;
     
-    vector<ASTrule*>::iterator first = lower_bound(mRules.begin(), mRules.end(), 
+    std::vector<ASTrule*>::iterator first = lower_bound(mRules.begin(), mRules.end(),
                                                    &needle, ASTrule::compareLT);
     if (first == mRules.end() || (*first)->mNameIndex != shapetype)
         throw CfdgError("Cannot find a rule for a shape (very helpful I know).");
@@ -346,11 +345,11 @@ void
 CFDGImpl::rulesLoaded()
 {
     // thanks to by Brent Yorgey
-    vector<double> weightsums( m_shapeTypes.size(), 0.0 );
-    vector<double> percentweightsums( m_shapeTypes.size(), 0.0 );
-    vector<double> unitweightsums( m_shapeTypes.size(), 0.0 );
-    vector<int> rulecounts( m_shapeTypes.size(), 0 );
-    vector<int> weightTypes( m_shapeTypes.size(), 0 );
+    std::vector<double> weightsums( m_shapeTypes.size(), 0.0 );
+    std::vector<double> percentweightsums( m_shapeTypes.size(), 0.0 );
+    std::vector<double> unitweightsums( m_shapeTypes.size(), 0.0 );
+    std::vector<int> rulecounts( m_shapeTypes.size(), 0 );
+    std::vector<int> weightTypes( m_shapeTypes.size(), 0 );
 
     // first pass: sum all the weights for each shape type
     for (auto&& r: mRules) {
@@ -428,7 +427,7 @@ CFDGImpl::numRules()
     return static_cast<int>(mRules.size());
 }
 
-string
+std::string
 CFDGImpl::decodeShapeName(int shapetype)
 {
     if (shapetype < int(m_shapeTypes.size()))
@@ -447,7 +446,7 @@ CFDGImpl::decodeShapeLocation(int shapetype)
 }
 
 int
-CFDGImpl::tryEncodeShapeName(const string& s) const
+CFDGImpl::tryEncodeShapeName(const std::string& s) const
 {
     for (unsigned int i = 0; i < m_shapeTypes.size(); i++) {
         if (s == m_shapeTypes[i].name) {
@@ -459,7 +458,7 @@ CFDGImpl::tryEncodeShapeName(const string& s) const
 }
 
 int
-CFDGImpl::encodeShapeName(const string& s, const yy::location& where)
+CFDGImpl::encodeShapeName(const std::string& s, const yy::location& where)
 {
     int i = tryEncodeShapeName(s);
     if (i >= 0) return i;

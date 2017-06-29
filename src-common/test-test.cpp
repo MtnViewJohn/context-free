@@ -27,11 +27,9 @@
 
 #include <string>
 
-using namespace std;
-
 namespace {
-	string
-	message(exception* f)
+	std::string
+	message(std::exception* f)
 	{
 		return f->what();
 	}
@@ -42,8 +40,8 @@ TEST(test, check) {
     CHECK_MSG(true, "true wasn't true");
     CHECK_SAME(7, 3 + 4);
 
-    string a("abc");
-    string b("a");
+    std::string a("abc");
+    std::string b("a");
     b += "b";
     b += "c";
     CHECK_SAME(a, b);
@@ -61,7 +59,7 @@ TEST(test, failure) {
     try {
         PASS();
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -81,7 +79,7 @@ TEST(test, failure) {
     try {
         CHECK(false);
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -91,7 +89,7 @@ TEST(test, failure) {
     try {
         CHECK_MSG(false, "false wasn't true");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -101,7 +99,7 @@ TEST(test, failure) {
     try {
         CHECK_SAME(42, 3 + 4);
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -113,7 +111,7 @@ TEST(test, failure) {
         string b("beta");
         CHECK_SAME(a, b);
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -124,7 +122,7 @@ TEST(test, failure) {
         int* i = 0;
         CHECK_VALID(i);
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         fail = true;
     }
@@ -134,7 +132,7 @@ TEST(test, failure) {
     try {
         SKIP();
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         delete f;
         skip = true;
     }
@@ -148,7 +146,7 @@ TEST(test, reporting)
         CHECK_MSG(false, "false wasn't true");
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("false wasn't true", message(f));
         delete f;
     }
@@ -162,7 +160,7 @@ TEST(test, reporting)
         CHECK_SAME(x, y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("y had wrong value; expected x", message(f));
         delete f;
     }
@@ -173,7 +171,7 @@ TEST(test, reporting)
         CHECK_SAME(x, y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("y had wrong value; expected true; actual false",
             message(f));
         delete f;
@@ -185,30 +183,30 @@ TEST(test, reporting)
         CHECK_SAME(x, y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("y had wrong value; expected 4; actual 5", message(f));
         delete f;
     }
     
     try {
-        string x("abc");
-        string y("def");
+        std::string x("abc");
+        std::string y("def");
         CHECK_SAME(x, y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("y had wrong value; expected abc; actual def",
             message(f));
         delete f;
     }
     
     try {
-        string x("abc\nuvw");
-        string y("def\nxyz");
+        std::string x("abc\nuvw");
+        std::string y("def\nxyz");
         CHECK_SAME(x, y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME(
             "y had wrong value\nexpected:\nabc\nuvw\nactual:\ndef\nxyz\n",
             message(f));
@@ -216,11 +214,11 @@ TEST(test, reporting)
     }
 
     try {
-        string y("def");
+        std::string y("def");
         CHECK_SAME("abc", y);
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("y had wrong value; expected abc; actual def",
             message(f));
         delete f;
@@ -229,7 +227,7 @@ TEST(test, reporting)
     try {
         SKIP();
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_CONTAINS("test skipped", message(f));
     }
 }
@@ -242,7 +240,7 @@ TEST(test, check_contains)
         CHECK_CONTAINS("abc", "row row row");
         FAIL("should have failed");
     }
-    catch (exception* f) {
+    catch (std::exception* f) {
         CHECK_SAME("abc not found in row row row",
             message(f));
         delete f;
@@ -252,12 +250,12 @@ TEST(test, check_contains)
 TEST(test, calledfrom)
 {
     Test::testlocation a("alpha", 18);
-    CHECK_SAME("[alpha:18]", (string)a);
+    CHECK_SAME("[alpha:18]", (std::string)a);
     
     {
         WHERE(a);
         Test::testlocation b("beta", 22, _called_from);
-        CHECK_SAME("[beta:22]\n    from [alpha:18]", (string)b);
+        CHECK_SAME("[beta:22]\n    from [alpha:18]", (std::string)b);
     }
 
     Test::testlocation c("gamma", 34);

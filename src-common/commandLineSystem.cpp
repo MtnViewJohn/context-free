@@ -54,7 +54,9 @@ struct imemstream: virtual membuf, std::istream {
     }
 };
 
-using namespace std;
+using std::cin;
+using std::cerr;
+using std::endl;
 
 const char* prettyInt(unsigned long);
 
@@ -100,14 +102,14 @@ CommandLineSystem::error(bool errorOccurred)
     return mErrorMode;
 }
 
-istream*
-CommandLineSystem::openFileForRead(const string& path)
+std::istream*
+CommandLineSystem::openFileForRead(const std::string& path)
 {
     if (path == "-") {
         if (!mInputBuffer) {
             std::ostringstream ss;
             ss << cin.rdbuf();
-            mInputBuffer = std::make_unique<string>(ss.str());
+            mInputBuffer = std::make_unique<std::string>(ss.str());
         }
         return new imemstream(mInputBuffer->data(), mInputBuffer->length());
     }
@@ -127,7 +129,7 @@ CommandLineSystem::openFileForRead(const string& path)
     if (example != ExamplesMap.end())
         return new imemstream(example->second, strlen(example->second));
 
-    std::unique_ptr<istream> f = std::make_unique<ifstream>(path.c_str(), ios::binary);
+    std::unique_ptr<std::istream> f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
     if (f && (bool)(*f))
         return f.release();
 

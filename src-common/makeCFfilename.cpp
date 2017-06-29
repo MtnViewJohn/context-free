@@ -31,11 +31,10 @@
 #include <cstring>
 #include <string.h>
 
-using namespace std;
 
-string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
+std::string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
 {
-    stringstream namestream(stringstream::out);
+    std::stringstream namestream(std::stringstream::out);
     
     if (strcmp(fmt, "-") == 0)
         return namestream.str();        // empty string becomes stdout
@@ -65,7 +64,7 @@ string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
                 namestream << Variation::toString(variation, lower);
                 break;
             case 'f':
-                namestream << setfill('0') << setw(numLength) << frame;
+                namestream << std::setfill('0') << std::setw(numLength) << frame;
                 break;
             case '%':
                 namestream << '%';

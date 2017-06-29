@@ -115,7 +115,9 @@ int Variation::random(int letters)
 
 #ifdef TEST_MAIN
 #include <iostream>
-using namespace std;
+using std::cout;
+using std::endl;
+using std::cin;
 
 int
 main(int argc, char* argv[])
@@ -132,10 +134,8 @@ main(int argc, char* argv[])
     char c = buf[0];
     if (c == '.') {
       int v = Variation::random();
-      char codeUpper[Variation::maxStringLength];
-      char codeLower[Variation::maxStringLength];
-      Variation::toString(v, codeUpper, false);
-      Variation::toString(v, codeLower, true);
+      std::string codeUpper = Variation::toString(v, false);
+      std::string codeLower = Variation::toString(v, true);
 
       cout << "random picked " << v << endl;
       cout << "    or >" << codeUpper << "<" << endl;
@@ -143,17 +143,15 @@ main(int argc, char* argv[])
     }
     else if ('0' <= c && c <= '9') {
       int v = atoi(buf);
-      char code[Variation::maxStringLength];
-      Variation::toString(v, code, false);
-      int v2 = Variation::fromString(code);
+      std::string code = Variation::toString(v, false);
+      int v2 = Variation::fromString(code.c_str());
 
       cout << v << " converted to >" << code << "<" << endl;
       cout << "    which converted back to " << v2 << endl;
     }
     else {
       int v = Variation::fromString(buf);
-      char code[Variation::maxStringLength];
-      Variation::toString(v, code, false);
+      std::string code = Variation::toString(v, false);
       cout << ">" << buf << "< converted to " << v << endl;
       cout << "    which converted back to >" << code << "<" << endl;
     }

@@ -35,7 +35,8 @@
 #include <sstream>
 #include <shlwapi.h>
 
-using namespace std;
+using std::cerr;
+using std::endl;
 
 void
 Win32System::clearAndCR()
@@ -67,7 +68,7 @@ Win32System::tempFileDirectory()
 istream*
 Win32System::tempFileForRead(const FileString& path)
 {
-    return new ifstream(path.c_str(), ios::binary);
+    return new std::ifstream(path.c_str(), std::ios::binary);
 }
 
 ostream*
@@ -97,7 +98,7 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
         !::MultiByteToWideChar(CP_UTF8, 0, rel.c_str(), -1, wrel, 32768))
     {
         message("Cannot find %s relative to %s", rel.c_str(), base.c_str());
-        return string();
+        return std::string();
     }
     PathRemoveFileSpecW(wbase);
     // Perform PathCombineW w/o the weird canonicalization behavior
@@ -105,7 +106,7 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
         wcscat_s(wbase, 32768, L"\\");
     wcscat_s(wbase, 32768, wrel);
     if (PathFileExistsW(wbase) && ::WideCharToMultiByte(CP_UTF8, 0, wbase, -1, buf, 32768, NULL, NULL)) {
-        return string(buf);
+        return std::string(buf);
     } else {
         return rel;
     }
@@ -119,10 +120,10 @@ namespace {
     };
 }
 
-vector<AbstractSystem::FileString>
+std::vector<AbstractSystem::FileString>
 Win32System::findTempFiles()
 {
-    vector<FileString> ret;
+    std::vector<FileString> ret;
     const FileChar* tempdir = tempFileDirectory();
 
     wchar_t wtempdir[32768];
@@ -132,7 +133,7 @@ Win32System::findTempFiles()
         return ret;
 
     ::WIN32_FIND_DATAW ffd;
-    unique_ptr<void, FindCloser> fff(::FindFirstFileW(wtempdir, &ffd));
+    std::unique_ptr<void, FindCloser> fff(::FindFirstFileW(wtempdir, &ffd));
     if (fff.get() == INVALID_HANDLE_VALUE) {
         fff.release();  // Don't call FindClose() if invalid
         return ret;     // Return empty

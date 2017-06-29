@@ -51,7 +51,6 @@
 #include "CmdInfo.h"
 #include "tiledCanvas.h"
 
-using namespace std;
 using namespace AST;
 
 //#define DEBUG_SIZES
@@ -143,7 +142,7 @@ RendererImpl::init()
     
     m_cfdg->hasParameter(CFG::BorderFixed, mFixedBorderX, this);
     m_cfdg->hasParameter(CFG::BorderDynamic, mShapeBorder, this);
-    if (2 * static_cast<int>(fabs(mFixedBorderX)) >= min(m_width, m_height))
+    if (2 * static_cast<int>(fabs(mFixedBorderX)) >= std::min(m_width, m_height))
         mFixedBorderX = 0.0;
     if (mShapeBorder <= 0.0)
         mShapeBorder = 1.0;
@@ -290,7 +289,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             requestStop = true;
             system()->error();
             system()->syntaxError(e);
-        } catch (exception& e) {
+        } catch (std::exception& e) {
             requestStop = true;
             system()->catastrophicError(e.what());
         }
@@ -308,7 +307,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
 
         // Get the largest unfinished shape
         Shape s(std::move(mUnfinishedShapes.front()));
-        pop_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
+        std::pop_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
         mUnfinishedShapes.pop_back();
         m_stats.toDoCount--;
         
@@ -321,7 +320,7 @@ RendererImpl::run(Canvas * canvas, bool partialDraw)
             system()->error();
             system()->syntaxError(e);
             break;
-        } catch (exception& e) {
+        } catch (std::exception& e) {
             requestStop = true;
             system()->catastrophicError(e.what());
             break;
@@ -379,14 +378,14 @@ public:
     
 private:
     agg::trans_affine_time mTimeBounds;
-    double          mFrameScale;
-    vector<Bounds>  mFrameBounds;
-    vector<int>     mFrameCounts;
-    double          mScale;
-    int             mWidth;
-    int             mHeight;
-    int             mFrames;
-    RendererImpl&   mRenderer;
+    double              mFrameScale;
+    std::vector<Bounds> mFrameBounds;
+    std::vector<int>    mFrameCounts;
+    double              mScale;
+    int                 mWidth;
+    int                 mHeight;
+    int                 mFrames;
+    RendererImpl&       mRenderer;
 
     OutputBounds& operator=(const OutputBounds&);   // not defined
 };
@@ -447,7 +446,7 @@ OutputBounds::backwardFilter(double framesToHalf)
 {
     double alpha = pow(0.5, 1.0 / framesToHalf);
     
-    vector<Bounds>::reverse_iterator prev, curr, end;
+    std::vector<Bounds>::reverse_iterator prev, curr, end;
     prev = mFrameBounds.rbegin();
     end = mFrameBounds.rend();
     if (prev == end) return;
@@ -465,7 +464,7 @@ OutputBounds::smooth(int window)
     
     mFrameBounds.resize(frames + window - 1, mFrameBounds.back());
     
-    vector<Bounds>::iterator write, read, end;
+    std::vector<Bounds>::iterator write, read, end;
     read = mFrameBounds.begin();
     
     double factor = 1.0 / window;
@@ -524,7 +523,7 @@ RendererImpl::animate(Canvas* canvas, int frames, int frame, bool zoom)
         } catch (Stopped&) {
             m_stats.animating = false;
             return;
-        } catch (exception& e) {
+        } catch (std::exception& e) {
             system()->catastrophicError(e.what());
             return;
         }
@@ -606,7 +605,7 @@ RendererImpl::processShape(Shape& s)
         if (!mBounds.valid() || (area * mScaleArea >= m_minArea)) {
             m_stats.toDoCount++;
             mUnfinishedShapes.push_back(std::move(s));
-            push_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
+            std::push_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end());
         }
     } else if (m_cfdg->getShapeType(s.mShapeType) == CFDGImpl::pathType) {
         const ASTrule* rule = m_cfdg->findRule(s.mShapeType, 0.0);
@@ -751,12 +750,12 @@ RendererImpl::moveUnfinishedToTwoFiles()
 {
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    ++mUnfinishedFileCount);
-    unique_ptr<ostream> f1(m_unfinishedFiles.back().forWrite());
+    std::unique_ptr<std::ostream> f1(m_unfinishedFiles.back().forWrite());
     int num1 = m_unfinishedFiles.back().number();
 
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    ++mUnfinishedFileCount);
-    unique_ptr<ostream> f2(m_unfinishedFiles.back().forWrite());
+    std::unique_ptr<std::ostream> f2(m_unfinishedFiles.back().forWrite());
     int num2 = m_unfinishedFiles.back().number();
     
     system()->message("Writing %s temp files %d & %d",
@@ -799,7 +798,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
     // Remove the written shapes, heap property remains intact
     static const Shape neverActuallyUsed;
     mUnfinishedShapes.resize(count, neverActuallyUsed);
-    assert(is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
+    assert(std::is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
 }
 
 void
@@ -810,7 +809,7 @@ RendererImpl::getUnfinishedFromFile()
     TempFile t(std::move(m_unfinishedFiles.front()));
     m_unfinishedFiles.pop_front();
     
-    unique_ptr<istream> f(t.forRead());
+    std::unique_ptr<std::istream> f(t.forRead());
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -818,9 +817,9 @@ RendererImpl::getUnfinishedFromFile()
         *f >> outStats.outputCount;
         outStats.outputDone = 0;
         outStats.showProgress = true;
-        istream_iterator<Shape> it(*f);
-        istream_iterator<Shape> eit;
-        back_insert_iterator< UnfinishedContainer > sendto(mUnfinishedShapes);
+        std::istream_iterator<Shape> it(*f);
+        std::istream_iterator<Shape> eit;
+        std::back_insert_iterator< UnfinishedContainer > sendto(mUnfinishedShapes);
         while (it != eit) {
             *sendto = *it;
             ++it;
@@ -861,7 +860,7 @@ RendererImpl::fixupHeap()
     last = first;
     ++last;
     for (difference_type i = 1; i < n; ++i) {
-        push_heap(first, ++last);
+        std::push_heap(first, ++last);
     
         ++outStats.outputDone;
         if (requestUpdate) {
@@ -871,7 +870,7 @@ RendererImpl::fixupHeap()
         if (requestStop || requestFinishUp)
             return;
     }
-    assert(is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
+    assert(std::is_heap(mUnfinishedShapes.begin(), mUnfinishedShapes.end()));
 }
 
 //-------------------------------------------------------------------------////
@@ -881,7 +880,7 @@ RendererImpl::moveFinishedToFile()
 {
     m_finishedFiles.emplace_back(system(), AbstractSystem::ShapeTemp, ++mFinishedFileCount);
     
-    unique_ptr<ostream> f(m_finishedFiles.back().forWrite());
+    std::unique_ptr<std::ostream> f(m_finishedFiles.back().forWrite());
 
     if (f && f->good()) {
         if (mFinishedShapes.size() > 10000)
@@ -950,7 +949,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
         for_each(start, last, op);
         m_outputSoFar = static_cast<int>(mFinishedShapes.size());
     } else {
-        deque<TempFile>::iterator begin, last, end;
+        std::deque<TempFile>::iterator begin, last, end;
         
         while (m_finishedFiles.size() > MaxMergeFiles) {
             TempFile t(system(), AbstractSystem::MergeTemp, ++mFinishedFileCount);
@@ -965,7 +964,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
                 for (auto it = begin; it != end; ++it)
                     merger.addTempFile(*it);
                 
-                std::unique_ptr<ostream> f(t.forWrite());
+                std::unique_ptr<std::ostream> f(t.forWrite());
                 if (!f) {
                     system()->message("Cannot open temporary file for shapes");
                     requestStop = true;
@@ -1077,7 +1076,7 @@ void RendererImpl::output(bool final)
         });
     }
     catch (Stopped&) { }
-    catch (exception& e) {
+    catch (std::exception& e) {
         system()->catastrophicError(e.what());
     }
 

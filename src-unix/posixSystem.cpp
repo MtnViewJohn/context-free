@@ -40,7 +40,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <cstdint>
-using namespace std;
+
+using std::cerr;
+using std::endl;
 
 /* The following code declares classes to read from and write to
  * file descriptore or file handles.
@@ -163,35 +165,35 @@ namespace {
     };
 }
 
-ostream*
+std::ostream*
 PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {
-    string t(tempFileDirectory());
+    std::string t(tempFileDirectory());
     if (t.back() != '/')
         t.push_back('/');
     t.append(TempPrefixes[tt]);
     t.append("XXXXXX");
     t.append(TempSuffixes[tt]);
     
-    ostream* f = nullptr;
+    std::unique_ptr<std::ostream> f;
     
     std::unique_ptr<char, MallocDeleter> b(strdup(t.c_str()));
     int tfd = mkstemps(b.get(), (int)strlen(TempSuffixes[tt]));
     if (tfd != -1) {
-        f = new boost::fdostream(tfd);
+        f = std::make_unique<boost::fdostream>(tfd);
         nameOut.assign(b.get());
     }
     
-    return f;
+    return f.release();
 }
 
-string
-PosixSystem::relativeFilePath(const string& base, const string& rel)
+std::string
+PosixSystem::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    string s = base;
+    std::string s = base;
     
-    string::size_type i = s.rfind('/');
-    if (i == string::npos) {
+    std::string::size_type i = s.rfind('/');
+    if (i == std::string::npos) {
         return rel;
     }
     i += 1;
@@ -205,10 +207,10 @@ PosixSystem::deleteTempFile(const FileString& name)
     return remove(name.c_str());
 }
 
-vector<AbstractSystem::FileString>
+std::vector<AbstractSystem::FileString>
 PosixSystem::findTempFiles()
 {
-    vector<FileString> ret;
+    std::vector<FileString> ret;
     const char* dirname = tempFileDirectory();
     size_t len = strlen(TempPrefixAll);
     std::unique_ptr<DIR, DirCloser> dirp(opendir(dirname));

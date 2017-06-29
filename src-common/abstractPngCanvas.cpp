@@ -29,7 +29,8 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 const char* prettyInt(unsigned long);
 
@@ -104,7 +105,7 @@ abstractPngCanvas::end()
         
     }
     
-    string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
+    std::string name = makeCFfilename(mOutputFileName, mCurrentFrame, mFrameCount,
                                  mVariation);
     
     if (mFrameCount) {

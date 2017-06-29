@@ -37,7 +37,6 @@
 #include <Windows.h>
 #endif
 
-using namespace std;
 
 void SVGCanvas::start(bool clear, const agg::rgba& bk, int width, int height)
 {
@@ -93,7 +92,8 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
     if (!g) mOutput << mEndline;
 
     if (attr.mFlags & AST::CF_FILL) {
-        mOutput << "stroke=\"none\" fill=\"#" << hex << setw(6) << setfill('0') << rgb << dec << "\"" << setfill(' ');
+        mOutput << "stroke=\"none\" fill=\"#" << std::hex << std::setw(6)
+                << std::setfill('0') << rgb << std::dec << "\"" << std::setfill(' ');
         
         if (c.a < RGBA8::base_mask) mOutput <<  " fill-opacity=\"" << c.opacity() << "\"";
         if (attr.mFlags & AST::CF_EVEN_ODD)
@@ -101,7 +101,8 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
         else
             mOutput << " fill-rule=\"nonzero\"";
     } else {
-        mOutput << "fill=\"none\" stroke=\"#" << hex << setw(6) << setfill('0') << rgb << dec << "\"" << setfill(' ');
+        mOutput << "fill=\"none\" stroke=\"#" << std::hex << std::setw(6)
+                << std::setfill('0') << rgb << std::dec << "\"" << std::setfill(' ');
         
         if (c.a < RGBA8::base_mask) mOutput <<  " stroke-opacity=\"" << c.opacity() << "\"";
         
@@ -144,10 +145,10 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
     if (attr.mFlags & AST::CF_ISO_WIDTH) {
         mOutput << ' ' << ending;
     } else {
-        mOutput << mEndline << setprecision(8);
-        mOutput << "transform=\"matrix(" << setw(10) << tr.sx << " " << setw(10) 
-        << tr.shy << " " << setw(10) << tr.shx << " " << setw(10) << tr.sy 
-        << " " << setw(10) << tr.tx << " " << setw(10) << tr.ty << ")\"" 
+        mOutput << mEndline << std::setprecision(8);
+        mOutput << "transform=\"matrix(" << std::setw(10) << tr.sx << " " << std::setw(10)
+        << tr.shy << " " << std::setw(10) << tr.shx << " " << std::setw(10) << tr.sy
+        << " " << std::setw(10) << tr.tx << " " << std::setw(10) << tr.ty << ")\""
         << ending;
     }
     indent(-padding); 
@@ -255,7 +256,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
     mNextPathID(1),
     mCropped(crop),
     mOutputFile(),
-    mOutput(*opath ? mOutputFile : cout),
+    mOutput(*opath ? mOutputFile : std::cout),
     mDescription(desc),
     mLength(length)
 {
@@ -263,9 +264,9 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
 #ifdef _WIN32
         wchar_t wpath[32768];
         if (::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
-            mOutputFile.open(wpath, ios::binary | ios::trunc | ios::out);
+            mOutputFile.open(wpath, std::ios::binary | std::ios::trunc | std::ios::out);
 #else
-        mOutputFile.open(opath, ios::binary | ios::trunc | ios::out);
+        mOutputFile.open(opath, std::ios::binary | std::ios::trunc | std::ios::out);
 #endif
     }
     mError = !(mOutputFile.is_open() && mOutputFile.good());

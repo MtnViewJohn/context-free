@@ -60,8 +60,6 @@ NSString* PrefKeyMovieHeight = @"MovieHeight";
 NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
 
 namespace {
-    using namespace std;
-    
     NSString* PrefKeyHiresWidth = @"HiresWidth";
     NSString* PrefKeyHiresHeight = @"HiresHeight";
     

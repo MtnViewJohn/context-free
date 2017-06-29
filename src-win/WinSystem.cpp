@@ -35,10 +35,9 @@
 #include <string.h>
 #include <windows.h>
 
-using namespace std;
 
 //map<const string, WinSystem*> WinSystem::PathMap;
-map<const string, string> WinSystem::ExampleMap;
+std::map<const std::string, std::string> WinSystem::ExampleMap;
 
 WinSystem::WinSystem(void* h)
 :   mWindow(h)
@@ -119,11 +118,11 @@ std::istream* WinSystem::openFileForRead(const std::string& path)
     auto exText = ExampleMap.find(exname);
 
     if (path == mName) {
-        return new stringstream(mText);
+        return new std::stringstream(mText);
     } else if (exText != ExampleMap.end()) {
-        return new stringstream(exText->second, ios_base::in);
+        return new std::stringstream(exText->second, std::ios_base::in);
     } else {
-        return new ifstream(path.c_str(), ios::binary);
+        return new std::ifstream(path.c_str(), std::ios::binary);
     }
 }
 

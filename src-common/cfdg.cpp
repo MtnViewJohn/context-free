@@ -43,11 +43,9 @@
 #include "tiledCanvas.h"
 #include <fstream>
 
-using namespace std;
-
 
 yy::location CfdgError::Default;
-double Renderer::Infinity = numeric_limits<double>::infinity();      // Ignore the gcc warning
+double Renderer::Infinity = std::numeric_limits<double>::infinity();      // Ignore the gcc warning
 bool Renderer::AbortEverything = false;
 unsigned Renderer::ParamCount = 0;
 const CfgArray<std::string> CFDG::ParamNames = {
@@ -152,10 +150,10 @@ AbstractSystem::~AbstractSystem() = default;
 void AbstractSystem::stats(const Stats&)
     { }
 
-istream*
+std::istream*
 AbstractSystem::tempFileForRead(const FileString& path)
 {
-    return new ifstream(path.c_str(), ios::binary);
+    return new std::ifstream(path.c_str(), std::ios::binary);
 }
 
 Canvas::~Canvas() = default;
@@ -191,7 +189,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
                                           yy::CfdgParser::token::CFDG3;
         
         yy::CfdgParser parser(b);
-        std::unique_ptr<istream> input(system->openFileForRead(fname));
+        std::unique_ptr<std::istream> input(system->openFileForRead(fname));
         if (!input || !input->good()) {
             system->error();
             system->message("Couldn't open rules file %s", fname);

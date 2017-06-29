@@ -40,8 +40,9 @@
 
 #include <gdiplus.h>
 
-using namespace std;
 using namespace Gdiplus;
+using std::cerr;
+using std::endl;
 
 static ColorPalette* GrayPalette = nullptr;
 static ULONG_PTR GdiPToken;
