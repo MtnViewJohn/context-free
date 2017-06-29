@@ -65,28 +65,35 @@ Win32System::tempFileDirectory()
     return tempPathBufferW;
 }
 
-istream*
+std::istream*
 Win32System::tempFileForRead(const FileString& path)
 {
     return new std::ifstream(path.c_str(), std::ios::binary);
 }
 
-ostream*
+namespace {
+    struct MallocDeleter {
+        void operator()(void* ptr) const {
+            free(ptr);
+        }
+    };
+}
+
+std::ostream*
 Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {    
     const FileChar* wtempdir = tempFileDirectory();
 
-    wchar_t* b = _wtempnam(wtempdir, TempPrefixes_w[tt]);
-    if (b == NULL)
+    std::unique_ptr<wchar_t, MallocDeleter> b{ _wtempnam(wtempdir, TempPrefixes_w[tt]) };
+    if (!b)
         return nullptr;
-    FileString bcopy = b;
+    FileString bcopy = b.get();
     bcopy.append(TempSuffixes_w[tt]);
-    ofstream* f = new ofstream;
-    f->open(bcopy.c_str(), ios::binary | ios::trunc | ios::out);
+    std::unique_ptr<std::ofstream> f = std::make_unique<std::ofstream>(bcopy, 
+        std::ios::binary | std::ios::trunc | std::ios::out);
     nameOut.assign(bcopy);
-    free(b);
     
-    return f;
+    return f.release();
 }
 
 std::string
