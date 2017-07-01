@@ -72,9 +72,9 @@ namespace {
         void syntaxError(const CfdgError& err) override;
         void catastrophicError(const char* what) override;
         
-        istream* openFileForRead(const string& path) override;
+        std::istream* openFileForRead(const std::string& path) override;
         const FileChar* tempFileDirectory() override;
-        string relativeFilePath(const string& base, const string& rel) override;
+        std::string relativeFilePath(const std::string& base, const std::string& rel) override;
         
         void stats(const Stats& s) override;
         
@@ -83,11 +83,11 @@ namespace {
     private:
         CFDGDocument* mDoc;
         
-        CFDGDocument* findDocFor(const string& path);
+        CFDGDocument* findDocFor(const std::string& path);
     };
     
     CFDGDocument*
-    CocoaSystem::findDocFor(const string& path)
+    CocoaSystem::findDocFor(const std::string& path)
     {
         if (path.empty())
             return mDoc;
@@ -152,20 +152,20 @@ namespace {
                             waitUntilDone: YES];
     }
     
-    istream*
-    CocoaSystem::openFileForRead(const string& path)
+    std::istream*
+    CocoaSystem::openFileForRead(const std::string& path)
     {
         CFDGDocument* doc = findDocFor(path);
                 
         if (doc) {
             NSData* data = [doc getContent];
-            basic_stringstream<char>* s = new stringstream;
+            std::basic_stringstream<char>* s = new std::stringstream;
             s->write(reinterpret_cast<const char*>([data bytes]), [data length]);
-            s->seekp(0, ios::beg);
+            s->seekp(0, std::ios::beg);
             return s;
         }
 
-        return new ifstream(path.c_str(), ios::in);
+        return new std::ifstream(path.c_str(), std::ios::in);
     }
     
     const AbstractSystem::FileChar*
@@ -174,8 +174,8 @@ namespace {
         return [NSTemporaryDirectory() UTF8String];
     }
     
-    string
-    CocoaSystem::relativeFilePath(const string& base, const string& rel)
+    std::string
+    CocoaSystem::relativeFilePath(const std::string& base, const std::string& rel)
     {
         NSString* baseStr =
             [NSString stringWithUTF8String: base.c_str()];
@@ -196,7 +196,7 @@ namespace {
         if ([fm fileExistsAtPath: libStr])
             newStr = libStr;
         
-        return string([newStr UTF8String]);
+        return std::string([newStr UTF8String]);
     }
     
     void
