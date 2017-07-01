@@ -771,35 +771,38 @@ namespace {
     NSBitmapImageRep* bits;
     
     if (mult) {
-        NSRect iRect = NSMakeRect(0.0, 0.0, 0.0, 0.0);
-        iRect.size = mRenderedRect.size;
+        int  width = static_cast<int>(mRenderedRect.size.width  * mult->width);
+        int height = static_cast<int>(mRenderedRect.size.height * mult->height);
         
-        NSRect fRect = iRect;
-        fRect.size.width *= mult->width;
-        fRect.size.height *= mult->height;
+        auto fmt = aggCanvas::SuggestPixelFormat(mEngine.get());
+        if (fmt == aggCanvas::RGB8_Blend) fmt = aggCanvas::RGBA8_Blend;
+        if (fmt == aggCanvas::RGB16_Blend) fmt = aggCanvas::RGBA16_Blend;
         
-        tileList points = mRenderer->m_tiledCanvas->getTessellation(static_cast<int>(fRect.size.width),
-                                                                   static_cast<int>(fRect.size.height), 0, 0);
+        BitmapAndFormat* bm = [[BitmapAndFormat alloc]
+                               initWithAggPixFmt: fmt
+                                      pixelsWide: width
+                                      pixelsHigh: height];
+        [bm autorelease];
+        bits = [bm getImageRep];
         
-        NSImage* tileImage = [[NSImage alloc] initWithSize: fRect.size];
-
+        tileList points = mRenderer->m_tiledCanvas->getTessellation(width, height, 0, 0);
+        
         [self validateDrawingImage];
+
+        NSGraphicsContext* context = [NSGraphicsContext graphicsContextWithBitmapImageRep: bits];
+        if (!bm || !bits || !context) return nil;
         
-        [tileImage lockFocus];
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:context];
         
         for (agg::point_i& pt: points) {
             [mDrawingImage drawAtPoint: NSMakePoint(pt.x, pt.y)
                               fromRect: NSZeroRect
-                             operation: NSCompositeCopy
+                             operation: NSCompositingOperationCopy
                               fraction: 1.0];
         }
-
-        bits = [[NSBitmapImageRep alloc]
-                    initWithFocusedViewRect: fRect];
-
-        [tileImage unlockFocus];
-        [tileImage release];
-        [bits autorelease];
+        
+        [NSGraphicsContext restoreGraphicsState];
     }
     else if (cropped) {
         bits = [mRenderBitmap getImageRepCropped: mRenderedRect];
@@ -813,8 +816,7 @@ namespace {
     
     NSMutableData* mdata = [NSMutableData data];
     CGImageDestinationRef destref = 
-        CGImageDestinationCreateWithData((CFMutableDataRef)mdata,
-                                         (CFStringRef)@"public.png", 1, nil);
+        CGImageDestinationCreateWithData((CFMutableDataRef)mdata, kUTTypePNG, 1, nil);
     if (!destref) return nil;
     
     CGImageDestinationAddImage(destref, iref, nullptr);
