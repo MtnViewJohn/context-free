@@ -339,7 +339,8 @@ namespace {
     
     mOrigName = [[NSString alloc] initWithString: [mUserNameField stringValue]];
     mOrigPassword = [GalleryUploader copyPassword: mOrigName];
-    [mPasswordField setStringValue: mOrigPassword];
+    if (mOrigPassword)
+        [mPasswordField setStringValue: mOrigPassword];
     
 
     if ([[mTitleField stringValue] length] == 0) {
