@@ -40,7 +40,6 @@ extern NSString* PrefKeyMinumumSize;
 
 @class CFDGDocument;
 @class TopBar;
-@class BitmapImageHolder;
 
 typedef NS_ENUM(NSInteger, ActionType) {
     StopAction          = 0,
@@ -52,7 +51,6 @@ typedef NS_ENUM(NSInteger, ActionType) {
 @interface GView : NSView<NSWindowDelegate> {
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
-    BitmapImageHolder*  mRenderBitmap;  // this bitmap must never be drawn
 
     NSImage*            mDrawingImage;
 

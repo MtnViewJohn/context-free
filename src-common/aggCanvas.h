@@ -79,6 +79,8 @@ class aggCanvas : public Canvas {
         int cropY();
         int cropWidth();
         int cropHeight();
+
+        void draw(const aggCanvas& src, int x, int y);
     
     //private:
     public:

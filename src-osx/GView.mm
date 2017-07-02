@@ -128,6 +128,7 @@ cfdg_ptr     mEngine;
 renderer_ptr mRenderer;
 canvas_ptr   mCanvas;
 tempfile_ptr mMovieFile;
+BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 }
 @end
 
@@ -774,35 +775,25 @@ namespace {
         int  width = static_cast<int>(mRenderedRect.size.width  * mult->width);
         int height = static_cast<int>(mRenderedRect.size.height * mult->height);
         
-        auto fmt = aggCanvas::SuggestPixelFormat(mEngine.get());
-        if (fmt == aggCanvas::RGB8_Blend) fmt = aggCanvas::RGBA8_Blend;
-        if (fmt == aggCanvas::RGB16_Blend) fmt = aggCanvas::RGBA16_Blend;
+        auto fmt = [mRenderBitmap aggPixelFormat];
         
-        BitmapAndFormat* bm = [[BitmapAndFormat alloc]
-                               initWithAggPixFmt: fmt
-                                      pixelsWide: width
-                                      pixelsHigh: height];
-        [bm autorelease];
-        bits = [bm getImageRep];
+        BitmapAndFormat* png_bm = [[BitmapAndFormat alloc]
+                                 initWithAggPixFmt: fmt
+                                        pixelsWide: width
+                                        pixelsHigh: height];
+        if (!png_bm) return nil;
+        [png_bm autorelease];
         
+        auto pngCanvas = std::make_unique<ImageCanvas>(self, png_bm, fmt);
+        ImageCanvas* srcCanvas = dynamic_cast<ImageCanvas*>(mCanvas.get());
+        if (!srcCanvas) return nil;
+
         tileList points = mRenderer->m_tiledCanvas->getTessellation(width, height, 0, 0);
         
-        [self validateDrawingImage];
-
-        NSGraphicsContext* context = [NSGraphicsContext graphicsContextWithBitmapImageRep: bits];
-        if (!bm || !bits || !context) return nil;
+        for (agg::point_i& pt: points)
+            pngCanvas->draw(*srcCanvas, pt.x, pt.y);
         
-        [NSGraphicsContext saveGraphicsState];
-        [NSGraphicsContext setCurrentContext:context];
-        
-        for (agg::point_i& pt: points) {
-            [mDrawingImage drawAtPoint: NSMakePoint(pt.x, pt.y)
-                              fromRect: NSZeroRect
-                             operation: NSCompositingOperationCopy
-                              fraction: 1.0];
-        }
-        
-        [NSGraphicsContext restoreGraphicsState];
+        bits = [png_bm getImageRep];
     }
     else if (cropped) {
         bits = [mRenderBitmap getImageRepCropped: mRenderedRect];

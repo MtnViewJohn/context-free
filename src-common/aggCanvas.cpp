@@ -176,6 +176,8 @@ class aggCanvas::impl {
         
         virtual void copy(void* data, unsigned width, unsigned height,
                           int stride, PixelFormat format) = 0;
+    
+        virtual void draw(const aggCanvas& src, int x, int y) = 0;
 };
 
 
@@ -207,6 +209,8 @@ template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
         
         void copy(void* data, unsigned width, unsigned height,
                   int stride, aggCanvas::PixelFormat format);
+    
+        void draw(const aggCanvas& src, int x, int y);
 };
 
 template <class pixel_fmt>
@@ -314,6 +318,17 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
     
 }
 
+template <class  pixel_fmt>
+void
+aggPixelPainter<pixel_fmt>::draw(const aggCanvas& src, int x, int y)
+{
+    agg::rendering_buffer srcBuffer(src.m->buffer.buf(),
+                                    src.m->buffer.width(),
+                                    src.m->buffer.height(),
+                                    src.m->buffer.stride());
+    pixel_fmt srcPixFmt(srcBuffer);
+    agg::copy_rect(srcPixFmt, pixFmt, nullptr, x, y);
+}
 
 aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) { 
     switch (pixfmt) {
@@ -414,6 +429,12 @@ aggCanvas::copy(void* data, unsigned width, unsigned height,
                 int stride, PixelFormat format)
 {
     m->copy(data, width, height, stride, format);
+}
+
+void
+aggCanvas::draw(const aggCanvas& src, int x, int y)
+{
+    m->draw(src, x, y);
 }
 
 bool    aggCanvas::colorCount256()  { return m->colorCount256(); }
