@@ -1,11 +1,18 @@
   Change Log
   
-V3.0.11.4 - June 2017
+V3.0.11.4 - July 2017
 ---------------------
-* Fix handling of Mac OS9 line endings.
 * Including examples in version 2 cfdg files includes the version 2 variant
   of the example.
 * The missing shape rule error message now says where the problem is.
+
+  Bug fixes:
+
+* Fix handling of Mac OS9 line endings.
+* Mac: Gallery upload sheet fails to display if the user has no stored 
+  credentials.
+* Mac: Tiled designs save/upload at the wrong resolution on systems with
+  retina displays.
 
 V3.0.11.3 - June 2017
 ---------------------
