@@ -771,7 +771,7 @@ namespace {
 {
     NSBitmapImageRep* bits;
     
-    if (mult) {
+    if (mult && (mult->width != 1.0 || mult->height != 1.0)) {
         int  width = static_cast<int>(mRenderedRect.size.width  * mult->width);
         int height = static_cast<int>(mRenderedRect.size.height * mult->height);
         
@@ -785,8 +785,8 @@ namespace {
         [png_bm autorelease];
         
         auto pngCanvas = std::make_unique<ImageCanvas>(self, png_bm, fmt);
-        ImageCanvas* srcCanvas = dynamic_cast<ImageCanvas*>(mCanvas.get());
-        if (!srcCanvas) return nil;
+        auto srcCanvas = std::make_unique<ImageCanvas>(self, mRenderBitmap, fmt);
+        if (!srcCanvas || !pngCanvas) return nil;
 
         tileList points = mRenderer->m_tiledCanvas->getTessellation(width, height, 0, 0);
         
@@ -795,7 +795,7 @@ namespace {
         
         bits = [png_bm getImageRep];
     }
-    else if (cropped) {
+    else if (cropped && !mult) {
         bits = [mRenderBitmap getImageRepCropped: mRenderedRect];
     }
     else {
@@ -1623,7 +1623,7 @@ namespace {
     NSSize mult = NSMakeSize([mSaveTileWidth floatValue], [mSaveTileHeight floatValue]);
     
     NSData *pngData =
-        [self pngImageDataCropped: YES multiplier: &mult];
+        [self pngImageDataCropped: NO multiplier: &mult];
     
     if (pngData) {
         [pngData writeToURL: filename atomically: YES];
