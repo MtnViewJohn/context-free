@@ -322,11 +322,7 @@ template <class  pixel_fmt>
 void
 aggPixelPainter<pixel_fmt>::draw(const aggCanvas& src, int x, int y)
 {
-    agg::rendering_buffer srcBuffer(src.m->buffer.buf(),
-                                    src.m->buffer.width(),
-                                    src.m->buffer.height(),
-                                    src.m->buffer.stride());
-    pixel_fmt srcPixFmt(srcBuffer);
+    pixel_fmt srcPixFmt(src.m->buffer);
     agg::copy_rect(srcPixFmt, pixFmt, nullptr, x, y);
 }
 
