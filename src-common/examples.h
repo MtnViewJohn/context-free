@@ -943,7 +943,7 @@ rule curveleft_1_03_2 {
  curveleft_1_03_2 { rotate 2 size 1.03 x -0.0326586 y 0.996714 }
 }
 
-rule curveleft_1_03_3 {
+)&&&" R"&&&(rule curveleft_1_03_3 {
  SQUARE { } 
  curveleft_1_03_3 { rotate 3 size 1.03 x -0.0412463 y 0.987342 }
 }
@@ -957,7 +957,7 @@ rule curveleft_1_03_5 {
  SQUARE { } 
  curveleft_1_03_5 { rotate 5 size 1.03 x -0.0579246 y 0.968156 }
 }
-)&&&" R"&&&(
+
  rule curveright_1_04_5 {
  SQUARE { } 
  curveright_1_04_5 { rotate -5 size 1.04 x 0.0633425 y 0.9727 }
@@ -2338,7 +2338,7 @@ rule CHAPTER7 {
 	// braces then they are applied
 	// in the order they are found
 	// and there can be multiple
-	// occurences of a given type
+	// occurrences of a given type
 	// of transform.
 }
 
@@ -4205,7 +4205,7 @@ rule {
  curveleft_1_02_5 [ rotate 5 size 1.02 x -0.0525078 y 0.963611 ]
 }
 
- shape curveright_1_03_5
+)&&&" R"&&&( shape curveright_1_03_5
 rule {
  SQUARE [ ] 
  curveright_1_03_5 [ rotate -5 size 1.03 x 0.0579257 y 0.968155 ]
@@ -4216,7 +4216,7 @@ rule {
  SQUARE [ ] 
  curveright_1_03_4 [ rotate -4 size 1.03 x 0.0496704 y 0.977821 ]
 }
-)&&&" R"&&&(
+
  shape curveright_1_03_3
 rule {
  SQUARE [ ] 
