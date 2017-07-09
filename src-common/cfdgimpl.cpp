@@ -382,7 +382,7 @@ CFDGImpl::rulesLoaded()
         {
             CfdgError::Warning(r->mLocation, "Percentages do not sum to 100%");
         }
-        if (!isfinite(weight)) weight = 0.0;
+        if (!std::isfinite(weight)) weight = 0.0;
         unitweightsums[ r->mNameIndex ] += weight;
         if (--rulecounts[ r->mNameIndex ]) {
             r->mWeight = unitweightsums[ r->mNameIndex ];

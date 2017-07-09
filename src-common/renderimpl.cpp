@@ -41,7 +41,8 @@
 #include <math.h>
 #define isfinite _finite
 #else
-#include <math.h>
+#include <cmath>
+using std::isfinite;
 #endif
 
 #include "shapeSTL.h"
