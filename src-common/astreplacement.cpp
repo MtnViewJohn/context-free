@@ -753,7 +753,7 @@ namespace AST {
 
         switch (ph) {
             case CompilePhase::TypeCheck:
-                if (mClone && !ASTparameter::Impure)
+                if (mClone && !b->impure())
                     CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
                 break;
             case CompilePhase::Simplify:
@@ -891,7 +891,7 @@ namespace AST {
                         CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function", b);
                     if (mType == NumericType && t == NumericType && sz != mTuplesize)
                         CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function", b);
-                    if (isNatural && (!mExpression || !mExpression->isNatural) && !ASTparameter::Impure)
+                    if (isNatural && (!mExpression || !mExpression->isNatural) && !b->impure())
                         CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function", b);
                 } else {
                     if (mShapeSpec.shapeType >= 0) {

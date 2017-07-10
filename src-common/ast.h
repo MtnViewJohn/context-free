@@ -35,6 +35,7 @@
 #include <stdint.h>
 
 class RendererAST;
+class Builder;
 
 namespace AST {
     using SymmList = std::vector<agg::trans_affine>;
@@ -111,8 +112,6 @@ namespace AST {
         int         mStackIndex = -1;
         int         mTuplesize = 1;
         
-        static bool Impure;
-        
         ASTparameter() = default;
         ASTparameter(const std::string& typeName, int nameIndex,
                      const yy::location& where);
@@ -135,7 +134,7 @@ namespace AST {
         constCopy(const yy::location& where, const std::string& entropy) const;
         
         static int CheckType(const ASTparameters* types, const ASTexpression* args,
-                            const yy::location& where, bool checkNumber);
+                            const yy::location& where, bool checkNumber, Builder* b);
     };
 
     enum FlagTypes : unsigned {

@@ -46,6 +46,7 @@ public:
         bool        mRandUsed;
     
         double      mMaxNatural;
+        bool        mImpure;
 
         double      mCurrentTime;
         double      mCurrentFrame;

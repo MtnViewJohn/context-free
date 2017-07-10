@@ -99,7 +99,7 @@ Builder::Builder(const cfdgi_ptr& cfdg, int variation)
     assert(Builder::CurrentBuilder == nullptr);    // ensure singleton
     Builder::CurrentBuilder = this;
     MaxNatural = 1000.0;
-    ASTparameter::Impure = false;
+    m_CFDG->m_impure = false;
 }
 
 Builder::~Builder()
@@ -422,7 +422,7 @@ Builder::MakeConfig(ASTdefine* cfg)
         if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
             error(expLoc, "CF::Impure requires a constant numeric expression");
         } else {
-            ASTparameter::Impure = v != 0.0;
+            m_CFDG->m_impure = v != 0.0;
         }
     }
     
@@ -866,5 +866,11 @@ void
 Builder::timeWise()
 {
     m_CFDG->addParameter(CFDGImpl::Time);
+}
+
+bool
+Builder::impure() const noexcept
+{
+    return m_CFDG->m_impure;
 }
 

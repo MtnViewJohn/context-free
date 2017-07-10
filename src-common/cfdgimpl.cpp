@@ -54,8 +54,8 @@ using namespace AST;
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
 : mPostDtorCleanup(m), m_backgroundColor(1, 1, 1, 1), mStackSize(0),
-  mInitShape(nullptr), m_system(m), m_Parameters(0),
-  ParamDepth({NoParameter}),
+  mInitShape(nullptr), m_system(m), m_builder(nullptr), m_impure(false),
+  m_Parameters(0), ParamDepth({NoParameter}),
   mTileOffset(0, 0), needle(0, CfdgError::Default)
 {
     // Initialize the shape table with the primitive shapes so that they get the
@@ -601,6 +601,7 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
     std::unique_ptr<RendererImpl> r;
     try {
         r = std::make_unique<RendererImpl>(ptr, width, height, minSize, variation, border);
+        r->mImpure = m_impure;
         Modification tiled;
         Modification sized;
         Modification timed;

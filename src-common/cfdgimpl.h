@@ -109,6 +109,7 @@ class CFDGImpl : public CFDG {
     
         AbstractSystem* m_system;
         Builder*        m_builder;
+        bool            m_impure;
     
         int m_Parameters;
     

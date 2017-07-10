@@ -28,7 +28,7 @@
 
 RendererAST::RendererAST(int w, int h)
 : Renderer(w, h),
-  mMaxNatural(1000.0),
+  mMaxNatural(1000.0), mImpure(false),
   mCurrentTime(0.0), mCurrentFrame(0.0),
   mCurrentPath(nullptr)
 { }
@@ -60,6 +60,10 @@ RendererAST::init()
 bool
 RendererAST::isNatural(RendererAST* r, double n)
 {
+    if (r && r->mImpure) return true;
+    if (Builder::CurrentBuilder &&
+        Builder::CurrentBuilder->isMyBuilder() &&
+        Builder::CurrentBuilder->impure()) return true;
     return n >= 0 && n <= (r ? r->mMaxNatural : Builder::MaxNatural) && n == floor(n);
 }
 

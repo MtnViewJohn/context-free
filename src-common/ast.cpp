@@ -35,8 +35,6 @@
 
 namespace AST {
 
-    bool ASTparameter::Impure = false;
-    
     void
     ASTparameter::init(int nameIndex, ASTdefine* def)
     {
@@ -176,18 +174,18 @@ namespace AST {
     
     int
     ASTparameter::CheckType(const ASTparameters* types, const ASTexpression* args,
-                            const yy::location& where, bool checkNumber)
+                            const yy::location& where, bool checkNumber, Builder* b)
     {
         // Walks down the right edge of an expression tree checking that the types
         // of the children match the specified argument types
         if ((types == nullptr || types->empty()) && (args == nullptr)) return 0;
 
         if (types == nullptr || types->empty()) {
-            CfdgError::Error(args->where, "Arguments are not expected.");
+            CfdgError::Error(args->where, "Arguments are not expected.", b);
             return -1;
         }
         if (args == nullptr) {
-            CfdgError::Error(where, "Arguments are expected.");
+            CfdgError::Error(where, "Arguments are expected.", b);
             return -1;
         }
         bool justCount = args->mType == AST::NoType;
@@ -203,7 +201,7 @@ namespace AST {
             if (justCount) continue;
             
             if (count >= expect) {
-                CfdgError::Error(args->where, "Not enough arguments");
+                CfdgError::Error(args->where, "Not enough arguments", b);
                 return -1;
             }
             
@@ -211,35 +209,35 @@ namespace AST {
             assert(arg);
             
             if (param_it->mType != arg->mType) {
-                CfdgError::Error(arg->where, "Incorrect argument type.");
-                CfdgError::Error(param_it->mLocation, "This is the expected type.");
+                CfdgError::Error(arg->where, "Incorrect argument type.", b);
+                CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
                 return -1;
             }
-            if (param_it->isNatural && !arg->isNatural && !ASTparameter::Impure) {
-                CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement");
+            if (param_it->isNatural && !arg->isNatural && !b->impure()) {
+                CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement", b);
                 return -1;
             }
             if (param_it->mType == AST::NumericType &&
                 param_it->mTuplesize != arg->evaluate())
             {
                 if (param_it->mTuplesize == 1)
-                    CfdgError::Error(arg->where, "This argument should be scalar");
+                    CfdgError::Error(arg->where, "This argument should be scalar", b);
                 else
-                    CfdgError::Error(arg->where, "This argument should be a vector");
-                CfdgError::Error(param_it->mLocation, "This is the expected type.");
+                    CfdgError::Error(arg->where, "This argument should be a vector", b);
+                CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
                 return -1;
             }
             if (arg->mLocality != PureLocal && arg->mLocality != PureNonlocal &&
                 param_it->mType == AST::NumericType && !param_it->isNatural &&
-                !ASTparameter::Impure && checkNumber)
+                !b->impure() && checkNumber)
             {
-                CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement");
+                CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement", b);
                 return -1;
             }
         }
         
         if (count < expect) {
-            CfdgError::Error(args->getChild(count)->where, "Too many arguments.");
+            CfdgError::Error(args->getChild(count)->where, "Too many arguments.", b);
             return -1;
         }
 

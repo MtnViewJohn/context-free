@@ -156,6 +156,7 @@ public:
     void            inColor();
     void            timeWise();
     bool            isMyBuilder() const noexcept;
+    bool            impure() const noexcept;
 };
 
 #endif // INCLUDE_BUILDER_H

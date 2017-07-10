@@ -2259,7 +2259,7 @@ namespace AST {
                 static FuncType mustBeNatural[] = {Factorial, Sg, IsNatural, Div, Divides};
                 
                 if (std::find(std::begin(mustBeNatural), std::end(mustBeNatural), functype) != std::end(mustBeNatural)) {
-                    if (arguments && !arguments->isNatural && !ASTparameter::Impure)
+                    if (arguments && !arguments->isNatural && !b->impure())
                         CfdgError::Error(arguments->where, "function is defined over natural numbers only", b);
                     isNatural = true;
                 }
@@ -2460,7 +2460,7 @@ namespace AST {
                             return nullptr;
                         }
                         
-                        argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true);
+                        argSize = ASTparameter::CheckType(typeSignature, arguments.get(), where, true, b);
                         if (argSize < 0) {
                             argSource = NoArgs;
                             return nullptr;
@@ -2597,7 +2597,7 @@ namespace AST {
                     Compile(arguments, ph, b);
                     
                     definition = def;
-                    ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false);
+                    ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false, b);
                     isConstant = false;
                     isNatural = def->isNatural;
                     mType = def->mType;
@@ -2726,7 +2726,7 @@ namespace AST {
                     if (mType != NumericType)
                         CfdgError::Error(where, "Operand(s) must be numeric", b);
                 }
-                if (op == '_' && !isNatural &&!ASTparameter::Impure)
+                if (op == '_' && !isNatural && !b->impure())
                     CfdgError::Error(where, "Proper subtraction operands must be natural", b);
                 break;
             }
