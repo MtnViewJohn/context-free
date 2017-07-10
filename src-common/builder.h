@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <map>
 #include <thread>
+#include <mutex>
 #include "agg2/agg_basics.h"
 #include "Rand64.h"
 
@@ -60,6 +61,7 @@ namespace yy {
 class Builder {
 public:
     static Builder* CurrentBuilder;
+    static std::recursive_mutex BuilderMutex;
     std::thread::id mBuilderThread;
     static double   MaxNatural;
 

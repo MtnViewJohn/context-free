@@ -61,6 +61,9 @@ bool
 RendererAST::isNatural(RendererAST* r, double n)
 {
     if (r && r->mImpure) return true;
+
+    std::lock_guard<std::recursive_mutex> lock(Builder::BuilderMutex);
+    
     if (Builder::CurrentBuilder &&
         Builder::CurrentBuilder->isMyBuilder() &&
         Builder::CurrentBuilder->impure()) return true;

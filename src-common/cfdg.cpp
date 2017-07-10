@@ -117,9 +117,14 @@ CfdgError::operator=(const CfdgError& e) noexcept
 void
 CfdgError::Error(const yy::location& errLoc, const char* msg, Builder* b)
 {
-    if (b)
+    if (b) {
         b->error(errLoc, msg);
-    else if (Builder::CurrentBuilder && Builder::CurrentBuilder->isMyBuilder())
+        return;
+    }
+    
+    std::lock_guard<std::recursive_mutex> lock(Builder::BuilderMutex);
+    
+    if (Builder::CurrentBuilder && Builder::CurrentBuilder->isMyBuilder())
         Builder::CurrentBuilder->error(errLoc, msg);
     else
         throw CfdgError(errLoc, msg);
@@ -128,6 +133,8 @@ CfdgError::Error(const yy::location& errLoc, const char* msg, Builder* b)
 void
 CfdgError::Warning(const yy::location& errLoc, const char* msg)
 {
+    std::lock_guard<std::recursive_mutex> lock(Builder::BuilderMutex);
+    
     if (Builder::CurrentBuilder && Builder::CurrentBuilder->isMyBuilder())
         Builder::CurrentBuilder->warning(errLoc, msg);
 }

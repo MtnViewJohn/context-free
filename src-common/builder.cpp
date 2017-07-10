@@ -85,6 +85,7 @@ const std::map<std::string, int> Builder::FlagNames = {
     {"CF::p6m",         AST::CF_P6M}
 };
 Builder* Builder::CurrentBuilder = nullptr;
+std::recursive_mutex Builder::BuilderMutex;
 double Builder:: MaxNatural = 1000.0;
 
 Builder::Builder(const cfdgi_ptr& cfdg, int variation)
@@ -96,14 +97,18 @@ Builder::Builder(const cfdgi_ptr& cfdg, int variation)
     mBuilderThread = std::this_thread::get_id();
     //CommandInfo::shapeMap[0].mArea = M_PI * 0.25;
     mSeed.seed(static_cast<unsigned long long>(variation));
+    
+    std::lock_guard<std::recursive_mutex> lock(BuilderMutex);
     assert(Builder::CurrentBuilder == nullptr);    // ensure singleton
     Builder::CurrentBuilder = this;
+    
     MaxNatural = 1000.0;
     m_CFDG->m_impure = false;
 }
 
 Builder::~Builder()
 {
+    std::lock_guard<std::recursive_mutex> lock(BuilderMutex);
     Builder::CurrentBuilder = nullptr;
 }
 
