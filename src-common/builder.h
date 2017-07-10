@@ -39,6 +39,7 @@
 #include <string>
 #include <cstdlib>
 #include <map>
+#include <thread>
 #include "agg2/agg_basics.h"
 #include "Rand64.h"
 
@@ -59,6 +60,7 @@ namespace yy {
 class Builder {
 public:
     static Builder* CurrentBuilder;
+    std::thread::id mBuilderThread;
     static double   MaxNatural;
 
     cfdgi_ptr                   m_CFDG;
@@ -153,6 +155,7 @@ public:
     void            CheckConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();
+    bool            isMyBuilder() const noexcept;
 };
 
 #endif // INCLUDE_BUILDER_H

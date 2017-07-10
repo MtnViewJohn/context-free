@@ -64,12 +64,12 @@ namespace AST {
         virtual param_ptr evalArgs(RendererAST* = nullptr, const StackRule* = nullptr) const
         { CfdgError::Error(where, "Cannot convert this expression into a shape"); return nullptr; }
         virtual void entropy(std::string&) const {};
-        virtual ASTexpression* simplify() { return nullptr; }
+        virtual ASTexpression* simplify(Builder*) { return nullptr; }
         
         virtual const ASTexpression* getChild(size_t i) const;
         virtual size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
-        virtual ASTexpression* compile(CompilePhase) { return nullptr; }
+        virtual ASTexpression* compile(CompilePhase, Builder*) { return nullptr; }
         // Always returns nullptr except during type check in the following cases:
         // * An ASTvariable bound to a constant returns a copy of the constant
         // * An ASTvariable bound to a rule spec returns an ASTruleSpec that
@@ -105,12 +105,13 @@ namespace AST {
         double random;
         ASTfunction() = delete;
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
-                    const yy::location& nameLoc, const yy::location& argsLoc);
+                    const yy::location& nameLoc, const yy::location& argsLoc,
+                    Builder* b);
         ~ASTfunction() override = default;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* compile(CompilePhase ph) override;
-        ASTexpression* simplify() override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        ASTexpression* simplify(Builder* b) override;
     };
     class ASTselect : public ASTexpression {
         enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
@@ -122,14 +123,14 @@ namespace AST {
         exp_ptr          selector;
         bool             ifSelect;
         
-        ASTselect(exp_ptr args, const yy::location& loc, bool asIf);
+        ASTselect(exp_ptr args, const yy::location& loc, bool asIf, Builder* b);
         ~ASTselect() override;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     private:
         //ASTselect(const yy::location& loc)
         //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
@@ -172,8 +173,8 @@ namespace AST {
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         param_ptr evalArgs(RendererAST* = nullptr, const StackRule* sr = nullptr) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
         void grab(const ASTruleSpecifier* src);
     };
     class ASTstartSpecifier : public ASTruleSpecifier {
@@ -191,8 +192,8 @@ namespace AST {
         ASTstartSpecifier(ASTruleSpecifier&& r, mod_ptr m) noexcept
         : ASTruleSpecifier(std::move(r)), mModification(std::move(m)) { };
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASTcons : public ASTexpression {
     public:
@@ -203,8 +204,8 @@ namespace AST {
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
         
         const ASTexpression* getChild(size_t i) const override;
         size_t size() const override { return children.size(); }
@@ -244,7 +245,7 @@ namespace AST {
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASTuserFunction : public ASTexpression {
     public:
@@ -259,8 +260,8 @@ namespace AST {
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string&) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     private:
         class StackSetup {
             friend class ASTuserFunction;
@@ -279,8 +280,8 @@ namespace AST {
         ASTlet(cont_ptr args, def_ptr func, const yy::location& letLoc,
                const yy::location& defLoc);
         ~ASTlet() override;          // inherited definition ptr owns ASTdefine
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASToperator : public ASTexpression {
     public:
@@ -293,8 +294,8 @@ namespace AST {
         ~ASToperator() override = default;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASTparen : public ASTexpression {
     public:
@@ -309,8 +310,8 @@ namespace AST {
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
         void entropy(std::string& ent) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
 
     class ASTmodTerm : public ASTexpression {
@@ -336,8 +337,8 @@ namespace AST {
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASTmodification : public ASTexpression {
     public:
@@ -361,8 +362,8 @@ namespace AST {
         ~ASTmodification() override;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
         void setVal(Modification& m, RendererAST* = nullptr) const;
         void addEntropy(const std::string& name);
         void makeCanonical();
@@ -386,22 +387,22 @@ namespace AST {
         ~ASTarray() override;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
-        ASTexpression* simplify() override;
-        ASTexpression* compile(CompilePhase ph) override;
+        ASTexpression* simplify(Builder* b) override;
+        ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     
-    inline void Compile(exp_ptr& exp, CompilePhase ph)
+    inline void Compile(exp_ptr& exp, CompilePhase ph, Builder* b)
     {
         if (!exp) return;
-        ASTexpression* r = exp->compile(ph);
+        ASTexpression* r = exp->compile(ph, b);
         if (r)
             exp.reset(r);
     }
     
-    inline void Simplify(exp_ptr& exp)
+    inline void Simplify(exp_ptr& exp, Builder* b)
     {
         if (!exp) return;
-        ASTexpression* r = exp->simplify();
+        ASTexpression* r = exp->simplify(b);
         if (r)
             exp.reset(r);
     }

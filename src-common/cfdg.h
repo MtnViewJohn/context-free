@@ -54,6 +54,7 @@ namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter;
 namespace agg { struct trans_affine_time; }
 class Shape;
 class tiledCanvas;
+class Builder;
 
 class DeferUntilRuntime : public std::exception {
 public:
@@ -66,7 +67,7 @@ public:
     yy::location    where;
     static yy::location Default;
     
-    static void     Error(const yy::location& errLoc, const char* msg);
+    static void     Error(const yy::location& errLoc, const char* msg, Builder* b = nullptr);
     static void     Warning(const yy::location& errLoc, const char* msg);
     
     CfdgError(const yy::location& loc, const char* msg);

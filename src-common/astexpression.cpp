@@ -33,19 +33,20 @@
 namespace AST {
     
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
-                             const yy::location& nameLoc, const yy::location& argsLoc)
+                             const yy::location& nameLoc, const yy::location& argsLoc,
+                             Builder* b)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType),
       functype(NotAFunction), arguments(std::move(args))
     {
         if (func.empty()) {
-            CfdgError::Error(nameLoc, "bad function call");
+            CfdgError::Error(nameLoc, "bad function call", b);
             return;
         }
         
         functype = GetFuncType(func);
         
         if (functype == NotAFunction) {
-            CfdgError::Error(nameLoc, "Unknown function");
+            CfdgError::Error(nameLoc, "Unknown function", b);
             return;
         }
         
@@ -228,22 +229,14 @@ namespace AST {
     param_ptr
     ASTparen::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
-        if (mType != RuleType) {
-            CfdgError::Error(where, "Evaluation of a non-shape expression in a shape context");
-            return nullptr;
-        }
-        
+        assert(mType == RuleType);
         return e->evalArgs(rti, parent);
     }
     
     param_ptr
     ASTselect::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
-        if (mType != RuleType) {
-            CfdgError::Error(where, "Evaluation of a non-shape select() in a shape context");
-            return nullptr;
-        }
-        
+        assert(mType == RuleType);
         return arguments[getIndex(rti)]->evalArgs(rti, parent);
     }
     
@@ -272,10 +265,7 @@ namespace AST {
     param_ptr
     ASTuserFunction::evalArgs(RendererAST* rti, const StackRule* parent) const
     {
-        if (mType != RuleType) {
-            CfdgError::Error(where, "Function does not evaluate to a shape");
-            return nullptr;
-        }
+        assert(mType == RuleType);
         
         if (!rti)
             throw DeferUntilRuntime();
@@ -304,14 +294,11 @@ namespace AST {
         static const std::string Ops("NP!+-*/^_<>LG=n&|X");
         size_t pos = Ops.find(op);
 
-        if (pos == std::string::npos) {
-            CfdgError::Error(where, "Unknown operator");
-        } else if (pos < 3) {
-            if (right)
-                CfdgError::Error(where, "Operator takes only one operand");
+        assert(pos != std::string::npos);
+        if (pos < 3) {
+            assert(!right);
         } else {
-            if (!right)
-                CfdgError::Error(where, "Operator takes two operands");
+            assert(right);
         }
     }
 
@@ -368,14 +355,14 @@ namespace AST {
         canonical = m->canonical;
     }
     
-    ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf)
+    ASTselect::ASTselect(exp_ptr args, const yy::location& loc, bool asIf, Builder* b)
     : ASTexpression(loc), tupleSize(-1), indexCache(NotCached),
       selector(std::move(args)), ifSelect(asIf)
     {
         isConstant = false;
         
         if (!selector || selector->size() < 3) {
-            CfdgError::Error(loc, "select()/if() function requires arguments");
+            CfdgError::Error(loc, "select()/if() function requires arguments", b);
             return;
         }
     }
@@ -1805,9 +1792,9 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTfunction::simplify()
+    ASTfunction::simplify(Builder* b)
     {
-        Simplify(arguments);
+        Simplify(arguments, b);
         
         if (isConstant) {
             double result[AST::MaxVectorSize];
@@ -1823,33 +1810,33 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTselect::simplify()
+    ASTselect::simplify(Builder* b)
     {
         if (indexCache == NotCached) {
             for (auto& arg: arguments)
-                Simplify(arg);
-            Simplify(selector);
+                Simplify(arg, b);
+            Simplify(selector, b);
             return nullptr;
         }
         
-        Simplify(arguments[indexCache]);
+        Simplify(arguments[indexCache], b);
         return arguments[indexCache].release();
     }
     
     ASTexpression*
-    ASTruleSpecifier::simplify()
+    ASTruleSpecifier::simplify(Builder* b)
     {
         if (arguments) {
             if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
                 for (auto& child: carg->children)
-                    Simplify(child);
+                    Simplify(child, b);
             } else {
-                Simplify(arguments);
+                Simplify(arguments, b);
             }
         }
         if (argSource == StackArgs) {
             bool isGlobal;
-            const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+            const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
             assert(bound);
             if (bound->mType != RuleType)
                 return nullptr;
@@ -1870,7 +1857,7 @@ namespace AST {
                     mLocality = PureLocal;
                     assert(argSource != DynamicArgs && argSource != ShapeArgs);
                 } else {
-                    CfdgError::Error(where, "Error processing shape variable.");
+                    CfdgError::Error(where, "Error processing shape variable.", b);
                 }
             }
         }
@@ -1878,21 +1865,21 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTstartSpecifier::simplify()
+    ASTstartSpecifier::simplify(Builder* b)
     {
-        ASTruleSpecifier::simplify();
+        ASTruleSpecifier::simplify(b);
         if (mModification) {
-            ASTexpression* m = mModification->simplify();
+            ASTexpression* m = mModification->simplify(b);
             assert(m == mModification.get());
         }
         return nullptr;
     }
     
     ASTexpression*
-    ASTcons::simplify()
+    ASTcons::simplify(Builder* b)
     {
         for (auto& child: children)
-            Simplify(child);
+            Simplify(child, b);
         
         if (children.size() == 1)
             return children[0].release();
@@ -1901,7 +1888,7 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTuserFunction::simplify()
+    ASTuserFunction::simplify(Builder* b)
     {
         if (arguments) {
             if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
@@ -1909,19 +1896,19 @@ namespace AST {
                 // ASTcons if it only has one child and that will break the
                 // function arguments.
                 for (auto& child: carg->children)
-                    Simplify(child);
+                    Simplify(child, b);
             } else {
-                Simplify(arguments);
+                Simplify(arguments, b);
             }
         }
         return nullptr;
     }
     
     ASTexpression*
-    ASTlet::simplify()
+    ASTlet::simplify(Builder* b)
     {
         assert(definition);
-        definition->compile(CompilePhase::Simplify);
+        definition->compile(CompilePhase::Simplify, b);
         if (isConstant) {
             std::string ent;
             entropy(ent);
@@ -1933,14 +1920,14 @@ namespace AST {
         } else if (!arguments) {
             return definition->mExpression.release();
         }
-        return ASTuserFunction::simplify();
+        return ASTuserFunction::simplify(b);
     }
     
     ASTexpression*
-    ASToperator::simplify()
+    ASToperator::simplify(Builder* b)
     {
-        Simplify(left);
-        Simplify(right);
+        Simplify(left, b);
+        Simplify(right, b);
         
         if (isConstant && (mType == NumericType || mType == FlagType)) {
             double result[AST::MaxVectorSize];
@@ -1955,21 +1942,21 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTparen::simplify()
+    ASTparen::simplify(Builder* b)
     {
-        Simplify(e);
+        Simplify(e, b);
         return e.release();
     }
     
     ASTexpression*
-    ASTmodTerm::simplify()
+    ASTmodTerm::simplify(Builder* b)
     {
-        Simplify(args);
+        Simplify(args, b);
         return nullptr;
     }
     
     ASTexpression*
-    ASTmodification::simplify()
+    ASTmodification::simplify(Builder* b)
     {
         static const std::map<ASTmodTerm::modTypeEnum, int> ClassMap = {
             { ASTmodTerm::unknownType,  ASTmodification::NotAClass },
@@ -2016,7 +2003,7 @@ namespace AST {
         
         for (term_ptr& mod: temp) {
             if (!mod) {
-                CfdgError::Error(where, "Unknown term in shape adjustment");
+                CfdgError::Error(where, "Unknown term in shape adjustment", b);
                 continue;
             }
             
@@ -2028,9 +2015,9 @@ namespace AST {
                 nonConstant |= mc;
             bool keepThisOne = (mc & nonConstant) != 0;
             
-            if (Builder::CurrentBuilder->mInPathContainer && (mc & ZClass))
+            if (b->mInPathContainer && (mc & ZClass))
                 CfdgError::Warning(mod->where, "Z changes are not supported within paths");
-            if (Builder::CurrentBuilder->mInPathContainer && (mc & TimeClass))
+            if (b->mInPathContainer && (mc & TimeClass))
                 CfdgError::Warning(mod->where, "Time changes are not supported within paths");
             
             try {
@@ -2042,7 +2029,7 @@ namespace AST {
             
             if (keepThisOne) {
                 assert(mod->modType != ASTmodTerm::param);
-                Simplify(mod->args);
+                Simplify(mod->args, b);
                 modExp.push_back(std::move(mod));
             }
         }
@@ -2050,21 +2037,21 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTarray::simplify()
+    ASTarray::simplify(Builder* b)
     {
         if (!mData || !isConstant || mLength > 1) {
-            Simplify(mArgs);
+            Simplify(mArgs, b);
             return nullptr;
         }
         
         double i;
         if (mArgs->evaluate(&i, 1) != 1) {
-            CfdgError::Error(mArgs->where, "Cannot evaluate array index");
+            CfdgError::Error(mArgs->where, "Cannot evaluate array index", b);
             return nullptr;
         }
         int index = static_cast<int>(i);
         if (index >= mCount || index < 0) {
-            CfdgError::Error(where, "Array index exceeds bounds");
+            CfdgError::Error(where, "Array index exceeds bounds", b);
             return nullptr;
         }
         
@@ -2075,9 +2062,9 @@ namespace AST {
     }
 
     ASTexpression*
-    ASTfunction::compile(AST::CompilePhase ph)
+    ASTfunction::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(arguments, ph);
+        Compile(arguments, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2096,13 +2083,13 @@ namespace AST {
                     if (arguments->mType == NumericType)
                         argcount = arguments->evaluate();
                     else
-                        CfdgError::Error(argsLoc, "function arguments must be numeric");
+                        CfdgError::Error(argsLoc, "function arguments must be numeric", b);
                 }
                 
                 switch (functype) {
                     case Abs:
                         if (argcount < 1 || argcount > 2)
-                            CfdgError::Error(argsLoc, "function takes one or two arguments");
+                            CfdgError::Error(argsLoc, "function takes one or two arguments", b);
                         break;
                     case Infinity:
                         if (argcount == 0) {
@@ -2134,7 +2121,7 @@ namespace AST {
                     case Sg:
                     case IsNatural:
                         if (argcount != 1)
-                            CfdgError::Error(argsLoc, "Function takes one argument");
+                            CfdgError::Error(argsLoc, "Function takes one argument", b);
                         break;
                     case BitOr:
                     case BitAnd:
@@ -2146,44 +2133,44 @@ namespace AST {
                     case Divides:
                     case Div:
                         if (argcount != 2)
-                            CfdgError::Error(argsLoc, "Function takes two arguments");
+                            CfdgError::Error(argsLoc, "Function takes two arguments", b);
                         break;
                     case Dot:
                     case Cross:
                         if (argnum != 2) {
-                            CfdgError::Error(argsLoc, "Dot/cross product takes two vectors");
+                            CfdgError::Error(argsLoc, "Dot/cross product takes two vectors", b);
                         } else {
                             int l = arguments->getChild(0)->evaluate();
                             int r = arguments->getChild(1)->evaluate();
                             if (functype == Dot && (l != r || l < 2))
-                                CfdgError::Error(argsLoc, "Dot product takes two vectors of the same length");
+                                CfdgError::Error(argsLoc, "Dot product takes two vectors of the same length", b);
                             if (functype == Cross && (l != 3 || r != 3))
-                                CfdgError::Error(argsLoc, "Cross product takes two vector3s");
+                                CfdgError::Error(argsLoc, "Cross product takes two vector3s", b);
                         }
                         break;
                     case Hsb2Rgb:
                     case Rgb2Hsb:
                         if (argcount != 3)
-                            CfdgError::Error(argsLoc, "RGB/HSB conversion function takes 3 arguments");
+                            CfdgError::Error(argsLoc, "RGB/HSB conversion function takes 3 arguments", b);
                         break;
                     case Vec:
                         if (argnum < 2) {
-                            CfdgError::Error(argsLoc, "vec() function at least two arguments");
+                            CfdgError::Error(argsLoc, "vec() function at least two arguments", b);
                         } else if (!arguments->getChild(0)->isConstant ||
                                    !arguments->getChild(0)->isNatural ||
                                     arguments->getChild(0)->evaluate(&random, 1) != 1)
                         {
-                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be a scalar constant");
+                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be a scalar constant", b);
                         } else if (static_cast<int>(floor(random)) < 2 ||
                                    static_cast<int>(floor(random)) > AST::MaxVectorSize)
                         {
-                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be >= 2 and <= 99");
+                            CfdgError::Error(arguments->getChild(1)->where, "vec() function length argument must be >= 2 and <= 99", b);
                         }
                         break;
                     case Ftime:
                     case Frame:
                         if (arguments)
-                            CfdgError::Error(argsLoc, "ftime()/frame() functions takes no arguments");
+                            CfdgError::Error(argsLoc, "ftime()/frame() functions takes no arguments", b);
                         isConstant = false;
                         arguments = std::make_unique<ASTreal>(1.0, argsLoc);
                         break;
@@ -2210,18 +2197,18 @@ namespace AST {
                             case 2:
                                 break;
                             default:
-                                CfdgError::Error(argsLoc, "Illegal argument(s) for random function");
+                                CfdgError::Error(argsLoc, "Illegal argument(s) for random function", b);
                                 break;
                         }
                         if (!isConstant && functype == Rand_Static) {
-                            CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant");
+                            CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant", b);
                         }
                         break;
                     case RandDiscrete:
                         isConstant = false;
                         isNatural = RendererAST::isNatural(nullptr, static_cast<double>(argcount));
                         if (argcount < 1)
-                            CfdgError::Error(argsLoc, "Function takes at least one arguments");
+                            CfdgError::Error(argsLoc, "Function takes at least one arguments", b);
                         break;
                     case RandBernoulli:
                     case RandGeometric:
@@ -2231,7 +2218,7 @@ namespace AST {
                     case RandStudentT:
                         isConstant = false;
                         if (argcount != 1)
-                            CfdgError::Error(argsLoc, "Function takes one argument");
+                            CfdgError::Error(argsLoc, "Function takes one argument", b);
                         break;
                     case RandBinomial:
                     case RandNegBinomial:
@@ -2247,15 +2234,15 @@ namespace AST {
                     case RandWeibull:
                         isConstant = false;
                         if (argcount != 2)
-                            CfdgError::Error(argsLoc, "Function takes two arguments");
+                            CfdgError::Error(argsLoc, "Function takes two arguments", b);
                         break;
                     case Min:
                     case Max:
                         if (argcount < 2)
-                            CfdgError::Error(argsLoc, "Function takes at least two arguments");
+                            CfdgError::Error(argsLoc, "Function takes at least two arguments", b);
                         break;
                     case NotAFunction:
-                        CfdgError::Error(where, "Unknown function");
+                        CfdgError::Error(where, "Unknown function", b);
                         break;
                 }
                 
@@ -2273,7 +2260,7 @@ namespace AST {
                 
                 if (std::find(std::begin(mustBeNatural), std::end(mustBeNatural), functype) != std::end(mustBeNatural)) {
                     if (arguments && !arguments->isNatural && !ASTparameter::Impure)
-                        CfdgError::Error(arguments->where, "function is defined over natural numbers only");
+                        CfdgError::Error(arguments->where, "function is defined over natural numbers only", b);
                     isNatural = true;
                 }
 
@@ -2286,13 +2273,13 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTselect::compile(AST::CompilePhase ph)
+    ASTselect::compile(AST::CompilePhase ph, Builder* b)
     {
         if (!selector)
             return nullptr;
         for (auto& arg: arguments)
-            Compile(arg, ph);
-        Compile(selector, ph);
+            Compile(arg, ph, b);
+        Compile(selector, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2306,11 +2293,11 @@ namespace AST {
                 arguments.erase(arguments.begin());
                 
                 if (selector->mType != NumericType || selector->evaluate() != 1) {
-                    CfdgError::Error(selector->where, "if()/select() selector must be a numeric scalar");
+                    CfdgError::Error(selector->where, "if()/select() selector must be a numeric scalar", b);
                     return nullptr;
                 }
                 if (arguments.size() < 2) {
-                    CfdgError::Error(selector->where, "if()/select() selector must have at least two arguments");
+                    CfdgError::Error(selector->where, "if()/select() selector must have at least two arguments", b);
                     return nullptr;
                 }
                 
@@ -2319,18 +2306,18 @@ namespace AST {
                 tupleSize = (mType == NumericType) ? arguments[0]->evaluate() : 1;
                 for (auto&& argument: arguments) {
                     if (mType != argument->mType) {
-                        CfdgError::Error(argument->where, "select()/if() choices must be of same type");
+                        CfdgError::Error(argument->where, "select()/if() choices must be of same type", b);
                     } else if (mType == NumericType && tupleSize != -1 &&
                                argument->evaluate() != tupleSize)
                     {
-                        CfdgError::Error(argument->where, "select()/if() choices must be of same length");
+                        CfdgError::Error(argument->where, "select()/if() choices must be of same length", b);
                         tupleSize = -1;
                     }
                     isNatural = isNatural && argument->isNatural;
                 }
                 
                 if (ifSelect && arguments.size() != 2) {
-                    CfdgError::Error(where, "if() function requires two arguments");
+                    CfdgError::Error(where, "if() function requires two arguments", b);
                 }
                 
                 if (selector->isConstant) {
@@ -2348,9 +2335,9 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTruleSpecifier::compile(AST::CompilePhase ph)
+    ASTruleSpecifier::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(arguments, ph);
+        Compile(arguments, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2358,7 +2345,7 @@ namespace AST {
                     case ShapeArgs:
                         assert(arguments);
                         if (arguments->mType != AST::RuleType)
-                            CfdgError::Error(arguments->where, "Expression does not return a shape");
+                            CfdgError::Error(arguments->where, "Expression does not return a shape", b);
                         isConstant = false;
                         mLocality = arguments->mLocality;
                         arguments->entropy(entropyVal);
@@ -2371,32 +2358,32 @@ namespace AST {
                         return nullptr;
                     case StackArgs: {
                         bool isGlobal;
-                        const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                        const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
                         assert(bound);
                         if (bound->mType != RuleType) {
-                            CfdgError::Error(where, "Shape name does not bind to a rule variable");
-                            CfdgError::Error(bound->mLocation, "   this is what it binds to");
+                            CfdgError::Error(where, "Shape name does not bind to a rule variable", b);
+                            CfdgError::Error(bound->mLocation, "   this is what it binds to", b);
                         }
                         if (bound->mStackIndex == -1) {
                             if (!bound->mDefinition || !bound->mDefinition->mExpression) {
-                                CfdgError::Error(where, "Error processing shape variable.");
+                                CfdgError::Error(where, "Error processing shape variable.", b);
                                 return nullptr;
                             }
                             const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound->mDefinition->mExpression.get());
                             if (r == nullptr) {
-                                CfdgError::Error(where, "Error processing shape variable.");
+                                CfdgError::Error(where, "Error processing shape variable.", b);
                                 return nullptr;
                             }
                             grab(r);
                             mLocality = PureLocal;
                         } else {
                             mStackIndex = bound->mStackIndex -
-                                (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                                (isGlobal ? 0 : b->mLocalStackDepth);
                             isConstant = false;
                             mLocality = bound->mLocality;
                         }
                         if (arguments && arguments->mType != AST::NoType)
-                            CfdgError::Error(arguments->where, "Cannot bind parameters twice");
+                            CfdgError::Error(arguments->where, "Cannot bind parameters twice", b);
                         return nullptr;
                     }
                     case NoArgs:
@@ -2410,7 +2397,7 @@ namespace AST {
                         break;
                     case DynamicArgs: {
                         ASTdefine* func = nullptr;
-                        std::string name = Builder::CurrentBuilder->GetTypeInfo(shapeType, func, typeSignature);
+                        std::string name = b->GetTypeInfo(shapeType, func, typeSignature);
                         if (typeSignature && typeSignature->empty())
                             typeSignature = nullptr;
                         
@@ -2418,11 +2405,11 @@ namespace AST {
                             if (func->mType == RuleType) {
                                 argSource = ShapeArgs;
                                 arguments = std::make_unique<ASTuserFunction>(shapeType, arguments.release(), func, where);
-                                Compile(arguments, ph);
+                                Compile(arguments, ph, b);
                                 isConstant = false;
                                 mLocality = arguments->mLocality;
                             } else {
-                                CfdgError::Error(arguments->where, "Function does not return a shape");
+                                CfdgError::Error(arguments->where, "Function does not return a shape", b);
                             }
                             
                             if (arguments)
@@ -2432,40 +2419,40 @@ namespace AST {
                         }
                         
                         bool isGlobal;
-                        const ASTparameter* bound = Builder::CurrentBuilder->findExpression(shapeType, isGlobal);
+                        const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
                         if (bound && bound->mType == RuleType) {
                             // Shape was a stack variable but the variable type
                             // was not known to be a ruleSpec until now. Convert
                             // to a StackArgs and recompile as such.
                             argSource = StackArgs;
-                            compile(ph);    // always return nullptr
+                            compile(ph, b);    // always return nullptr
                             return nullptr;
                         }
                         
                         if (arguments && arguments->mType == AST::ReuseType) {
                             argSource = ParentArgs;
                             if (!typeSignature) {
-                                CfdgError::Error(where, "Parameter reuse only allowed when shape has parameters to reuse.");
+                                CfdgError::Error(where, "Parameter reuse only allowed when shape has parameters to reuse.", b);
                             } else if (typeSignature != parentSignature) {
                                 ASTparameters::const_iterator param_it = typeSignature->begin();
                                 ASTparameters::const_iterator parent_it = parentSignature->begin();
                                 while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {
                                     if (*param_it != *parent_it) {
-                                        CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.");
-                                        CfdgError::Error(param_it->mLocation, "    target shape parameter type");
-                                        CfdgError::Error(parent_it->mLocation, "    does not equal source shape parameter type");
+                                        CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.", b);
+                                        CfdgError::Error(param_it->mLocation, "    target shape parameter type", b);
+                                        CfdgError::Error(parent_it->mLocation, "    does not equal source shape parameter type", b);
                                         break;
                                     }
                                     ++param_it;
                                     ++parent_it;
                                 }
                                 if (param_it == typeSignature->end() && parent_it != parentSignature->end()) {
-                                    CfdgError::Error(where, "Source shape has more parameters than target shape.");
-                                    CfdgError::Error(parent_it->mLocation, "    extra source parameters start here");
+                                    CfdgError::Error(where, "Source shape has more parameters than target shape.", b);
+                                    CfdgError::Error(parent_it->mLocation, "    extra source parameters start here", b);
                                 }
                                 if (param_it != typeSignature->end() && parent_it == parentSignature->end()) {
-                                    CfdgError::Error(where, "Target shape has more parameters than source shape.");
-                                    CfdgError::Error(param_it->mLocation, "    extra target parameters start here");
+                                    CfdgError::Error(where, "Target shape has more parameters than source shape.", b);
+                                    CfdgError::Error(param_it->mLocation, "    extra target parameters start here", b);
                                 }
                             }
                             isConstant = true;
@@ -2509,19 +2496,19 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTstartSpecifier::compile(AST::CompilePhase ph)
+    ASTstartSpecifier::compile(AST::CompilePhase ph, Builder* b)
     {
         std::string name(entropyVal);
-        ASTruleSpecifier::compile(ph);      // always return nullptr
+        ASTruleSpecifier::compile(ph, b);   // always return nullptr
         entropyVal = std::move(name);       // StartShape only uses name for entropy (grrr)
         if (mModification) {
-            mModification->compile(ph);     // always returns nullptr
+            mModification->compile(ph, b);  // always returns nullptr
         }
         return nullptr;
     }
     
     ASTexpression*
-    ASTcons::compile(AST::CompilePhase ph)
+    ASTcons::compile(AST::CompilePhase ph, Builder* b)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2529,7 +2516,7 @@ namespace AST {
                 mLocality = PureLocal;
                 mType = NoType;
                 for (auto& child : children) {
-                    Compile(child, ph);
+                    Compile(child, ph, b);
                     isConstant = isConstant && child->isConstant;
                     isNatural = isNatural && child->isNatural;
                     mLocality = CombineLocality(mLocality, child->mLocality);
@@ -2544,34 +2531,34 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTvariable::compile(AST::CompilePhase ph)
+    ASTvariable::compile(AST::CompilePhase ph, Builder* b)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool isGlobal = false;
-                const ASTparameter* bound = Builder::CurrentBuilder->findExpression(stringIndex, isGlobal);
+                const ASTparameter* bound = b->findExpression(stringIndex, isGlobal);
                 if (bound == nullptr) {
-                    CfdgError::Error(where, "internal error.");
+                    CfdgError::Error(where, "internal error.", b);
                     return nullptr;
                 }
                 
-                std::string name = Builder::CurrentBuilder->ShapeToString(stringIndex);
+                std::string name = b->ShapeToString(stringIndex);
 
                 if (bound->mStackIndex == -1) {
                     assert(bound->mDefinition);
                     ASTexpression* ret = bound->constCopy(where, name);
                     if (!ret)
-                        CfdgError::Error(where, "internal error.");
+                        CfdgError::Error(where, "internal error.", b);
                     return ret;
                 } else {
                     if (bound->mType == AST::RuleType) {
                         ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
-                        ret->compile(ph);       // always return nullptr
+                        ret->compile(ph, b);    // always return nullptr
                         return ret;
                     }
                     
                     count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
-                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
                     mType = bound->mType;
                     isNatural = bound->isNatural;
                     mLocality = bound->mLocality;
@@ -2586,7 +2573,7 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTuserFunction::compile(AST::CompilePhase ph)
+    ASTuserFunction::compile(AST::CompilePhase ph, Builder* b)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2595,19 +2582,19 @@ namespace AST {
                 // type check we may need to convert to a shape spec.
                 ASTdefine* def = nullptr;
                 const ASTparameters* p = nullptr;
-                std::string name = Builder::CurrentBuilder->GetTypeInfo(nameIndex, def, p);
+                std::string name = b->GetTypeInfo(nameIndex, def, p);
                 
                 if (def && p) {
-                    CfdgError::Error(where, "Name matches both a function and a shape");
+                    CfdgError::Error(where, "Name matches both a function and a shape", b);
                     return nullptr;
                 }
                 if (!def && !p) {
-                    CfdgError::Error(where, "Name does not match shape name or function name");
+                    CfdgError::Error(where, "Name does not match shape name or function name", b);
                     return nullptr;
                 }
                 
                 if (def) {  // && !p
-                    Compile(arguments, ph);
+                    Compile(arguments, ph, b);
                     
                     definition = def;
                     ASTparameter::CheckType(&(def->mParameters), arguments.get(), where, false);
@@ -2627,7 +2614,7 @@ namespace AST {
                 ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, name,
                                                            std::move(arguments),
                                                            where, nullptr);
-                r->compile(CompilePhase::TypeCheck);    // always returns nullptr
+                r->compile(CompilePhase::TypeCheck, b); // always returns nullptr
                 return r;
                 break;
             }
@@ -2638,11 +2625,11 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTlet::compile(AST::CompilePhase ph)
+    ASTlet::compile(AST::CompilePhase ph, Builder* b)
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
-                mDefinitions->compile(ph, nullptr, definition);
+                mDefinitions->compile(ph, b, nullptr, definition);
                 
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
@@ -2677,10 +2664,10 @@ namespace AST {
     }
     
     ASTexpression*
-    ASToperator::compile(AST::CompilePhase ph)
+    ASToperator::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(left, ph);
-        Compile(right, ph);
+        Compile(left, ph, b);
+        Compile(right, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2697,18 +2684,18 @@ namespace AST {
                         case 'P':
                             tupleSize = ls;
                             if (rs != 0)
-                                CfdgError::Error(where, "Unitary operators must have only one operand");
+                                CfdgError::Error(where, "Unitary operators must have only one operand", b);
                             break;
                         case '!':
                             if (rs != 0 || ls != 1)
-                                CfdgError::Error(where, "Unitary operators must have only one scalar operand");
+                                CfdgError::Error(where, "Unitary operators must have only one scalar operand", b);
                             break;
                         case '/':
                         case '*':
                             if (ls < 1 || rs < 1)
-                                CfdgError::Error(where, "Binary operators must have two operands");
+                                CfdgError::Error(where, "Binary operators must have two operands", b);
                             else if (ls != rs && std::min(ls, rs) > 1)
-                                CfdgError::Error(where, "At least one operand must be scalar (or both same size)");
+                                CfdgError::Error(where, "At least one operand must be scalar (or both same size)", b);
                             tupleSize = std::max(ls, rs);
                             break;
                         case '+':
@@ -2719,13 +2706,13 @@ namespace AST {
                         case '=':
                         case 'n':
                             if (ls != rs)
-                                CfdgError::Error(where, "Operands must have the same length");
+                                CfdgError::Error(where, "Operands must have the same length", b);
                             if (ls < 1 || rs < 1)
-                                CfdgError::Error(where, "Binary operators must have two operands");
+                                CfdgError::Error(where, "Binary operators must have two operands", b);
                             break;
                         default:
                             if (ls != 1 || rs != 1)
-                                CfdgError::Error(where, "Binary operators must have two scalar operands");
+                                CfdgError::Error(where, "Binary operators must have two scalar operands", b);
                             break;
                     }
                 }
@@ -2734,13 +2721,13 @@ namespace AST {
                 
                 if (op == '+') {
                     if (mType != FlagType && mType != NumericType)
-                        CfdgError::Error(where, "Operands must be numeric or flags");
+                        CfdgError::Error(where, "Operands must be numeric or flags", b);
                 } else {
                     if (mType != NumericType)
-                        CfdgError::Error(where, "Operand(s) must be numeric");
+                        CfdgError::Error(where, "Operand(s) must be numeric", b);
                 }
                 if (op == '_' && !isNatural &&!ASTparameter::Impure)
-                    CfdgError::Error(where, "Proper subtraction operands must be natural");
+                    CfdgError::Error(where, "Proper subtraction operands must be natural", b);
                 break;
             }
             case CompilePhase::Simplify:
@@ -2750,10 +2737,10 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTparen::compile(AST::CompilePhase ph)
+    ASTparen::compile(AST::CompilePhase ph, Builder* b)
     {
         if (!e) return nullptr;
-        Compile(e, ph);
+        Compile(e, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -2770,12 +2757,12 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTmodTerm::compile(AST::CompilePhase ph)
+    ASTmodTerm::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(args, ph);
+        Compile(args, ph, b);
         if (!args) {
             if (modType != param)
-                CfdgError::Error(where, "Illegal expression in shape adjustment");
+                CfdgError::Error(where, "Illegal expression in shape adjustment", b);
             return nullptr;
         }
         
@@ -2832,7 +2819,7 @@ namespace AST {
                             case ASTmodTerm::transform:
                                 maxCount = 6;
                                 if (argCount != 1 && argCount != 2 && argCount != 4 && argCount != 6)
-                                    CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters");
+                                    CfdgError::Error(where, "transform adjustment takes 1, 2, 4, or 6 parameters", b);
                                 break;
                             case ASTmodTerm::param:
                                 minCount = maxCount = 0;
@@ -2843,19 +2830,19 @@ namespace AST {
                         }
                         
                         if (argCount < minCount)
-                            CfdgError::Error(where, "Not enough adjustment parameters");
+                            CfdgError::Error(where, "Not enough adjustment parameters", b);
                         if (argCount > maxCount)
-                            CfdgError::Error(where, "Too many adjustment parameters");
+                            CfdgError::Error(where, "Too many adjustment parameters", b);
                         break;
                     }
                     case ModType:
                         if (modType != ASTmodTerm::transform)
-                            CfdgError::Error(args->where, "Cannot accept a transform expression here");
+                            CfdgError::Error(args->where, "Cannot accept a transform expression here", b);
                         else
                             modType = ASTmodTerm::modification;
                         break;
                     default:
-                        CfdgError::Error(args->where, "Illegal expression in shape adjustment");
+                        CfdgError::Error(args->where, "Illegal expression in shape adjustment", b);
                         break;
                 }
                 break;
@@ -2867,10 +2854,10 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTmodification::compile(AST::CompilePhase ph)
+    ASTmodification::compile(AST::CompilePhase ph, Builder* b)
     {
         for (auto& term: modExp)
-            term->compile(ph);          // ASTterm::compile() always return nullptr
+            term->compile(ph, b);          // ASTterm::compile() always return nullptr
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -3015,27 +3002,27 @@ namespace AST {
     }
     
     ASTexpression*
-    ASTarray::compile(AST::CompilePhase ph)
+    ASTarray::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(mArgs, ph);
+        Compile(mArgs, ph, b);
         if (!mArgs) {
-            CfdgError::Error(where, "Illegal expression in vector index");
+            CfdgError::Error(where, "Illegal expression in vector index", b);
             return nullptr;
         }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool isGlobal;
-                const ASTparameter* bound = Builder::CurrentBuilder->findExpression(mName, isGlobal);
+                const ASTparameter* bound = b->findExpression(mName, isGlobal);
                 assert(bound);
                 if (bound ->mType != NumericType) {
-                    CfdgError::Error(where, "Vectors can only have numeric components");
+                    CfdgError::Error(where, "Vectors can only have numeric components", b);
                     return nullptr;
                 }
                 
                 isNatural = bound->isNatural;
                 mStackIndex = bound->mStackIndex -
-                    (isGlobal ? 0 : Builder::CurrentBuilder->mLocalStackDepth);
+                    (isGlobal ? 0 : b->mLocalStackDepth);
                 mCount = bound->mTuplesize;
                 isParameter = bound->isParameter;
                 mLocality = bound->mLocality;
@@ -3044,7 +3031,7 @@ namespace AST {
                 if (bound->mStackIndex == -1) {
                     mData = std::make_unique<double[]>(mCount);
                     if (bound->mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
-                        CfdgError::Error(where, "Error computing vector data");
+                        CfdgError::Error(where, "Error computing vector data", b);
                         isConstant = false;
                         return nullptr;
                     }
@@ -3059,7 +3046,7 @@ namespace AST {
                         !indices[i]->isConstant ||
                          indices[i]->evaluate(&data, 1) != 1)
                     {
-                        CfdgError::Error(indices[i]->where, "Vector stride/length must be a scalar numeric constant");
+                        CfdgError::Error(indices[i]->where, "Vector stride/length must be a scalar numeric constant", b);
                         break;
                     }
                     mStride = mLength;
@@ -3067,12 +3054,12 @@ namespace AST {
                 }
                 
                 if (mArgs->mType != NumericType || mArgs->evaluate() != 1)
-                    CfdgError::Error(mArgs->where, "Vector index must be a scalar numeric expression");
+                    CfdgError::Error(mArgs->where, "Vector index must be a scalar numeric expression", b);
 
                 if (mStride < 0 || mLength < 0)
-                    CfdgError::Error(mArgs->where, "Vector length & stride arguments must be positive");
+                    CfdgError::Error(mArgs->where, "Vector length & stride arguments must be positive", b);
                 if (mStride * (mLength - 1) >= mCount)
-                    CfdgError::Error(mArgs->where, "Vector length & stride arguments too large for source");
+                    CfdgError::Error(mArgs->where, "Vector length & stride arguments too large for source", b);
                 
                 isConstant = mData && mArgs->isConstant;
                 mLocality = CombineLocality(mLocality, mArgs->mLocality);

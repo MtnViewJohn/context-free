@@ -199,9 +199,9 @@ CFDGImpl::isTiled(agg::trans_affine* tr, double* x, double* y) const
         mTileMod.m_transform.transform(&v_x, &v_y);
         
         if (fabs(u_y - o_y) >= 0.0001 && fabs(v_x - o_x) >= 0.0001) 
-            CfdgError::Error(loc, "Tile must be aligned with the X or Y axis.");
+            CfdgError::Error(loc, "Tile must be aligned with the X or Y axis.", m_builder);
         if ((u_x - o_x) < 0.0 || (v_y - o_y) < 0.0)
-            CfdgError::Error(loc, "Tile must be in the positive X/Y quadrant.");
+            CfdgError::Error(loc, "Tile must be in the positive X/Y quadrant.", m_builder);
         
         *x = u_x - o_x;
         *y = v_y - o_y;
@@ -233,9 +233,9 @@ CFDGImpl::isFrieze(agg::trans_affine* tr, double* x, double* y) const
         mTileMod.m_transform.transform(&v_x, &v_y);
         
         if (fabs(u_y - o_y) >= 0.0001 || fabs(v_x - o_x) >= 0.0001) 
-            CfdgError::Error(loc, "Frieze must be aligned with the X and Y axis.");
+            CfdgError::Error(loc, "Frieze must be aligned with the X and Y axis.", m_builder);
         if ((u_x - o_x) < 0.0 || (v_y - o_y) < 0.0)
-            CfdgError::Error(loc, "Frieze must be in the positive X/Y quadrant.");
+            CfdgError::Error(loc, "Frieze must be in the positive X/Y quadrant.", m_builder);
         
         *x = u_x - o_x;
         *y = v_y - o_y;
@@ -251,7 +251,7 @@ CFDGImpl::isSized(double* x, double* y) const
     if (x) *x = mSizeMod.m_transform.sx;
     if (y) *y = mSizeMod.m_transform.sy;
     if (mSizeMod.m_transform.shx != 0.0 || mSizeMod.m_transform.shy != 0.0)
-        CfdgError::Error(loc, "Size specification must not be rotated or skewed.");
+        CfdgError::Error(loc, "Size specification must not be rotated or skewed.", m_builder);
     return true;
 }
 
@@ -262,7 +262,7 @@ CFDGImpl::isTimed(agg::trans_affine_time* t) const
     if (!hasParameter(CFG::Time, AST::ModType, loc)) return false;
     if (t) *t = mTimeMod.m_time;
     if (mTimeMod.m_time.tbegin >= mTimeMod.m_time.tend)
-        CfdgError::Error(loc, "Time specification must have positive duration.");
+        CfdgError::Error(loc, "Time specification must have positive duration.", m_builder);
     return true;
 }
 
@@ -274,7 +274,7 @@ CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
     std::vector<const ASTmodification*> left = getTransforms(e, syms, r, isTiled(), mTileMod.m_transform);
     
     if (!left.empty()) {
-        CfdgError(left.front()->where, "At least one term was invalid");
+        CfdgError::Error(left.front()->where, "At least one term was invalid", m_builder);
     }
 }
 
@@ -286,7 +286,7 @@ CFDGImpl::hasParameter(CFG name, double& value, RendererAST* r) const
         return false;
     
     if (!exp->isConstant && !r) {
-        CfdgError::Error(exp->where, "This expression must be constant");
+        CfdgError::Error(exp->where, "This expression must be constant", m_builder);
         return false;
     } else {
         exp->evaluate(&value, 1, r);
@@ -302,7 +302,7 @@ CFDGImpl::hasParameter(CFG name, Modification& value, RendererAST* r) const
         return false;
     
     if (!exp->isConstant && !r) {
-        CfdgError::Error(exp->where, "This expression must be constant");
+        CfdgError::Error(exp->where, "This expression must be constant", m_builder);
         return false;
     } else {
         exp->evaluate(value, true, r);
@@ -356,7 +356,7 @@ CFDGImpl::rulesLoaded()
         if (r->weightType == ASTrule::PercentWeight) {
             percentweightsums[ r->mNameIndex ] += r->mWeight;
             if (percentweightsums[ r->mNameIndex ] > 1.0001)
-                CfdgError::Error(r->mLocation, "Percentages exceed 100%");
+                CfdgError::Error(r->mLocation, "Percentages exceed 100%", m_builder);
         } else {
             weightsums[ r->mNameIndex ] += r->mWeight;
         }
@@ -396,10 +396,10 @@ CFDGImpl::rulesLoaded()
     // with respect to rules of the same shape type
     sort(mRules.begin(), mRules.end(), ASTrule::compareLT);
     
-    Builder::CurrentBuilder->mLocalStackDepth = 0;
-    mCFDGcontents.compile(CompilePhase::TypeCheck);
-    if (!Builder::CurrentBuilder->mErrorOccured)
-        mCFDGcontents.compile(CompilePhase::Simplify);
+    m_builder->mLocalStackDepth = 0;
+    mCFDGcontents.compile(CompilePhase::TypeCheck, m_builder);
+    if (!m_builder->mErrorOccured)
+        mCFDGcontents.compile(CompilePhase::Simplify, m_builder);
     
     // Wait until done and then update these members
     double value;

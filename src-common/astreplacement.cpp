@@ -66,7 +66,7 @@ namespace AST {
     }
     
     void
-    ASTrepContainer::compile(CompilePhase ph, ASTloop* loop, ASTdefine* def)
+    ASTrepContainer::compile(CompilePhase ph, Builder* b, ASTloop* loop, ASTdefine* def)
     {
         // Delete all of the incomplete parameters inserted during parse
         if (ph == CompilePhase::TypeCheck) {
@@ -77,14 +77,14 @@ namespace AST {
                 }
         }
         
-        Builder::CurrentBuilder->push_repContainer(*this);
+        b->push_repContainer(*this);
         if (loop)
-            loop->compileLoopMod();
+            loop->compileLoopMod(b);
         for (auto& rep: mBody)
-            rep->compile(ph);
+            rep->compile(ph, b);
         if (def)
-            def->compile(ph);
-        Builder::CurrentBuilder->pop_repContainer(nullptr);
+            def->compile(ph, b);
+        b->pop_repContainer(nullptr);
     }
 
     
@@ -119,10 +119,8 @@ namespace AST {
         };
         
         auto opname = PathOpNames.find(s);
-        if (opname == PathOpNames.end())
-            CfdgError::Error(loc, "Unknown path operation type");
-        else
-            mPathOp = opname->second;
+        assert(opname != PathOpNames.end());
+        mPathOp = opname->second;
     }
 
     ASTloop::ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
@@ -153,7 +151,7 @@ namespace AST {
     
     void
     ASTloop::setupLoop(double& start, double& end, double& step, const ASTexpression* e,
-                       const yy::location& loc, RendererAST* rti)
+                       RendererAST* rti)
     {
         double data[3];
         switch (e->evaluate(data, 3, rti)) {
@@ -167,8 +165,7 @@ namespace AST {
             case 3:
                 break;
             default:
-                CfdgError::Error(loc, "A loop must have one to three index parameters.");
-                break;
+                return;
         }
         start = data[0];
         end = data[1];
@@ -278,11 +275,10 @@ namespace AST {
         mMiterLimit(4.0), mStrokeWidth(0.1), mParameters(std::move(params)),
         mFlags(CF_MITER_JOIN + CF_BUTT_CAP)
     {
-        if (s == "FILL") {
+        if (s == "FILL")
             mFlags |= CF_FILL;
-        } else if (s != "STROKE") {
-            CfdgError::Error(loc, "Unknown path command/operation");
-        }
+        else
+            assert(s == "STROKE");
     }
     
     ASTreplacement::~ASTreplacement() = default;
@@ -358,7 +354,7 @@ namespace AST {
         
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         if (mLoopArgs) {
-            setupLoop(start, end, step, mLoopArgs.get(), mLocation, r);
+            setupLoop(start, end, step, mLoopArgs.get(), r);
         } else {
             start = mLoopData[0];
             end = mLoopData[1];
@@ -609,52 +605,52 @@ namespace AST {
     }
     
     void
-    ASTreplacement::compile(AST::CompilePhase ph)
+    ASTreplacement::compile(AST::CompilePhase ph, Builder* b)
     {
         ASTexpression* r;
-        r = mShapeSpec.compile(ph);             // always returns nullptr
+        r = mShapeSpec.compile(ph, b);             // always returns nullptr
         assert(r == nullptr);
-        r = mChildChange.compile(ph);           // ditto
+        r = mChildChange.compile(ph, b);           // ditto
         assert(r == nullptr);
 
         switch (ph) {
             case CompilePhase::TypeCheck:
                 mChildChange.addEntropy(mShapeSpec.entropyVal);
-                if (typeid(ASTreplacement) == typeid(*this) && Builder::CurrentBuilder->mInPathContainer) {
+                if (typeid(ASTreplacement) == typeid(*this) && b->mInPathContainer) {
                     // This is a subpath
                     if (mShapeSpec.argSource == ASTruleSpecifier::ShapeArgs ||
                         mShapeSpec.argSource == ASTruleSpecifier::StackArgs ||
                         primShape::isPrimShape(mShapeSpec.shapeType))
                     {
                         if (mRepType != op)
-                            CfdgError::Error(mShapeSpec.where, "Error in subpath specification");
+                            CfdgError::Error(mShapeSpec.where, "Error in subpath specification", b);
                     } else {
-                        const ASTrule* rule = Builder::CurrentBuilder->GetRule(mShapeSpec.shapeType);
+                        const ASTrule* rule = b->GetRule(mShapeSpec.shapeType);
                         if (!rule || !rule->isPath)
-                            CfdgError::Error(mShapeSpec.where, "Subpath can only refer to a path");
+                            CfdgError::Error(mShapeSpec.where, "Subpath can only refer to a path", b);
                         else if (rule->mRuleBody.mRepType != mRepType)
-                            CfdgError::Error(mShapeSpec.where, "Subpath type mismatch error");
+                            CfdgError::Error(mShapeSpec.where, "Subpath type mismatch error", b);
                     }
                 }
                 break;
             case CompilePhase::Simplify:
-                r = mShapeSpec.simplify();          // always returns nullptr
+                r = mShapeSpec.simplify(b);          // always returns nullptr
                 assert(r == nullptr);
-                r = mChildChange.simplify();        // ditto
+                r = mChildChange.simplify(b);        // ditto
                 assert(r == nullptr);
                 break;
         }
     }
     
     void
-    ASTloop::compile(AST::CompilePhase ph)
+    ASTloop::compile(AST::CompilePhase ph, Builder* b)
     {
-        Compile(mLoopArgs, ph);
+        Compile(mLoopArgs, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (!mLoopArgs) {
-                    CfdgError::Error(mLocation, "A loop must have one to three index parameters.");
+                    CfdgError::Error(mLocation, "A loop must have one to three index parameters.", b);
                     return;
                 }
                 
@@ -667,8 +663,13 @@ namespace AST {
                 bool finallyNatural = false;
                 Locality_t locality = mLoopArgs->mLocality;
                 
+                int c = mLoopArgs->evaluate();
+                if (c < 1 || c > 3) {
+                    CfdgError::Error(mLoopArgs->where, "A loop must have one to three index parameters.", b);
+                }
+                
                 if (mLoopArgs->isConstant) {
-                    setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get(), mLoopArgs->where);
+                    setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get());
                     bodyNatural = mLoopData[0] == floor(mLoopData[0]) &&
                     mLoopData[1] == floor(mLoopData[1]) &&
                     mLoopData[2] == floor(mLoopData[2]) &&
@@ -679,11 +680,6 @@ namespace AST {
                     mLoopData[1] + mLoopData[2] < 9007199254740992.;
                     mLoopArgs.reset();
                 } else {
-                    int c = mLoopArgs->evaluate();
-                    if (c < 1 || c > 3) {
-                        CfdgError::Error(mLoopArgs->where, "A loop must have one to three index parameters.");
-                    }
-                    
                     for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
                         const ASTexpression* loopArg = mLoopArgs->getChild(i);
                         int num = loopArg->evaluate();
@@ -716,44 +712,44 @@ namespace AST {
                 
                 mLoopBody.mParameters.front().isNatural = bodyNatural;
                 mLoopBody.mParameters.front().mLocality = locality;
-                mLoopBody.compile(ph, this, nullptr);
+                mLoopBody.compile(ph, b, this, nullptr);
                 mFinallyBody.mParameters.front().isNatural = finallyNatural;
                 mFinallyBody.mParameters.front().mLocality = locality;
-                mFinallyBody.compile(ph);
+                mFinallyBody.compile(ph, b);
                 
                 if (!mLoopModHolder)
                     mChildChange.addEntropy(ent);
                 break;
             }
             case CompilePhase::Simplify:
-                Simplify(mLoopArgs);
-                mLoopBody.compile(ph);
-                mFinallyBody.compile(ph);
+                Simplify(mLoopArgs, b);
+                mLoopBody.compile(ph, b);
+                mFinallyBody.compile(ph, b);
                 break;
         }
     }
     
     void
-    ASTloop::compileLoopMod()
+    ASTloop::compileLoopMod(Builder* b)
     {
         if (mLoopModHolder) {
-            mLoopModHolder->compile(CompilePhase::TypeCheck);
+            mLoopModHolder->compile(CompilePhase::TypeCheck, b);
             mChildChange.grab(mLoopModHolder.get());
         } else {
-            mChildChange.compile(CompilePhase::TypeCheck);
+            mChildChange.compile(CompilePhase::TypeCheck, b);
         }
     }
     
     void
-    ASTtransform::compile(AST::CompilePhase ph)
+    ASTtransform::compile(AST::CompilePhase ph, Builder* b)
     {
-        ASTreplacement::compile(ph);
+        ASTreplacement::compile(ph, b);
         ASTexpression* ret = nullptr;
         if (mExpHolder)
-            ret = mExpHolder->compile(ph);        // always returns nullptr
+            ret = mExpHolder->compile(ph, b);     // always returns nullptr
         if (ret != nullptr)
-            CfdgError::Error(mLocation, "Error analyzing transform list");
-        mBody.compile(ph);
+            CfdgError::Error(mLocation, "Error analyzing transform list", b);
+        mBody.compile(ph, b);
 
         switch (ph) {
             case CompilePhase::TypeCheck:
@@ -761,45 +757,45 @@ namespace AST {
                     CfdgError::Error(mLocation, "Shape cloning only permitted in impure mode");
                 break;
             case CompilePhase::Simplify:
-                Simplify(mExpHolder);
+                Simplify(mExpHolder, b);
                 break;
         }
     }
     
     void
-    ASTif::compile(AST::CompilePhase ph)
+    ASTif::compile(AST::CompilePhase ph, Builder* b)
     {
-        ASTreplacement::compile(ph);
-        Compile(mCondition, ph);
-        mThenBody.compile(ph);
-        mElseBody.compile(ph);
+        ASTreplacement::compile(ph, b);
+        Compile(mCondition, ph, b);
+        mThenBody.compile(ph, b);
+        mElseBody.compile(ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck:
                 if (mCondition->mType != NumericType || mCondition->evaluate() != 1)
-                    CfdgError::Error(mCondition->where, "If condition must be a numeric scalar");
+                    CfdgError::Error(mCondition->where, "If condition must be a numeric scalar", b);
                 break;
             case CompilePhase::Simplify:
-                Simplify(mCondition);
+                Simplify(mCondition, b);
                 break;
         }
     }
     
     void
-    ASTswitch::compile(AST::CompilePhase ph)
+    ASTswitch::compile(AST::CompilePhase ph, Builder* b)
     {
-        ASTreplacement::compile(ph);
-        Compile(mSwitchExp, ph);
+        ASTreplacement::compile(ph, b);
+        Compile(mSwitchExp, ph, b);
         for (auto&& _case: mCases) {
-            Compile(_case.first, ph);
-            _case.second->compile(ph);
+            Compile(_case.first, ph, b);
+            _case.second->compile(ph, b);
         }
-        mElseBody.compile(ph);
+        mElseBody.compile(ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate() != 1)
-                    CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar");
+                    CfdgError::Error(mSwitchExp->where, "Switch selector must be a numeric scalar", b);
                 
                 // Build the switch map from the stored case value expressions
                 double val[2] = { 0.0 };
@@ -814,20 +810,20 @@ namespace AST {
                             if (func && func->functype == ASTfunction::RandOp) {
                                 // The term is a range, get the bounds
                                 if (func->arguments->evaluate(val, 2) != 2) {
-                                    CfdgError::Error(func->where, "Case range cannot be evaluated");
+                                    CfdgError::Error(func->where, "Case range cannot be evaluated", b);
                                     continue;
                                 } else {
                                     low = static_cast<caseType>(floor(val[0]));
                                     high = static_cast<caseType>(floor(val[1]));
                                     if (high <= low) {
-                                        CfdgError::Error(func->where, "Case range is reversed");
+                                        CfdgError::Error(func->where, "Case range is reversed", b);
                                         continue;
                                     }
                                 }
                             } else {
                                 // Not a range, must be a single value
                                 if (term->evaluate(val, 1) != 1) {
-                                    CfdgError::Error(term->where, "Case value cannot be evaluated");
+                                    CfdgError::Error(term->where, "Case value cannot be evaluated", b);
                                     continue;
                                 } else {
                                     low = high = static_cast<caseType>(floor(val[0]));
@@ -836,46 +832,46 @@ namespace AST {
                             
                             caseRange range{low, high};
                             if (mCaseMap.count(range)) {
-                                CfdgError::Error(term->where, "Case value already in use");
+                                CfdgError::Error(term->where, "Case value already in use", b);
                             } else {
                                 mCaseMap[range] = body;
                             }
                         } catch (DeferUntilRuntime&) {
-                            CfdgError::Error(term->where, "Case expression is not constant");
+                            CfdgError::Error(term->where, "Case expression is not constant", b);
                         }
                     }
                 }
                 break;
             }
             case CompilePhase::Simplify:
-                Simplify(mSwitchExp);
+                Simplify(mSwitchExp, b);
                 break;
         }
     }
     
     void
-    ASTdefine::compile(AST::CompilePhase ph)
+    ASTdefine::compile(AST::CompilePhase ph, Builder* b)
     {
         if (mDefineType == FunctionDefine || mDefineType == LetDefine) {
             ASTrepContainer tempCont;
             tempCont.mParameters = mParameters;     // copy
-            Builder::CurrentBuilder->push_repContainer(tempCont);
-            ASTreplacement::compile(ph);
-            Compile(mExpression, ph);
+            b->push_repContainer(tempCont);
+            ASTreplacement::compile(ph, b);
+            Compile(mExpression, ph, b);
             if (ph == CompilePhase::Simplify)
-                Simplify(mExpression);
-            Builder::CurrentBuilder->pop_repContainer(nullptr);
+                Simplify(mExpression, b);
+            b->pop_repContainer(nullptr);
         } else {
-            ASTreplacement::compile(ph);
-            Compile(mExpression, ph);
+            ASTreplacement::compile(ph, b);
+            Compile(mExpression, ph, b);
             if (ph == CompilePhase::Simplify)
-                Simplify(mExpression);
+                Simplify(mExpression, b);
         }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mDefineType == ConfigDefine) {
-                    Builder::CurrentBuilder->MakeConfig(this);
+                    b->MakeConfig(this);
                     return;
                 }
 
@@ -892,37 +888,36 @@ namespace AST {
                     sz = ModificationSize;
                 if (mDefineType == FunctionDefine) {
                     if (t != mType)
-                        CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function");
+                        CfdgError::Error(mLocation, "Mismatch between declared and defined type of user function", b);
                     if (mType == NumericType && t == NumericType && sz != mTuplesize)
-                        CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function");
+                        CfdgError::Error(mLocation, "Mismatch between declared and defined vector length of user function", b);
                     if (isNatural && (!mExpression || !mExpression->isNatural) && !ASTparameter::Impure)
-                        CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function");
+                        CfdgError::Error(mLocation, "Mismatch between declared natural and defined not-natural type of user function", b);
                 } else {
                     if (mShapeSpec.shapeType >= 0) {
                         ASTdefine* func = nullptr;
                         const ASTparameters* shapeParams = nullptr;
-                        Builder::CurrentBuilder->GetTypeInfo(mShapeSpec.shapeType, func, shapeParams);
+                        b->GetTypeInfo(mShapeSpec.shapeType, func, shapeParams);
                         if (func) {
-                            CfdgError::Error(mLocation, "Variable name is also the name of a function");
-                            CfdgError::Error(func->mLocation, "   function definition is here");
+                            CfdgError::Error(mLocation, "Variable name is also the name of a function", b);
+                            CfdgError::Error(func->mLocation, "   function definition is here", b);
                         }
                         if (shapeParams)
-                            CfdgError::Error(mLocation, "Variable name is also the name of a shape");
+                            CfdgError::Error(mLocation, "Variable name is also the name of a shape", b);
                     }
                     
                     mTuplesize = sz;
                     mType = t;
                     if (t != (t & (-t)) || !t)
-                        CfdgError::Error(mLocation, "Expression can only have one type");
+                        CfdgError::Error(mLocation, "Expression can only have one type", b);
                     if (mDefineType == StackDefine && (mExpression ? mExpression->isConstant : mChildChange.modExp.empty()))
                         mDefineType = ConstDefine;
                     isNatural = mExpression && mExpression->isNatural && mType == NumericType;
-                    ASTparameter& param = Builder::CurrentBuilder->
-                        mContainerStack.back()->
+                    ASTparameter& param = b->mContainerStack.back()->
                         addDefParameter(mShapeSpec.shapeType, this, mLocation, mLocation);
                     if (mDefineType == StackDefine) {
-                        param.mStackIndex = Builder::CurrentBuilder->mLocalStackDepth;
-                        Builder::CurrentBuilder->mLocalStackDepth += param.mTuplesize;
+                        param.mStackIndex = b->mLocalStackDepth;
+                        b->mLocalStackDepth += param.mTuplesize;
                     }
                 }
                 break;
@@ -933,37 +928,37 @@ namespace AST {
     }
     
     void
-    ASTrule::compile(AST::CompilePhase ph)
+    ASTrule::compile(AST::CompilePhase ph, Builder* b)
     {
-        Builder::CurrentBuilder->mInPathContainer = isPath;
-        ASTreplacement::compile(ph);
-        mRuleBody.compile(ph);
+        b->mInPathContainer = isPath;
+        ASTreplacement::compile(ph, b);
+        mRuleBody.compile(ph, b);
     }
     
     void
-    ASTpathOp::compile(AST::CompilePhase ph)
+    ASTpathOp::compile(AST::CompilePhase ph, Builder* b)
     {
-        ASTreplacement::compile(ph);
-        Compile(mArguments, ph);
+        ASTreplacement::compile(ph, b);
+        Compile(mArguments, ph, b);
         if (mOldStyleArguments)
-            mOldStyleArguments->compile(ph);        // always return nullptr
+            mOldStyleArguments->compile(ph, b);     // always return nullptr
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mOldStyleArguments)
-                    makePositional();
+                    makePositional(b);
                 else
-                    checkArguments();
+                    checkArguments(b);
                 break;
             }
             case CompilePhase::Simplify:
-                pathDataConst();
-                Simplify(mArguments);
+                pathDataConst(b);
+                Simplify(mArguments, b);
                 break;
         }
     }
     
-    static exp_ptr GetFlagsAndStroke(ASTtermArray& terms, int& flags)
+    static exp_ptr GetFlagsAndStroke(ASTtermArray& terms, int& flags, Builder* b)
     {
         ASTtermArray temp(std::move(terms));
         exp_ptr ret;
@@ -975,7 +970,7 @@ namespace AST {
                     break;                      // ASTmodTerm::compile() does not overwrite them
                 case AST::ASTmodTerm::stroke:
                     if (ret)
-                        CfdgError::Error(term->where, "Only one stroke width term is allowed");
+                        CfdgError::Error(term->where, "Only one stroke width term is allowed", b);
                     ret = std::move(term->args);
                     break;
                 default:
@@ -988,22 +983,22 @@ namespace AST {
     }
     
     void
-    ASTpathCommand::compile(AST::CompilePhase ph)
+    ASTpathCommand::compile(AST::CompilePhase ph, Builder* b)
     {
-        ASTreplacement::compile(ph);
-        Compile(mParameters, ph);
+        ASTreplacement::compile(ph, b);
+        Compile(mParameters, ph, b);
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 mChildChange.addEntropy((mFlags & CF_FILL) ? "FILL" : "STROKE");
                 
                 // Extract any stroke adjustments
-                exp_ptr w = GetFlagsAndStroke(mChildChange.modExp, mFlags);
+                exp_ptr w = GetFlagsAndStroke(mChildChange.modExp, mFlags, b);
                 if (w) {
                     if (mParameters)
-                        CfdgError::Error(w->where, "Cannot have a stroke adjustment in a v3 path command");
+                        CfdgError::Error(w->where, "Cannot have a stroke adjustment in a v3 path command", b);
                     else if (w->size() != 1 || w->mType != NumericType || w->evaluate() != 1)
-                        CfdgError::Error(w->where, "Stroke adjustment is ill-formed");
+                        CfdgError::Error(w->where, "Stroke adjustment is ill-formed", b);
                     else
                         mParameters = std::move(w);
                 }
@@ -1028,14 +1023,14 @@ namespace AST {
                                 flags = std::move(pcmdParams[0]);
                                 break;
                             default:
-                                CfdgError::Error(loc, "Bad expression type in path command parameters");
+                                CfdgError::Error(loc, "Bad expression type in path command parameters", b);
                                 break;
                         }
                         break;
                     case 0:
                         return;
                     default:
-                        CfdgError::Error(loc, "Path commands can have zero, one, or two parameters");
+                        CfdgError::Error(loc, "Path commands can have zero, one, or two parameters", b);
                         return;
                 }
                 
@@ -1043,7 +1038,7 @@ namespace AST {
                     if (mFlags & CF_FILL)
                         CfdgError::Warning(stroke->where, "Stroke width only useful for STROKE commands");
                     if (stroke->mType != NumericType || stroke->evaluate() != 1) {
-                        CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar");
+                        CfdgError::Error(stroke->where, "Stroke width expression must be numeric scalar", b);
                     } else if (!stroke->isConstant ||
                                stroke->evaluate(&mStrokeWidth, 1) != 1)
                     {
@@ -1053,10 +1048,10 @@ namespace AST {
                 
                 if (flags) {
                     if (flags->mType != FlagType) {
-                        CfdgError::Error(flags->where, "Unexpected argument in path command");
+                        CfdgError::Error(flags->where, "Unexpected argument in path command", b);
                         return;
                     }
-                    Simplify(flags);
+                    Simplify(flags, b);
                     if (ASTreal* r = dynamic_cast<ASTreal*> (flags.get())) {
                         int f = static_cast<int>(r->value);
                         if (f & CF_JOIN_PRESENT)
@@ -1067,13 +1062,13 @@ namespace AST {
                         if ((mFlags & CF_FILL) && (f & (CF_JOIN_PRESENT | CF_CAP_PRESENT)))
                             CfdgError::Warning(flags->where, "Stroke flags only useful for STROKE commands");
                     } else {
-                        CfdgError::Error(flags->where, "Flag expressions must be constant");
+                        CfdgError::Error(flags->where, "Flag expressions must be constant", b);
                     }
                 }
                 break;
             }
             case CompilePhase::Simplify:
-                Simplify(mParameters);
+                Simplify(mParameters, b);
                 break;
         }
     }
@@ -1292,19 +1287,19 @@ namespace AST {
     }
     
     void
-    ASTpathOp::pathDataConst()
+    ASTpathOp::pathDataConst(Builder* b)
     {
         if (mArguments && mArguments->isConstant) {
             double data[7];
             if (mArguments->evaluate(data, 7) < 0)
-                CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
+                CfdgError::Error(mArguments->where, "Cannot evaluate arguments", b);
             mArguments.reset();
             mChildChange.modData.m_transform.load_from(data);
         }
     }
 
     void
-    ASTpathOp::checkArguments()
+    ASTpathOp::checkArguments(Builder* b)
     {
         if (mArguments)
             mArgCount = mArguments->evaluate();
@@ -1315,18 +1310,18 @@ namespace AST {
             switch (temp->mType) {
                 case FlagType: {
                     if (i != mArguments->size() - 1)
-                        CfdgError::Error(temp->where, "Flags must be the last argument");
+                        CfdgError::Error(temp->where, "Flags must be the last argument", b);
                     if (const ASTreal* rf = dynamic_cast<const ASTreal*> (temp))
                         mFlags |= rf ? static_cast<int>(rf->value) : 0;
                     else
-                        CfdgError::Error(temp->where, "Flag expressions must be constant");
+                        CfdgError::Error(temp->where, "Flag expressions must be constant", b);
                     --mArgCount;
                     break;
                 }
                 case NumericType:
                     break;
                 default:
-                    CfdgError::Error(temp->where, "Path operation arguments must be numeric expressions or flags");
+                    CfdgError::Error(temp->where, "Path operation arguments must be numeric expressions or flags", b);
                     break;
             }
         }
@@ -1337,26 +1332,26 @@ namespace AST {
             case MOVETO:
             case MOVEREL:
                 if (mArgCount != 2)
-                    CfdgError::Error(mLocation, "Move/line path operation requires two arguments");
+                    CfdgError::Error(mLocation, "Move/line path operation requires two arguments", b);
                 break;
             case ARCTO:
             case ARCREL:
                 if (mArgCount != 3 && mArgCount != 5)
-                    CfdgError::Error(mLocation, "Arc path operations require three or five arguments");
+                    CfdgError::Error(mLocation, "Arc path operations require three or five arguments", b);
                 break;
             case CURVETO:
             case CURVEREL:
                 if (mFlags & CF_CONTINUOUS) {
                     if (mArgCount != 2 && mArgCount != 4)
-                        CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments");
+                        CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments", b);
                 } else {
                     if (mArgCount != 4 && mArgCount != 6)
-                        CfdgError::Error(mLocation, "Non-continuous curve path operations require four or six arguments");
+                        CfdgError::Error(mLocation, "Non-continuous curve path operations require four or six arguments", b);
                 }
                 break;
             case CLOSEPOLY:
                 if (mArgCount)
-                    CfdgError::Error(mLocation, "CLOSEPOLY takes no arguments, only flags");
+                    CfdgError::Error(mLocation, "CLOSEPOLY takes no arguments, only flags", b);
                 break;
             default:
                 break;
@@ -1364,7 +1359,7 @@ namespace AST {
     }
     
     static ASTexpression*
-    parseXY(exp_ptr ax, exp_ptr ay, double def, const yy::location& loc)
+    parseXY(exp_ptr ax, exp_ptr ay, double def, const yy::location& loc, Builder* b)
     {
         if (!ax)
             ax = std::make_unique<ASTreal>(def, loc);
@@ -1372,7 +1367,7 @@ namespace AST {
         if (ax->mType == NumericType)
             sz = ax->evaluate();
         else
-            CfdgError::Error(ax->where, "Path argument must be a scalar value");
+            CfdgError::Error(ax->where, "Path argument must be a scalar value", b);
         
         if (sz == 1 && !ay)
             ay = std::make_unique<ASTreal>(def, loc);
@@ -1381,38 +1376,38 @@ namespace AST {
             if (ay->mType == NumericType)
                 sz += ay->evaluate();
             else
-                CfdgError::Error(ay->where, "Path argument must be a scalar value");
+                CfdgError::Error(ay->where, "Path argument must be a scalar value", b);
         }
         
         if (sz != 2)
-            CfdgError::Error(loc, "Error parsing path operation arguments");
+            CfdgError::Error(loc, "Error parsing path operation arguments", b);
         
         return ax.release()->append(ay.release());
     }
     
     static void
-    rejectTerm(exp_ptr& term)
+    rejectTerm(exp_ptr& term, Builder* b)
     {
         if (term)
-            CfdgError::Error(term->where, "Illegal argument");
+            CfdgError::Error(term->where, "Illegal argument", b);
     }
     
     static void
-    acquireTerm(exp_ptr& exp, term_ptr& term)
+    acquireTerm(exp_ptr& exp, term_ptr& term, Builder* b)
     {
         if (exp) {
-            CfdgError::Error(exp->where, "Duplicate argument");
-            CfdgError::Error(term->where, "    conflicts with this argument");
+            CfdgError::Error(exp->where, "Duplicate argument", b);
+            CfdgError::Error(term->where, "    conflicts with this argument", b);
         }
         exp = std::move(term->args);
     }
     
     void
-    ASTpathOp::makePositional()
+    ASTpathOp::makePositional(Builder* b)
     {
-        exp_ptr w = GetFlagsAndStroke(mOldStyleArguments->modExp, mFlags);
+        exp_ptr w = GetFlagsAndStroke(mOldStyleArguments->modExp, mFlags, b);
         if (w)
-            CfdgError::Error(w->where, "Stroke width not allowed in a path operation");
+            CfdgError::Error(w->where, "Stroke width not allowed in a path operation", b);
         
         exp_ptr ax;
         exp_ptr ay;
@@ -1429,46 +1424,46 @@ namespace AST {
                 continue;
             switch (mod->modType) {
                 case ASTmodTerm::x:
-                    acquireTerm(ax, mod);
+                    acquireTerm(ax, mod, b);
                     break;
                 case ASTmodTerm::y:
-                    acquireTerm(ay, mod);
+                    acquireTerm(ay, mod, b);
                     break;
                 case ASTmodTerm::x1:
-                    acquireTerm(ax1, mod);
+                    acquireTerm(ax1, mod, b);
                     break;
                 case ASTmodTerm::y1:
-                    acquireTerm(ay1, mod);
+                    acquireTerm(ay1, mod, b);
                     break;
                 case ASTmodTerm::x2:
-                    acquireTerm(ax2, mod);
+                    acquireTerm(ax2, mod, b);
                     break;
                 case ASTmodTerm::y2:
-                    acquireTerm(ay2, mod);
+                    acquireTerm(ay2, mod, b);
                     break;
                 case ASTmodTerm::xrad:
-                    acquireTerm(arx, mod);
+                    acquireTerm(arx, mod, b);
                     break;
                 case ASTmodTerm::yrad:
-                    acquireTerm(ary, mod);
+                    acquireTerm(ary, mod, b);
                     break;
                 case ASTmodTerm::rot:
-                    acquireTerm(ar, mod);
+                    acquireTerm(ar, mod, b);
                     break;
                 case ASTmodTerm::z:
                 case ASTmodTerm::zsize:
-                    CfdgError::Error(mod->where, "Z changes are not permitted in paths");
+                    CfdgError::Error(mod->where, "Z changes are not permitted in paths", b);
                     break;
                 case ASTmodTerm::unknownType:
                 default:
-                    CfdgError::Error(mod->where, "Unrecognized element in a path operation");
+                    CfdgError::Error(mod->where, "Unrecognized element in a path operation", b);
                     break;
             }
         }
         
         ASTexpression* xy = nullptr;
         if (mPathOp != CLOSEPOLY) {
-            xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation);
+            xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation, b);
         } 
         
         switch (mPathOp) {
@@ -1481,13 +1476,13 @@ namespace AST {
             case ARCTO:
             case ARCREL:
                 if (arx || ary) {
-                    ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1.0, mLocation);
+                    ASTexpression* rxy = parseXY(std::move(arx), std::move(ary), 1.0, mLocation, b);
                     ASTexpression* angle = ar.release();
                     if (!angle)
                         angle = new ASTreal(0.0, mLocation);
                     
                     if (angle->mType != NumericType || angle->evaluate() != 1)
-                        CfdgError(angle->where, "Arc angle must be a scalar value");
+                        CfdgError::Error(angle->where, "Arc angle must be a scalar value", b);
                     
                     mArguments.reset(xy->append(rxy)->append(angle));
                 } else {
@@ -1496,7 +1491,7 @@ namespace AST {
                         radius = new ASTreal(1.0, mLocation);
                     
                     if (radius->mType != NumericType || radius->evaluate() != 1)
-                        CfdgError::Error(radius->where, "Arc radius must be a scalar value");
+                        CfdgError::Error(radius->where, "Arc radius must be a scalar value", b);
                     
                     mArguments.reset(xy->append(radius));
                 } 
@@ -1505,12 +1500,12 @@ namespace AST {
             case CURVEREL: {
                 ASTexpression *xy1 = nullptr, *xy2 = nullptr;
                 if (ax1 || ay1) {
-                    xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation);
+                    xy1 = parseXY(std::move(ax1), std::move(ay1), 0.0, mLocation, b);
                 } else {
                     mFlags |= CF_CONTINUOUS;
                 }
                 if (ax2 || ay2) {
-                    xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation);
+                    xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation, b);
                 }
                 
                 mArguments.reset(xy->append(xy1)->append(xy2));
@@ -1522,15 +1517,15 @@ namespace AST {
                 break;
         }
         
-        rejectTerm(ax);
-        rejectTerm(ay);
-        rejectTerm(ar);
-        rejectTerm(arx);
-        rejectTerm(ary);
-        rejectTerm(ax1);
-        rejectTerm(ay1);
-        rejectTerm(ax2);
-        rejectTerm(ay2);
+        rejectTerm(ax, b);
+        rejectTerm(ay, b);
+        rejectTerm(ar, b);
+        rejectTerm(arx, b);
+        rejectTerm(ary, b);
+        rejectTerm(ax1, b);
+        rejectTerm(ay1, b);
+        rejectTerm(ax2, b);
+        rejectTerm(ay2, b);
         
         mArgCount = mArguments ? mArguments->evaluate() : 0;
         mOldStyleArguments.reset();

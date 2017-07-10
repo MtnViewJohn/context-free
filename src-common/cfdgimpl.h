@@ -43,6 +43,7 @@
 #include "astreplacement.h"
 #include "config.h"
 #include "stacktype.h"
+class Builder;
 
 class CFDGImpl : public CFDG {
     enum consts_t: unsigned { NoParameter = static_cast<unsigned>(-1) };
@@ -107,6 +108,7 @@ class CFDGImpl : public CFDG {
         std::map<int, AST::ASTdefine*> mFunctions;
     
         AbstractSystem* m_system;
+        Builder*        m_builder;
     
         int m_Parameters;
     

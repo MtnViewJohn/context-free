@@ -115,9 +115,11 @@ CfdgError::operator=(const CfdgError& e) noexcept
 }
 
 void
-CfdgError::Error(const yy::location& errLoc, const char* msg)
+CfdgError::Error(const yy::location& errLoc, const char* msg, Builder* b)
 {
-    if (Builder::CurrentBuilder)
+    if (b)
+        b->error(errLoc, msg);
+    else if (Builder::CurrentBuilder && Builder::CurrentBuilder->isMyBuilder())
         Builder::CurrentBuilder->error(errLoc, msg);
     else
         throw CfdgError(errLoc, msg);
@@ -126,7 +128,7 @@ CfdgError::Error(const yy::location& errLoc, const char* msg)
 void
 CfdgError::Warning(const yy::location& errLoc, const char* msg)
 {
-    if (Builder::CurrentBuilder)
+    if (Builder::CurrentBuilder && Builder::CurrentBuilder->isMyBuilder())
         Builder::CurrentBuilder->warning(errLoc, msg);
 }
 
@@ -181,6 +183,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         if (!pCfdg)
             pCfdg = std::make_unique<CFDGImpl>(system);
         Builder b(pCfdg, variation);
+        pCfdg->m_builder = &b;
 
         yy::Scanner lexer;
         b.lexer = &lexer;
@@ -247,8 +250,10 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
         pCfdg.reset();
     }
     
-    if (pCfdg)
+    if (pCfdg) {
+        pCfdg->m_builder = nullptr;
         system->message("%d rules loaded", pCfdg->numRules());
+    }
     
     return cfdg_ptr(pCfdg);
 }

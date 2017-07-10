@@ -66,7 +66,7 @@ namespace AST {
         ASTreplacement(const std::string& s, const yy::location& loc);
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
-        virtual void compile(CompilePhase ph);
+        virtual void compile(CompilePhase ph, Builder* b);
     };
     class ASTrepContainer {
     public:
@@ -93,7 +93,7 @@ namespace AST {
                 rep->traverse(parent, tr, r);
             r->unwindStack(s, mParameters);
         }
-        void compile(CompilePhase ph, ASTloop* loop = nullptr, ASTdefine* def = nullptr);
+        void compile(CompilePhase ph, Builder* b, ASTloop* loop = nullptr, ASTdefine* def = nullptr);
         void addParameter(const std::string& type, int index,
                           const yy::location& typeLoc, const yy::location& nameLoc);
         ASTparameter& addDefParameter(int index, ASTdefine* def,
@@ -111,16 +111,15 @@ namespace AST {
         std::string mLoopName;
         
         static void setupLoop(double& start, double& end, double& step, 
-                              const ASTexpression* e, const yy::location& loc,
-                              RendererAST* rti = nullptr);
+                              const ASTexpression* e, RendererAST* rti = nullptr);
         
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                 exp_ptr args, const yy::location& argsLoc,
                 mod_ptr mods);
         ~ASTloop() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
-        void compileLoopMod();
+        void compile(CompilePhase ph, Builder* b) override;
+        void compileLoopMod(Builder* b);
     };
     class ASTtransform: public ASTreplacement {
     public:
@@ -131,7 +130,7 @@ namespace AST {
         ASTtransform(const yy::location& loc, exp_ptr mods);
         ~ASTtransform() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
     };
     class ASTif: public ASTreplacement {
     public:
@@ -142,7 +141,7 @@ namespace AST {
         ASTif(exp_ptr ifCond, const yy::location& condLoc);
         ~ASTif() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
     };
     class ASTswitch: public ASTreplacement {
     public:
@@ -163,7 +162,7 @@ namespace AST {
         ASTswitch(exp_ptr switchExp, const yy::location& expLoc);
         ~ASTswitch() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
         
         void unify();
     };
@@ -182,7 +181,7 @@ namespace AST {
         
         ASTdefine(std::string&& name, const yy::location& loc);
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
         ~ASTdefine() override = default;
         ASTdefine& operator=(const ASTdefine&) = delete;
     };
@@ -213,7 +212,7 @@ namespace AST {
         void traversePath(const Shape& parent, RendererAST* r) const;
         void traverseRule(Shape& parent, RendererAST* r) const;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
     };
     class ASTpathOp : public ASTreplacement {
     public:
@@ -226,12 +225,12 @@ namespace AST {
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
         ~ASTpathOp() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
     private:
         void pathData(double* data, RendererAST* rti) const;
-        void pathDataConst();
-        void makePositional();
-        void checkArguments();
+        void pathDataConst(Builder* b);
+        void makePositional(Builder* b);
+        void checkArguments(Builder* b);
     };
     class ASTpathCommand : public ASTreplacement {
     public:
@@ -252,7 +251,7 @@ namespace AST {
                        const yy::location& loc);
         
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph) override;
+        void compile(CompilePhase ph, Builder* b) override;
         ~ASTpathCommand() override = default;
     private:
         mutable CommandInfo mInfoCache;

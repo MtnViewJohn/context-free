@@ -1147,12 +1147,12 @@ exp[res]:
         |
         exp[start] RANGEOP exp[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res, &driver);
         }
         |
         exp[center] PLUSMINUSOP exp[range] {
             exp_ptr pair($center->append($range)); $center = nullptr; $range = nullptr;
-            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res);
+            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res, &driver);
         }
         ;
 
@@ -1177,12 +1177,12 @@ exp3[res]:
         |
         exp3[start] RANGEOP exp3[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res, &driver);
         }
         |
         exp3[center] PLUSMINUSOP exp3[range] {
             exp_ptr pair($center->append($range)); $center = nullptr; $range = nullptr;
-            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res);
+            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res, &driver);
         }
         |
         exp3[l] '+' exp3[r]        { $res = new ASToperator('+', $l, $r); }
