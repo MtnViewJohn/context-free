@@ -1,4 +1,4 @@
-startshape test
+startshape test2
 
 CF::MaxNatural = 10
 
@@ -18,7 +18,7 @@ shape test {
 
 shape test2 {
   loop m = 4 [y 1] {
-    loop n = 7 [x 1]
+    loop n = 6 [x 1]
       SQUARE [sat 1 b 1 h ack(m,n)]
   }
 }
