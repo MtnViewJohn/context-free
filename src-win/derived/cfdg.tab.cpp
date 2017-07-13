@@ -2389,7 +2389,7 @@ namespace yy {
 #line 1148 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
+            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
         }
 #line 2395 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2398,7 +2398,7 @@ namespace yy {
 #line 1153 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
+            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
         }
 #line 2404 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2447,7 +2447,7 @@ namespace yy {
 #line 1178 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
+            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
         }
 #line 2453 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2456,7 +2456,7 @@ namespace yy {
 #line 1183 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location);
+            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
         }
 #line 2462 "cfdg.tab.cpp" // lalr1.cc:859
     break;
