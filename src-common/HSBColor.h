@@ -35,7 +35,7 @@ namespace agg {
 
 #define EQUALITY_THRESHOLD  0.00001
 
-#include <math.h>
+#include <cmath>
 
 struct HSBColor
 {
@@ -93,7 +93,7 @@ HSBColor::adjust(const double& base, const double& adjustment,
     if (useTarget) {
             // If we are really close to the target then don't change, even if
             // the adjustment is negative (which way would we go?)
-        if (adjustment > 0 && fabs(base - target) < EQUALITY_THRESHOLD)
+        if (adjustment > 0 && std::fabs(base - target) < EQUALITY_THRESHOLD)
             return base;
         
             // Otherwise move away from or toward the target
@@ -137,7 +137,7 @@ HSBColor::adjustHue(const double& base, const double& adjustment,
     }
     
     // Normalize result to the interval [0,360)
-    return h < 0.0 ? fmod(h + 360.0, 360.0) : fmod(h, 360.0);
+    return h < 0.0 ? std::fmod(h + 360.0, 360.0) : std::fmod(h, 360.0);
 }
 
 

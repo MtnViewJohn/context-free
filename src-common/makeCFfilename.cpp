@@ -27,7 +27,6 @@
 #include <iomanip>
 #include <string>
 #include "variation.h"
-#include "math.h"
 #include <cstring>
 #include <string.h>
 

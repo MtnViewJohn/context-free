@@ -23,7 +23,7 @@
 //
 
 #include "primShape.h"
-#include <math.h>
+#include <cmath>
 #include "agg2/agg_basics.h"
 
 using namespace agg;

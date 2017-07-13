@@ -43,11 +43,7 @@
 #pragma warning( disable : 4800 4189 )
 #endif
 
-#ifdef _WIN32
-#include <float.h>
-#define isfinite _finite
-#endif
-#include <math.h>
+#include <cmath>
 
 using namespace AST;
 
@@ -620,9 +616,9 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
         }
         if (hasParameter(CFG::Time, timed, nullptr)) {
             if (timed.m_time.tend <= timed.m_time.tbegin ||
-                !myfinite(timed.m_time.tbegin) ||
-                !myfinite(timed.m_time.tend) ||
-                !myfinite(timed.m_time.st))
+                !std::isfinite(timed.m_time.tbegin) ||
+                !std::isfinite(timed.m_time.tend) ||
+                !std::isfinite(timed.m_time.st))
             {
                 yy::location loc;
                 hasParameter(CFG::Time, AST::ModType, loc);

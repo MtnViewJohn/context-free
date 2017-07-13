@@ -36,14 +36,8 @@
 #include <cassert>
 #include <functional>
 
-#ifdef _WIN32
-#include <float.h>
-#include <math.h>
-#define isfinite _finite
-#else
 #include <cmath>
 using std::isfinite;
-#endif
 
 #include "shapeSTL.h"
 #include "primShape.h"

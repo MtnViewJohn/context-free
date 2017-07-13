@@ -27,7 +27,7 @@
 #include "builder.h"
 #include "rendererAST.h"
 
-#include <math.h>
+#include <cmath>
 #include <cassert>
 
 namespace AST {

@@ -26,7 +26,7 @@
 #include "SVGCanvas.h"
 #include <assert.h>
 #include <iomanip>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include "primShape.h"

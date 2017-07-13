@@ -46,13 +46,8 @@
 #include "stacktype.h"
 #include <iostream>
 
-#ifdef _WIN32
-#include <float.h>
-#define isfinite _finite
-#else
 #include <cmath>
 using std::isfinite;
-#endif
 
 bool
 Modification::isFinite() const

@@ -23,7 +23,7 @@
 //
 
 #include "tiledCanvas.h"
-#include <math.h>
+#include <cmath>
 #include "primShape.h"
 #include "bounds.h"
 #include <cstdlib>
@@ -166,7 +166,7 @@ tileList tiledCanvas::getTessellation(int w, int h, int x1, int y1, bool flipY)
 {
     tileList tessPoints;
     // Produce an integer version of mOffset that is centered in the w x h screen
-    agg::trans_affine tess(mWidth, floor(mOffset.shy + 0.5), floor(mOffset.shx + 0.5),
+    agg::trans_affine tess(mWidth, std::floor(mOffset.shy + 0.5), std::floor(mOffset.shx + 0.5),
         flipY ? -mHeight : mHeight, x1, y1);
     agg::rect_i screen(0, 0, w - 1, h - 1);
     if (mFrieze == CFDG::frieze_x)

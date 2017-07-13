@@ -35,7 +35,7 @@
 #include "builder.h"
 #include "cfdgimpl.h"
 #include <string.h>
-#include <math.h>
+#include <cmath>
 #include "astexpression.h"
 #include "scanner.h"
 #include "cfdg.tab.hpp"
