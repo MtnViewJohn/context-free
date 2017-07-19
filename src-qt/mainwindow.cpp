@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->code->setStyleSheet("font: 12px monospace");
     ui->output->setRenderHint(QPainter::Antialiasing);
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
