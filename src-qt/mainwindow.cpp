@@ -11,6 +11,8 @@
 #include <QtDebug>
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "qtcanvas.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -21,21 +23,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->output->setRenderHint(QPainter::Antialiasing);
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
+    QMetaObject::connectSlotsByName(this);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::foobar() {
-    static int size = 50;
-
-    //scene->addEllipse(50, 50, size, size);
-    size -= 10;
-    return;
-}
-
-void MainWindow::on_runButton_clicked() {
+void MainWindow::runCode() {
 
     int fd = open("/tmp/tmp.cfdg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
@@ -67,4 +62,45 @@ void MainWindow::on_runButton_clicked() {
     //qDebug() << ui->output->items() << endl;
     if(unlink("/tmp/tmp.cfdg"))
         perror("Unlinking tempfile: ");
+}
+
+void MainWindow::openFile() {
+    qDebug() << "Open file" << endl;
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "", tr("CFDG file (*.cfdg);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"),
+                                     file.errorString());
+            return;
+        }
+        this->setWindowTitle(fileName.remove(0, fileName.lastIndexOf("/")+1) + " - ContextFree");
+        QTextStream istream(&file);
+        QString c;
+        c.append(istream.readAll());
+        ui->code->document()->clearUndoRedoStacks();
+        ui->code->document()->setPlainText(c);
+    }
+}
+
+void MainWindow::saveFile() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("CFDG file (*.cfdg);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"),
+                                     file.errorString());
+            return;
+        }
+        QTextStream ostream(&file);
+        ostream << ui->code->document()->toPlainText();
+    }
+}
+
+void MainWindow::newFile() {
+
 }

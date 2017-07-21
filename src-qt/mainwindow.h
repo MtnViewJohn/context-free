@@ -10,16 +10,18 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    Ui::MainWindow *ui;
-    QGraphicsScene *scene;
-    void foobar();
-    private slots:
-    void on_runButton_clicked();
+    public:
+        explicit MainWindow(QWidget *parent = 0);
+        ~MainWindow();
+        Ui::MainWindow *ui;
+        QGraphicsScene *scene;
+    public slots:
+        void runCode();
+        void saveFile();
+        void openFile();
+        void newFile();
 };
 
 #endif // MAINWINDOW_H

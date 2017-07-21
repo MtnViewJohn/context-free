@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     QTextEdit *editor = w.findChild<QTextEdit*>("code");
     cfdg_highlighter highlighter(editor->document());
+    w.setWindowTitle("New Document - ContextFree");
     w.show();
-    w.foobar();
     return a.exec();
 }
