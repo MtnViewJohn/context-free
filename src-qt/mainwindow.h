@@ -22,6 +22,8 @@ class MainWindow : public QMainWindow
         void saveFile();
         void openFile();
         void newFile();
+    private:
+        bool confirmModify();
 };
 
 #endif // MAINWINDOW_H

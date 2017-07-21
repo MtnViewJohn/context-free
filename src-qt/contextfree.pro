@@ -15,11 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     cfdg_highlighter.cpp \
-    qtcanvas.cpp
+    qtcanvas.cpp \
+    qtsystem.cpp
 
 HEADERS  += mainwindow.h \
     cfdg_highlighter.h \
-    qtcanvas.h
+    qtcanvas.h \
+    cf-util.h \
+    qtsystem.h
 
 
 FORMS    += mainwindow.ui

@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <variation.h>
 #include <cstdio>
+#include "cf-util.h"
 #include <commandLineSystem.h>
 #include <QtDebug>
 #include <QGraphicsItem>
@@ -28,6 +29,35 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+bool MainWindow::confirmModify() {
+    QMessageBox box;
+    box.setText("You have unsaved changes which may be lost.");
+    box.setInformativeText("Save your changes?");
+    box.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    box.setDefaultButton(QMessageBox::Save);
+    int button = box.exec();
+    switch(button) {
+    case QMessageBox::Save:
+        // save file and continue dangerous action
+        this->saveFile();
+        return true;
+        break;
+    case QMessageBox::Discard:
+        // don't save file, but continue dangerous action
+        return true;
+        break;
+    case QMessageBox::Cancel:
+        // abort dangerous action
+        return false;
+        break;
+    default:
+        // this should never happen, unless I'm a grapefruit
+        gerr("Unrecognized button! Aborting...");
+        // Don't do it if you don't know what they said
+        return false;
+    }
 }
 
 void MainWindow::runCode() {
@@ -86,6 +116,8 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::saveFile() {
+    if(!confirmModify())
+        return;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("CFDG file (*.cfdg);;All Files (*)"));
     if (fileName.isEmpty())
         return;
@@ -102,5 +134,9 @@ void MainWindow::saveFile() {
 }
 
 void MainWindow::newFile() {
-
+    if(!confirmModify())
+        return;
+    this->setWindowTitle("New Document - ContextFree");
+    ui->code->document()->clearUndoRedoStacks();
+    ui->code->document()->setPlainText("");
 }

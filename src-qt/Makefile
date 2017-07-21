@@ -53,11 +53,13 @@ OBJECTS_DIR   = ./
 SOURCES       = main.cpp \
 		mainwindow.cpp \
 		cfdg_highlighter.cpp \
-		qtcanvas.cpp moc_mainwindow.cpp
+		qtcanvas.cpp \
+		qtsystem.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		cfdg_highlighter.o \
 		qtcanvas.o \
+		qtsystem.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/common/unix.conf \
@@ -134,10 +136,13 @@ DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/features/lex.prf \
 		contextfree.pro mainwindow.h \
 		cfdg_highlighter.h \
-		qtcanvas.h main.cpp \
+		qtcanvas.h \
+		cf-util.h \
+		qtsystem.h main.cpp \
 		mainwindow.cpp \
 		cfdg_highlighter.cpp \
-		qtcanvas.cpp
+		qtcanvas.cpp \
+		qtsystem.cpp
 QMAKE_TARGET  = contextfree
 DESTDIR       = 
 TARGET        = contextfree
@@ -319,8 +324,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h cfdg_highlighter.h qtcanvas.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp cfdg_highlighter.cpp qtcanvas.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h cfdg_highlighter.h qtcanvas.h cf-util.h qtsystem.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp cfdg_highlighter.cpp qtcanvas.cpp qtsystem.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -381,6 +386,8 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 main.o: main.cpp mainwindow.h \
+		cf-util.h \
+		ui_mainwindow.h \
 		cfdg_highlighter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
@@ -408,6 +415,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../src-common/xorshift64star.h \
 		../src-common/config.h \
 		../src-common/variation.h \
+		cf-util.h \
 		../src-common/commandLineSystem.h \
 		../src-unix/posixSystem.h \
 		qtcanvas.h \
@@ -442,6 +450,31 @@ qtcanvas.o: qtcanvas.cpp qtcanvas.h \
 		../src-common/aggCanvas.h \
 		../src-common/primShape.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qtcanvas.o qtcanvas.cpp
+
+qtsystem.o: qtsystem.cpp qtsystem.h \
+		../src-unix/posixSystem.h \
+		../src-common/cfdg.h \
+		../src-agg/agg2/agg_trans_affine.h \
+		../src-agg/agg2/agg_basics.h \
+		../src-agg/agg2/agg_config.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
+		../src-agg/agg2/agg_path_storage.h \
+		../src-agg/agg2/agg_math.h \
+		../src-agg/agg2/agg_array.h \
+		../src-agg/agg2/agg_bezier_arc.h \
+		../src-agg/agg2/agg_conv_transform.h \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
+		../src-common/stacktype.h \
+		../src-common/ast.h \
+		../src-agg/agg2/agg_math_stroke.h \
+		../src-agg/agg2/agg_vertex_sequence.h \
+		../src-common/Rand64.h \
+		../src-common/xorshift64star.h \
+		../src-common/config.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qtsystem.o qtsystem.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
