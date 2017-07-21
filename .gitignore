@@ -30,3 +30,6 @@ packages*
 src-net/.vs/
 .vs/
 src-win/win-install/*.exe
+src-qt/*.o
+src-qt/moc_*
+src-qt/contextfree
