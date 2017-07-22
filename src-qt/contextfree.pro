@@ -23,7 +23,7 @@ HEADERS  += mainwindow.h \
 
 
 FORMS    += mainwindow.ui
-INCLUDEPATH += ../src-common ../src-agg ../objs ../src-unix ../src-win/derived
+INCLUDEPATH += ../src-common ../src-agg ../objs ../src-unix ../src-win/derived ../src-common/agg-extras
 CONFIG += c++11
-LIBS += ./cfdg.a -lpng
+LIBS += ./cfdg.a -lpng -pthread
 PRE_TARGETDEPS += /home/kiernan/code/contextfree/src-qt/cfdg.a

@@ -15,7 +15,7 @@ CXX           = clang++
 DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../src-common -I../src-agg -I../objs -I../src-unix -I../src-win/derived -isystem /usr/include/QtWidgets -isystem /usr/include/QtGui -isystem /usr/include/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt5/mkspecs/linux-clang
+INCPATH       = -I. -I../src-common -I../src-agg -I../objs -I../src-unix -I../src-win/derived -I../src-common/agg-extras -isystem /usr/include/QtWidgets -isystem /usr/include/QtGui -isystem /usr/include/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt5/mkspecs/linux-clang
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,7 +38,7 @@ DISTNAME      = contextfree1.0.0
 DISTDIR = /home/kiernan/code/context-free-git/src-qt/.tmp/contextfree1.0.0
 LINK          = clang++
 LFLAGS        = -Wl,--as-needed -ccc-gcc-name g++
-LIBS          = $(SUBLIBS) ./cfdg.a -lpng -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) ./cfdg.a -lpng -pthread -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -359,7 +359,7 @@ compiler_moc_header_clean:
 moc_mainwindow.cpp: mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-clang -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-clang -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -386,18 +386,22 @@ main.o: main.cpp mainwindow.h \
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
 		ui_mainwindow.h \
-		../src-common/cfdg.h \
+		../src-common/renderimpl.h \
 		../src-agg/agg2/agg_trans_affine.h \
 		../src-agg/agg2/agg_basics.h \
 		../src-agg/agg2/agg_config.h \
-		../src-agg/agg2/agg_color_rgba.h \
-		../src-agg/agg2/agg_gamma_lut.h \
-		../src-agg/agg2/agg_gamma_functions.h \
+		../src-common/agg-extras/agg_trans_affine_time.h \
+		../src-common/bounds.h \
 		../src-agg/agg2/agg_path_storage.h \
 		../src-agg/agg2/agg_math.h \
 		../src-agg/agg2/agg_array.h \
 		../src-agg/agg2/agg_bezier_arc.h \
 		../src-agg/agg2/agg_conv_transform.h \
+		../src-common/rendererAST.h \
+		../src-common/cfdg.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
 		../src-win/derived/location.hh \
 		../src-win/derived/position.hh \
 		../src-common/stacktype.h \
@@ -407,6 +411,28 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../src-common/Rand64.h \
 		../src-common/xorshift64star.h \
 		../src-common/config.h \
+		../src-common/CmdInfo.h \
+		../src-common/cfdgimpl.h \
+		../src-common/shape.h \
+		../src-common/agg-extras/agg_trans_affine_1D.h \
+		../src-common/HSBColor.h \
+		../src-common/astreplacement.h \
+		../src-common/astexpression.h \
+		../src-common/primShape.h \
+		../src-common/tempfile.h \
+		../src-common/pathIterator.h \
+		../src-agg/agg2/agg_bounding_rect.h \
+		../src-agg/agg2/agg_rasterizer_scanline_aa.h \
+		../src-agg/agg2/agg_rasterizer_cells_aa.h \
+		../src-agg/agg2/agg_rasterizer_sl_clip.h \
+		../src-agg/agg2/agg_clip_liang_barsky.h \
+		../src-agg/agg2/agg_rasterizer_scanline_aa_nogamma.h \
+		../src-agg/agg2/agg_conv_stroke.h \
+		../src-agg/agg2/agg_vcgen_stroke.h \
+		../src-agg/agg2/agg_conv_adaptor_vcgen.h \
+		../src-agg/agg2/agg_conv_curve.h \
+		../src-agg/agg2/agg_curves.h \
+		../src-common/chunk_vector.h \
 		../src-common/variation.h \
 		../src-common/commandLineSystem.h \
 		../src-unix/posixSystem.h \

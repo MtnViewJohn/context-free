@@ -1,0 +1,6 @@
+startshape foo
+
+shape foo {
+	SQUARE [sat 1 b 1]
+	foo [h 1 s 0.99 x 0.5 y 0.5]
+}

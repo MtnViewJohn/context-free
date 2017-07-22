@@ -94,14 +94,12 @@ public:
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         runButton = new QToolButton(toolbar);
         runButton->setObjectName(QStringLiteral("runButton"));
-        QIcon icon3;
-        iconThemeName = QStringLiteral("media-playback-start");
-        if (QIcon::hasThemeIcon(iconThemeName)) {
-            icon3 = QIcon::fromTheme(iconThemeName);
-        } else {
-            icon3.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
-        }
+        runButton->setBaseSize(QSize(100, 100));
+        QIcon icon3(QIcon::fromTheme(QStringLiteral("media-playback-start")));
         runButton->setIcon(icon3);
+        runButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        runButton->setAutoRaise(false);
+        runButton->setArrowType(Qt::NoArrow);
 
         horizontalLayout->addWidget(runButton);
 

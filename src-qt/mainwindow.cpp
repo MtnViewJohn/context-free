@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "renderimpl.h"
 #include <errno.h>
 #include <cfdg.h>
 #include <fcntl.h>
@@ -13,6 +14,7 @@
 #include <QGraphicsEllipseItem>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QtConcurrent/QtConcurrent>
 #include "qtcanvas.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -28,6 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void asyncRun(std::shared_ptr<Renderer> rend, std::shared_ptr<QtCanvas> canv) {
+    rend->run(canv.get(), false);
+    return;
 }
 
 void MainWindow::runCode() {
@@ -54,10 +61,16 @@ void MainWindow::runCode() {
     foreach (QGraphicsItem *item, scene->items())
         scene->removeItem(item);
     QtCanvas canv(ui->output->width(), ui->output->height(), scene);
+    QTimer *t = new QTimer(this);
+    connect(t, SIGNAL(timeout()), this, SLOT(updateUi()));
+    t->start();
+    ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     rend->run(&canv, false);
+    t->stop();
     QRectF ibr = scene->itemsBoundingRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
+    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
 
     //qDebug() << ui->output->items() << endl;
     if(unlink("/tmp/tmp.cfdg"))
@@ -103,4 +116,8 @@ void MainWindow::saveFile() {
 
 void MainWindow::newFile() {
 
+}
+
+void MainWindow::updateUi() {
+    QApplication::processEvents();
 }

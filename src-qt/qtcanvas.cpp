@@ -6,12 +6,14 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
+#include <QApplication>
 #include <QtDebug>
 
 using namespace std;
 
 void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
     cout << "Primitive shape!" << endl;
+    QApplication::processEvents();
     double* mat = new double[6];
     tr.store_to(mat);
     QTransform qtr(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5]);
@@ -19,7 +21,6 @@ void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
     QGraphicsItem *item;
     QBrush br(QColor(c.r >> 8, c.g >> 8, c.b >> 8, c.a >> 8));
     QPen pe;
-    //pe.setWidth(0);
     pe.setStyle(Qt::NoPen);
     switch(shape) {
     case primShape::circleType:
@@ -49,7 +50,7 @@ void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
         break;
     }
     item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    //scene.addItem(item);
+    //scene->addItem(item);
 }
 
 void QtCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo &attr) {
