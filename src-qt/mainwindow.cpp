@@ -3,7 +3,7 @@
 #include "renderimpl.h"
 #include <errno.h>
 #include <cfdg.h>
-#include <fcntl.h>
+#include <fstream>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <variation.h>
@@ -11,6 +11,7 @@
 #include <commandLineSystem.h>
 #include <QtDebug>
 #include <QGraphicsItem>
+#include <pthread.h>
 #include <QGraphicsEllipseItem>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -26,55 +27,53 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
     QMetaObject::connectSlotsByName(this);
+    QTimer *t = new QTimer(this);
+    connect(t, SIGNAL(timeout()), this, SLOT(updateUi()));
+    t->start();
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
 
-void asyncRun(std::shared_ptr<Renderer> rend, std::shared_ptr<QtCanvas> canv) {
-    rend->run(canv.get(), false);
-    return;
+struct runArgs {
+        shared_ptr<Renderer> rend;
+        QtCanvas *canv;
+};
+
+void* asyncRun(void *runArgsStruct) {
+    struct runArgs *args = reinterpret_cast<struct runArgs*>(runArgsStruct);
+    args->rend->run(args->canv, false);
+    return nullptr;
 }
 
 void MainWindow::runCode() {
 
-    int fd = open("/tmp/tmp.cfdg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-    if (fd == -1) {
-        perror("Couldn't open tempfile: ");
+    ofstream fs("/tmp/tmp.cfdg");
+    if (!fs) {
+        perror("Couldn't open tempfile");
         return;
     }
-    write(fd, ui->code->toPlainText().toStdString().c_str(), ui->code->toPlainText().length());
-    ::close(fd);
-    CommandLineSystem sys;
-    cfdg_ptr design = CFDG::ParseFile("/tmp/tmp.cfdg", &sys, 7394);
-    if(design == nullptr) {
-        std::cerr << "OH NOES!" << std::endl;
-        if(unlink("/tmp/tmp.cfdg"))
-            perror("Unlinking tempfile: ");
-        return;
-    }
-    std::shared_ptr<Renderer> rend(design->renderer(design, ui->output->width(),
-                                                    ui->output->height(), 0.0001,
-                                                    4,
-                                                    2.0));
+    fs << ui->code->toPlainText().toStdString() << std::endl;
     foreach (QGraphicsItem *item, scene->items())
         scene->removeItem(item);
-    QtCanvas canv(ui->output->width(), ui->output->height(), scene);
-    QTimer *t = new QTimer(this);
-    connect(t, SIGNAL(timeout()), this, SLOT(updateUi()));
-    t->start();
+    std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
     ui->runButton->setIcon(QIcon::fromTheme("process-working"));
-    rend->run(&canv, false);
-    t->stop();
+//    pthread_t *pt = new pthread_t;
+//    pthread_attr_t *attr = new pthread_attr_t ;
+//    pthread_attr_init(attr);
+//    pthread_attr_setdetachstate(attr, PTHREAD_CREATE_DETACHED);
+//    struct runArgs args = (struct runArgs){rend, canv};
+//    pthread_create(pt, attr, asyncRun, &args);
+    ui->runButton->setText("Building...");
+    ui->runButton->setDisabled(true);
+    AsyncRenderer *r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene);
+    connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
     QRectF ibr = scene->itemsBoundingRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
-    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
-
+    //ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
     //qDebug() << ui->output->items() << endl;
-    if(unlink("/tmp/tmp.cfdg"))
-        perror("Unlinking tempfile: ");
 }
 
 void MainWindow::openFile() {
@@ -121,3 +120,12 @@ void MainWindow::newFile() {
 void MainWindow::updateUi() {
     QApplication::processEvents();
 }
+
+void MainWindow::doneRender() {
+    if(unlink("/tmp/tmp.cfdg"))
+        perror("Unlinking tempfile");
+    ui->runButton->setEnabled(true);
+    ui->runButton->setText("Build");
+}
+
+

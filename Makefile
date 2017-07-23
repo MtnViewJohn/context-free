@@ -195,7 +195,7 @@ check: cfdg
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
 CPPFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
-#CPPFLAGS += -g
+CPPFLAGS += -g
 
 # Add this for clang
 ifeq ($(shell uname -s), Darwin)

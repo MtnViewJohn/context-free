@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
         void openFile();
         void newFile();
         void updateUi();
+        void doneRender();
 };
 
 #endif // MAINWINDOW_H
