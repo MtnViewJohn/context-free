@@ -38,6 +38,7 @@ public:
     QFrame *toolbar;
     QHBoxLayout *horizontalLayout;
     QToolButton *runButton;
+    QToolButton *cancelButton;
     QHBoxLayout *centralLayout;
     QTextEdit *code;
     QGraphicsView *output;
@@ -94,6 +95,7 @@ public:
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         runButton = new QToolButton(toolbar);
         runButton->setObjectName(QStringLiteral("runButton"));
+        runButton->setBaseSize(QSize(100, 100));
         QIcon icon3;
         iconThemeName = QStringLiteral("media-playback-start");
         if (QIcon::hasThemeIcon(iconThemeName)) {
@@ -102,8 +104,25 @@ public:
             icon3.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
         }
         runButton->setIcon(icon3);
+        runButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        runButton->setAutoRaise(false);
+        runButton->setArrowType(Qt::NoArrow);
 
         horizontalLayout->addWidget(runButton);
+
+        cancelButton = new QToolButton(toolbar);
+        cancelButton->setObjectName(QStringLiteral("cancelButton"));
+        cancelButton->setEnabled(true);
+        QIcon icon4;
+        iconThemeName = QStringLiteral("process-stop");
+        if (QIcon::hasThemeIcon(iconThemeName)) {
+            icon4 = QIcon::fromTheme(iconThemeName);
+        } else {
+            icon4.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+        }
+        cancelButton->setIcon(icon4);
+
+        horizontalLayout->addWidget(cancelButton);
 
 
         verticalLayout->addWidget(toolbar, 0, Qt::AlignLeft);
@@ -144,6 +163,7 @@ public:
         QObject::connect(actionSave, SIGNAL(triggered()), MainWindow, SLOT(saveFile()));
         QObject::connect(actionNew, SIGNAL(triggered()), MainWindow, SLOT(newFile()));
         QObject::connect(runButton, SIGNAL(clicked()), MainWindow, SLOT(runCode()));
+        QObject::connect(cancelButton, SIGNAL(clicked()), MainWindow, SLOT(doneRender()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -167,6 +187,7 @@ public:
         actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", Q_NULLPTR));
 #endif // QT_NO_SHORTCUT
         runButton->setText(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("MainWindow", "Cancel", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MainWindow", "&File", Q_NULLPTR));
     } // retranslateUi
 

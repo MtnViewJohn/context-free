@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <errno.h>
 #include <cfdg.h>
-#include <fcntl.h>
+#include <fstream>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <variation.h>
@@ -11,20 +11,23 @@
 #include <commandLineSystem.h>
 #include <QtDebug>
 #include <QGraphicsItem>
+#include <pthread.h>
 #include <QGraphicsEllipseItem>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QtConcurrent/QtConcurrent>
 #include "qtcanvas.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->cancelButton->setVisible(false);
     ui->code->setStyleSheet("font: 12px monospace");
     ui->output->setRenderHint(QPainter::Antialiasing);
+    ui->output->setTransform(ui->output->transform().scale(1, -1));
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
-    QMetaObject::connectSlotsByName(this);
 }
 
 MainWindow::~MainWindow() {
@@ -62,36 +65,25 @@ bool MainWindow::confirmModify() {
 
 void MainWindow::runCode() {
 
-    int fd = open("/tmp/tmp.cfdg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-    if (fd == -1) {
-        perror("Couldn't open tempfile: ");
+    ofstream fs("/tmp/tmp.cfdg");
+    if (!fs) {
+        perror("Couldn't open tempfile");
         return;
     }
-    write(fd, ui->code->toPlainText().toStdString().c_str(), ui->code->toPlainText().length());
-    ::close(fd);
-    CommandLineSystem sys;
-    cfdg_ptr design = CFDG::ParseFile("/tmp/tmp.cfdg", &sys, 7394);
-    if(design == nullptr) {
-        std::cerr << "OH NOES!" << std::endl;
-        if(unlink("/tmp/tmp.cfdg"))
-            perror("Unlinking tempfile: ");
-        return;
-    }
-    std::shared_ptr<Renderer> rend(design->renderer(design, ui->output->width(),
-                                                    ui->output->height(), 0.0001,
-                                                    4,
-                                                    2.0));
+    fs << ui->code->toPlainText().toStdString() << std::endl;
     foreach (QGraphicsItem *item, scene->items())
         scene->removeItem(item);
-    QtCanvas canv(ui->output->width(), ui->output->height(), scene);
-    rend->run(&canv, false);
-    QRectF ibr = scene->itemsBoundingRect();
+    std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
+    ui->runButton->setText("Building...");
+    ui->cancelButton->setVisible(true);
+    ui->runButton->setIcon(QIcon::fromTheme("process-working"));
+    ui->runButton->setDisabled(true);
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene);
+    connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
+    QRectF ibr = scene->sceneRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
-
     //qDebug() << ui->output->items() << endl;
-    if(unlink("/tmp/tmp.cfdg"))
-        perror("Unlinking tempfile: ");
 }
 
 void MainWindow::openFile() {
@@ -136,7 +128,19 @@ void MainWindow::saveFile() {
 void MainWindow::newFile() {
     if(!confirmModify())
         return;
-    this->setWindowTitle("New Document - ContextFree");
     ui->code->document()->clearUndoRedoStacks();
     ui->code->document()->setPlainText("");
+    this->setWindowTitle("New Document - ContextFree");
 }
+
+void MainWindow::doneRender() {
+    if(unlink("/tmp/tmp.cfdg"))
+        perror("Unlinking tempfile");
+    delete r;
+    qDebug() << "AsyncRenderer deleted" << endl;
+    ui->cancelButton->setVisible(false);
+    ui->runButton->setEnabled(true);
+    ui->runButton->setText("Build");
+    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
+}
+

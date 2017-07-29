@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include "qtcanvas.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,8 +23,10 @@ class MainWindow : public QMainWindow
         void saveFile();
         void openFile();
         void newFile();
+        void doneRender();
     private:
-        bool confirmModify();
+	bool confirmModify();
+        AsyncRenderer *r;
 };
 
 #endif // MAINWINDOW_H

@@ -1,0 +1,11 @@
+startshape FOO
+
+shape FOO 
+rule {
+	SQUARE [h 1 b 1]
+	FOO [sat 1 x 0.005 s 0.99 y -0.005]
+}
+rule {
+	CIRCLE [h 50 b 1]
+	FOO [sat 1 s 0.48]
+}
