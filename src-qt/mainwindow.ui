@@ -30,7 +30,9 @@
           <string>Build</string>
          </property>
          <property name="icon">
-          <iconset theme="media-playback-start"/>
+          <iconset theme="media-playback-start">
+           <normaloff/>
+          </iconset>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonIconOnly</enum>
@@ -40,6 +42,21 @@
          </property>
          <property name="arrowType">
           <enum>Qt::NoArrow</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cancelButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+         <property name="icon">
+          <iconset theme="process-stop">
+           <normaloff/>
+          </iconset>
          </property>
         </widget>
        </item>
@@ -195,11 +212,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>doneRender()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>57</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFile()</slot>
   <slot>saveFile()</slot>
   <slot>newFile()</slot>
   <slot>runCode()</slot>
+  <slot>doneRender()</slot>
  </slots>
 </ui>

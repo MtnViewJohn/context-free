@@ -29,14 +29,17 @@ class ParseWorker: public QThread {
         Q_OBJECT
 
     public:
-        ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, QObject *parent): w(w), h(h), canv(canv), QThread(parent) {}
-        void run() override;
+        ParseWorker(int w, int h, shared_ptr<QtCanvas> canv);
+        ~ParseWorker();
+        void requestStop();
+    public:
+        void run();
     signals:
         void done();
     private:
         int w, h;
         shared_ptr<QtCanvas> canv;
-        ParseWorker();
+        shared_ptr<Renderer> rend;
 };
 class AsyncRenderer: public QObject {
         Q_OBJECT
@@ -53,6 +56,11 @@ class AsyncRenderer: public QObject {
         shared_ptr<QtCanvas> canv;
         QGraphicsScene *scene;
         ParseWorker p;
+        QThread t;
+        union {
+                bool parsing;
+                bool shouldExit;
+        };
 };
 
 #endif // QTCANVAS_H

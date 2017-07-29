@@ -21,7 +21,6 @@ void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
     tr.store_to(mat);
     QTransform qtr(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5]);
     delete[] mat;
-    qtr.scale(1, -1);
     specs.push_back(new ShapeSpec(shape, qtr, QColor(c.r >> 8, c.g >> 8, c.b >> 8, c.a >> 8)));
 //    item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 }
@@ -80,27 +79,42 @@ AsyncRenderer::AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsS
     h(h),
     canv(canv),
     scene(scene),
-    p(w, h, canv, this) {
+    p(w, h, canv),
+    t(this) {
     qDebug() << "Beginning AsyncRenderer constructor" << endl;
-    connect(&p, &QThread::finished, &p, &QObject::deleteLater);
+    connect(&p, SIGNAL(finished() ), &p, SLOT(deleteLater() ));
+    connect(&p, SIGNAL(done() ), this, SLOT(render() ));
     p.start();
-    connect(&p, &ParseWorker::done, this, &AsyncRenderer::render);
+    parsing = true;
+    QMetaObject::invokeMethod(&p, "parse");
     qDebug() << "Done AsyncRenderer constructor" << endl;
 }
 
 AsyncRenderer::~AsyncRenderer() {
     qDebug() << "AsyncRenderer being destroyed!" << endl;
-    p.quit();
-    p.wait();
+    if(parsing) {
+        p.requestStop();
+        p.quit();
+        qDebug() << "Waiting for ParseWorker..." << endl;
+        p.wait();
+        qDebug() << "Done waiting" << endl;
+    } else {
+        shouldExit = true;
+    }
 }
 
 void AsyncRenderer::render() {
+    parsing = false;
     qDebug() << "Beginning render";
-    foreach(ShapeSpec *s, canv->specs)
+    shouldExit = false; // Begin lifetime of shouldExit
+    foreach(ShapeSpec *s, canv->specs) {
+        QApplication::processEvents();
+        if(shouldExit)
+            break;
         s->drawOnScene(*scene);
+    }
     qDebug() << "Done render";
     emit done();
-    delete this;
 }
 
 void ParseWorker::run() {
@@ -113,13 +127,28 @@ void ParseWorker::run() {
             perror("Unlinking tempfile");
         return;
     }
-    shared_ptr<Renderer> rend(design->renderer(design,
-                                               w,
-                                               h,
-                                               0.0001,
-                                               4,
-                                               2.0));
+    rend = shared_ptr<Renderer>(design->renderer(design,
+                                w,
+                                h,
+                                0.1,
+                                4,
+                                2.0));
+    if(rend == nullptr) {
+        if(unlink("/tmp/tmp.cfdg"))
+            perror("Unlinking tempfile");
+        emit done();
+        return;
+    }
     rend->run(this->canv.get(), false);
     qDebug() << "Done parsing" << endl;
     emit done();
 }
+
+void ParseWorker::requestStop() {
+    if(rend != nullptr)
+       rend->requestStop = true;
+}
+
+ParseWorker::ParseWorker(int w, int h, shared_ptr<QtCanvas> canv): w(w), h(h), canv(canv) {}
+
+ParseWorker::~ParseWorker() {}

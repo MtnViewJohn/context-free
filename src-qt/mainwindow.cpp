@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "renderimpl.h"
 #include <errno.h>
 #include <cfdg.h>
 #include <fstream>
@@ -22,29 +21,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->cancelButton->setVisible(false);
     ui->code->setStyleSheet("font: 12px monospace");
     ui->output->setRenderHint(QPainter::Antialiasing);
+    ui->output->setTransform(ui->output->transform().scale(1, -1));
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
-    QMetaObject::connectSlotsByName(this);
-    QTimer *t = new QTimer(this);
-    connect(t, SIGNAL(timeout()), this, SLOT(updateUi()));
-    t->start();
 }
 
 MainWindow::~MainWindow() {
     delete ui;
-}
-
-struct runArgs {
-        shared_ptr<Renderer> rend;
-        QtCanvas *canv;
-};
-
-void* asyncRun(void *runArgsStruct) {
-    struct runArgs *args = reinterpret_cast<struct runArgs*>(runArgsStruct);
-    args->rend->run(args->canv, false);
-    return nullptr;
 }
 
 void MainWindow::runCode() {
@@ -58,21 +44,15 @@ void MainWindow::runCode() {
     foreach (QGraphicsItem *item, scene->items())
         scene->removeItem(item);
     std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
-    ui->runButton->setIcon(QIcon::fromTheme("process-working"));
-//    pthread_t *pt = new pthread_t;
-//    pthread_attr_t *attr = new pthread_attr_t ;
-//    pthread_attr_init(attr);
-//    pthread_attr_setdetachstate(attr, PTHREAD_CREATE_DETACHED);
-//    struct runArgs args = (struct runArgs){rend, canv};
-//    pthread_create(pt, attr, asyncRun, &args);
     ui->runButton->setText("Building...");
+    ui->cancelButton->setVisible(true);
+    ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     ui->runButton->setDisabled(true);
-    AsyncRenderer *r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene);
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene);
     connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
-    QRectF ibr = scene->itemsBoundingRect();
+    QRectF ibr = scene->sceneRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
-    //ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
     //qDebug() << ui->output->items() << endl;
 }
 
@@ -114,18 +94,19 @@ void MainWindow::saveFile() {
 }
 
 void MainWindow::newFile() {
-
-}
-
-void MainWindow::updateUi() {
-    QApplication::processEvents();
+    ui->code->document()->clearUndoRedoStacks();
+    ui->code->document()->setPlainText("");
+    this->setWindowTitle("New Document - ContextFree");
 }
 
 void MainWindow::doneRender() {
     if(unlink("/tmp/tmp.cfdg"))
         perror("Unlinking tempfile");
+    delete r;
+    qDebug() << "AsyncRenderer deleted" << endl;
+    ui->cancelButton->setVisible(false);
     ui->runButton->setEnabled(true);
     ui->runButton->setText("Build");
+    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
 }
-
 

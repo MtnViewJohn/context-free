@@ -493,7 +493,31 @@ moc_predefs.h: /usr/lib/qt5/mkspecs/features/data/dummy.cpp
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_qtcanvas.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_qtcanvas.cpp
-moc_mainwindow.cpp: mainwindow.h \
+moc_mainwindow.cpp: qtcanvas.h \
+		../src-common/cfdg.h \
+		../src-agg/agg2/agg_trans_affine.h \
+		../src-agg/agg2/agg_basics.h \
+		../src-agg/agg2/agg_config.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
+		../src-agg/agg2/agg_path_storage.h \
+		../src-agg/agg2/agg_math.h \
+		../src-agg/agg2/agg_array.h \
+		../src-agg/agg2/agg_bezier_arc.h \
+		../src-agg/agg2/agg_conv_transform.h \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
+		../src-common/stacktype.h \
+		../src-common/ast.h \
+		../src-agg/agg2/agg_math_stroke.h \
+		../src-agg/agg2/agg_vertex_sequence.h \
+		../src-common/Rand64.h \
+		../src-common/xorshift64star.h \
+		../src-common/config.h \
+		../src-common/aggCanvas.h \
+		../src-common/primShape.h \
+		mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include mainwindow.h -o moc_mainwindow.cpp
@@ -510,8 +534,8 @@ moc_qtcanvas.cpp: ../src-common/cfdg.h \
 		../src-agg/agg2/agg_array.h \
 		../src-agg/agg2/agg_bezier_arc.h \
 		../src-agg/agg2/agg_conv_transform.h \
-		../objs/location.hh \
-		../objs/position.hh \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
 		../src-common/stacktype.h \
 		../src-common/ast.h \
 		../src-agg/agg2/agg_math_stroke.h \
@@ -546,29 +570,21 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 main.o: main.cpp mainwindow.h \
-		cfdg_highlighter.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
-
-mainwindow.o: mainwindow.cpp mainwindow.h \
-		ui_mainwindow.h \
-		../src-common/renderimpl.h \
+		qtcanvas.h \
+		../src-common/cfdg.h \
 		../src-agg/agg2/agg_trans_affine.h \
 		../src-agg/agg2/agg_basics.h \
 		../src-agg/agg2/agg_config.h \
-		../src-common/agg-extras/agg_trans_affine_time.h \
-		../src-common/bounds.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
 		../src-agg/agg2/agg_path_storage.h \
 		../src-agg/agg2/agg_math.h \
 		../src-agg/agg2/agg_array.h \
 		../src-agg/agg2/agg_bezier_arc.h \
 		../src-agg/agg2/agg_conv_transform.h \
-		../src-common/rendererAST.h \
-		../src-common/cfdg.h \
-		../src-agg/agg2/agg_color_rgba.h \
-		../src-agg/agg2/agg_gamma_lut.h \
-		../src-agg/agg2/agg_gamma_functions.h \
-		../objs/location.hh \
-		../objs/position.hh \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
 		../src-common/stacktype.h \
 		../src-common/ast.h \
 		../src-agg/agg2/agg_math_stroke.h \
@@ -576,33 +592,40 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../src-common/Rand64.h \
 		../src-common/xorshift64star.h \
 		../src-common/config.h \
-		../src-common/CmdInfo.h \
-		../src-common/cfdgimpl.h \
-		../src-common/shape.h \
-		../src-common/agg-extras/agg_trans_affine_1D.h \
-		../src-common/HSBColor.h \
-		../src-common/astreplacement.h \
-		../src-common/astexpression.h \
+		../src-common/aggCanvas.h \
 		../src-common/primShape.h \
-		../src-common/tempfile.h \
-		../src-common/pathIterator.h \
-		../src-agg/agg2/agg_bounding_rect.h \
-		../src-agg/agg2/agg_rasterizer_scanline_aa.h \
-		../src-agg/agg2/agg_rasterizer_cells_aa.h \
-		../src-agg/agg2/agg_rasterizer_sl_clip.h \
-		../src-agg/agg2/agg_clip_liang_barsky.h \
-		../src-agg/agg2/agg_rasterizer_scanline_aa_nogamma.h \
-		../src-agg/agg2/agg_conv_stroke.h \
-		../src-agg/agg2/agg_vcgen_stroke.h \
-		../src-agg/agg2/agg_conv_adaptor_vcgen.h \
-		../src-agg/agg2/agg_conv_curve.h \
-		../src-agg/agg2/agg_curves.h \
-		../src-common/chunk_vector.h \
+		cfdg_highlighter.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+
+mainwindow.o: mainwindow.cpp mainwindow.h \
+		qtcanvas.h \
+		../src-common/cfdg.h \
+		../src-agg/agg2/agg_trans_affine.h \
+		../src-agg/agg2/agg_basics.h \
+		../src-agg/agg2/agg_config.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
+		../src-agg/agg2/agg_path_storage.h \
+		../src-agg/agg2/agg_math.h \
+		../src-agg/agg2/agg_array.h \
+		../src-agg/agg2/agg_bezier_arc.h \
+		../src-agg/agg2/agg_conv_transform.h \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
+		../src-common/stacktype.h \
+		../src-common/ast.h \
+		../src-agg/agg2/agg_math_stroke.h \
+		../src-agg/agg2/agg_vertex_sequence.h \
+		../src-common/Rand64.h \
+		../src-common/xorshift64star.h \
+		../src-common/config.h \
+		../src-common/aggCanvas.h \
+		../src-common/primShape.h \
+		ui_mainwindow.h \
 		../src-common/variation.h \
 		../src-common/commandLineSystem.h \
-		../src-unix/posixSystem.h \
-		qtcanvas.h \
-		../src-common/aggCanvas.h
+		../src-unix/posixSystem.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 cfdg_highlighter.o: cfdg_highlighter.cpp cfdg_highlighter.h
@@ -621,8 +644,8 @@ qtcanvas.o: qtcanvas.cpp qtcanvas.h \
 		../src-agg/agg2/agg_array.h \
 		../src-agg/agg2/agg_bezier_arc.h \
 		../src-agg/agg2/agg_conv_transform.h \
-		../objs/location.hh \
-		../objs/position.hh \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
 		../src-common/stacktype.h \
 		../src-common/ast.h \
 		../src-agg/agg2/agg_math_stroke.h \
