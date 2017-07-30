@@ -99,6 +99,7 @@
    </widget>
    <addaction name="menuFile"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset theme="document-open">
@@ -216,7 +217,7 @@
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>doneRender()</slot>
+   <slot>stop()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>65</x>
@@ -235,5 +236,6 @@
   <slot>newFile()</slot>
   <slot>runCode()</slot>
   <slot>doneRender()</slot>
+  <slot>stop()</slot>
  </slots>
 </ui>

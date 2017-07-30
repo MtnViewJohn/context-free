@@ -24,8 +24,11 @@ class MainWindow : public QMainWindow
         void openFile();
         void newFile();
         void doneRender();
+        void stop();
+        void abortRender();
+        void showmsg(const char *msg);
     private:
-	bool confirmModify();
+        bool confirmModify();
         AsyncRenderer *r;
 };
 

@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->output->setTransform(ui->output->transform().scale(1, -1));
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
+    ui->statusBar->showMessage("Work", 0);
 }
 
 MainWindow::~MainWindow() {
@@ -78,8 +79,9 @@ void MainWindow::runCode() {
     ui->cancelButton->setVisible(true);
     ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     ui->runButton->setDisabled(true);
-    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene);
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene, ui->statusBar);
     connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
+    connect(r, &AsyncRenderer::aborted, this, &MainWindow::abortRender);
     QRectF ibr = scene->sceneRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
@@ -134,13 +136,31 @@ void MainWindow::newFile() {
 }
 
 void MainWindow::doneRender() {
+    qDebug() << "Done rendering";
     if(unlink("/tmp/tmp.cfdg"))
         perror("Unlinking tempfile");
+    ui->cancelButton->setVisible(false);
+    ui->runButton->setEnabled(true);
+    ui->runButton->setText("Build");
+    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
     delete r;
-    qDebug() << "AsyncRenderer deleted" << endl;
+}
+
+void MainWindow::stop() {
+    r->cleanup();
+}
+
+void MainWindow::abortRender() {
+    qDebug() << "Aborted rendering";
+    if(unlink("/tmp/tmp.cfdg"))
+        perror("Unlinking tempfile");
     ui->cancelButton->setVisible(false);
     ui->runButton->setEnabled(true);
     ui->runButton->setText("Build");
     ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
 }
 
+void MainWindow::showmsg(const char* msg) {
+    ui->statusBar->showMessage(msg, 1000);
+    delete msg;
+}

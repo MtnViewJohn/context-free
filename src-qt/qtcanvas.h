@@ -5,13 +5,14 @@
 #include <QGraphicsScene>
 #include <vector>
 #include <QThread>
+#include <QStatusBar>
 #include "primShape.h"
 using namespace std;
 
 class ShapeSpec {
     public:
         ShapeSpec(int type, QTransform qtr, QColor fill): type(type), qtr(qtr), fill(fill) {}
-        void drawOnScene(QGraphicsScene &scene);
+        void drawOnScene(QGraphicsScene *scene);
         int type;
         QTransform qtr;
         QColor fill;
@@ -29,7 +30,7 @@ class ParseWorker: public QThread {
         Q_OBJECT
 
     public:
-        ParseWorker(int w, int h, shared_ptr<QtCanvas> canv);
+        ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, QStatusBar *sb);
         ~ParseWorker();
         void requestStop();
     public:
@@ -40,27 +41,30 @@ class ParseWorker: public QThread {
         int w, h;
         shared_ptr<QtCanvas> canv;
         shared_ptr<Renderer> rend;
+        QStatusBar *sb;
 };
 class AsyncRenderer: public QObject {
         Q_OBJECT
 
     public:
-        AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene);
+        AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, QStatusBar *sb);
+        void cleanup();
         ~AsyncRenderer();
     public slots:
         void render();
     signals:
         void done();
+        void abortRender();
+        void aborted();
     private:
         int w, h;
         shared_ptr<QtCanvas> canv;
         QGraphicsScene *scene;
-        ParseWorker p;
+        ParseWorker *p;
         QThread t;
-        union {
-                bool parsing;
-                bool shouldExit;
-        };
+        bool parsing = true;
+        bool rendering = false;
+        bool shouldExit = false;
 };
 
 #endif // QTCANVAS_H

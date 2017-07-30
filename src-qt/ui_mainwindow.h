@@ -20,6 +20,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
@@ -44,6 +45,7 @@ public:
     QGraphicsView *output;
     QMenuBar *menuBar;
     QMenu *menuFile;
+    QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -151,6 +153,9 @@ public:
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         MainWindow->setMenuBar(menuBar);
+        statusBar = new QStatusBar(MainWindow);
+        statusBar->setObjectName(QStringLiteral("statusBar"));
+        MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuFile->addAction(actionOpen);
@@ -163,7 +168,7 @@ public:
         QObject::connect(actionSave, SIGNAL(triggered()), MainWindow, SLOT(saveFile()));
         QObject::connect(actionNew, SIGNAL(triggered()), MainWindow, SLOT(newFile()));
         QObject::connect(runButton, SIGNAL(clicked()), MainWindow, SLOT(runCode()));
-        QObject::connect(cancelButton, SIGNAL(clicked()), MainWindow, SLOT(doneRender()));
+        QObject::connect(cancelButton, SIGNAL(clicked()), MainWindow, SLOT(stop()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi

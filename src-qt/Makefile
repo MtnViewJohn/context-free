@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR='"/home/kiernan/code/context-free-git/src-qt"'
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../src-common -I../src-agg -I../objs -I../src-unix -I../src-win/derived -I../src-common/agg-extras -isystem /usr/include/QtWidgets -isystem /usr/include/QtGui -isystem /usr/include/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt5/mkspecs/linux-g++
+INCPATH       = -I. -I../src-common -I../src-agg -I../objs -I../src-unix -I../src-win/derived -I../src-common/agg-extras -isystem /usr/include/QtWidgets -isystem /usr/include/QtGui -isystem /usr/include/QtTest -isystem /usr/include/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,7 +38,7 @@ DISTNAME      = contextfree1.0.0
 DISTDIR = /home/kiernan/code/context-free-git/src-qt/.tmp/contextfree1.0.0
 LINK          = g++
 LFLAGS        = -Wl,--as-needed
-LIBS          = $(SUBLIBS) ./cfdg.a -lpng -pthread -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) ./cfdg.a -lpng -pthread -lQt5Widgets -lQt5Gui -lQt5Test -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -54,16 +54,17 @@ SOURCES       = main.cpp \
 		mainwindow.cpp \
 		cfdg_highlighter.cpp \
 		qtcanvas.cpp \
-		qtsystem.cpp moc_mainwindow.cpp
-
+		qtsystem.cpp moc_mainwindow.cpp \
+		moc_qtcanvas.cpp \
+		moc_qtsystem.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		cfdg_highlighter.o \
 		qtcanvas.o \
 		qtsystem.o \
 		moc_mainwindow.o \
-		moc_qtcanvas.o
-
+		moc_qtcanvas.o \
+		moc_qtsystem.o
 DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/common/unix.conf \
 		/usr/lib/qt5/mkspecs/common/linux.conf \
@@ -173,6 +174,7 @@ DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/features/qt.prf \
 		/usr/lib/qt5/mkspecs/features/resources.prf \
 		/usr/lib/qt5/mkspecs/features/moc.prf \
+		/usr/lib/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/qt5/mkspecs/features/uic.prf \
 		/usr/lib/qt5/mkspecs/features/unix/thread.prf \
@@ -311,6 +313,7 @@ Makefile: contextfree.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5
 		/usr/lib/qt5/mkspecs/features/qt.prf \
 		/usr/lib/qt5/mkspecs/features/resources.prf \
 		/usr/lib/qt5/mkspecs/features/moc.prf \
+		/usr/lib/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/qt5/mkspecs/features/uic.prf \
 		/usr/lib/qt5/mkspecs/features/unix/thread.prf \
@@ -323,6 +326,7 @@ Makefile: contextfree.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5
 		contextfree.pro \
 		/usr/lib/libQt5Widgets.prl \
 		/usr/lib/libQt5Gui.prl \
+		/usr/lib/libQt5Test.prl \
 		/usr/lib/libQt5Core.prl
 	$(QMAKE) -o Makefile contextfree.pro -spec linux-g++ CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug
 /usr/lib/qt5/mkspecs/features/spec_pre.prf:
@@ -434,6 +438,7 @@ Makefile: contextfree.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5
 /usr/lib/qt5/mkspecs/features/qt.prf:
 /usr/lib/qt5/mkspecs/features/resources.prf:
 /usr/lib/qt5/mkspecs/features/moc.prf:
+/usr/lib/qt5/mkspecs/features/testlib_defines.prf:
 /usr/lib/qt5/mkspecs/features/unix/opengl.prf:
 /usr/lib/qt5/mkspecs/features/uic.prf:
 /usr/lib/qt5/mkspecs/features/unix/thread.prf:
@@ -446,6 +451,7 @@ Makefile: contextfree.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5
 contextfree.pro:
 /usr/lib/libQt5Widgets.prl:
 /usr/lib/libQt5Gui.prl:
+/usr/lib/libQt5Test.prl:
 /usr/lib/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile contextfree.pro -spec linux-g++ CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug
@@ -496,9 +502,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++11 -Wall -W -dM -E -o moc_predefs.h /usr/lib/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_qtcanvas.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_qtcanvas.cpp moc_qtsystem.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_qtcanvas.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_qtcanvas.cpp moc_qtsystem.cpp
 moc_mainwindow.cpp: qtcanvas.h \
 		../src-common/cfdg.h \
 		../src-agg/agg2/agg_trans_affine.h \
@@ -526,7 +532,7 @@ moc_mainwindow.cpp: qtcanvas.h \
 		mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtTest -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include mainwindow.h -o moc_mainwindow.cpp
 
 moc_qtcanvas.cpp: ../src-common/cfdg.h \
 		../src-agg/agg2/agg_trans_affine.h \
@@ -554,7 +560,34 @@ moc_qtcanvas.cpp: ../src-common/cfdg.h \
 		qtcanvas.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include qtcanvas.h -o moc_qtcanvas.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtTest -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include qtcanvas.h -o moc_qtcanvas.cpp
+
+moc_qtsystem.cpp: ../src-unix/posixSystem.h \
+		../src-common/cfdg.h \
+		../src-agg/agg2/agg_trans_affine.h \
+		../src-agg/agg2/agg_basics.h \
+		../src-agg/agg2/agg_config.h \
+		../src-agg/agg2/agg_color_rgba.h \
+		../src-agg/agg2/agg_gamma_lut.h \
+		../src-agg/agg2/agg_gamma_functions.h \
+		../src-agg/agg2/agg_path_storage.h \
+		../src-agg/agg2/agg_math.h \
+		../src-agg/agg2/agg_array.h \
+		../src-agg/agg2/agg_bezier_arc.h \
+		../src-agg/agg2/agg_conv_transform.h \
+		../src-win/derived/location.hh \
+		../src-win/derived/position.hh \
+		../src-common/stacktype.h \
+		../src-common/ast.h \
+		../src-agg/agg2/agg_math_stroke.h \
+		../src-agg/agg2/agg_vertex_sequence.h \
+		../src-common/Rand64.h \
+		../src-common/xorshift64star.h \
+		../src-common/config.h \
+		qtsystem.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt5/mkspecs/linux-g++ -I/home/kiernan/code/context-free-git/src-qt -I/home/kiernan/code/context-free-git/src-common -I/home/kiernan/code/context-free-git/src-agg -I/home/kiernan/code/context-free-git/objs -I/home/kiernan/code/context-free-git/src-unix -I/home/kiernan/code/context-free-git/src-win/derived -I/home/kiernan/code/context-free-git/src-common/agg-extras -I/usr/include/QtWidgets -I/usr/include/QtGui -I/usr/include/QtTest -I/usr/include/QtCore -I/usr/include/c++/6.3.0 -I/usr/include/c++/6.3.0/x86_64-alpine-linux-musl -I/usr/include/c++/6.3.0/backward -I/usr/local/include -I/usr/include/fortify -I/usr/include -I/usr/lib/gcc/x86_64-alpine-linux-musl/6.3.0/include qtsystem.h -o moc_qtsystem.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -576,7 +609,6 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 main.o: main.cpp mainwindow.h \
-		ui_mainwindow.h \
 		qtcanvas.h \
 		../src-common/cfdg.h \
 		../src-agg/agg2/agg_trans_affine.h \
@@ -601,6 +633,8 @@ main.o: main.cpp mainwindow.h \
 		../src-common/config.h \
 		../src-common/aggCanvas.h \
 		../src-common/primShape.h \
+		cf-util.h \
+		ui_mainwindow.h \
 		cfdg_highlighter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
@@ -663,7 +697,7 @@ qtcanvas.o: qtcanvas.cpp qtcanvas.h \
 		../src-common/config.h \
 		../src-common/aggCanvas.h \
 		../src-common/primShape.h \
-		../src-common/commandLineSystem.h \
+		qtsystem.h \
 		../src-unix/posixSystem.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qtcanvas.o qtcanvas.cpp
 
@@ -697,6 +731,9 @@ moc_mainwindow.o: moc_mainwindow.cpp
 
 moc_qtcanvas.o: moc_qtcanvas.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qtcanvas.o moc_qtcanvas.cpp
+
+moc_qtsystem.o: moc_qtsystem.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qtsystem.o moc_qtsystem.cpp
 
 ####### Install
 

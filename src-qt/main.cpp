@@ -5,8 +5,6 @@
 #include <QTextEdit>
 #include <QtDebug>
 
-
-
 int main(int argc, char *argv[])
 {
     if (QIcon::themeName() == "") {
@@ -14,6 +12,7 @@ int main(int argc, char *argv[])
         QIcon::setThemeName("Adwaita");
     }
     QApplication a(argc, argv);
+    MainWindow w;
     QTextEdit *editor = w.findChild<QTextEdit*>("code");
     cfdg_highlighter highlighter(editor->document());
     w.setWindowTitle("New Document - ContextFree");

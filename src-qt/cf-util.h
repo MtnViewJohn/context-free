@@ -10,8 +10,6 @@
 #include <string>
 using namespace std;
 
-static MainWindow w;
-
 inline void gerr(const QString &errmsg, MainWindow *w = nullptr, const bool &shouldTerminate = false) {
     QMessageBox box;
     box.setStandardButtons(QMessageBox::Ok);
