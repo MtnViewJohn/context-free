@@ -23,6 +23,7 @@
 //
 
 #include "makeCFfilename.h"
+#include "attributes.h"
 #include <sstream>
 #include <iomanip>
 #include <string>
@@ -58,7 +59,7 @@ std::string makeCFfilename(const char* fmt, int frame, int frameCount, int varia
         switch (*(perc + 1)) {
             case 'V':
                 lower = false;
-                [[fallthrough]];
+                FALLTHROUGH
             case 'v':
                 namestream << Variation::toString(variation, lower);
                 break;
