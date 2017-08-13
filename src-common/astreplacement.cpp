@@ -159,10 +159,10 @@ namespace AST {
             case 1:
                 data[1] = data[0];
                 data[0] = 0.0;
-		FALLTHROUGH
+		FALLTHROUGH;
             case 2:
                 data[2] = 1.0;
-		FALLTHROUGH
+		FALLTHROUGH;
             case 3:
                 break;
             default:
@@ -333,7 +333,7 @@ namespace AST {
             case op:
                 if (!tr)
                     child.mWorldState.m_transform.reset();
-	        FALLTHROUGH
+	        FALLTHROUGH;
             case mixed:
             case command:
                 replace(child, r);
@@ -1164,20 +1164,20 @@ namespace AST {
         switch (pop->mPathOp) {
             case MOVEREL:
                 mPath.rel_to_abs(data + 0, data + 1);
-		FALLTHROUGH
+		FALLTHROUGH;
             case MOVETO:
                 mPath.move_to(data[0], data[1]);
                 r->mWantMoveTo = false;
                 break;
             case LINEREL:
                 mPath.rel_to_abs(data + 0, data + 1);
-		FALLTHROUGH
+		FALLTHROUGH;
             case LINETO:
                 mPath.line_to(data[0], data[1]);
                 break;
             case ARCREL:
                 mPath.rel_to_abs(data + 0, data + 1);
-		FALLTHROUGH
+		FALLTHROUGH;
             case ARCTO: {
                 if (!agg::is_vertex(mPath.last_vertex(data + 2, data + 3)) ||
                     (tr && s.mWorldState.m_transform.determinant() < 1e-10))
@@ -1206,7 +1206,7 @@ namespace AST {
                 mPath.rel_to_abs(data + 0, data + 1);
                 mPath.rel_to_abs(data + 2, data + 3);
                 mPath.rel_to_abs(data + 4, data + 5);
-		FALLTHROUGH
+		FALLTHROUGH;
             case CURVETO:
                 if ((pop->mFlags & CF_CONTINUOUS) &&
                     !agg::is_curve(mPath.last_vertex(data + 4, data + 5)))

@@ -838,6 +838,7 @@ static const flex_int32_t yy_rule_can_match_eol[90] =
 */
 #line 32 "../../src-common/cfdg.l"
     #define YY_NO_UNISTD_H
+    #include "attributes.h"
     #include "builder.h"
     #include "scanner.h"
     #include "astexpression.h"
@@ -847,15 +848,15 @@ static const flex_int32_t yy_rule_can_match_eol[90] =
     typedef yy::CfdgParser::token token;
     typedef yy::CfdgParser::token_type token_type;    
     
-#line 850 "lex.yy.cpp"
+#line 851 "lex.yy.cpp"
 /* calling this externally    */
 /* don't want yywrap to exist.*/
 /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
-#line 68 "../../src-common/cfdg.l"
+#line 69 "../../src-common/cfdg.l"
 #define YY_USER_ACTION  yylloc->columns(utf8length(yytext, yyleng));
-#line 857 "lex.yy.cpp"
 #line 858 "lex.yy.cpp"
+#line 859 "lex.yy.cpp"
 
 #define INITIAL 0
 
@@ -987,10 +988,10 @@ YY_DECL
 		}
 
 	{
-#line 71 "../../src-common/cfdg.l"
+#line 72 "../../src-common/cfdg.l"
 
 
-#line 74 "../../src-common/cfdg.l"
+#line 75 "../../src-common/cfdg.l"
  /* code to place at the beginning of yylex() */
 
     // reset location
@@ -1004,7 +1005,7 @@ YY_DECL
 
                                                                 
  /* comment line */
-#line 1007 "lex.yy.cpp"
+#line 1008 "lex.yy.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1069,7 +1070,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 87 "../../src-common/cfdg.l"
+#line 88 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1077,7 +1078,7 @@ YY_RULE_SETUP
 /* C-style comment */
 case 2:
 YY_RULE_SETUP
-#line 92 "../../src-common/cfdg.l"
+#line 93 "../../src-common/cfdg.l"
 {
     int c;
     char lastChar = ' ';
@@ -1113,7 +1114,7 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 124 "../../src-common/cfdg.l"
+#line 125 "../../src-common/cfdg.l"
 {        /* \042 is " in ASCII */
     if (yytext[yyleng - 1] != '\042') {
         LexerError("end-of-line in quoted string");
@@ -1126,387 +1127,387 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 134 "../../src-common/cfdg.l"
+#line 135 "../../src-common/cfdg.l"
 {return token::STARTSHAPE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 135 "../../src-common/cfdg.l"
+#line 136 "../../src-common/cfdg.l"
 {return token::BACKGROUND;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 136 "../../src-common/cfdg.l"
+#line 137 "../../src-common/cfdg.l"
 {return token::INCLUDE;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 137 "../../src-common/cfdg.l"
+#line 138 "../../src-common/cfdg.l"
 {return token::IMPORT;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 138 "../../src-common/cfdg.l"
+#line 139 "../../src-common/cfdg.l"
 {return token::TILE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 139 "../../src-common/cfdg.l"
+#line 140 "../../src-common/cfdg.l"
 {return token::RULE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 140 "../../src-common/cfdg.l"
+#line 141 "../../src-common/cfdg.l"
 {return token::PATH;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 141 "../../src-common/cfdg.l"
+#line 142 "../../src-common/cfdg.l"
 {return token::SHAPE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 142 "../../src-common/cfdg.l"
+#line 143 "../../src-common/cfdg.l"
 {return token::LOOP;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 143 "../../src-common/cfdg.l"
+#line 144 "../../src-common/cfdg.l"
 {return token::CLONE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 144 "../../src-common/cfdg.l"
+#line 145 "../../src-common/cfdg.l"
 {return token::LET;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 145 "../../src-common/cfdg.l"
+#line 146 "../../src-common/cfdg.l"
 {return token::BECOMES;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 146 "../../src-common/cfdg.l"
+#line 147 "../../src-common/cfdg.l"
 {return token::FINALLY;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 147 "../../src-common/cfdg.l"
+#line 148 "../../src-common/cfdg.l"
 {return token::IF;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 148 "../../src-common/cfdg.l"
+#line 149 "../../src-common/cfdg.l"
 {return token::ELSE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 149 "../../src-common/cfdg.l"
+#line 150 "../../src-common/cfdg.l"
 {return token::SWITCH;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 150 "../../src-common/cfdg.l"
+#line 151 "../../src-common/cfdg.l"
 {return token::CASE;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 151 "../../src-common/cfdg.l"
+#line 152 "../../src-common/cfdg.l"
 {return token::RANGEOP;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 152 "../../src-common/cfdg.l"
+#line 153 "../../src-common/cfdg.l"
 {return token::RANGEOP;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 153 "../../src-common/cfdg.l"
+#line 154 "../../src-common/cfdg.l"
 {return token::PLUSMINUSOP;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 154 "../../src-common/cfdg.l"
+#line 155 "../../src-common/cfdg.l"
 {return token::PLUSMINUSOP;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 155 "../../src-common/cfdg.l"
+#line 156 "../../src-common/cfdg.l"
 {return token::CF_INFINITY;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 157 "../../src-common/cfdg.l"
+#line 158 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::time;          return token::MODTYPE;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 158 "../../src-common/cfdg.l"
+#line 159 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::timescale;     return token::MODTYPE;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 159 "../../src-common/cfdg.l"
+#line 160 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::rot;           return token::MODTYPE;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 160 "../../src-common/cfdg.l"
+#line 161 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::rot;           return token::MODTYPE;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 161 "../../src-common/cfdg.l"
+#line 162 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 162 "../../src-common/cfdg.l"
+#line 163 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 163 "../../src-common/cfdg.l"
+#line 164 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 164 "../../src-common/cfdg.l"
+#line 165 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 165 "../../src-common/cfdg.l"
+#line 166 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::sat;           return token::MODTYPE;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 166 "../../src-common/cfdg.l"
+#line 167 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::sat;           return token::MODTYPE;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 167 "../../src-common/cfdg.l"
+#line 168 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::bright;        return token::MODTYPE;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 168 "../../src-common/cfdg.l"
+#line 169 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::bright;        return token::MODTYPE;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 169 "../../src-common/cfdg.l"
+#line 170 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::alpha;         return token::MODTYPE;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 170 "../../src-common/cfdg.l"
+#line 171 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::alpha;         return token::MODTYPE;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 171 "../../src-common/cfdg.l"
+#line 172 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 172 "../../src-common/cfdg.l"
+#line 173 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::transform;     return token::MODTYPE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 173 "../../src-common/cfdg.l"
+#line 174 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::x;             return token::MODTYPE;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 174 "../../src-common/cfdg.l"
+#line 175 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::y;             return token::MODTYPE;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 175 "../../src-common/cfdg.l"
+#line 176 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::z;             return token::MODTYPE;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 176 "../../src-common/cfdg.l"
+#line 177 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 177 "../../src-common/cfdg.l"
+#line 178 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::size;          return token::MODTYPE;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 178 "../../src-common/cfdg.l"
+#line 179 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::skew;          return token::MODTYPE;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 179 "../../src-common/cfdg.l"
+#line 180 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 180 "../../src-common/cfdg.l"
+#line 181 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targHue;       return token::MODTYPE;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 181 "../../src-common/cfdg.l"
+#line 182 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 182 "../../src-common/cfdg.l"
+#line 183 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targSat;       return token::MODTYPE;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 183 "../../src-common/cfdg.l"
+#line 184 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 184 "../../src-common/cfdg.l"
+#line 185 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targBright;    return token::MODTYPE;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 185 "../../src-common/cfdg.l"
+#line 186 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 186 "../../src-common/cfdg.l"
+#line 187 "../../src-common/cfdg.l"
 {yylval->modToken = AST::ASTmodTerm::targAlpha;     return token::MODTYPE;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 188 "../../src-common/cfdg.l"
+#line 189 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::param); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 189 "../../src-common/cfdg.l"
+#line 190 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::param); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 190 "../../src-common/cfdg.l"
+#line 191 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::stroke); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 191 "../../src-common/cfdg.l"
+#line 192 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::x1); }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 192 "../../src-common/cfdg.l"
+#line 193 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::y1); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 193 "../../src-common/cfdg.l"
+#line 194 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::x2); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 194 "../../src-common/cfdg.l"
+#line 195 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::y2); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 195 "../../src-common/cfdg.l"
+#line 196 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::xrad); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 196 "../../src-common/cfdg.l"
+#line 197 "../../src-common/cfdg.l"
 { return v2token(yylval, AST::ASTmodTerm::yrad); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 198 "../../src-common/cfdg.l"
+#line 199 "../../src-common/cfdg.l"
 { return token::LT; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 199 "../../src-common/cfdg.l"
+#line 200 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 200 "../../src-common/cfdg.l"
+#line 201 "../../src-common/cfdg.l"
 { return token::LE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 201 "../../src-common/cfdg.l"
+#line 202 "../../src-common/cfdg.l"
 { return token::GT; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 202 "../../src-common/cfdg.l"
+#line 203 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 203 "../../src-common/cfdg.l"
+#line 204 "../../src-common/cfdg.l"
 { return token::GE; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 204 "../../src-common/cfdg.l"
+#line 205 "../../src-common/cfdg.l"
 { return token::EQ; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 205 "../../src-common/cfdg.l"
+#line 206 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 206 "../../src-common/cfdg.l"
+#line 207 "../../src-common/cfdg.l"
 { return token::NEQ; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 207 "../../src-common/cfdg.l"
+#line 208 "../../src-common/cfdg.l"
 { return token::NOT; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 208 "../../src-common/cfdg.l"
+#line 209 "../../src-common/cfdg.l"
 { return token::AND; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 209 "../../src-common/cfdg.l"
+#line 210 "../../src-common/cfdg.l"
 { return token::OR; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 210 "../../src-common/cfdg.l"
+#line 211 "../../src-common/cfdg.l"
 { return token::XOR; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 211 "../../src-common/cfdg.l"
+#line 212 "../../src-common/cfdg.l"
 { return '_'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 213 "../../src-common/cfdg.l"
+#line 214 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 214 "../../src-common/cfdg.l"
+#line 215 "../../src-common/cfdg.l"
 {
     // This greedy string regex gobbles up Unicode operators. Find the first one
     // and chop the string there.
@@ -1549,17 +1550,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 253 "../../src-common/cfdg.l"
+#line 254 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 254 "../../src-common/cfdg.l"
+#line 255 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 255 "../../src-common/cfdg.l"
+#line 256 "../../src-common/cfdg.l"
 {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
@@ -1569,18 +1570,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 261 "../../src-common/cfdg.l"
+#line 262 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 262 "../../src-common/cfdg.l"
+#line 263 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 	YY_BREAK
 /* gobble up white-spaces */
 case 86:
 YY_RULE_SETUP
-#line 265 "../../src-common/cfdg.l"
+#line 266 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1589,7 +1590,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 270 "../../src-common/cfdg.l"
+#line 271 "../../src-common/cfdg.l"
 {
     yylloc->lines(1); yylloc->step();
 }
@@ -1597,13 +1598,13 @@ YY_RULE_SETUP
 /* pass all other characters up to bison */
 case 88:
 YY_RULE_SETUP
-#line 275 "../../src-common/cfdg.l"
+#line 276 "../../src-common/cfdg.l"
 {
     return static_cast<int>(*yytext);
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 279 "../../src-common/cfdg.l"
+#line 280 "../../src-common/cfdg.l"
 {
     if (!YY_CURRENT_BUFFER)
         yyterminate();
@@ -1617,10 +1618,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 290 "../../src-common/cfdg.l"
+#line 291 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1623 "lex.yy.cpp"
+#line 1624 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2583,7 +2584,7 @@ void Cfdgfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 290 "../../src-common/cfdg.l"
+#line 291 "../../src-common/cfdg.l"
 
 
 namespace yy {
@@ -2686,10 +2687,10 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         switch (j) {
             case 2:
                 if (code > 0x7f) break;
-		[[fallthrough]];
+		FALLTHROUGH;
             case 3:
                 if (code > 0x7ff) break;
-		[[fallthrough]];
+		FALLTHROUGH;
             case 4:
                 if (code > 0xffff) break;
                 LexerError("Invalid UTF-8 encoding: overlong sequence");
