@@ -28,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->output->setTransform(ui->output->transform().scale(1, -1));
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
-    ui->statusBar->showMessage("Work", 0);
+    ui->framesBox->setValue(1);
+    ui->framesBox->setRange(1, 1000000);
 }
 
 MainWindow::~MainWindow() {
@@ -83,7 +84,7 @@ void MainWindow::runCode() {
     ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     ui->runButton->setDisabled(true);
 
-    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene, this);
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, scene, this);
     connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
     connect(r, &AsyncRenderer::aborted, this, &MainWindow::abortRender);
 

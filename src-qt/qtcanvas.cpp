@@ -1,5 +1,4 @@
 #include "qtcanvas.h"
-#include "qtcanvas-async.h"
 #include "qtsystem.h"
 #include <primShape.h>
 #include <QObject>
@@ -78,12 +77,12 @@ void ShapeSpec::drawOnScene(QGraphicsScene *scene) {
     }
 }
 
-AsyncRenderer::AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw): w(w),
+AsyncRenderer::AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw): w(w),
     h(h),
     canv(canv),
     scene(scene),
     t(this) {
-    p = new ParseWorker(w, h, canv, mw);
+    p = new ParseWorker(w, h, frames, canv, mw);
     qDebug() << "Beginning AsyncRenderer constructor" << endl;
     connect(p, SIGNAL(finished() ), p, SLOT(deleteLater() ));
     connect(p, SIGNAL(done() ), this, SLOT(render() ));
@@ -163,7 +162,7 @@ void ParseWorker::run() {
         emit done();
         return;
     }
-    rend->run(this->canv.get(), false);
+    rend->animate(this->canv.get(), frames, 0, false);
     qDebug() << "Done parsing" << endl;
     emit done();
 }
@@ -173,7 +172,7 @@ void ParseWorker::requestStop() {
        rend->requestStop = true;
 }
 
-ParseWorker::ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, MainWindow *mw): w(w), h(h), canv(canv), rend(nullptr), mw(mw) {}
+ParseWorker::ParseWorker(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw): w(w), h(h), frames(frames), canv(canv), rend(nullptr), mw(mw) {}
 
 ParseWorker::~ParseWorker() {
 }

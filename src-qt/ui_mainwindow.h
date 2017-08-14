@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.1
+** Created by: Qt User Interface Compiler version 5.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -17,9 +17,11 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
@@ -40,6 +42,8 @@ public:
     QHBoxLayout *horizontalLayout;
     QToolButton *runButton;
     QToolButton *cancelButton;
+    QLabel *label;
+    QSpinBox *framesBox;
     QHBoxLayout *centralLayout;
     QTextEdit *code;
     QGraphicsView *output;
@@ -59,7 +63,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon = QIcon::fromTheme(iconThemeName);
         } else {
-            icon.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+            icon.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         actionOpen->setIcon(icon);
         actionNew = new QAction(MainWindow);
@@ -69,7 +73,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon1 = QIcon::fromTheme(iconThemeName);
         } else {
-            icon1.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+            icon1.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         actionNew->setIcon(icon1);
         actionSave = new QAction(MainWindow);
@@ -79,7 +83,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon2 = QIcon::fromTheme(iconThemeName);
         } else {
-            icon2.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+            icon2.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         actionSave->setIcon(icon2);
         actionSave->setMenuRole(QAction::TextHeuristicRole);
@@ -103,7 +107,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon3 = QIcon::fromTheme(iconThemeName);
         } else {
-            icon3.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+            icon3.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         runButton->setIcon(icon3);
         runButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -120,11 +124,21 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon4 = QIcon::fromTheme(iconThemeName);
         } else {
-            icon4.addFile(QStringLiteral(""), QSize(), QIcon::Normal, QIcon::Off);
+            icon4.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         cancelButton->setIcon(icon4);
 
         horizontalLayout->addWidget(cancelButton);
+
+        label = new QLabel(toolbar);
+        label->setObjectName(QStringLiteral("label"));
+
+        horizontalLayout->addWidget(label);
+
+        framesBox = new QSpinBox(toolbar);
+        framesBox->setObjectName(QStringLiteral("framesBox"));
+
+        horizontalLayout->addWidget(framesBox);
 
 
         verticalLayout->addWidget(toolbar, 0, Qt::AlignLeft);
@@ -149,7 +163,7 @@ public:
         MainWindow->setCentralWidget(mainLayout);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 756, 25));
+        menuBar->setGeometry(QRect(0, 0, 756, 27));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         MainWindow->setMenuBar(menuBar);
@@ -175,25 +189,20 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
-        actionOpen->setText(QApplication::translate("MainWindow", "&Open", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        actionOpen->setText(QApplication::translate("MainWindow", "&Open", 0));
 #ifndef QT_NO_STATUSTIP
-        actionOpen->setStatusTip(QApplication::translate("MainWindow", "Open", Q_NULLPTR));
+        actionOpen->setStatusTip(QApplication::translate("MainWindow", "Open", 0));
 #endif // QT_NO_STATUSTIP
-#ifndef QT_NO_SHORTCUT
-        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", Q_NULLPTR));
-#endif // QT_NO_SHORTCUT
-        actionNew->setText(QApplication::translate("MainWindow", "&New", Q_NULLPTR));
-#ifndef QT_NO_SHORTCUT
-        actionNew->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", Q_NULLPTR));
-#endif // QT_NO_SHORTCUT
-        actionSave->setText(QApplication::translate("MainWindow", "&Save", Q_NULLPTR));
-#ifndef QT_NO_SHORTCUT
-        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", Q_NULLPTR));
-#endif // QT_NO_SHORTCUT
-        runButton->setText(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
-        cancelButton->setText(QApplication::translate("MainWindow", "Cancel", Q_NULLPTR));
-        menuFile->setTitle(QApplication::translate("MainWindow", "&File", Q_NULLPTR));
+        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0));
+        actionNew->setText(QApplication::translate("MainWindow", "&New", 0));
+        actionNew->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0));
+        actionSave->setText(QApplication::translate("MainWindow", "&Save", 0));
+        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
+        runButton->setText(QApplication::translate("MainWindow", "Build", 0));
+        cancelButton->setText(QApplication::translate("MainWindow", "Cancel", 0));
+        label->setText(QApplication::translate("MainWindow", "Animation Frames:", 0));
+        menuFile->setTitle(QApplication::translate("MainWindow", "&File", 0));
     } // retranslateUi
 
 };

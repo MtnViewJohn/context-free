@@ -32,7 +32,7 @@ class ParseWorker: public QThread {
         Q_OBJECT
 
     public:
-        ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, MainWindow *mw);
+        ParseWorker(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw);
         ~ParseWorker();
         void requestStop();
     public:
@@ -40,7 +40,7 @@ class ParseWorker: public QThread {
     signals:
         void done();
     private:
-        int w, h;
+        int w, h, frames;
         shared_ptr<QtCanvas> canv;
         shared_ptr<Renderer> rend;
         MainWindow *mw;
@@ -49,7 +49,7 @@ class AsyncRenderer: public QObject {
         Q_OBJECT
 
     public:
-        AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw);
+        AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw);
         void cleanup();
         ~AsyncRenderer();
     public slots:
@@ -59,7 +59,7 @@ class AsyncRenderer: public QObject {
         void abortRender();
         void aborted();
     private:
-        int w, h;
+        int w, h, frames;
         shared_ptr<QtCanvas> canv;
         QGraphicsScene *scene;
         ParseWorker *p;
