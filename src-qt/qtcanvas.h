@@ -58,6 +58,7 @@ class AsyncRenderer: public QObject {
         void done();
         void abortRender();
         void aborted();
+        void updateRect();
     private:
         int w, h, frames;
         shared_ptr<QtCanvas> canv;

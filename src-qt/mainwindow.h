@@ -28,6 +28,7 @@ class MainWindow : public QMainWindow
         void stop();
         void abortRender();
         void showmsg(const char *msg);
+        void updateRect();
     private:
         bool confirmModify();
         AsyncRenderer *r;

@@ -24,7 +24,6 @@ void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
     QTransform qtr(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5]);
     delete[] mat;
     specs.push_back(new ShapeSpec(shape, qtr, QColor(c.r >> 8, c.g >> 8, c.b >> 8, c.a >> 8)));
-//    item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 }
 
 void QtCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo &attr) {
@@ -130,10 +129,12 @@ void AsyncRenderer::render() {
             return;
         } else {
                 s->drawOnScene(scene);
+                emit updateRect();
         }
     }
     qDebug() << "Done render; setting rendering flag to false";
     rendering = false;
+    emit updateRect();
     emit done();
 }
 
@@ -163,6 +164,7 @@ void ParseWorker::run() {
         return;
     }
     rend->animate(this->canv.get(), frames, 0, false);
+    //rend->run(this->canv.get(), false);
     qDebug() << "Done parsing" << endl;
     emit done();
 }

@@ -85,12 +85,10 @@ void MainWindow::runCode() {
     ui->runButton->setDisabled(true);
 
     r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, scene, this);
-    connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
-    connect(r, &AsyncRenderer::aborted, this, &MainWindow::abortRender);
+    connect(r, SIGNAL(done()), this, SLOT(doneRender()));
+    connect(r, SIGNAL(aborted()), this, SLOT(abortRender()));
+    connect(r, SIGNAL(updateRect()), this, SLOT(updateRect()));
 
-    QRectF ibr = scene->sceneRect();
-    ui->output->setSceneRect(ibr);
-    scene->setSceneRect(ibr);
     //qDebug() << ui->output->items() << endl;
 }
 
@@ -169,4 +167,10 @@ void MainWindow::abortRender() {
 void MainWindow::showmsg(const char* msg) {
     ui->statusBar->showMessage(msg, 1000);
     delete msg;
+}
+
+void MainWindow::updateRect() {
+    QRectF ibr = scene->itemsBoundingRect();
+    ui->output->setSceneRect(ibr);
+    scene->setSceneRect(ibr);
 }
