@@ -8,7 +8,7 @@ class QtSystem: public QObject, public PosixSystem {
         Q_OBJECT
 
     public:
-        QtSystem(QStatusBar *sb);
+        QtSystem();
         void message(const char* fmt, ...) override;
         void syntaxError(const CfdgError &err) override;
         void catastrophicError(const char* what) override;
@@ -16,8 +16,6 @@ class QtSystem: public QObject, public PosixSystem {
         void orphan() override {}
     signals:
         void showmsg(const char *msg);
-    private:
-        QStatusBar *sb;
 };
 
 #endif // QTSYSTEM_H

@@ -1,4 +1,5 @@
 #include "qtcanvas.h"
+#include "qtcanvas-async.h"
 #include "qtsystem.h"
 #include <primShape.h>
 #include <QObject>
@@ -77,12 +78,12 @@ void ShapeSpec::drawOnScene(QGraphicsScene *scene) {
     }
 }
 
-AsyncRenderer::AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, QStatusBar *sb): w(w),
+AsyncRenderer::AsyncRenderer(int w, int h, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw): w(w),
     h(h),
     canv(canv),
     scene(scene),
     t(this) {
-    p = new ParseWorker(w, h, canv, sb);
+    p = new ParseWorker(w, h, canv, mw);
     qDebug() << "Beginning AsyncRenderer constructor" << endl;
     connect(p, SIGNAL(finished() ), p, SLOT(deleteLater() ));
     connect(p, SIGNAL(done() ), this, SLOT(render() ));
@@ -139,10 +140,13 @@ void AsyncRenderer::render() {
 
 void ParseWorker::run() {
     qDebug() << "Beginning parsing" << endl;
-    QtSystem sys(sb);
+
+    QtSystem sys;
+    connect(&sys, SIGNAL(showmsg(const char*)), mw, SLOT(showmsg(const char*)));
+
     cfdg_ptr design(CFDG::ParseFile("/tmp/tmp.cfdg", &sys, 7394));
     if(design.get() == nullptr) {
-        std::cerr << "OH NOES!" << std::endl;
+        std::cerr << "Design evaluated to null; do you have a startshape?" << std::endl;
         if(unlink("/tmp/tmp.cfdg"))
             perror("Unlinking tempfile");
         return;
@@ -150,9 +154,9 @@ void ParseWorker::run() {
     rend = shared_ptr<Renderer>(design->renderer(design,
                                 w,
                                 h,
-                                0.1,
+                                1,
                                 4,
-                                2.0));
+                                2));
     if(rend == nullptr) {
         if(unlink("/tmp/tmp.cfdg"))
             perror("Unlinking tempfile");
@@ -169,7 +173,7 @@ void ParseWorker::requestStop() {
        rend->requestStop = true;
 }
 
-ParseWorker::ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, QStatusBar *sb): w(w), h(h), canv(canv), rend(nullptr), sb(sb) {}
+ParseWorker::ParseWorker(int w, int h, shared_ptr<QtCanvas> canv, MainWindow *mw): w(w), h(h), canv(canv), rend(nullptr), mw(mw) {}
 
 ParseWorker::~ParseWorker() {
 }

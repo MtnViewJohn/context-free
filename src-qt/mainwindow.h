@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include "qtcanvas.h"
+
+class AsyncRenderer;
 
 namespace Ui {
 class MainWindow;

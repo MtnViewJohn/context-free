@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 
-QtSystem::QtSystem(QStatusBar *sb): sb(sb) {
+QtSystem::QtSystem(){
 }
 
 

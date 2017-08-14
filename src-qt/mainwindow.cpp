@@ -72,16 +72,21 @@ void MainWindow::runCode() {
         return;
     }
     fs << ui->code->toPlainText().toStdString() << std::endl;
+
     foreach (QGraphicsItem *item, scene->items())
         scene->removeItem(item);
+
     std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
+
     ui->runButton->setText("Building...");
     ui->cancelButton->setVisible(true);
     ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     ui->runButton->setDisabled(true);
-    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene, ui->statusBar);
+
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), canv, scene, this);
     connect(r, &AsyncRenderer::done, this, &MainWindow::doneRender);
     connect(r, &AsyncRenderer::aborted, this, &MainWindow::abortRender);
+
     QRectF ibr = scene->sceneRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
