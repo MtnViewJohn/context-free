@@ -33,3 +33,5 @@ src-win/win-install/*.exe
 src-qt/*.o
 src-qt/moc_*
 src-qt/contextfree
+src-qt/CMakeCache.txt
+src-qt/CMakeFiles/
