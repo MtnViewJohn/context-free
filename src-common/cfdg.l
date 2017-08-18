@@ -30,6 +30,7 @@
 
 %{
     #define YY_NO_UNISTD_H
+    #include "attributes.h"
     #include "builder.h"
     #include "scanner.h"
     #include "astexpression.h"
@@ -388,10 +389,10 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         switch (j) {
             case 2:
                 if (code > 0x7f) break;
-		[[fallthrough]];
+		FALLTHROUGH;
             case 3:
                 if (code > 0x7ff) break;
-		[[fallthrough]];
+		FALLTHROUGH;
             case 4:
                 if (code > 0xffff) break;
                 LexerError("Invalid UTF-8 encoding: overlong sequence");

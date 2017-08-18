@@ -30,6 +30,7 @@
 #include <cmath>
 #include <cassert>
 #include "rendererAST.h"
+#include "attributes.h"
 #include <cstdlib>
 #include <cstring>
 
@@ -383,7 +384,7 @@ namespace AST {
                     case 4:
                         x = data[2];
                         y = data[3];
-			[[fallthrough]];
+			FALLTHROUGH;
                     case 2:
                         order = data[1];
                         break;
@@ -401,7 +402,7 @@ namespace AST {
                     case 5:
                         x = data[3];
                         y = data[4];
-			[[fallthrough]];
+			FALLTHROUGH;
                     case 3:
                         order = data[1];
                         angle = data[2] * M_PI / 180.0;
@@ -409,7 +410,7 @@ namespace AST {
                     case 4:
                         x = data[2];
                         y = data[3];
-			[[fallthrough]];
+			FALLTHROUGH;
                     case 2:
                         order = data[1];
                         break;

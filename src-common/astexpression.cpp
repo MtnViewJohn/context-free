@@ -26,6 +26,7 @@
 #include "astexpression.h"
 #include "builder.h"
 #include "rendererAST.h"
+#include "attributes.h"
 
 #include <cmath>
 #include <cassert>
@@ -208,7 +209,7 @@ namespace AST {
                     // copy the parameters with the correct shape type.
                     return param_ptr(StackRule::alloc(parent, shapeType));
                 }
-		[[fallthrough]];
+		FALLTHROUGH;
             case SimpleParentArgs:
                 assert(parent);
                 assert(rti);
@@ -1450,7 +1451,7 @@ namespace AST {
                 target += modType - ASTmodTerm::hue;
                 mask <<= 2 * (modType - ASTmodTerm::hue);
                 hue = false;
-		[[fallthrough]];
+		FALLTHROUGH;
             case ASTmodTerm::hue: {
                 if (argcount != 2) {
                     // One argument changes hue, 3 changes hsb, 4 changes hsba
@@ -1497,7 +1498,7 @@ namespace AST {
                 target += modType - ASTmodTerm::hueTarg;
                 mask <<= 2 * (modType - ASTmodTerm::hueTarg);
                 hue = false;
-		[[fallthrough]];
+		FALLTHROUGH;
             case ASTmodTerm::hueTarg: {
                 if ((m.m_ColorAssignment & mask) || *color != 0.0) {
                     if (rti == nullptr)
@@ -2179,7 +2180,7 @@ namespace AST {
                     case Rand2:
                     case RandInt:
                         isConstant = false;
-			[[fallthrough]];
+			FALLTHROUGH;
                     case Rand_Static:
                         switch (argcount) {
                             case 0:
@@ -2224,7 +2225,7 @@ namespace AST {
                     case RandNegBinomial:
                         isNatural = arguments &&  arguments->size() == 2 &&
                                     arguments->getChild(0)->isNatural;
-		        [[fallthrough]];
+		        FALLTHROUGH;
                     case RandCauchy:
                     case RandExtremeValue:
                     case RandFisherF:
@@ -2702,7 +2703,7 @@ namespace AST {
                         case '-':
                         case '_':
                             tupleSize = ls;
-			    [[fallthrough]];
+			    FALLTHROUGH;
                         case '=':
                         case 'n':
                             if (ls != rs)
