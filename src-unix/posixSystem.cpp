@@ -215,9 +215,7 @@ PosixSystem::findTempFiles()
     size_t len = strlen(TempPrefixAll);
     std::unique_ptr<DIR, DirCloser> dirp(opendir(dirname));
     if (!dirp) return ret;
-    dirent currentEntry;
-    dirent* der;
-    while (readdir_r(dirp.get(), &currentEntry, &der) == 0 && der) {
+    while (dirent* der = readdir(dirp.get())) {
         if (strncmp(TempPrefixAll, der->d_name, len) == 0) {
             ret.emplace_back(dirname);
             if (ret.back().back() != '/')
