@@ -30,8 +30,7 @@
           <string>Build</string>
          </property>
          <property name="icon">
-          <iconset theme="media-playback-start">
-           <normaloff>.</normaloff>.</iconset>
+          <iconset theme="view-refresh"/>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonIconOnly</enum>
@@ -53,8 +52,7 @@
           <string>Cancel</string>
          </property>
          <property name="icon">
-          <iconset theme="process-stop">
-           <normaloff>.</normaloff>.</iconset>
+          <iconset theme="process-stop"/>
          </property>
         </widget>
        </item>
@@ -84,6 +82,53 @@
        <widget class="QGraphicsView" name="output"/>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="mediaBar">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
+        <widget class="QToolButton" name="playButton">
+         <property name="text">
+          <string>Play</string>
+         </property>
+         <property name="icon">
+          <iconset theme="media-playback-start"/>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="playhead">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -234,6 +279,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>playButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>startPlayback(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playhead</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFile()</slot>
@@ -242,5 +319,7 @@
   <slot>runCode()</slot>
   <slot>doneRender()</slot>
   <slot>stop()</slot>
+  <slot>startPlayback(bool)</slot>
+  <slot>setFrame(int)</slot>
  </slots>
 </ui>

@@ -21,16 +21,17 @@ project(context-free)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(PNG)
 
 add_executable(context-free ${SOURCE_LIST} ${OBJS})
+add_executable(dummy EXCLUDE_FROM_ALL mainwindow.ui)
 
 target_link_libraries(context-free Qt5::Widgets)
-target_link_libraries(context-free Qt5::Test)
+#target_link_libraries(context-free Qt5::Test)
 target_link_libraries(context-free ${CMAKE_SOURCE_DIR}/cfdg.a)
 
 include_directories(${INCLUDE_DIR})

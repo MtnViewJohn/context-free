@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->cancelButton->setVisible(false);
+    ui->mediaBar->setVisible(false);
     ui->code->setStyleSheet("font: 12px monospace");
     ui->output->setRenderHint(QPainter::Antialiasing);
     ui->output->setTransform(ui->output->transform().scale(1, -1));
@@ -30,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->output->setScene(scene);
     ui->framesBox->setValue(1);
     ui->framesBox->setRange(1, 1000000);
+    t.setInterval(1000/30);
+    connect(&t, SIGNAL(timeout()), this, SLOT(incFrame()));
 }
 
 MainWindow::~MainWindow() {
@@ -74,17 +77,17 @@ void MainWindow::runCode() {
     }
     fs << ui->code->toPlainText().toStdString() << std::endl;
 
-    foreach (QGraphicsItem *item, scene->items())
-        scene->removeItem(item);
+    QGraphicsScene *tempScene = new QGraphicsScene(this);
+    this->scene = tempScene;
+    if(r != NULL)
+        delete r;
 
     std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
-
-    ui->runButton->setText("Building...");
     ui->cancelButton->setVisible(true);
-    ui->runButton->setIcon(QIcon::fromTheme("process-working"));
     ui->runButton->setDisabled(true);
-
-    r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, scene, this);
+    ui->mediaBar->setVisible(false);
+    t.stop();
+    r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, this);
     connect(r, SIGNAL(done()), this, SLOT(doneRender()));
     connect(r, SIGNAL(aborted()), this, SLOT(abortRender()));
     connect(r, SIGNAL(updateRect()), this, SLOT(updateRect()));
@@ -145,9 +148,13 @@ void MainWindow::doneRender() {
         perror("Unlinking tempfile");
     ui->cancelButton->setVisible(false);
     ui->runButton->setEnabled(true);
-    ui->runButton->setText("Build");
-    ui->runButton->setIcon(QIcon::fromTheme("media-playback-start"));
-    delete r;
+    ui->mediaBar->setVisible(true);
+    QGraphicsScene *temp = scene;
+    r->frameIndex = 0;
+    scene = r->getScenes()[0].get();
+    ui->output->setScene(scene);
+    ui->playhead->setMaximum(r->frameCount());
+    delete temp;
 }
 
 void MainWindow::stop() {
@@ -173,4 +180,31 @@ void MainWindow::updateRect() {
     QRectF ibr = scene->itemsBoundingRect();
     ui->output->setSceneRect(ibr);
     scene->setSceneRect(ibr);
+}
+
+void MainWindow::startPlayback(bool shouldPlay) {
+    if(shouldPlay)
+        t.start();
+    else
+        t.stop();
+}
+
+void MainWindow::incFrame() {
+    vector<unique_ptr<QGraphicsScene> > &scenes = r->getScenes();
+    if(++(r->frameIndex) < scenes.size()) {
+        scene = scenes[r->frameIndex].get();
+        ui->output->setScene(scene);
+        ui->playhead->setValue(r->frameIndex);
+        qDebug() << "Show frame " << r->frameIndex << " of " << r->frameCount();
+    } else
+        t.stop();
+}
+
+void MainWindow::setFrame(int frame) {
+    vector<unique_ptr<QGraphicsScene> > &scenes = r->getScenes();
+    if(frame < scenes.size()) {
+        r->frameIndex = frame;
+        scene = scenes[r->frameIndex].get();
+        ui->output->setScene(scene);
+    }
 }

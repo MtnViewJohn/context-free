@@ -6,6 +6,7 @@
 #include <vector>
 #include <QThread>
 #include <QStatusBar>
+#include <queue>
 #include "primShape.h"
 #include "mainwindow.h"
 using namespace std;
@@ -20,12 +21,14 @@ class ShapeSpec {
 };
 
 class QtCanvas: public Canvas {
+        int frameIndex;
     public:
-        QtCanvas(int w, int h): Canvas(w, h) {}
         virtual ~QtCanvas();
+        QtCanvas(int w, int h);
         void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo &attr) override;
         void primitive(int shape, RGBA8 c, agg::trans_affine tr) override;
-        vector<ShapeSpec*> specs;
+        void start(bool b, const agg::rgba &r, int i1, int i2) override;
+        queue<queue<ShapeSpec> > specs;
 };
 
 class ParseWorker: public QThread {
@@ -47,10 +50,12 @@ class ParseWorker: public QThread {
 };
 class AsyncRenderer: public QObject {
         Q_OBJECT
-
     public:
-        AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw);
+        AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw);
         void cleanup();
+        vector<unique_ptr<QGraphicsScene> > &getScenes();
+        int frameCount();
+        int frameIndex;
         ~AsyncRenderer();
     public slots:
         void render();
@@ -62,12 +67,15 @@ class AsyncRenderer: public QObject {
     private:
         int w, h, frames;
         shared_ptr<QtCanvas> canv;
-        QGraphicsScene *scene;
+        vector<unique_ptr<QGraphicsScene> > scenes;
         ParseWorker *p;
         QThread t;
         bool parsing = true;
         bool rendering = false;
-        bool shouldExit = false;
+        union {
+                bool shouldExit;
+                bool stillWorking;
+        };
 };
 
 #endif // QTCANVAS_H

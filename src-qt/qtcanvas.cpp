@@ -11,7 +11,6 @@
 #include <QThread>
 #include <QtConcurrent/QtConcurrent>
 #include <QtDebug>
-#include <QSignalSpy>
 #include <unistd.h>
 
 using namespace std;
@@ -23,13 +22,21 @@ void QtCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr) {
     tr.store_to(mat);
     QTransform qtr(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5]);
     delete[] mat;
-    specs.push_back(new ShapeSpec(shape, qtr, QColor(c.r >> 8, c.g >> 8, c.b >> 8, c.a >> 8)));
+    specs.back().emplace(shape, qtr, QColor(c.r >> 8, c.g >> 8, c.b >> 8, c.a >> 8));
 }
 
 void QtCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo &attr) {
     cout << "PATHological error!" << endl;
     return;
 }
+
+void QtCanvas::start(bool b, const agg::rgba &r, int i1, int i2) {
+    specs.emplace();
+    qDebug() << "New frame, now have " << specs.size() << " frames";
+    this->Canvas::start(b, r, i1, i2);
+}
+
+QtCanvas::QtCanvas(int w, int h): Canvas(w, h) {}
 
 QtCanvas::~QtCanvas() {
 
@@ -42,28 +49,17 @@ void ShapeSpec::drawOnScene(QGraphicsScene *scene) {
     pe.setStyle(Qt::NoPen);
     switch(this->type) {
     case primShape::circleType:
-        cout << "Circle!" << endl;
         item = scene->addEllipse(0, 0, 1, 1, pe, br);
         item->setTransform(this->qtr);
         break;
     case primShape::squareType:
-        cout << "Square!" << endl;
         item = scene->addRect(0, 0, 1, 1, pe, br);
         item->setTransform(this->qtr);
         break;
     case primShape::fillType:
-        cout << "Fill!" << endl;
         scene->addRect(-scene->height()/2, -scene->width()/2, scene->height(), scene->width(), pe, br);
         break;
-    default:
-        cout << "Shape " << this->type << " not recognized." << endl
-             << "Circle: " << primShape::circleType << endl
-             << "Square: " << primShape::squareType << endl
-             << "Fill: " << primShape::fillType << endl
-             << "Triangle: " << primShape::triangleType << endl;
-        break;
     case primShape::triangleType:
-        cout << "Triangle!" << endl;
         QPainterPath *path = new QPainterPath(QPoint(0, 0));
         path->lineTo(1, 0);
         path->lineTo(0.5, 0.8660254037844386);
@@ -76,10 +72,9 @@ void ShapeSpec::drawOnScene(QGraphicsScene *scene) {
     }
 }
 
-AsyncRenderer::AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, QGraphicsScene *scene, MainWindow *mw): w(w),
+AsyncRenderer::AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw): w(w),
     h(h),
     canv(canv),
-    scene(scene),
     t(this) {
     p = new ParseWorker(w, h, frames, canv, mw);
     qDebug() << "Beginning AsyncRenderer constructor" << endl;
@@ -88,9 +83,14 @@ AsyncRenderer::AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv
     p->start();
     parsing = true;
     qDebug() << "Done AsyncRenderer constructor" << endl;
+    shouldExit = false;
 }
 
 AsyncRenderer::~AsyncRenderer() {
+}
+
+vector<unique_ptr<QGraphicsScene> > &AsyncRenderer::getScenes() {
+    return scenes;
 }
 
 void AsyncRenderer::cleanup() {
@@ -104,11 +104,10 @@ void AsyncRenderer::cleanup() {
     } else if (rendering) {
         shouldExit = true;
         qDebug() << "Should exit";
-        shared_ptr<QSignalSpy> s(new QSignalSpy(this, SIGNAL(aborted()) ));
-        emit abortRender();
         QtConcurrent::run([=] () {
-            while(s->isEmpty()) {
+            while(stillWorking) {
                 //qDebug() << "Processing events waiting for aborted signal";
+                QApplication::processEvents();
             }
             delete this;
         });
@@ -119,23 +118,37 @@ void AsyncRenderer::render() {
     parsing = false;
     rendering = true;
     qDebug() << "Beginning render";
-    QSignalSpy spy(this, SIGNAL(abortRender()) );
-    foreach(ShapeSpec *s, canv->specs) {
+    //QSignalSpy spy(this, SIGNAL(abortRender()) );
+    frameIndex = 0;
+    while(!canv->specs.empty()) {
+        queue<ShapeSpec> q = canv->specs.front();
+        scenes.push_back(make_unique<QGraphicsScene>(Q_NULLPTR));
+        qDebug() << "Scene count: " << scenes.size();
         qDebug() << "Processing events for render";
         QApplication::processEvents();
-        if(!spy.isEmpty()) {
-            qDebug() << "Yes, I should";
-            emit aborted();
-            return;
-        } else {
-                s->drawOnScene(scene);
+        while(!q.empty()) {
+            if(shouldExit) {
+                qDebug() << "Yes, I should";
+                stillWorking = false;
+                return;
+            } else {
+                q.front().drawOnScene(scenes[frameIndex].get());
+                q.pop();
                 emit updateRect();
+            }
         }
+        canv->specs.pop();
+        frameIndex++;
     }
     qDebug() << "Done render; setting rendering flag to false";
+
     rendering = false;
     emit updateRect();
     emit done();
+}
+
+int AsyncRenderer::frameCount() {
+    return scenes.size();
 }
 
 void ParseWorker::run() {

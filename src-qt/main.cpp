@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     if (QIcon::themeName() == "") {
         QIcon::setThemeSearchPaths((QStringList){"/usr/share/icons"});
-        QIcon::setThemeName("Adwaita");
+        QIcon::setThemeName("Tango");
     }
     QApplication a(argc, argv);
     MainWindow w;

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QTimer>
 
 class AsyncRenderer;
 
@@ -15,6 +16,7 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
+        QTimer t;
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
         Ui::MainWindow *ui;
@@ -29,9 +31,13 @@ class MainWindow : public QMainWindow
         void abortRender();
         void showmsg(const char *msg);
         void updateRect();
+        void incFrame();
+
+        void startPlayback(bool shouldPlay);
+        void setFrame(int frame);
     private:
         bool confirmModify();
-        AsyncRenderer *r;
+        AsyncRenderer *r = NULL;
 };
 
 #endif // MAINWINDOW_H
