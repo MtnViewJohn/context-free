@@ -234,7 +234,9 @@ PosixSystem::findTempFiles()
 size_t
 PosixSystem::getPhysicalMemory()
 {
-#ifdef __linux__
+#ifdef NOSYSCTL
+    return 0;
+#elif defined(__linux__)
   #if defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
     uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
     if (size > MaximumMemory)
@@ -243,15 +245,13 @@ PosixSystem::getPhysicalMemory()
   #else
     return 0;
   #endif
-#elif defined(NOSYSCTL)
-    return 0;
-#else // __linux__
+#else // not __linux__ and not NOSYSCTL
     int mib[2];
-#ifdef CTL_HW
+  #ifdef CTL_HW
     mib[0] = CTL_HW;
-#else
+  #else
     return 0;
-#endif
+  #endif
   #if defined(HW_MEMSIZE)
     mib[1] = HW_MEMSIZE;    // OSX
     uint64_t size = 0;      // 64-bit
