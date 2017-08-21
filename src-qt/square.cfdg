@@ -1,0 +1,5 @@
+startshape foo
+
+shape foo {
+	SQUARE []
+}
