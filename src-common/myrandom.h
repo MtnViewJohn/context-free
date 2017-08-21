@@ -894,6 +894,10 @@ namespace CF {
     }
         
         
+#ifdef __alpha
+#undef __alpha
+#endif
+
     // gamma_distribution
     
     template<class _RealType = double>
