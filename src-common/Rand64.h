@@ -105,7 +105,7 @@ public:
 private:
     XORshift64star  mSeed;
     static Rand64   Common;
-    double prob(double p) { return p < 0.0 ? 0.0 : p > 1.0 ? 1.0 : p; };
+    double prob(double p) { return p < 0.0 ? 0.0 : (p > 1.0 ? 1.0 : p); };
     double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
     double degree(double n) { return n >= 1.0 ? floor(n) : 1.0; }
     int64_t nat(int64_t i) { return i < 1 ? 1 : i; }

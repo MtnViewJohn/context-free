@@ -408,6 +408,10 @@ namespace CF {
                                (__t_ - __r0_) * std::log(1 - __p_));
             __odds_ratio_ = __p_ / (1 - __p_);
         }
+	else
+	{
+	    __r0_ = __pr_ = __odds_ratio_ = 0;
+	}
     }
     
     template<class _IntType>
@@ -822,7 +826,7 @@ namespace CF {
             double __difmuk;
             double __g = __pr.__mean_ + __pr.__s_ * CF::normal_distribution<double>()(__urng);
             double __u;
-            if (__g > 0)
+            if (__g >= 0)
             {
                 __x = static_cast<result_type>(__g);
                 if (__x >= __pr.__l_)
