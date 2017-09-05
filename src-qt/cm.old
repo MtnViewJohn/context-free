@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.5.1)
+
+set(CF_MAIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+set(SOURCE_LIST main.cpp
+		mainwindow.cpp
+		cfdg_highlighter.cpp
+		qtcanvas.cpp
+		qtsystem.cpp)
+
+set(INCLUDE_DIR ${CF_MAIN_DIR}/src-common
+		${CMAKE_CURRENT_SOURCE_DIR}/../src-agg
+		${CMAKE_CURRENT_SOURCE_DIR}/../src-unix
+		${CMAKE_CURRENT_SOURCE_DIR}/../src-win/derived
+		${CMAKE_CURRENT_SOURCE_DIR}/../src-common/agg-extras)
+
+file(GLOB OBJS ${CMAKE_CURRENT_SOURCE_DIR}/../objs "*.o")
+
+project(context-free)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+
+find_package(Qt5Widgets)
+find_package(PNG)
+
+add_executable(context-free ${SOURCE_LIST} ${OBJS})
+
+target_link_libraries(context-free Qt5::Widgets)
+target_link_libraries(context-free ${CMAKE_SOURCE_DIR}/cfdg.a)
+
+target_include_directories(context-free ${INCLUDE_DIR})

@@ -30,3 +30,13 @@ packages*
 src-net/.vs/
 .vs/
 src-win/win-install/*.exe
+src-qt/*.o
+src-qt/moc_*
+src-qt/ui_*
+src-qt/CMakeLists.txt.user*
+src-qt/*.cfdg
+src-qt/Makefile
+src-qt/cmake_install.cmake
+qt-build
+context-free
+**/*.swp

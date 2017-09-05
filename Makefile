@@ -21,6 +21,8 @@ vpath %.cfdg input
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
 INC_DIRS += /usr/local/include
 
+QT_BUILD_DIR = qt-build
+
 #
 # Installation directories
 #
@@ -48,7 +50,7 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp
 
-UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
+UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp mainsyms.cpp posixTimer.cpp \
     posixVersion.cpp
 
 DERIVED_SRCS = cfdg.tab.cpp lex.yy.cpp
@@ -134,7 +136,16 @@ cfdg: $(OBJS)
 	$(LINK.o) $^ $(LINKFLAGS) -o $@
 	strip $@
 
+qt: $(QT_BUILD_DIR)/context-free
+	cp $< .
 
+$(QT_BUILD_DIR)/context-free: $(OBJS) $(QT_BUILD_DIR)/Makefile
+	rm -f $(OBJ_DIR)/main.o
+	make -C $(QT_BUILD_DIR)
+
+# Qt CMake
+$(QT_BUILD_DIR)/Makefile: src-qt/CMakeLists.txt
+	cd $(QT_BUILD_DIR) && cmake ../src-qt
 #
 # Derived
 #
@@ -160,6 +171,7 @@ src-common/examples.h: $(INPUT_SRCS)
 clean :
 	rm -f $(OBJ_DIR)/*
 	rm -f cfdg
+	rm -rf $(QT_BUILD_DIR)/*
 
 distclean: clean
 	rmdir $(OBJ_DIR) 2> /dev/null || true
@@ -195,7 +207,7 @@ check: cfdg
 
 CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
 CPPFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
-#CPPFLAGS += -g
+CPPFLAGS += -g
 
 # Add this for clang
 ifeq ($(shell uname -s), Darwin)
