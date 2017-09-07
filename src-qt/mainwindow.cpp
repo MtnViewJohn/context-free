@@ -46,18 +46,30 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
+
+    // Hide UI elements which should only be shown in particular circumstances
     ui->cancelButton->setVisible(false);
     ui->mediaBar->setVisible(false);
+
     ui->code->setStyleSheet("font: 12px monospace");
+
     ui->output->setRenderHint(QPainter::Antialiasing);
+
+    // Flip output vertically to match orientation used by the rest of Contextfree
     ui->output->setTransform(ui->output->transform().scale(1, -1));
+
     scene = new QGraphicsScene(this);
     ui->output->setScene(scene);
     ui->framesBox->setValue(1);
     ui->framesBox->setRange(1, 1000000);
-    t.setInterval(1000/30.0);
+
+    // Set up timer for frame changing during playback
+    QSettings s;
+    fpsTimer.setInterval(1000/s.value("output_fps", 30).toDouble());
+
     currentFile = "";
-    connect(&t, SIGNAL(timeout()), this, SLOT(incFrame()));
+
+    connect(&fpsTimer, SIGNAL(timeout()), this, SLOT(incFrame()));
 }
 
 MainWindow::~MainWindow() {
@@ -122,7 +134,7 @@ void MainWindow::runCode() {
     ui->cancelButton->setVisible(true);
     ui->runButton->setDisabled(true);
     ui->mediaBar->setVisible(false);
-    t.stop();
+    fpsTimer.stop();
     r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, this);
     connect(r, SIGNAL(done()), this, SLOT(doneRender()));
     connect(r, SIGNAL(aborted()), this, SLOT(abortRender()));
@@ -204,7 +216,7 @@ void MainWindow::showPrefs() {
 
     if(s.exec()) {
         QSettings s("contextfreeart.org", "ContextFree");
-        t.setInterval(1000.0 / s.value("output_fps").toInt());
+        fpsTimer.setInterval(1000.0 / s.value("output_fps").toInt());
     }
 }
 
@@ -251,9 +263,9 @@ void MainWindow::updateRect() {
 
 void MainWindow::startPlayback(bool shouldPlay) {
     if(shouldPlay)
-        t.start();
+        fpsTimer.start();
     else
-        t.stop();
+        fpsTimer.stop();
 }
 
 void MainWindow::incFrame() {
@@ -264,7 +276,7 @@ void MainWindow::incFrame() {
         ui->playhead->setValue(r->frameIndex);
         qDebug() << "Show frame " << r->frameIndex << " of " << r->frameCount();
     } else
-        t.stop();
+        fpsTimer.stop();
 }
 
 void MainWindow::setFrame(int frame) {

@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        QTimer t;
+        QTimer fpsTimer;
         QString currentFile;
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
