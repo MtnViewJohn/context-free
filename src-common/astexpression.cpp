@@ -2366,17 +2366,7 @@ namespace AST {
                             CfdgError::Error(bound->mLocation, "   this is what it binds to", b);
                         }
                         if (bound->mStackIndex == -1) {
-                            if (!bound->mDefinition || !bound->mDefinition->mExpression) {
-                                CfdgError::Error(where, "Error processing shape variable.", b);
-                                return nullptr;
-                            }
-                            const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound->mDefinition->mExpression.get());
-                            if (r == nullptr) {
-                                CfdgError::Error(where, "Error processing shape variable.", b);
-                                return nullptr;
-                            }
-                            grab(r);
-                            mLocality = PureLocal;
+                            // This has to wait until after simplification
                         } else {
                             mStackIndex = bound->mStackIndex -
                                 (isGlobal ? 0 : b->mLocalStackDepth);
@@ -2490,6 +2480,20 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify: {
+                if (argSource == StackArgs) {
+                    bool isGlobal;
+                    const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
+                    assert(bound);
+                    if (bound->mStackIndex == -1) {
+                        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound->mDefinition->mExpression.get());
+                        if (r == nullptr) {
+                            CfdgError::Error(where, "Error processing shape variable.", b);
+                            return nullptr;
+                        }
+                        grab(r);
+                        mLocality = PureLocal;
+                    }
+                }
                 break;
             }
         }
