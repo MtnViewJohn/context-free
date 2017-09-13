@@ -1,0 +1,11 @@
+startshape foo
+
+bar = 5
+
+shape foo {
+  baz(bar)[]
+}
+
+shape baz(number xz) {
+  CIRCLE[s xz 1]
+}

@@ -140,10 +140,9 @@ namespace AST {
         mLocality = from.mLocality;
         mName = from.mName;
         mLocation = from.mLocation;
-        assert(!from.mDefinition);          // only used with parameters
         mStackIndex = from.mStackIndex;
         mTuplesize = from.mTuplesize;
-        mDefinition = nullptr;
+        mDefinition = from.mDefinition;
         return *this;
     }
     

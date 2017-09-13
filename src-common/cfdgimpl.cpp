@@ -392,10 +392,14 @@ CFDGImpl::rulesLoaded()
     // with respect to rules of the same shape type
     sort(mRules.begin(), mRules.end(), ASTrule::compareLT);
     
-    m_builder->mLocalStackDepth = 0;
-    mCFDGcontents.compile(CompilePhase::TypeCheck, m_builder);
-    if (!m_builder->mErrorOccured)
-        mCFDGcontents.compile(CompilePhase::Simplify, m_builder);
+    try {
+        m_builder->mLocalStackDepth = 0;
+        mCFDGcontents.compile(CompilePhase::TypeCheck, m_builder);
+        if (!m_builder->mErrorOccured)
+            mCFDGcontents.compile(CompilePhase::Simplify, m_builder);
+    } catch (DeferUntilRuntime&) {
+        CfdgError::Error(CfdgError::Default, "Unexpected exception during compile.");
+    }
     
     // Wait until done and then update these members
     double value;

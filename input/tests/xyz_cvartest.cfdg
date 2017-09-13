@@ -1,0 +1,9 @@
+startshape foo
+
+c5 = 5
+
+shape foo {
+  CIRCLE []
+  CIRCLE [x c5 3 4]
+}
+ 

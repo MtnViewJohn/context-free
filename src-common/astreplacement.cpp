@@ -670,16 +670,7 @@ namespace AST {
                 }
                 
                 if (mLoopArgs->isConstant) {
-                    setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get());
-                    bodyNatural = mLoopData[0] == floor(mLoopData[0]) &&
-                    mLoopData[1] == floor(mLoopData[1]) &&
-                    mLoopData[2] == floor(mLoopData[2]) &&
-                    mLoopData[0] >= 0.0 && mLoopData[1] >= 0.0 &&
-                    mLoopData[0] < 9007199254740992. &&
-                    mLoopData[1] < 9007199254740992.;
-                    finallyNatural = bodyNatural && mLoopData[1] + mLoopData[2] >= -1.0 &&
-                    mLoopData[1] + mLoopData[2] < 9007199254740992.;
-                    mLoopArgs.reset();
+                    bodyNatural = finallyNatural = mLoopArgs->isNatural;
                 } else {
                     for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
                         const ASTexpression* loopArg = mLoopArgs->getChild(i);
@@ -724,6 +715,23 @@ namespace AST {
             }
             case CompilePhase::Simplify:
                 Simplify(mLoopArgs, b);
+                if (mLoopArgs->isConstant) {
+                    bool bodyNatural = mLoopBody.mParameters.front().isNatural;
+                    bool finallyNatural = mFinallyBody.mParameters.front().isNatural;
+                    setupLoop(mLoopData[0], mLoopData[1], mLoopData[2], mLoopArgs.get());
+                    bodyNatural = bodyNatural && mLoopData[0] == floor(mLoopData[0]) &&
+                                mLoopData[1] == floor(mLoopData[1]) &&
+                                mLoopData[2] == floor(mLoopData[2]) &&
+                                mLoopData[0] >= 0.0 && mLoopData[1] >= 0.0 &&
+                                mLoopData[0] < 9007199254740992. &&
+                                mLoopData[1] < 9007199254740992.;
+                    finallyNatural = finallyNatural && bodyNatural &&
+                                mLoopData[1] + mLoopData[2] >= -1.0 &&
+                                mLoopData[1] + mLoopData[2] < 9007199254740992.;
+                    mLoopArgs.reset();
+                    mLoopBody.mParameters.front().isNatural = bodyNatural;
+                    mFinallyBody.mParameters.front().isNatural = finallyNatural;
+                }
                 mLoopBody.compile(ph, b);
                 mFinallyBody.compile(ph, b);
                 break;
@@ -872,7 +880,7 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mDefineType == ConfigDefine) {
-                    b->MakeConfig(this);
+                    b->TypeCheckConfig(this);
                     return;
                 }
 
@@ -911,7 +919,7 @@ namespace AST {
                     mType = t;
                     if (t != (t & (-t)) || !t)
                         CfdgError::Error(mLocation, "Expression can only have one type", b);
-                    if (mDefineType == StackDefine && (mExpression ? mExpression->isConstant : mChildChange.modExp.empty()))
+                    if (mDefineType == StackDefine && (mExpression ? mExpression->isConstant : mChildChange.isConstant))
                         mDefineType = ConstDefine;
                     isNatural = mExpression && mExpression->isNatural && mType == NumericType;
                     ASTparameter& param = b->mContainerStack.back()->
@@ -924,6 +932,8 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify:
+                if (mDefineType == ConfigDefine)
+                    b->MakeConfig(this);
                 break;
         }
     }
@@ -953,8 +963,8 @@ namespace AST {
                 break;
             }
             case CompilePhase::Simplify:
-                pathDataConst(b);
                 Simplify(mArguments, b);
+                pathDataConst(b);
                 break;
         }
     }

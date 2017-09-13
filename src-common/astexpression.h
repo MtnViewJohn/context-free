@@ -156,6 +156,7 @@ namespace AST {
         int mStackIndex;
         const ASTparameters* typeSignature;
         const ASTparameters* parentSignature;
+        ASTparameter bound;
         
         ASTruleSpecifier(int t, const std::string& name, exp_ptr args, const yy::location& loc, 
                          const ASTparameters* parent);
@@ -234,17 +235,20 @@ namespace AST {
     };
     class ASTvariable : public ASTexpression {
     public:
+        enum : int {IllegalStackIndex = std::numeric_limits<int>::max()};
         int stringIndex;
         std::string text;
         int stackIndex;
         int count;
         bool isParameter;
+         ASTparameter bound;
         
         ASTvariable() = delete;
         ASTvariable(int stringNum, const std::string& str, const yy::location& loc);
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
         void entropy(std::string& e) const override;
+        ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
     };
     class ASTuserFunction : public ASTexpression {
@@ -380,6 +384,7 @@ namespace AST {
         int     mCount;
         bool    isParameter;
         std::string entString;
+        ASTparameter bound;
         
         ASTarray(int nameIndex, exp_ptr args, const yy::location& loc, const std::string& name);
         ASTarray(const ASTarray&) = delete;

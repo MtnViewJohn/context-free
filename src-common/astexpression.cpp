@@ -593,7 +593,11 @@ namespace AST {
         if (res && (length < count))
             return -1;
         if (res) {
-            if (rti == nullptr) throw DeferUntilRuntime();
+            if (!rti)
+                throw DeferUntilRuntime();
+            if (stackIndex == IllegalStackIndex)
+                CfdgError::Error(where, "Non-stack variable accessed through stack.");
+            
             const StackType* stackItem = rti->stackItem(stackIndex);
             for (int i = 0; i < count; ++i)
                 res[i] = stackItem[i].number;
@@ -819,13 +823,14 @@ namespace AST {
         switch (functype) {
             case Min:
             case Max:
-                *res = MinMax(arguments.get(), rti, functype == Min);
+                if (res)
+                    *res = MinMax(arguments.get(), rti, functype == Min);
                 return 1;
             case Dot: {
                 double l[AST::MaxVectorSize];
                 double r[AST::MaxVectorSize];
-                int lc = arguments->getChild(0)->evaluate(l, AST::MaxVectorSize, rti);
-                int rc = arguments->getChild(1)->evaluate(r, AST::MaxVectorSize, rti);
+                int lc = arguments->getChild(0)->evaluate(res ? l : nullptr, AST::MaxVectorSize, rti);
+                int rc = arguments->getChild(1)->evaluate(res ? r : nullptr, AST::MaxVectorSize, rti);
                 if (lc == rc && lc > 1) {
                     *res = 0.0;
                     for (int i = 0; i < lc; ++i)
@@ -836,8 +841,8 @@ namespace AST {
             case Cross: {
                 double l[3];
                 double r[3];
-                if (arguments->getChild(0)->evaluate(l, 3, rti) == 3 &&
-                    arguments->getChild(1)->evaluate(r, 3, rti) == 3)
+                if (arguments->getChild(0)->evaluate(res ? l : nullptr, 3, rti) == 3 &&
+                    arguments->getChild(1)->evaluate(res ? r : nullptr, 3, rti) == 3)
                 {
                     res[0] = l[1]*r[2] - l[2]*r[1];
                     res[1] = l[2]*r[0] - l[0]*r[2];
@@ -847,7 +852,7 @@ namespace AST {
             }
             case Vec: {
                 double l[AST::MaxVectorSize + 1];
-                int lc = arguments->evaluate(l, AST::MaxVectorSize + 1, rti);
+                int lc = arguments->evaluate(res ? l : nullptr, AST::MaxVectorSize + 1, rti);
                 if (lc > 1)
                     for (int i = 0; i < destLength; ++i)
                         res[i] = l[i % (lc - 1) + 1];
@@ -855,7 +860,7 @@ namespace AST {
             }
             case Hsb2Rgb: {
                 double c[3];
-                if (arguments->evaluate(c, 3, rti) == 3) {
+                if (arguments->evaluate(res ? c : nullptr, 3, rti) == 3) {
                     agg::rgba rgb;
                     HSBColor hsb(c[0], c[1], c[2], 1.0);
                     hsb.getRGBA(rgb);
@@ -865,7 +870,7 @@ namespace AST {
             }
             case Rgb2Hsb: {
                 double c[3];
-                if (arguments->evaluate(c, 3, rti) == 3) {
+                if (arguments->evaluate(res ? c : nullptr, 3, rti) == 3) {
                     agg::rgba rgb(c[0], c[1], c[2], 1.0);
                     HSBColor hsb(rgb);
                     res[0] = hsb.h; res[1] = hsb.s; res[2] = hsb.b;
@@ -874,7 +879,7 @@ namespace AST {
             }
             case RandDiscrete: {
                 double w[AST::MaxVectorSize];
-                int wc = arguments->evaluate(w, AST::MaxVectorSize, rti);
+                int wc = arguments->evaluate(res ? w : nullptr, AST::MaxVectorSize, rti);
                 if (wc >= 1)
                     *res = static_cast<double>(rti->mCurrentSeed.getDiscrete(wc, w));
                 return 1;
@@ -884,7 +889,7 @@ namespace AST {
         }
         
         double a[2];
-        int count = arguments->evaluate(a, 2, rti);
+        int count = arguments->evaluate(res ? a : nullptr, 2, rti);
         // no need to check the argument count, the constructor already checked it
         
         // But check it anyway to make valgrind happy
@@ -1211,7 +1216,11 @@ namespace AST {
         if (mType != ModType)
             CfdgError::Error(where, "Non-adjustment variable referenced in an adjustment context");
         
-        if (rti == nullptr) throw DeferUntilRuntime();
+        if (rti == nullptr) return;
+        
+        if (stackIndex == IllegalStackIndex)
+            CfdgError::Error(where, "Non-stack variable accessed through stack.");
+        
         const StackType* stackItem = rti->stackItem(stackIndex);
         const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
         if (shapeDest) {
@@ -1836,14 +1845,11 @@ namespace AST {
             }
         }
         if (argSource == StackArgs) {
-            bool isGlobal;
-            const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
-            assert(bound);
-            if (bound->mType != RuleType)
+            if (bound.mType != RuleType)
                 return nullptr;
-            if (bound->mStackIndex == -1) {
-                assert(bound->mDefinition);
-                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound->mDefinition->mExpression.get())) {
+            if (bound.mStackIndex == -1) {
+                assert(bound.mDefinition);
+                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound.mDefinition->mExpression.get())) {
                     // The source ASTruleSpec must already be type-checked
                     // because it is lexically earlier
                     shapeType = r->shapeType;
@@ -1862,6 +1868,10 @@ namespace AST {
                 }
             }
         }
+        if (argSource == DynamicArgs && isConstant) {
+            simpleRule = evalArgs();
+            argSource = SimpleArgs;
+        }
         return nullptr;
     }
     
@@ -1871,7 +1881,7 @@ namespace AST {
         ASTruleSpecifier::simplify(b);
         if (mModification) {
             ASTexpression* m = mModification->simplify(b);
-            assert(m == mModification.get());
+            assert(m == nullptr);
         }
         return nullptr;
     }
@@ -1921,7 +1931,11 @@ namespace AST {
         } else if (!arguments) {
             return definition->mExpression.release();
         }
-        return ASTuserFunction::simplify(b);
+        
+        b->push_repContainer(*mDefinitions);
+        (void)ASTuserFunction::simplify(b);
+        b->pop_repContainer(nullptr);
+        return nullptr;
     }
     
     ASTexpression*
@@ -1949,6 +1963,20 @@ namespace AST {
         return e.release();
     }
     
+    ASTexpression*
+    ASTvariable::simplify(Builder* b)
+    {
+        if (bound.mStackIndex == -1) {
+            assert(bound.mDefinition);
+            std::string name = b->ShapeToString(stringIndex);
+            ASTexpression* ret = bound.constCopy(where, name);
+            if (!ret)
+                CfdgError::Error(where, "internal error.", b);
+            return ret;
+        }
+        return nullptr;
+    }
+
     ASTexpression*
     ASTmodTerm::simplify(Builder* b)
     {
@@ -2008,7 +2036,14 @@ namespace AST {
                 continue;
             }
             
+            Simplify(mod->args, b);
             // Put in code for separating color changes and target color changes
+            
+            // Drop identity transforms here, not in type-check
+            double d[2];
+            if (mod->isConstant && mod->modType == ASTmodTerm::size &&
+                mod->args->evaluate(d, 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
+                continue;
             
             int mc = ClassMap.at(mod->modType);
             modClass |= mc;
@@ -2040,10 +2075,19 @@ namespace AST {
     ASTexpression*
     ASTarray::simplify(Builder* b)
     {
-        if (!mData || !isConstant || mLength > 1) {
-            Simplify(mArgs, b);
-            return nullptr;
+        if (bound.mType == NumericType && bound.mStackIndex == -1) {
+            mData = std::make_unique<double[]>(mCount);
+            if (bound.mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
+                CfdgError::Error(where, "Error computing vector data", b);
+                isConstant = false;
+                return nullptr;
+            }
         }
+        
+        Simplify(mArgs, b);
+
+        if (!mData || !isConstant || mLength > 1)
+            return nullptr;
         
         double i;
         if (mArgs->evaluate(&i, 1) != 1) {
@@ -2359,19 +2403,18 @@ namespace AST {
                         return nullptr;
                     case StackArgs: {
                         bool isGlobal;
-                        const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
-                        assert(bound);
-                        if (bound->mType != RuleType) {
+                        auto boundp = b->findExpression(shapeType, isGlobal);
+                        assert(boundp);
+                        bound = *boundp;
+                        if (bound.mType != RuleType) {
                             CfdgError::Error(where, "Shape name does not bind to a rule variable", b);
-                            CfdgError::Error(bound->mLocation, "   this is what it binds to", b);
+                            CfdgError::Error(bound.mLocation, "   this is what it binds to", b);
                         }
-                        if (bound->mStackIndex == -1) {
-                            // This has to wait until after simplification
-                        } else {
-                            mStackIndex = bound->mStackIndex -
+                        if (bound.mStackIndex != -1) {
+                            mStackIndex = bound.mStackIndex -
                                 (isGlobal ? 0 : b->mLocalStackDepth);
                             isConstant = false;
-                            mLocality = bound->mLocality;
+                            mLocality = bound.mLocality;
                         }
                         if (arguments && arguments->mType != AST::NoType)
                             CfdgError::Error(arguments->where, "Cannot bind parameters twice", b);
@@ -2410,8 +2453,10 @@ namespace AST {
                         }
                         
                         bool isGlobal;
-                        const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
-                        if (bound && bound->mType == RuleType) {
+                        auto boundp = b->findExpression(shapeType, isGlobal);
+                        if (boundp)
+                            bound = *boundp;
+                        if (boundp && boundp->mType == RuleType) {
                             // Shape was a stack variable but the variable type
                             // was not known to be a ruleSpec until now. Convert
                             // to a StackArgs and recompile as such.
@@ -2459,8 +2504,6 @@ namespace AST {
                         
                         if (arguments && arguments->mType != AST::NoType) {
                             if (arguments->isConstant) {
-                                simpleRule = evalArgs();
-                                argSource = SimpleArgs;
                                 isConstant = true;
                                 mLocality = PureLocal;
                             } else {
@@ -2481,11 +2524,8 @@ namespace AST {
             }
             case CompilePhase::Simplify: {
                 if (argSource == StackArgs) {
-                    bool isGlobal;
-                    const ASTparameter* bound = b->findExpression(shapeType, isGlobal);
-                    assert(bound);
-                    if (bound->mStackIndex == -1) {
-                        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound->mDefinition->mExpression.get());
+                    if (bound.mStackIndex == -1) {
+                        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound.mDefinition->mExpression.get());
                         if (r == nullptr) {
                             CfdgError::Error(where, "Error processing shape variable.", b);
                             return nullptr;
@@ -2541,33 +2581,32 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool isGlobal = false;
-                const ASTparameter* bound = b->findExpression(stringIndex, isGlobal);
-                if (bound == nullptr) {
+                auto boundp = b->findExpression(stringIndex, isGlobal);
+                if (boundp == nullptr) {
                     CfdgError::Error(where, "internal error.", b);
                     return nullptr;
                 }
+                bound = *boundp;
                 
                 std::string name = b->ShapeToString(stringIndex);
 
-                if (bound->mStackIndex == -1) {
-                    assert(bound->mDefinition);
-                    ASTexpression* ret = bound->constCopy(where, name);
-                    if (!ret)
-                        CfdgError::Error(where, "internal error.", b);
-                    return ret;
+                count = bound.mType == AST::NumericType ? bound.mTuplesize : 1;
+                mType = bound.mType;
+                isNatural = bound.isNatural;
+                mLocality = bound.mLocality;
+                isParameter = bound.isParameter;
+
+                if (bound.mStackIndex == -1) {
+                    isConstant = true;      // will be replaced at simplification
+                    stackIndex = IllegalStackIndex;
                 } else {
-                    if (bound->mType == AST::RuleType) {
+                    if (bound.mType == AST::RuleType) {
                         ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
                         ret->compile(ph, b);    // always return nullptr
                         return ret;
                     }
                     
-                    count = bound->mType == AST::NumericType ? bound->mTuplesize : 1;
-                    stackIndex = bound->mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
-                    mType = bound->mType;
-                    isNatural = bound->isNatural;
-                    mLocality = bound->mLocality;
-                    isParameter = bound->isParameter;
+                    stackIndex = bound.mStackIndex - (isGlobal ? 0 : b->mLocalStackDepth);
                 }
                 break;
             }
@@ -2635,22 +2674,24 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 mDefinitions->compile(ph, b, nullptr, definition);
+                cont_ptr constDefs = std::make_unique<ASTrepContainer>();
                 
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
                 for (auto& rep: mDefinitions->mBody) {
-                    if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get()))
+                    if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get())) {
                         if (def->mDefineType == ASTdefine::StackDefine) {
                             definition->mParamSize += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
+                        } else {
+                            constDefs->mBody.emplace_back(std::move(rep));
                         }
+                    }
                 }
                 mDefinitions->mParameters.pop_back();       // remove the definition parameter
-                for (auto& param: mDefinitions->mParameters) {
-                    if (!param.mDefinition)
-                        definition->mParameters.push_back(param);
-                }
-                mDefinitions.reset();   // we're done with these
+                definition->mParameters.swap(mDefinitions->mParameters);
+                mDefinitions.swap(constDefs);
+                mDefinitions->mParameters = definition->mParameters;    // copy
                 arguments.reset(args);
                 
                 isConstant = !arguments && definition->mExpression->isConstant;
@@ -2912,33 +2953,6 @@ namespace AST {
                             // apart the arguments.
                         case ASTmodTerm::xyz:
                         case ASTmodTerm::sizexyz: {
-                            double d[3];
-                            if ((*term)->args->isConstant && (*term)->args->evaluate(d, 3) == 3) {
-                                (*term)->args = std::make_unique<ASTcons>(exp_list({
-                                    new ASTreal(d[0], (*term)->where),
-                                    new ASTreal(d[1], (*term)->where)
-                                }));
-                                (*term)->modType = (*term)->modType == ASTmodTerm::xyz ?
-                                    ASTmodTerm::x : ASTmodTerm::size;
-                                (*term)->argCount = 2;
-                                
-                                ASTmodTerm::modTypeEnum ztype = (*term)->modType == ASTmodTerm::size ?
-                                    ASTmodTerm::zsize : ASTmodTerm::z;
-                                term_ptr zmod = std::make_unique<ASTmodTerm>(ztype, new ASTreal(d[2], (*term)->where), (*term)->where);
-                                zmod->argCount = 1;
-                                
-                                // Check if sizexy part is the identity transform and only save it if it is not
-                                if (d[0] == 1.0 && d[1] == 1.0 && (*term)->modType == ASTmodTerm::size)
-                                {
-                                    // Drop sizexy term and just save sizez term if sizexy term
-                                    // is the identity transform
-                                    (*term) = std::move(zmod);
-                                } else {
-                                    modExp.emplace_back(std::move(zmod));
-                                }
-                                break;
-                            }
-                            
                             ASTexpArray xyzargs = Extract(std::move((*term)->args));
                             ASTexpression* xyargs = nullptr;
                             ASTexpression* zargs = nullptr;
@@ -2966,15 +2980,7 @@ namespace AST {
                                 zmod->mLocality = zargs->mLocality;
                                 zmod->argCount = 1;
                                 
-                                if ((*term)->modType == ASTmodTerm::size && xyargs->isConstant &&
-                                    xyargs->evaluate(d, 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
-                                {
-                                    // Drop xy term and just save z term if xy term
-                                    // is the identity transform
-                                    (*term) = std::move(zmod);
-                                } else {
-                                    modExp.emplace_back(std::move(zmod));
-                                }
+                                modExp.emplace_back(std::move(zmod));
                             } else {    // No dice, put it all back
                                 xyargs = Append(xyargs, zargs);
                                 (*term)->args.reset(xyargs);
@@ -3018,29 +3024,22 @@ namespace AST {
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 bool isGlobal;
-                const ASTparameter* bound = b->findExpression(mName, isGlobal);
-                assert(bound);
-                if (bound ->mType != NumericType) {
+                auto boundp = b->findExpression(mName, isGlobal);
+                assert(boundp);
+                bound = *boundp;
+                if (bound.mType != NumericType) {
                     CfdgError::Error(where, "Vectors can only have numeric components", b);
                     return nullptr;
                 }
                 
-                isNatural = bound->isNatural;
-                mStackIndex = bound->mStackIndex -
+                isNatural = bound.isNatural;
+                mStackIndex = bound.mStackIndex -
                     (isGlobal ? 0 : b->mLocalStackDepth);
-                mCount = bound->mTuplesize;
-                isParameter = bound->isParameter;
-                mLocality = bound->mLocality;
+                mCount = bound.mTuplesize;
+                isParameter = bound.isParameter;
+                mLocality = bound.mLocality;
                 
                 mArgs->entropy(entString);
-                if (bound->mStackIndex == -1) {
-                    mData = std::make_unique<double[]>(mCount);
-                    if (bound->mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
-                        CfdgError::Error(where, "Error computing vector data", b);
-                        isConstant = false;
-                        return nullptr;
-                    }
-                }
                 
                 ASTexpArray indices = Extract(std::move(mArgs));
                 mArgs = std::move(indices[0]);

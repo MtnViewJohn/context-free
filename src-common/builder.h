@@ -64,6 +64,7 @@ public:
     static std::recursive_mutex BuilderMutex;
     std::thread::id mBuilderThread;
     static double   MaxNatural;
+    static int      MaxNaturalDepth;
 
     cfdgi_ptr                   m_CFDG;
     std::unique_ptr<std::string> m_basePath;
@@ -154,6 +155,7 @@ public:
     const AST::ASTrule*
                     GetRule(int name);
     void            MakeConfig(AST::ASTdefine* cfg);
+    void            TypeCheckConfig(AST::ASTdefine* cfg);
     void            CheckConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();

@@ -86,7 +86,8 @@ const std::map<std::string, int> Builder::FlagNames = {
 };
 Builder* Builder::CurrentBuilder = nullptr;
 std::recursive_mutex Builder::BuilderMutex;
-double Builder:: MaxNatural = 1000.0;
+double Builder::MaxNatural = 1000.0;
+int Builder::MaxNaturalDepth = std::numeric_limits<int>::max();
 
 Builder::Builder(const cfdgi_ptr& cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(nullptr), m_pathCount(1),
@@ -103,6 +104,7 @@ Builder::Builder(const cfdgi_ptr& cfdg, int variation)
     Builder::CurrentBuilder = this;
     
     MaxNatural = 1000.0;
+    MaxNaturalDepth = std::numeric_limits<int>::max();
     m_CFDG->m_impure = false;
 }
 
@@ -422,14 +424,6 @@ Builder::MakeConfig(ASTdefine* cfg)
     }
     
     yy::location expLoc = cfg->mExpression ? cfg->mExpression->where : cfg->mLocation;
-    if (cfgNum == CFG::Impure) {
-        double v = 0.0;
-        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
-            error(expLoc, "CF::Impure requires a constant numeric expression");
-        } else {
-            m_CFDG->m_impure = v != 0.0;
-        }
-    }
     
     // Accessing this pointer via unique_ptr<>::operator*() inside typeid() causes
     // problems with latest clang. So grab an unmanaged copy ahead of time and use the copy.
@@ -472,12 +466,26 @@ Builder::MakeConfig(ASTdefine* cfg)
         
         cfg->mExpression = std::make_unique<ASTstartSpecifier>(std::move(*rule), std::move(mod));
     }
-    ASTexpression* current = cfg->mExpression.get();
     m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth));
-    if (cfgNum == CFG::MaxNatural) {
-        const ASTexpression* max = m_CFDG->hasParameter(CFG::MaxNatural);
-        if (max != current || !max)
-            return;                             // only process if we are changing it
+}
+
+void
+Builder::TypeCheckConfig(ASTdefine* cfg)
+{
+    CFG cfgNum = CFDG::lookupCfg(cfg->mName);
+    yy::location expLoc = cfg->mExpression ? cfg->mExpression->where : cfg->mLocation;
+
+    if (cfgNum == CFG::Impure) {
+        double v = 0.0;
+        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
+            error(expLoc, "CF::Impure requires a constant numeric expression");
+        } else {
+            m_CFDG->m_impure = v != 0.0;
+        }
+    }
+    
+    if (cfgNum == CFG::MaxNatural && MaxNaturalDepth > cfg->mConfigDepth) {
+        auto max = cfg->mExpression.get();
         double v = -1.0;
         if (!max->isConstant ||
             max->mType != AST::NumericType ||
@@ -489,6 +497,7 @@ Builder::MakeConfig(ASTdefine* cfg)
                   "CF::MaxNatural must be < 9007199254740992");
         } else {
             MaxNatural = v;
+            MaxNaturalDepth = cfg->mConfigDepth;
         }
     }
 }
