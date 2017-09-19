@@ -5,6 +5,16 @@
 cfdg_highlighter::cfdg_highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {
     HighlightingRule rule;
 
+    QStringList shapePatterns;
+    shape.setForeground(QColor("mediumseagreen"));
+    // We don't need to use a lookbehind because the keywords' formatting will be overwritten by the next rule
+    shapePatterns << "\\bshape\\s+\\S+" << "\\bstartshape\\s+\\S+" << "\\brule\\s+\\S+" << "\\S*(?=\\s+(?:\\[.*\\]|{.*}))";
+    foreach (const QString &pattern, shapePatterns) {
+        rule.pattern = QRegularExpression(pattern);
+        rule.format = shape;
+        highlightingRules.append(rule);
+    }
+
     paramtypes.setForeground(Qt::darkBlue);
     paramtypes.setFontWeight(QFont::Bold);
     QStringList ptypePatterns;
@@ -14,14 +24,6 @@ cfdg_highlighter::cfdg_highlighter(QTextDocument *parent) : QSyntaxHighlighter(p
         rule.format = paramtypes;
         highlightingRules.append(rule);
     }
-    QStringList shapePatterns;
-    shapePatterns << "(?<=shape)\\s+\\S+" << "(?<=startshape)\\s+\\S+" << "(?<=rule)\\s+\\S+" << ".+(?=(\\[.*\\]|{.*}))";
-    foreach (const QString &pattern, shapePatterns) {
-        rule.pattern = QRegularExpression(pattern);
-        rule.format = shape;
-        highlightingRules.append(rule);
-    }
-    shape.setForeground(QColor("mediumseagreen"));
 }
 
 void cfdg_highlighter::highlightBlock(const QString &text) {
