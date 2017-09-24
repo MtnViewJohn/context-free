@@ -39,6 +39,7 @@
     NSInteger                   mStatus;
     NSString*                   mOrigPassword;
     NSString*                   mOrigName;
+    unsigned                    mSuccessId;
 
     IBOutlet NSView*    mContentView;
 

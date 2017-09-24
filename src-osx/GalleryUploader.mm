@@ -48,18 +48,21 @@ namespace {
         return s;
     }
 
-    NSString* asNSString(const std::string& s)
-    {
-        return [NSString stringWithUTF8String: s.c_str()];
-    }
-
     static NSString* ccURI   = @"CreativeCommonsLicenseURI";
     static NSString* ccName  = @"CreativeCommonsLicenseName";
     static NSString* ccImage = @"CreativeCommonsLicenseImage";
     
     static NSString* galDomain = @"www.contextfreeart.org";
     static NSString* galPath = @"/gallery/";
-    
+
+    static NSString* uploadUrl =
+        //@"http://localhost:5000/postdesign";
+        @"https://www.contextfreeart.org/gallery/gallerydb/postdesign";
+
+    static NSString* displayUrl =
+        //@"http://localhost:8000/main.html#design/%d";
+        @"https://www.contextfreeart.org/gallery/index.html#design/%d";
+
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
     {
         SecKeychainItemRef itemRef = nil;
@@ -237,9 +240,7 @@ namespace {
     upload.mImage       = reinterpret_cast<const char*>([imageData bytes]);
     upload.mImageLen    = [imageData length];
 
-    std::ostringstream payloadStream;
-    upload.generatePayload(payloadStream);
-    std::string payloadString = payloadStream.str();
+    std::string payloadString = upload.generateJSON();
 
     return [NSData dataWithBytes: payloadString.data()
                     length: payloadString.length()];
@@ -286,9 +287,26 @@ namespace {
         case 0:
             [mMessage setString: @"Upload completed without a status code (?!?!?!)."];
             break;
-        case 409:
-            [mRetryButton setEnabled:YES];
         case 200: {
+            std::string json(static_cast<const char*>([mResponseBody bytes]), [mResponseBody length]);
+            Upload response(json);
+            mSuccessId = response.mId;
+            if (mSuccessId) {
+                [mMessage setString: @"Upload completed successfully."];
+                [mRetryButton setTitle: @"See Design"];
+                [mRetryButton setEnabled:YES];
+            } else {
+                [mMessage setString: @"The gallery indicates that the upload succeeded but did not return a design number."];
+            }
+            break;
+        }
+        case 409:
+        case 401:
+        case 400:
+        case 404:
+        case 500:
+            [mRetryButton setEnabled:YES];
+        default: {
             NSAttributedString *theParsedHTML;
 
             // Take the raw HTML data and then initialize an NSMutableAttributed
@@ -315,14 +333,6 @@ namespace {
             }
             break;
         }
-        case 404:
-            [mMessage setString: @"Upload service is offline."];
-            break;
-        default:
-            [mMessage setString: [NSString localizedStringWithFormat:
-                @"Failed with unexpected status code: %ld, %@", static_cast<long>(mStatus),
-                [NSHTTPURLResponse localizedStringForStatusCode: mStatus]]];
-            break;
     }
     [mResponseBody release];    mResponseBody = nil;
     [self setView: mDoneView];
@@ -330,7 +340,13 @@ namespace {
 
 - (IBAction)retry:(id)sender
 {
-    [self setView: mFormView];
+    if (mSuccessId) {
+        NSString* where = [NSString stringWithFormat: displayUrl, mSuccessId];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: where]];
+        [self cancel: sender];
+    } else {
+        [self setView: mFormView];
+    }
 }
 
 - (IBAction)show:(id)sender
@@ -525,14 +541,12 @@ decisionListener:(id)listener
     }
     
     NSMutableURLRequest* request =
-        [NSMutableURLRequest requestWithURL:
-                [NSURL URLWithString: @"https://www.contextfreeart.org/gallery/upload.php"]
-                //[NSURL URLWithString: @"http://aluminium.local/~john/cfa2/gallery/upload.php"]
-            cachePolicy: NSURLRequestReloadIgnoringCacheData
-            timeoutInterval: 120.0
+        [NSMutableURLRequest requestWithURL: [NSURL URLWithString: uploadUrl]
+                                cachePolicy: NSURLRequestReloadIgnoringCacheData
+                            timeoutInterval: 120.0
         ];
     [request setHTTPMethod: @"POST"];
-    [request setValue: asNSString(Upload::generateContentType())
+    [request setValue: @"application/json"
                 forHTTPHeaderField: @"Content-Type"];
     [request setHTTPBody: body];
 

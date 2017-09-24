@@ -45,6 +45,13 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>creativecommons.org</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
