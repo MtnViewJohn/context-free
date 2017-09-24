@@ -27,13 +27,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <WebKit/WebView.h>
-#import <WebKit/WebPolicyDelegate.h>
 
 @class CFDGDocument;
 @class GView;
 
-@interface GalleryUploader : NSWindowController <WebPolicyDelegate> {
+@interface GalleryUploader : NSWindowController {
     CFDGDocument*               mDocument;
     GView*                      mView;
     NSInteger                   mStatus;
@@ -43,9 +41,6 @@
 
     IBOutlet NSView*    mContentView;
 
-    IBOutlet NSView*    mLicenseView;
-    IBOutlet WebView*       mCreativeCommonsWidget;
-    
     IBOutlet NSView*    mFormView;
     IBOutlet NSTextField*      mUserNameField;
     IBOutlet NSTextField*      mPasswordField;
@@ -85,19 +80,13 @@
 
 - (IBAction)goToCreateAccount:(id)sender;
 - (IBAction)changeLicense:(id)sender;
-- (IBAction)updateLicense:(id)sender;
-- (IBAction)noChangeLicense:(id)sender;
 - (IBAction)licenseDetails:(id)sender;
 - (IBAction)upload:(id)sender;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)retry:(id)sender;
 
-- (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation
-        request:(NSURLRequest *)request frame:(WebFrame *)frame 
-decisionListener:(id)listener;
-
-- (void) updateCCInfo;
+- (void)updateCCInfo:(BOOL)reset;
 
 + (NSString*) copyPassword:(NSString *)forUser;
 + (void) savePassword:(NSString*)password forUser:(NSString*)user;

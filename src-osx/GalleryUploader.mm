@@ -185,12 +185,10 @@ namespace {
     [mFormView retain];
     [mProgressView retain];
     [mDoneView retain];
-    [mLicenseView retain];
     return self;
 }
 
 - (void) dealloc {
-    [mLicenseView release];
     [mDoneView release];
     [mProgressView release];
     [mFormView release];
@@ -406,7 +404,7 @@ namespace {
         [mSaveTileHeight setFloatValue: 1.0];
     }
     
-    [self updateCCInfo];
+    [self updateCCInfo: YES];
     
     [NSApp beginSheet: [self window]
         modalForWindow: [mView window]
@@ -414,11 +412,13 @@ namespace {
 }
 
 
-- (void)updateCCInfo
+- (void)updateCCInfo:(BOOL)reset
 {
-    mDefccURI = [[NSUserDefaults standardUserDefaults] stringForKey: ccURI];
-    mDefccName = [[NSUserDefaults standardUserDefaults] stringForKey: ccName];
-    mDefccImage = [[NSUserDefaults standardUserDefaults] stringForKey: ccImage];
+    if (reset) {
+        mDefccURI = [[NSUserDefaults standardUserDefaults] stringForKey: ccURI];
+        mDefccName = [[NSUserDefaults standardUserDefaults] stringForKey: ccName];
+        mDefccImage = [[NSUserDefaults standardUserDefaults] stringForKey: ccImage];
+    }
     
     if (!mDefccURI || !mDefccName || !mDefccImage || [mDefccURI length] == 0 || 
         [mDefccName length] == 0 || [mDefccImage length] == 0) 
@@ -427,24 +427,10 @@ namespace {
         mDefccName = @"no license chosen";
         mDefccImage = @"";
     }
-    
+
     bool isSeeded = [mDefccURI length] > 0;
-    NSError* err = nil;
-    NSString* htmlPath = [[NSBundle mainBundle] pathForResource: @"widgetform" 
-                                                         ofType: @"html"];
-    //NSString* theHtml = [NSString stringWithContentsOfFile: htmlPath];
-    NSString* theHtml = [NSString stringWithContentsOfFile: htmlPath 
-                                                  encoding: NSUTF8StringEncoding 
-                                                     error: &err];
-    NSString* seededHtml = [NSString stringWithFormat: theHtml, 
-                            mDefccURI,
-                            isSeeded ? @"" : @"&want_a_license=no_license_by_default"];
     
     [mLicenseName setStringValue: mDefccName];
-    
-    [[mCreativeCommonsWidget mainFrame] loadHTMLString: seededHtml
-                                               baseURL: [NSURL fileURLWithPath: htmlPath]];
-    [mCreativeCommonsWidget setPolicyDelegate: self];
     
     if (isSeeded) {
         NSURL* iconURL = [NSURL URLWithString: mDefccImage];
@@ -467,41 +453,54 @@ namespace {
 
 - (IBAction)changeLicense:(id)sender
 {
-    [self setView: mLicenseView];
-}
-
-- (IBAction)updateLicense:(id)sender
-{
-    mDefccURI = @"";
-    mDefccName = @"";
-    mDefccImage = @"";
-    
-    DOMDocument* dom = [[mCreativeCommonsWidget mainFrame] DOMDocument];
-    
-    if (dom) {
-        DOMElement* licenseURIElem = [dom getElementById: @"cc_js_result_uri"];
-        DOMElement* licenseNameElem = [dom getElementById: @"cc_js_result_name"];
-        DOMElement* licenseImageElem = [dom getElementById: @"cc_js_result_img"];
-        
-        if (licenseNameElem && licenseImageElem && licenseURIElem) {
-            mDefccURI = [licenseURIElem getAttribute: @"value"];
-            mDefccName = [licenseNameElem getAttribute: @"value"];
-            mDefccImage = [licenseImageElem getAttribute: @"value"];
-        }
+    NSPopUpButton* ccmenu = (NSPopUpButton*)sender;
+    NSInteger tag = [ccmenu selectedTag];
+    switch (tag) {
+        case 0:
+            [self updateCCInfo: YES];
+            return;
+        case 1:
+            mDefccURI = @"https://creativecommons.org/publicdomain/zero/1.0/";
+            mDefccName = @"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication";
+            mDefccImage = @"https://licensebuttons.net/p/zero/1.0/88x31.png";
+            break;
+        case 2:
+            mDefccURI = @"https://creativecommons.org/licenses/by/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution 4.0 International";
+            break;
+        case 3:
+            mDefccURI = @"https://creativecommons.org/licenses/by-sa/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by-sa/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution-ShareAlike 4.0 International";
+            break;
+        case 4:
+            mDefccURI = @"https://creativecommons.org/licenses/by-nd/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by-nd/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution-NoDerivatives 4.0 International";
+            break;
+        case 5:
+            mDefccURI = @"https://creativecommons.org/licenses/by-nc/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by-nc/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution-NonCommercial 4.0 International";
+            break;
+        case 6:
+            mDefccURI = @"https://creativecommons.org/licenses/by-nc-sa/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International";
+            break;
+        case 7:
+            mDefccURI = @"https://creativecommons.org/licenses/by-nc-nd/4.0/";
+            mDefccImage = @"https://licensebuttons.net/l/by-nc-nd/4.0/88x31.png";
+            mDefccName = @"Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International";
+            break;
+        default:
+            mDefccURI = @"";
+            mDefccName = @"no license chosen";
+            mDefccImage = @"";
+            break;
     }
-    
-    [[NSUserDefaults standardUserDefaults] setObject: mDefccURI forKey: ccURI];
-    [[NSUserDefaults standardUserDefaults] setObject: mDefccName forKey: ccName];
-    [[NSUserDefaults standardUserDefaults] setObject: mDefccImage forKey: ccImage];
-    
-    [self updateCCInfo];
-    
-    [self setView: mFormView];
-}
-
-- (IBAction)noChangeLicense:(id)sender
-{
-    [self setView: mFormView];
+    [self updateCCInfo: NO];
 }
 
 - (IBAction)licenseDetails:(id)sender
@@ -509,19 +508,6 @@ namespace {
     NSURL* url = [NSURL URLWithString: mDefccURI];
     
     [[NSWorkspace sharedWorkspace] openURL: url];
-}
-
-- (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation
-        request:(NSURLRequest *)request frame:(WebFrame *)frame 
-decisionListener:(id)listener 
-{
-    int navigationType = [[actionInformation objectForKey:WebActionNavigationTypeKey] intValue];
-    if (navigationType == WebNavigationTypeLinkClicked) {    
-        [listener ignore];
-        [[NSWorkspace sharedWorkspace] openURL: [request URL]];
-    } else {
-        [listener use];
-    }
 }
 
 - (IBAction)upload:(id)sender
