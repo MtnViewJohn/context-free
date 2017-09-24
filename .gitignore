@@ -38,5 +38,6 @@ src-qt/*.cfdg
 src-qt/Makefile
 src-qt/cmake_install.cmake
 qt-build
+build-src-qt-*
 context-free
 **/*.swp

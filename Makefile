@@ -21,7 +21,7 @@ vpath %.cfdg input
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
 INC_DIRS += /usr/local/include
 
-QT_BUILD_DIR = qt-build
+QT_BUILD_DIR = build-src-qt-Desktop-Default
 
 #
 # Installation directories

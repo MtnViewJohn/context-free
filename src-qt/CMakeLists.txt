@@ -12,7 +12,7 @@ set(SOURCE_LIST main.cpp
 set(INCLUDE_DIR ${CF_MAIN_DIR}/src-common
 		${CF_MAIN_DIR}/src-agg
 		${CF_MAIN_DIR}/src-unix
-                ${CF_MAIN_DIR}/src-win/derivedl
+                ${CF_MAIN_DIR}/src-win/derived
                 ${CF_MAIN_DIR}/src-common/agg-extras
                 ${CF_MAIN_DIR}/objs)
 
