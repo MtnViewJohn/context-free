@@ -279,10 +279,10 @@ namespace {
 
 -(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
     static NSArray* CFAdomains = [[NSArray alloc] initWithObjects:
-                                  @"http://www.contextfreeart.org/gallery/",
-                                  @"http://contextfreeart.org/gallery/",
-                                  @"https://www.contextfreeart.org/gallery/",
-                                  @"https://contextfreeart.org/gallery/",
+                                  @"http://www.contextfreeart.org/gallery",
+                                  @"http://contextfreeart.org/gallery",
+                                  @"https://www.contextfreeart.org/gallery",
+                                  @"https://contextfreeart.org/gallery",
                                   nil];
     NSString * pboardString = [pboard stringForType:NSStringPboardType];
 
@@ -296,6 +296,8 @@ namespace {
     for (id cfaurl in CFAdomains) {
         if ([pboardString hasPrefix: cfaurl]) {
             NSRange idLoc = [pboardString rangeOfString: @"id="];
+            if (idLoc.location == NSNotFound)
+                idLoc = [pboardString rangeOfString: @"#design/"];
             if (idLoc.location != NSNotFound) {
                 int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
                 [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
