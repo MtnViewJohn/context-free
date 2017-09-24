@@ -31,116 +31,50 @@
 #include <iostream>
 
 #include "variation.h"
+#include "cereal/archives/json.hpp"
 
 
-namespace {
-    const char mime_boundary[] = "a3c8dfd7-dce4-443c-ae3c-446df50f28c0";
-    const char mime_endl[] = "\r\n";
-    
-    void generateMimeBoundary(std::ostream& out)
-    {
-        out << mime_endl << "--" << mime_boundary << mime_endl;
-    }
-    
-    void generateMimeFooter(std::ostream& out)
-    {
-        out << mime_endl << "--" << mime_boundary << "--" << mime_endl;
-    }
-    
-    void generateTextField(std::ostream& out, const char* field,
-                           const std::string& value)
-    {
-        generateMimeBoundary(out);
-        
-        out << "Content-Disposition: form-data"
-            << "; name=" << field       // shouldn't need quotes
-            << mime_endl
-            << "Content-Type: text/plain; charset=UTF-8" << mime_endl
-            << mime_endl;
-        
-        out << value; 
-    }
-    
-    void generateTextField(std::ostream& out, const char* field,
-                           char value)
-    {
-        generateMimeBoundary(out);
-        
-        out << "Content-Disposition: form-data"
-            << "; name=" << field       // shouldn't need quotes
-            << mime_endl
-            << "Content-Type: text/plain; charset=UTF-8" << mime_endl
-            << mime_endl;
-        
-        out << value; 
-    }
-    
-    void generateFileField(std::ostream& out, const char* field,
-                           const char* data, size_t length, const std::string& fileName)
-    {
-        generateMimeBoundary(out);
-        
-        out << "Content-Disposition: form-data"
-            << "; name=" << field       // shouldn't need quotes
-            << "; filename=\"" << fileName << '"'
-            << mime_endl
-            << "Content-Type: application/octet-stream" << mime_endl
-            << mime_endl;
-        
-        out.write(data, length);
-    }
-    
-    std::string compressionName(Upload::Compression compression)
-    {
-        switch (compression) {
-            default:
-            case Upload::CompressJPEG:  return "JPEG";
-            case Upload::CompressPNG8:  return "PNG-8";
-        }
-    }
-    
-    std::string variationName(int variation)
-    {
-        return Variation::toString(variation, false);
+std::string
+Upload::compressionName() const
+{
+    switch (mCompression) {
+        default:
+        case Upload::CompressJPEG:  return "JPEG";
+        case Upload::CompressPNG8:  return "PNG-8";
     }
 }
 
-std::string Upload::generateHeader()
+std::string
+Upload::variationName() const
 {
-    return std::string("Content-Type: multipart/form-data; boundary=") + 
-        mime_boundary;
+    return Variation::toString(mVariation, false);
 }
 
-std::string Upload::generateContentType()
+std::string
+Upload::tiledName() const
 {
-    return std::string("multipart/form-data; boundary=") + 
-        mime_boundary;
+    return std::string(1, (char)(mTiled + '0'));
 }
 
-void
-Upload::generatePayload(std::ostream& out)
+std::string
+Upload::generateJSON()
 {
-    generateTextField(out, "screenname", mUserName);
-    generateTextField(out, "password", mPassword);
-    
-    generateTextField(out, "agent", "ContextFree");
-    
-    generateTextField(out, "title", mTitle);
-    generateFileField(out, "cfdgfile", mText, mTextLen, mFileName);
-    generateFileField(out, "imagefile", mImage, mImageLen, "image.png");
-    generateTextField(out, "compression", compressionName(mCompression));
-    generateTextField(out, "cc_js_result_uri", mccLicenseURI);
-    generateTextField(out, "cc_js_result_name", mccLicenseName);
-    generateTextField(out, "cc_js_result_img", mccLicenseImage);
-    if (mccLicenseURI.length())
-        generateTextField(out, "cc_js_want_cc_license", "sure");
-    if (mTiled)
-        generateTextField(out, "tiled", "on");
-    generateTextField(out, "tiledtype", (char)(mTiled + '0'));
-    generateTextField(out, "variation", variationName(mVariation));
-    generateTextField(out, "notes", mNotes);
-    
-    // generateTextField(out, "submit", "Upload!");
-    
-    generateMimeFooter(out);
+    std::ostringstream out;
+    {
+        cereal::JSONOutputArchive archive(out);
+        save(archive);
+    }
+    return out.str();
+}
+
+Upload::Upload(const std::string& json)
+: mId(0)
+{
+    try {
+        std::istringstream in(json);
+        cereal::JSONInputArchive archive(in);
+        archive(cereal::make_nvp("design", *this));
+    } catch (cereal::Exception&) {
+        mId = 0;
+    }
 }

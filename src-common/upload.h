@@ -29,12 +29,30 @@
 #ifndef INCLUDE_UPLOAD_H
 #define INCLUDE_UPLOAD_H
 
-#include <iosfwd>
 #include <string>
+#include "cereal/cereal.hpp"
 
 class Upload {
 public:
-    Upload() : mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
+    class FileObject {
+    public:
+        FileObject(const char* name, const char* content, size_t length)
+        : mName(name), mContent(content), mLength(length)
+        {}
+        
+        template<class Archive>
+        void save(Archive & archive) const
+        {
+            archive(cereal::make_nvp("filename", mName));
+            archive.saveBinaryValue(static_cast<const void *>(mContent), mLength, "contents");
+        }
+    private:
+        std::string mName;
+        const char* mContent;
+        size_t mLength;
+    };
+    Upload() : mId(0), mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
+    Upload(const std::string&);
     enum Compression {
         CompressJPEG = 0,
         CompressPNG8 = 1
@@ -43,6 +61,7 @@ public:
     std::string     mUserName;
     std::string     mPassword;
     
+    unsigned        mId = 0;
     std::string     mTitle;
     std::string     mNotes;
     
@@ -61,10 +80,42 @@ public:
     const char*         mImage;        // png data
     size_t              mImageLen;
     
-    void generatePayload(std::ostream&);
+    std::string generateJSON();
     
-    static std::string generateHeader();
-    static std::string generateContentType();
+    template<class Archive>
+    void save(Archive & archive) const
+    {
+        archive(
+            cereal::make_nvp("agent", std::string("ContextFree")),
+            cereal::make_nvp("screenname", mUserName),
+            cereal::make_nvp("password", mPassword),
+            cereal::make_nvp("designid", mId),
+            cereal::make_nvp("title", mTitle),
+            cereal::make_nvp("notes", mNotes),
+            cereal::make_nvp("variation", variationName()),
+            cereal::make_nvp("tiledtype", tiledName()),
+            cereal::make_nvp("compression", compressionName()),
+            cereal::make_nvp("ccURI", mccLicenseURI),
+            cereal::make_nvp("ccImage", mccLicenseImage),
+            cereal::make_nvp("ccName", mccLicenseName),
+            cereal::make_nvp("cfdgfile", FileObject(mFileName.c_str(), mText, mTextLen)),
+            cereal::make_nvp("imagefile", FileObject("image.png", mImage, mImageLen))
+        );
+    }
+    
+    template<class Archive>
+    void load(Archive & archive)
+    {
+        archive(
+                cereal::make_nvp("designid", mId),
+                cereal::make_nvp("title", mTitle)
+        );
+    }
+    
+private:
+    std::string compressionName() const;
+    std::string variationName() const;
+    std::string tiledName() const;
 };
 
 #endif // INCLUDE_UPLOAD_H
