@@ -36,7 +36,7 @@
 #include "SaveImage.h"
 #include "SVGCanvas.h"
 #include "ffCanvas.h"
-#include "UploadDesign.h"
+#include "GalleryUploader.h"
 #include "upload.h"
 #include "tempfile.h"
 #include "TempFileDeleter.h"
@@ -690,23 +690,17 @@ System::Void Document::menuRUpload_Click(System::Object^ sender, System::EventAr
         return;
     }
 
-    Upload u;
-    u.mCompression = mCanvas->colorCount256() ? Upload::CompressPNG8 : Upload::CompressJPEG;
-    u.mTiled = mTiled;
-    u.mVariation = currentVariation;
+    bool compression = mCanvas->colorCount256() ? Upload::CompressPNG8 : Upload::CompressJPEG;
 
     array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdgText->Text);
     pin_ptr<Byte> pinnedCfdg = &encodedCfdg[0];
 
-    u.mText = reinterpret_cast<const char*>(pinnedCfdg);
-    u.mTextLen = strlen(u.mText);
+    GalleryUploader toGal(this, Path::GetFileNameWithoutExtension(Text),
+        (*mEngine)->isFrieze(), mTiled, compression, currentVariation,
+        reinterpret_cast<const char*>(pinnedCfdg), mTiled ? mOutputMultiplier : nullptr);
 
-    UploadDesign uploadWiz(this, Path::GetFileNameWithoutExtension(Text), &u,
-		(*mEngine)->isFrieze(), mTiled ? mOutputMultiplier : nullptr);
+    toGal.ShowDialog(this);
 
-    uploadWiz.ShowDialog(this);
-    u.mText = 0;
-    u.mTextLen = 0;
 }
 
 System::Void Document::menuEUndo_Click(System::Object^ sender, System::EventArgs^ e)

@@ -157,6 +157,30 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ContextFree</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">ContextFree</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
+    <IncludePath>$(SolutionDir)\..\src-cereal;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -431,11 +455,6 @@
     </ProjectReference>
     <ProjectReference Include="FileDlgExtenders\FileDlgExtenders.csproj">
       <Project>{9b4da48c-6d11-46c9-a63d-d369e9c5fe42}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="Controls\Controls.csproj">
-      <Project>{870c7d59-f59b-44d1-961e-c4341daa5306}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
@@ -999,6 +1018,7 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">4290;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="GalleryUploader.cpp" />
     <ClCompile Include="MessageCtrl.cpp" />
     <ClCompile Include="MRUManager.cpp" />
     <ClCompile Include="..\src-common\pathIterator.cpp">
@@ -1302,7 +1322,6 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
     </ClCompile>
-    <ClCompile Include="UploadDesign.cpp" />
     <ClCompile Include="..\src-common\variation.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -1453,6 +1472,9 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="..\src-common\HSBColor.h" />
+    <ClInclude Include="GalleryUploader.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="MessageCtrl.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -1484,9 +1506,6 @@
     <ClInclude Include="TempFileDeleter.h" />
     <ClInclude Include="TrackPoint.h" />
     <ClInclude Include="..\src-common\upload.h" />
-    <ClInclude Include="UploadDesign.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
     <ClInclude Include="..\src-common\variation.h" />
     <ClInclude Include="..\src-win\WinCanvas.h" />
     <ClInclude Include="..\src-win\WinSystem.h" />
@@ -1553,6 +1572,9 @@
       <DependentUpon>Form1.h</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GalleryUploader.resx">
+      <DependentUpon>GalleryUploader.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MessageCtrl.resx">
       <DependentUpon>MessageCtrl.h</DependentUpon>
       <SubType>Designer</SubType>
@@ -1569,10 +1591,9 @@
       <DependentUpon>SaveImage.h</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UploadDesign.resx">
-      <DependentUpon>UploadDesign.h</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="copyright.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
