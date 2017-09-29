@@ -31,12 +31,13 @@
 
 #include <string>
 #include "cereal/cereal.hpp"
+#include <cstdlib>
 
 class Upload {
 public:
     class FileObject {
     public:
-        FileObject(const char* name, const char* content, size_t length)
+        FileObject(const char* name, const char* content, std::size_t length)
         : mName(name), mContent(content), mLength(length)
         {}
         
@@ -49,7 +50,7 @@ public:
     private:
         std::string mName;
         const char* mContent;
-        size_t mLength;
+        std::size_t mLength;
     };
     Upload() : mId(0), mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
     Upload(const std::string&);
@@ -75,10 +76,10 @@ public:
     std::string     mccLicenseImage;
     
     const char*         mText;         // cfdg file, utf-8 text
-    size_t              mTextLen;
+    std::size_t         mTextLen;
     
     const char*         mImage;        // png data
-    size_t              mImageLen;
+    std::size_t         mImageLen;
     
     std::string generateJSON();
     
