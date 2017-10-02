@@ -7,7 +7,8 @@ set(SOURCE_LIST main.cpp
 		cfdg_highlighter.cpp
                 qtcanvas.cpp
                 qtsystem.cpp
-                settings_dialog.cpp)
+                settings_dialog.cpp
+                asyncrenderer.cpp)
 
 set(INCLUDE_DIR ${CF_MAIN_DIR}/src-common
 		${CF_MAIN_DIR}/src-agg

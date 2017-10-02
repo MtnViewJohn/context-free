@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "asyncrenderer.h"
+#include "settings_dialog.h"
+#include "qtcanvas.h"
+
 #include <errno.h>
 #include <cfdg.h>
 #include <fstream>
@@ -16,8 +20,6 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
-#include "qtcanvas.h"
-#include "settings_dialog.h"
 
 // File i/o
 QString readFileFromDisk(QString fname) {
