@@ -114,6 +114,10 @@ CommandLineSystem::openFileForRead(const std::string& path)
         return new imemstream(mInputBuffer->data(), mInputBuffer->length());
     }
     
+    std::unique_ptr<std::istream> f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
+    if (f && (bool)(*f))
+        return f.release();
+    
     char dirchar =
 #ifdef _WIN32
         '\\';
@@ -128,10 +132,6 @@ CommandLineSystem::openFileForRead(const std::string& path)
     auto example = ExamplesMap.find(exfile);
     if (example != ExamplesMap.end())
         return new imemstream(example->second, strlen(example->second));
-
-    std::unique_ptr<std::istream> f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
-    if (f && (bool)(*f))
-        return f.release();
 
     return nullptr;
 }
