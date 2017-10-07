@@ -111,27 +111,32 @@ CommandLineSystem::openFileForRead(const std::string& path)
             ss << cin.rdbuf();
             mInputBuffer = std::make_unique<std::string>(ss.str());
         }
+        mFirstCfdgRead = false;
         return new imemstream(mInputBuffer->data(), mInputBuffer->length());
+    }
+    
+    if (!mFirstCfdgRead) {
+        char dirchar =
+#ifdef _WIN32
+            '\\';
+#else
+            '/';
+#endif
+        auto dirloc = path.rfind(dirchar);
+        auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
+    
+        if (cfdgVersion == 2)
+            exfile.replace(exfile.end() - 5, exfile.end(), "_v2.cfdg");
+        auto example = ExamplesMap.find(exfile);
+        if (example != ExamplesMap.end())
+            return new imemstream(example->second, strlen(example->second));
+    } else {
+        mFirstCfdgRead = false;
     }
     
     std::unique_ptr<std::istream> f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
     if (f && (bool)(*f))
         return f.release();
-    
-    char dirchar =
-#ifdef _WIN32
-        '\\';
-#else
-        '/';
-#endif
-    auto dirloc = path.rfind(dirchar);
-    auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
-    
-    if (cfdgVersion == 2)
-        exfile.replace(exfile.end() - 5, exfile.end(), "_v2.cfdg");
-    auto example = ExamplesMap.find(exfile);
-    if (example != ExamplesMap.end())
-        return new imemstream(example->second, strlen(example->second));
 
     return nullptr;
 }

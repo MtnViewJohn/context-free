@@ -187,6 +187,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
     cfdgi_ptr pCfdg;
     for (int version = 2; version <= 3; ++version) {
         system->cfdgVersion = version;
+        system->mFirstCfdgRead = true;
         if (!pCfdg)
             pCfdg = std::make_unique<CFDGImpl>(system);
         Builder b(pCfdg, variation);

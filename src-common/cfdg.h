@@ -99,6 +99,7 @@ class AbstractSystem {
 #define FileFormat "%s"
 #endif
         int cfdgVersion = 2;
+        bool mFirstCfdgRead = true;
 
         virtual void message(const char* fmt, ...) = 0;
         virtual void syntaxError(const CfdgError& err) = 0;

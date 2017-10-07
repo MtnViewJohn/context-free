@@ -70,6 +70,14 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "input/demo2_v2.cfdg output/test.png"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-J input/mtree.cfdg -"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"
             isEnabled = "NO">
          </CommandLineArgument>
@@ -87,7 +95,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s500 -a20 -f16 -v EQWLFC input/mtree.cfdg output/mtree.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s50 -T10x1 /Users/john/Documents/Context\ Free/tests/friezesymmtest1.cfdg output/feet.png"
