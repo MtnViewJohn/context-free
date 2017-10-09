@@ -646,6 +646,7 @@ namespace AST {
     void
     ASTloop::compile(AST::CompilePhase ph, Builder* b)
     {
+        ASTreplacement::compile(ph, b);
         Compile(mLoopArgs, ph, b);
         
         switch (ph) {
