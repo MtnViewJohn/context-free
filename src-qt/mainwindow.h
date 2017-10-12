@@ -1,11 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "ui_mainwindow.h"
 
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QTimer>
 
-class AsyncRenderer;
+class AsyncRendQt;
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,7 @@ class MainWindow : public QMainWindow
         bool saveFileAs();
         void openFile();
         void newFile();
+        void exportFile();
     public slots:
         void runCode();
         void saveFileAction();
@@ -33,6 +35,7 @@ class MainWindow : public QMainWindow
         void openFileAction();
         void newFileAction();
         void showPrefs();
+        void exportFileAction();
 
         void doneRender();
         void stop();
@@ -46,7 +49,7 @@ class MainWindow : public QMainWindow
     private:
 
         bool confirmModify(bool newFile);
-        AsyncRenderer *r = NULL;
+        AsyncRendQt *r = NULL;
 };
 
 #endif // MAINWINDOW_H

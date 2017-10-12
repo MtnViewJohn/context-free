@@ -3,15 +3,19 @@
 #include "asyncrenderer.h"
 #include "settings_dialog.h"
 #include "qtcanvas.h"
+#include "qtsystem.h"
+
+#include <cfdg.h>
+#include <commandLineSystem.h>
+#include <pngCanvas.h>
+#include <aggCanvas.h>
 
 #include <errno.h>
-#include <cfdg.h>
 #include <fstream>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <variation.h>
 #include <cstdio>
-#include <commandLineSystem.h>
 #include <QtDebug>
 #include <QGraphicsItem>
 #include <pthread.h>
@@ -132,12 +136,11 @@ void MainWindow::runCode() {
     if(r != NULL)
         delete r;
 
-    std::shared_ptr<QtCanvas> canv(new QtCanvas(ui->output->width(), ui->output->height()));
     ui->cancelButton->setVisible(true);
     ui->runButton->setDisabled(true);
     ui->mediaBar->setVisible(false);
     fpsTimer.stop();
-    r = new AsyncRenderer(ui->output->width(), ui->output->height(), ui->framesBox->value(), canv, this);
+    r = new AsyncRendQt(ui->output->width(), ui->output->height(), ui->framesBox->value(), this);
     connect(r, SIGNAL(done()), this, SLOT(doneRender()));
     connect(r, SIGNAL(aborted()), this, SLOT(abortRender()));
     connect(r, SIGNAL(updateRect()), this, SLOT(updateRect()));
@@ -172,13 +175,6 @@ bool MainWindow::saveFile() {
         return writeFileToDisk(this->currentFile, ui->code->document()->toPlainText());
 }
 
-void MainWindow::newFile() {
-    ui->code->document()->clearUndoRedoStacks();
-    ui->code->document()->setPlainText("");
-    this->currentFile = "";
-    this->setWindowTitle("New Document - ContextFree");
-}
-
 bool MainWindow::saveFileAs() {
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("CFDG file (*.cfdg);;All Files (*)"));
@@ -190,6 +186,24 @@ bool MainWindow::saveFileAs() {
         QDir::setCurrent(QFileInfo( QFile(fileName) ).dir().path());
         return writeFileToDisk(fileName, ui->code->document()->toPlainText());
     }
+    this->setWindowTitle(fileName.remove(0, fileName.lastIndexOf("/")+1) + " - ContextFree");
+}
+
+void MainWindow::newFile() {
+    ui->code->document()->clearUndoRedoStacks();
+    ui->code->document()->setPlainText("");
+    this->currentFile = "";
+    this->setWindowTitle("New Document - ContextFree");
+}
+// Can't be export, because that's a keyword
+void MainWindow::exportFile() {
+    // Only supports png for now
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("PNG Image (*.png);;All Files (*)"));
+    qDebug() << "File name: " << fileName.toStdString().c_str();
+
+    AsyncRendPNG *g = new AsyncRendPNG(1, this, currentFile.toStdString(), fileName.toStdString());
+    // Reset cout to normal value
+    //cout.rdbuf(oldCout);
 }
 
 void MainWindow::openFileAction() {
@@ -210,6 +224,11 @@ void MainWindow::newFileAction() {
     if(!confirmModify())
         return;
     this->newFile();
+}
+
+void MainWindow::exportFileAction() {
+    qDebug() << "Export clicked!";
+    this->exportFile();
 }
 
 void MainWindow::showPrefs() {
@@ -253,7 +272,7 @@ void MainWindow::abortRender() {
 }
 
 void MainWindow::showmsg(const char* msg) {
-    ui->statusBar->showMessage(msg, 1000);
+    //ui->statusBar->showMessage(msg, 1000);
     delete msg;
 }
 

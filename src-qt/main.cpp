@@ -8,8 +8,9 @@
 int main(int argc, char *argv[])
 {
     if (QIcon::themeName() == "") {
+        // TODO: Add a toggle for this somewhere
         QIcon::setThemeSearchPaths((QStringList) {"/usr/share/icons"});
-        QIcon::setThemeName("Tango");
+        QIcon::setThemeName("Adwaita");
     }
     QApplication a(argc, argv);
     MainWindow w;

@@ -141,7 +141,7 @@
      <x>0</x>
      <y>0</y>
      <width>756</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -152,6 +152,8 @@
     <addaction name="actionNew"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
     <addaction name="actionPrefs"/>
    </widget>
    <addaction name="menuFile"/>
@@ -201,7 +203,8 @@
   </action>
   <action name="actionSaveAs">
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save As...</string>
@@ -212,10 +215,19 @@
   </action>
   <action name="actionPrefs">
    <property name="icon">
-    <iconset theme="preferences-desktop"/>
+    <iconset theme="preferences-desktop">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>
@@ -272,7 +284,7 @@
   </connection>
   <connection>
    <sender>runButton</sender>
-   <signal>clicked()</signal>
+   <signal>released()</signal>
    <receiver>MainWindow</receiver>
    <slot>runCode()</slot>
    <hints>
@@ -366,6 +378,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionExport</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>exportFileAction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>377</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFileAction()</slot>
@@ -378,5 +406,6 @@
   <slot>setFrame(int)</slot>
   <slot>showPrefs()</slot>
   <slot>saveFileAsAction()</slot>
+  <slot>exportFileAction()</slot>
  </slots>
 </ui>

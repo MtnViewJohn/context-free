@@ -2,6 +2,7 @@
 #define ASYNCRENDERER_H
 #include <QThread>
 #include <memory>
+#include <cfdg.h>
 
 class QGraphicsScene;
 class QtCanvas;
@@ -14,7 +15,7 @@ class ParseWorker: public QThread {
         Q_OBJECT
 
     public:
-        ParseWorker(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw);
+        ParseWorker(int frames, shared_ptr<Canvas> canv, MainWindow *mw, cfdg_ptr design, shared_ptr<Renderer> rend);
         ~ParseWorker();
         void requestStop();
     public:
@@ -23,20 +24,21 @@ class ParseWorker: public QThread {
         void done();
         void earlyAbort();
     private:
-        int w, h, frames;
-        shared_ptr<QtCanvas> canv;
+        int frames;
+        shared_ptr<Canvas> canv;
         shared_ptr<Renderer> rend;
+        cfdg_ptr design;
         MainWindow *mw;
 };
-class AsyncRenderer: public QObject {
+class AsyncRendQt: public QObject {
         Q_OBJECT
     public:
-        AsyncRenderer(int w, int h, int frames, shared_ptr<QtCanvas> canv, MainWindow *mw);
+        AsyncRendQt(int w, int h, int frames, MainWindow *mw);
         void cleanup();
         vector<unique_ptr<QGraphicsScene> > &getScenes();
         int frameCount();
         int frameIndex;
-        ~AsyncRenderer();
+        ~AsyncRendQt();
     public slots:
         void render();
     signals:
@@ -46,16 +48,26 @@ class AsyncRenderer: public QObject {
         void updateRect();
     private:
         int w, h, frames;
-        shared_ptr<QtCanvas> canv;
         vector<unique_ptr<QGraphicsScene> > scenes;
+        shared_ptr<Renderer> rend;
+        shared_ptr<QtCanvas> canv;
         ParseWorker *p;
-        QThread t;
+//        QThread t;
         bool parsing = true;
         bool rendering = false;
         union {
                 bool shouldExit;
                 bool stillWorking;
         };
+};
+class AsyncRendPNG: public QObject {
+        Q_OBJECT
+    public:
+        AsyncRendPNG(int frames, MainWindow *mw, string ifile, string ofile);
+    private:
+        ParseWorker *p;
+        shared_ptr<Canvas> canv;
+        shared_ptr<Renderer> rend;
 };
 
 #endif // ASYNCRENDERER_H
