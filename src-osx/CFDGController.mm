@@ -302,6 +302,10 @@ namespace {
                 int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
                 [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
             }
+            if ([pboardString hasSuffix: @".cfdg"]) {
+                NSURL* cfdgurl = [NSURL URLWithString: pboardString];
+                [[GalleryDownloader alloc] initWithUrl:cfdgurl controller: self];
+            }
             return;
         }
     }

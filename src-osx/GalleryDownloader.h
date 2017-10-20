@@ -43,6 +43,7 @@
 }
 
 - (id)initWithDesignID:(int)design controller:(CFDGController*)ctrl;
+- (id)initWithUrl:(NSURL*)url controller:(CFDGController*)ctrl;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 - (NSURLRequest *)connection:(NSURLConnection *)connection

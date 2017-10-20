@@ -55,6 +55,25 @@
     return self;
 }
 
+- (id)initWithUrl:(NSURL*)url controller:(CFDGController*)ctrl
+{
+    self = [super init];
+    if (self) {
+        designID = 0;
+        variation = Variation::random();
+        controller = ctrl;
+        NSURLRequest* req = [NSURLRequest requestWithURL: url];
+        galleryConnection = [[NSURLConnection alloc] initWithRequest: req delegate: self];
+        if (galleryConnection) {
+            receivedData = [[NSMutableData data] retain];
+        } else {
+            DLerror = [[NSError alloc] initWithDomain: NSPOSIXErrorDomain code: ECONNABORTED userInfo: nil];
+            [self allDone];
+        }
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     [cfdgContents release]; cfdgContents = nil;
