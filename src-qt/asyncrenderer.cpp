@@ -5,6 +5,7 @@
 
 #include <makeCFfilename.h>
 #include <pngCanvas.h>
+#include <SVGCanvas.h>
 #include <QSettings>
 #include <QtDebug>
 #include <QtConcurrent/QtConcurrent>
@@ -114,10 +115,10 @@ int AsyncRendQt::frameCount() {
     return scenes.size();
 }
 
-AsyncRendPNG::AsyncRendPNG(int frames, MainWindow *mw, string ifile, string ofile) {
+AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, shared_ptr<Canvas> (*initCanvas)(int frames, int w, int h, const char* ofile, shared_ptr<Renderer> rend)) {
 
-    QtSystem *sys = new QtSystem();
-    connect(sys, SIGNAL(showmsg(const char*)), this, SLOT(showmsg(const char*)));
+    sys = new QtSystem();
+    connect(sys, &QtSystem::showmsg, mw, &MainWindow::showmsg);
 
     cfdg_ptr design(CFDG::ParseFile(ifile.c_str(), sys, 4));
     if(design.get() == nullptr) {
@@ -133,28 +134,10 @@ AsyncRendPNG::AsyncRendPNG(int frames, MainWindow *mw, string ifile, string ofil
                               4,
                               2));
 
-    qDebug() << "Sensible filename:" << ofile.c_str();
+    char *ofile_copy = new char[ofile.length() + 1];
+    strcpy(ofile_copy, ofile.c_str());
 
-    // If a static output file name is provided then generate an output
-    // file name format string by escaping any '%' characters. If this is
-    // an animation run with PNG output then add "_%f" before the extension.
-    string pngOutput;
-    pngOutput.reserve(ofile.length());
-    for (char c: ofile) {
-        pngOutput.append(c == '%' ? 2 : 1, c);
-    }
-    size_t ext = pngOutput.find_last_of('.');
-    size_t dir = pngOutput.find_last_of('/');
-    if (ext != string::npos && (dir == string::npos || ext > dir)) {
-        pngOutput.insert(ext, "_%f");
-    } else {
-        pngOutput.append("_%f");
-    }
-
-    char *pngOutputC = new char[strlen(pngOutput.c_str()) + 1];
-    strcpy(pngOutputC, pngOutput.c_str());
-
-    shared_ptr<pngCanvas> canv = make_unique<pngCanvas>(pngOutputC, false, 1920, 1080, aggCanvas::PixelFormat::RGB16_Blend, false, 1, 294, true, rend.get(), 1, 1);
+    shared_ptr<Canvas> canv = initCanvas(1, w, h, ofile_copy, rend);
 
     p = new ParseWorker(frames, canv, mw, design, rend);
     qDebug() << "Beginning AsyncRendGeneric constructor" << endl;
@@ -164,6 +147,13 @@ AsyncRendPNG::AsyncRendPNG(int frames, MainWindow *mw, string ifile, string ofil
     connect(p, SIGNAL( earlyAbort() ), this, SLOT( deleteLater() ));
     p->start();
     qDebug() << "Done AsyncRendGeneric constructor" << endl;
+}
+
+AsyncRendGeneric::~AsyncRendGeneric() {
+    QtConcurrent::run([] (ParseWorker *p, QtSystem *sys) {
+        p->wait();
+        delete sys;
+    }, p, sys);
 }
 
 void ParseWorker::run() {
@@ -178,6 +168,8 @@ void ParseWorker::requestStop() {
     if(rend != nullptr)
        rend->requestStop = true;
 }
+
+AsyncRendSvg::~AsyncRendSvg() {}
 
 ParseWorker::ParseWorker(int frames, shared_ptr<Canvas> canv, MainWindow *mw, cfdg_ptr design, shared_ptr<Renderer> rend): frames(frames), canv(canv), mw(mw), design(design), rend(rend) {}
 

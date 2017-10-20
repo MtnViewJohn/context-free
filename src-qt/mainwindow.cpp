@@ -8,6 +8,7 @@
 #include <cfdg.h>
 #include <commandLineSystem.h>
 #include <pngCanvas.h>
+#include <SVGCanvas.h>
 #include <aggCanvas.h>
 
 #include <errno.h>
@@ -24,6 +25,9 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
+#include <QCloseEvent>
+
+extern QDebug operator<<(QDebug out, const std::string& str);
 
 // File i/o
 QString readFileFromDisk(QString fname) {
@@ -82,7 +86,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-bool MainWindow::confirmModify(bool newFile = false) {
+bool MainWindow::confirmDangerAction() {
 
     if(!this->currentFile.isEmpty()) {
         QFile file(this->currentFile);
@@ -149,7 +153,7 @@ void MainWindow::runCode() {
 }
 
 void MainWindow::openFile() {
-    qDebug() << "Open file" << endl;
+    qDebug() << "Open file";
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "", tr("CFDG file (*.cfdg);;All Files (*)"));
     if (fileName.isEmpty())
         return;
@@ -197,17 +201,65 @@ void MainWindow::newFile() {
 }
 // Can't be export, because that's a keyword
 void MainWindow::exportFile() {
-    // Only supports png for now
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("PNG Image (*.png);;All Files (*)"));
-    qDebug() << "File name: " << fileName.toStdString().c_str();
+    this->saveFile();
 
-    AsyncRendPNG *g = new AsyncRendPNG(1, this, currentFile.toStdString(), fileName.toStdString());
+    // Only supports png/svg for now
+    QFileDialog dialog(this);
+
+    dialog.setNameFilter(tr("PNG Image (*.png);;SVG Image (*.svg)"));
+
+    dialog.setWindowTitle(tr("Export file"));
+
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+    QString *filter = new QString("PNG Image (*.png)");
+
+    connect(&dialog, &QFileDialog::filterSelected, [&filter] (const QString &newFilter) {
+        delete filter;
+        filter = new QString(newFilter);
+        qDebug() << "Filter sel:" << newFilter.toStdString().c_str();
+    });
+
+    dialog.setFileMode(QFileDialog::AnyFile);
+
+    if(!dialog.exec())
+        return;
+
+    string fname = dialog.selectedFiles()[0].toStdString();
+
+    if(filter == tr("SVG Image (*.svg)")) {
+        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), [] (int frames, int w, int h, const char *ofile, shared_ptr<Renderer> rend) -> shared_ptr<Canvas> {
+            return make_shared<SVGCanvas>(ofile, w, h, false);
+        });
+    } else if (filter == tr("PNG Image (*.png)")) {
+        // If a static output file name is provided then generate an output
+        // file name format string by escaping any '%' characters. If this is
+        // an animation run with PNG output then add "_%f" before the extension.
+        string pngOutput;
+        pngOutput.reserve(fname.length());
+        for (char c: fname) {
+            pngOutput.append(c == '%' ? 2 : 1, c);
+        }
+        size_t ext = pngOutput.find_last_of('.');
+        size_t dir = pngOutput.find_last_of('/');
+        if (ext != string::npos && (dir == string::npos || ext > dir)) {
+            pngOutput.insert(ext, "_%f");
+        } else {
+            pngOutput.append("_%f");
+        }
+
+        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), pngOutput, [] (int frames, int w, int h, const char *ofile, shared_ptr<Renderer> rend) -> shared_ptr<Canvas> {
+            return make_shared<pngCanvas>(ofile, false, w, h, aggCanvas::PixelFormat::RGB16_Blend, false, frames, 294, true, rend.get(), 1, 1);
+        });
+        //AsyncRendPNG *g = new AsyncRendPNG(1, this, currentFile.toStdString(), fname.toStdString());
+    }
+    delete filter;
     // Reset cout to normal value
     //cout.rdbuf(oldCout);
 }
 
 void MainWindow::openFileAction() {
-    if(!confirmModify())
+    if(!confirmDangerAction())
         return;
     this->openFile();
 }
@@ -221,7 +273,7 @@ void MainWindow::saveFileAsAction() {
 }
 
 void MainWindow::newFileAction() {
-    if(!confirmModify())
+    if(!confirmDangerAction())
         return;
     this->newFile();
 }
@@ -229,6 +281,10 @@ void MainWindow::newFileAction() {
 void MainWindow::exportFileAction() {
     qDebug() << "Export clicked!";
     this->exportFile();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    confirmDangerAction() ? event->accept() : event->ignore();
 }
 
 void MainWindow::showPrefs() {

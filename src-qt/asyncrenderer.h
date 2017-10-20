@@ -8,6 +8,7 @@ class QGraphicsScene;
 class QtCanvas;
 class MainWindow;
 class Renderer;
+class QtSystem;
 
 using namespace std;
 
@@ -60,14 +61,23 @@ class AsyncRendQt: public QObject {
                 bool stillWorking;
         };
 };
-class AsyncRendPNG: public QObject {
+class AsyncRendGeneric: public QObject {
         Q_OBJECT
     public:
-        AsyncRendPNG(int frames, MainWindow *mw, string ifile, string ofile);
+        AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, shared_ptr<Canvas> (*initCanvas)(int frames, int w, int h, const char *ofile, shared_ptr<Renderer>));
+        ~AsyncRendGeneric();
     private:
+        QtSystem *sys;
         ParseWorker *p;
         shared_ptr<Canvas> canv;
         shared_ptr<Renderer> rend;
+};
+
+class AsyncRendSvg: public QObject {
+        Q_OBJECT
+    public:
+        AsyncRendSvg(MainWindow *mw, string ifile, string ofile);
+        ~AsyncRendSvg();
 };
 
 #endif // ASYNCRENDERER_H

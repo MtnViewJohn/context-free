@@ -47,8 +47,11 @@ class MainWindow : public QMainWindow
         void startPlayback(bool shouldPlay);
         void setFrame(int frame);
     private:
+        bool confirmDangerAction();
 
-        bool confirmModify(bool newFile);
+    protected:
+        void closeEvent(QCloseEvent *event);
+
         AsyncRendQt *r = NULL;
 };
 

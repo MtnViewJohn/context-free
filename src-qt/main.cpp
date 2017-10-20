@@ -5,6 +5,12 @@
 #include <QStringList>
 #include <QtDebug>
 
+QDebug operator<<(QDebug out, const std::string& str)
+{
+    out << QString::fromStdString(str);
+    return out;
+}
+
 int main(int argc, char *argv[])
 {
     if (QIcon::themeName() == "") {
