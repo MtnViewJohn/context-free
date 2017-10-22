@@ -122,9 +122,11 @@ CommandLineSystem::openFileForRead(const std::string& path)
 #endif
     auto dirloc = path.rfind(dirchar);
     auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
+    auto dotloc = exfile.find_last_of('.');
+    auto extloc = (dotloc == std::string::npos) ? exfile.end() : exfile.end() - (exfile.length() - dotloc);
     
     if (cfdgVersion == 2)
-        exfile.replace(exfile.end() - 5, exfile.end(), "_v2.cfdg");
+        exfile.replace(extloc, exfile.end(), "_v2.cfdg");
     auto example = ExamplesMap.find(exfile);
     if (example != ExamplesMap.end())
         return new imemstream(example->second, strlen(example->second));
