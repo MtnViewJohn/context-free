@@ -9,6 +9,9 @@ class QtCanvas;
 class MainWindow;
 class Renderer;
 class QtSystem;
+namespace exfmt {
+    class ExFmt;
+}
 
 using namespace std;
 
@@ -61,10 +64,11 @@ class AsyncRendQt: public QObject {
                 bool stillWorking;
         };
 };
+
 class AsyncRendGeneric: public QObject {
         Q_OBJECT
     public:
-        AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, shared_ptr<Canvas> (*initCanvas)(int frames, int w, int h, const char *ofile, shared_ptr<Renderer>));
+        AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, exfmt::ExFmt e);
         ~AsyncRendGeneric();
     private:
         QtSystem *sys;

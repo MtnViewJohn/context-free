@@ -2,6 +2,7 @@
 #include "qtcanvas.h"
 #include "qtsystem.h"
 #include "mainwindow.h"
+#include "exformats.h"
 
 #include <makeCFfilename.h>
 #include <pngCanvas.h>
@@ -115,7 +116,7 @@ int AsyncRendQt::frameCount() {
     return scenes.size();
 }
 
-AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, shared_ptr<Canvas> (*initCanvas)(int frames, int w, int h, const char* ofile, shared_ptr<Renderer> rend)) {
+AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, exfmt::ExFmt e) {
 
     sys = new QtSystem();
     connect(sys, &QtSystem::showmsg, mw, &MainWindow::showmsg);
@@ -137,7 +138,7 @@ AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, str
     char *ofile_copy = new char[ofile.length() + 1];
     strcpy(ofile_copy, ofile.c_str());
 
-    shared_ptr<Canvas> canv = initCanvas(1, w, h, ofile_copy, rend);
+    shared_ptr<Canvas> canv = e.ex(1, w, h, ofile_copy, rend);
 
     p = new ParseWorker(frames, canv, mw, design, rend);
     qDebug() << "Beginning AsyncRendGeneric constructor" << endl;

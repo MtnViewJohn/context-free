@@ -4,6 +4,7 @@
 #include "settings_dialog.h"
 #include "qtcanvas.h"
 #include "qtsystem.h"
+#include "exformats.h"
 
 #include <cfdg.h>
 #include <commandLineSystem.h>
@@ -228,29 +229,10 @@ void MainWindow::exportFile() {
     string fname = dialog.selectedFiles()[0].toStdString();
 
     if(filter == tr("SVG Image (*.svg)")) {
-        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), [] (int frames, int w, int h, const char *ofile, shared_ptr<Renderer> rend) -> shared_ptr<Canvas> {
-            return make_shared<SVGCanvas>(ofile, w, h, false);
-        });
+        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exfmt::png);
     } else if (filter == tr("PNG Image (*.png)")) {
-        // If a static output file name is provided then generate an output
-        // file name format string by escaping any '%' characters. If this is
-        // an animation run with PNG output then add "_%f" before the extension.
-        string pngOutput;
-        pngOutput.reserve(fname.length());
-        for (char c: fname) {
-            pngOutput.append(c == '%' ? 2 : 1, c);
-        }
-        size_t ext = pngOutput.find_last_of('.');
-        size_t dir = pngOutput.find_last_of('/');
-        if (ext != string::npos && (dir == string::npos || ext > dir)) {
-            pngOutput.insert(ext, "_%f");
-        } else {
-            pngOutput.append("_%f");
-        }
 
-        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), pngOutput, [] (int frames, int w, int h, const char *ofile, shared_ptr<Renderer> rend) -> shared_ptr<Canvas> {
-            return make_shared<pngCanvas>(ofile, false, w, h, aggCanvas::PixelFormat::RGB16_Blend, false, frames, 294, true, rend.get(), 1, 1);
-        });
+        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exfmt::svg);
         //AsyncRendPNG *g = new AsyncRendPNG(1, this, currentFile.toStdString(), fname.toStdString());
     }
     delete filter;
