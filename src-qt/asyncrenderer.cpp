@@ -117,6 +117,7 @@ int AsyncRendQt::frameCount() {
 }
 
 AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, string ifile, string ofile, exfmt::ExFmt e) {
+    qDebug() << "Beginning AsyncRendGeneric constructor" << endl;
 
     sys = new QtSystem();
     connect(sys, &QtSystem::showmsg, mw, &MainWindow::showmsg);
@@ -138,10 +139,11 @@ AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, str
     char *ofile_copy = new char[ofile.length() + 1];
     strcpy(ofile_copy, ofile.c_str());
 
-    shared_ptr<Canvas> canv = e.ex(1, w, h, ofile_copy, rend);
+    aggCanvas::PixelFormat fmt = aggCanvas::SuggestPixelFormat(design.get());
+
+    shared_ptr<Canvas> canv = e.ex(frames, w, h, ofile_copy, fmt, rend);
 
     p = new ParseWorker(frames, canv, mw, design, rend);
-    qDebug() << "Beginning AsyncRendGeneric constructor" << endl;
     connect(p, SIGNAL( done() ), p, SLOT( deleteLater() ));
     connect(p, SIGNAL( earlyAbort() ), p, SLOT( deleteLater() ));
     connect(p, SIGNAL( done() ), this, SLOT( deleteLater() ));
@@ -159,7 +161,7 @@ AsyncRendGeneric::~AsyncRendGeneric() {
 
 void ParseWorker::run() {
     qDebug() << "Beginning parsing" << endl;
-    rend->animate(canv.get(), frames, 0, false);
+    rend->animate(canv.get(), frames, 0, true);
     //rend->run(this->canv.get(), false);
     qDebug() << "Done parsing" << endl;
     emit done();

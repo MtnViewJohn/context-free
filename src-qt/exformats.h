@@ -4,6 +4,7 @@
 #include <limits>
 #include <string>
 #include <memory>
+#include <aggCanvas.h>
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -12,8 +13,10 @@ class QWidget;
 class Canvas;
 class Renderer;
 
-std::shared_ptr<Canvas> ex_svg (int frames, int w, int h, const char *ofile, std::shared_ptr<Renderer> rend);
-std::shared_ptr<Canvas> ex_png (int frames, int w, int h, const char *ofile, std::shared_ptr<Renderer> rend);
+
+std::shared_ptr<Canvas> ex_svg (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
+std::shared_ptr<Canvas> ex_png (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
+std::shared_ptr<Canvas> ex_qtime (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
 
 namespace exfmt {
 
@@ -43,16 +46,17 @@ namespace exfmt {
             int min, max;
     };
 
-    using FileExporter = std::shared_ptr<Canvas> (*)(int frames, int w, int h, const char *ofile, std::shared_ptr<Renderer>);
+    using FileExporter = std::shared_ptr<Canvas> (*)(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer>);
 
     struct ExFmt {
         public:
-            const FileExporter ex;
-            const std::vector<std::shared_ptr<Option>> opts;
+            FileExporter ex;
+            std::vector<std::shared_ptr<Option>> opts;
     };
 
     const ExFmt svg = (ExFmt) { &ex_svg, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.svg")} };
     const ExFmt png = (ExFmt) { &ex_png, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.png")} };
+    const ExFmt qtime = (ExFmt) { &ex_qtime, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.qtime")} };
 
 }
 

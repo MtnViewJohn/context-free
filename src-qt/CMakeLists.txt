@@ -36,7 +36,7 @@ set(OBJS ${CF_MAIN_DIR}/objs/abstractPngCanvas.o
                 ${CF_MAIN_DIR}/objs/cfdg.tab.o
                 ${CF_MAIN_DIR}/objs/CmdInfo.o
                 ${CF_MAIN_DIR}/objs/commandLineSystem.o
-                ${CF_MAIN_DIR}/objs/ffCanvasDummy.o
+                ${CF_MAIN_DIR}/objs/ffCanvas.o
                 ${CF_MAIN_DIR}/objs/HSBColor.o
                 ${CF_MAIN_DIR}/objs/lex.yy.o
                 ${CF_MAIN_DIR}/objs/mainsyms.o

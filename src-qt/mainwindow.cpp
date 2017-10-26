@@ -202,12 +202,15 @@ void MainWindow::newFile() {
 }
 // Can't be export, because that's a keyword
 void MainWindow::exportFile() {
-    this->saveFile();
+    int frames = ui->framesBox->value();
+
+    if(!this->saveFile())
+        return;
 
     // Only supports png/svg for now
     QFileDialog dialog(this);
 
-    dialog.setNameFilter(tr("PNG Image (*.png);;SVG Image (*.svg)"));
+    dialog.setNameFilter(tr("PNG Image (*.png);;SVG Image (*.svg);;QuickTime file (*.mov)"));
 
     dialog.setWindowTitle(tr("Export file"));
 
@@ -228,16 +231,14 @@ void MainWindow::exportFile() {
 
     string fname = dialog.selectedFiles()[0].toStdString();
 
-    if(filter == tr("SVG Image (*.svg)")) {
-        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exfmt::png);
-    } else if (filter == tr("PNG Image (*.png)")) {
+    std::map<QString, exfmt::ExFmt> exporters;
+    exporters.emplace(std::make_pair(tr("SVG Image (*.svg)"), exfmt::svg));
+    exporters.emplace(std::make_pair(tr("PNG Image (*.png)"), exfmt::png));
+    exporters.emplace(std::make_pair(tr("QuickTime file (*.mov)"), exfmt::qtime));
 
-        AsyncRendGeneric r(1, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exfmt::svg);
-        //AsyncRendPNG *g = new AsyncRendPNG(1, this, currentFile.toStdString(), fname.toStdString());
-    }
+    AsyncRendGeneric r(frames, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exporters[*filter]);
+
     delete filter;
-    // Reset cout to normal value
-    //cout.rdbuf(oldCout);
 }
 
 void MainWindow::openFileAction() {

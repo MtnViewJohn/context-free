@@ -85,14 +85,14 @@ endif
 # Uncomment these lines to enable FFmpeg support
 #
 
-# COMMON_SRCS += ffCanvas.cpp
-# LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
+COMMON_SRCS += ffCanvas.cpp
+LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
 
 #
 # Comment out this line to enable FFmpeg support
 #
 
-COMMON_SRCS += ffCanvasDummy.cpp
+# COMMON_SRCS += ffCanvasDummy.cpp
 SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
 
 #

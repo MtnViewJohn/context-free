@@ -2,18 +2,21 @@
 
 #include <SVGCanvas.h>
 #include <pngCanvas.h>
+#include <ffCanvas.h>
 #include <cfdg.h>
 
+#include <QErrorMessage>
 #include <QDoubleSpinBox>
+#include <QSettings>
+#include <QtDebug>
 #include <memory>
 #include <string>
 
-std::shared_ptr<Canvas> ex_svg (int frames, int w, int h, const char *ofile, std::shared_ptr<Renderer> rend) {
+std::shared_ptr<Canvas> ex_svg(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend) {
     return std::make_shared<SVGCanvas>(ofile, w, h, false);
 }
-const exfmt::FileExporter svg_fex = &ex_svg;
 
-std::shared_ptr<Canvas> ex_png (int frames, int w, int h, const char *ofile, std::shared_ptr<Renderer> rend) {
+std::shared_ptr<Canvas> ex_png(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &p, std::shared_ptr<Renderer> rend) {
 
     // If a static output file name is provided then generate an output
     // file name format string by escaping any '%' characters. If this is
@@ -32,9 +35,24 @@ std::shared_ptr<Canvas> ex_png (int frames, int w, int h, const char *ofile, std
     } else {
         pngOutput.append("_%f");
     }
-    return std::make_shared<pngCanvas>(ofile, false, w, h, aggCanvas::PixelFormat::RGB16_Blend, false, frames, 294, true, rend.get(), 1, 1);
+
+    char *pngOutputC = new char[pngOutput.length()+1];
+    strcpy(pngOutputC, pngOutput.c_str());
+
+    delete ofile;
+    return std::make_shared<pngCanvas>(pngOutputC, false, w, h, p, false, frames, 294, true, rend.get(), 1, 1);
 }
-const exfmt::FileExporter png_fex = &ex_png;
+
+std::shared_ptr<Canvas> ex_qtime(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &p, std::shared_ptr<Renderer> rend) {
+    QSettings s("contextfreeart.org", "ContextFree");
+    qDebug() << "Creating ffCanvas @" << s.value("output_fps", 30).toInt() << "fps";
+    qDebug() << "File is" << ofile;
+    std::shared_ptr<ffCanvas> canv = std::make_shared<ffCanvas>(ofile, p, w, h, s.value("output_fps", 30).toInt(), ffCanvas::H264);
+    if(canv->mErrorMsg) {
+        std::cerr << "ffCanvas error: " << canv->mErrorMsg << std::endl;
+    }
+    return canv;
+}
 
 std::string exfmt::Option::getName() {
     return name;
