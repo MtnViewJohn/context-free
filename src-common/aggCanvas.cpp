@@ -439,10 +439,10 @@ int     aggCanvas::cropY()          { return m->offsetY; }
 int     aggCanvas::cropWidth()      { return m->cropWidth; }
 int     aggCanvas::cropHeight()     { return m->cropHeight; }
 
-aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
+aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(cfdg_ptr engine)
 {
-    if (engine == nullptr) 
-        return RGBA8_Blend;
+//    if (engine == nullptr) 
+//        return RGBA8_Blend;
     
     int ret = Gray8_Blend;
     

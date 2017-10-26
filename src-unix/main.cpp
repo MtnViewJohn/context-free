@@ -473,7 +473,7 @@ int main (int argc, char* argv[]) {
     }
 
     bool useRGBA = myDesign->usesColor;
-    aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign.get());
+    aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign);
     bool use16bit = (pixfmt & aggCanvas::Has_16bit_Color) != 0;
     const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
     

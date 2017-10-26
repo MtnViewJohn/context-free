@@ -60,7 +60,7 @@ class aggCanvas : public Canvas {
         bool colorCount256();
             // return whether the aggCanvas can fit in byte pixels
         
-        static PixelFormat SuggestPixelFormat(CFDG* engine);
+        static PixelFormat SuggestPixelFormat(cfdg_ptr engine);
         
     protected:
         aggCanvas(PixelFormat);

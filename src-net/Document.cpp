@@ -1101,7 +1101,7 @@ void Document::DoRender()
         str.resize(bytes->Length);
         Marshal::Copy(bytes, 0, IntPtr(&str[0]), bytes->Length);
 
-        mAnimationCanvas = new ffCanvas(str.c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
+        mAnimationCanvas = new ffCanvas(str.c_str(), WinCanvas::SuggestPixelFormat(mEngine),
             renderParams->animateWidth, renderParams->animateHeight,
             renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec);
 
@@ -1316,7 +1316,7 @@ void Document::setupCanvas(Renderer* r)
             renderParams->width : renderParams->animateWidth;
         int height = renderParams->action == RenderParameters::RenderActions::Render ?
             renderParams->height : renderParams->animateHeight;
-        mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()), 
+        mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine), 
             width, height, (*mEngine)->getBackgroundColor());
     }
 }
