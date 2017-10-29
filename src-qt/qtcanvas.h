@@ -11,14 +11,32 @@
 
 using namespace std;
 
+enum CmdType {
+    move_to,
+    next_poly,
+    line_to,
+    curve3,
+    curve4,
+    close_path
+};
+
+struct PathNode {
+        double x, y;
+        CmdType cmdt;
+};
+
 class ShapeSpec {
+        bool parsePath(QGraphicsScene *scene, QPen &pe, QBrush &br, QPainterPath *path);
     public:
         ShapeSpec(int type, QTransform qtr, QColor fill): type(type), qtr(qtr), fill(fill) {}
         void drawOnScene(QGraphicsScene *scene);
         int type;
+        vector<PathNode> nodes;
         QTransform qtr;
         QColor fill;
 };
+
+const int path_shape = -1;
 
 class QtCanvas: public Canvas {
         int frameIndex;
