@@ -210,8 +210,11 @@ void MainWindow::exportFile() {
     // Only supports png/svg for now
     QFileDialog dialog(this);
 
+#ifdef QUICKTIME
     dialog.setNameFilter(tr("PNG Image (*.png);;SVG Image (*.svg);;QuickTime file (*.mov)"));
-
+#else /* QUICKTIME */
+    dialog.setNameFilter(tr("PNG Image (*.png);;SVG Image (*.svg)"));
+#endif
     dialog.setWindowTitle(tr("Export file"));
 
     dialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -234,8 +237,9 @@ void MainWindow::exportFile() {
     std::map<QString, exfmt::ExFmt> exporters;
     exporters.emplace(std::make_pair(tr("SVG Image (*.svg)"), exfmt::svg));
     exporters.emplace(std::make_pair(tr("PNG Image (*.png)"), exfmt::png));
+#ifdef QUICKTIME
     exporters.emplace(std::make_pair(tr("QuickTime file (*.mov)"), exfmt::qtime));
-
+#endif /* QUICKTIME */
     AsyncRendGeneric r(frames, 1920, 1080, this, this->currentFile.toStdString(), fname.c_str(), exporters[*filter]);
 
     delete filter;

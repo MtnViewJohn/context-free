@@ -13,11 +13,14 @@ class QWidget;
 class Canvas;
 class Renderer;
 
+// Uncomment to enable quicktime export
+// #define QUICKTIME
 
 std::shared_ptr<Canvas> ex_svg (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
 std::shared_ptr<Canvas> ex_png (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
+#ifdef QUICKTIME
 std::shared_ptr<Canvas> ex_qtime (int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer> rend);
-
+#endif /* QUICKTIME */
 namespace exfmt {
 
     class Option {
@@ -32,18 +35,20 @@ namespace exfmt {
 
     class DblOption: public Option {
         public:
-            DblOption(const std::string name, const double min = 0, const double max = std::numeric_limits<double>::max());
+            DblOption(const std::string name, const double min = 0, const double max = std::numeric_limits<double>::max(), const QString opt_default = "");
             QWidget *getWidget() override;
         private:
             double min, max;
+            QString opt_default;
     };
 
     class IntOption: public Option {
         public:
-            IntOption(const std::string name, const int min = 0, const int max = std::numeric_limits<int>::max());
+            IntOption(const std::string name, const int min = 0, const int max = std::numeric_limits<int>::max(), const QString opt_default = "");
             QWidget *getWidget() override;
         private:
             int min, max;
+            QString opt_default;
     };
 
     using FileExporter = std::shared_ptr<Canvas> (*)(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &fmt, std::shared_ptr<Renderer>);
@@ -54,9 +59,12 @@ namespace exfmt {
             std::vector<std::shared_ptr<Option>> opts;
     };
 
-    const ExFmt svg = (ExFmt) { &ex_svg, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.svg")} };
-    const ExFmt png = (ExFmt) { &ex_png, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.png")} };
-    const ExFmt qtime = (ExFmt) { &ex_qtime, (std::vector<std::shared_ptr<Option>>) {std::make_shared<DblOption>("test.qtime")} };
+    const ExFmt svg = (ExFmt) { &ex_svg, (std::vector<std::shared_ptr<Option>>) {std::make_shared<IntOption>("Minimum size", 0, std::numeric_limits<double>::max(), "output_minsize")} };
+    const ExFmt png = (ExFmt) { &ex_png, (std::vector<std::shared_ptr<Option>>) {std::make_shared<IntOption>("Minimum size", 0, std::numeric_limits<double>::max(), "output_minsize")} };
+#ifdef QUICKTIME
+    const ExFmt qtime = (ExFmt) { &ex_qtime, (std::vector<std::shared_ptr<Option>>) {std::make_shared<IntOption>("FPS", 0, std::numeric_limits<double>::max(), "output_fps"),
+            std::make_shared<IntOption>("Minimum size", 0, std::numeric_limits<double>::max(), "output_minsize")} };
+#endif
 
 }
 

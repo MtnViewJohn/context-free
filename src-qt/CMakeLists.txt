@@ -9,7 +9,8 @@ set(SOURCE_LIST main.cpp
                 qtsystem.cpp
                 settings_dialog.cpp
                 asyncrenderer.cpp
-                exformats.cpp)
+                exformats.cpp
+                exoptiondialog.cpp)
 
 set(INCLUDE_DIR ${CF_MAIN_DIR}/src-common
 		${CF_MAIN_DIR}/src-agg
@@ -36,7 +37,8 @@ set(OBJS ${CF_MAIN_DIR}/objs/abstractPngCanvas.o
                 ${CF_MAIN_DIR}/objs/cfdg.tab.o
                 ${CF_MAIN_DIR}/objs/CmdInfo.o
                 ${CF_MAIN_DIR}/objs/commandLineSystem.o
-                ${CF_MAIN_DIR}/objs/ffCanvas.o
+                # Change to ffCanvas.o for quicktime support
+                ${CF_MAIN_DIR}/objs/ffCanvasDummy.o
                 ${CF_MAIN_DIR}/objs/HSBColor.o
                 ${CF_MAIN_DIR}/objs/lex.yy.o
                 ${CF_MAIN_DIR}/objs/mainsyms.o
@@ -79,7 +81,7 @@ SET_SOURCE_FILES_PROPERTIES(
 #set(ENV{QT_NO_DEBUG_OUTPUT} 1)
 
 add_executable(context-free ${SOURCE_LIST} ${OBJS})
-add_executable(dummy EXCLUDE_FROM_ALL mainwindow.ui settings_dialog.ui)
+add_executable(dummy EXCLUDE_FROM_ALL mainwindow.ui settings_dialog.ui exoptiondialog.ui)
 
 target_link_libraries(context-free Qt5::Widgets)
 target_link_libraries(context-free ${PNG_LIBRARIES})

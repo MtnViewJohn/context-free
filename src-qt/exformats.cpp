@@ -2,7 +2,9 @@
 
 #include <SVGCanvas.h>
 #include <pngCanvas.h>
+#ifdef QUICKTIME
 #include <ffCanvas.h>
+#endif /* QUICKTIME */
 #include <cfdg.h>
 
 #include <QErrorMessage>
@@ -43,7 +45,10 @@ std::shared_ptr<Canvas> ex_png(int frames, int w, int h, char *ofile, aggCanvas:
     return std::make_shared<pngCanvas>(pngOutputC, false, w, h, p, false, frames, 294, true, rend.get(), 1, 1);
 }
 
+#ifdef QUICKTIME
 std::shared_ptr<Canvas> ex_qtime(int frames, int w, int h, char *ofile, aggCanvas::PixelFormat &p, std::shared_ptr<Renderer> rend) {
+    // Uncomment to enable Quicktime support
+
     QSettings s("contextfreeart.org", "ContextFree");
     qDebug() << "Creating ffCanvas @" << s.value("output_fps", 30).toInt() << "fps";
     qDebug() << "File is" << ofile;
@@ -52,8 +57,9 @@ std::shared_ptr<Canvas> ex_qtime(int frames, int w, int h, char *ofile, aggCanva
         std::cerr << "ffCanvas error: " << canv->mErrorMsg << std::endl;
     }
     return canv;
+    return nullptr;
 }
-
+#endif /* QUICKTIME */
 std::string exfmt::Option::getName() {
     return name;
 }
@@ -62,22 +68,33 @@ void exfmt::Option::setName(const std::string s) {
     name = s;
 }
 
-exfmt::DblOption::DblOption(const std::string name, const double min, const double max): min(min), max(max) {
+exfmt::DblOption::DblOption(const std::string name, const double min, const double max, const QString opt_default): min(min), max(max), opt_default(opt_default) {
     this->setName(name);
+
 }
 
 QWidget *exfmt::DblOption::getWidget() {
     QDoubleSpinBox *w = new QDoubleSpinBox();
+    QSettings s;
+    if(!opt_default.isEmpty() && s.value(opt_default, std::numeric_limits<double>::lowest()).toDouble() >= min && s.value(opt_default, std::numeric_limits<double>::max()).toDouble() <= max)
+        w->setValue(s.value(opt_default).toDouble());
+    else
+        w->setValue(min);
     w->setRange(min, max);
     return w;
 }
 
-exfmt::IntOption::IntOption (const std::string name, const int min, const int max): min(min), max(max) {
+exfmt::IntOption::IntOption (const std::string name, const int min, const int max, const QString opt_default): min(min), max(max), opt_default(opt_default) {
     this->setName(name);
 }
 
 QWidget *exfmt::IntOption::getWidget() {
     QDoubleSpinBox *w = new QDoubleSpinBox();
+    QSettings s;
+    if(!opt_default.isEmpty() && s.value(opt_default, std::numeric_limits<int>::lowest()).toInt() >= min && s.value(opt_default, std::numeric_limits<int>::max()).toInt() <= max)
+        w->setValue(s.value(opt_default).toInt());
+    else
+        w->setValue(min);
     w->setRange(min, max);
     return w;
 }
