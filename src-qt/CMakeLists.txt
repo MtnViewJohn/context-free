@@ -84,6 +84,8 @@ add_executable(dummy EXCLUDE_FROM_ALL mainwindow.ui settings_dialog.ui)
 
 target_link_libraries(context-free Qt5::Widgets)
 target_link_libraries(context-free ${PNG_LIBRARIES})
-#target_link_libraries(context-free Qt5::Test)
+
+# Uncomment to enable QuickTime support
+# target_link_libraries(context-free avformat avcodec swscale swresample avutil z m x264 pthread dl)
 
 include_directories(${INCLUDE_DIR})

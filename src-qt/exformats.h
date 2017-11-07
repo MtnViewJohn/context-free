@@ -33,8 +33,7 @@ namespace exfmt {
     const ExFmt svg = (ExFmt) { &ex_svg };
     const ExFmt png = (ExFmt) { &ex_png };
 #ifdef QUICKTIME
-    const ExFmt qtime = (ExFmt) { &ex_qtime, (std::vector<std::shared_ptr<Option>>) {std::make_shared<IntOption>("FPS", 0, std::numeric_limits<double>::max(), "output_fps"),
-            std::make_shared<IntOption>("Minimum size", 0, std::numeric_limits<double>::max(), "output_minsize")} };
+    const ExFmt qtime = (ExFmt) { &ex_qtime };
 #endif
 
 }
