@@ -61,6 +61,18 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
         assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
     }
     
+    initVariables();
+    
+    mCFDGcontents.isGlobal = true;
+#ifdef EXTREME_PARAM_DEBUG
+    StackRule::ParamMap.clear();
+    StackRule::ParamUID = 0;
+#endif
+}
+
+void
+CFDGImpl::initVariables()
+{
     std::string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
     int pi_num = encodeShapeName(pi_name, CfdgError::Default);
     def_ptr pi = std::make_unique<ASTdefine>(std::move(pi_name), CfdgError::Default);
@@ -68,12 +80,42 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     pi->mShapeSpec.shapeType = pi_num;
     mCFDGcontents.addDefParameter(pi_num, pi.get(), CfdgError::Default, CfdgError::Default);
     mCFDGcontents.mBody.push_back(std::move(pi));
-    
-    mCFDGcontents.isGlobal = true;
-#ifdef EXTREME_PARAM_DEBUG
-    StackRule::ParamMap.clear();
-    StackRule::ParamUID = 0;
-#endif
+
+    std::initializer_list<std::string> circleNames = {
+        "\xe2\x9a\xab", "\xe2\x97\x8f", "\xe2\xac\xa4"
+    };
+    for (auto name: circleNames) {  // no auto&&, we want to make a copy
+        int num = encodeShapeName(name, CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::circleType, "CIRCLE", nullptr, CfdgError::Default, nullptr);
+        def->mShapeSpec.shapeType = num;
+        mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
+        mCFDGcontents.mBody.push_back(std::move(def));
+    }
+
+    std::initializer_list<std::string> squareNames = {
+        "\xe2\xac\x9b", "\xe2\x97\xbc", "\xe2\x97\xbe", "\xef\xbf\xad", "\xe2\x96\xa0"
+    };
+    for (auto name: squareNames) {
+        int num = encodeShapeName(name, CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::squareType, "SQUARE", nullptr, CfdgError::Default, nullptr);
+        def->mShapeSpec.shapeType = num;
+        mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
+        mCFDGcontents.mBody.push_back(std::move(def));
+    }
+
+    std::initializer_list<std::string> triangleNames = {
+        "\xe2\x96\xb2", "\xe2\x96\xb4"
+    };
+    for (auto name: triangleNames) {
+        int num = encodeShapeName(name, CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::triangleType, "TRIANGLE", nullptr, CfdgError::Default, nullptr);
+        def->mShapeSpec.shapeType = num;
+        mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
+        mCFDGcontents.mBody.push_back(std::move(def));
+    }
 }
 
 CFDGImpl::~CFDGImpl()

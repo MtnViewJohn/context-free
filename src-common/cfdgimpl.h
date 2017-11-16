@@ -102,6 +102,8 @@ class CFDGImpl : public CFDG {
         
         std::vector<ShapeType> m_shapeTypes;
     
+        void initVariables();
+    
     public:
         AST::rep_ptr mInitShape;
         std::vector<AST::ASTrule*> mRules;
