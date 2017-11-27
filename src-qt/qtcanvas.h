@@ -7,13 +7,13 @@
 #include <QThread>
 #include <QStatusBar>
 #include <queue>
-#include "primShape.h"
+#include <primShape.h>
+#include <CmdInfo.h>
 
 using namespace std;
 
 enum CmdType {
     move_to,
-    next_poly,
     line_to,
     curve3,
     curve4,
@@ -28,12 +28,13 @@ struct PathNode {
 class ShapeSpec {
         bool parsePath(QGraphicsScene *scene, QPen &pe, QBrush &br, QPainterPath *path);
     public:
-        ShapeSpec(int type, QTransform qtr, QColor fill): type(type), qtr(qtr), fill(fill) {}
+        ShapeSpec(int type, QTransform qtr, QColor fill): type(type), qtr(qtr), shapeColor(fill) {}
         void drawOnScene(QGraphicsScene *scene);
         int type;
         vector<PathNode> nodes;
         QTransform qtr;
-        QColor fill;
+        QColor shapeColor;
+        AST::CommandInfo cmd_info;
 };
 
 const int path_shape = -1;

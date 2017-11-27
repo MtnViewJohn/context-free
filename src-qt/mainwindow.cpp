@@ -189,9 +189,9 @@ bool MainWindow::saveFileAs() {
     else {
         this->currentFile = fileName;
         QDir::setCurrent(QFileInfo( QFile(fileName) ).dir().path());
+        this->setWindowTitle(fileName.remove(0, fileName.lastIndexOf("/")+1) + " - ContextFree");
         return writeFileToDisk(fileName, ui->code->document()->toPlainText());
     }
-    this->setWindowTitle(fileName.remove(0, fileName.lastIndexOf("/")+1) + " - ContextFree");
 }
 
 void MainWindow::newFile() {
