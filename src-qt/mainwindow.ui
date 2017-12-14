@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="mainLayout">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <item alignment="Qt::AlignLeft">
+    <item>
      <widget class="QFrame" name="toolbar">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -67,6 +67,42 @@
        </item>
        <item>
         <widget class="QSpinBox" name="framesBox"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Variation:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="varBox">
+         <property name="text">
+          <string>AAAAAA</string>
+         </property>
+         <property name="maxLength">
+          <number>6</number>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -141,7 +177,7 @@
      <x>0</x>
      <y>0</y>
      <width>756</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -385,8 +421,8 @@
    <slot>exportFileAction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>377</x>
-     <y>234</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>377</x>

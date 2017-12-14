@@ -289,7 +289,9 @@ void MainWindow::doneRender() {
 
     ui->cancelButton->setVisible(false);
     ui->runButton->setEnabled(true);
-    ui->mediaBar->setVisible(true);
+    if(r->getScenes().size() > 1) {
+        ui->mediaBar->setVisible(true);
+    }
     QGraphicsScene *temp = scene;
     r->frameIndex = 0;
     scene = r->getScenes()[0].get();

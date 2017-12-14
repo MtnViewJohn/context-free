@@ -7,7 +7,7 @@ cfdg_highlighter::cfdg_highlighter(QTextDocument *parent) : QSyntaxHighlighter(p
 
     QStringList shapePatterns;
     shape.setForeground(QColor("mediumseagreen"));
-    // We don't need to use a lookbehind because the keywords' formatting will be overwritten by the next rule
+    // We don't need to use a lookbehind because the keywords' formatting will be overwritten by the next rule // This regex finds shape names when they're being called
     shapePatterns << "\\bshape\\s+\\S+" << "\\bstartshape\\s+\\S+" << "\\brule\\s+\\S+" << "\\bpath\\s+\\S+" << "\\S*(?=\\s*(?:\\[.*\\]|{.*}))";
     foreach (const QString &pattern, shapePatterns) {
         rule.pattern = QRegularExpression(pattern);

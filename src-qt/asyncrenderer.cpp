@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "exformats.h"
 
+#include <variation.h>
 #include <makeCFfilename.h>
 #include <pngCanvas.h>
 #include <SVGCanvas.h>
@@ -18,7 +19,9 @@ AsyncRendQt::AsyncRendQt(int w, int h, int frames, MainWindow *mw): w(w),
     QtSystem* sys = new QtSystem();
     connect(sys, SIGNAL(showmsg(const char*)), mw, SLOT(showmsg(const char*)));
 
-    cfdg_ptr design(CFDG::ParseFile(mw->currentFile.toStdString().c_str(), sys, 7394));
+    int variation = Variation::fromString(mw->ui->varBox->text().toStdString().c_str());
+
+    cfdg_ptr design(CFDG::ParseFile(mw->currentFile.toStdString().c_str(), sys, variation));
     if(design.get() == nullptr) {
         sys->catastrophicError("Design evaluated to null");
         emit aborted();
@@ -29,7 +32,7 @@ AsyncRendQt::AsyncRendQt(int w, int h, int frames, MainWindow *mw): w(w),
                                 w,
                                 h,
                                 s.value("output_minsize", 0.3).toDouble(),
-                                4,
+                                variation   ,
                                 2));
     if(rend == nullptr) {
         emit aborted();
@@ -133,7 +136,7 @@ AsyncRendGeneric::AsyncRendGeneric(int frames, int w, int h, MainWindow *mw, str
                               1920,
                               1080,
                               s.value("output_minsize", 0.3).toDouble(),
-                              4,
+                              Variation::fromString(mw->ui->varBox->text().toStdString().c_str()),
                               2));
 
     char *ofile_copy = new char[ofile.length() + 1];
