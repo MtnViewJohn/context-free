@@ -115,7 +115,9 @@ CommandLineSystem::openFileForRead(const std::string& path)
         return new imemstream(mInputBuffer->data(), mInputBuffer->length());
     }
     
-    if (!mFirstCfdgRead) {
+    if (!mFirstCfdgRead && path.length() > 5 && 
+        path.compare(path.length() - 5, 5, ".cfdg") == 0)
+    {
         char dirchar =
 #ifdef _WIN32
             '\\';
