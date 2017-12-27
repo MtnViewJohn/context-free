@@ -2046,6 +2046,9 @@ namespace AST {
                 continue;
             
             int mc = ClassMap.at(mod->modType);
+            const ASTmodification* modmod = dynamic_cast<const ASTmodification*>(mod->args.get());
+            if (mod->modType == ASTmodTerm::modification && modmod)
+                mc = modmod->modClass;
             modClass |= mc;
             if (!mod->isConstant)
                 nonConstant |= mc;
@@ -2057,8 +2060,15 @@ namespace AST {
                 CfdgError::Warning(mod->where, "Time changes are not supported within paths");
             
             try {
-                if (!keepThisOne)
-                    mod->evaluate(modData, false, nullptr);
+                if (!keepThisOne) {
+                    if (modmod) {                   // merge in mod data
+                        assert(modmod->modExp.empty());
+                        if (modData.merge(modmod->modData))
+                            keepThisOne = true;     // unless color conflict
+                    } else {
+                        mod->evaluate(modData, false, nullptr);
+                    }
+                }
             } catch (DeferUntilRuntime&) {
                 keepThisOne = true;
             }

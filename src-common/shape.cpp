@@ -63,18 +63,19 @@ Modification::isFinite() const
 bool
 Modification::merge(const Modification& m)
 {
-    m_transform.premultiply(m.m_transform);
-    m_Z.premultiply(m.m_Z);
-    m_time.premultiply(m.m_time);
-    mRand64Seed ^= m.mRand64Seed;
-    
     bool conflict = (m_ColorAssignment & m.m_ColorAssignment) ||
                     ((m.m_ColorAssignment & HSBColor::HueMask) &&   m_Color.h != 0.0) ||
                     ((  m_ColorAssignment & HSBColor::HueMask) && m.m_Color.h != 0.0) ||
                     (m_Color.b != 0.0 && m.m_Color.b != 0.0) ||
                     (m_Color.s != 0.0 && m.m_Color.s != 0.0) ||
                     (m_Color.a != 0.0 && m.m_Color.a != 0.0);
-
+    if (conflict) return true;
+    
+    m_transform.premultiply(m.m_transform);
+    m_Z.premultiply(m.m_Z);
+    m_time.premultiply(m.m_time);
+    mRand64Seed ^= m.mRand64Seed;
+    
     m_ColorTarget.h += m.m_ColorTarget.h;
     m_ColorTarget.b += m.m_ColorTarget.b;
     m_ColorTarget.s += m.m_ColorTarget.s;
@@ -85,7 +86,7 @@ Modification::merge(const Modification& m)
     m_Color.a += m.m_Color.a;
     m_ColorAssignment |= m.m_ColorAssignment;
     
-    return conflict;
+    return false;
 }
 
 void
