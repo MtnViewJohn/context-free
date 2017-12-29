@@ -3075,7 +3075,7 @@ namespace AST {
                 if (mStride * (mLength - 1) >= mCount)
                     CfdgError::Error(mArgs->where, "Vector length & stride arguments too large for source", b);
                 
-                isConstant = mData && mArgs->isConstant;
+                isConstant = (bound.mStackIndex == -1) && mArgs->isConstant;
                 mLocality = CombineLocality(mLocality, mArgs->mLocality);
                 break;
             }
