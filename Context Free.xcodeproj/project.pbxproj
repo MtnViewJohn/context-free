@@ -275,6 +275,7 @@
 		5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BitmapImageHolder.mm; sourceTree = "<group>"; };
 		524464E509BAAD5C007E722B /* primShape.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = primShape.cpp; sourceTree = "<group>"; };
 		524464E609BAAD5C007E722B /* primShape.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = primShape.h; sourceTree = "<group>"; };
+		5249137A1FE7724A001A8371 /* json3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json3.hpp; sourceTree = "<group>"; };
 		524D1AEF1EF4764A000D855A /* libagg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libagg.a; path = ../../../../usr/local/lib/libagg.a; sourceTree = "<group>"; };
 		524D1FAF13AD0D7C002732C2 /* astexpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = astexpression.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		524D1FB013AD0D8A002732C2 /* astreplacement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = astreplacement.h; sourceTree = "<group>"; };
@@ -534,6 +535,7 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
+				5249137A1FE7724A001A8371 /* json3.hpp */,
 				52D06C1E17667BB400F8D94C /* config.h */,
 				5298ED5216A216CB00C5726D /* chunk_vector.h */,
 				528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */,
@@ -970,7 +972,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1053,7 +1055,6 @@
 					/usr/local/include,
 					"src-agg/include",
 					"src-common",
-					"src-cereal",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1093,7 +1094,6 @@
 					/usr/local/include,
 					"src-agg/include",
 					"src-common",
-					"src-cereal",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1132,7 +1132,6 @@
 					/usr/local/include,
 					"src-agg/include",
 					"src-common",
-					"src-cereal",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1170,7 +1169,6 @@
 					/usr/local/include,
 					"src-agg/include",
 					"src-common",
-					"src-cereal",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1213,7 +1211,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1300,7 +1298,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
@@ -1343,7 +1341,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;

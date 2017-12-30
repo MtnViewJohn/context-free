@@ -34,8 +34,33 @@
 #include "builder.h"
 #include <typeinfo>
 
+
 namespace AST {
+    void to_json(json& j, const ASTparameter& m)
+    {
+        try {
+            std::string typeName = ASTparameter::typeNames.at(m.mType);
+            j = json{{"parameter type", typeName}};
+        } catch (std::out_of_range&) {
+            j = json{{"parameter type", "mixed"}};
+        }
+        if (m.mType == NumericType)
+            j["parameter tuple size"] = m.mTuplesize;
+        j["natural"] = m.isNatural;
+        j["parameter name"] = CFDG::ShapeToString(m.mName);
+    }
     
+    void to_json(json& j, const ASTreplacement& p) {
+        p.to_json(j);
+    }
+    
+    void to_json(json& j, const ASTrepContainer& p) {
+        j = json::array();
+        for (const auto& elem: p.mBody)
+            j.push_back(*elem);
+    }
+    
+
     CommandInfo::UIDtype ASTcompiledPath::GlobalPathUID(1);
     
     void
@@ -139,11 +164,11 @@ namespace AST {
     {
     }
     
-    ASTdefine::ASTdefine(std::string&& name, const yy::location& loc)
+    ASTdefine::ASTdefine(std::string& name, const yy::location& loc)
     : ASTreplacement(nullptr, loc, empty), mDefineType(StackDefine),
-      mType(NoType), isNatural(false), mParamSize(0), mName(std::move(name)),
-      mConfigDepth(-1)
+      mType(NoType), isNatural(false), mParamSize(0), mConfigDepth(-1)
     {
+        mName.swap(name);
         // Set the Modification entropy to parameter name, not its own contents
         int i = 0;
         mChildChange.modData.mRand64Seed.seed();
@@ -967,6 +992,224 @@ namespace AST {
                 Simplify(mArguments, b);
                 pathDataConst(b);
                 break;
+        }
+    }
+    
+    void
+    ASTreplacement::to_json(json& j) const
+    {
+        j = json{
+            {"class", "ASTreplacement"},
+            {"replacement shape", mShapeSpec},
+            {"replacement adjustment", mChildChange}
+        };
+    }
+    
+    void
+    ASTloop::to_json(json& j) const
+    {
+        j = json{
+            {"class", "ASTloop"},
+            {"loop variable name", CFDG::ShapeToString(mLoopIndexName)}
+        };
+        if (mLoopArgs) {
+            json j2{};
+            args_to_json(j2, *mLoopArgs);
+            j["loop bounds"] = j2;
+        } else {
+            j["loop bounds"] = mLoopData;
+        }
+        j["loop modification"] = mChildChange;
+        j["loop body"] = mLoopBody;
+        j["finally body"] = mFinallyBody;
+    }
+    
+    void
+    ASTtransform::to_json(json& j) const
+    {
+        j = json{
+            {"class", mClone ? "ASTclone" : "ASTtransform"},
+            {mClone ? "clone body" : "transform body", mBody}
+        };
+        json j2{};
+        args_to_json(j2, *mExpHolder);
+        j[mClone ? "clone list" : "transform list"] = j2;
+    }
+    
+    void
+    ASTif::to_json(json& j) const
+    {
+        j = json{
+            {"class", "ASTif"},
+            {"if condition", *mCondition},
+            {"then body", mThenBody},
+            {"else body", mElseBody}
+        };
+    }
+    
+    void
+    ASTswitch::to_json(json& j) const
+    {
+        struct tempcase {
+            std::vector<caseType> mCases;
+            const ASTrepContainer* mCaseBody;
+            tempcase(const ASTrepContainer* c) : mCaseBody(c) {}
+            json to_json() const {
+                return json{{"cases", mCases}, {"case body", *mCaseBody}};
+            }
+        };
+        std::vector<tempcase> tempCases;
+        for (auto&& caseinfo: mCases)
+            tempCases.emplace_back(caseinfo.second.get());
+        for (auto&& caseinfo: mCaseMap) {
+            for (auto&& tempcaseinfo: tempCases)
+                if (caseinfo.second == tempcaseinfo.mCaseBody) {
+                    for (auto i = caseinfo.first.first; i <= caseinfo.first.second; ++i)
+                        tempcaseinfo.mCases.push_back(i);
+                    break;
+                }
+        }
+        j = json{
+            {"class", "ASTswitch"},
+            {"switch expression", *mSwitchExp},
+            {"switch cases", json::array()},
+            {"switch else body", mElseBody}
+        };
+        for (auto&& c: tempCases)
+            j["switch cases"].push_back(c.to_json());
+    }
+    
+    void
+    ASTdefine::to_json(json& j) const
+    {
+        static std::map<define_t, std::string> defTypeName =
+        {
+            {StackDefine, "stack definition"},
+            {ConstDefine, "constant definition"},
+            {ConfigDefine, "configuration definition"},
+            {FunctionDefine, "function definition"},
+            {LetDefine, "let definition"}
+        };
+        j = {
+            {"class", "ASTdefine"},
+            {"definition type", defTypeName[mDefineType]},
+            {"definition name", mDefineType == ConfigDefine ? mName : CFDG::ShapeToString(mShapeSpec.shapeType)}
+        };
+        if (mDefineType == FunctionDefine) {
+            j["function parameters"] = mParameters;
+            j["function expression"] = *mExpression;
+        } else if (mDefineType != ConfigDefine) {
+            if (mExpression)
+                j["definition expression"] = *mExpression;
+            else
+                j["definition adjustment"] = mChildChange;
+        }
+        if (mExpression && mExpression->mType == NumericType)
+            j["length"] = mTuplesize;
+    }
+    
+    void
+    ASTrule::to_json(json& j) const
+    {
+        if (isPath) {
+            j = {
+                {"class", "ASTpath"},
+                {"path name", CFDG::ShapeToString(mNameIndex)}
+            };
+            if (auto params = CFDG::ShapeToParams(mNameIndex))
+                j["path parameters"] = *params;
+            else
+                j["path parameters"] = json::array();
+            j["path body"] = mRuleBody;
+        } else {
+            j = {
+                {"class", "ASTrule"},
+                {"rule name", CFDG::ShapeToString(mNameIndex)},
+                {"rule weight", mWeight}
+            };
+            if (auto params = CFDG::ShapeToParams(mNameIndex))
+                j["rule parameters"] = *params;
+            else
+                j["rule parameters"] = json::array();
+            j["rule body"] = mRuleBody;
+        }
+    }
+    
+    void
+    ASTpathOp::to_json(json& j) const
+    {
+        static const std::map<pathOpEnum, std::string> pathOpNames =
+        {
+            {unknownPathop, "unknown"},
+            {MOVETO, "MOVETO"},
+            {MOVEREL, "MOVEREL"},
+            {LINETO, "LINETO"},
+            {LINEREL, "LINEREL"},
+            {ARCTO, "ARCTO"},
+            {ARCREL, "ARCREL"},
+            {CURVETO, "CURVETO"},
+            {CURVEREL, "CURVEREL"},
+            {CLOSEPOLY, "CLOSEPOLY"}
+        };
+        try {
+            auto pathop = pathOpNames.at(mPathOp);
+            j = {
+                {"class", "ASTpathOp"},
+                {"path op", pathop}
+            };
+            if (mArguments) {
+                json j2{};
+                args_to_json(j2, *mArguments);
+                j["path op arguments"] = j2;
+            } else {
+                std::vector<double> data(6);
+                mChildChange.modData.m_transform.store_to(data.data());
+                data.resize(mArgCount);
+                j["path op arguments"] = data;
+            }
+            json_string flags;
+            if (mFlags & CF_ARC_CW)
+                flags = "CF::ArcCW";
+            if (mFlags & CF_ARC_LARGE)
+                flags += "CF::ArcLarge";
+            if (mFlags & CF_CONTINUOUS)
+                flags += "CF::Continuous";
+            if (mFlags & CF_ALIGN)
+                flags += "CF::Align";
+            j["path op flags"] = flags.get();
+        } catch (std::out_of_range&) {}
+    }
+    
+    void
+    ASTpathCommand::to_json(json& j) const
+    {
+        json_string flags;
+        if (mFlags & CF_FILL) {
+            if (mFlags & CF_EVEN_ODD)
+                flags = "CF::EvenOdd";
+            j = json{
+                {"class", "ASTpathCommand"},
+                {"path command", "FILL"},
+                {"adjustment", mChildChange},
+                {"flags", flags.get()}
+            };
+        } else {
+            static const char* joinNames[5] = {"CF::MiterJoin", "???", "CF::RoundJoin", "CF::BevelJoin", "???"};
+            static const char* capNames[3] = {"CF::ButtCap", "CF::SquareCap", "CF::RoundCap"};
+            flags = joinNames[mFlags & 7];
+            flags += capNames[(mFlags >> 4) & 7];
+            if (mFlags & CF_ISO_WIDTH)
+                flags += "CF::IsoWidth";
+            j = json{
+                {"class", "ASTpathCommand"},
+                {"path command", "STROKE"},
+                {"adjustment", mChildChange},
+                {"flags", flags.get()}
+            };
+            if (mParameters)
+                j["stroke width"] = *mParameters;
+            else
+                j["stroke width"] = mStrokeWidth;
         }
     }
     

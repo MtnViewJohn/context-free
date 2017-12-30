@@ -386,7 +386,7 @@ global_definition:
 function_definition_header:
         SHAPE USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr name($funcName); $funcName = nullptr;
-            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            $function_definition_header = driver.MakeDefinition(std::move(name), @function_definition_header, true);
             if ($function_definition_header) {
                 $function_definition_header->mType = RuleType;
                 $function_definition_header->mTuplesize = 1;
@@ -395,7 +395,7 @@ function_definition_header:
         |
         USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr name($funcName); $funcName = nullptr;
-            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            $function_definition_header = driver.MakeDefinition(std::move(name), @function_definition_header, true);
             if ($function_definition_header) {
                 $function_definition_header->mType = NumericType;
                 $function_definition_header->mTuplesize = 1;
@@ -405,7 +405,7 @@ function_definition_header:
         USER_STRING[funcType] USER_STRING[funcName] function_parameter_list BECOMES {
             str_ptr type($funcType); $funcType = nullptr;
             str_ptr name($funcName); $funcName = nullptr;
-            $function_definition_header = driver.MakeDefinition(*name, @function_definition_header, true);
+            $function_definition_header = driver.MakeDefinition(std::move(name), @function_definition_header, true);
             if ($function_definition_header)
                 $function_definition_header->mType = AST::decodeType(*type, $function_definition_header->mTuplesize, 
                                                                      $function_definition_header->isNatural, @funcType);
@@ -449,7 +449,7 @@ global_definition_header:
 definition_header:
         USER_STRING[defnName] BECOMES {
             str_ptr name($defnName); $defnName = nullptr;
-            $definition_header = driver.MakeDefinition(*name, @definition_header, false);
+            $definition_header = driver.MakeDefinition(std::move(name), @definition_header, false);
         }
         | MODTYPE BECOMES {
             error(@MODTYPE, "Reserved keyword: adjustment");
@@ -697,7 +697,7 @@ element_simple:
             str_ptr cmd($shapeName);    $shapeName = nullptr;
             exp_ptr p($parameter_spec); $parameter_spec = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
-            $element_simple = driver.MakeElement(*cmd, std::move(mod),
+            $element_simple = driver.MakeElement(std::move(cmd), std::move(mod),
                                                  std::move(p), @element_simple, false);
         }
         | 
@@ -706,8 +706,8 @@ element_simple:
             mod_ptr mod($modification); $modification = nullptr;
             str_ptr func(new std::string("if"));
             args.reset(driver.MakeFunction(std::move(func), std::move(args), @IF, @exp2, false));
-            static const std::string ifstr("if");
-            $element_simple = driver.MakeElement(ifstr, std::move(mod), std::move(args), @element_simple, false);
+            func.reset(new std::string("if"));
+            $element_simple = driver.MakeElement(std::move(func), std::move(mod), std::move(args), @element_simple, false);
         }
         |
         letHeader letBody modification {
@@ -716,15 +716,15 @@ element_simple:
             exp_ptr exp($letBody);      $letBody = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
             exp.reset(driver.MakeLet(@1, std::move(vars), std::move(exp)));      // must do unconditionally
-            static const std::string letstr("let");
-            $element_simple = driver.MakeElement(letstr, std::move(mod), std::move(exp), @element_simple, false);
+            str_ptr newlet(new std::string("let"));
+            $element_simple = driver.MakeElement(std::move(newlet), std::move(mod), std::move(exp), @element_simple, false);
         }
         |
         PATH shapeName parameter_spec modification {
             str_ptr cmd($shapeName);    $shapeName = nullptr;
             exp_ptr p($parameter_spec); $parameter_spec = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
-            $element_simple = driver.MakeElement(*cmd, std::move(mod), std::move(p), @element_simple, true);
+            $element_simple = driver.MakeElement(std::move(cmd), std::move(mod), std::move(p), @element_simple, true);
         }
         ;
 
@@ -917,7 +917,7 @@ loopHeader_v2:
             str_ptr cstr($loopCount); $loopCount = nullptr;
             exp_ptr count(new ASTreal(*cstr, @loopCount));
             mod_ptr mod($modification_v2); $modification_v2 = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             --driver.mLocalStackDepth;
             driver.lexer->maybeVersion = token::CFDG2;
             $loopHeader_v2 = new ASTloop(driver.StringToShape(dummyvar, @loopCount, false),
@@ -938,7 +938,7 @@ loopHeader:
         |
         LOOP MODTYPE BECOMES exp2 {
             exp_ptr index($exp2); $exp2 = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             $loopHeader = new ASTloop(driver.StringToShape(dummyvar, @LOOP, false),
                                       dummyvar, @MODTYPE, std::move(index), @exp2, nullptr);
             driver.push_repContainer($loopHeader->mLoopBody);
@@ -947,7 +947,7 @@ loopHeader:
         |
         LOOP exp2 {
             exp_ptr count($exp2); $exp2 = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             $loopHeader = new ASTloop(driver.StringToShape(dummyvar, @LOOP, false),
                                       dummyvar, @LOOP, std::move(count), @exp2, nullptr);
             driver.push_repContainer($loopHeader->mLoopBody);

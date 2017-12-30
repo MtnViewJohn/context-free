@@ -28,12 +28,17 @@
 
 #include "xorshift64star.h"
 #include <cmath>
+#include <string>
 
 class Rand64 {
 public:
     using result_type = XORshift64star::result_type;
     Rand64(result_type seed = XORshift64star::RAND64_SEED) : mSeed(seed) { }
     Rand64(const Rand64& r) : mSeed(r.mSeed) { }
+    std::string serialize() const;
+    bool operator==(const Rand64& o) const { return mSeed.mSeed == o.mSeed.mSeed; }
+    bool operator!=(const Rand64& o) const { return mSeed.mSeed != o.mSeed.mSeed; }
+
     // Return double in [0,1)
     double getDouble()
     {

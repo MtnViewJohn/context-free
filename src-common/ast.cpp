@@ -35,6 +35,23 @@
 #include <cstring>
 
 namespace AST {
+    const std::map<expType, std::string> ASTparameter::typeNames =
+    {
+        {NoType, "no type"},
+        {NumericType, "numeric type"},
+        {ModType, "adjustment type"},
+        {RuleType, "rule type"},
+        {FlagType, "flag type"}
+    };
+    
+    const std::map<Locality_t, std::string> ASTparameter::localityNames =
+    {
+        {UnknownLocal, "unknown locality"},
+        {ImpureNonlocal, "impure non-local"},
+        {PureNonlocal, "pure non-local"},
+        {PureLocal, "pure local"}
+    };
+
 
     void
     ASTparameter::init(int nameIndex, ASTdefine* def)

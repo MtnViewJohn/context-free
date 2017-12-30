@@ -212,6 +212,16 @@ Builder::ShapeToString(int shape)
     return m_CFDG->decodeShapeName(shape);
 }
 
+const std::string&
+Builder::FlagToString(int flag)
+{
+    static const std::string notfound = "Unknown flag";
+    for (auto&& kv: FlagNames)
+        if (kv.second == flag)
+            return kv.first;
+    return notfound;
+}
+
 // Switch parser input to a new file
 void
 Builder::IncludeFile(const std::string& fname)
@@ -333,8 +343,8 @@ Builder::MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, exp_ptr exp)
         error(cfgLoc, "Configuration parameters must be at global scope");
         return nullptr;
     }
-    std::string name(CFDG::ParamNames[cfgnum]);     // copy the name
-    ASTdefine* cfg = new ASTdefine(std::move(name), cfgLoc);
+    std::string name(CFDG::ParamNames[cfgnum]);         // copy the name
+    ASTdefine* cfg = new ASTdefine(name, cfgLoc);
     cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
     cfg->mDefineType = ASTdefine::ConfigDefine;
     cfg->mExpression = std::move(exp);
@@ -342,10 +352,10 @@ Builder::MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, exp_ptr exp)
 }
 
 ASTdefine*
-Builder::MakeDefinition(std::string& name, const yy::location& nameLoc,
+Builder::MakeDefinition(AST::str_ptr name, const yy::location& nameLoc,
                         bool isFunction)
 {
-    if (strncmp(name.c_str(), "CF::", 4) == 0) {
+    if (strncmp(name->c_str(), "CF::", 4) == 0) {
         if (isFunction) {
             error(nameLoc, "Configuration parameters cannot be functions");
             return nullptr;
@@ -354,18 +364,18 @@ Builder::MakeDefinition(std::string& name, const yy::location& nameLoc,
             error(nameLoc, "Configuration parameters must be at global scope");
             return nullptr;
         }
-        ASTdefine* cfg = new ASTdefine(std::move(name), nameLoc);
+        ASTdefine* cfg = new ASTdefine(*name, nameLoc);
         cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
         cfg->mDefineType = ASTdefine::ConfigDefine;
         return cfg;
     }
     
-    if (ASTfunction::GetFuncType(name) != ASTfunction::NotAFunction) {
+    if (ASTfunction::GetFuncType(*name) != ASTfunction::NotAFunction) {
         error(nameLoc, "Internal function names are reserved");
         return nullptr;
     }
     
-    int nameIndex = StringToShape(name, nameLoc, false);
+    int nameIndex = StringToShape(*name, nameLoc, false);
     if (ASTdefine* funcDef = m_CFDG->findFunction(nameIndex)) {
         error(nameLoc, "Definition with same name as user function");
         error(funcDef->mLocation, "    user function definition is here.");
@@ -373,7 +383,7 @@ Builder::MakeDefinition(std::string& name, const yy::location& nameLoc,
     }
 
     CheckVariableName(nameIndex, nameLoc, false);
-    ASTdefine* def = new ASTdefine(std::move(name), nameLoc);
+    ASTdefine* def = new ASTdefine(*name, nameLoc);
     def->mShapeSpec.shapeType = nameIndex;
     if (isFunction) {
         for (ASTparameter& param: mParamDecls.mParameters)
@@ -558,7 +568,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
     std::string name("let");
     int nameIndex = StringToShape(name, letLoc, false);
     yy::location defLoc = exp->where;
-    def_ptr def = std::make_unique<ASTdefine>(std::move(name), defLoc);
+    def_ptr def = std::make_unique<ASTdefine>(name, defLoc);
     def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
     def->mDefineType = ASTdefine::LetDefine;
@@ -566,7 +576,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
 }
 
 ruleSpec_ptr
-Builder::MakeRuleSpec(const std::string& name, exp_ptr args,
+Builder::MakeRuleSpec(std::string& name, exp_ptr args,
                       const yy::location& loc, mod_ptr mod, bool makeStart)
 {
     if (name == "if" || name == "let" || name == "select") {
@@ -628,13 +638,13 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
 }
 
 ASTreplacement*
-Builder::MakeElement(const std::string& s, mod_ptr mods, exp_ptr params, 
+Builder::MakeElement(AST::str_ptr s, mod_ptr mods, exp_ptr params,
                      const yy::location& loc, bool subPath)
 {
-    if (mInPathContainer && !subPath && (s == "FILL" || s == "STROKE")) 
-        return new ASTpathCommand(s, std::move(mods), std::move(params), loc);
+    if (mInPathContainer && !subPath && (*s == "FILL" || *s == "STROKE"))
+        return new ASTpathCommand(*s, std::move(mods), std::move(params), loc);
     
-    ruleSpec_ptr r = MakeRuleSpec(s, std::move(params), loc);
+    ruleSpec_ptr r = MakeRuleSpec(*s, std::move(params), loc);
     ASTreplacement::repElemListEnum t = ASTreplacement::replacement;
     if (r->argSource == ASTruleSpecifier::ParentArgs)
         r->argSource = ASTruleSpecifier::SimpleParentArgs;

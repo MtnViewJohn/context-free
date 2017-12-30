@@ -207,11 +207,15 @@ class CFDG {
         bool usesFrameTime;
         static const CfgArray<std::string>  ParamNames;
         static CFG lookupCfg(const std::string& name);
+        static const std::string& getCfgName(int c);
+        static std::string ShapeToString(int shape);
+        static const AST::ASTparameters* ShapeToParams(int shape);
         virtual bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
         virtual const agg::rgba& getBackgroundColor() = 0;
+        virtual void serialize(std::ostream&) = 0;
 
     protected:
         CFDG()

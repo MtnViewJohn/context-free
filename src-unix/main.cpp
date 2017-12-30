@@ -50,6 +50,7 @@
 #include "makeCFfilename.h"
 #include <cassert>
 #include <memory>
+#include "astexpression.h"
 
 using std::string;
 using std::cerr;
@@ -123,7 +124,7 @@ prettyInt(unsigned long v)
 }
 
 struct options {
-    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3 };
+    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 4 };
     int   width;
     int   height;
     int   widthMult;
@@ -239,6 +240,8 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag zoom(parser, "zoom", "Zoom out during animation", {'z', "zoom"});
     args::Flag makeSVG(parser, "SVG", "Generate SVG output (not allowed for animation)",
                        {'V', "svg"});
+    args::Flag makeJSON(parser, "JSON", "Generate JSON output of parsed cfdg file",
+                       {'J', "json"});
     args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
     args::Flag makeProRes(parser, "ProRes", "Use ProRes codec for QuickTime output", { "prores" });
 #ifdef _WIN32
@@ -351,6 +354,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.format = options::BMPfile;
         opt.outputWallpaper = true;
     }
+    if (makeJSON) opt.format = options::JSONfile;
     opt.crop = crop;
     opt.check = check;
     opt.quiet = quiet;
@@ -402,6 +406,17 @@ public:
 };
 
 static nullostream cnull;
+
+namespace {
+    struct OstreamCloser
+    {
+        void operator()(std::ostream* ptr) const {
+            if (ptr != &std::cout)
+                delete ptr;        // Not called if nullptr
+        }
+    };
+}
+
 
 int main (int argc, char* argv[]) {
     options opts;
@@ -458,9 +473,19 @@ int main (int argc, char* argv[]) {
         if (opts.input.empty()) exit(0);
     }
     
+    AST::ASTfunction::RandStaticIsConst = opts.format != options::JSONfile;
     cfdg_ptr myDesign = CFDG::ParseFile(opts.input.c_str(), &system, opts.variation);
     if (!myDesign) return 3;
     if (opts.check) return 0;
+    if (opts.format == options::JSONfile) {
+        std::unique_ptr<std::ostream, OstreamCloser> out(nullptr);
+        if (opts.outputStdout)
+            out.reset(&std::cout);
+        else
+            out.reset(new std::ofstream(opts.output));
+        myDesign->serialize(*out);
+        return 0;
+    }
     if (opts.widthMult != 1 || opts.heightMult != 1) {
         if (!myDesign->isTiled() && !myDesign->isFrieze()) {
             cerr << "Tiled output multiplication only allowed for tiled or frieze designs." << endl;
@@ -546,6 +571,8 @@ int main (int argc, char* argv[]) {
             myCanvas = static_cast<Canvas*>(mov.get());
             break;
         }
+        case options::JSONfile:
+            break;
     }
     
     if (myCanvas->mError || system.error(false) || TheRenderer->requestStop) {

@@ -39,6 +39,9 @@
 #include <cstring>
 #include "agg_trans_affine_time.h"
 
+#include "json3.hpp"
+using json = nlohmann::json;
+
 #ifdef _WIN32
 #pragma warning( disable : 4800 4189 )
 #endif
@@ -75,7 +78,7 @@ CFDGImpl::initVariables()
 {
     std::string pi_name("\xcf\x80");           // UTF8-encoded pi symbol
     int pi_num = encodeShapeName(pi_name, CfdgError::Default);
-    def_ptr pi = std::make_unique<ASTdefine>(std::move(pi_name), CfdgError::Default);
+    def_ptr pi = std::make_unique<ASTdefine>(pi_name, CfdgError::Default);
     pi->mExpression = std::make_unique<ASTreal>(M_PI, CfdgError::Default);
     pi->mShapeSpec.shapeType = pi_num;
     mCFDGcontents.addDefParameter(pi_num, pi.get(), CfdgError::Default, CfdgError::Default);
@@ -86,7 +89,7 @@ CFDGImpl::initVariables()
     };
     for (auto name: circleNames) {  // no auto&&, we want to make a copy
         int num = encodeShapeName(name, CfdgError::Default);
-        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(name, CfdgError::Default);
         def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::circleType, "CIRCLE", nullptr, CfdgError::Default, nullptr);
         def->mShapeSpec.shapeType = num;
         mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
@@ -98,7 +101,7 @@ CFDGImpl::initVariables()
     };
     for (auto name: squareNames) {
         int num = encodeShapeName(name, CfdgError::Default);
-        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(name, CfdgError::Default);
         def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::squareType, "SQUARE", nullptr, CfdgError::Default, nullptr);
         def->mShapeSpec.shapeType = num;
         mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
@@ -110,7 +113,7 @@ CFDGImpl::initVariables()
     };
     for (auto name: triangleNames) {
         int num = encodeShapeName(name, CfdgError::Default);
-        def_ptr def = std::make_unique<ASTdefine>(std::move(name), CfdgError::Default);
+        def_ptr def = std::make_unique<ASTdefine>(name, CfdgError::Default);
         def->mExpression = std::make_unique<ASTruleSpecifier>(primShape::triangleType, "TRIANGLE", nullptr, CfdgError::Default, nullptr);
         def->mShapeSpec.shapeType = num;
         mCFDGcontents.addDefParameter(num, def.get(), CfdgError::Default, CfdgError::Default);
@@ -316,6 +319,21 @@ CFDGImpl::getSymmetry(SymmList& syms, RendererAST* r)
     }
 }
 
+void
+CFDGImpl::serialize(std::ostream& out)
+{
+    json j{};
+    json jc{};
+    for (int cfg = 0; cfg < static_cast<int>(CFG::_NumberOf); ++cfg)
+        if (ParamDepth[cfg] != NoParameter)
+            jc[getCfgName(cfg)] = *ParamExp[cfg];
+    j["configuration"] = jc;
+    auto it = mCFDGcontents.mBody.begin();
+    mCFDGcontents.mBody.erase(it, it + 11);     // delete the pre-defines
+    j["cfdg"] = mCFDGcontents;
+    out << std::setw(4) << j << std::endl;
+}
+
 bool
 CFDGImpl::hasParameter(CFG name, double& value, RendererAST* r) const
 {
@@ -425,8 +443,8 @@ CFDGImpl::rulesLoaded()
         if (--rulecounts[ r->mNameIndex ]) {
             r->mWeight = unitweightsums[ r->mNameIndex ];
         } else {
-            // make sure that last rule of a type has a weightsum > 1.0
-            r->mWeight = 1.1;
+            // make sure that last rule of a type has a weightsum >= 1.0
+            r->mWeight = 1.0;
         }
     }
     

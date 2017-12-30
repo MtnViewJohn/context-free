@@ -79,6 +79,35 @@ CFDG::lookupCfg(const std::string& name)
     return static_cast<CFG>(nameIt - ParamNames.begin());
 }
 
+const std::string&
+CFDG::getCfgName(int c)
+{
+    static const std::string unknown = "unknown configuration variable";
+    if (c >= 0 && c < static_cast<int>(CFG::_NumberOf))
+        return ParamNames[c];
+    return unknown;
+}
+
+static CFDGImpl* LatestCFDGimpl = nullptr;
+
+std::string
+CFDG::ShapeToString(int shape)
+{
+    if (LatestCFDGimpl)
+        return LatestCFDGimpl->decodeShapeName(shape);
+    else
+        return "unknown";
+}
+
+const AST::ASTparameters*
+CFDG::ShapeToParams(int shape)
+{
+    if (LatestCFDGimpl)
+        return LatestCFDGimpl->getShapeParams(shape);
+    else
+        return nullptr;
+}
+
 CfdgError::CfdgError(const yy::location& loc, const char* msg)
 : where(loc), mMsg(msg)
 {
@@ -192,6 +221,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             pCfdg = std::make_unique<CFDGImpl>(system);
         Builder b(pCfdg, variation);
         pCfdg->m_builder = &b;
+        LatestCFDGimpl = pCfdg.get();
 
         yy::Scanner lexer;
         b.lexer = &lexer;
@@ -237,6 +267,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             yyresult = parser.parse();
         } catch (CfdgError& err) {
             system->syntaxError(err);
+            LatestCFDGimpl = nullptr;
             return nullptr;
         }
         
@@ -256,6 +287,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
             return nullptr;
         system->message("Restarting as a version 3 design");
         pCfdg.reset();
+        LatestCFDGimpl = nullptr;
     }
     
     if (pCfdg) {

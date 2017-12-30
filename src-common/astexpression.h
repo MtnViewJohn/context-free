@@ -39,6 +39,61 @@
 class RendererAST;
 class Builder;
 
+#include "json3.hpp"
+using json = nlohmann::json;
+
+namespace agg {
+    void to_json(json& j, const trans_affine& m);
+    void to_json(json& j, const trans_affine_1D& m);
+    void to_json(json& j, const trans_affine_time& m);
+};
+
+void to_json(json& j, const HSBColor& m);
+
+void to_json(json& j, const Rand64& m);
+
+void to_json(json& j, const Modification& m);
+
+void to_json(json& j, const StackRule& r);
+
+class json_string {
+public:
+    json_string() = default;
+    json_string(const char* str) : mSep(str) {}
+    json_string& operator=(const char* str) {
+        mString = str;
+        return *this;
+    }
+    json_string& operator+=(const char* str) {
+        if (!mString.empty())
+            mString += mSep;
+        mString += str;
+        return *this;
+    }
+    json_string& operator+=(const std::string& str) {
+        if (!mString.empty())
+            mString += mSep;
+        mString += str;
+        return *this;
+    }
+    const std::string& get() const {
+        return mString;
+    }
+private:
+    std::string mString;
+    std::string mSep = "+";
+};
+
+class json_float {
+public:
+    json_float() = default;
+    json_float(double v) : value(v) {}
+    double value = 0.0;
+};
+
+void to_json(json& j, json_float f);
+void from_json(const json& j, json_float& f);
+
 namespace AST {
     
     class ASTdefine;
@@ -82,7 +137,12 @@ namespace AST {
         // with the returned object. Using the original object after type check
         // will fail.
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
+        virtual void to_json(json& j) const;
     };
+    
+    void to_json(json& j, const ASTexpression& e);
+    void args_to_json(json& j, const ASTexpression& e);
+    
     class ASTfunction : public ASTexpression {
     public:
         enum FuncType { NotAFunction, 
@@ -100,6 +160,8 @@ namespace AST {
             RandDiscrete, RandGeometric
         };
         static FuncType GetFuncType(const std::string& func);
+        static const std::string& GetFuncName(ASTfunction::FuncType t);
+        static bool RandStaticIsConst;      // hideous hack for JSON
         FuncType functype;
         exp_ptr arguments;
         double random;
@@ -112,6 +174,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
         ASTexpression* simplify(Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTselect : public ASTexpression {
         enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
@@ -131,6 +194,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     private:
         //ASTselect(const yy::location& loc)
         //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
@@ -177,6 +241,7 @@ namespace AST {
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
         void grab(const ASTruleSpecifier* src);
+        void to_json(json& j) const override;
     };
     class ASTstartSpecifier : public ASTruleSpecifier {
     public:
@@ -195,6 +260,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTcons : public ASTexpression {
     public:
@@ -211,6 +277,7 @@ namespace AST {
         const ASTexpression* getChild(size_t i) const override;
         size_t size() const override { return children.size(); }
         ASTexpression* append(ASTexpression* sib) override;
+        void to_json(json& j) const override;
     };
     class ASTreal : public ASTexpression {
     public:
@@ -232,6 +299,7 @@ namespace AST {
         ~ASTreal() override = default;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
         void entropy(std::string& e) const override;
+        void to_json(json& j) const override;
     };
     class ASTvariable : public ASTexpression {
     public:
@@ -250,6 +318,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTuserFunction : public ASTexpression {
     public:
@@ -266,6 +335,7 @@ namespace AST {
         void entropy(std::string&) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     private:
         class StackSetup {
             friend class ASTuserFunction;
@@ -280,12 +350,14 @@ namespace AST {
     };
     class ASTlet : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
+        std::vector<std::string> mNames;
     public:
         ASTlet(cont_ptr args, def_ptr func, const yy::location& letLoc,
                const yy::location& defLoc);
         ~ASTlet() override;          // inherited definition ptr owns ASTdefine
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASToperator : public ASTexpression {
     public:
@@ -300,6 +372,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTparen : public ASTexpression {
     public:
@@ -316,6 +389,7 @@ namespace AST {
         void entropy(std::string& ent) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
 
     class ASTmodTerm : public ASTexpression {
@@ -343,7 +417,11 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
+    
+    void to_json(json& j, const ASTmodTerm& m);
+    
     class ASTmodification : public ASTexpression {
     public:
         enum modClassEnum {
@@ -372,7 +450,11 @@ namespace AST {
         void addEntropy(const std::string& name);
         void makeCanonical();
         void grab(ASTmodification* m);
+        void to_json(json& j) const override;
     };
+    
+    void to_json(json& j, const ASTmodification& m);
+    
     class ASTarray : public ASTexpression {
     public:
         int     mName;
@@ -394,6 +476,7 @@ namespace AST {
         void entropy(std::string& e) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     
     inline void Compile(exp_ptr& exp, CompilePhase ph, Builder* b)

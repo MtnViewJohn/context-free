@@ -71,11 +71,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/demo2_v2.cfdg output/test.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-J input/mtree.cfdg -"
-            isEnabled = "NO">
+            argument = "-J input/tests/xyztext1.cfdg -"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"

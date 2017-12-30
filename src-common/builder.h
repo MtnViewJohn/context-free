@@ -116,6 +116,8 @@ public:
     int             StringToShape(const std::string& name, const yy::location& loc,
                                   bool colonsAllowed);
     std::string     ShapeToString(int shape);
+    static const std::string&
+                    FlagToString(int flag);
     void            PushNameSpace(AST::str_ptr n, const yy::location& loc);
     void            CheckName(const std::string& name, const yy::location& loc,
                               bool colonsAllowed);
@@ -130,12 +132,12 @@ public:
     AST::ASTexpression*  
                     MakeVariable(const std::string& name, const yy::location& loc);
     AST::ruleSpec_ptr
-                    MakeRuleSpec(const std::string& name, AST::exp_ptr a,
+                    MakeRuleSpec(std::string& name, AST::exp_ptr a,
                                  const yy::location& loc, AST::mod_ptr mod = nullptr,
                                  bool makeStart = false);
     void            MakeModTerm(AST::ASTtermArray& dest, AST::term_ptr t);
     AST::ASTreplacement*
-                    MakeElement(const std::string& s, AST::mod_ptr mods, AST::exp_ptr params,
+                    MakeElement(AST::str_ptr s, AST::mod_ptr mods, AST::exp_ptr params,
                                 const yy::location& loc, bool subPath);
     AST::ASTexpression*
                     MakeFunction(AST::str_ptr name, AST::exp_ptr args, const yy::location& nameLoc, 
@@ -149,7 +151,7 @@ public:
                     MakeModification(AST::mod_ptr modExp, const yy::location& loc,
                                      bool canonical);
     AST::ASTdefine* MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, AST::exp_ptr exp);
-    AST::ASTdefine* MakeDefinition(std::string& name, const yy::location& nameLoc,
+    AST::ASTdefine* MakeDefinition(AST::str_ptr name, const yy::location& nameLoc,
                                    bool isFunction);
     std::string     GetTypeInfo(int name, AST::ASTdefine*& func, const AST::ASTparameters*& p);
     const AST::ASTrule*

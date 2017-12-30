@@ -140,6 +140,7 @@ class CFDGImpl : public CFDG {
         bool isSized(double* x = nullptr, double* y = nullptr) const override;
         bool isTimed(agg::trans_affine_time* t = nullptr) const override;
         const agg::rgba& getBackgroundColor() override;
+        void serialize(std::ostream&) override;
         void setBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
     

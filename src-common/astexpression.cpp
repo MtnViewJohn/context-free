@@ -31,7 +31,167 @@
 #include <cmath>
 #include <cassert>
 
+using namespace std::string_literals;
+
+void to_json(json& j, json_float f)
+{
+    if (std::isfinite(f.value))
+        j = f.value;
+    else if (std::isnan(f.value))
+        j = "NaN";
+    else
+        j = std::signbit(f.value) ? "-Infinity" : "Infinity";
+}
+
+void from_json(const json& j, json_float& f)
+{
+    if (j.is_number()) {
+        f.value = j.get<double>();
+    } else if (j.is_string()) {
+        const std::string& s = j.get_ref<const std::string&>();
+        if (s == "NaN")
+            f.value = NAN;
+        else if (s == "Infinity")
+            f.value = INFINITY;
+        else if (s == "-Infinity")
+            f.value = -INFINITY;
+        else
+            throw nlohmann::detail::type_error::create(302, "float string must be 'Nan', 'Infinity', or '-Infinity', but is " + s);
+    } else {
+        throw nlohmann::detail::type_error::create(302, "type must be number or string, but is " + std::string(j.type_name()));
+    }
+}
+
+namespace agg {
+    void to_json(json& j, const trans_affine& m)
+    {
+        j = json{{"sx", m.sx}, {"shy", m.shy}, {"shx", m.shx},
+                 {"sy", m.sy}, {"tx", m.tx}, {"ty", m.ty}};
+    }
+    void to_json(json& j, const trans_affine_1D& m)
+    {
+        j = json{{"sz", m.sz}, {"tz", json_float(m.tz)}};
+    }
+    void to_json(json& j, const trans_affine_time& m)
+    {
+        j = json{{"st", m.st}, {"tbegin", json_float(m.tbegin)}, {"tend", json_float(m.tend)}};
+    }
+    
+};
+
+void to_json(json& j, const HSBColor& m)
+{
+    j = json {
+        {"hue", m.h},
+        {"saturation", m.s},
+        {"brightness", m.b},
+        {"alpha", m.a}
+    };
+}
+
+void to_json(json& j, const Rand64& m)
+{
+    j = json{{"seed", m.serialize()}};
+}
+
+void to_json(json& j, const Modification& m)
+{
+    static const Modification defMod;
+    j = json{};
+    if (m.m_transform != defMod.m_transform)
+        j["transform xy"] = m.m_transform;
+    if (m.m_Z != defMod.m_Z)
+        j["transform z"] = m.m_Z;
+    if (m.m_time != defMod.m_time)
+        j["transform time"] = m.m_time;
+    if (m.m_Color != defMod.m_Color)
+        j["color"] = m.m_Color;
+    if (m.m_ColorTarget != defMod.m_ColorTarget)
+        j["color target"] = m.m_ColorTarget;
+    if (m.m_ColorAssignment != defMod.m_ColorAssignment) {
+        json_string ca_str(", ");
+        auto ca = m.m_ColorAssignment;
+        for (auto&& channel: {"hue"s, "saturation"s, "brightness"s, "alpha"s}) {
+            switch (ca & HSBColor::ColorMask) {
+                case HSBColor::ColorTarget:
+                    ca_str += channel + " target";
+                    break;
+                case HSBColor::Color2Value:
+                    ca_str += channel + " two valued";
+                    break;
+                default:
+                    break;
+            }
+            ca >>= 2;
+        }
+        j["color assignment"] = ca_str.get();
+    }
+    j["random"] = m.mRand64Seed;
+}
+
+void to_json(json& j, const StackRule& r)
+{
+    j = json::array();
+    j.push_back(CFDG::ShapeToString(r.mRuleName));
+    if (r.mParamCount == 0) return;
+    for (auto it = r.begin(), e = r.end(); it != e; ++it) {
+        switch (it.type().mType) {
+            case AST::NumericType: {
+                const StackType* vec = reinterpret_cast<const StackType*>(&*it);
+                if (it.type().isNatural) {
+                    j.push_back(static_cast<int>(vec->number));
+                } else {
+                    json j2 = json::array();
+                    for (int i = 0; i < it.type().mTuplesize; ++i)
+                        j2.push_back(json_float(vec[i].number));
+                    j.push_back(j2);
+                }
+                break;
+            }
+            case AST::ModType: {
+                const Modification* m = reinterpret_cast<const Modification*>(&*it);
+                j.push_back(*m);
+                break;
+            }
+            case AST::RuleType: {
+                j.push_back(*(it->rule));
+                break;
+            }
+            default:
+                assert(false);
+                break;
+        }
+    }
+}
+
 namespace AST {
+    void to_json(json& j, const ASTexpression& e)
+    {
+        e.to_json(j);
+    }
+    
+    void args_to_json(json& j, const ASTexpression& e)
+    {
+        j = json::array();
+        if (const ASTcons* c = dynamic_cast<const ASTcons*>(&e)) {
+            for (auto&& kid: c->children)
+                j.push_back(*kid);
+        } else {
+            j.push_back(e);
+        }
+    }
+    
+    void to_json(json& j, const ASTmodTerm& m)
+    {
+        m.to_json(j);
+    }
+    
+    void to_json(json& j, const ASTmodification& m)
+    {
+        m.to_json(j);
+    }
+    
+    bool ASTfunction::RandStaticIsConst = true;
     
     ASTfunction::ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                              const yy::location& nameLoc, const yy::location& argsLoc,
@@ -55,81 +215,91 @@ namespace AST {
             random = r.getDouble();
     }
     
+    static const std::map<std::string, ASTfunction::FuncType> NameMap = {
+        { "cos",        ASTfunction::Cos},
+        { "sin",        ASTfunction::Sin },
+        { "tan",        ASTfunction::Tan },
+        { "cot",        ASTfunction::Cot },
+        { "acos",       ASTfunction::Acos },
+        { "asin",       ASTfunction::Asin },
+        { "atan",       ASTfunction::Atan },
+        { "acot",       ASTfunction::Acot },
+        { "cosh",       ASTfunction::Cosh },
+        { "sinh",       ASTfunction::Sinh },
+        { "tanh",       ASTfunction::Tanh },
+        { "acosh",      ASTfunction::Acosh },
+        { "asinh",      ASTfunction::Asinh },
+        { "atanh",      ASTfunction::Atanh },
+        { "log",        ASTfunction::Log },
+        { "log10",      ASTfunction::Log10 },
+        { "sqrt",       ASTfunction::Sqrt },
+        { "exp",        ASTfunction::Exp },
+        { "abs",        ASTfunction::Abs },
+        { "floor",      ASTfunction::Floor },
+        { "ceiling",    ASTfunction::Ceiling },
+        { "infinity",   ASTfunction::Infinity },
+        { "factorial",  ASTfunction::Factorial },
+        { "sg",         ASTfunction::Sg },
+        { "isNatural",  ASTfunction::IsNatural },
+        { "bitnot",     ASTfunction::BitNot },
+        { "bitor",      ASTfunction::BitOr },
+        { "bitand",     ASTfunction::BitAnd },
+        { "bitxor",     ASTfunction::BitXOR },
+        { "bitleft",    ASTfunction::BitLeft },
+        { "bitright",   ASTfunction::BitRight },
+        { "atan2",      ASTfunction::Atan2 },
+        { "mod",        ASTfunction::Mod },
+        { "divides",    ASTfunction::Divides },
+        { "div",        ASTfunction::Div },
+        { "dot",        ASTfunction::Dot },
+        { "cross",      ASTfunction::Cross },
+        { "hsb2rgb",    ASTfunction::Hsb2Rgb },
+        { "rgb2hsb",    ASTfunction::Rgb2Hsb },
+        { "vec",        ASTfunction::Vec },
+        { "min",        ASTfunction::Min },
+        { "max",        ASTfunction::Max },
+        { "ftime",      ASTfunction::Ftime },
+        { "frame",      ASTfunction::Frame },
+        { "rand_static",        ASTfunction::Rand_Static },
+        { "rand",               ASTfunction::Rand },
+        { "rand.",              ASTfunction::RandOp },
+        { "rand+/-",            ASTfunction::Rand2 },
+        { "rand::exponential",  ASTfunction::RandExponential },
+        { "rand::gamma",        ASTfunction::RandGamma },
+        { "rand::weibull",      ASTfunction::RandWeibull },
+        { "rand::extremeV",     ASTfunction::RandExtremeValue },
+        { "rand::normal",       ASTfunction::RandNormal },
+        { "rand::lognormal",    ASTfunction::RandLogNormal },
+        { "rand::chisquared",   ASTfunction::RandChiSquared },
+        { "rand::cauchy",       ASTfunction::RandCauchy },
+        { "rand::fisherF",      ASTfunction::RandFisherF },
+        { "rand::studentT",     ASTfunction::RandStudentT },
+        { "randint",            ASTfunction::RandInt },
+        { "randint::bernoulli", ASTfunction::RandBernoulli },
+        { "randint::binomial",  ASTfunction::RandBinomial },
+        { "randint::negbinomial", ASTfunction::RandNegBinomial },
+        { "randint::poisson",   ASTfunction::RandPoisson },
+        { "randint::discrete",  ASTfunction::RandDiscrete },
+        { "randint::geometric", ASTfunction::RandGeometric }
+    };
+    
     ASTfunction::FuncType
     ASTfunction::GetFuncType(const std::string& func) 
     {
-        static const std::map<std::string, ASTfunction::FuncType> NameMap = {
-            { "cos",        ASTfunction::Cos},
-            { "sin",        ASTfunction::Sin },
-            { "tan",        ASTfunction::Tan },
-            { "cot",        ASTfunction::Cot },
-            { "acos",       ASTfunction::Acos },
-            { "asin",       ASTfunction::Asin },
-            { "atan",       ASTfunction::Atan },
-            { "acot",       ASTfunction::Acot },
-            { "cosh",       ASTfunction::Cosh },
-            { "sinh",       ASTfunction::Sinh },
-            { "tanh",       ASTfunction::Tanh },
-            { "acosh",      ASTfunction::Acosh },
-            { "asinh",      ASTfunction::Asinh },
-            { "atanh",      ASTfunction::Atanh },
-            { "log",        ASTfunction::Log },
-            { "log10",      ASTfunction::Log10 },
-            { "sqrt",       ASTfunction::Sqrt },
-            { "exp",        ASTfunction::Exp },
-            { "abs",        ASTfunction::Abs },
-            { "floor",      ASTfunction::Floor },
-            { "ceiling",    ASTfunction::Ceiling },
-            { "infinity",   ASTfunction::Infinity },
-            { "factorial",  ASTfunction::Factorial },
-            { "sg",         ASTfunction::Sg },
-            { "isNatural",  ASTfunction::IsNatural },
-            { "bitnot",     ASTfunction::BitNot },
-            { "bitor",      ASTfunction::BitOr },
-            { "bitand",     ASTfunction::BitAnd },
-            { "bitxor",     ASTfunction::BitXOR },
-            { "bitleft",    ASTfunction::BitLeft },
-            { "bitright",   ASTfunction::BitRight },
-            { "atan2",      ASTfunction::Atan2 },
-            { "mod",        ASTfunction::Mod },
-            { "divides",    ASTfunction::Divides },
-            { "div",        ASTfunction::Div },
-            { "dot",        ASTfunction::Dot },
-            { "cross",      ASTfunction::Cross },
-            { "hsb2rgb",    ASTfunction::Hsb2Rgb },
-            { "rgb2hsb",    ASTfunction::Rgb2Hsb },
-            { "vec",        ASTfunction::Vec },
-            { "min",        ASTfunction::Min },
-            { "max",        ASTfunction::Max },
-            { "ftime",      ASTfunction::Ftime },
-            { "frame",      ASTfunction::Frame },
-            { "rand_static",        ASTfunction::Rand_Static },
-            { "rand",               ASTfunction::Rand },
-            { "rand.",              ASTfunction::RandOp },
-            { "rand+/-",            ASTfunction::Rand2 },
-            { "rand::exponential",  ASTfunction::RandExponential },
-            { "rand::gamma",        ASTfunction::RandGamma },
-            { "rand::weibull",      ASTfunction::RandWeibull },
-            { "rand::extremeV",     ASTfunction::RandExtremeValue },
-            { "rand::normal",       ASTfunction::RandNormal },
-            { "rand::lognormal",    ASTfunction::RandLogNormal },
-            { "rand::chisquared",   ASTfunction::RandChiSquared },
-            { "rand::cauchy",       ASTfunction::RandCauchy },
-            { "rand::fisherF",      ASTfunction::RandFisherF },
-            { "rand::studentT",     ASTfunction::RandStudentT },
-            { "randint",            ASTfunction::RandInt },
-            { "randint::bernoulli", ASTfunction::RandBernoulli },
-            { "randint::binomial",  ASTfunction::RandBinomial },
-            { "randint::negbinomial", ASTfunction::RandNegBinomial },
-            { "randint::poisson",   ASTfunction::RandPoisson },
-            { "randint::discrete",  ASTfunction::RandDiscrete },
-            { "randint::geometric", ASTfunction::RandGeometric }
-        };
-        
         auto nameItem = NameMap.find(func);
         if (nameItem == NameMap.end())
             return NotAFunction;
         return (*nameItem).second;
+    }
+    
+    const std::string&
+    ASTfunction::GetFuncName(ASTfunction::FuncType t)
+    {
+        static std::string naf = "not_a_function";
+        for (auto&& kv: NameMap)
+            if (kv.second == t)
+                return kv.first;
+        return naf;
     }
     
     ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, exp_ptr args, 
@@ -2255,8 +2425,10 @@ namespace AST {
                                 CfdgError::Error(argsLoc, "Illegal argument(s) for random function", b);
                                 break;
                         }
-                        if (!isConstant && functype == Rand_Static) {
-                            CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant", b);
+                        if (functype == Rand_Static) {
+                            if (!isConstant)
+                                CfdgError::Error(argsLoc, "Argument(s) for rand_static() must be constant", b);
+                            isConstant = RandStaticIsConst;     // terrible, but works for JSON
                         }
                         break;
                     case RandDiscrete:
@@ -2693,6 +2865,7 @@ namespace AST {
                         if (def->mDefineType == ASTdefine::StackDefine) {
                             definition->mParamSize += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
+                            mNames.push_back(def->mName);
                         } else {
                             constDefs->mBody.emplace_back(std::move(rep));
                         }
@@ -3086,6 +3259,242 @@ namespace AST {
     }
     
     void
+    ASTexpression::to_json(json& j) const
+    {
+        try {
+            auto&& locName = ASTparameter::localityNames.at(mLocality);
+            j["constant"] = isConstant;
+            if (mType == NumericType)
+                j["natural"] = isNatural;
+            j["type"] = ASTparameter::typeNames.at(mType);
+            j["locality"] = locName;
+        } catch (std::out_of_range&) {}
+    }
+    
+    void
+    ASTfunction::to_json(json& j) const
+    {
+        j = json{{"class", "ASTfunction"}};
+        ASTexpression::to_json(j);
+        j["function"] = GetFuncName(functype);
+        if (arguments) {
+            json j2{};
+            args_to_json(j2, *arguments);
+            j["function arguments"] = j2;
+        }
+        if (functype == Vec)
+            j["vector length"] = static_cast<int>(random);
+    }
+    
+    void
+    ASTselect::to_json(json& j) const
+    {
+        j = json{{"class", "ASTselect"}};
+        ASTexpression::to_json(j);
+        j["select type"] = ifSelect ? "if" : "select";
+        j["select tuple size"] = tupleSize;
+        j["select selector"] = *selector;
+        json j2 = json::array();
+        for (const auto& choice: arguments)
+            j2.push_back(*choice);
+        j["select choices"] = j2;
+    }
+    
+    void
+    ASTruleSpecifier::to_json(json& j) const
+    {
+        static const std::map<ArgSource, std::string> SourceName =
+        {
+            {NoArgs, "no arguments"},
+            {DynamicArgs, "dynamic arguments"},
+            {StackArgs, "stack arguments"},
+            {SimpleArgs, "constant arguments"},
+            {ParentArgs, "copy parent arguments"},
+            {SimpleParentArgs, "simple copy parent arguments"},
+            {ShapeArgs, "indirect arguments"}
+        };
+        try {
+            auto sourceName = SourceName.at(argSource);
+            j = json{{"class", "ASTruleSpecifier"}};
+            ASTexpression::to_json(j);
+            j["shape name"] = CFDG::ShapeToString(shapeType);
+            j["argument source"] = sourceName;
+            switch (argSource) {
+                case SimpleArgs:
+                    j["constant arguments"] = *simpleRule;
+                    break;
+                case DynamicArgs: {
+                    json j2{};
+                    args_to_json(j2, *arguments);
+                    j["arguments"] = j2;
+                    break;
+                }
+                case ShapeArgs:
+                    j["shape expression"] = *arguments;
+                    break;
+                case StackArgs:
+                case NoArgs:
+                case ParentArgs:
+                case SimpleParentArgs:
+                    break;
+            }
+        } catch (std::out_of_range&) {}
+    }
+    
+    void
+    ASTstartSpecifier::to_json(json& j) const
+    {
+        ASTruleSpecifier::to_json(j);
+        j["class"] = "ASTstartSpecifier";
+        if (mModification)
+            j["startshape adjustment"] = *mModification;
+        else
+            j["startshape adjustment"] = nullptr;
+    }
+    
+    void
+    ASTcons::to_json(json& j) const
+    {
+        j = json{{"class", "ASTcons"}};
+        ASTexpression::to_json(j);
+        json kids = json::array();
+        for (auto&& kid: children)
+            kids.push_back(*kid);
+        j["children"] = kids;
+        j["length"] = children.size();
+    }
+    
+    void
+    ASTreal::to_json(json& j) const
+    {
+        j = json{{"class", "ASTreal"}};
+        ASTexpression::to_json(j);
+        if (mType == NumericType) {
+            j["value"] = json_float(value);
+        } else {
+            j["flag"] = Builder::FlagToString(static_cast<int>(value));
+        }
+    }
+    
+    void
+    ASTvariable::to_json(json& j) const
+    {
+        j = json{{"class", "ASTvariable"}};
+        ASTexpression::to_json(j);
+        if (mType == NumericType)
+            j["length"] = count;
+        j["variable name"] = CFDG::ShapeToString(stringIndex);
+    }
+    
+    void
+    ASTuserFunction::to_json(json& j) const
+    {
+        j = json{{"class", "ASTuserFunction"}};
+        ASTexpression::to_json(j);
+        if (mType == NumericType)
+            j["length"] = definition->mTuplesize;
+        j["userfunction name"] = CFDG::ShapeToString(nameIndex);
+        json j2 = json::array();
+        if (arguments)
+            args_to_json(j2, *arguments);
+        j["arguments"] = j2;
+    }
+    
+    void
+    ASTlet::to_json(json& j) const
+    {
+        j = json{{"class", "ASTlet"}};
+        j["let expression"] = *(definition->mExpression);
+        if (mType == NumericType)
+            j["length"] = definition->mTuplesize;
+        json j2 = json::array();
+        for (size_t i = 0; i < mNames.size(); ++i)
+            j2.push_back(json{{"variable", mNames[i]}, {"expression", *(arguments->getChild(i))}});
+        j["let variables"] = j2;
+    }
+    
+    void
+    ASToperator::to_json(json& j) const
+    {
+        j = json{{"class", "ASToperator"}};
+        ASTexpression::to_json(j);
+        j["operator"] = std::string(1, op);
+        if (left)
+            j["left"] = *left;
+        else
+            j["left"] = nullptr;
+        if (right)
+            j["right"] = *right;
+        else
+            j["right"] = nullptr;
+    }
+    
+    void
+    ASTparen::to_json(json& j) const
+    {
+        j = json{{"class", "ASTparen"}};
+        ASTexpression::to_json(j);
+        j["parenthetical expression"] = *e;
+    }
+    
+    void
+    ASTmodTerm::to_json(json& j) const
+    {
+        static const std::map<modTypeEnum, std::string> nameMap =
+        {
+            {unknownType, "unknown"},
+            {x, "x"}, {y, "y"}, {z, "z"}, {xyz, "xyz"},
+            {transform, "transform"},
+            {size, "size"}, {sizexyz, "sizexyz"}, {zsize, "zsize"},
+            {rot, "rotation"}, {skew, "skew"}, {flip, "flip"},
+            {hue, "hue"}, {sat, "saturation"}, {bright, "brightness"}, {alpha, "alpha"},
+            {hue, "hue target"}, {sat, "saturation target"}, {bright, "brightness target"}, {alpha, "alpha target"},
+            {hue, "target hue"}, {sat, "target saturation"}, {bright, "target brightness"}, {alpha, "target alpha"},
+            {time, "time"}, {timescale, "timescale"},
+            {stroke, "stroke width"}, {param, "parameter string"},
+            {x1, "x1"}, {y1, "y1"}, {x2, "x2"}, {y2, "y2"}, {xrad, "radius x"}, {yrad, "radius y"},
+            {modification, "modification"}
+        };
+        try {
+            auto termName = nameMap.at(modType);
+            j = json{{"class", "ASTmodTerm"}};
+            ASTexpression::to_json(j);
+            j["modterm type"] = termName;
+            json j2{};
+            args_to_json(j2, *args);
+            j["modterm arguments"] = j2;
+        } catch (std::out_of_range&) {}
+    }
+    
+    void
+    ASTmodification::to_json(json& j) const
+    {
+        j = json{{"class", "ASTmodification"}};
+        ASTexpression::to_json(j);
+        j["modification constants"] = modData;
+        j["modification non-constants"] = json::array();
+        for (auto&& term: modExp)
+            j["modification non-constants"].push_back(*term);
+    }
+    
+    void
+    ASTarray::to_json(json& j) const
+    {
+        j = json{{"class", "ASTarray"}};
+        ASTexpression::to_json(j);
+        j["array name"] = CFDG::ShapeToString(mName);
+        j["array index"] = *mArgs;
+        j["array length"] = mLength;
+        j["array stride"] = mStride;
+        if (mData) {
+            auto jd = json::array();
+            for (int i = 0; i < mCount; ++i)
+                jd.push_back(json_float(mData[i]));
+            j["array constant data"] = jd;
+        }
+    }
+    
+    void
     ASTmodification::addEntropy(const std::string& s)
     {
         modData.mRand64Seed.xorString(s.c_str(), entropyIndex);
@@ -3112,5 +3521,6 @@ namespace AST {
             return arguments.size() - 1;
         return i;
     }
+    
 }
 

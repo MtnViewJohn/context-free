@@ -39,6 +39,9 @@
 #include "CmdInfo.h"
 #include "agg2/agg_path_storage.h"
 
+#include "json3.hpp"
+using json = nlohmann::json;
+
 namespace agg {
     struct trans_affine;
 }
@@ -47,6 +50,8 @@ struct StackRule;
 class Builder;
 
 namespace AST {
+    void to_json(json& j, const ASTparameter& m);
+    
     class ASTreplacement {
     public:
         enum repElemListEnum { rule = 8, replacement = 4, mixed = 3, command = 2, op = 1, empty = 0 };
@@ -67,7 +72,11 @@ namespace AST {
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph, Builder* b);
+        virtual void to_json(json& j) const;
     };
+
+    void to_json(json& j, const ASTreplacement& p);
+    
     class ASTrepContainer {
     public:
         pathOpEnum mPathOp;
@@ -100,11 +109,14 @@ namespace AST {
                           const yy::location& nameLoc, const yy::location& expLoc);
         void addLoopParameter(int index, const yy::location& nameLoc);
     };
+
+    void to_json(json& j, const ASTrepContainer& p);
+    
     class ASTloop: public ASTreplacement {
     public:
         exp_ptr mLoopArgs;
         mod_ptr mLoopModHolder;
-        double  mLoopData[3];
+        std::array<double,3>  mLoopData;
         ASTrepContainer mLoopBody;
         ASTrepContainer mFinallyBody;
         int mLoopIndexName;
@@ -120,6 +132,7 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
         void compileLoopMod(Builder* b);
+        void to_json(json& j) const override;
     };
     class ASTtransform: public ASTreplacement {
     public:
@@ -131,6 +144,7 @@ namespace AST {
         ~ASTtransform() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTif: public ASTreplacement {
     public:
@@ -142,7 +156,9 @@ namespace AST {
         ~ASTif() override;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
+
     class ASTswitch: public ASTreplacement {
     public:
         using caseType = std::int64_t;
@@ -165,6 +181,7 @@ namespace AST {
         void compile(CompilePhase ph, Builder* b) override;
         
         void unify();
+        void to_json(json& j) const override;
     };
     class ASTdefine : public ASTreplacement {
     public:
@@ -179,11 +196,12 @@ namespace AST {
         std::string mName;
         int mConfigDepth;
         
-        ASTdefine(std::string&& name, const yy::location& loc);
+        ASTdefine(std::string& name, const yy::location& loc);
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
         ~ASTdefine() override = default;
         ASTdefine& operator=(const ASTdefine&) = delete;
+        void to_json(json& j) const override;
     };
     class ASTrule : public ASTreplacement {
     public:
@@ -213,6 +231,7 @@ namespace AST {
         void traverseRule(Shape& parent, RendererAST* r) const;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
+        void to_json(json& j) const override;
     };
     class ASTpathOp : public ASTreplacement {
     public:
@@ -231,6 +250,8 @@ namespace AST {
         void pathDataConst(Builder* b);
         void makePositional(Builder* b);
         void checkArguments(Builder* b);
+    public:
+        void to_json(json& j) const override;
     };
     class ASTpathCommand : public ASTreplacement {
     public:
@@ -253,6 +274,7 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
         void compile(CompilePhase ph, Builder* b) override;
         ~ASTpathCommand() override = default;
+        void to_json(json& j) const override;
     private:
         mutable CommandInfo mInfoCache;
     };
@@ -277,4 +299,5 @@ namespace AST {
         static CommandInfo::UIDtype GlobalPathUID;
     };
 }
+
 #endif //INCLUDE_ASTREPLACEMENT_H

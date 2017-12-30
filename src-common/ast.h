@@ -28,6 +28,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 #include <string>
 #include "agg2/agg_math_stroke.h"
 #include "agg2/agg_trans_affine.h"
@@ -111,6 +112,9 @@ namespace AST {
         ASTdefine*  mDefinition = nullptr;        // weak pointer
         int         mStackIndex = -1;
         int         mTuplesize = 1;
+        
+        static const std::map<expType, std::string> typeNames;
+        static const std::map<Locality_t, std::string> localityNames;
         
         ASTparameter() = default;
         ASTparameter(const std::string& typeName, int nameIndex,
