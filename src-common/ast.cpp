@@ -144,7 +144,7 @@ namespace AST {
       isNatural(from.isNatural), mLocality(from.mLocality), mName(from.mName),
       mLocation(from.mLocation), mDefinition(nullptr), mStackIndex(from.mStackIndex),
       mTuplesize(from.mTuplesize)
-    { assert(!from.mDefinition); }          // only used with parameters
+    {}
     
     ASTparameter&
     ASTparameter::operator=(const ASTparameter& from)
