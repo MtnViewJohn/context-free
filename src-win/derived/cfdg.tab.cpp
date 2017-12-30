@@ -1303,7 +1303,7 @@ namespace yy {
 #line 387 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            (yylhs.value.defObj) = driver.MakeDefinition(std::move(name), yylhs.location, true);
             if ((yylhs.value.defObj)) {
                 (yylhs.value.defObj)->mType = RuleType;
                 (yylhs.value.defObj)->mTuplesize = 1;
@@ -1316,7 +1316,7 @@ namespace yy {
 #line 396 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            (yylhs.value.defObj) = driver.MakeDefinition(std::move(name), yylhs.location, true);
             if ((yylhs.value.defObj)) {
                 (yylhs.value.defObj)->mType = NumericType;
                 (yylhs.value.defObj)->mTuplesize = 1;
@@ -1330,7 +1330,7 @@ namespace yy {
     {
             str_ptr type((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             str_ptr name((yystack_[2].value.string)); (yystack_[2].value.string) = nullptr;
-            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, true);
+            (yylhs.value.defObj) = driver.MakeDefinition(std::move(name), yylhs.location, true);
             if ((yylhs.value.defObj))
                 (yylhs.value.defObj)->mType = AST::decodeType(*type, (yylhs.value.defObj)->mTuplesize, 
                                                                      (yylhs.value.defObj)->isNatural, yystack_[3].location);
@@ -1394,7 +1394,7 @@ namespace yy {
 #line 450 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
-            (yylhs.value.defObj) = driver.MakeDefinition(*name, yylhs.location, false);
+            (yylhs.value.defObj) = driver.MakeDefinition(std::move(name), yylhs.location, false);
         }
 #line 1400 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -1722,7 +1722,7 @@ namespace yy {
             str_ptr cmd((yystack_[2].value.string));    (yystack_[2].value.string) = nullptr;
             exp_ptr p((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
-            (yylhs.value.component) = driver.MakeElement(*cmd, std::move(mod),
+            (yylhs.value.component) = driver.MakeElement(std::move(cmd), std::move(mod),
                                                  std::move(p), yylhs.location, false);
         }
 #line 1729 "cfdg.tab.cpp" // lalr1.cc:859
@@ -1735,8 +1735,8 @@ namespace yy {
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             str_ptr func(new std::string("if"));
             args.reset(driver.MakeFunction(std::move(func), std::move(args), yystack_[4].location, yystack_[2].location, false));
-            static const std::string ifstr("if");
-            (yylhs.value.component) = driver.MakeElement(ifstr, std::move(mod), std::move(args), yylhs.location, false);
+            func.reset(new std::string("if"));
+            (yylhs.value.component) = driver.MakeElement(std::move(func), std::move(mod), std::move(args), yylhs.location, false);
         }
 #line 1742 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -1749,8 +1749,8 @@ namespace yy {
             exp_ptr exp((yystack_[1].value.expression));      (yystack_[1].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             exp.reset(driver.MakeLet(yystack_[2].location, std::move(vars), std::move(exp)));      // must do unconditionally
-            static const std::string letstr("let");
-            (yylhs.value.component) = driver.MakeElement(letstr, std::move(mod), std::move(exp), yylhs.location, false);
+            str_ptr newlet(new std::string("let"));
+            (yylhs.value.component) = driver.MakeElement(std::move(newlet), std::move(mod), std::move(exp), yylhs.location, false);
         }
 #line 1756 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -1761,7 +1761,7 @@ namespace yy {
             str_ptr cmd((yystack_[2].value.string));    (yystack_[2].value.string) = nullptr;
             exp_ptr p((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
-            (yylhs.value.component) = driver.MakeElement(*cmd, std::move(mod), std::move(p), yylhs.location, true);
+            (yylhs.value.component) = driver.MakeElement(std::move(cmd), std::move(mod), std::move(p), yylhs.location, true);
         }
 #line 1767 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2056,7 +2056,7 @@ namespace yy {
             str_ptr cstr((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr count(new ASTreal(*cstr, yystack_[3].location));
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             --driver.mLocalStackDepth;
             driver.lexer->maybeVersion = token::CFDG2;
             (yylhs.value.loopObj) = new ASTloop(driver.StringToShape(dummyvar, yystack_[3].location, false),
@@ -2083,7 +2083,7 @@ namespace yy {
 #line 939 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr index((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             (yylhs.value.loopObj) = new ASTloop(driver.StringToShape(dummyvar, yystack_[3].location, false),
                                       dummyvar, yystack_[2].location, std::move(index), yystack_[0].location, nullptr);
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
@@ -2096,7 +2096,7 @@ namespace yy {
 #line 948 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr count((yystack_[0].value.expression)); (yystack_[0].value.expression) = nullptr;
-            static const std::string dummyvar("~~inaccessiblevar~~");
+            std::string dummyvar("~~inaccessiblevar~~");
             (yylhs.value.loopObj) = new ASTloop(driver.StringToShape(dummyvar, yystack_[1].location, false),
                                       dummyvar, yystack_[1].location, std::move(count), yystack_[0].location, nullptr);
             driver.push_repContainer((yylhs.value.loopObj)->mLoopBody);
