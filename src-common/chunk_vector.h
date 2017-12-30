@@ -391,7 +391,7 @@ public:
         if (_start == _end) return;
         --_end;
         auto endVal = _chunks[_end >> _power2] + (_end & _chunk_mask);
-        _alloc_traits::destroy<_valType>(_valAlloc, endVal);
+        _alloc_traits::template destroy<_valType>(_valAlloc, endVal);
     }
     
     void push_front(const value_type& x)
@@ -422,7 +422,7 @@ public:
         if (_start == _end) return;
         auto frontVal = _chunks[_start >> _power2] + (_start & _chunk_mask);
         ++_start;
-        _alloc_traits::destroy<_valType>(_valAlloc, frontVal);
+        _alloc_traits::template destroy<_valType>(_valAlloc, frontVal);
     }
     
     size_type size() const noexcept { return _end - _start; }
@@ -432,7 +432,7 @@ public:
     void clear() noexcept
     {
         for (size_t i = _start; i < _end; ++i)
-            _alloc_traits::destroy<_valType>(_valAlloc, _chunks[i >> _power2] + (i & _chunk_mask));
+            _alloc_traits::template destroy<_valType>(_valAlloc, _chunks[i >> _power2] + (i & _chunk_mask));
         _end = _start;
     }
     

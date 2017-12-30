@@ -394,6 +394,7 @@
     <ClInclude Include="src-common\bounds.h" />
     <ClInclude Include="src-common\builder.h" />
     <ClInclude Include="src-common\cfdg.h" />
+    <ClInclude Include="src-common\chunk_vector.h" />
     <ClInclude Include="src-common\CmdInfo.h" />
     <ClInclude Include="src-common\commandLineSystem.h" />
     <ClInclude Include="src-common\config.h" />
