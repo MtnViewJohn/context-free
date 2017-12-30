@@ -398,6 +398,7 @@
     <ClInclude Include="src-common\commandLineSystem.h" />
     <ClInclude Include="src-common\config.h" />
     <ClInclude Include="src-common\ffCanvas.h" />
+    <ClInclude Include="src-common\json3.hpp" />
     <ClInclude Include="src-common\pathIterator.h" />
     <ClInclude Include="src-common\rendererAST.h" />
     <ClInclude Include="src-common\stacktype.h" />
