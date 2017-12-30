@@ -30,28 +30,10 @@
 #define INCLUDE_UPLOAD_H
 
 #include <string>
-#include "cereal/cereal.hpp"
 #include <cstdlib>
 
 class Upload {
 public:
-    class FileObject {
-    public:
-        FileObject(const char* name, const char* content, std::size_t length)
-        : mName(name), mContent(content), mLength(length)
-        {}
-        
-        template<class Archive>
-        void save(Archive & archive) const
-        {
-            archive(cereal::make_nvp("filename", mName));
-            archive.saveBinaryValue(static_cast<const void *>(mContent), mLength, "contents");
-        }
-    private:
-        std::string mName;
-        const char* mContent;
-        std::size_t mLength;
-    };
     Upload() : mId(0), mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
     Upload(const std::string&);
     enum Compression {
@@ -83,37 +65,6 @@ public:
     
     std::string generateJSON();
     
-    template<class Archive>
-    void save(Archive & archive) const
-    {
-        archive(
-            cereal::make_nvp("agent", std::string("ContextFree")),
-            cereal::make_nvp("screenname", mUserName),
-            cereal::make_nvp("password", mPassword),
-            cereal::make_nvp("designid", mId),
-            cereal::make_nvp("title", mTitle),
-            cereal::make_nvp("notes", mNotes),
-            cereal::make_nvp("variation", variationName()),
-            cereal::make_nvp("tiledtype", tiledName()),
-            cereal::make_nvp("compression", compressionName()),
-            cereal::make_nvp("ccURI", mccLicenseURI),
-            cereal::make_nvp("ccImage", mccLicenseImage),
-            cereal::make_nvp("ccName", mccLicenseName),
-            cereal::make_nvp("cfdgfile", FileObject(mFileName.c_str(), mText, mTextLen)),
-            cereal::make_nvp("imagefile", FileObject("image.png", mImage, mImageLen))
-        );
-    }
-    
-    template<class Archive>
-    void load(Archive & archive)
-    {
-        archive(
-                cereal::make_nvp("designid", mId),
-                cereal::make_nvp("title", mTitle)
-        );
-    }
-    
-private:
     std::string compressionName() const;
     std::string variationName() const;
     std::string tiledName() const;
