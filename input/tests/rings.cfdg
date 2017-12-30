@@ -7,6 +7,7 @@ path rings {
     MOVETO(i, 0)
     ARCTO(-i, 0, i)
     ARCTO(i, 0, i)
+    CLOSEPOLY()
     STROKE(.5)[]
   }
 }

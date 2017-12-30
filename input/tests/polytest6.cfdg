@@ -1,7 +1,7 @@
 startshape foo
 background {b -1}
 rule foo {
-7* {r (360 / 7)} hept2 { y (sin(360/7) / tan(180/7) + cos(360/7)) r 180 b 1}
+7* {r (360 / 7)} hept2 { y (sin(360/7) / tan(180/7) + cos(360/7)) s -1 b 1}
 hept2 {b 1 s (sin(360/7) / tan(180/7) + cos(360/7) - 1)}
 }
 
@@ -15,5 +15,5 @@ path hept {
 
 rule hept2 {
 	hept{}
-	hept2 {r 180 s 0.69}
+	hept2 {s -0.69}
 }
