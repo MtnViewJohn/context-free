@@ -292,41 +292,43 @@ private:
         _chunk_mask = _chunk_size - 1
     };
 
+    using _alloc_traits = std::allocator_traits<_Alloc>;
+
 public:
     using value_type             = _valType;
-    using pointer                = typename _Alloc::pointer;
-    using const_pointer          = typename _Alloc::const_pointer;
-    using reference              = typename _Alloc::reference;
-    using const_reference        = typename _Alloc::const_reference;
+    using pointer                = typename _alloc_traits::pointer;
+    using const_pointer          = typename _alloc_traits::const_pointer;
+    using reference              = _valType&;
+    using const_reference        = const _valType&;
     using iterator               = chunk_vector_iterator<_valType, _power2>;
     using const_iterator         = chunk_vector_iterator<const _valType, _power2>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
     using reverse_iterator       = std::reverse_iterator<iterator>;
     using size_type              = std::size_t;
     using difference_type        = std::ptrdiff_t;
-    using allocator_type         = _Alloc;
+    using allocator_type         = typename _alloc_traits::allocator_type;
 
     chunk_vector()
     {
-        assert(_valAlloc.max_size() >= _chunk_size);
+        assert(_alloc_traits::max_size(_valAlloc) >= _chunk_size);
     }
     chunk_vector(std::initializer_list<value_type> l)
     {
-        assert(_valAlloc.max_size() >= _chunk_size);
+        assert(_alloc_traits::max_size(_valAlloc) >= _chunk_size);
         reserve(l.size());
         for (auto&& v: l)
             push_back(v);
     }
     chunk_vector(const chunk_vector& o)
     {
-        assert(_valAlloc.max_size() >= _chunk_size);
+        assert(_alloc_traits::max_size(_valAlloc) >= _chunk_size);
         reserve(o.size());
         for (auto&& v: o)
             push_back(v);
     }
     chunk_vector(chunk_vector&& o) noexcept(noexcept(_chunks.swap(o._chunks)))
     {
-        assert(_valAlloc.max_size() >= _chunk_size);
+        assert(_alloc_traits::max_size(_valAlloc) >= _chunk_size);
         _start = o._start;  o._start = 0;
         _end = o._end;      o._end = 0;
         _chunks.swap(o._chunks);
@@ -365,14 +367,14 @@ public:
     void push_back(const value_type& x)
     {
         auto endVal = _alloc_back();
-        _valAlloc.construct(endVal, x);
+        _alloc_traits::construct(_valAlloc, endVal, x);
         ++_end;
     }
     
     void push_back(value_type&& x)
     {
         auto endVal = _alloc_back();
-        _valAlloc.construct(endVal, std::move(x));
+        _alloc_traits::construct(_valAlloc, endVal, std::move(x));
         ++_end;
     }
     
@@ -380,7 +382,7 @@ public:
     void emplace_back(Args&&... args)
     {
         auto endVal = _alloc_back();
-        _valAlloc.construct(endVal, std::forward<Args>(args)...);
+        _alloc_traits::construct(_valAlloc, endVal, std::forward<Args>(args)...);
         ++_end;
     }
     
@@ -389,20 +391,20 @@ public:
         if (_start == _end) return;
         --_end;
         auto endVal = _chunks[_end >> _power2] + (_end & _chunk_mask);
-        _valAlloc.destroy(endVal);
+        _alloc_traits::destroy<_valType>(_valAlloc, endVal);
     }
     
     void push_front(const value_type& x)
     {
         auto frontVal = _alloc_front();
-        _valAlloc.construct(frontVal, x);
+        _alloc_traits::construct(_valAlloc, frontVal, x);
         --_start;
     }
     
     void push_front(value_type&& x)
     {
         auto frontVal = _alloc_front();
-        _valAlloc.construct(frontVal, std::move(x));
+        _alloc_traits::construct(_valAlloc, frontVal, std::move(x));
         --_start;
     }
     
@@ -410,7 +412,7 @@ public:
     void emplace_front(Args&&... args)
     {
         auto frontVal = _alloc_front();
-        _valAlloc.construct(frontVal, std::forward<Args>(args)...);
+        _alloc_traits::construct(_valAlloc, frontVal, std::forward<Args>(args)...);
         --_start;
         
     }
@@ -420,7 +422,7 @@ public:
         if (_start == _end) return;
         auto frontVal = _chunks[_start >> _power2] + (_start & _chunk_mask);
         ++_start;
-        _valAlloc.destroy(frontVal);
+        _alloc_traits::destroy<_valType>(_valAlloc, frontVal);
     }
     
     size_type size() const noexcept { return _end - _start; }
@@ -430,7 +432,7 @@ public:
     void clear() noexcept
     {
         for (size_t i = _start; i < _end; ++i)
-            _valAlloc.destroy(_chunks[i >> _power2] + (i & _chunk_mask));
+            _alloc_traits::destroy<_valType>(_valAlloc, _chunks[i >> _power2] + (i & _chunk_mask));
         _end = _start;
     }
     
@@ -510,7 +512,7 @@ public:
             }
             _chunks.reserve(_chunks.size() + chunksNeeded);
             for (size_type i = 0; i < chunksNeeded; ++i)
-                _chunks.push_back(_valAlloc.allocate(_chunk_size));
+                _chunks.push_back(_alloc_traits::allocate(_valAlloc, _chunk_size));
         } else {
             size_type newSize = static_cast<size_type>(-_newSize);
             if (_end >= newSize) return;
@@ -527,7 +529,7 @@ public:
             // alloc throws an exception.
             _chunks.reserve(_chunks.size() + chunksNeeded);
             for (size_type i = 0; i < chunksNeeded; ++i) {
-                _chunks.insert(_chunks.begin(), _valAlloc.allocate(_chunk_size));
+                _chunks.insert(_chunks.begin(), _alloc_traits::allocate(_valAlloc, _chunk_size));
                 _start += _chunk_size;
             }
         }
@@ -613,7 +615,7 @@ private:
                 _end -= _chunk_size;
                 --_chunkNum;
             } else {
-                newChunk = _valAlloc.allocate(_chunk_size);
+                newChunk = _alloc_traits::allocate(_valAlloc, _chunk_size);
             }
             _chunks.push_back(newChunk);
         }
@@ -630,7 +632,7 @@ private:
                 newChunk = _chunks.back();
                 _chunks.pop_back();
             } else {
-                newChunk =  _valAlloc.allocate(_chunk_size);
+                newChunk = _alloc_traits::allocate(_valAlloc, _chunk_size);
             }
             _chunks.insert(_chunks.begin(), newChunk);
             _start += _chunk_size;
@@ -646,21 +648,21 @@ private:
         // Special case for empty container
         if (empty()) {
             for (auto&& chunk: _chunks)
-                _valAlloc.deallocate(chunk, _chunk_size);
+                _alloc_traits::deallocate(_valAlloc, chunk, _chunk_size);
             _chunks.clear();
             _start = _end = 0;
             return;
         }
         // Remove unused chunks from the front
         while (shrinkFront && _start >= _chunk_size) {
-            _valAlloc.deallocate(_chunks.front(), _chunk_size);
+            _alloc_traits::deallocate(_valAlloc, _chunks.front(), _chunk_size);
             _chunks.erase(_chunks.begin());
             _start -= _chunk_size;
             _end -= _chunk_size;
         }
         // Remove unused chunks from the back
         while (capacity() - _end >= _chunk_size) {
-            _valAlloc.deallocate(_chunks.back(), _chunk_size);
+            _alloc_traits::deallocate(_valAlloc, _chunks.back(), _chunk_size);
             _chunks.pop_back();
         }
     }
