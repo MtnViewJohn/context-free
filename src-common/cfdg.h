@@ -45,6 +45,8 @@
 #include <memory>
 #include <cstdint>
 
+#define _unused(x) ((void)(x))
+
 using RGBA8 = agg::rgba16;
 
 namespace AST { class ASTcompiledPath; class ASTrule; class ASTparameter;

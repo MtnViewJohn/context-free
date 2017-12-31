@@ -62,6 +62,7 @@ CFDGImpl::CFDGImpl(AbstractSystem* m)
     for (auto&& name: primShape::shapeNames) {
         int num = encodeShapeName(name, CfdgError::Default);
         assert(num >= 0 && num < primShape::numTypes && primShape::shapeNames[num] == name);
+        _unused(num);
     }
     
     initVariables();

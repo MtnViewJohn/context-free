@@ -2052,6 +2052,7 @@ namespace AST {
         if (mModification) {
             ASTexpression* m = mModification->simplify(b);
             assert(m == nullptr);
+            _unused(m);
         }
         return nullptr;
     }

@@ -396,6 +396,7 @@ Builder::MakeDefinition(AST::str_ptr name, const yy::location& nameLoc,
         
         AST::ASTdefine* prev = m_CFDG->declareFunction(nameIndex, def);
         assert(prev == def);    // since findFunction() didn't find it
+        _unused(prev);
     } else {
         // Add parameters during parse even though the type info is unknown. At least
         // we know the name of parameters and we can use this info to help distinguish

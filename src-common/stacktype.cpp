@@ -289,6 +289,7 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
 {
     for (size_t i = 0; i < arguments->size(); ++i, ++dest) {
         assert(dest != end);
+        _unused(end);
         if (onStack)
             rti->mLogicalStackTop = &(*dest);
         const AST::ASTexpression* arg = arguments->getChild(i);
