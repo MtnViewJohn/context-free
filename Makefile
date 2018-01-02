@@ -193,13 +193,14 @@ check: cfdg
 # Rules
 #
 
-CPPFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CPPFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
-CPPFLAGS += -g -DNDEBUG
+CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
+CXXFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
+CXXFLAGS += -g
+CPPFLAGS += -DNDEBUG
 
 # Add this for clang
 ifeq ($(shell uname -s), Darwin)
-  CPPFLAGS += -stdlib=libc++
+  CXXFLAGS += -stdlib=libc++
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
