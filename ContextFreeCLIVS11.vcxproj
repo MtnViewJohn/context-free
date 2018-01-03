@@ -401,6 +401,7 @@
     <ClInclude Include="src-common\ffCanvas.h" />
     <ClInclude Include="src-common\json3.hpp" />
     <ClInclude Include="src-common\pathIterator.h" />
+    <ClInclude Include="src-common\prettyint.h" />
     <ClInclude Include="src-common\rendererAST.h" />
     <ClInclude Include="src-common\stacktype.h" />
     <ClInclude Include="src-common\xorshift64star.h" />
@@ -456,6 +457,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src-common\pathIterator.cpp" />
+    <ClCompile Include="src-common\prettyint.cpp" />
     <ClCompile Include="src-common\rendererAST.cpp" />
     <ClCompile Include="src-common\stacktype.cpp" />
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
