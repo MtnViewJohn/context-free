@@ -51,6 +51,7 @@
 #include <cassert>
 #include <memory>
 #include "astexpression.h"
+#include "prettyint.h"
 
 using std::string;
 using std::cerr;
@@ -58,8 +59,6 @@ using std::endl;
 
 void setupTimer(std::shared_ptr<Renderer>& renderer);
 void cleanupTimer();
-
-const char* prettyInt(unsigned long);
 
 std::ostream* myCout = &cerr;
 
@@ -100,28 +99,6 @@ void termination_handler(int)
 }
 #endif
 
-
-const char*
-prettyInt(unsigned long v)
-{
-    if (!v) return "0";
-    
-    static char temp[32];
-    temp[31] = '\0';
-    int i = 0;
-    char* pos = temp + 30;
-    for(;;) {
-        *pos = '0' + (v % 10);
-        v = v / 10;
-        if (!v) return pos;
-        ++i;
-        --pos;
-        if (i % 3 == 0) {
-            *pos = ',';
-            --pos;
-        }
-    }
-}
 
 struct options {
     enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 4 };

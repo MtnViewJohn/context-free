@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <arpa/inet.h>
+#include "prettyint.h"
 
 using std::cerr;
 using std::endl;
@@ -49,8 +50,6 @@ namespace {
         cerr << message << endl;
     }
 }
-
-const char* prettyInt(unsigned long);
 
 namespace {
     struct FileCloser

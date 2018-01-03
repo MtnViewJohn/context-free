@@ -28,11 +28,11 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include "prettyint.h"
 
 using std::cout;
 using std::endl;
 
-const char* prettyInt(unsigned long);
 
 abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,

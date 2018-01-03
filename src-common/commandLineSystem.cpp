@@ -37,7 +37,7 @@
 #include <iostream>
 
 #include "bounds.h"
-
+#include "prettyint.h"
 #include <streambuf>
 #include <istream>
 
@@ -57,8 +57,6 @@ struct imemstream: virtual membuf, std::istream {
 using std::cin;
 using std::cerr;
 using std::endl;
-
-const char* prettyInt(unsigned long);
 
 const char*
 CommandLineSystem::maybeLF()

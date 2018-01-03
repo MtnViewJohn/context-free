@@ -64,6 +64,7 @@
 		528EC35516D53B3D004DAEC2 /* rendererAST.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528EC35316D53B3A004DAEC2 /* rendererAST.cpp */; };
 		528EC35616D53B3D004DAEC2 /* rendererAST.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528EC35316D53B3A004DAEC2 /* rendererAST.cpp */; };
 		529049A30F3E4CC900484FED /* cfdg.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 529049A10F3E4CC900484FED /* cfdg.ypp */; };
+		529262BB1FFCAAC800D00B7D /* prettyint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529262B91FFCAAC800D00B7D /* prettyint.cpp */; };
 		52954E62175EFCC800AE6516 /* GalleryDownloader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52954E61175EFCC700AE6516 /* GalleryDownloader.mm */; };
 		529CC95715A393820079C2B5 /* ffCanvasDummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */; };
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
@@ -314,6 +315,8 @@
 		528EC35416D53B3C004DAEC2 /* rendererAST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rendererAST.h; sourceTree = "<group>"; };
 		529049A10F3E4CC900484FED /* cfdg.ypp */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = cfdg.ypp; sourceTree = "<group>"; };
 		529049A20F3E4CC900484FED /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
+		529262B91FFCAAC800D00B7D /* prettyint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = prettyint.cpp; sourceTree = "<group>"; };
+		529262BA1FFCAAC800D00B7D /* prettyint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prettyint.h; sourceTree = "<group>"; };
 		52954E60175EFCC700AE6516 /* GalleryDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GalleryDownloader.h; sourceTree = "<group>"; };
 		52954E61175EFCC700AE6516 /* GalleryDownloader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GalleryDownloader.mm; sourceTree = "<group>"; };
 		5298ED5216A216CB00C5726D /* chunk_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_vector.h; sourceTree = "<group>"; };
@@ -598,6 +601,8 @@
 				52C267B6154F268C00230EB9 /* abstractPngCanvas.h */,
 				52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */,
 				52D5D8DA1ACB938B005109E5 /* myrandom.h */,
+				529262B91FFCAAC800D00B7D /* prettyint.cpp */,
+				529262BA1FFCAAC800D00B7D /* prettyint.h */,
 			);
 			path = "src-common";
 			sourceTree = "<group>";
@@ -833,6 +838,7 @@
 			files = (
 				524D22BC13BA0123002732C2 /* cfdg.ypp in Sources */,
 				524D22BB13BA0123002732C2 /* cfdg.l in Sources */,
+				529262BB1FFCAAC800D00B7D /* prettyint.cpp in Sources */,
 				524D22B513BA0123002732C2 /* aggCanvas.cpp in Sources */,
 				524D22B613BA0123002732C2 /* astexpression.cpp in Sources */,
 				524D22B713BA0123002732C2 /* astreplacement.cpp in Sources */,
