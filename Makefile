@@ -196,6 +196,7 @@ check: cfdg
 CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
 CXXFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
 CXXFLAGS += -g
+CXXFLAGS += -Werror
 CPPFLAGS += -DNDEBUG
 
 # Add this for clang
