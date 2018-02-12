@@ -24,7 +24,6 @@
 
 #include "WinCanvas.h"
 #include "WinSystem.h"
-#include <windows.h>
 
 void WinCanvas::start(bool clear, const agg::rgba& bk, int actualWidth, int actualHeight)
 {
@@ -55,8 +54,8 @@ WinCanvas::WinCanvas(WinSystem* sys, aggCanvas::PixelFormat pixfmt,
     // pad row stride to DWORD boundary
     mStride += ((-mStride) & 3);
 
-    mBM = (char*)(new DWORD[mStride * mHeight / 4]);
-    aggCanvas::attach((void*)mBM, mWidth, mHeight, mStride, height > 0);
+    mBM = std::make_unique<uint32_t[]>(mStride * mHeight / 4);
+    aggCanvas::attach((void*)(mBM.get()), mWidth, mHeight, mStride, height > 0);
 
     // clear the bitmap
     aggCanvas::start(true, bkgrnd, width, mHeight);
@@ -64,9 +63,10 @@ WinCanvas::WinCanvas(WinSystem* sys, aggCanvas::PixelFormat pixfmt,
     mNoUpdate = false;
 }
 
-WinCanvas::~WinCanvas()
+char*
+WinCanvas::bitmap()
 {
-    delete[] mBM;
+    return (char*)mBM.get();
 }
 
 WinCanvas* WinCanvas::Make8bitCopy()
@@ -80,7 +80,7 @@ WinCanvas* WinCanvas::Make8bitCopy()
     eight->end();
     eight->mNoUpdate = false;
 
-    eight->copy(mBM, mWidth, mHeight, mStride, mPixelFormat);
+    eight->copy((void*)(mBM.get()), mWidth, mHeight, mStride, mPixelFormat);
 
     return eight;
 }

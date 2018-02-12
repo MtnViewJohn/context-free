@@ -27,6 +27,7 @@
 
 #include "cfdg.h"
 #include "aggCanvas.h"
+#include <memory>
 
 class WinSystem;
 
@@ -35,19 +36,19 @@ class WinCanvas : public aggCanvas
 public:
     WinCanvas(WinSystem* sys, aggCanvas::PixelFormat pixfmt, 
         int width, int height, agg::rgba bkgrnd);
-    WinCanvas(const WinCanvas&);                // declare but do not implement
-    WinCanvas& operator=(const WinCanvas&);     // declare but do not implement
-    ~WinCanvas();
+    WinCanvas(const WinCanvas&) = delete;
+    WinCanvas& operator=(const WinCanvas&) = delete;
 
     int mStride;
     aggCanvas::PixelFormat mPixelFormat;
-    char* mBM;
+    std::unique_ptr<uint32_t[]> mBM;
     agg::rgba mBackground;
     bool mNoUpdate;
     
     void start(bool clear, const agg::rgba& bk, int, int);
     void end();
     WinCanvas* Make8bitCopy();
+    char* bitmap();
     
 protected:
     WinSystem* mSystem;

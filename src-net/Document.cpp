@@ -1266,7 +1266,7 @@ Bitmap^ Document::MakeBitmap(bool cropped, WinCanvas *canvas)
     }
 
     Bitmap^ bm;
-    char* data = canvas->mBM;
+    char* data = (char*)(canvas->bitmap());
     int width = canvas->mWidth;
     int height = canvas->mHeight;
     if (cropped) {
