@@ -39,7 +39,7 @@
 #include "CmdInfo.h"
 #include "agg2/agg_path_storage.h"
 
-#include "json3.hpp"
+#include "json_fwd.hpp"
 using json = nlohmann::json;
 
 namespace agg {

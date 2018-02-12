@@ -39,7 +39,7 @@
 class RendererAST;
 class Builder;
 
-#include "json3.hpp"
+#include "json_fwd.hpp"
 using json = nlohmann::json;
 
 namespace agg {

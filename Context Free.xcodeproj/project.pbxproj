@@ -309,6 +309,7 @@
 		527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rewind.press.icns; sourceTree = "<group>"; };
 		527FE236135ABF2400F9B15F /* pathIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathIterator.h; sourceTree = "<group>"; };
 		527FE237135ABF2400F9B15F /* pathIterator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathIterator.cpp; sourceTree = "<group>"; };
+		5282F21C2031546300A45AA4 /* json_fwd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_fwd.hpp; sourceTree = "<group>"; };
 		528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = commandLineSystem.cpp; sourceTree = "<group>"; };
 		528EC35016C5D28D004DAEC2 /* commandLineSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commandLineSystem.h; sourceTree = "<group>"; };
 		528EC35316D53B3A004DAEC2 /* rendererAST.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendererAST.cpp; sourceTree = "<group>"; };
@@ -538,6 +539,7 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
+				5282F21C2031546300A45AA4 /* json_fwd.hpp */,
 				5249137A1FE7724A001A8371 /* json3.hpp */,
 				52D06C1E17667BB400F8D94C /* config.h */,
 				5298ED5216A216CB00C5726D /* chunk_vector.h */,

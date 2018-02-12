@@ -27,6 +27,7 @@
 
 #include "agg2/agg_basics.h"
 #include "pathIterator.h"
+#include "json3.hpp"
 #include <cassert>
 #include <atomic>
 #include "rendererAST.h"

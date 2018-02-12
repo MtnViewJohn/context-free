@@ -27,6 +27,7 @@
 #include "builder.h"
 #include "rendererAST.h"
 #include "attributes.h"
+#include "json3.hpp"
 
 #include <cmath>
 #include <cassert>
