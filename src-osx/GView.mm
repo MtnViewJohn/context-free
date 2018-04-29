@@ -626,7 +626,7 @@ namespace {
               didEndSelector: @selector(saveSvgtoFile:)];
 }
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem
 {
     SEL action = [anItem action];
     
@@ -654,7 +654,7 @@ namespace {
     if (action == @selector(saveOutput:))
         return !mRendering && (mRenderBitmap || mMovieFile);
             
-    return [super validateMenuItem: anItem];
+    return YES;
 }
 
 - (IBAction) showHiresRenderSheet:(id)sender

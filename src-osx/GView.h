@@ -119,7 +119,7 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (IBAction)saveOutput:(id)sender;
 - (IBAction)saveTileImage:(id)sender;
 - (IBAction)saveAsSVG:(id)sender;
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 - (IBAction)enterFullscreen:(id)sender;
 - (void)updateFullScreenMenu;
 
