@@ -645,7 +645,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         [nonono setInformativeText: problem];
         [nonono addButtonWithTitle: @"OK"];
         [nonono beginSheetModalForWindow: mAnimateSheet
-                       completionHandler: ^(NSModalResponse returnCode){}];
+                           modalDelegate:nil
+                          didEndSelector:nil
+                             contextInfo:nil];
         return;
     }
 

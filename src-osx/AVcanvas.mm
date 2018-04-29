@@ -211,7 +211,7 @@
         }
         
         [_assetInput markAsFinished];
-        [_assetWriter finishWritingWithCompletionHandler: ^{}];
+        [_assetWriter finishWriting];
     }
     
     CVPixelBufferPoolRelease([_assetInputAdaptor pixelBufferPool]);
