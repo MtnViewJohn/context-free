@@ -121,7 +121,7 @@ shape SPIRAL
 
 	// the system will stop the
 	// recursion when the shapes
-	// get to small to see
+	// get too small to see
 }
 
 shape CHAPTER4
