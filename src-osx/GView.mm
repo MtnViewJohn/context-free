@@ -1388,6 +1388,7 @@ namespace {
                                                                    }];
         mEndMovieToken = nil;
     }
+    mCurrentTime.doubleValue = 0.0;
     
     if (!mMoviePlayerLayer) {
         AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
