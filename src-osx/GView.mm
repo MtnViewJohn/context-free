@@ -1388,6 +1388,14 @@ namespace {
                                                                    }];
         mEndMovieToken = nil;
     }
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    mCurrentTime.doubleValue = [defaults floatForKey: PrefKeyMovieLength];
+    NSCell *cell = [[[NSCell alloc]initTextCell: [mCurrentTime stringValue]] autorelease];
+    CGFloat sz = [cell cellSize].width + 20.0;
+    NSRect rect = [mCurrentTime frame];
+    rect.origin.x -= (sz - rect.size.width) / 2.0;
+    rect.size.width = sz;
+    [mCurrentTime setFrame: rect];
     mCurrentTime.doubleValue = 0.0;
     
     if (!mMoviePlayerLayer) {

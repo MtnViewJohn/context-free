@@ -43,6 +43,7 @@
     
     IBOutlet NSTextField*   mAnimationFrame;
     IBOutlet NSTextField*   mFrameLabel;
+    IBOutlet NSTextField*   mTimeLabel;
     IBOutlet NSPopUpButton* mAnimationCodec;
     IBOutlet NSTextField*   mCodecLabel;
     
