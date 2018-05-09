@@ -67,7 +67,7 @@
 - (IBAction) uploadToGallery:(id)sender;
 - (IBAction) insertUnicode:(id)sender;
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem;
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) startHiresRender:(id)sender;

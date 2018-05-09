@@ -528,7 +528,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 }
 
 
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem
 {
     SEL action = [anItem action];
     
@@ -545,10 +545,10 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     ||  action == @selector(showAnimationSheet:)
     ||  action == @selector(uploadToGallery:))
     {
-        return [mGView validateMenuItem: anItem];
+        return [mGView validateUserInterfaceItem: anItem];
     }
     
-    return [super validateMenuItem: anItem];
+    return [super validateUserInterfaceItem: anItem];
 }
 
 - (IBAction) showHiresRenderSheet:(id)sender
