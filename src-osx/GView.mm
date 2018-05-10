@@ -1016,6 +1016,7 @@ namespace {
     } else {
         mLastAnimateFrame = fr;
         mCurrentAction = ActionType::AnimateFrameAction;
+        [self tearDownPlayer];
         mMovieFile.reset();
         [self buildImageCanvasSize];
         [self renderBegin: &parameters];
