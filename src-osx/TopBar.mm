@@ -54,16 +54,9 @@ namespace {
 {
     NSSize size = [self frame].size;
     
-    NSRect midOld = [mCenterControls frame];
-    NSRect midNew = midOld;
-    midNew.origin.x = floor((size.width - midNew.size.width) / 2.0);
-    moveView(self, mCenterControls, midOld, midNew);
+    NSRect controls = [mCenterControls frame];
     
-    NSRect leftOld = [mLeftStatus frame];
-    NSRect leftNew = leftOld;
-    CGFloat xSpace = leftOld.origin.x;
-    leftNew.size.width = midNew.origin.x - xSpace - leftNew.origin.x;
-    moveView(self, mLeftStatus, leftOld, leftNew);
+    CGFloat xSpace = controls.origin.x;
     
     CGFloat rightEdge = size.width;
     
@@ -84,7 +77,7 @@ namespace {
     
     NSRect rightOld = [mRightStatus frame];
     NSRect rightNew = rightOld;
-    rightNew.origin.x = midNew.origin.x + midNew.size.width + xSpace;
+    rightNew.origin.x = controls.origin.x + controls.size.width + xSpace;
     rightNew.size.width = rightEdge - xSpace - rightNew.origin.x;
     moveView(self, mRightStatus, rightOld, rightNew);
     

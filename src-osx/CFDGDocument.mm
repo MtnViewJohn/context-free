@@ -315,7 +315,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)close
 {
-    mStatus = nil;
     mGView = nil;
     [self stopRender: self];
     [super close];
@@ -345,10 +344,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)noteStatus:(NSString*)s
 {
-    if (mStatus != nil) {
-        [mStatus setStringValue: s];
-        [mStatus setToolTip: s];
-    }
     if (mStatusText != nil) {
         [[[mStatusText textStorage] mutableString] appendString: s];
         [[[mStatusText textStorage] mutableString] appendString: @"\n"];
@@ -384,11 +379,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     NSUInteger start = [msg length];
     [[msg mutableString] appendString: [e message]];
     [[msg mutableString] appendString: @"\n"];
-    
-    if (mStatus != nil) {
-        [mStatus setStringValue: [msg mutableString]];
-        [mStatus setToolTip: [msg mutableString]];
-    }
     
     if (mStatusText != nil) {
         NSString* errorPath = [e path];

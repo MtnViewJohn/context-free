@@ -20,7 +20,6 @@
                 <outlet property="mGViewSplit" destination="452" id="dhd-ae-hne"/>
                 <outlet property="mHiresSheet" destination="86" id="100"/>
                 <outlet property="mSheetLabel" destination="Pa7-Cu-daJ" id="nLu-Jg-rbV"/>
-                <outlet property="mStatus" destination="57" id="62"/>
                 <outlet property="mStatusText" destination="450" id="455"/>
                 <outlet property="mTimeLabel" destination="RXc-Hd-mgh" id="yEI-V0-MbS"/>
                 <outlet property="window" destination="5" id="8"/>
@@ -155,17 +154,17 @@
                             <real value="250"/>
                         </holdingPriorities>
                     </splitView>
-                    <customView id="126" customClass="TopBar">
+                    <customView misplaced="YES" id="126" customClass="TopBar">
                         <rect key="frame" x="0.0" y="758" width="1200" height="42"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <subviews>
-                            <progressIndicator hidden="YES" verticalHuggingPriority="750" maxValue="100" bezeled="NO" style="bar" id="111">
+                            <progressIndicator hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" maxValue="100" bezeled="NO" style="bar" id="111">
                                 <rect key="frame" x="1098" y="8" width="72" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
-                            <box title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
-                                <rect key="frame" x="455" y="5" width="310" height="48"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                            <box misplaced="YES" title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
+                                <rect key="frame" x="5" y="5" width="310" height="48"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
                                     <rect key="frame" x="2" y="2" width="306" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -245,7 +244,7 @@ The variation code is a one to six letter sequence.</string>
                                     </subviews>
                                 </view>
                             </box>
-                            <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="60">
+                            <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="60">
                                 <rect key="frame" x="1176" y="10" width="16" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
@@ -253,15 +252,6 @@ The variation code is a one to six letter sequence.</string>
                                 <rect key="frame" x="815" y="12" width="280" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField toolTip="Status Messages" verticalHuggingPriority="750" id="57">
-                                <rect key="frame" x="5" y="12" width="421" height="14"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" placeholderString="Status Messages" id="399">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -343,7 +333,6 @@ The variation code is a one to six letter sequence.</string>
                         </subviews>
                         <connections>
                             <outlet property="mCenterControls" destination="81" id="128"/>
-                            <outlet property="mLeftStatus" destination="57" id="127"/>
                             <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="4iX-Dd-vYY"/>
                             <outlet property="mProgressOne" destination="60" id="130"/>
                             <outlet property="mProgressTwo" destination="111" id="131"/>

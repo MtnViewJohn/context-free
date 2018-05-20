@@ -27,7 +27,6 @@
 
 @interface TopBar : NSView
 {
-    IBOutlet NSView*    mLeftStatus;
     IBOutlet NSView*    mCenterControls;
     IBOutlet NSView*    mRightStatus;
     IBOutlet NSView*    mProgressOne;

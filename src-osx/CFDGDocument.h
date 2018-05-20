@@ -38,7 +38,6 @@
     NSData*                 mContent;
     
     IBOutlet NSTextView*    mEditor;
-    IBOutlet NSTextField*   mStatus;
     IBOutlet NSTextView*    mStatusText;
     
     IBOutlet NSTextField*   mAnimationFrame;
