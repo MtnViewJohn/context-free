@@ -59,25 +59,25 @@ namespace AST {
     class ASTcompiledPath;
 }
 
-class RendererImpl : public RendererAST {
+class RendererImpl final : public RendererAST {
     public:
         RendererImpl(const cfdg_ptr& cfdg,
                      int width, int height, double minSize,
                      int variation, double border);
         ~RendererImpl();
     
-        void setMaxShapes(int n) override;
-        void resetBounds() override;
-        void resetSize(int x, int y) override;
+        void setMaxShapes(int n) final;
+        void resetBounds() final;
+        void resetSize(int x, int y) final;
         void initBounds();
         
-        double run(Canvas* canvas, bool partialDraw) override;
-        void draw(Canvas* canvas) override;
-        void animate(Canvas* canvas, int frames, int frame, bool zoom) override;
-        void processPathCommand(const Shape& s, const AST::CommandInfo* attr) override;
-        void processShape(Shape& s) override;
-        void processPrimShape(Shape& s, const AST::ASTrule* attr = nullptr) override;
-        void processSubpath(const Shape& s, bool tr, int) override;
+        double run(Canvas* canvas, bool partialDraw) final;
+        void draw(Canvas* canvas) final;
+        void animate(Canvas* canvas, int frames, int frame, bool zoom) final;
+        void processPathCommand(const Shape& s, const AST::CommandInfo* attr) final;
+        void processShape(Shape& s) final;
+        void processPrimShape(Shape& s, const AST::ASTrule* attr = nullptr) final;
+        void processSubpath(const Shape& s, bool tr, int) final;
         
     private:
         void outputPrep(Canvas*);
@@ -168,7 +168,7 @@ class RendererImpl : public RendererAST {
         static unsigned int MaxMergeFiles;      // maximum number of files to merge at once
     
     protected:
-        void colorConflict(const yy::location& w) override;
+        void colorConflict(const yy::location& w) final;
 };
 
 

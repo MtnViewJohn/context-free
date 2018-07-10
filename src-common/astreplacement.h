@@ -112,7 +112,7 @@ namespace AST {
 
     void to_json(json& j, const ASTrepContainer& p);
     
-    class ASTloop: public ASTreplacement {
+    class ASTloop final: public ASTreplacement {
     public:
         exp_ptr mLoopArgs;
         mod_ptr mLoopModHolder;
@@ -128,11 +128,11 @@ namespace AST {
         ASTloop(int nameIndex, const std::string& name, const yy::location& nameLoc,
                 exp_ptr args, const yy::location& argsLoc,
                 mod_ptr mods);
-        ~ASTloop() override;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
+        ~ASTloop() final;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
         void compileLoopMod(Builder* b);
-        void to_json(json& j) const override;
+        void to_json(json& j) const final;
     };
     class ASTtransform: public ASTreplacement {
     public:
@@ -141,25 +141,25 @@ namespace AST {
         bool mClone;
         
         ASTtransform(const yy::location& loc, exp_ptr mods);
-        ~ASTtransform() override;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTtransform() final;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASTif: public ASTreplacement {
+    class ASTif final: public ASTreplacement {
     public:
         exp_ptr mCondition;
         ASTrepContainer mThenBody;
         ASTrepContainer mElseBody;
         
         ASTif(exp_ptr ifCond, const yy::location& condLoc);
-        ~ASTif() override;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTif() final;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
 
-    class ASTswitch: public ASTreplacement {
+    class ASTswitch final: public ASTreplacement {
     public:
         using caseType = std::int64_t;
         using caseRange = std::pair<caseType, caseType>;
@@ -176,14 +176,14 @@ namespace AST {
         ASTrepContainer mElseBody;
         
         ASTswitch(exp_ptr switchExp, const yy::location& expLoc);
-        ~ASTswitch() override;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
+        ~ASTswitch() final;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
         
         void unify();
-        void to_json(json& j) const override;
+        void to_json(json& j) const final;
     };
-    class ASTdefine : public ASTreplacement {
+    class ASTdefine final : public ASTreplacement {
     public:
         enum define_t { StackDefine, ConstDefine, ConfigDefine, FunctionDefine, LetDefine };
         define_t mDefineType;
@@ -197,13 +197,13 @@ namespace AST {
         int mConfigDepth;
         
         ASTdefine(std::string& name, const yy::location& loc);
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
-        ~ASTdefine() override = default;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
+        ~ASTdefine() final = default;
         ASTdefine& operator=(const ASTdefine&) = delete;
-        void to_json(json& j) const override;
+        void to_json(json& j) const final;
     };
-    class ASTrule : public ASTreplacement {
+    class ASTrule final : public ASTreplacement {
     public:
         enum WeightTypes { NoWeight = 1, PercentWeight = 2, ExplicitWeight = 4};
         ASTrepContainer mRuleBody;
@@ -226,14 +226,14 @@ namespace AST {
         : ASTreplacement(nullptr, loc, rule), mCachedPath(nullptr),
           mWeight(1.0), isPath(false), mNameIndex(ruleIndex), weightType(NoWeight) { };
         ASTrule(int i);
-        ~ASTrule() override;
+        ~ASTrule() final;
         void traversePath(const Shape& parent, RendererAST* r) const;
         void traverseRule(Shape& parent, RendererAST* r) const;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASTpathOp : public ASTreplacement {
+    class ASTpathOp final : public ASTreplacement {
     public:
         exp_ptr mArguments;
         mod_ptr mOldStyleArguments;
@@ -242,18 +242,18 @@ namespace AST {
         
         ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
-        ~ASTpathOp() override;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
+        ~ASTpathOp() final;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
     private:
         void pathData(double* data, RendererAST* rti) const;
         void pathDataConst(Builder* b);
         void makePositional(Builder* b);
         void checkArguments(Builder* b);
     public:
-        void to_json(json& j) const override;
+        void to_json(json& j) const final;
     };
-    class ASTpathCommand : public ASTreplacement {
+    class ASTpathCommand final : public ASTreplacement {
     public:
         double  mMiterLimit;
         double  mStrokeWidth;
@@ -271,10 +271,10 @@ namespace AST {
         ASTpathCommand(const std::string& s, mod_ptr mods, exp_ptr params,
                        const yy::location& loc);
         
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const override;
-        void compile(CompilePhase ph, Builder* b) override;
-        ~ASTpathCommand() override = default;
-        void to_json(json& j) const override;
+        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void compile(CompilePhase ph, Builder* b) final;
+        ~ASTpathCommand() final = default;
+        void to_json(json& j) const final;
     private:
         mutable CommandInfo mInfoCache;
     };

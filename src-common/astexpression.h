@@ -143,7 +143,7 @@ namespace AST {
     void to_json(json& j, const ASTexpression& e);
     void args_to_json(json& j, const ASTexpression& e);
     
-    class ASTfunction : public ASTexpression {
+    class ASTfunction final : public ASTexpression {
     public:
         enum FuncType { NotAFunction, 
             Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
@@ -169,14 +169,14 @@ namespace AST {
         ASTfunction(const std::string& func, exp_ptr args, Rand64& r,
                     const yy::location& nameLoc, const yy::location& argsLoc,
                     Builder* b);
-        ~ASTfunction() override = default;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        ASTexpression* simplify(Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTfunction() final = default;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        ASTexpression* simplify(Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASTselect : public ASTexpression {
+    class ASTselect final : public ASTexpression {
         enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
     public:
         int              tupleSize;
@@ -187,14 +187,14 @@ namespace AST {
         bool             ifSelect;
         
         ASTselect(exp_ptr args, const yy::location& loc, bool asIf, Builder* b);
-        ~ASTselect() override;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTselect() final;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const final;
+        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     private:
         //ASTselect(const yy::location& loc)
         //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
@@ -243,7 +243,7 @@ namespace AST {
         void grab(const ASTruleSpecifier* src);
         void to_json(json& j) const override;
     };
-    class ASTstartSpecifier : public ASTruleSpecifier {
+    class ASTstartSpecifier final : public ASTruleSpecifier {
     public:
         mod_ptr mModification;
         ASTstartSpecifier(int t, const std::string& name, exp_ptr args,
@@ -257,29 +257,29 @@ namespace AST {
         : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
         ASTstartSpecifier(ASTruleSpecifier&& r, mod_ptr m) noexcept
         : ASTruleSpecifier(std::move(r)), mModification(std::move(m)) { };
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASTcons : public ASTexpression {
+    class ASTcons final : public ASTexpression {
     public:
         ASTexpArray children;
         ASTcons() = delete;
         ASTcons(exp_list kids);
-        ~ASTcons() override;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        ~ASTcons() final;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
         
-        const ASTexpression* getChild(size_t i) const override;
-        size_t size() const override { return children.size(); }
-        ASTexpression* append(ASTexpression* sib) override;
-        void to_json(json& j) const override;
+        const ASTexpression* getChild(size_t i) const final;
+        size_t size() const final { return children.size(); }
+        ASTexpression* append(ASTexpression* sib) final;
+        void to_json(json& j) const final;
     };
-    class ASTreal : public ASTexpression {
+    class ASTreal final : public ASTexpression {
     public:
         double value;
         std::string text;
@@ -296,12 +296,12 @@ namespace AST {
         : ASTexpression(loc, true, 
                         floor(v) == v && v >= 0.0 && v < 9007199254740992.,
                         NumericType), value(v) { mLocality = PureLocal; };
-        ~ASTreal() override = default;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void entropy(std::string& e) const override;
-        void to_json(json& j) const override;
+        ~ASTreal() final = default;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void entropy(std::string& e) const final;
+        void to_json(json& j) const final;
     };
-    class ASTvariable : public ASTexpression {
+    class ASTvariable final : public ASTexpression {
     public:
         enum : int {IllegalStackIndex = std::numeric_limits<int>::max()};
         int stringIndex;
@@ -313,12 +313,12 @@ namespace AST {
         
         ASTvariable() = delete;
         ASTvariable(int stringNum, const std::string& str, const yy::location& loc);
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
     class ASTuserFunction : public ASTexpression {
     public:
@@ -348,18 +348,18 @@ namespace AST {
             size_t                  mOldSize;
         };
     };
-    class ASTlet : public ASTuserFunction {
+    class ASTlet final : public ASTuserFunction {
         std::unique_ptr<ASTrepContainer> mDefinitions;
         std::vector<std::string> mNames;
     public:
         ASTlet(cont_ptr args, def_ptr func, const yy::location& letLoc,
                const yy::location& defLoc);
-        ~ASTlet() override;          // inherited definition ptr owns ASTdefine
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTlet() final;          // inherited definition ptr owns ASTdefine
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASToperator : public ASTexpression {
+    class ASToperator final : public ASTexpression {
     public:
         char op;
         int  tupleSize;
@@ -367,14 +367,14 @@ namespace AST {
         exp_ptr right;
         ASToperator() = delete;
         ASToperator(char o, ASTexpression* l, ASTexpression* r);
-        ~ASToperator() override = default;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASToperator() final = default;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
-    class ASTparen : public ASTexpression {
+    class ASTparen final : public ASTexpression {
     public:
         exp_ptr e;
         ASTparen() = delete;
@@ -382,17 +382,17 @@ namespace AST {
                                                     e1->isNatural,
                                                     e1->mType), e(e1)
         { };
-        ~ASTparen() override = default;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const override;
-        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const override;
-        void entropy(std::string& ent) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTparen() final = default;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST* r) const final;
+        param_ptr evalArgs(RendererAST* rti = nullptr, const StackRule* parent = nullptr) const final;
+        void entropy(std::string& ent) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
 
-    class ASTmodTerm : public ASTexpression {
+    class ASTmodTerm final : public ASTexpression {
     public:
         enum modTypeEnum : unsigned {  unknownType, x, y, z, xyz, transform,
             size, sizexyz, rot, skew, flip, 
@@ -411,18 +411,18 @@ namespace AST {
         ASTmodTerm(modTypeEnum t, const std::string& ent, const yy::location& loc);
         ASTmodTerm(modTypeEnum t, const yy::location& loc)
         : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0) {};
-        ~ASTmodTerm() override = default;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTmodTerm() final = default;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST*) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
     
     void to_json(json& j, const ASTmodTerm& m);
     
-    class ASTmodification : public ASTexpression {
+    class ASTmodification final : public ASTexpression {
     public:
         enum modClassEnum {
             NotAClass = 0, GeomClass = 1, ZClass = 2, TimeClass = 4,
@@ -441,21 +441,21 @@ namespace AST {
           entropyIndex(0), canonical(true) {}
         ASTmodification(const ASTmodification& m, const yy::location& loc);
         ASTmodification(mod_ptr m, const yy::location& loc);
-        ~ASTmodification() override;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void evaluate(Modification& m, bool shapeDest, RendererAST*) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
+        ~ASTmodification() final;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void evaluate(Modification& m, bool shapeDest, RendererAST*) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
         void setVal(Modification& m, RendererAST* = nullptr) const;
         void addEntropy(const std::string& name);
         void makeCanonical();
         void grab(ASTmodification* m);
-        void to_json(json& j) const override;
+        void to_json(json& j) const final;
     };
     
     void to_json(json& j, const ASTmodification& m);
     
-    class ASTarray : public ASTexpression {
+    class ASTarray final : public ASTexpression {
     public:
         int     mName;
         std::unique_ptr<double[]> mData;
@@ -471,12 +471,12 @@ namespace AST {
         ASTarray(int nameIndex, exp_ptr args, const yy::location& loc, const std::string& name);
         ASTarray(const ASTarray&) = delete;
         ASTarray& operator=(const ASTarray&) = delete;
-        ~ASTarray() override;
-        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const override;
-        void entropy(std::string& e) const override;
-        ASTexpression* simplify(Builder* b) override;
-        ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        ~ASTarray() final;
+        int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;
+        void entropy(std::string& e) const final;
+        ASTexpression* simplify(Builder* b) final;
+        ASTexpression* compile(CompilePhase ph, Builder* b) final;
+        void to_json(json& j) const final;
     };
     
     inline void Compile(exp_ptr& exp, CompilePhase ph, Builder* b)
