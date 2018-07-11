@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -226,12 +226,13 @@ The variation code is a one to six letter sequence.</string>
                                         <popUpButton hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="N40-Ev-FF7">
                                             <rect key="frame" x="22" y="-5" width="76" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
+                                            <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
                                                 <menu key="menu" id="9w0-Pe-geL">
                                                     <items>
-                                                        <menuItem title="Render" state="on" tag="1" id="RXa-rI-z9w"/>
+                                                        <menuItem title="Render" tag="1" id="RXa-rI-z9w"/>
+                                                        <menuItem title="Render to Size" tag="4" id="2Vu-bm-wwN"/>
                                                         <menuItem title="Animate" tag="2" id="gQw-fA-Q85"/>
                                                         <menuItem title="Animate Frame" tag="3" id="luO-8S-EqS"/>
                                                     </items>
@@ -552,7 +553,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-162" y="834"/>
+            <point key="canvasLocation" x="-449" y="97"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="119" userLabel="Shared Defaults"/>
         <window title="Save Image Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="137" userLabel="Save Image Accessory" customClass="NSPanel">

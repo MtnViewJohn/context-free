@@ -60,7 +60,6 @@
 }
 
 - (IBAction) startRender:(id)sender;
-- (IBAction) repeatRender:(id)sender;
 - (IBAction) finishRender:(id)sender;
 - (IBAction) stopRender:(id)sender;
 - (IBAction) saveAsSVG:(id)sender;

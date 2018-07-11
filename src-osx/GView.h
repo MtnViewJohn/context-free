@@ -36,6 +36,8 @@ extern NSString* PrefKeyMovieFrameRate;
 extern NSString* PrefKeyMovieFormat;
 extern NSString* PrefKeyMovieWidth;
 extern NSString* PrefKeyMovieHeight;
+extern NSString* PrefKeyHiresWidth;
+extern NSString* PrefKeyHiresHeight;
 extern NSString* PrefKeyMinumumSize;
 
 @class CFDGDocument;
@@ -45,7 +47,8 @@ typedef NS_ENUM(NSInteger, ActionType) {
     StopAction          = 0,
     RenderAction        = 1,
     AnimateAction       = 2,
-    AnimateFrameAction  = 3
+    AnimateFrameAction  = 3,
+    Render2SizeAction   = 4
 };
 
 @interface GView : NSView<NSWindowDelegate> {
@@ -67,11 +70,8 @@ typedef NS_ENUM(NSInteger, ActionType) {
     bool mRestartRenderer;
     bool mRendererFinishing;
     bool mRendererStopping;
-    bool mLastRenderWasHires;
     bool mCloseOnRenderStopped;
     
-    NSSize mLastRenderSize;
-    double mLastRenderMin;
     float  mLastAnimateFrame;
     
     bool mCanvasColor256;
@@ -146,9 +146,8 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (IBAction) startRender:(id)sender;
 - (IBAction) finishRender:(id)sender;
 - (IBAction) stopRender:(id)sender;
-- (IBAction) repeatRender:(id)sender;
-- (void) startHiresRender: (NSSize) size minimum: (double) minSize;
-- (void) startAnimation: (NSSize) size minimum: (double) minSize frame: (float) fr;
+- (void) startHiresRender;
+- (void) startAnimation:(float) frame;
 @end
 
 @interface GView (variationControl)

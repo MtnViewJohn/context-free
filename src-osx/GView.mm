@@ -145,6 +145,7 @@ BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 
 - (void)noteProgress;
 - (void)requestRenderUpdate;
+- (void)setCurrentAction:(ActionType)newAction;
 
 - (void)setupPlayer:(NSURL*)movie;
 - (void)tearDownPlayer;
@@ -197,7 +198,7 @@ namespace {
             { }
     };
     
-    NSArray*    ActionStrings = @[@"Stop", @"Render", @"Animate", @"Frame"];
+    NSArray*    ActionStrings = @[@"Stop", @"Render", @"Animate", @"Frame", @"Sized"];
 }
 
 
@@ -232,11 +233,13 @@ namespace {
         mRestartRenderer = false;
         mRendererFinishing = false;
         mRendererStopping = false;
-        mLastRenderWasHires = false;
         mCloseOnRenderStopped = false;
         
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
+
+        mCurrentAction = ActionType::RenderAction;
+        mLastAnimateFrame = 1.0;
 
         mTiled = false;
         
@@ -280,8 +283,6 @@ namespace {
         mFullScreenMenu = [[winMenu submenu] itemWithTag: (NSInteger)420];
     }
     [window setDelegate: self];
-    mCurrentAction = ActionType::RenderAction;
-    mLastAnimateFrame = 1.0;
     self.wantsLayer = YES;
 }
 
@@ -543,17 +544,16 @@ namespace {
             case RenderAction:
                 [self startRender: sender];
                 break;
+            case Render2SizeAction:
+                [self updateVariation: YES];
+                [self startHiresRender];
+                break;
                 
             case AnimateFrameAction:
+                [self updateVariation: YES];
                 frame = mLastAnimateFrame;
             case AnimateAction: {
-                NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-                float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
-                float movieHeight = [defaults floatForKey: PrefKeyMovieHeight];
-                double movieMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
-                [self startAnimation: NSMakeSize(movieWidth, movieHeight)
-                             minimum: movieMinSize
-                               frame: frame];
+                [self startAnimation: frame];
                 break;
             }
             case StopAction:
@@ -565,9 +565,7 @@ namespace {
 - (IBAction)selectAction:(id)sender
 {
     NSInteger newAction = [mActionSelect selectedTag];
-    mCurrentAction = (ActionType)newAction;
-    [mActionControl setLabel: ActionStrings[newAction]
-                  forSegment: 0];
+    [self setCurrentAction: (ActionType)newAction];
 }
 
 - (IBAction)saveOutput:(id)sender
@@ -637,7 +635,6 @@ namespace {
         return YES;
         
     if (action == @selector(showHiresRenderSheet:)
-    ||  action == @selector(repeatRender:)
     ||  action == @selector(showAnimateSheet:))
         return !mRendering;
             
@@ -827,22 +824,9 @@ namespace {
 
 @implementation GView (renderControl)
 
-- (IBAction) repeatRender:(id)sender
-{
-    if (mLastRenderWasHires) {
-        [self updateVariation: YES];
-        
-        [self startHiresRender: mLastRenderSize
-                       minimum: mLastRenderMin];
-    } else {
-        [self startRender: sender];
-    }
-}
-
 - (IBAction) startRender:(id)sender
 {
-    mCurrentAction = ActionType::RenderAction;
-    mLastRenderWasHires = false;
+    [self setCurrentAction: ActionType::RenderAction];
     [self tearDownPlayer];
     
     if (mRendering) {
@@ -904,13 +888,15 @@ namespace {
     }
 }
 
-- (void) startHiresRender: (NSSize) size
-    minimum: (double) minSize
+- (void) startHiresRender
 {
-    mLastRenderWasHires = true;
-    mLastRenderSize = size;
-    mLastRenderMin = minSize;
-    mCurrentAction = ActionType::RenderAction;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    float hiresWidth = [defaults floatForKey: PrefKeyHiresWidth];
+    float hiresHeight = [defaults floatForKey: PrefKeyHiresHeight];
+    double minSize = [defaults doubleForKey: PrefKeyMinumumSize];
+    NSSize size = NSMakeSize(hiresWidth, hiresHeight);
+    
+    [self setCurrentAction: ActionType::Render2SizeAction];
     [self tearDownPlayer];
     
     if (mRendering)
@@ -932,17 +918,19 @@ namespace {
     [self renderBegin: &parameters];
 }
 
-- (void) startAnimation: (NSSize) size
-                minimum: (double) minSize
-                  frame: (float) fr
+- (void) startAnimation: (float) frame
 {
     RenderParameters parameters;
     parameters.render = false;
     parameters.periodicUpdate = false;
     parameters.animate = true;
-    parameters.animateFrame = static_cast<int>(fr);
+    parameters.animateFrame = static_cast<int>(frame);
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
+    float movieHeight = [defaults floatForKey: PrefKeyMovieHeight];
+    NSSize size = NSMakeSize(movieWidth, movieHeight);
+    double minSize = [defaults doubleForKey: PrefKeyMinumumSize];
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     auto fmt = AVcanvas::H264;
@@ -985,7 +973,7 @@ namespace {
                                 mRenderer->m_width, mRenderer->m_height]];
 
     if (parameters.animateFrame == 0) {
-        mCurrentAction = ActionType::AnimateAction;
+        [self setCurrentAction: ActionType::AnimateAction];
 
         BitmapAndFormat* bits = [BitmapAndFormat alloc];
         [bits initWithAggPixFmt: aggCanvas::AV_Blend
@@ -1014,8 +1002,8 @@ namespace {
             NSBeep();
         }
     } else {
-        mLastAnimateFrame = fr;
-        mCurrentAction = ActionType::AnimateFrameAction;
+        mLastAnimateFrame = frame;
+        [self setCurrentAction: ActionType::AnimateFrameAction];
         [self tearDownPlayer];
         mMovieFile.reset();
         [self buildImageCanvasSize];
@@ -1363,6 +1351,13 @@ namespace {
     [mProgress animate: self];
     [mProgress displayIfNeeded];
 #endif
+}
+
+- (void)setCurrentAction:(ActionType)newAction
+{
+    mCurrentAction = newAction;
+    [mActionControl setLabel: ActionStrings[newAction]
+                  forSegment: 0];
 }
 
 - (void)requestRenderUpdate

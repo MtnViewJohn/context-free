@@ -58,10 +58,10 @@
 NSString* PrefKeyMovieWidth = @"MovieWidth";
 NSString* PrefKeyMovieHeight = @"MovieHeight";
 NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
+NSString* PrefKeyHiresWidth = @"HiresWidth";
+NSString* PrefKeyHiresHeight = @"HiresHeight";
 
 namespace {
-    NSString* PrefKeyHiresWidth = @"HiresWidth";
-    NSString* PrefKeyHiresHeight = @"HiresHeight";
     
     class CocoaSystem : public PosixSystem
     {
@@ -500,7 +500,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (IBAction) enterFullscreen:(id)sender { [mGView enterFullscreen: sender]; }
 - (IBAction) startRender:(id)sender { [mGView startRender: sender]; }
-- (IBAction) repeatRender:(id)sender{ [mGView repeatRender: sender]; }
 - (IBAction) finishRender:(id)sender{ [mGView finishRender: sender]; }
 - (IBAction) stopRender:(id)sender  { [mGView stopRender: sender]; }
 - (IBAction) saveAsSVG:(id)sender   { [mGView saveAsSVG: sender]; }
@@ -526,7 +525,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         return YES;
    
     if (action == @selector(startRender:)
-    ||  action == @selector(repeatRender:)
     ||  action == @selector(finishRender:)
     ||  action == @selector(stopRender:)
     ||  action == @selector(saveAsSVG:)
@@ -553,13 +551,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (![mHiresSheet makeFirstResponder: nil])
     return;
 
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    float hiresWidth = [defaults floatForKey: PrefKeyHiresWidth];
-    float hiresHeight = [defaults floatForKey: PrefKeyHiresHeight];
-    double hiresMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
-
-    [mGView startHiresRender: NSMakeSize(hiresWidth, hiresHeight)
-                minimum: hiresMinSize];
+    [mGView startHiresRender];
     [self cancelHiresRender:sender];
 }
 
@@ -600,8 +592,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
-    float movieHeight = [defaults floatForKey: PrefKeyMovieHeight];
-    double movieMinSize = [defaults doubleForKey: PrefKeyMinumumSize];
     float movieFrame =  0.0;
     NSString* message = nil;
     NSString* problem = nil;
@@ -642,9 +632,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
 
     
-    [mGView startAnimation: NSMakeSize(movieWidth, movieHeight)
-                   minimum: movieMinSize
-                     frame: movieFrame];
+    [mGView startAnimation: movieFrame];
     [self cancelAnimation:sender];
 }
 
