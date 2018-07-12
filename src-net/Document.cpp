@@ -94,7 +94,8 @@ void Document::InitializeStuff()
 
     // setup the render parameters and the render thread
     renderParams = new RenderParameters();
-    lastRenderWasSized = false;
+    renderParams->initFromPrefs();
+    renderParams->frame = 1;
     renderThread = gcnew BackgroundWorker();
     renderThread->RunWorkerCompleted += gcnew RunWorkerCompletedEventHandler(this, &Document::RenderCompleted);
     renderThread->DoWork += gcnew DoWorkEventHandler(this, &Document::RunRenderThread);
@@ -380,7 +381,10 @@ System::Void Document::modifiedCFDG(System::Object^ sender, System::EventArgs^ e
 
 System::Void Document::menuRRender_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	mRenderButtonAction = RenderButtonAction::Render;
+    RenderButtonAction oldAction = mRenderButtonAction;
+    mRenderButtonAction = RenderButtonAction::Render;
+    if (oldAction != mRenderButtonAction)
+        updateRenderButton();
 
 	if (renderThread->IsBusy) {
         postAction = PostRenderAction::Render;
@@ -392,95 +396,87 @@ System::Void Document::menuRRender_Click(System::Object^ sender, System::EventAr
     renderParams->periodicUpdate = true;
     renderParams->suppressDisplay = false;
     renderParams->action = RenderParameters::RenderActions::Render;
-    lastRenderWasSized = false;
     DoRender();
 }
 
 System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	RenderButtonAction oldAction = mRenderButtonAction;
-	mRenderButtonAction = RenderButtonAction::Render;
+	mRenderButtonAction = RenderButtonAction::RenderSized;
+    if (oldAction != mRenderButtonAction)
+        updateRenderButton();
 
     if (renderThread->IsBusy) {
         postAction = PostRenderAction::RenderSize;
         return;
     }
 
-	if (oldAction != mRenderButtonAction)
-		updateRenderButton();
-
-    RenderSizeDialog rs(renderParams);
-
-    if (sender != menuRRenderSize || rs.ShowDialog() == Windows::Forms::DialogResult::OK) {
-        if (sender != menuRRenderSize) 
+    renderParams->initFromPrefs();
+    if (sender == menuRRenderSize) {
+        RenderSizeDialog rs(renderParams);
+        if (rs.ShowDialog() == Windows::Forms::DialogResult::OK)
             renderParams->saveToPrefs();
-        renderParams->action = RenderParameters::RenderActions::Render;
-        lastRenderWasSized = true;
-        DoRender();
+        else
+            return;
     }
+
+    renderParams->action = RenderParameters::RenderActions::Render;
+    DoRender();
 }
 
 System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	RenderButtonAction oldAction = mRenderButtonAction;
 	mRenderButtonAction = RenderButtonAction::Animate;
+    if (oldAction != mRenderButtonAction)
+        updateRenderButton();
 
 	if (renderThread->IsBusy) {
         postAction = PostRenderAction::Animate;
         return;
     }
 
-	if (oldAction != mRenderButtonAction)
-		updateRenderButton();
-
-	renderParams->animateFrame = false;
-    AnimateDialog an(renderParams);
-
-    if (sender != menuRAnimate || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
-        if (sender != menuRAnimate)
+    renderParams->initFromPrefs();
+    renderParams->animateFrame = false;
+    if (sender == menuRAnimate) {
+        AnimateDialog an(renderParams);
+        if (an.ShowDialog() == Windows::Forms::DialogResult::OK)
             renderParams->saveToPrefs();
-        renderParams->action = RenderParameters::RenderActions::Animate;
-        DoRender();
+        else
+            return;
+    } else {
+        renderParams->animateFrameCount = renderParams->length * renderParams->frameRate;
     }
+
+    renderParams->action = RenderParameters::RenderActions::Animate;
+    DoRender();
 }
 
 System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	RenderButtonAction oldAction = mRenderButtonAction;
 	mRenderButtonAction = RenderButtonAction::AnimateFrame;
+    if (oldAction != mRenderButtonAction)
+        updateRenderButton();
 
 	if (renderThread->IsBusy) {
         postAction = PostRenderAction::AnimateFrame;
         return;
     }
 
-	if (oldAction != mRenderButtonAction)
-		updateRenderButton();
-
-	renderParams->animateFrame = true;
-    AnimateDialog an(renderParams);
-
-    if (sender != menuRAnimateFrame || an.ShowDialog() == Windows::Forms::DialogResult::OK) {
-        if (sender != menuRAnimateFrame)
+    renderParams->initFromPrefs();
+    renderParams->animateFrame = true;
+    if (sender == menuRAnimateFrame) {
+        AnimateDialog an(renderParams);
+        if (an.ShowDialog() == Windows::Forms::DialogResult::OK)
             renderParams->saveToPrefs();
-        renderParams->action = RenderParameters::RenderActions::Animate;
-        DoRender();
-    }
-}
-
-System::Void Document::menuRRenderAgain_Click(System::Object^ sender, System::EventArgs^ e)
-{
-    if (renderThread->IsBusy) {
-        postAction = PostRenderAction::RenderRepeat;
-        renderParams->action = RenderParameters::RenderActions::Render;
-        return;
-    }
-
-    if (!lastRenderWasSized) {
-        renderParams->width = renderParams->height = 0;
+        else
+            return;
     } else {
-        NextVar_Click(nullptr, nullptr);
+        renderParams->animateFrameCount = renderParams->length * renderParams->frameRate;
     }
+
+    renderParams->action = RenderParameters::RenderActions::Animate;
     DoRender();
 }
 
@@ -807,6 +803,9 @@ System::Void Document::RenderButton_Click(System::Object^ sender, System::EventA
 		case RenderButtonAction::Render:
 			menuRRender_Click(sender, e);
 			break;
+        case RenderButtonAction::RenderSized:
+            menuRRenderSize_Click(sender, e);
+            break;
 		case RenderButtonAction::Animate:
 			menuRAnimate_Click(sender, e);
 			break;
@@ -815,6 +814,15 @@ System::Void Document::RenderButton_Click(System::Object^ sender, System::EventA
 			break;
 		}
     }
+}
+
+System::Void Document::actionToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    ToolStripMenuItem^ menu = cli::safe_cast<ToolStripMenuItem^>(sender);
+    String^ tag = menu->Tag->ToString();
+    int tagnum = Int32::Parse(tag);
+    mRenderButtonAction = (RenderButtonAction)tagnum;
+    updateRenderButton();
 }
 
 System::Void Document::PrevVar_Click(System::Object^ sender, System::EventArgs^ e)
@@ -965,7 +973,7 @@ System::Void Document::variationKeyPress(Object^ sender, System::Windows::Forms:
         System::Media::SystemSounds::Beep->Play();
     } else if (e->KeyChar == '\r') {
         e->Handled = true;
-        menuRRenderAgain_Click(sender, e);
+        RenderButton_Click(sender, e);
     }
 }
 
@@ -1004,7 +1012,10 @@ void Document::updateRenderButton()
 		case RenderButtonAction::Render:
 			toolStripRenderButton->Text = "Render";
 			break;
-		case RenderButtonAction::Animate:
+        case RenderButtonAction::RenderSized:
+            toolStripRenderButton->Text = "Sized";
+            break;
+        case RenderButtonAction::Animate:
 			toolStripRenderButton->Text = "Animate";
 			break;
 		case RenderButtonAction::AnimateFrame:
@@ -1036,7 +1047,7 @@ void Document::DoRender()
 
     bool modifiedSinceRender = SyncToSystem();
 
-    if (!modifiedSinceRender && !mUserChangedVariation && !lastRenderWasSized) {
+    if (!modifiedSinceRender && !mUserChangedVariation) {
         NextVar_Click(nullptr, nullptr);
     }
     mUserChangedVariation = false;

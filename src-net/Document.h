@@ -80,11 +80,10 @@ namespace ContextFreeNet {
         int  currentVariation;
         int maxVariation, minVariation;
         RenderParameters* renderParams;
-        bool lastRenderWasSized;
 
         enum class PostRenderAction { DoNothing, Render, RenderSize, RenderRepeat, 
             Animate, AnimateFrame, SaveOutput, Close, Exit };
-		enum class RenderButtonAction { Render, Animate, AnimateFrame };
+		enum class RenderButtonAction { Render, RenderSized, Animate, AnimateFrame };
         property PostRenderAction postAction {
             void set(PostRenderAction a) {
                 if (a == PostRenderAction::DoNothing || a == PostRenderAction::Exit) {
@@ -196,6 +195,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem1;
 private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimate;
 private: System::Windows::Forms::ToolStripMenuItem^  menuRAnimateFrame;
 private: System::Windows::Forms::ToolStripMenuItem^  piToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  renderToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  sizedToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  animateToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  frameToolStripMenuItem;
 
     public:
 
@@ -234,7 +237,7 @@ private:
 	public:  System::Windows::Forms::RichTextBox^  cfdgText;
 
 
-	private: System::Windows::Forms::ToolStripButton^  toolStripRenderButton;
+    private: System::Windows::Forms::ToolStripSplitButton^ toolStripRenderButton;
 
 	private: System::Windows::Forms::ToolStripTextBox^  toolStripVariation;
 	private: System::Windows::Forms::ToolStripButton^  toolStripPrevVar;
@@ -312,7 +315,11 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
 		{
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Document::typeid));
             this->toolStrip1 = (gcnew System::Windows::Forms::ToolStrip());
-            this->toolStripRenderButton = (gcnew System::Windows::Forms::ToolStripButton());
+            this->toolStripRenderButton = (gcnew System::Windows::Forms::ToolStripSplitButton());
+            this->renderToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->sizedToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->animateToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->frameToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStripSaveButton = (gcnew System::Windows::Forms::ToolStripButton());
             this->toolStripProgressBar = (gcnew System::Windows::Forms::ToolStripProgressBar());
             this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
@@ -348,6 +355,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripMenuItem5 = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStripMenuItem6 = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->infToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->piToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->insertSymmetryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFCyclicToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFDihedralToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -417,7 +425,6 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
             this->menuROutput = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRUpload = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->piToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->toolStrip1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->documentSplitter))->BeginInit();
             this->documentSplitter->Panel1->SuspendLayout();
@@ -440,7 +447,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar,
                     this->toolStripNextVar, this->toolStripSeparator2, this->toolStripStatus
             });
-            this->toolStrip1->Location = System::Drawing::Point(0, 42);
+            this->toolStrip1->Location = System::Drawing::Point(0, 0);
             this->toolStrip1->Name = L"toolStrip1";
             this->toolStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::System;
             this->toolStrip1->Size = System::Drawing::Size(1162, 39);
@@ -451,15 +458,51 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->toolStripRenderButton->AutoSize = false;
             this->toolStripRenderButton->AutoToolTip = false;
+            this->toolStripRenderButton->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+                this->renderToolStripMenuItem,
+                    this->sizedToolStripMenuItem, this->animateToolStripMenuItem, this->frameToolStripMenuItem
+            });
             this->toolStripRenderButton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripRenderButton.Image")));
             this->toolStripRenderButton->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
             this->toolStripRenderButton->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->toolStripRenderButton->ImageTransparentColor = System::Drawing::Color::Magenta;
             this->toolStripRenderButton->Name = L"toolStripRenderButton";
-            this->toolStripRenderButton->Size = System::Drawing::Size(79, 22);
+            this->toolStripRenderButton->Size = System::Drawing::Size(85, 22);
             this->toolStripRenderButton->Text = L"Render";
             this->toolStripRenderButton->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-            this->toolStripRenderButton->Click += gcnew System::EventHandler(this, &Document::RenderButton_Click);
+            this->toolStripRenderButton->ButtonClick += gcnew System::EventHandler(this, &Document::RenderButton_Click);
+            // 
+            // renderToolStripMenuItem
+            // 
+            this->renderToolStripMenuItem->Name = L"renderToolStripMenuItem";
+            this->renderToolStripMenuItem->Size = System::Drawing::Size(324, 38);
+            this->renderToolStripMenuItem->Tag = L"0";
+            this->renderToolStripMenuItem->Text = L"Render";
+            this->renderToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::actionToolStripMenuItem_Click);
+            // 
+            // sizedToolStripMenuItem
+            // 
+            this->sizedToolStripMenuItem->Name = L"sizedToolStripMenuItem";
+            this->sizedToolStripMenuItem->Size = System::Drawing::Size(324, 38);
+            this->sizedToolStripMenuItem->Tag = L"1";
+            this->sizedToolStripMenuItem->Text = L"Render to Size";
+            this->sizedToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::actionToolStripMenuItem_Click);
+            // 
+            // animateToolStripMenuItem
+            // 
+            this->animateToolStripMenuItem->Name = L"animateToolStripMenuItem";
+            this->animateToolStripMenuItem->Size = System::Drawing::Size(324, 38);
+            this->animateToolStripMenuItem->Tag = L"2";
+            this->animateToolStripMenuItem->Text = L"Animate";
+            this->animateToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::actionToolStripMenuItem_Click);
+            // 
+            // frameToolStripMenuItem
+            // 
+            this->frameToolStripMenuItem->Name = L"frameToolStripMenuItem";
+            this->frameToolStripMenuItem->Size = System::Drawing::Size(324, 38);
+            this->frameToolStripMenuItem->Tag = L"3";
+            this->frameToolStripMenuItem->Text = L"Animate a Frame";
+            this->frameToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::actionToolStripMenuItem_Click);
             // 
             // toolStripSaveButton
             // 
@@ -535,7 +578,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->documentSplitter->Dock = System::Windows::Forms::DockStyle::Fill;
             this->documentSplitter->FixedPanel = System::Windows::Forms::FixedPanel::Panel1;
-            this->documentSplitter->Location = System::Drawing::Point(0, 81);
+            this->documentSplitter->Location = System::Drawing::Point(0, 39);
             this->documentSplitter->Name = L"documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -546,7 +589,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->documentSplitter->Panel2->BackColor = System::Drawing::SystemColors::Window;
             this->documentSplitter->Panel2->Controls->Add(this->renderBox);
-            this->documentSplitter->Size = System::Drawing::Size(1162, 727);
+            this->documentSplitter->Size = System::Drawing::Size(1162, 769);
             this->documentSplitter->SplitterDistance = 386;
             this->documentSplitter->TabIndex = 1;
             // 
@@ -565,8 +608,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // editorSplitter.Panel2
             // 
             this->editorSplitter->Panel2->Controls->Add(this->cfdgMessage);
-            this->editorSplitter->Size = System::Drawing::Size(386, 727);
-            this->editorSplitter->SplitterDistance = 560;
+            this->editorSplitter->Size = System::Drawing::Size(386, 769);
+            this->editorSplitter->SplitterDistance = 602;
             this->editorSplitter->TabIndex = 1;
             // 
             // cfdgText
@@ -576,7 +619,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->cfdgText->Location = System::Drawing::Point(0, 0);
             this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
-            this->cfdgText->Size = System::Drawing::Size(386, 560);
+            this->cfdgText->Size = System::Drawing::Size(386, 602);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
             this->cfdgText->WordWrap = false;
@@ -598,7 +641,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->renderBox->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"renderBox.InitialImage")));
             this->renderBox->Location = System::Drawing::Point(0, 0);
             this->renderBox->Name = L"renderBox";
-            this->renderBox->Size = System::Drawing::Size(772, 727);
+            this->renderBox->Size = System::Drawing::Size(772, 769);
             this->renderBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
             this->renderBox->TabIndex = 0;
             this->renderBox->TabStop = false;
@@ -770,7 +813,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // toolStripMenuItem2
             // 
             this->toolStripMenuItem2->Name = L"toolStripMenuItem2";
-            this->toolStripMenuItem2->Size = System::Drawing::Size(268, 38);
+            this->toolStripMenuItem2->Size = System::Drawing::Size(134, 38);
             this->toolStripMenuItem2->Tag = L"8804";
             this->toolStripMenuItem2->Text = L"≤";
             this->toolStripMenuItem2->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
@@ -778,7 +821,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // toolStripMenuItem3
             // 
             this->toolStripMenuItem3->Name = L"toolStripMenuItem3";
-            this->toolStripMenuItem3->Size = System::Drawing::Size(268, 38);
+            this->toolStripMenuItem3->Size = System::Drawing::Size(134, 38);
             this->toolStripMenuItem3->Tag = L"8805";
             this->toolStripMenuItem3->Text = L"≥";
             this->toolStripMenuItem3->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
@@ -786,7 +829,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // toolStripMenuItem4
             // 
             this->toolStripMenuItem4->Name = L"toolStripMenuItem4";
-            this->toolStripMenuItem4->Size = System::Drawing::Size(268, 38);
+            this->toolStripMenuItem4->Size = System::Drawing::Size(134, 38);
             this->toolStripMenuItem4->Tag = L"8800";
             this->toolStripMenuItem4->Text = L"≠";
             this->toolStripMenuItem4->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
@@ -794,7 +837,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // toolStripMenuItem5
             // 
             this->toolStripMenuItem5->Name = L"toolStripMenuItem5";
-            this->toolStripMenuItem5->Size = System::Drawing::Size(268, 38);
+            this->toolStripMenuItem5->Size = System::Drawing::Size(134, 38);
             this->toolStripMenuItem5->Tag = L"8230";
             this->toolStripMenuItem5->Text = L"…";
             this->toolStripMenuItem5->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
@@ -802,7 +845,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // toolStripMenuItem6
             // 
             this->toolStripMenuItem6->Name = L"toolStripMenuItem6";
-            this->toolStripMenuItem6->Size = System::Drawing::Size(268, 38);
+            this->toolStripMenuItem6->Size = System::Drawing::Size(134, 38);
             this->toolStripMenuItem6->Tag = L"177";
             this->toolStripMenuItem6->Text = L"±";
             this->toolStripMenuItem6->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
@@ -810,10 +853,17 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // infToolStripMenuItem
             // 
             this->infToolStripMenuItem->Name = L"infToolStripMenuItem";
-            this->infToolStripMenuItem->Size = System::Drawing::Size(268, 38);
+            this->infToolStripMenuItem->Size = System::Drawing::Size(134, 38);
             this->infToolStripMenuItem->Tag = L"8734";
             this->infToolStripMenuItem->Text = L"∞";
             this->infToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
+            // 
+            // piToolStripMenuItem
+            // 
+            this->piToolStripMenuItem->Name = L"piToolStripMenuItem";
+            this->piToolStripMenuItem->Size = System::Drawing::Size(134, 38);
+            this->piToolStripMenuItem->Text = L"π";
+            this->piToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
             // insertSymmetryToolStripMenuItem
             // 
@@ -1285,8 +1335,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuRRenderAgain->ShortcutKeys = static_cast<System::Windows::Forms::Keys>(((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Alt)
                 | System::Windows::Forms::Keys::R));
             this->menuRRenderAgain->Size = System::Drawing::Size(409, 38);
-            this->menuRRenderAgain->Text = L"Repea&t render";
-            this->menuRRenderAgain->Click += gcnew System::EventHandler(this, &Document::menuRRenderAgain_Click);
+            this->menuRRenderAgain->Text = L"Repea&t Last Render";
+            this->menuRRenderAgain->Click += gcnew System::EventHandler(this, &Document::RenderButton_Click);
             // 
             // menuRAnimate
             // 
@@ -1346,13 +1396,6 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuRUpload->Text = L"&Upload to gallery...";
             this->menuRUpload->Click += gcnew System::EventHandler(this, &Document::menuRUpload_Click);
             // 
-            // piToolStripMenuItem
-            // 
-            this->piToolStripMenuItem->Name = L"piToolStripMenuItem";
-            this->piToolStripMenuItem->Size = System::Drawing::Size(268, 38);
-            this->piToolStripMenuItem->Text = L"π";
-            this->piToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
-            // 
             // Document
             // 
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
@@ -1403,8 +1446,6 @@ private:
     System::Void menuRRender_Click(System::Object^  sender, System::EventArgs^  e);
 
     System::Void menuRRenderSize_Click(System::Object^  sender, System::EventArgs^  e);
-
-    System::Void menuRRenderAgain_Click(System::Object^  sender, System::EventArgs^  e);
 
     System::Void menuRStop_Click(System::Object^  sender, System::EventArgs^  e);
 
@@ -1506,5 +1547,6 @@ private: System::Void messageWindowReady(System::Object^ sender, System::Windows
          System::Text::StringBuilder^ deferredHtml;
          bool messageWindowUnready;
 private: System::Void toolStripMenuUnicode_Click(System::Object^  sender, System::EventArgs^  e);
+private: System::Void actionToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }
