@@ -225,6 +225,7 @@ namespace ContextFreeNet {
         req->ContentLength = len;
         req->ProtocolVersion = HttpVersion::Version11;
         req->KeepAlive = false;
+        ServicePointManager::SecurityProtocol = SecurityProtocolType::Tls11 | SecurityProtocolType::Tls12;
 
         try {
             StreamWriter writer(req->GetRequestStream());
