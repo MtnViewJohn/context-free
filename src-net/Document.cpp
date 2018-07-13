@@ -1117,10 +1117,12 @@ void Document::DoRender()
             renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec);
 
         if (mAnimationCanvas->mError) {
-            setMessageText(gcnew String(mAnimationCanvas->mErrorMsg));
+            String^ message = gcnew String(mAnimationCanvas->mErrorMsg);
+            System::Media::SystemSounds::Beep->Play();
+            System::Windows::Forms::MessageBox::Show(MdiParent, message);
+            setMessageText(message);
             delete mAnimationCanvas;
             mAnimationCanvas = nullptr;
-            System::Media::SystemSounds::Beep->Play();
             return;
         }
     }
