@@ -945,6 +945,22 @@ namespace {
             break;
     }
     
+    if ((int)movieWidth & 7) {
+        NSString* message =     parameters.animateFrame ?
+                                @"Cannot create animation movie frame" :
+                                @"Cannot create animation movie";
+        NSAlert* nonono = [[[NSAlert alloc] init] autorelease];
+        [nonono setAlertStyle: NSAlertStyleWarning];
+        [nonono setMessageText: message];
+        [nonono setInformativeText: @"Rendered width must be a multiple of 8 pixels"];
+        [nonono addButtonWithTitle: @"OK"];
+        [nonono beginSheetModalForWindow: [self window]
+                           modalDelegate:nil
+                          didEndSelector:nil
+                             contextInfo:nil];
+        return;
+    }
+
     parameters.animateFrameCount = static_cast<int>(movieLength * movieFrameRate * 0.01);
     
     [self buildEngine];
