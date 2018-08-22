@@ -2499,7 +2499,7 @@ rule CHAPTER2 {
     SQUARE { x 3 y 5 size 0.75 }
 	// adjust size
 
-	// notice that rotaion and size
+	// notice that rotation and size
 	// are adjusted after location
 
     SQUARE { x 5 y 5
@@ -2549,7 +2549,7 @@ rule SPIRAL {
 
 	// the system will stop the
 	// recursion when the shapes
-	// get to small to see
+	// get too small to see
 }
 
 rule CHAPTER4 {
@@ -6030,7 +6030,7 @@ shape CHAPTER2
     SQUARE [ x 3 y 5 size 0.75 ]
 	// adjust size
 
-	// notice that rotaion and size
+	// notice that rotation and size
 	// are adjusted after location
 
     SQUARE [ x 5 y 5
@@ -6083,7 +6083,7 @@ shape SPIRAL
 
 	// the system will stop the
 	// recursion when the shapes
-	// get to small to see
+	// get too small to see
 }
 
 shape CHAPTER4
