@@ -386,7 +386,7 @@ Void Form1::processArgs(array<System::String^>^ args)
 
     if (args == nullptr || args->Length == 1) return;
 
-    if (args->Length == 2) {
+    if (args->Length == 2 && !fileAlreadyOpen(args[1])) {
         OpenDoc(args[1]);
     } else if (args[1] == "/new" && args->Length == 3) {
         String^ name = Path::GetDirectoryName(args[2]) + "\\Document.cfdg";
