@@ -414,6 +414,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System">
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -1180,7 +1181,6 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
     </ClCompile>
-    <ClCompile Include="SingletonController.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -1459,6 +1459,7 @@
     <ClInclude Include="AnimateDialog.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="CFApp.h" />
     <ClInclude Include="CFPrefs.h" />
     <ClInclude Include="ColorCalculator.h">
       <FileType>CppForm</FileType>
@@ -1499,7 +1500,6 @@
     <ClInclude Include="..\src-common\scanner.h" />
     <ClInclude Include="..\src-common\shape.h" />
     <ClInclude Include="..\src-common\shapeSTL.h" />
-    <ClInclude Include="SingletonController.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\src-common\SVGCanvas.h" />
     <ClInclude Include="..\src-common\tempfile.h" />
