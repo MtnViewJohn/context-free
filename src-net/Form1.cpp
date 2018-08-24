@@ -315,15 +315,9 @@ void Form1::OpenDoc(String^ name)
         newMDIchild->TabText = Path::GetFileName(name);
         newMDIchild->Name = name;
         newMDIchild->isNamed = Path::IsPathRooted(name);
-        newMDIchild->reloadWhenReady = true;
-        if (newMDIchild->isNamed ? !File::Exists(name) : 
-                         (exampleSet->IndexOfKey(name) == -1))
-        {
-            mruManager->Remove(name);
-            MessageBox::Show("The file may have been moved or deleted.", "File not found.",
-                MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
-            return;
-        }
+        newMDIchild->reloadWhenReady =
+            newMDIchild->isNamed ? File::Exists(name)
+                                 : exampleSet->ContainsKey(name);
     }
 
     newMDIchild->Text = newMDIchild->TabText;
@@ -331,8 +325,9 @@ void Form1::OpenDoc(String^ name)
     newMDIchild->Closing += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::File_Closed);
     newMDIchild->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::Document);
 
-    if (newMDIchild->isNamed && File::Exists(name)) {
-        mruManager->currentDirectory = Path::GetDirectoryName(name);
+    if (newMDIchild->isNamed) {
+        if (File::Exists(name))
+            mruManager->currentDirectory = Path::GetDirectoryName(name);
         openFiles->Add(name, newMDIchild);
     }
 }
@@ -384,13 +379,19 @@ Void Form1::processArgs(array<System::String^>^ args)
     if (this->InvokeRequired) 
         return;
 
-    if (args == nullptr || args->Length == 1) return;
+    if (args == nullptr || args->Length <= 1) return;
 
     if (args->Length == 2 && !fileAlreadyOpen(args[1])) {
         OpenDoc(args[1]);
     } else if (args[1] == "/new" && args->Length == 3) {
         String^ name = Path::GetDirectoryName(args[2]) + "\\Document.cfdg";
-        OpenDoc(name);
+        for (int i = 1; ; ++i) {
+            if (!File::Exists(name) && !openFiles->ContainsKey(name)) {
+                OpenDoc(name);
+                break;
+            }
+            name = Path::GetDirectoryName(args[2]) + "\\Document" + i.ToString() + ".cfdg";
+        }
     }
     Activate();
     BringToFront();
