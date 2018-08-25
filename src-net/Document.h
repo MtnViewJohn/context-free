@@ -107,7 +107,10 @@ namespace ContextFreeNet {
         WinSystem* mSystem;
         System::ComponentModel::BackgroundWorker^ renderThread;
         System::Windows::Forms::TextBox^ variationEdit;
+        System::Windows::Forms::ToolStripSeparator^  rightSeparator;
         System::Windows::Forms::TextBox^ frameEdit;
+        System::Windows::Forms::TextBox^ widthEdit;
+        System::Windows::Forms::TextBox^ heightEdit;
 
 
     private: System::Windows::Forms::ToolStripLabel^  toolStripStatus;
@@ -205,6 +208,11 @@ private: System::Windows::Forms::ToolStripTextBox^  toolStripFrameTextBox;
 private: System::Windows::Forms::ToolStripSeparator^  toolStripFrameSeparator;
 private: System::Windows::Forms::ToolStripButton^  toolStripPrevFrame;
 private: System::Windows::Forms::ToolStripButton^  toolStripNextFrame;
+private: System::Windows::Forms::ToolStripLabel^  toolStripSizeLabel1;
+private: System::Windows::Forms::ToolStripTextBox^  toolStripWidthBox;
+private: System::Windows::Forms::ToolStripLabel^  toolStripSizeLabel2;
+private: System::Windows::Forms::ToolStripTextBox^  toolStripHeightBox;
+private: System::Windows::Forms::ToolStripSeparator^  toolStripSizeSeparator;
 
     public:
 
@@ -253,7 +261,8 @@ private:
 
 
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator2;
+private: System::Windows::Forms::ToolStripSeparator^  toolStripVariationSeparator;
+
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
     private: System::Windows::Forms::ToolStripMenuItem^  menuFile;
 
@@ -332,12 +341,17 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripVariation = (gcnew System::Windows::Forms::ToolStripTextBox());
             this->toolStripPrevVar = (gcnew System::Windows::Forms::ToolStripButton());
             this->toolStripNextVar = (gcnew System::Windows::Forms::ToolStripButton());
-            this->toolStripSeparator2 = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->toolStripVariationSeparator = (gcnew System::Windows::Forms::ToolStripSeparator());
             this->toolStripFrameLabel = (gcnew System::Windows::Forms::ToolStripLabel());
             this->toolStripFrameTextBox = (gcnew System::Windows::Forms::ToolStripTextBox());
             this->toolStripPrevFrame = (gcnew System::Windows::Forms::ToolStripButton());
             this->toolStripNextFrame = (gcnew System::Windows::Forms::ToolStripButton());
             this->toolStripFrameSeparator = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->toolStripSizeLabel1 = (gcnew System::Windows::Forms::ToolStripLabel());
+            this->toolStripWidthBox = (gcnew System::Windows::Forms::ToolStripTextBox());
+            this->toolStripSizeLabel2 = (gcnew System::Windows::Forms::ToolStripLabel());
+            this->toolStripHeightBox = (gcnew System::Windows::Forms::ToolStripTextBox());
+            this->toolStripSizeSeparator = (gcnew System::Windows::Forms::ToolStripSeparator());
             this->toolStripStatus = (gcnew System::Windows::Forms::ToolStripLabel());
             this->documentSplitter = (gcnew System::Windows::Forms::SplitContainer());
             this->editorSplitter = (gcnew System::Windows::Forms::SplitContainer());
@@ -453,11 +467,12 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->toolStrip1->GripStyle = System::Windows::Forms::ToolStripGripStyle::Hidden;
             this->toolStrip1->ImageScalingSize = System::Drawing::Size(32, 32);
-            this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(14) {
+            this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(19) {
                 this->toolStripRenderButton,
                     this->toolStripSaveButton, this->toolStripProgressBar, this->toolStripSeparator1, this->toolStripVariation, this->toolStripPrevVar,
-                    this->toolStripNextVar, this->toolStripSeparator2, this->toolStripFrameLabel, this->toolStripFrameTextBox, this->toolStripPrevFrame,
-                    this->toolStripNextFrame, this->toolStripFrameSeparator, this->toolStripStatus
+                    this->toolStripNextVar, this->toolStripVariationSeparator, this->toolStripFrameLabel, this->toolStripFrameTextBox, this->toolStripPrevFrame,
+                    this->toolStripNextFrame, this->toolStripFrameSeparator, this->toolStripSizeLabel1, this->toolStripWidthBox, this->toolStripSizeLabel2,
+                    this->toolStripHeightBox, this->toolStripSizeSeparator, this->toolStripStatus
             });
             this->toolStrip1->Location = System::Drawing::Point(0, 0);
             this->toolStrip1->Name = L"toolStrip1";
@@ -570,10 +585,10 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripNextVar->ToolTipText = L"Next Variation";
             this->toolStripNextVar->Click += gcnew System::EventHandler(this, &Document::NextVar_Click);
             // 
-            // toolStripSeparator2
+            // toolStripVariationSeparator
             // 
-            this->toolStripSeparator2->Name = L"toolStripSeparator2";
-            this->toolStripSeparator2->Size = System::Drawing::Size(6, 47);
+            this->toolStripVariationSeparator->Name = L"toolStripVariationSeparator";
+            this->toolStripVariationSeparator->Size = System::Drawing::Size(6, 47);
             // 
             // toolStripFrameLabel
             // 
@@ -620,8 +635,41 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripFrameSeparator->Size = System::Drawing::Size(6, 47);
             this->toolStripFrameSeparator->Visible = false;
             // 
+            // toolStripSizeLabel1
+            // 
+            this->toolStripSizeLabel1->Name = L"toolStripSizeLabel1";
+            this->toolStripSizeLabel1->Size = System::Drawing::Size(63, 44);
+            this->toolStripSizeLabel1->Text = L"Size:";
+            this->toolStripSizeLabel1->Visible = false;
+            // 
+            // toolStripWidthBox
+            // 
+            this->toolStripWidthBox->Name = L"toolStripWidthBox";
+            this->toolStripWidthBox->Size = System::Drawing::Size(100, 47);
+            this->toolStripWidthBox->Visible = false;
+            // 
+            // toolStripSizeLabel2
+            // 
+            this->toolStripSizeLabel2->Name = L"toolStripSizeLabel2";
+            this->toolStripSizeLabel2->Size = System::Drawing::Size(31, 44);
+            this->toolStripSizeLabel2->Text = L"×";
+            this->toolStripSizeLabel2->Visible = false;
+            // 
+            // toolStripHeightBox
+            // 
+            this->toolStripHeightBox->Name = L"toolStripHeightBox";
+            this->toolStripHeightBox->Size = System::Drawing::Size(100, 47);
+            this->toolStripHeightBox->Visible = false;
+            // 
+            // toolStripSizeSeparator
+            // 
+            this->toolStripSizeSeparator->Name = L"toolStripSizeSeparator";
+            this->toolStripSizeSeparator->Size = System::Drawing::Size(6, 47);
+            this->toolStripSizeSeparator->Visible = false;
+            // 
             // toolStripStatus
             // 
+            this->toolStripStatus->Alignment = System::Windows::Forms::ToolStripItemAlignment::Right;
             this->toolStripStatus->AutoSize = false;
             this->toolStripStatus->AutoToolTip = true;
             this->toolStripStatus->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
@@ -1609,5 +1657,6 @@ private: System::Void PrevFrame_Click(System::Object^  sender, System::EventArgs
 private: System::Void NextFrame_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void Frame_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e);
 private: System::Void Frame_Changed(System::Object^ sender, System::EventArgs^ e);
+private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e);
 };
 }

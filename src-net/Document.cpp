@@ -70,6 +70,7 @@ void Document::InitializeStuff()
 
     // get resize events so that the status and message text fields can stay the
     // right size
+    rightSeparator = toolStripVariationSeparator;
     toolStrip1->SizeChanged += gcnew EventHandler(this, &Document::stripSizeChanged);
 
     // get renderbox resize events so that its backing store can be remad
@@ -172,6 +173,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     // Replace the placeholder ToolStripTextBox with an encapsulated TextBox.
     // This is done to fix a .Net bug with the ToolStripTextBox::Textchanged
     // event not firing reliably.
+    toolStrip1->SuspendLayout();
     toolStrip1->Items->Insert(toolStrip1->Items->IndexOf(toolStripVariation), 
                               gcnew ToolStripControlHost(variationEdit));
     toolStrip1->Items->Remove(toolStripVariation); 
@@ -199,6 +201,37 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     frameEdit->KeyPress += gcnew KeyPressEventHandler(this, &Document::Frame_KeyPress);
     frameEdit->TextChanged += gcnew EventHandler(this, &Document::Frame_Changed);
     frameEdit->Visible = false;
+
+    // Same bug fix for toolStripWidthBox
+    widthEdit = gcnew TextBox();
+    toolStrip1->Items->Insert(toolStrip1->Items->IndexOf(toolStripWidthBox),
+        gcnew ToolStripControlHost(widthEdit));
+    toolStrip1->Items->Remove(toolStripWidthBox);
+    widthEdit->MaxLength = 5;
+    widthEdit->Text = System::Convert::ToString(renderParams->width);
+    widthEdit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
+    widthEdit->MinimumSize = System::Drawing::Size(50, 25);
+    widthEdit->MaximumSize = System::Drawing::Size(50, 25);
+    widthEdit->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
+    widthEdit->KeyPress += gcnew KeyPressEventHandler(this, &Document::Frame_KeyPress);
+    widthEdit->TextChanged += gcnew EventHandler(this, &Document::Size_Changed);
+    widthEdit->Visible = false;
+
+    // Same bug fix for toolStripHeightBox
+    heightEdit = gcnew TextBox();
+    toolStrip1->Items->Insert(toolStrip1->Items->IndexOf(toolStripHeightBox),
+        gcnew ToolStripControlHost(heightEdit));
+    toolStrip1->Items->Remove(toolStripHeightBox);
+    heightEdit->MaxLength = 5;
+    heightEdit->Text = System::Convert::ToString(renderParams->height);
+    heightEdit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
+    heightEdit->MinimumSize = System::Drawing::Size(50, 25);
+    heightEdit->MaximumSize = System::Drawing::Size(50, 25);
+    heightEdit->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
+    heightEdit->KeyPress += gcnew KeyPressEventHandler(this, &Document::Frame_KeyPress);
+    heightEdit->TextChanged += gcnew EventHandler(this, &Document::Size_Changed);
+    heightEdit->Visible = false;
+    toolStrip1->ResumeLayout();
 
     // Prepare the error message pane
     cfdgMessage->Navigating += gcnew WebBrowserNavigatingEventHandler(this, &Document::errorNavigation);
@@ -935,10 +968,14 @@ void Document::WndProc( Message% m )
 
 System::Void Document::stripSizeChanged(System::Object^ sender, System::EventArgs^ e)
 {
-    System::Drawing::Rectangle messageSize = toolStripStatus->Bounds;
     System::Drawing::Size stripSize = toolStrip1->Size;
+    System::Drawing::Rectangle sepRect = rightSeparator->Bounds;
+    System::Drawing::Rectangle messageBox = toolStripStatus->Bounds;
 
-    toolStripStatus->Width = stripSize.Width - messageSize.X - 6;
+    int w = stripSize.Width - sepRect.Right - 6;
+    if (w < 75) w = 75;
+    toolStripStatus->Width = w;
+
     toolStrip1->PerformLayout();
 }
 
@@ -1057,6 +1094,21 @@ System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ 
     System::Media::SystemSounds::Asterisk->Play();
 }
 
+System::Void Document::Size_Changed(System::Object^ sender, System::EventArgs^ e)
+{
+    int s = 0;
+    TextBox^ box = (TextBox^)sender;
+    if (!System::Int32::TryParse(box->Text, s) || s < 1) {
+        box->Text = "1000";
+        s = 1000;
+    }
+    if (box == widthEdit)
+        renderParams->width = s;
+    else
+        renderParams->height = s;
+    renderParams->saveToPrefs();
+}
+
 void Document::updateRenderButton()
 {
     int lastIndex = mRenderButtonIndex;
@@ -1086,14 +1138,29 @@ void Document::updateRenderButton()
 		}
         mRenderButtonIndex = 0;
 
-        bool vis = mRenderButtonAction == RenderButtonAction::AnimateFrame;
-        toolStrip1->SuspendLayout();
-        frameEdit->Visible = vis;
-        toolStripFrameLabel->Visible = vis;
-        toolStripFrameSeparator->Visible = vis;
-        toolStripPrevFrame->Visible = vis;
-        toolStripNextFrame->Visible = vis;
-        toolStrip1->ResumeLayout();
+        bool visFrame = mRenderButtonAction == RenderButtonAction::AnimateFrame;
+        bool visSize = mRenderButtonAction == RenderButtonAction::RenderSized;
+        if (frameEdit->Visible != visFrame || widthEdit->Visible != visSize) {
+            rightSeparator = toolStripVariationSeparator;
+            if (visFrame) rightSeparator = toolStripFrameSeparator;
+            if (visSize) rightSeparator = toolStripSizeSeparator;
+            toolStrip1->SuspendLayout();
+
+            frameEdit->Visible = visFrame;
+            toolStripFrameLabel->Visible = visFrame;
+            toolStripFrameSeparator->Visible = visFrame;
+            toolStripPrevFrame->Visible = visFrame;
+            toolStripNextFrame->Visible = visFrame;
+
+            toolStripSizeLabel1->Visible = visSize;
+            toolStripSizeLabel2->Visible = visSize;
+            widthEdit->Visible = visSize;
+            heightEdit->Visible = visSize;
+            toolStripSizeSeparator->Visible = visSize;
+
+            toolStrip1->ResumeLayout();
+            stripSizeChanged(nullptr, nullptr);
+        }
     }
 
     if (lastIndex != mRenderButtonIndex) {
