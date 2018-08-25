@@ -146,16 +146,30 @@
   </data>
   <data name="toolStripPrevVar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAAAkSURBVDhPYxiG4MCBA/+BFAwTD9A0Eq95CGmEgeFnwPAA
-        DAwAZvI2H8ErOTUAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAACRJREFUOE9jGIbgwIED/4EUDBMP0DQSr3kIaYSB4WfA8AAMDABm8jYfwSs5NQAA
+        AABJRU5ErkJggg==
 </value>
   </data>
   <data name="toolStripNextVar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAHYcAAB2HAY/l8WUAAAAmSURBVDhPYxhe4D8IHzhwAESTDMCaQXgEGjCENIIA2RoH
-        PWBgAADHVDYfUBoQtwAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAACZJREFUOE9jGF7gPwgfOHAARJMMwJpBeAQaMIQ0ggDZGgc9YGAAAMdUNh9QGhC3
+        AAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="toolStripPrevFrame.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAACRJREFUOE9jGIbgwIED/4EUDBMP0DQSr3kIaYSB4WfA8AAMDABm8jYfwSs5NQAA
+        AABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="toolStripNextFrame.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAACZJREFUOE9jGF7gPwgfOHAARJMMwJpBeAQaMIQ0ggDZGgc9YGAAAMdUNh9QGhC3
+        AAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="renderBox.InitialImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

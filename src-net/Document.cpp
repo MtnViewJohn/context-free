@@ -96,6 +96,7 @@ void Document::InitializeStuff()
     renderParams = new RenderParameters();
     renderParams->initFromPrefs();
     renderParams->frame = 1;
+    renderParams->animateFrameCount = renderParams->length * renderParams->frameRate;
     renderThread = gcnew BackgroundWorker();
     renderThread->RunWorkerCompleted += gcnew RunWorkerCompletedEventHandler(this, &Document::RenderCompleted);
     renderThread->DoWork += gcnew DoWorkEventHandler(this, &Document::RunRenderThread);
@@ -183,6 +184,21 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     variationEdit->TextChanged += processVariationChange;
     --currentVariation;
     NextVar_Click(nullptr, nullptr);
+
+    // Same bug fix for toolStripFrameTextBox
+    frameEdit = gcnew TextBox();
+    toolStrip1->Items->Insert(toolStrip1->Items->IndexOf(toolStripFrameTextBox),
+                              gcnew ToolStripControlHost(frameEdit));
+    toolStrip1->Items->Remove(toolStripFrameTextBox);
+    frameEdit->MaxLength = 4;
+    frameEdit->Text = System::Convert::ToString(renderParams->frame);
+    frameEdit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
+    frameEdit->MinimumSize = System::Drawing::Size(50, 25);
+    frameEdit->MaximumSize = System::Drawing::Size(50, 25);
+    frameEdit->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
+    frameEdit->KeyPress += gcnew KeyPressEventHandler(this, &Document::Frame_KeyPress);
+    frameEdit->TextChanged += gcnew EventHandler(this, &Document::Frame_Changed);
+    frameEdit->Visible = false;
 
     // Prepare the error message pane
     cfdgMessage->Navigating += gcnew WebBrowserNavigatingEventHandler(this, &Document::errorNavigation);
@@ -470,10 +486,10 @@ System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::E
     renderParams->animateFrame = true;
     if (sender == menuRAnimateFrame) {
         AnimateDialog an(renderParams);
-        if (an.ShowDialog() == Windows::Forms::DialogResult::OK)
-            renderParams->saveToPrefs();
-        else
+        if (an.ShowDialog() != Windows::Forms::DialogResult::OK)
             return;
+        renderParams->saveToPrefs();
+        frameEdit->Text = System::Convert::ToString(renderParams->frame);
     } else {
         renderParams->animateFrameCount = renderParams->length * renderParams->frameRate;
     }
@@ -847,6 +863,22 @@ System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ 
     variationEdit->Text = gcnew String(vChars.c_str());
 }
 
+System::Void Document::PrevFrame_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    if (renderParams->frame <= 1)
+        return;
+    --renderParams->frame;
+    frameEdit->Text = System::Convert::ToString(renderParams->frame);
+}
+
+System::Void Document::NextFrame_Click(System::Object^ sender, System::EventArgs^ e)
+{
+    if (renderParams->frame >= renderParams->animateFrameCount)
+        return;
+    ++renderParams->frame;
+    frameEdit->Text = System::Convert::ToString(renderParams->frame);
+}
+
 void Document::WndProc( Message% m )
 {
     // Listen for operating system messages.
@@ -979,6 +1011,12 @@ System::Void Document::variationKeyPress(Object^ sender, System::Windows::Forms:
     }
 }
 
+System::Void Document::Frame_KeyPress(Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)
+{
+    if (!Char::IsControl(e->KeyChar) && !Char::IsDigit(e->KeyChar))
+        e->Handled = true;
+}
+
 System::Void Document::variationChanged(System::Object^ sender, System::EventArgs^ e)
 {
     if (variationEdit->Text == String::Empty) {
@@ -997,6 +1035,26 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
     }
     pin_ptr<Byte> pinnedVar = &encodedVar[0];
     currentVariation = Variation::fromString(reinterpret_cast<const char*>(pinnedVar));
+}
+
+System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ e)
+{
+    if (frameEdit->Text == String::Empty) {
+        frameEdit->Text = "1";
+        renderParams->frame = 1;
+        return;
+    }
+
+    try {
+        renderParams->frame = System::Int32::Parse(frameEdit->Text);
+        if (renderParams->frame >= 1 && renderParams->frame <= renderParams->animateFrameCount)
+            return;
+    }
+    catch (System::SystemException^) {}
+    // Bad parse or out-of-range frame
+    frameEdit->Text = "1";
+    renderParams->frame = 1;
+    System::Media::SystemSounds::Asterisk->Play();
 }
 
 void Document::updateRenderButton()
@@ -1027,6 +1085,15 @@ void Document::updateRenderButton()
 			break;
 		}
         mRenderButtonIndex = 0;
+
+        bool vis = mRenderButtonAction == RenderButtonAction::AnimateFrame;
+        toolStrip1->SuspendLayout();
+        frameEdit->Visible = vis;
+        toolStripFrameLabel->Visible = vis;
+        toolStripFrameSeparator->Visible = vis;
+        toolStripPrevFrame->Visible = vis;
+        toolStripNextFrame->Visible = vis;
+        toolStrip1->ResumeLayout();
     }
 
     if (lastIndex != mRenderButtonIndex) {
