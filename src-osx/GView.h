@@ -95,6 +95,9 @@ typedef NS_ENUM(NSInteger, ActionType) {
     IBOutlet NSTextField*           mFrameLabel;
     IBOutlet NSTextField*           mFrameField;
     IBOutlet NSStepper*             mFrameStepper;
+    IBOutlet NSTextField*           mRenderWidth;
+    IBOutlet NSTextField*           mRenderHeight;
+    IBOutlet NSTextField*           mRenderX;
 
     IBOutlet NSBox*                 mMovieControls;
     IBOutlet NSButton*              mStartStopButton;

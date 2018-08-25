@@ -1423,9 +1423,14 @@ namespace {
 - (void)setCurrentAction:(ActionType)newAction
 {
     bool notframe = newAction != ActionType::AnimateFrameAction;
-    [mFrameLabel setHidden: notframe];
+    bool notHires = newAction != ActionType::Render2SizeAction;
+    [mFrameLabel setHidden: (notframe && notHires)];
     [mFrameField setHidden: notframe];
     [mFrameStepper setHidden: notframe];
+    [mRenderWidth setHidden: notHires];
+    [mRenderHeight setHidden: notHires];
+    [mRenderX setHidden: notHires];
+    [mFrameLabel setStringValue: (notframe ? @"Size:" : @"Frame:")];
     mCurrentAction = newAction;
     [mActionControl setLabel: ActionStrings[newAction]
                   forSegment: 0];

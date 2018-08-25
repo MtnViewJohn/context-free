@@ -135,6 +135,9 @@
                                     <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
+                                    <outlet property="mRenderHeight" destination="Gd4-wd-MxT" id="hCs-Ga-fci"/>
+                                    <outlet property="mRenderWidth" destination="L7P-WQ-Zkb" id="NXa-g6-lFb"/>
+                                    <outlet property="mRenderX" destination="bYG-Y8-qhE" id="O0R-sE-CMN"/>
                                     <outlet property="mRewindButton" destination="ZZH-fi-HFl" id="yCW-Hq-6uV"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
@@ -166,10 +169,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <box misplaced="YES" title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
-                                <rect key="frame" x="5" y="5" width="420" height="48"/>
+                                <rect key="frame" x="5" y="5" width="471" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
-                                    <rect key="frame" x="2" y="2" width="416" height="44"/>
+                                    <rect key="frame" x="2" y="2" width="467" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="bIH-dW-BZL">
@@ -226,9 +229,9 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </stepper>
                                         <textField hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="3lN-Sg-Kwl" userLabel="Frame Label">
-                                            <rect key="frame" x="299" y="4" width="45" height="14"/>
+                                            <rect key="frame" x="292" y="4" width="45" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Frame:" id="OZt-Zx-NAN">
+                                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Frame:" id="OZt-Zx-NAN">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -268,8 +271,43 @@ The variation code is a one to six letter sequence.</string>
                                                 <action selector="selectAction:" target="19" id="7Fp-rN-3TA"/>
                                             </connections>
                                         </popUpButton>
+                                        <textField verticalHuggingPriority="750" misplaced="YES" id="bYG-Y8-qhE">
+                                            <rect key="frame" x="393" y="4" width="19" height="17"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="×" id="ZPQ-j9-BGN">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" misplaced="YES" id="L7P-WQ-Zkb" userLabel="WidthField">
+                                            <rect key="frame" x="342" y="2" width="53" height="19"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" bezelStyle="round" id="Lv6-6g-Q2L">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <binding destination="119" name="value" keyPath="values.HiresWidth" id="UqZ-W9-EZK"/>
+                                                <outlet property="formatter" destination="145" id="kK6-8N-pef"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" misplaced="YES" id="Gd4-wd-MxT" userLabel="HeightField">
+                                            <rect key="frame" x="409" y="2" width="53" height="19"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" bezelStyle="round" id="xpP-Wp-Yj0">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <binding destination="119" name="value" keyPath="values.HiresHeight" id="uSP-Bx-dku"/>
+                                                <outlet property="formatter" destination="145" id="c6k-Xn-Qos"/>
+                                            </connections>
+                                        </textField>
                                         <stepper hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="p8c-G8-kLd" userLabel="Frame Stepper">
-                                            <rect key="frame" x="393" y="-1" width="15" height="22"/>
+                                            <rect key="frame" x="394" y="0.0" width="15" height="22"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <stepperCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="1" maxValue="18278" doubleValue="18277" id="BfY-zJ-S7m">
                                                 <font key="font" metaFont="smallSystem"/>
@@ -394,7 +432,7 @@ The variation code is a one to six letter sequence.</string>
                 <rect key="frame" x="0.0" y="0.0" width="427" height="371"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="87">
+                    <textField verticalHuggingPriority="750" id="87" userLabel="WidthField">
                         <rect key="frame" x="117" y="176" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="405">
@@ -416,7 +454,7 @@ The variation code is a one to six letter sequence.</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="89">
+                    <textField verticalHuggingPriority="750" id="89" userLabel="HeightField">
                         <rect key="frame" x="237" y="176" width="91" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="407">
