@@ -92,7 +92,10 @@ typedef NS_ENUM(NSInteger, ActionType) {
     IBOutlet NSTextField*           mVariationLabel;
     IBOutlet NSTextField*           mVariationField;
     IBOutlet NSStepper*             mVariationStepper;
-    
+    IBOutlet NSTextField*           mFrameLabel;
+    IBOutlet NSTextField*           mFrameField;
+    IBOutlet NSStepper*             mFrameStepper;
+
     IBOutlet NSBox*                 mMovieControls;
     IBOutlet NSButton*              mStartStopButton;
     IBOutlet NSButton*              mRewindButton;
@@ -140,6 +143,7 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (int) isFrieze;
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 
+- (void)controlTextDidChange:(NSNotification *)notification;
 @end
 
 @interface GView (renderControl)
@@ -159,3 +163,12 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (IBAction) adjustVariation:(id)sender;    // sent by stepper
 - (IBAction) editVariation:(id)sender;      // sent by text field
 @end
+
+@interface GView (frameControl)
+- (void) initializeFrame;
+- (int) checkFrame:(int)frame;
+- (void) setAnimationFrame:(float)frame;
+- (float) animationFrame;
+- (IBAction) adjustFrame:(id)sender;        // sent by stepper & text field
+@end
+

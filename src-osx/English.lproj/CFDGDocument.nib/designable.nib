@@ -129,6 +129,9 @@
                                     <outlet property="mActionSelect" destination="N40-Ev-FF7" id="QLg-kq-juE"/>
                                     <outlet property="mCurrentTime" destination="RXc-Hd-mgh" id="3jx-9g-AiG"/>
                                     <outlet property="mDocument" destination="-2" id="42"/>
+                                    <outlet property="mFrameField" destination="K4z-to-cnJ" id="RdA-OU-hir"/>
+                                    <outlet property="mFrameLabel" destination="3lN-Sg-Kwl" id="mZ9-We-c0W"/>
+                                    <outlet property="mFrameStepper" destination="p8c-G8-kLd" id="dv2-g6-l61"/>
                                     <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
@@ -163,10 +166,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <box misplaced="YES" title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
-                                <rect key="frame" x="5" y="5" width="310" height="48"/>
+                                <rect key="frame" x="5" y="5" width="420" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
-                                    <rect key="frame" x="2" y="2" width="306" height="44"/>
+                                    <rect key="frame" x="2" y="2" width="416" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="bIH-dW-BZL">
@@ -208,7 +211,6 @@ The variation code is a one to six letter sequence.</string>
                                             </textFieldCell>
                                             <connections>
                                                 <action selector="editVariation:" target="19" id="73"/>
-                                                <outlet property="delegate" destination="19" id="75"/>
                                                 <outlet property="formatter" destination="76" id="77"/>
                                                 <outlet property="nextKeyView" destination="69" id="80"/>
                                             </connections>
@@ -223,15 +225,39 @@ The variation code is a one to six letter sequence.</string>
                                                 <action selector="adjustVariation:" target="19" id="74"/>
                                             </connections>
                                         </stepper>
+                                        <textField hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="3lN-Sg-Kwl" userLabel="Frame Label">
+                                            <rect key="frame" x="299" y="4" width="45" height="14"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Frame:" id="OZt-Zx-NAN">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="K4z-to-cnJ" userLabel="Frame Field">
+                                            <rect key="frame" x="342" y="2" width="53" height="19"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" bezelStyle="round" id="BQf-fE-Xph">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="adjustFrame:" target="19" id="V2X-EW-qcY"/>
+                                                <outlet property="delegate" destination="19" id="4M5-sC-b8b"/>
+                                                <outlet property="formatter" destination="r4N-FT-ywz" id="kor-XR-w5E"/>
+                                                <outlet property="nextKeyView" destination="p8c-G8-kLd" id="AaT-WM-C2x"/>
+                                            </connections>
+                                        </textField>
                                         <popUpButton hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="N40-Ev-FF7">
                                             <rect key="frame" x="22" y="-5" width="76" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
+                                            <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
                                                 <menu key="menu" id="9w0-Pe-geL">
                                                     <items>
-                                                        <menuItem title="Render" tag="1" id="RXa-rI-z9w"/>
+                                                        <menuItem title="Render" state="on" tag="1" id="RXa-rI-z9w"/>
                                                         <menuItem title="Render to Size" tag="4" id="2Vu-bm-wwN"/>
                                                         <menuItem title="Animate" tag="2" id="gQw-fA-Q85"/>
                                                         <menuItem title="Animate Frame" tag="3" id="luO-8S-EqS"/>
@@ -242,6 +268,16 @@ The variation code is a one to six letter sequence.</string>
                                                 <action selector="selectAction:" target="19" id="7Fp-rN-3TA"/>
                                             </connections>
                                         </popUpButton>
+                                        <stepper hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="p8c-G8-kLd" userLabel="Frame Stepper">
+                                            <rect key="frame" x="393" y="-1" width="15" height="22"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <stepperCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="1" maxValue="18278" doubleValue="18277" id="BfY-zJ-S7m">
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </stepperCell>
+                                            <connections>
+                                                <action selector="adjustFrame:" target="19" id="FOm-1q-4lf"/>
+                                            </connections>
+                                        </stepper>
                                     </subviews>
                                 </view>
                             </box>
@@ -1176,8 +1212,12 @@ Gw
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="327.5" y="861.5"/>
+            <point key="canvasLocation" x="765" y="1489"/>
         </window>
+        <numberFormatter formatterBehavior="custom10_4" numberStyle="decimal" allowsFloats="NO" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" id="r4N-FT-ywz" userLabel="Frame Formatter">
+            <real key="minimum" value="1"/>
+            <real key="maximum" value="9999"/>
+        </numberFormatter>
     </objects>
     <resources>
         <image name="RemotePlay_norm.tif" width="32" height="32"/>

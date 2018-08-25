@@ -238,9 +238,6 @@ namespace {
         mCurrentVariation = 0;
         mIncrementVariationOnRender = false;
 
-        mCurrentAction = ActionType::RenderAction;
-        mLastAnimateFrame = 1.0;
-
         mTiled = false;
         
         mFullScreenMenu = nil;
@@ -256,6 +253,8 @@ namespace {
     [mSaveAnimationAccessory retain];
     [mDocument retain];
     [self initializeVariation];
+    [self initializeFrame];
+    [self setCurrentAction: ActionType::RenderAction];
     
     NSNumber* one = [NSNumber numberWithInt: 1];
     NSNumber* hundred = [NSNumber numberWithInt: 100];
@@ -813,6 +812,14 @@ namespace {
     return mdata;
 }
 
+
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+    NSTextField *textField = [notification object];
+    if (textField == mFrameField)
+        [self adjustFrame: textField];
+}
+
 @end
 
 
@@ -1018,7 +1025,7 @@ namespace {
             NSBeep();
         }
     } else {
-        mLastAnimateFrame = frame;
+        [self setAnimationFrame: frame];
         [self setCurrentAction: ActionType::AnimateFrameAction];
         [self tearDownPlayer];
         mMovieFile.reset();
@@ -1247,7 +1254,51 @@ namespace {
 @end
 
 
+@implementation GView (frameControl)
 
+- (void)initializeFrame
+{
+    mLastAnimateFrame = 1.0;
+    [mFrameField setIntValue: 1];
+    [mFrameStepper setIntValue: 1];
+}
+
+- (int)checkFrame:(int)frame
+{
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    float movieLength = [defaults floatForKey: PrefKeyMovieLength];
+    NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
+    float animateFrameCount = movieLength * movieFrameRate * 0.01f;
+    if (frame < 1) return 1;
+    if (frame > animateFrameCount) return (int)animateFrameCount;
+    return frame;
+}
+
+- (void)setAnimationFrame:(float)frame
+{
+    mLastAnimateFrame = frame;
+    int f = static_cast<int>(frame);
+    [mFrameStepper setIntValue: f];
+    [mFrameField setIntValue: f];
+}
+
+- (float)animationFrame
+{
+    return mLastAnimateFrame;
+}
+
+- (IBAction)adjustFrame:(id)sender
+{
+    int f1 = [sender intValue];
+    int f2 = [self checkFrame: f1];
+    if (f1 != f2)
+        NSBeep();
+    [mFrameField setIntValue: f2];
+    [mFrameStepper setIntValue: f2];
+    mLastAnimateFrame = f2;
+}
+
+@end
 
 
 @implementation GView (internal)
@@ -1371,6 +1422,10 @@ namespace {
 
 - (void)setCurrentAction:(ActionType)newAction
 {
+    bool notframe = newAction != ActionType::AnimateFrameAction;
+    [mFrameLabel setHidden: notframe];
+    [mFrameField setHidden: notframe];
+    [mFrameStepper setHidden: notframe];
     mCurrentAction = newAction;
     [mActionControl setLabel: ActionStrings[newAction]
                   forSegment: 0];

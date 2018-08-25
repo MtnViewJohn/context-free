@@ -580,6 +580,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mAnimationFrame setHidden: NO];
     [mCodecLabel setHidden: YES];
     [mAnimationCodec setHidden: YES];
+    [mAnimationFrame setIntValue: static_cast<int>([mGView animationFrame])];
     [NSApp beginSheet: mAnimateSheet
        modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
         modalDelegate: nil didEndSelector: nil contextInfo: nil];
@@ -592,7 +593,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
-    float movieFrame =  0.0;
+    float movieFrame =  1.0;
     NSString* message = nil;
     NSString* problem = nil;
     if (![mAnimationFrame isHidden]) {
