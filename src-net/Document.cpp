@@ -981,6 +981,7 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
 {
     if (variationEdit->Text == String::Empty) {
         variationEdit->Text = "A";
+        currentVariation = Variation::fromString("A");
         System::Media::SystemSounds::Beep->Play();
         return;
     }
@@ -988,7 +989,8 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
     mUserChangedVariation = true;
     array<Byte>^ encodedVar = System::Text::Encoding::UTF8->GetBytes(variationEdit->Text);
     if (encodedVar->Length == 0) {
-        currentVariation = 0;
+        variationEdit->Text = "A";
+        currentVariation = Variation::fromString("A");
         return;
     }
     pin_ptr<Byte> pinnedVar = &encodedVar[0];
