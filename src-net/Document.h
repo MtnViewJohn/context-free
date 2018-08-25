@@ -570,6 +570,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripStatus->AutoSize = false;
             this->toolStripStatus->AutoToolTip = true;
             this->toolStripStatus->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+            this->toolStripStatus->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
             this->toolStripStatus->Name = L"toolStripStatus";
             this->toolStripStatus->Size = System::Drawing::Size(75, 22);
             this->toolStripStatus->TextAlign = System::Drawing::ContentAlignment::MiddleRight;

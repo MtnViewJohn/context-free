@@ -175,9 +175,11 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
                               gcnew ToolStripControlHost(variationEdit));
     toolStrip1->Items->Remove(toolStripVariation); 
     variationEdit->MaxLength = 6;
+    variationEdit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
     variationEdit->Name = L"variationEdit";
-    variationEdit->MinimumSize = System::Drawing::Size(75, 25);
-    variationEdit->MaximumSize = System::Drawing::Size(75, 25);
+    variationEdit->MinimumSize = System::Drawing::Size(80, 25);
+    variationEdit->MaximumSize = System::Drawing::Size(80, 25);
+    variationEdit->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
     variationEdit->TextChanged += processVariationChange;
     --currentVariation;
     NextVar_Click(nullptr, nullptr);
