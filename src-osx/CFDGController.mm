@@ -68,6 +68,10 @@ enum {
 
 #endif  // MAC_OS_X_VERSION_10_7
 
+NSString* prefKeyEditorFontName = @"EditorFontName";
+NSString* prefKeyEditorFontSize = @"EditorFontSize";
+
+
 namespace {
     NSArray* urls = nil;
     NSArray* examples = nil;
@@ -97,9 +101,6 @@ namespace {
 
     static const NSTimeInterval updateCheckingInterval = 7*24*60*60;
         // one week in seconds
-    
-    static NSString* prefKeyEditorFontName = @"EditorFontName";
-    static NSString* prefKeyEditorFontSize = @"EditorFontSize";
     
     static NSString* prefKeyUserName = @"UserName";
     static NSString* prefKeyPassword = @"UserPassword";
@@ -213,6 +214,12 @@ namespace {
                                              forKey: prefKeyEditorFontSize];
 
     [self updateFontDisplay: newFont];
+    // No font pref binding, so the existing windows have to be updated
+    for (NSDocument* nsdoc in [[NSDocumentController sharedDocumentController] documents])
+        if ([nsdoc isKindOfClass:[CFDGDocument class]]) {
+            CFDGDocument* cfdoc = (CFDGDocument*)nsdoc;
+            [cfdoc updateFont: name size: size];
+        }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification

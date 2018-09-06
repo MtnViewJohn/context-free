@@ -116,6 +116,12 @@
                                     <action selector="saveDocumentAs:" target="-1" id="216"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Save To…" id="4lN-7y-gzh">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="saveDocumentTo:" target="-1" id="3C0-rd-iES"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Revert" id="112">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -587,27 +593,40 @@
                                     <items>
                                         <menuItem title="Find…" tag="1" keyEquivalent="f" id="154">
                                             <connections>
-                                                <action selector="performFindPanelAction:" target="-1" id="199"/>
+                                                <action selector="findAction:" target="-1" id="b5N-Wb-9cS"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Find Next" tag="2" keyEquivalent="g" id="167">
                                             <connections>
-                                                <action selector="performFindPanelAction:" target="-1" id="200"/>
+                                                <action selector="findAction:" target="-1" id="fMk-SU-gUD"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Find Previous" tag="3" keyEquivalent="G" id="162">
                                             <connections>
-                                                <action selector="performFindPanelAction:" target="-1" id="201"/>
+                                                <action selector="findAction:" target="-1" id="Cnb-GT-jrB"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="161">
                                             <connections>
-                                                <action selector="performFindPanelAction:" target="-1" id="202"/>
+                                                <action selector="findAction:" target="-1" id="z88-al-uDY"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Jump to Selection" keyEquivalent="j" id="155">
                                             <connections>
-                                                <action selector="centerSelectionInVisibleArea:" target="-1" id="203"/>
+                                                <action selector="findAction:" target="-1" id="PaD-Sl-as6"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="BbF-jK-gJF"/>
+                                        <menuItem title="Replace..." tag="12" keyEquivalent="f" id="hSR-Yf-Njj">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="findAction:" target="-1" id="Hnb-od-ToM"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Replace Next" tag="6" keyEquivalent="e" id="xcV-zB-bWj">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="findAction:" target="-1" id="Va8-fR-QDL"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1289,25 +1308,5 @@
             <real key="minimum" value="-1"/>
             <real key="maximum" value="1"/>
         </numberFormatter>
-        <menuItem title="Menu" id="608">
-            <modifierMask key="keyEquivalentModifierMask"/>
-            <menu key="submenu" title="Menu" id="609">
-                <items>
-                    <menuItem title="Item" id="610">
-                        <modifierMask key="keyEquivalentModifierMask"/>
-                    </menuItem>
-                </items>
-            </menu>
-        </menuItem>
-        <menuItem title="Item" id="614">
-            <modifierMask key="keyEquivalentModifierMask"/>
-        </menuItem>
-        <menuItem title="Item" id="617">
-            <modifierMask key="keyEquivalentModifierMask"/>
-        </menuItem>
-        <menuItem isSeparatorItem="YES" id="627"/>
-        <menuItem title="CF::Size" id="762">
-            <modifierMask key="keyEquivalentModifierMask"/>
-        </menuItem>
     </objects>
 </document>

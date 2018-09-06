@@ -28,6 +28,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import <AVFoundation/AVFoundation.h>
+#import "../src-scintilla/cocoa/ScintillaView.h"
+#import "../src-scintilla/cocoa/InfoBar.h"
 #include <memory>
 
 extern NSString* PrefKeyMovieZoom;
@@ -39,6 +41,8 @@ extern NSString* PrefKeyMovieHeight;
 extern NSString* PrefKeyHiresWidth;
 extern NSString* PrefKeyHiresHeight;
 extern NSString* PrefKeyMinumumSize;
+extern NSString* prefKeyEditorFontName;
+extern NSString* prefKeyEditorFontSize;
 
 @class CFDGDocument;
 @class TopBar;
@@ -51,7 +55,14 @@ typedef NS_ENUM(NSInteger, ActionType) {
     Render2SizeAction   = 4
 };
 
-@interface GView : NSView<NSWindowDelegate> {
+typedef NS_ENUM(NSInteger, FindReplaceShowEnum) {
+    ShowNeither         = 0,
+    ShowFind            = 1,
+    ShowFindReplace     = 2
+};
+
+
+@interface GView : NSView<NSWindowDelegate, ScintillaNotificationProtocol> {
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
 
@@ -85,6 +96,15 @@ typedef NS_ENUM(NSInteger, ActionType) {
     IBOutlet NSProgressIndicator*   mProgress;
     IBOutlet NSProgressIndicator*   mOutputProgress;
     
+    IBOutlet NSTextField*           mFindText;
+    IBOutlet NSTextField*           mReplaceText;
+    NSInteger                       mFindTextVersion;
+    IBOutlet NSSegmentedControl*    mFindButtons;
+    IBOutlet NSSegmentedControl*    mReplaceButtons;
+    IBOutlet NSMenuItem*            mMatchCaseMenu;
+    IBOutlet NSMenuItem*            mWholeWordMenu;
+    IBOutlet NSMenuItem*            mWrapSearchMenu;
+
     int     mCurrentVariation;
     bool    mIncrementVariationOnRender;
     ActionType mCurrentAction;
@@ -112,13 +132,22 @@ typedef NS_ENUM(NSInteger, ActionType) {
     IBOutlet NSTextField*           mSaveTileHeight;
     IBOutlet NSView*                mSaveAnimationAccessory;
     
+    IBOutlet NSBox*                 mEditorBox;
+    ScintillaView*                  mEditor;
+    IBOutlet NSImageView*           mRewindView;
+    
     NSMenuItem*    mFullScreenMenu;
     
     bool    mTiled;
     double  mScale;
+    
+    bool mSuspendNotifications;
 }
 
 - (id)initWithFrame:(NSRect)frame;
+- (void)showFindReplace:(FindReplaceShowEnum) e;
+- (IBAction)findAction:(id)sender;
+- (IBAction)findOptions:(id)sender;
 
 - (IBAction)toggleRender:(id)sender;
 - (IBAction)selectAction:(id)sender;
@@ -147,6 +176,8 @@ typedef NS_ENUM(NSInteger, ActionType) {
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 
 - (void)controlTextDidChange:(NSNotification *)notification;
+- (void)notification:(SCNotification *)notification;
+- (void)suspendNotifications:(BOOL)suspend;
 @end
 
 @interface GView (renderControl)

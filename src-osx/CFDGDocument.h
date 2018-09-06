@@ -27,6 +27,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "../src-scintilla/cocoa/ScintillaView.h"
 #include "cfdg.h"
 
 @class GalleryUploader;
@@ -37,7 +38,7 @@
     AbstractSystem*         mSystem;
     NSData*                 mContent;
     
-    IBOutlet NSTextView*    mEditor;
+    ScintillaView*          mEditor;
     IBOutlet NSTextView*    mStatusText;
     
     IBOutlet NSTextField*   mAnimationFrame;
@@ -81,8 +82,12 @@
 - (cfdg_ptr)buildEngine;
 - (AbstractSystem*)system;
 
+- (void)setEditor:(ScintillaView*)editor;
 - (void)showContent;
 - (NSData*)getContent;
+- (void)updateFont:(NSString*)name size:(float)sz;
+- (void)textDidChange:(NSNotification *)notification;
+- (void)setDirty:(BOOL)dirty;
 
 - (void)noteStatus:(NSString*)s;
 - (void)noteCatastrophicError:(NSString*)s;

@@ -31,6 +31,7 @@
 #import "VariationFormatter.h"
 #import "TopBar.h"
 #import "BitmapImageHolder.h"
+#import "CFDGController.h"
 
 #include "cfdg.h"
 #include "SVGCanvas.h"
@@ -40,6 +41,7 @@
 #include "Rand64.h"
 #include <tgmath.h>
 #include <tempfile.h>
+#include <algorithm>
 
 using cfdg_ptr = std::shared_ptr<CFDG>;
 using renderer_ptr = std::unique_ptr<Renderer>;
@@ -134,6 +136,18 @@ BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 
 @interface GView (internal)
 
+- (void)setupEditor;
+//- (long)findInTarget:(NSString*)text start:(long)startPosition end:(long)endPosition;
+//- (FindResult) findAndHighlightText: (NSString *) searchText
+//                          matchCase: (BOOL) matchCase
+//                          wholeWord: (BOOL) wholeWord
+//                           scrollTo: (BOOL) scrollTo
+//                               wrap: (BOOL) wrap
+//                          backwards: (BOOL) backwards;
+- (BOOL)findNext:(BOOL)reversed;
+- (void)replaceNext:(BOOL)find;
+- (void)replaceAll;
+
 - (void)drawCheckerboardRect:(NSRect)rect;
 
 - (void)buildEngine;
@@ -199,6 +213,45 @@ namespace {
     };
     
     NSArray*    ActionStrings = @[@"Stop", @"Render", @"Animate", @"Frame", @"Sized"];
+    
+    const char major_keywords[] =
+    "a alpha "
+    "b background brightness "
+    "case clone "
+    "else "
+    "f finally flip "
+    "h hue "
+    "if import include "
+    "let loop "
+    "path "
+    "r rotate rule "
+    "s saturation sat size skew startshape shape "
+    "tile time timescale trans transform "
+    "x x1 x2 "
+    "y y1 y2 "
+    "z";
+    
+    const char functions[] =
+    "cos sin tan cot acos asin atan acot cosh sinh tanh acosh asinh atanh log log10 "
+    "sqrt exp abs floor ceiling infinity factorial sg isNatural bitnot bitor bitand bitxor "
+    "bitleft bitright atan2 mod divides div dot cross hsb2rgb rgb2hsb vec min max ftime "
+    "frame rand_static rand rand::exponential rand::gamma rand::weibull rand::extremeV "
+    "rand::normal rand::lognormal rand::chisquared rand::cauchy rand::fisherF "
+    "rand::studentT randint randint::bernoulli randint::binomial randint::negbinomial "
+    "randint::poisson randint::discrete randint::geometric "
+    "CIRCLE SQUARE TRIANGLE FILL STROKE "
+    "MOVETO LINETO ARCTO CURVETO MOVEREL LINEREL ARCREL CURVEREL CLOSEPOLY";
+    
+    const char built_ins[] =
+    "CF::None CF::MiterJoin CF::RoundJoin CF::BevelJoin CF::ButtCap CF::RoundCap "
+    "CF::SquareCap CF::ArcCW CF::ArcLarge CF::Continuous CF::Align CF::EvenOdd "
+    "CF::IsoWidth CF::Cyclic CF::Dihedral CF::p11g CF::p11m CF::p1m1 CF::p2 "
+    "CF::p2mg CF::p2mm CF::pm CF::pg CF::cm CF::pmm CF::pmg CF::pgg CF::cmm "
+    "CF::p4 CF::p4m CF::p4g CF::p3 CF::p3m1 CF::p31m CF::p6 CF::p6m "
+    "CF::AllowOverlap CF::Alpha CF::Background CF::BorderDynamic CF::BorderFixed "
+    "CF::Color CF::ColorDepth CF::Frame CF::FrameTime CF::Impure CF::MaxNatural "
+    "CF::MaxShapes CF::MinimumSize CF::Size CF::StartShape CF::Symmetry "
+    "CF::Tile CF::Time";
 }
 
 
@@ -209,7 +262,13 @@ namespace {
 @end
 
 
-@implementation GView
+@implementation GView {
+    bool mMatchCase;
+    bool mWholeWord;
+    bool mWrapSearch;
+    bool mHaveFound;
+    bool mFindFailed;
+}
 
 + (void)initialize {
     if (self == [GView self]) {
@@ -241,6 +300,14 @@ namespace {
         mTiled = false;
         
         mFullScreenMenu = nil;
+        
+        mFindTextVersion = NSIntegerMin;
+        mMatchCase = true;
+        mWholeWord = false;
+        mWrapSearch = true;
+        mHaveFound = false;
+        mFindFailed = false;
+        mSuspendNotifications = false;
     }
     return self;
 }
@@ -283,6 +350,115 @@ namespace {
     }
     [window setDelegate: self];
     self.wantsLayer = YES;
+    
+    NSRect newFrame = mEditorBox.frame;
+    //newFrame.size.width -= 2 * newFrame.origin.x;
+    //newFrame.size.height -= 3 * newFrame.origin.y + 55;
+    
+    mEditor = [[[ScintillaView alloc] initWithFrame: newFrame] autorelease];
+    [mDocument setEditor: mEditor];
+    
+    [mEditorBox.contentView addSubview: mEditor];
+    [mEditor setAutoresizesSubviews: YES];
+    [mEditor setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable];
+    [mEditor setDelegate: self];
+    // I have no idea why this can't be called directly
+    [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
+        [window makeFirstResponder:[mEditor content]];
+    }];
+    NSView* superview = [mRewindView superview];
+    [self setupEditor];
+
+    [mRewindView setAlphaValue:0.0];        // Put search wrap symbol on top
+    [mRewindView removeFromSuperview];      // but have it be invisible (for now)
+    [superview addSubview:mRewindView];
+}
+
+- (void)showFindReplace:(FindReplaceShowEnum) e
+{
+    NSRect newFrame = mEditorBox.frame;
+    switch (e) {
+        case ShowFind:
+            newFrame.size.height -= 29;
+            break;
+        case ShowFindReplace:
+            newFrame.size.height -= 55;
+            break;
+        default:
+            break;
+    }
+    [mEditor setFrame: newFrame];
+}
+
+- (IBAction) findAction:(id)sender
+{
+    NSInteger tag = [sender tag];
+    if ([sender isKindOfClass: [NSSegmentedControl class]]) {
+        NSSegmentedControl* ctrl = (NSSegmentedControl*)sender;
+        NSInteger seg = [ctrl selectedSegment];
+        tag = [[ctrl cell] tagForSegment:seg];
+    }
+    switch (tag) {
+        case 0: {   // Jump to selection
+            [mEditor setGeneralProperty: SCI_SCROLLCARET value: 0];
+            break;
+        }
+        case NSTextFinderActionShowFindInterface:
+            [self showFindReplace: ShowFind];
+            break;
+        case NSTextFinderActionNextMatch:
+            [self findNext:NO];
+            break;
+        case NSTextFinderActionPreviousMatch:
+            [self findNext:YES];
+            break;
+        case NSTextFinderActionReplaceAll:
+            [self replaceAll];
+            break;
+        case NSTextFinderActionReplace:
+            [self replaceNext: NO];
+            break;
+        case NSTextFinderActionReplaceAndFind:
+            [self replaceNext: YES];
+            break;
+        case NSTextFinderActionSetSearchString: {
+            BOOL canFind = [[mEditor selectedString] length] > 0;
+            [mFindButtons setEnabled: canFind];
+            [mReplaceButtons setEnabled: canFind];
+            [mFindText setStringValue: [mEditor selectedString]];
+            NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
+            mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+            [pBoard setString:[mEditor selectedString] forType:NSStringPboardType];
+            break;
+        }
+        case NSTextFinderActionShowReplaceInterface:
+            [self showFindReplace: ShowFindReplace];
+            break;
+        case NSTextFinderActionHideFindInterface:
+        case NSTextFinderActionHideReplaceInterface:
+            [[self window] makeFirstResponder:[mEditor content]];
+            [self showFindReplace: ShowNeither];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)findOptions:(id)sender
+{
+    switch ([sender tag]) {
+        case 0:
+            mMatchCase = !mMatchCase;
+            break;
+        case 1:
+            mWholeWord = !mWholeWord;
+            break;
+        case 2:
+            mWrapSearch = !mWrapSearch;
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
@@ -310,8 +486,21 @@ namespace {
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    [self showFindReplace: ShowNeither];
+    [[self window] makeFirstResponder:nil];
     [self tearDownPlayer];
     [self deleteRenderer];
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
+    NSInteger version = [pBoard changeCount];
+    if (version != mFindTextVersion) {
+        NSString* find = [pBoard stringForType:NSPasteboardTypeString];
+        mFindTextVersion = version;
+        [mFindText setStringValue: find];
+    }
 }
 
 - (void)updateFullScreenMenu
@@ -626,6 +815,14 @@ namespace {
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem
 {
     SEL action = [anItem action];
+    NSInteger tag = [anItem tag];
+    static NSTextFinderAction findtags[5] = {
+        NSTextFinderActionNextMatch,
+        NSTextFinderActionPreviousMatch,
+        NSTextFinderActionReplaceAll,
+        NSTextFinderActionReplace,
+        NSTextFinderActionReplaceAndFind
+    };
     
     if (action == @selector(startRender:))
         return !mRestartRenderer;
@@ -649,6 +846,25 @@ namespace {
     
     if (action == @selector(saveOutput:))
         return !mRendering && (mRenderBitmap || mMovieFile);
+    
+    if (action == @selector(findAction:) && std::find(findtags, findtags+5, tag) != findtags+5)
+        return [[mFindText stringValue] length] > 0;
+    
+    if (action == @selector(findOptions:)) {
+        switch (tag) {
+            case 0:
+                mMatchCaseMenu.state = mMatchCase ? NSOnState : NSOffState;
+                break;
+            case 1:
+                mWholeWordMenu.state = mWholeWord ? NSOnState : NSOffState;
+                break;
+            case 2:
+                mWrapSearchMenu.state = mWrapSearch ? NSOnState : NSOffState;
+                break;
+            default:
+                break;
+        }
+    }
             
     return YES;
 }
@@ -818,6 +1034,52 @@ namespace {
     NSTextField *textField = [notification object];
     if (textField == mFrameField)
         [self adjustFrame: textField];
+    if (textField == mFindText) {
+        BOOL canFind = [[mFindText stringValue] length] > 0;
+        [mFindButtons setEnabled: canFind];
+        [mReplaceButtons setEnabled: canFind];
+        NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [pBoard setString:[mFindText stringValue] forType:NSStringPboardType];
+    }
+}
+
+- (void)suspendNotifications:(BOOL)suspend
+{
+    mSuspendNotifications = suspend;
+}
+
+- (void)notification:(SCNotification *)notification
+{
+    if (mSuspendNotifications) return;
+    switch (notification->nmhdr.code) {
+        case SCN_CHARADDED:
+            break;  // brace autoinsert?
+        case SCN_MODIFIED:
+            if (notification->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+                [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidChangeNotification object: mEditor];
+                [mDocument textDidChange:nil];
+            }
+            break;
+        case SCN_SAVEPOINTLEFT:
+            [mDocument setDirty:YES];
+            break;
+        case SCN_SAVEPOINTREACHED:
+            [mDocument setDirty:NO];
+            break;
+        case SCN_MARGINCLICK:
+            if (notification->margin == 2) {
+                // Click on the folder margin. Toggle the current line if possible.
+                long line = [mEditor getGeneralProperty: SCI_LINEFROMPOSITION parameter: notification->position];
+                [mEditor setGeneralProperty: SCI_TOGGLEFOLD value: line];
+            }
+            break;
+        case SCN_FOCUSOUT:
+            [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidEndEditingNotification object: mEditor];
+            break;
+        default:
+            break;
+    }
 }
 
 @end
@@ -1302,6 +1564,180 @@ namespace {
 
 
 @implementation GView (internal)
+
+- (void)setupEditor
+{
+    [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CPP value: 0];
+
+    // Keywords to highlight. Indices are:
+    // 0 - Primary keywords and identifiers
+    // 1 - Secondary keywords and identifiers
+    // 2 - Documentation comment keywords
+    // 3 - Global classes and typedefs
+    // 4 - Preprocessor definitions
+    // 5 - Task marker and error marker keywords
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 0 value: major_keywords];
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 1 value: built_ins];
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 3 value: functions];
+
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    // Colors and styles for various syntactic elements. First the default style.
+    [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: [defaults stringForKey: prefKeyEditorFontName]];
+    long sz = static_cast<long>([defaults floatForKey: prefKeyEditorFontSize] * 100.0f);
+    [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_DEFAULT value: sz];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: STYLE_DEFAULT value: [NSColor blackColor]];
+    
+    [mEditor setGeneralProperty: SCI_STYLECLEARALL parameter: 0 value: 0];
+
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_COMMENT fromHTML: @"#097BF7"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_COMMENTLINE fromHTML: @"#097BF7"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_NUMBER fromHTML: @"#7F7F00"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_STRING fromHTML: @"#FFAA3E"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_WORD fromHTML: @"#007F00"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_WORD value: 1];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_WORD2 fromHTML: @"#007F00"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_WORD2 value: 1];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_GLOBALCLASS fromHTML: @"#56007F"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_GLOBALCLASS value: 1];
+
+    [mEditor setGeneralProperty: SCI_SETMARGINTYPEN parameter: 0 value: SC_MARGIN_NUMBER];
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: 35];
+    
+    // Markers.
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 16];
+    
+    // Some special lexer properties.
+    [mEditor setLexerProperty: @"fold" value: @"1"];
+    [mEditor setLexerProperty: @"fold.compact" value: @"0"];
+    [mEditor setLexerProperty: @"fold.comment" value: @"1"];
+    
+    // Folder setup.
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 2 value: 16];
+    [mEditor setGeneralProperty: SCI_SETMARGINMASKN parameter: 2 value: SC_MASK_FOLDERS];
+    [mEditor setGeneralProperty: SCI_SETMARGINSENSITIVEN parameter: 2 value: 1];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEROPEN value: SC_MARK_BOXMINUS];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDER value: SC_MARK_BOXPLUS];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERSUB value: SC_MARK_VLINE];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERTAIL value: SC_MARK_LCORNER];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEREND value: SC_MARK_BOXPLUSCONNECTED];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEROPENMID value: SC_MARK_BOXMINUSCONNECTED];
+    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERMIDTAIL value: SC_MARK_TCORNER];
+
+    for (int n= 25; n < 32; ++n) // Markers 25..31 are reserved for folding.
+    {
+        SC_MARKNUM_FOLDER;
+        [mEditor setColorProperty: SCI_MARKERSETFORE parameter: n value: [NSColor whiteColor]];
+        [mEditor setColorProperty: SCI_MARKERSETBACK parameter: n value: [NSColor blackColor]];
+    }
+
+    InfoBar* infoBar = [[[InfoBar alloc] initWithFrame: NSMakeRect(0, 0, 400, 0)] autorelease];
+    [infoBar setDisplay: IBShowAll];
+    [mEditor setInfoBar: infoBar top: NO];
+    [mEditor setStatusText: @"Operation complete"];
+    [mEditor setGeneralProperty:SCI_SETSEARCHFLAGS value:SCFIND_MATCHCASE];
+}
+
+
+
+- (BOOL)findNext:(BOOL)reversed
+{
+    NSString* text = [mFindText stringValue];
+    if ([text length] == 0) {
+        [mEditor setStatusText:@"No search text set"];
+        NSBeep();
+        return NO;
+    }
+    
+    auto found = [mEditor findAndHighlightText:text
+                                     matchCase:mMatchCase
+                                     wholeWord:mWholeWord
+                                      scrollTo:YES
+                                          wrap:mWrapSearch
+                                     backwards:reversed];
+    
+    switch (found) {
+        case FindResultNotFound:
+            [mEditor setStatusText: @"Text not found"];
+            NSBeep();
+            break;
+        case FindResultFound:
+            [mEditor setStatusText: @""];
+            break;
+        case FindResultFoundWrapped: {
+            auto anime = [mRewindView animator];    // 0.25sec animation
+            [anime setAlphaValue:1.0];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+                [anime setAlphaValue:0.0];
+            });
+            if (reversed)
+                [mEditor setStatusText: @"The search wrapped to the end"];
+            else
+                [mEditor setStatusText: @"The search wrapped to the start"];
+            break;
+        }
+    }
+    
+    return found != FindResultNotFound;
+}
+
+
+- (void)replaceNext:(BOOL)find
+{
+    NSString* text = [mFindText stringValue];
+    NSString* replaceText = [mReplaceText stringValue];
+    if ([text length] == 0) {
+        [mEditor setStatusText:@"No search text set"];
+        NSBeep();
+        return;
+    }
+    
+    int cnt = [mEditor findAndReplaceText:text
+                                   byText:replaceText
+                                matchCase:mMatchCase
+                                wholeWord:mWholeWord
+                                    doAll:NO];
+    if (cnt == 0) {
+        [mEditor setStatusText: @"Text not found"];
+        NSBeep();
+        return;
+    }
+    [mEditor setStatusText: @"Replaced"];
+
+    if (find) {
+        [self findNext:NO];
+    } else {
+        mHaveFound = false;
+    }
+}
+
+- (void)replaceAll
+{
+    NSString* text = [mFindText stringValue];
+    NSString* replaceText = [mReplaceText stringValue];
+    if ([text length] == 0) {
+        [mEditor setStatusText:@"No search text set"];
+        NSBeep();
+        return;
+    }
+    
+    int cnt = [mEditor findAndReplaceText:text
+                                   byText:replaceText
+                                matchCase:mMatchCase
+                                wholeWord:mWholeWord
+                                    doAll:YES];
+    
+    switch (cnt) {
+        case 0:
+            [mEditor setStatusText: @"Text not found"];
+            NSBeep();
+            break;
+        case 1:
+            [mEditor setStatusText:@"1 replacement"];
+            break;
+        default:
+            [mEditor setStatusText: [NSString stringWithFormat:@"%d replacements", cnt]];
+    }
+}
 
 - (void)drawCheckerboardRect:(NSRect)rect
 {

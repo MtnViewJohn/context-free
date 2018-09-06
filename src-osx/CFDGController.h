@@ -30,6 +30,7 @@
 
 @class GalleryDownloader;
 
+
 @interface CFDGController : NSObject {
     NSDictionary*           mUpdateInfo;
     

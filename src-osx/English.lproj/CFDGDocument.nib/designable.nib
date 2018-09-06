@@ -13,7 +13,6 @@
                 <outlet property="mAnimationCodec" destination="YRu-Mv-rrL" id="8gi-6o-x80"/>
                 <outlet property="mAnimationFrame" destination="DRm-l9-Glf" id="Dhh-8U-YGM"/>
                 <outlet property="mCodecLabel" destination="sUj-8i-vHY" id="vgB-2j-VbR"/>
-                <outlet property="mEditor" destination="13" id="34"/>
                 <outlet property="mEditorSplit" destination="451" id="XGo-fX-LqT"/>
                 <outlet property="mFrameLabel" destination="4eq-9n-7No" id="NOv-Ei-OHl"/>
                 <outlet property="mGView" destination="19" id="35"/>
@@ -27,7 +26,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="CFDG Document" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="CFDG window" animationBehavior="default" id="5" userLabel="Window">
+        <window title="CFDG Document" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="CFDG window" animationBehavior="default" tabbingMode="disallowed" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="44" y="91" width="1200" height="800"/>
@@ -37,7 +36,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="1200" height="800"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box borderType="none" title="Box" titlePosition="noTitle" id="135">
+                    <box borderType="none" titlePosition="noTitle" id="135">
                         <rect key="frame" x="0.0" y="757" width="1200" height="6"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="GHH-J2-OEk">
@@ -53,50 +52,134 @@
                                 <rect key="frame" x="0.0" y="0.0" width="415" height="760"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="14">
-                                        <rect key="frame" x="0.0" y="0.0" width="415" height="610"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <clipView key="contentView" id="dcX-I4-EiV">
-                                            <rect key="frame" x="1" y="1" width="398" height="608"/>
+                                    <box borderType="none" titlePosition="noTitle" id="XA2-UN-xFF" userLabel="Code Editor">
+                                        <rect key="frame" x="-3" y="-2" width="421" height="517"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" id="XhV-Ue-7MU">
+                                            <rect key="frame" x="0.0" y="0.0" width="421" height="517"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="13" customClass="GrammarTextView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="608"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <size key="minSize" width="398" height="608"/>
-                                                    <size key="maxSize" width="813" height="10000000"/>
-                                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="R4D-nu-TpI">
+                                                    <rect key="frame" x="51" y="493" width="277" height="19"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Find" usesSingleLineMode="YES" bezelStyle="round" id="sTt-vi-VhG">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <accessibility description="Find field"/>
                                                     <connections>
-                                                        <binding destination="119" name="fontName" keyPath="values.EditorFontName" id="395"/>
-                                                        <binding destination="119" name="fontSize" keyPath="values.EditorFontSize" previousBinding="395" id="397"/>
-                                                        <outlet property="delegate" destination="-2" id="39"/>
+                                                        <outlet property="delegate" destination="19" id="6dh-4T-bwd"/>
                                                     </connections>
-                                                </textView>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="e7S-vb-lWZ">
+                                                    <rect key="frame" x="51" y="467" width="224" height="19"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Replace" usesSingleLineMode="YES" bezelStyle="round" id="kf7-6c-A1w">
+                                                        <font key="font" metaFont="system" size="11"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <accessibility description="Replace field"/>
+                                                </textField>
+                                                <button toolTip="Done" verticalHuggingPriority="750" misplaced="YES" tag="11" id="q7H-aN-sJZ" userLabel="Done">
+                                                    <rect key="frame" x="390" y="491" width="31" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" alternateImage="NSRemoveTemplate" imageScaling="proportionallyDown" inset="2" id="U7j-i1-s8m">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="findAction:" target="19" id="ceH-UJ-TgC"/>
+                                                    </connections>
+                                                </button>
+                                                <button toolTip="Search options" verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="8VC-wN-PVJ">
+                                                    <rect key="frame" x="8" y="493" width="40" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="square" title="🔍▿" bezelStyle="shadowlessSquare" imagePosition="left" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="SVD-Jm-kpL">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system" size="14"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="performClick:" target="S0t-up-AMx" id="nVC-Cn-q6j"/>
+                                                    </connections>
+                                                </button>
+                                                <popUpButton hidden="YES" verticalHuggingPriority="750" misplaced="YES" id="S0t-up-AMx">
+                                                    <rect key="frame" x="4" y="467" width="76" height="26"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <popUpButtonCell key="cell" type="push" title="Case sensitive" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="4z1-NF-CMK" id="6sb-Ya-Beh">
+                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="menu"/>
+                                                        <menu key="menu" id="pCO-6r-0bj">
+                                                            <items>
+                                                                <menuItem title="Case sensitive" state="on" id="4z1-NF-CMK">
+                                                                    <connections>
+                                                                        <action selector="findOptions:" target="19" id="9x2-zb-jcI"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Whole words" tag="1" id="c8d-6K-fGZ">
+                                                                    <connections>
+                                                                        <action selector="findOptions:" target="19" id="nFR-Ey-8Ma"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Wrap" state="on" tag="2" id="2Z5-8p-m47">
+                                                                    <connections>
+                                                                        <action selector="findOptions:" target="19" id="nR0-FT-Xcz"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </popUpButtonCell>
+                                                </popUpButton>
+                                                <segmentedControl toolTip="Find" verticalHuggingPriority="750" misplaced="YES" id="hVl-9P-zsR">
+                                                    <rect key="frame" x="334" y="491" width="59" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="XrL-Wy-0Mq">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <segments>
+                                                            <segment toolTip="Find previous" image="NSGoLeftTemplate" width="26" tag="3"/>
+                                                            <segment toolTip="Find next" image="NSGoRightTemplate" width="26" tag="2"/>
+                                                        </segments>
+                                                    </segmentedCell>
+                                                    <connections>
+                                                        <action selector="findAction:" target="19" id="CCA-Rp-boK"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <segmentedControl verticalHuggingPriority="750" misplaced="YES" id="Ob9-iI-Nhp">
+                                                    <rect key="frame" x="281" y="466" width="139" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Gba-B4-FFG">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <segments>
+                                                            <segment label="Replace" width="56" tag="5"/>
+                                                            <segment label="&amp; Find" toolTip="Replace &amp; Find" width="46" tag="6"/>
+                                                            <segment label="All" toolTip="Replace all" width="29" tag="4"/>
+                                                        </segments>
+                                                    </segmentedCell>
+                                                    <connections>
+                                                        <action selector="findAction:" target="19" id="gVh-vv-os8"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="cpk-DK-ad8">
+                                                    <rect key="frame" x="178" y="226" width="64" height="64"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="NSRefreshTemplate" id="tmD-WJ-XYA"/>
+                                                </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </clipView>
-                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="432">
-                                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="431">
-                                            <rect key="frame" x="399" y="1" width="15" height="608"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                    </scrollView>
+                                        </view>
+                                    </box>
                                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="447">
-                                        <rect key="frame" x="0.0" y="619" width="415" height="141"/>
+                                        <rect key="frame" x="0.0" y="520" width="415" height="240"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <clipView key="contentView" id="2Cy-K2-uMB">
-                                            <rect key="frame" x="1" y="1" width="398" height="139"/>
+                                            <rect key="frame" x="1" y="1" width="398" height="238"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="450">
-                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="139"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="238"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <size key="minSize" width="398" height="139"/>
+                                                    <size key="minSize" width="398" height="238"/>
                                                     <size key="maxSize" width="463" height="10000000"/>
                                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <connections>
@@ -110,8 +193,8 @@
                                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="448">
-                                            <rect key="frame" x="399" y="1" width="15" height="139"/>
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="448">
+                                            <rect key="frame" x="399" y="1" width="15" height="238"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
@@ -129,16 +212,23 @@
                                     <outlet property="mActionSelect" destination="N40-Ev-FF7" id="QLg-kq-juE"/>
                                     <outlet property="mCurrentTime" destination="RXc-Hd-mgh" id="3jx-9g-AiG"/>
                                     <outlet property="mDocument" destination="-2" id="42"/>
+                                    <outlet property="mEditorBox" destination="XA2-UN-xFF" id="JqG-4U-ydm"/>
+                                    <outlet property="mFindButtons" destination="hVl-9P-zsR" id="yao-i7-K1C"/>
+                                    <outlet property="mFindText" destination="R4D-nu-TpI" id="Dco-Xl-5Mo"/>
                                     <outlet property="mFrameField" destination="K4z-to-cnJ" id="RdA-OU-hir"/>
                                     <outlet property="mFrameLabel" destination="3lN-Sg-Kwl" id="mZ9-We-c0W"/>
                                     <outlet property="mFrameStepper" destination="p8c-G8-kLd" id="dv2-g6-l61"/>
+                                    <outlet property="mMatchCaseMenu" destination="4z1-NF-CMK" id="ymy-iK-fDn"/>
                                     <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
                                     <outlet property="mRenderHeight" destination="Gd4-wd-MxT" id="hCs-Ga-fci"/>
                                     <outlet property="mRenderWidth" destination="L7P-WQ-Zkb" id="NXa-g6-lFb"/>
                                     <outlet property="mRenderX" destination="bYG-Y8-qhE" id="O0R-sE-CMN"/>
+                                    <outlet property="mReplaceButtons" destination="Ob9-iI-Nhp" id="mXx-o5-BjY"/>
+                                    <outlet property="mReplaceText" destination="e7S-vb-lWZ" id="Bpd-mB-0Oe"/>
                                     <outlet property="mRewindButton" destination="ZZH-fi-HFl" id="yCW-Hq-6uV"/>
+                                    <outlet property="mRewindView" destination="cpk-DK-ad8" id="RQD-rd-aoK"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
                                     <outlet property="mSaveTileAccessory" destination="305" id="499"/>
@@ -152,6 +242,8 @@
                                     <outlet property="mVariationField" destination="68" id="71"/>
                                     <outlet property="mVariationLabel" destination="67" id="70"/>
                                     <outlet property="mVariationStepper" destination="69" id="72"/>
+                                    <outlet property="mWholeWordMenu" destination="c8d-6K-fGZ" id="VaC-Sn-D3s"/>
+                                    <outlet property="mWrapSearchMenu" destination="2Z5-8p-m47" id="uQF-yG-P02"/>
                                 </connections>
                             </customView>
                         </subviews>
@@ -182,7 +274,7 @@
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
                                                     <segment label="Render" width="65"/>
-                                                    <segment label="▾" width="19" tag="1"/>
+                                                    <segment label="▿" width="19" tag="1"/>
                                                 </segments>
                                             </segmentedCell>
                                             <connections>
@@ -1258,6 +1350,11 @@ Gw
         </numberFormatter>
     </objects>
     <resources>
+        <image name="NSGoLeftTemplate" width="9" height="12"/>
+        <image name="NSGoRightTemplate" width="9" height="12"/>
+        <image name="NSRefreshTemplate" width="11" height="15"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="NSStopProgressFreestandingTemplate" width="11" height="11"/>
         <image name="RemotePlay_norm.tif" width="32" height="32"/>
         <image name="RemotePlay_press.tif" width="32" height="32"/>
         <image name="doc" width="128" height="128"/>

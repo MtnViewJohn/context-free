@@ -257,7 +257,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 + (BOOL)autosavesInPlace
 {
-    return YES;
+    return NO;
 }
 
 + (NSArray*) checkForTempFiles
@@ -283,6 +283,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         mContent = nil;
         mUploader = nil;
         mDisplayName = nil;
+        mEditor = nil;
     }
     return self;
 }
@@ -293,6 +294,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     mSystem->orphan();                      // leave system orphaned on the heap
     [mContent release]; mContent = nil;
     [mUploader release]; mUploader = nil;
+    [mEditor release]; mEditor = nil;
     [super dealloc];
 }
 
@@ -412,70 +414,81 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (void)highlightChars:(CfdgErrorWrapper*)link
 {
     yy::location* errLoc = [link location];
-    NSString* text = [mEditor string];
-    
-    NSRange lineRange;
-    unsigned int lineCount;
-    NSUInteger endOfLine;
-    NSUInteger start;
-    NSUInteger end;
-    
-    lineRange.location = 0;
-    lineRange.length = 0;
-    lineCount = 1;          // lineRange(0,0) is the start of line 1!
-    
-    while (lineCount < errLoc->begin.line) {
-        // find start of next line
-        [text getLineStart: nil end: &endOfLine contentsEnd: nil
-                  forRange: lineRange];
-        lineRange.location = endOfLine;
-        lineCount += 1;
-    }
-    start = lineRange.location + errLoc->begin.column;
-    
-    while (lineCount < errLoc->end.line) {
-        // find start of next line
-        [text getLineStart: nil end: &endOfLine contentsEnd: nil
-                  forRange: lineRange];
-        lineRange.location = endOfLine;
-        lineCount += 1;
-    }
-    end = lineRange.location + errLoc->end.column;
-    
-    lineRange.location = start;
-    lineRange.length = end - start;
-    
-    [mEditor setSelectedRange: lineRange];
-    [mEditor scrollRangeToVisible: lineRange];
-    [[mGView window] makeFirstResponder: mEditor];
+    auto b = [mEditor getGeneralProperty:SCI_POSITIONFROMLINE parameter:(errLoc->begin.line - 1)] +
+             errLoc->begin.column;
+    auto e = [mEditor getGeneralProperty:SCI_POSITIONFROMLINE parameter:(errLoc->end.line - 1)] +
+             errLoc->end.column;
+    [mEditor setGeneralProperty:SCI_SETSEL parameter:b value:e];
+    [[mGView window] makeFirstResponder: [mEditor content]];
 }
 
-- (NSData *)dataRepresentationOfType:(NSString *)type {
-    NSAssert([type isEqualToString: CFDGDocumentType], @"Unknown type");
+- (void)updateFont:(NSString*)name size:(float)sz
+{
+    // Colors and styles for various syntactic elements. First the default style.
+    long isz = static_cast<long>(sz * 100.0f);
+    [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: name];
+    [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_DEFAULT value: isz];
+    for (int i = SCE_C_DEFAULT; i <= SCE_C_ESCAPESEQUENCE; ++i) {
+        [mEditor setStringProperty: SCI_STYLESETFONT parameter: i value: name];
+        [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: i value: isz];
+    }
+}
+
+- (NSData *)dataOfType:(NSString *)type error:(NSError * _Nullable *)outError
+{
+    if (![type isEqualToString: CFDGDocumentType]) {
+        *outError = [NSError errorWithDomain:NSOSStatusErrorDomain
+                                        code:unimpErr
+                                    userInfo:NULL];
+        return nil;
+    }
 
     return [self getContent];
 }
 
-- (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)type error:(NSError * _Nullable *)outError
 {
-    NSAssert([type isEqualToString: CFDGDocumentType], @"Unknown type");
+    if (![type isEqualToString: CFDGDocumentType]) {
+        *outError = [NSError errorWithDomain:NSOSStatusErrorDomain
+                                        code:unimpErr
+                                    userInfo:NULL];
+        return NO;
+    }
 
+    [mContent release];
     mContent = [data retain];
     [self showContent];
-    
+    [self setDirty:NO];
+
     return YES;
+}
+
+-(void)saveDocument:sender
+{
+    [self saveDocumentWithDelegate:self
+                   didSaveSelector:@selector(didSaveDocument:didSave:contextInfo:)
+                       contextInfo:NULL];
+}
+
+-(void)saveDocumentAs:sender
+{
+    [self runModalSavePanelForSaveOperation:NSSaveAsOperation
+                                   delegate:self
+                            didSaveSelector:@selector(didSaveDocument:didSave:contextInfo:)
+                                contextInfo:NULL];
+}
+
+- (void)didSaveDocument:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo
+{
+    if (didSave)
+        [mEditor getGeneralProperty:SCI_SETSAVEPOINT];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)windowController
 {
     [self showContent];
+    [self setDirty:NO];
     [mStatusText setEditable: NO];
-    [mEditor setAutomaticDashSubstitutionEnabled:NO];
-    [mEditor setAutomaticDataDetectionEnabled:NO];
-    [mEditor setAutomaticLinkDetectionEnabled:NO];
-    [mEditor setAutomaticSpellingCorrectionEnabled:NO];
-    [mEditor setAutomaticTextReplacementEnabled:NO];
-    [mEditor setAutomaticQuoteSubstitutionEnabled:NO];
     mGViewSplit.autosaveName = @"CFDG view splitter";
     mEditorSplit.autosaveName = @"CFDG editor splitter";
 }
@@ -652,22 +665,51 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mUploader show: self];
 }
 
+- (void)setEditor:(ScintillaView*)editor
+{
+    [mEditor release];
+    mEditor = [editor retain];
+}
+
 - (void)showContent
 {
     if (mEditor) {
-        NSString* s = [[NSString alloc]
-                        initWithData: mContent encoding: NSUTF8StringEncoding];
-        [mEditor setString: s];
-        [s release];
+        [mGView suspendNotifications:YES];
+        if (mContent) {
+            NSMutableData* m = [mContent mutableCopy];
+            ++m.length;     // Add null termination
+            [mEditor setReferenceProperty:SCI_SETTEXT parameter:0 value:(const void*)[m bytes]];
+            --m.length;     // restore
+        } else {
+            [mEditor getGeneralProperty:SCI_CLEARALL];
+        }
+        [mGView suspendNotifications:NO];
+        [mEditor setGeneralProperty:SCI_EMPTYUNDOBUFFER value:0];
+        [mEditor setGeneralProperty:SCI_GOTOPOS value:0];
     }
 }
 
 - (NSData*)getContent
 {
-    [mContent release];
+    if (mContent) return mContent;
+
+    long length = [mEditor getGeneralProperty:SCI_GETLENGTH];
     
-    mContent = [[[mEditor string]
-                    dataUsingEncoding: NSUTF8StringEncoding] retain];
+    if (length == 0) {
+        mContent = [[NSData data] retain];
+    } else {
+        try {
+            NSMutableData* data = [NSMutableData dataWithLength: length + 1];
+            [mEditor setReferenceProperty:SCI_GETTEXT
+                                parameter:length + 1
+                                    value:(void*)[data mutableBytes]];
+            --data.length;                      // chop off terminal '\0'
+            mContent = [data retain];
+        } catch (...) {
+            mContent = [[NSData data] retain];
+        }
+    }
+
     return mContent;
 }
 
@@ -702,11 +744,62 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 }
 
 
-// Delegate methods from the editor
-- (void) textDidChange: (NSNotification *) notification
+- (void)textDidChange:(NSNotification *)notification
 {
     [self stopRender: self];
     [mGView reuseVariation];
+    [mContent release]; mContent = nil;
+}
+
+- (void)setDirty:(BOOL)dirty
+{
+    NSString* title = [self displayName];
+    if (dirty)
+        title = [title stringByAppendingString:@" — Edited"];
+    for (NSWindowController* ctrl in [self windowControllers]) {
+        [ctrl setDocumentEdited:dirty];
+        [[ctrl window] setDocumentEdited:dirty];
+        [[ctrl window] setTitle: title];
+    }
+}
+
+- (BOOL)isDocumentEdited {
+    if (mEditor)
+        return [mEditor getGeneralProperty:SCI_GETMODIFY];
+    else
+        return NO;
+}
+
+- (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+{
+    BOOL OKToClose = YES;
+    if ([self isDocumentEdited]) {
+        NSString* fileName = [[self fileURL] lastPathComponent];
+        if (fileName == nil)
+            fileName = [self displayName];
+        NSInteger result = NSRunAlertPanel([[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"],
+                                     @"The %@ file has changed. \n\nDo you want to save the changes?",
+                                     @"Yes", @"No", @"Cancel",
+                                     fileName);
+        switch (result) {
+            case NSAlertDefaultReturn:
+                [self saveDocumentWithDelegate:delegate
+                               didSaveSelector:shouldCloseSelector
+                                   contextInfo:contextInfo];
+                return;
+            case NSAlertAlternateReturn:
+                break;  // OKToClose = YES;
+            default:
+                OKToClose = NO;
+                break;
+        }
+    }
+    if ([delegate respondsToSelector:shouldCloseSelector]) {
+        void (*delegateMethod)(id, SEL, id, BOOL, void *);
+        delegateMethod = (void (*)(id, SEL, id, BOOL, void *))[delegate methodForSelector:shouldCloseSelector];
+        delegateMethod(delegate, shouldCloseSelector, self, OKToClose, contextInfo);
+    }
+
 }
 
 @end

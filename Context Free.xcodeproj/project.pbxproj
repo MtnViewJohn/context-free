@@ -45,6 +45,8 @@
 		524D22E613BA0200002732C2 /* posixTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22E113BA0200002732C2 /* posixTimer.cpp */; };
 		524D22E713BA0200002732C2 /* posixVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22E213BA0200002732C2 /* posixVersion.cpp */; };
 		524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22FC13BA0661002732C2 /* makeCFfilename.cpp */; };
+		525114B821350D7100065F80 /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; };
+		525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
 		526BCBD910F5C425003357E9 /* astreplacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBD810F5C425003357E9 /* astreplacement.cpp */; };
 		527631520D7B490B00F0F7C8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527631510D7B490B00F0F7C8 /* WebKit.framework */; };
@@ -195,7 +197,35 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXContainerItemProxy section */
+		525114BA21350D7100065F80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = Scintilla;
+		};
+		525A45F4213505A6008E0954 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = Scintilla;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		525114BC21350D7100065F80 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FD3C081108234EFE00693028 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,6 +321,7 @@
 		524D22FC13BA0661002732C2 /* makeCFfilename.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = makeCFfilename.cpp; sourceTree = "<group>"; };
 		524D22FD13BA0661002732C2 /* makeCFfilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeCFfilename.h; sourceTree = "<group>"; };
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
+		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
 		526BCBBC10F5C12D003357E9 /* astexpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = astexpression.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		526BCBD810F5C425003357E9 /* astreplacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = astreplacement.cpp; sourceTree = "<group>"; };
 		5270D471101ABBEA001A46A9 /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
@@ -453,6 +484,7 @@
 			files = (
 				52154E811DD038690031905B /* Security.framework in Frameworks */,
 				5200D96A1D8C972C00F60731 /* CoreVideo.framework in Frameworks */,
+				525114B821350D7100065F80 /* Scintilla.framework in Frameworks */,
 				5200D9681D8C96F400F60731 /* CoreMedia.framework in Frameworks */,
 				5200D9661D8C96BF00F60731 /* AVFoundation.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
@@ -495,6 +527,7 @@
 		29B97314FDCFA39411CA2CEA /* CFDA */ = {
 			isa = PBXGroup;
 			children = (
+				525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */,
 				524D22DB13BA01D8002732C2 /* src-unix */,
 				FD1EF08A0811ADE500FD38C6 /* src-common */,
 				FD1EF0970811AE1900FD38C6 /* src-osx */,
@@ -534,6 +567,14 @@
 				524D22E213BA0200002732C2 /* posixVersion.cpp */,
 			);
 			name = "src-unix";
+			sourceTree = "<group>";
+		};
+		525A45F1213505A6008E0954 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				525A45F5213505A6008E0954 /* Scintilla.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
@@ -759,12 +800,14 @@
 				FDF15B260880C3AD0041D85B /* CopyFiles */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				525114BC21350D7100065F80 /* Embed Frameworks */,
 			);
 			buildRules = (
 				529049BA0F3E9E0000484FED /* PBXBuildRule */,
 				529049B90F3E9C9B00484FED /* PBXBuildRule */,
 			);
 			dependencies = (
+				525114BB21350D7100065F80 /* PBXTargetDependency */,
 			);
 			name = "Context Free";
 			productInstallPath = "$(HOME)/Applications";
@@ -797,6 +840,12 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CFDA */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 525A45F1213505A6008E0954 /* Products */;
+					ProjectRef = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Context Free */,
@@ -804,6 +853,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		525A45F5213505A6008E0954 /* Scintilla.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Scintilla.framework;
+			remoteRef = 525A45F4213505A6008E0954 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8D1107290486CEB800E47090 /* Resources */ = {
@@ -924,6 +983,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		525114BB21350D7100065F80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Scintilla;
+			targetProxy = 525114BA21350D7100065F80 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		FD1EF0990811AE1900FD38C6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -980,9 +1047,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "src-scintilla/include";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-lagg";
@@ -1219,9 +1287,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "src-scintilla/include";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1306,9 +1375,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "src-scintilla/include";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-lagg";
@@ -1349,9 +1419,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "src-scintilla/include";
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-lagg";
