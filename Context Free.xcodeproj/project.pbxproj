@@ -47,6 +47,7 @@
 		524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22FC13BA0661002732C2 /* makeCFfilename.cpp */; };
 		525114B821350D7100065F80 /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; };
 		525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */ = {isa = PBXBuildFile; fileRef = 526271EE2140E4D200412E84 /* magnifying-glass.icns */; };
 		526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
 		526BCBD910F5C425003357E9 /* astreplacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBD810F5C425003357E9 /* astreplacement.cpp */; };
 		527631520D7B490B00F0F7C8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527631510D7B490B00F0F7C8 /* WebKit.framework */; };
@@ -322,6 +323,7 @@
 		524D22FD13BA0661002732C2 /* makeCFfilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeCFfilename.h; sourceTree = "<group>"; };
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
 		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
+		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
 		526BCBBC10F5C12D003357E9 /* astexpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = astexpression.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		526BCBD810F5C425003357E9 /* astreplacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = astreplacement.cpp; sourceTree = "<group>"; };
 		5270D471101ABBEA001A46A9 /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 		FD1EF0AF0811AE6500FD38C6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				526271EE2140E4D200412E84 /* magnifying-glass.icns */,
 				527D30B61EB1CEFA00F03EF6 /* rewind.norm.icns */,
 				527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */,
 				527D30AC1EB1C56D00F03EF6 /* RemotePause_norm.tif.icns */,
@@ -869,6 +872,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */,
 				527D30B21EB1C56D00F03EF6 /* RemotePause_norm.tif.icns in Resources */,
 				FD1EF0A50811AE1900FD38C6 /* InfoPlist.strings in Resources */,
 				FD1EF0A60811AE1900FD38C6 /* MainMenu.nib in Resources */,

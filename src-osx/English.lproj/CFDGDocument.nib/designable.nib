@@ -94,9 +94,9 @@
                                                     </connections>
                                                 </button>
                                                 <button toolTip="Search options" verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="8VC-wN-PVJ">
-                                                    <rect key="frame" x="8" y="493" width="40" height="21"/>
+                                                    <rect key="frame" x="8" y="493" width="40" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="square" title="🔍▿" bezelStyle="shadowlessSquare" imagePosition="left" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="SVD-Jm-kpL">
+                                                    <buttonCell key="cell" type="square" title="▿" bezelStyle="shadowlessSquare" image="magnifying-glass" imagePosition="left" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="SVD-Jm-kpL">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system" size="14"/>
                                                     </buttonCell>
@@ -1358,6 +1358,7 @@ Gw
         <image name="RemotePlay_norm.tif" width="32" height="32"/>
         <image name="RemotePlay_press.tif" width="32" height="32"/>
         <image name="doc" width="128" height="128"/>
+        <image name="magnifying-glass" width="512" height="512"/>
         <image name="rewind.norm" width="32" height="32"/>
         <image name="rewind.press" width="32" height="32"/>
     </resources>
