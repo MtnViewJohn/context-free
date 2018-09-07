@@ -61,6 +61,8 @@ NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
 NSString* PrefKeyHiresWidth = @"HiresWidth";
 NSString* PrefKeyHiresHeight = @"HiresHeight";
 
+extern NSInteger CurrentTabWidth;
+
 namespace {
     
     class CocoaSystem : public PosixSystem
@@ -532,6 +534,29 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     } else {
         [mEditor insertText: [menu title]];
     }
+}
+
+- (IBAction)shiftLeftRight:(id)sender
+{
+    NSInteger delta = [sender tag] * CurrentTabWidth;
+    bool didChange = false;
+    long start = [mEditor getGeneralProperty:SCI_GETANCHOR];
+    long end = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
+    start = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:start];
+    end = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:end];
+    for (; start <= end; ++start) {
+        long i = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:start];
+        long i2 = i + delta;
+        if (i2 < 0) i2 = 0;
+        if (i != i2) {
+            if (!didChange)
+                [mEditor getGeneralProperty:SCI_BEGINUNDOACTION];
+            didChange = true;
+            [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:start value:i2];
+        }
+    }
+    if (didChange)
+        [mEditor getGeneralProperty:SCI_ENDUNDOACTION];
 }
 
 

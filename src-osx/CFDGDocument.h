@@ -66,6 +66,7 @@
 - (IBAction) saveAsSVG:(id)sender;
 - (IBAction) uploadToGallery:(id)sender;
 - (IBAction) insertUnicode:(id)sender;
+- (IBAction)shiftLeftRight:(id)sender;
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 

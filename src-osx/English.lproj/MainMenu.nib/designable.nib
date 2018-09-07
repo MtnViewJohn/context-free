@@ -585,6 +585,17 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="1Ni-Ub-fac"/>
+                            <menuItem title="Shift Left" tag="-1" keyEquivalent="[" id="kyb-3h-EtQ">
+                                <connections>
+                                    <action selector="shiftLeftRight:" target="-1" id="VeW-sz-Q0w"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Shift Right" tag="1" keyEquivalent="]" id="Lf7-wX-8pt">
+                                <connections>
+                                    <action selector="shiftLeftRight:" target="-1" id="VOc-6Y-rio"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="174">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
