@@ -434,6 +434,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
 }
 
+- (void)tabWidthDidChange:(NSInteger)tab
+{
+    [mEditor setGeneralProperty:SCI_SETTABWIDTH value:tab];
+}
+
 - (NSData *)dataOfType:(NSString *)type error:(NSError * _Nullable *)outError
 {
     if (![type isEqualToString: CFDGDocumentType]) {

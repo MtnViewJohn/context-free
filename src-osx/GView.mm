@@ -56,6 +56,7 @@ using tempfile_ptr = std::unique_ptr<TempFile>;
 #define UPDATE_RATE         (1.0/12.0)
 #define PROGRESS_DELAY      12
 
+extern NSInteger CurrentTabWidth;
 
 @interface BitmapAndFormat : BitmapImageHolder {
     aggCanvas::PixelFormat _aggPixFmt;    
@@ -1054,11 +1055,48 @@ namespace {
     if (mSuspendNotifications) return;
     switch (notification->nmhdr.code) {
         case SCN_CHARADDED:
-            break;  // brace autoinsert?
+            // auto unindent
+            if (notification->ch == '}') {
+                long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
+                long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:pos];
+                long indentPos = [mEditor getGeneralProperty:SCI_GETLINEINDENTPOSITION parameter:lineno];
+                if (indentPos + 1 == pos) {     // '}' is in initial white space
+                    long indent = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:lineno];
+                    if (indent >= CurrentTabWidth)
+                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:lineno value:indent - CurrentTabWidth];
+                    else
+                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:lineno value:0];
+                }
+            }
+            break;
         case SCN_MODIFIED:
             if (notification->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidChangeNotification object: mEditor];
                 [mDocument textDidChange:nil];
+            }
+            if (notification->modificationType & SC_MOD_INSERTCHECK && notification->text) {
+                if (std::strcmp(notification->text, "\n") &&
+                    std::strcmp(notification->text, "\r") &&
+                    std::strcmp(notification->text, "\r\n")) {}
+                else {      // auto indent
+                    long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:notification->position];
+                    auto line = std::string([mEditor getGeneralProperty:SCI_LINELENGTH parameter: lineno], ' ');
+                    [mEditor setReferenceProperty:SCI_GETLINE parameter:lineno value:(void*)line.data()];
+                    long indent = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:lineno];
+                    for (char c: line) {
+                        if (c == '{')
+                            indent += CurrentTabWidth;
+                        if (c == '}')
+                            indent -= CurrentTabWidth;
+                    }
+                    if (indent > 0) {
+                        auto nextline = std::string(notification->text);
+                        nextline.append(indent, ' ');
+                        [mEditor setReferenceProperty:SCI_CHANGEINSERTION
+                                            parameter:nextline.length()
+                                                value:(const void*)nextline.data()];
+                    }
+                }
             }
             break;
         case SCN_SAVEPOINTLEFT:
@@ -1635,6 +1673,11 @@ namespace {
     [mEditor setInfoBar: infoBar top: NO];
     [mEditor setStatusText: @"Operation complete"];
     [mEditor setGeneralProperty:SCI_SETSEARCHFLAGS value:SCFIND_MATCHCASE];
+    [mEditor setGeneralProperty:SCI_SETUSETABS value:0];
+    [mEditor setGeneralProperty:SCI_SETTABWIDTH value:CurrentTabWidth];
+    [mEditor setGeneralProperty:SCI_SETINDENT value:0];
+    [mEditor setGeneralProperty:SCI_SETTABINDENTS value:1];
+    [mEditor setGeneralProperty:SCI_SETBACKSPACEUNINDENTS value:1];
 }
 
 

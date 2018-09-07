@@ -71,6 +71,7 @@ enum {
 NSString* prefKeyEditorFontName = @"EditorFontName";
 NSString* prefKeyEditorFontSize = @"EditorFontSize";
 
+NSInteger CurrentTabWidth;
 
 namespace {
     NSArray* urls = nil;
@@ -86,6 +87,7 @@ namespace {
     // Preferences keys
     static NSString* prefKeyCheckUpdateWeekly   = @"CheckUpdatesWeekly";
     static NSString* prefKeyCheckUpdateLast     = @"CheckUpdatesLastTime";
+    static NSString* prefKeyTabWidth            = @"TabWidth";
 
     // Update location
     static NSString* updateURL
@@ -200,6 +202,25 @@ namespace {
     NSFontManager* fontWindow = [NSFontManager sharedFontManager];
     [fontWindow setDelegate: self];
     [fontWindow orderFrontFontPanel: self];
+}
+
+- (IBAction)changeTabWidth:(id)sender
+{
+    NSInteger tag = [sender selectedTag];
+    [[NSUserDefaults standardUserDefaults] setInteger:tag forKey:prefKeyTabWidth];
+    CurrentTabWidth = tag;
+    for (NSDocument* nsdoc in [[NSDocumentController sharedDocumentController] documents])
+        if ([nsdoc isKindOfClass:[CFDGDocument class]]) {
+            CFDGDocument* cfdoc = (CFDGDocument*)nsdoc;
+            [cfdoc tabWidthDidChange:tag];
+        }
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSInteger tab = [[NSUserDefaults standardUserDefaults] integerForKey:prefKeyTabWidth];
+    if (tab < 2 || tab > 8) tab = 2;
+    [mTabWidth selectItemWithTag:tab];
 }
 
 - (void)changeFont:(id)sender
@@ -387,6 +408,8 @@ namespace {
 
     [[NSUserDefaultsController sharedUserDefaultsController]
         setInitialValues: userDefaultsValuesDict];
+
+    CurrentTabWidth = [[NSUserDefaults standardUserDefaults] integerForKey:prefKeyTabWidth];
 }
 
 + (void)migrateCredentials

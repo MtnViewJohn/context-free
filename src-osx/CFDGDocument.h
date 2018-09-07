@@ -88,6 +88,7 @@
 - (void)updateFont:(NSString*)name size:(float)sz;
 - (void)textDidChange:(NSNotification *)notification;
 - (void)setDirty:(BOOL)dirty;
+- (void)tabWidthDidChange:(NSInteger)tab;
 
 - (void)noteStatus:(NSString*)s;
 - (void)noteCatastrophicError:(NSString*)s;

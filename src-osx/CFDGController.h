@@ -39,6 +39,8 @@
     IBOutlet NSMenuItem*    mFullScreenMenu;
     
     IBOutlet NSTextField*   mFontDisplay;
+    
+    IBOutlet NSPopUpButton* mTabWidth;
 }
 
 - (IBAction) checkForUpdateNow:(id)sender;
@@ -48,6 +50,7 @@
 
 - (IBAction) setEditorFont:(id)sender;
 - (void)changeFont:(id)sender;
+- (IBAction)changeTabWidth:(id)sender;
 
 -(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error;
 -(void)downloadDone:(GalleryDownloader*)downloader;
