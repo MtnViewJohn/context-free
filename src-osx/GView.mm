@@ -253,6 +253,29 @@ namespace {
     "CF::Color CF::ColorDepth CF::Frame CF::FrameTime CF::Impure CF::MaxNatural "
     "CF::MaxShapes CF::MinimumSize CF::Size CF::StartShape CF::Symmetry "
     "CF::Tile CF::Time";
+    
+    std::vector<const char*> autoComplete = {
+        "ARCREL", "ARCTO", "background", "bitand", "bitleft", "bitnot", "bitor", "bitright", "bitxor",
+        "CF::Align", "CF::AllowOverlap", "CF::Alpha", "CF::ArcCW", "CF::ArcLarge", "CF::Background",
+        "CF::BevelJoin", "CF::BorderDynamic", "CF::BorderFixed", "CF::ButtCap", "CF::cm", "CF::cmm", "CF::Color",
+        "CF::ColorDepth", "CF::Continuous", "CF::Cyclic", "CF::Dihedral", "CF::EvenOdd", "CF::Frame",
+        "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::MaxNatural", "CF::MaxShapes",
+        "CF::MinimumSize", "CF::MiterJoin",
+        "CF::p11g", "CF::p11m", "CF::p1m1", "CF::p2", "CF::p2mg", "CF::p2mm", "CF::p3", "CF::p3m1", "CF::p31m",
+        "CF::p4", "CF::p4g", "CF::p4m", "CF::p6", "CF::p6m", "CF::pg", "CF::pgg", "CF::pm", "CF::pmg", "CF::pmm",
+        "CF::RoundCap", "CF::RoundJoin", "CF::Size", "CF::SquareCap", "CF::StartShape", "CF::Symmetry", "CF::Tile", "CF::Time",
+        "CIRCLE", "CLOSEPOLY", "CURVEREL", "CURVETO", "FILL", "import", "include", "LINEREL", "LINETO", "MOVEREL", "MOVETO", "SQUARE", "STROKE", "TRIANGLE",
+        "rand", "rand::cauchy", "rand::chisquared", "rand::exponential", "rand::extremeV",
+        "rand::fisherF", "rand::gamma", "rand::lognormal", "rand::normal", "rand::studentT", "rand::weibull",
+        "randint", "randint::bernoulli", "randint::binomial", "randint::discrete",
+        "randint::geometric", "randint::negbinomial", "randint::poisson", "rand_static", "startshape",
+        "floor", "ceiling", "infinity", "factorial", "isNatural", "divides", "div",
+        "dot", "cross", "hsb2rgb", "rgb2hsb"
+    };
+    
+    auto autoComp=[](const char* a, const char* b){
+        return strcasecmp(a, b) < 0;
+    };
 }
 
 
@@ -277,6 +300,7 @@ namespace {
         PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
         PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
         PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
+        std::sort(autoComplete.begin(), autoComplete.end(), autoComp);
     }
 }
 
@@ -1054,7 +1078,7 @@ namespace {
 {
     if (mSuspendNotifications) return;
     switch (notification->nmhdr.code) {
-        case SCN_CHARADDED:
+        case SCN_CHARADDED: {
             // auto unindent
             if (notification->ch == '}') {
                 long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
@@ -1067,8 +1091,27 @@ namespace {
                     else
                         [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:lineno value:0];
                 }
+                return;
+            }
+            long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
+            long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION parameter:pos];
+            long len = pos - wordPos;
+            if (len > 1) {
+                std::string list; list.reserve(1500);
+                std::string word(len, ' ');
+                Sci_TextRange r{{wordPos, pos}, word.data()};
+                [mEditor getGeneralProperty:SCI_GETTEXTRANGE ref:(const void*)(&r)];
+                auto iter = std::lower_bound(autoComplete.begin(), autoComplete.end(), word.c_str(), autoComp);
+                while (iter != autoComplete.end() && strncasecmp(*iter, word.c_str(), len) == 0) {
+                    if (!list.empty()) list.append(1, ' ');
+                    list.append(*iter);
+                    ++iter;
+                }
+                if (!list.empty())
+                    [mEditor setReferenceProperty:SCI_AUTOCSHOW parameter:len value:list.c_str()];
             }
             break;
+        }
         case SCN_MODIFIED:
             if (notification->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidChangeNotification object: mEditor];
@@ -1678,6 +1721,10 @@ namespace {
     [mEditor setGeneralProperty:SCI_SETINDENT value:0];
     [mEditor setGeneralProperty:SCI_SETTABINDENTS value:1];
     [mEditor setGeneralProperty:SCI_SETBACKSPACEUNINDENTS value:1];
+    
+    [mEditor setGeneralProperty:SCI_AUTOCSETIGNORECASE value:1];
+    [mEditor setReferenceProperty:SCI_AUTOCSTOPS parameter:0 value:"[]{}<>,1234567890()/*+-|=!&^ \t.\r\n"];
+    [mEditor setReferenceProperty:SCI_SETWORDCHARS parameter:0 value:"[]{}<>,1234567890()/*+-|=!&^ \t.\r\n"];
 }
 
 
