@@ -48,6 +48,7 @@
 		525114B821350D7100065F80 /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; };
 		525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */ = {isa = PBXBuildFile; fileRef = 526271EE2140E4D200412E84 /* magnifying-glass.icns */; };
+		526271F4214312C700412E84 /* CFscintilla.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526271F3214312C700412E84 /* CFscintilla.cpp */; };
 		526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
 		526BCBD910F5C425003357E9 /* astreplacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBD810F5C425003357E9 /* astreplacement.cpp */; };
 		527631520D7B490B00F0F7C8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527631510D7B490B00F0F7C8 /* WebKit.framework */; };
@@ -324,6 +325,8 @@
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
 		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
 		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
+		526271F221430D3200412E84 /* CFscintilla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFscintilla.h; sourceTree = "<group>"; };
+		526271F3214312C700412E84 /* CFscintilla.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CFscintilla.cpp; sourceTree = "<group>"; };
 		526BCBBC10F5C12D003357E9 /* astexpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = astexpression.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		526BCBD810F5C425003357E9 /* astreplacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = astreplacement.cpp; sourceTree = "<group>"; };
 		5270D471101ABBEA001A46A9 /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
@@ -648,6 +651,8 @@
 				52D5D8DA1ACB938B005109E5 /* myrandom.h */,
 				529262B91FFCAAC800D00B7D /* prettyint.cpp */,
 				529262BA1FFCAAC800D00B7D /* prettyint.h */,
+				526271F221430D3200412E84 /* CFscintilla.h */,
+				526271F3214312C700412E84 /* CFscintilla.cpp */,
 			);
 			path = "src-common";
 			sourceTree = "<group>";
@@ -971,6 +976,7 @@
 				52FB6B9409ECB8A20008CE6E /* tiledCanvas.cpp in Sources */,
 				FD879EE50B64190400FF6959 /* GalleryUploader.mm in Sources */,
 				FD879EE80B64191700FF6959 /* upload.cpp in Sources */,
+				526271F4214312C700412E84 /* CFscintilla.cpp in Sources */,
 				52100A7F0D3A9F1800F7070D /* Rand64.cpp in Sources */,
 				5226EFAE1071BB7600A30CC3 /* BitmapImageHolder.mm in Sources */,
 				526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */,

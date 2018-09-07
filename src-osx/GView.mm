@@ -42,6 +42,7 @@
 #include <tgmath.h>
 #include <tempfile.h>
 #include <algorithm>
+#include "CFscintilla.h"
 
 using cfdg_ptr = std::shared_ptr<CFDG>;
 using renderer_ptr = std::unique_ptr<Renderer>;
@@ -215,67 +216,6 @@ namespace {
     
     NSArray*    ActionStrings = @[@"Stop", @"Render", @"Animate", @"Frame", @"Sized"];
     
-    const char major_keywords[] =
-    "a alpha "
-    "b background brightness "
-    "case clone "
-    "else "
-    "f finally flip "
-    "h hue "
-    "if import include "
-    "let loop "
-    "path "
-    "r rotate rule "
-    "s saturation sat size skew startshape shape "
-    "tile time timescale trans transform "
-    "x x1 x2 "
-    "y y1 y2 "
-    "z";
-    
-    const char functions[] =
-    "cos sin tan cot acos asin atan acot cosh sinh tanh acosh asinh atanh log log10 "
-    "sqrt exp abs floor ceiling infinity factorial sg isNatural bitnot bitor bitand bitxor "
-    "bitleft bitright atan2 mod divides div dot cross hsb2rgb rgb2hsb vec min max ftime "
-    "frame rand_static rand rand::exponential rand::gamma rand::weibull rand::extremeV "
-    "rand::normal rand::lognormal rand::chisquared rand::cauchy rand::fisherF "
-    "rand::studentT randint randint::bernoulli randint::binomial randint::negbinomial "
-    "randint::poisson randint::discrete randint::geometric "
-    "CIRCLE SQUARE TRIANGLE FILL STROKE "
-    "MOVETO LINETO ARCTO CURVETO MOVEREL LINEREL ARCREL CURVEREL CLOSEPOLY";
-    
-    const char built_ins[] =
-    "CF::None CF::MiterJoin CF::RoundJoin CF::BevelJoin CF::ButtCap CF::RoundCap "
-    "CF::SquareCap CF::ArcCW CF::ArcLarge CF::Continuous CF::Align CF::EvenOdd "
-    "CF::IsoWidth CF::Cyclic CF::Dihedral CF::p11g CF::p11m CF::p1m1 CF::p2 "
-    "CF::p2mg CF::p2mm CF::pm CF::pg CF::cm CF::pmm CF::pmg CF::pgg CF::cmm "
-    "CF::p4 CF::p4m CF::p4g CF::p3 CF::p3m1 CF::p31m CF::p6 CF::p6m "
-    "CF::AllowOverlap CF::Alpha CF::Background CF::BorderDynamic CF::BorderFixed "
-    "CF::Color CF::ColorDepth CF::Frame CF::FrameTime CF::Impure CF::MaxNatural "
-    "CF::MaxShapes CF::MinimumSize CF::Size CF::StartShape CF::Symmetry "
-    "CF::Tile CF::Time";
-    
-    std::vector<const char*> autoComplete = {
-        "ARCREL", "ARCTO", "background", "bitand", "bitleft", "bitnot", "bitor", "bitright", "bitxor",
-        "CF::Align", "CF::AllowOverlap", "CF::Alpha", "CF::ArcCW", "CF::ArcLarge", "CF::Background",
-        "CF::BevelJoin", "CF::BorderDynamic", "CF::BorderFixed", "CF::ButtCap", "CF::cm", "CF::cmm", "CF::Color",
-        "CF::ColorDepth", "CF::Continuous", "CF::Cyclic", "CF::Dihedral", "CF::EvenOdd", "CF::Frame",
-        "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::MaxNatural", "CF::MaxShapes",
-        "CF::MinimumSize", "CF::MiterJoin",
-        "CF::p11g", "CF::p11m", "CF::p1m1", "CF::p2", "CF::p2mg", "CF::p2mm", "CF::p3", "CF::p3m1", "CF::p31m",
-        "CF::p4", "CF::p4g", "CF::p4m", "CF::p6", "CF::p6m", "CF::pg", "CF::pgg", "CF::pm", "CF::pmg", "CF::pmm",
-        "CF::RoundCap", "CF::RoundJoin", "CF::Size", "CF::SquareCap", "CF::StartShape", "CF::Symmetry", "CF::Tile", "CF::Time",
-        "CIRCLE", "CLOSEPOLY", "CURVEREL", "CURVETO", "FILL", "import", "include", "LINEREL", "LINETO", "MOVEREL", "MOVETO", "SQUARE", "STROKE", "TRIANGLE",
-        "rand", "rand::cauchy", "rand::chisquared", "rand::exponential", "rand::extremeV",
-        "rand::fisherF", "rand::gamma", "rand::lognormal", "rand::normal", "rand::studentT", "rand::weibull",
-        "randint", "randint::bernoulli", "randint::binomial", "randint::discrete",
-        "randint::geometric", "randint::negbinomial", "randint::poisson", "rand_static", "startshape",
-        "floor", "ceiling", "infinity", "factorial", "isNatural", "divides", "div",
-        "dot", "cross", "hsb2rgb", "rgb2hsb"
-    };
-    
-    auto autoComp=[](const char* a, const char* b){
-        return strcasecmp(a, b) < 0;
-    };
 }
 
 
@@ -300,7 +240,7 @@ namespace {
         PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
         PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
         PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
-        std::sort(autoComplete.begin(), autoComplete.end(), autoComp);
+        std::sort(ContextFree::autoComplete.begin(), ContextFree::autoComplete.end(), ContextFree::AutoCmp());
     }
 }
 
@@ -1082,33 +1022,48 @@ namespace {
             // auto unindent
             if (notification->ch == '}') {
                 long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
-                long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:pos];
-                long indentPos = [mEditor getGeneralProperty:SCI_GETLINEINDENTPOSITION parameter:lineno];
+                long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION
+                                                parameter:pos];
+                long indentPos = [mEditor getGeneralProperty:SCI_GETLINEINDENTPOSITION
+                                                   parameter:lineno];
                 if (indentPos + 1 == pos) {     // '}' is in initial white space
-                    long indent = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:lineno];
+                    long indent = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION
+                                                    parameter:lineno];
                     if (indent >= CurrentTabWidth)
-                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:lineno value:indent - CurrentTabWidth];
+                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION
+                                          parameter:lineno
+                                              value:indent - CurrentTabWidth];
                     else
-                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION parameter:lineno value:0];
+                        [mEditor setGeneralProperty:SCI_SETLINEINDENTATION
+                                          parameter:lineno
+                                              value:0];
                 }
                 return;
             }
             long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
-            long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION parameter:pos];
+            long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION
+                                             parameter:pos];
             long len = pos - wordPos;
             if (len > 1) {
                 std::string list; list.reserve(1500);
                 std::string word(len, ' ');
                 Sci_TextRange r{{wordPos, pos}, word.data()};
-                [mEditor getGeneralProperty:SCI_GETTEXTRANGE ref:(const void*)(&r)];
-                auto iter = std::lower_bound(autoComplete.begin(), autoComplete.end(), word.c_str(), autoComp);
-                while (iter != autoComplete.end() && strncasecmp(*iter, word.c_str(), len) == 0) {
+                [mEditor getGeneralProperty:SCI_GETTEXTRANGE
+                                        ref:(const void*)(&r)];
+                auto iter = std::lower_bound(ContextFree::autoComplete.begin(),
+                                             ContextFree::autoComplete.end(),
+                                             word.c_str(), ContextFree::AutoCmp());
+                while (iter != ContextFree::autoComplete.end() &&
+                       strncasecmp(*iter, word.c_str(), len) == 0)
+                {
                     if (!list.empty()) list.append(1, ' ');
                     list.append(*iter);
                     ++iter;
                 }
                 if (!list.empty())
-                    [mEditor setReferenceProperty:SCI_AUTOCSHOW parameter:len value:list.c_str()];
+                    [mEditor setReferenceProperty:SCI_AUTOCSHOW
+                                        parameter:len
+                                            value:list.c_str()];
             }
             break;
         }
@@ -1657,9 +1612,9 @@ namespace {
     // 3 - Global classes and typedefs
     // 4 - Preprocessor definitions
     // 5 - Task marker and error marker keywords
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 0 value: major_keywords];
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 1 value: built_ins];
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 3 value: functions];
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 0 value: ContextFree::major_keywords];
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 1 value: ContextFree::built_ins];
+    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 3 value: ContextFree::functions];
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     // Colors and styles for various syntactic elements. First the default style.
