@@ -42,6 +42,7 @@
 #include <tgmath.h>
 #include <tempfile.h>
 #include <algorithm>
+#include <cstring>
 #include "CFscintilla.h"
 
 using cfdg_ptr = std::shared_ptr<CFDG>;
@@ -232,6 +233,7 @@ namespace {
     bool mWrapSearch;
     bool mHaveFound;
     bool mFindFailed;
+    NSInteger mLastCaretPos;
 }
 
 + (void)initialize {
@@ -273,6 +275,7 @@ namespace {
         mHaveFound = false;
         mFindFailed = false;
         mSuspendNotifications = false;
+        mLastCaretPos = -1;
     }
     return self;
 }
@@ -1113,6 +1116,40 @@ namespace {
         case SCN_FOCUSOUT:
             [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidEndEditingNotification object: mEditor];
             break;
+        case SCN_UPDATEUI: {
+            long caretPos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
+            if (caretPos == mLastCaretPos) break;
+            mLastCaretPos = caretPos;
+            long bracePos1 = -1;
+            long bracePos2 = -1;
+            if (caretPos > 0 && std::strchr("[]{}()",
+                                            (char)[mEditor getGeneralProperty:SCI_GETCHARAT
+                                                                    parameter:caretPos - 1]))
+            {
+                bracePos1 = caretPos - 1;
+            } else if (std::strchr("[]{}()",
+                                   (char)[mEditor getGeneralProperty:SCI_GETCHARAT
+                                                           parameter:caretPos]))
+            {
+                bracePos1 = caretPos;
+            }
+            if (bracePos1 >= 0) {
+                bracePos2 = [mEditor getGeneralProperty:SCI_BRACEMATCH
+                                              parameter:bracePos1];
+                if (bracePos2 == INVALID_POSITION)
+                    [mEditor getGeneralProperty:SCI_BRACEBADLIGHT
+                                      parameter:bracePos1];
+                else
+                    [mEditor getGeneralProperty:SCI_BRACEHIGHLIGHT
+                                      parameter:bracePos1
+                                          extra:bracePos2];
+            } else {
+                [mEditor getGeneralProperty:SCI_BRACEHIGHLIGHT
+                                  parameter:INVALID_POSITION
+                                      extra:INVALID_POSITION];
+            }
+            break;
+        }
         default:
             break;
     }
@@ -1635,6 +1672,11 @@ namespace {
     [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_WORD2 value: 1];
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_GLOBALCLASS fromHTML: @"#56007F"];
     [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_GLOBALCLASS value: 1];
+    
+    [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#8a2be2"];
+    [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#e6e6fa"];
+    [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD fromHTML:@"#ff0000"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter:STYLE_BRACEBAD value: 1];
 
     [mEditor setGeneralProperty: SCI_SETMARGINTYPEN parameter: 0 value: SC_MARGIN_NUMBER];
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: 35];
