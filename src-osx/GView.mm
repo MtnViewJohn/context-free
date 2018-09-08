@@ -231,8 +231,6 @@ namespace {
     bool mMatchCase;
     bool mWholeWord;
     bool mWrapSearch;
-    bool mHaveFound;
-    bool mFindFailed;
     NSInteger mLastCaretPos;
 }
 
@@ -272,8 +270,6 @@ namespace {
         mMatchCase = true;
         mWholeWord = false;
         mWrapSearch = true;
-        mHaveFound = false;
-        mFindFailed = false;
         mSuspendNotifications = false;
         mLastCaretPos = -1;
     }
@@ -1792,8 +1788,6 @@ namespace {
 
     if (find) {
         [self findNext:NO];
-    } else {
-        mHaveFound = false;
     }
 }
 
