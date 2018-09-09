@@ -47,6 +47,9 @@
 		524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22FC13BA0661002732C2 /* makeCFfilename.cpp */; };
 		525114B821350D7100065F80 /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; };
 		525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5260DC632144EC8B0099D906 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC612144EC8B0099D906 /* MainMenu.xib */; };
+		5260DC662144ED440099D906 /* CFDGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC642144ED440099D906 /* CFDGDocument.xib */; };
+		5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC672144ED8C0099D906 /* GalleryUploader.xib */; };
 		526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */ = {isa = PBXBuildFile; fileRef = 526271EE2140E4D200412E84 /* magnifying-glass.icns */; };
 		526271F4214312C700412E84 /* CFscintilla.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526271F3214312C700412E84 /* CFscintilla.cpp */; };
 		526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
@@ -100,7 +103,6 @@
 		FD1EF0910811ADE500FD38C6 /* cfdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF08B0811ADE500FD38C6 /* cfdg.cpp */; };
 		FD1EF0930811ADE500FD38C6 /* cfdg.l in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF08D0811ADE500FD38C6 /* cfdg.l */; };
 		FD1EF0A50811AE1900FD38C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FD1EF0990811AE1900FD38C6 /* InfoPlist.strings */; };
-		FD1EF0A60811AE1900FD38C6 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = FD1EF09B0811AE1900FD38C6 /* MainMenu.nib */; };
 		FD1EF0A90811AE1900FD38C6 /* GView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF0A00811AE1900FD38C6 /* GView.mm */; };
 		FD1EF0AB0811AE1900FD38C6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1EF0A20811AE1900FD38C6 /* main.m */; };
 		FD1EF0AC0811AE1900FD38C6 /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = FD1EF0A30811AE1900FD38C6 /* version.plist */; };
@@ -129,12 +131,10 @@
 		FD570D32082821B3003F064D /* i_pix.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = FD570D30082821B3003F064D /* i_pix.cfdg */; };
 		FD782A8A082869F100910D5E /* HelpMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = FD782A89082869F100910D5E /* HelpMenu.plist */; };
 		FD782C43082A03ED00910D5E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD782C42082A03ED00910D5E /* SystemConfiguration.framework */; };
-		FD81610208146BF0009AB595 /* CFDGDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = FD81610008146BF0009AB595 /* CFDGDocument.nib */; };
 		FD81610808146C33009AB595 /* CFDGDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = FD81610608146C33009AB595 /* CFDGDocument.mm */; };
 		FD82A9DB09CB901B00529D7B /* shapeSTL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD82A9D909CB901B00529D7B /* shapeSTL.cpp */; };
 		FD82AA2909CC8CC000529D7B /* bounds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD82AA2709CC8CC000529D7B /* bounds.cpp */; };
 		FD82F7B409A4C49400D5C038 /* tempfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD82F7B209A4C49400D5C038 /* tempfile.cpp */; };
-		FD879EE10B6418E700FF6959 /* GalleryUploader.nib in Resources */ = {isa = PBXBuildFile; fileRef = FD879EDF0B6418E700FF6959 /* GalleryUploader.nib */; };
 		FD879EE50B64190400FF6959 /* GalleryUploader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FD879EE30B64190400FF6959 /* GalleryUploader.mm */; };
 		FD879EE80B64191700FF6959 /* upload.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD879EE60B64191700FF6959 /* upload.cpp */; };
 		FD9BA8550832B56A00B9396F /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = FD9BA8540832B56A00B9396F /* Credits.html */; };
@@ -324,6 +324,9 @@
 		524D22FD13BA0661002732C2 /* makeCFfilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeCFfilename.h; sourceTree = "<group>"; };
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
 		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
+		5260DC622144EC8B0099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		5260DC652144ED440099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CFDGDocument.xib; sourceTree = "<group>"; };
+		5260DC682144ED8C0099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/GalleryUploader.xib; sourceTree = "<group>"; };
 		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
 		526271F221430D3200412E84 /* CFscintilla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFscintilla.h; sourceTree = "<group>"; };
 		526271F3214312C700412E84 /* CFscintilla.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CFscintilla.cpp; sourceTree = "<group>"; };
@@ -396,7 +399,6 @@
 		FD1EF08D0811ADE500FD38C6 /* cfdg.l */ = {isa = PBXFileReference; explicitFileType = sourcecode.lex; fileEncoding = 4; path = cfdg.l; sourceTree = "<group>"; };
 		FD1EF0980811AE1900FD38C6 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FD1EF09A0811AE1900FD38C6 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FD1EF09C0811AE1900FD38C6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		FD1EF09F0811AE1900FD38C6 /* GView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GView.h; sourceTree = "<group>"; };
 		FD1EF0A00811AE1900FD38C6 /* GView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GView.mm; sourceTree = "<group>"; };
 		FD1EF0A10811AE1900FD38C6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -440,7 +442,6 @@
 		FD68653709C858740005FCA4 /* agg_copy_rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_copy_rect.h; sourceTree = "<group>"; };
 		FD782A89082869F100910D5E /* HelpMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HelpMenu.plist; sourceTree = "<group>"; };
 		FD782C42082A03ED00910D5E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
-		FD81610108146BF0009AB595 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/CFDGDocument.nib; sourceTree = "<group>"; };
 		FD81610508146C33009AB595 /* CFDGDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFDGDocument.h; sourceTree = "<group>"; };
 		FD81610608146C33009AB595 /* CFDGDocument.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CFDGDocument.mm; sourceTree = "<group>"; };
 		FD82A9D809CB901B00529D7B /* shapeSTL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shapeSTL.h; sourceTree = "<group>"; };
@@ -449,7 +450,6 @@
 		FD82AA2709CC8CC000529D7B /* bounds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bounds.cpp; sourceTree = "<group>"; };
 		FD82F7B109A4C49400D5C038 /* tempfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tempfile.h; sourceTree = "<group>"; };
 		FD82F7B209A4C49400D5C038 /* tempfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tempfile.cpp; sourceTree = "<group>"; };
-		FD879EE00B6418E700FF6959 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/GalleryUploader.nib; sourceTree = "<group>"; };
 		FD879EE20B64190400FF6959 /* GalleryUploader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GalleryUploader.h; sourceTree = "<group>"; };
 		FD879EE30B64190400FF6959 /* GalleryUploader.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = GalleryUploader.mm; sourceTree = "<group>"; };
 		FD879EE60B64191700FF6959 /* upload.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = upload.cpp; sourceTree = "<group>"; };
@@ -694,6 +694,9 @@
 		FD1EF0AF0811AE6500FD38C6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5260DC672144ED8C0099D906 /* GalleryUploader.xib */,
+				5260DC642144ED440099D906 /* CFDGDocument.xib */,
+				5260DC612144EC8B0099D906 /* MainMenu.xib */,
 				526271EE2140E4D200412E84 /* magnifying-glass.icns */,
 				527D30B61EB1CEFA00F03EF6 /* rewind.norm.icns */,
 				527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */,
@@ -711,9 +714,6 @@
 				FD1EF0990811AE1900FD38C6 /* InfoPlist.strings */,
 				FDC5D4AB082433AF00B5990D /* UserDefaults.plist */,
 				FD782A89082869F100910D5E /* HelpMenu.plist */,
-				FD1EF09B0811AE1900FD38C6 /* MainMenu.nib */,
-				FD81610008146BF0009AB595 /* CFDGDocument.nib */,
-				FD879EDF0B6418E700FF6959 /* GalleryUploader.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -880,19 +880,19 @@
 				526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */,
 				527D30B21EB1C56D00F03EF6 /* RemotePause_norm.tif.icns in Resources */,
 				FD1EF0A50811AE1900FD38C6 /* InfoPlist.strings in Resources */,
-				FD1EF0A60811AE1900FD38C6 /* MainMenu.nib in Resources */,
 				527D30B41EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns in Resources */,
 				FD1EF0AC0811AE1900FD38C6 /* version.plist in Resources */,
-				FD81610208146BF0009AB595 /* CFDGDocument.nib in Resources */,
 				527D30B51EB1C56D00F03EF6 /* RemotePlay_press.tif.icns in Resources */,
 				FDB2FAF8081CD10A00901B0E /* app.icns in Resources */,
 				FDCD3F10081E145E00D4A589 /* doc.icns in Resources */,
 				FDC5D4AC082433AF00B5990D /* UserDefaults.plist in Resources */,
+				5260DC632144EC8B0099D906 /* MainMenu.xib in Resources */,
 				527D30B81EB1CEFA00F03EF6 /* rewind.norm.icns in Resources */,
+				5260DC662144ED440099D906 /* CFDGDocument.xib in Resources */,
+				5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */,
 				527D30B91EB1CEFA00F03EF6 /* rewind.press.icns in Resources */,
 				FD782A8A082869F100910D5E /* HelpMenu.plist in Resources */,
 				FD9BA8550832B56A00B9396F /* Credits.html in Resources */,
-				FD879EE10B6418E700FF6959 /* GalleryUploader.nib in Resources */,
 				527D30B31EB1C56D00F03EF6 /* RemotePause_press.tif.icns in Resources */,
 				527631940D7B5D2D00F0F7C8 /* widgetform.html in Resources */,
 				527631990D7B63A000F0F7C8 /* widget-style.css in Resources */,
@@ -1002,36 +1002,36 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5260DC612144EC8B0099D906 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5260DC622144EC8B0099D906 /* English */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		5260DC642144ED440099D906 /* CFDGDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5260DC652144ED440099D906 /* English */,
+			);
+			name = CFDGDocument.xib;
+			sourceTree = "<group>";
+		};
+		5260DC672144ED8C0099D906 /* GalleryUploader.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5260DC682144ED8C0099D906 /* English */,
+			);
+			name = GalleryUploader.xib;
+			sourceTree = "<group>";
+		};
 		FD1EF0990811AE1900FD38C6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				FD1EF09A0811AE1900FD38C6 /* English */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		FD1EF09B0811AE1900FD38C6 /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FD1EF09C0811AE1900FD38C6 /* English */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		FD81610008146BF0009AB595 /* CFDGDocument.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FD81610108146BF0009AB595 /* English */,
-			);
-			name = CFDGDocument.nib;
-			sourceTree = "<group>";
-		};
-		FD879EDF0B6418E700FF6959 /* GalleryUploader.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FD879EE00B6418E700FF6959 /* English */,
-			);
-			name = GalleryUploader.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
