@@ -788,8 +788,6 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="396" y="318" width="489" height="418"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
-            <value key="minSize" type="size" width="489" height="386"/>
-            <value key="maxSize" type="size" width="489" height="386"/>
             <view key="contentView" misplaced="YES" id="243">
                 <rect key="frame" x="0.0" y="0.0" width="489" height="418"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -953,8 +951,8 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="395">
-                        <rect key="frame" x="193" y="164" width="45" height="14"/>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="395">
+                        <rect key="frame" x="193" y="164" width="46" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="negative" id="572">
                             <font key="font" metaFont="miniSystem"/>
@@ -1040,7 +1038,7 @@
             <connections>
                 <outlet property="delegate" destination="230" id="h97-yZ-3aj"/>
             </connections>
-            <point key="canvasLocation" x="131.5" y="312"/>
+            <point key="canvasLocation" x="126" y="418"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="268" userLabel="Shared Defaults"/>
         <window title="Color Calculator" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="324" userLabel="ColorCalc" customClass="NSPanel">
