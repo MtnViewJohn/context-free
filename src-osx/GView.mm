@@ -1018,8 +1018,8 @@ namespace {
     if (mSuspendNotifications) return;
     switch (notification->nmhdr.code) {
         case SCN_CHARADDED: {
-            // auto unindent
-            if (notification->ch == '}') {
+            
+            if (notification->ch == '}') {                  // auto unindent
                 long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
                 long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION
                                                 parameter:pos];
@@ -1039,6 +1039,8 @@ namespace {
                 }
                 return;
             }
+            
+            // auto-completion
             long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
             long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION
                                              parameter:pos];
@@ -1072,10 +1074,10 @@ namespace {
                 [mDocument textDidChange:nil];
             }
             if (notification->modificationType & SC_MOD_INSERTCHECK && notification->text) {
-                if (std::strcmp(notification->text, "\n") &&
-                    std::strcmp(notification->text, "\r") &&
-                    std::strcmp(notification->text, "\r\n")) {}
-                else {      // auto indent
+                if (std::strcmp(notification->text, "\n") == 0 ||
+                    std::strcmp(notification->text, "\r") == 0 ||
+                    std::strcmp(notification->text, "\r\n") == 0)
+                {      // auto indent
                     long lineno = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:notification->position];
                     auto line = std::string([mEditor getGeneralProperty:SCI_LINELENGTH parameter: lineno], ' ');
                     [mEditor setReferenceProperty:SCI_GETLINE parameter:lineno value:(void*)line.data()];
@@ -1113,6 +1115,7 @@ namespace {
             [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidEndEditingNotification object: mEditor];
             break;
         case SCN_UPDATEUI: {
+            // brace highlighting
             long caretPos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
             if (caretPos == mLastCaretPos) break;
             mLastCaretPos = caretPos;
