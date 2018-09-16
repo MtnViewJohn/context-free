@@ -37,6 +37,7 @@
 #include "astreplacement.h"
 #include <limits>
 #include <cstring>
+#include <iomanip>
 #include "agg_trans_affine_time.h"
 
 #include "json3.hpp"
