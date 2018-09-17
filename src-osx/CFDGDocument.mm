@@ -544,6 +544,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     long end = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
     start = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:start];
     end = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:end];
+    if (end < start) {
+        long t = start; start = end; end = t;
+    }
     for (; start <= end; ++start) {
         long i = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:start];
         long i2 = i + delta;
