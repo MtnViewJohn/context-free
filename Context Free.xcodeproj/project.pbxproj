@@ -324,9 +324,6 @@
 		524D22FD13BA0661002732C2 /* makeCFfilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeCFfilename.h; sourceTree = "<group>"; };
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
 		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
-		5260DC622144EC8B0099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		5260DC652144ED440099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CFDGDocument.xib; sourceTree = "<group>"; };
-		5260DC682144ED8C0099D906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/GalleryUploader.xib; sourceTree = "<group>"; };
 		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
 		526271F221430D3200412E84 /* CFscintilla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFscintilla.h; sourceTree = "<group>"; };
 		526271F3214312C700412E84 /* CFscintilla.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CFscintilla.cpp; sourceTree = "<group>"; };
@@ -362,6 +359,10 @@
 		5298ED5216A216CB00C5726D /* chunk_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_vector.h; sourceTree = "<group>"; };
 		529CC95515A393820079C2B5 /* ffCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffCanvas.h; sourceTree = "<group>"; };
 		529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffCanvasDummy.cpp; sourceTree = "<group>"; };
+		529D6A9121516F5B00C9C74F /* attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = attributes.h; sourceTree = "<group>"; };
+		529D6A9221517CC600C9C74F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryUploader.xib; sourceTree = "<group>"; };
+		529D6A9321517CC600C9C74F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CFDGDocument.xib; sourceTree = "<group>"; };
+		529D6A9421517CC600C9C74F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		52A1B8171D72073700A310F0 /* args.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = args.hxx; path = "src-unix/args.hxx"; sourceTree = "<group>"; };
 		52BA888A155F30490026AF04 /* ast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cpp; sourceTree = "<group>"; };
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
@@ -585,6 +586,7 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
+				529D6A9121516F5B00C9C74F /* attributes.h */,
 				5282F21C2031546300A45AA4 /* json_fwd.hpp */,
 				5249137A1FE7724A001A8371 /* json3.hpp */,
 				52D06C1E17667BB400F8D94C /* config.h */,
@@ -829,7 +831,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1000;
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
 						DevelopmentTeam = 23E5SF7D5S;
@@ -845,6 +847,7 @@
 				Japanese,
 				French,
 				German,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CFDA */;
 			projectDirPath = "";
@@ -1005,7 +1008,7 @@
 		5260DC612144EC8B0099D906 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5260DC622144EC8B0099D906 /* English */,
+				529D6A9421517CC600C9C74F /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -1013,7 +1016,7 @@
 		5260DC642144ED440099D906 /* CFDGDocument.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5260DC652144ED440099D906 /* English */,
+				529D6A9321517CC600C9C74F /* Base */,
 			);
 			name = CFDGDocument.xib;
 			sourceTree = "<group>";
@@ -1021,7 +1024,7 @@
 		5260DC672144ED8C0099D906 /* GalleryUploader.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5260DC682144ED8C0099D906 /* English */,
+				529D6A9221517CC600C9C74F /* Base */,
 			);
 			name = GalleryUploader.xib;
 			sourceTree = "<group>";
@@ -1040,7 +1043,7 @@
 		52086FBA0ABD19F6005EBDC1 /* Performance */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1058,7 +1061,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-scintilla/include";
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1071,7 +1074,7 @@
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
-				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+				USER_HEADER_SEARCH_PATHS = "src-scintilla/include src-common src-common/agg-extras src-unix";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1086,6 +1089,7 @@
 		52086FBB0ABD19F6005EBDC1 /* Performance */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -1119,9 +1123,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Performance;
@@ -1140,12 +1146,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = (
-					/usr/include,
-					/usr/local/include,
-					"src-agg/include",
-					"src-common",
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
@@ -1156,6 +1157,7 @@
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "src-common src-common/agg-extras src-unix";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wshadow",
@@ -1180,12 +1182,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = (
-					/usr/include,
-					/usr/local/include,
-					"src-agg/include",
-					"src-common",
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
@@ -1196,6 +1193,7 @@
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "src-common src-common/agg-extras src-unix";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wshadow",
@@ -1219,12 +1217,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = (
-					/usr/include,
-					/usr/local/include,
-					"src-agg/include",
-					"src-common",
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
@@ -1235,6 +1228,7 @@
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "src-common src-common/agg-extras src-unix";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wshadow",
@@ -1257,12 +1251,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
-				HEADER_SEARCH_PATHS = (
-					/usr/include,
-					/usr/local/include,
-					"src-agg/include",
-					"src-common",
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
@@ -1273,6 +1262,7 @@
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "src-common src-common/agg-extras src-unix";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wshadow",
@@ -1286,7 +1276,7 @@
 		FD6A132309B25B3000F4E1BC /* Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1305,12 +1295,11 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-scintilla/include";
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				OTHER_LDFLAGS = "-lagg";
@@ -1319,7 +1308,7 @@
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+				USER_HEADER_SEARCH_PATHS = "src-scintilla/include src-common src-common/agg-extras src-unix";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1334,6 +1323,7 @@
 		FD6A132409B25B3000F4E1BC /* Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -1367,9 +1357,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Universal;
@@ -1377,7 +1369,7 @@
 		FDB0D3D0085CEE00002FBEED /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1396,7 +1388,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-scintilla/include";
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1408,7 +1400,7 @@
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+				USER_HEADER_SEARCH_PATHS = "src-scintilla/include src-common src-common/agg-extras src-unix";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1423,7 +1415,7 @@
 		FDB0D3D1085CEE00002FBEED /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1441,7 +1433,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = "src-scintilla/include";
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "src-osx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1453,7 +1445,7 @@
 				PRODUCT_NAME = "Context Free";
 				PROVISIONING_PROFILE = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+				USER_HEADER_SEARCH_PATHS = "src-scintilla/include src-common src-common/agg-extras src-unix";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1468,6 +1460,7 @@
 		FDB0D3D4085CEE00002FBEED /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -1502,10 +1495,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Development;
@@ -1513,6 +1508,7 @@
 		FDB0D3D5085CEE00002FBEED /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -1546,9 +1542,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "src-cereal";
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Deployment;

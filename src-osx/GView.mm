@@ -40,7 +40,7 @@
 #include "tiledCanvas.h"
 #include "Rand64.h"
 #include <tgmath.h>
-#include <tempfile.h>
+#include "tempfile.h"
 #include <algorithm>
 #include <cstring>
 #include "CFscintilla.h"
