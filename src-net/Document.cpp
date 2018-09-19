@@ -898,6 +898,7 @@ System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ 
 
 System::Void Document::PrevFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
+    mUserChangedVariation = true;
     if (renderParams->frame <= 1)
         return;
     --renderParams->frame;
@@ -906,6 +907,7 @@ System::Void Document::PrevFrame_Click(System::Object^ sender, System::EventArgs
 
 System::Void Document::NextFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
+    mUserChangedVariation = true;
     if (renderParams->frame >= renderParams->animateFrameCount)
         return;
     ++renderParams->frame;
@@ -1056,6 +1058,7 @@ System::Void Document::Frame_KeyPress(Object^ sender, System::Windows::Forms::Ke
 
 System::Void Document::variationChanged(System::Object^ sender, System::EventArgs^ e)
 {
+    mUserChangedVariation = true;
     if (variationEdit->Text == String::Empty) {
         variationEdit->Text = "A";
         currentVariation = Variation::fromString("A");
@@ -1063,7 +1066,6 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
         return;
     }
 
-    mUserChangedVariation = true;
     array<Byte>^ encodedVar = System::Text::Encoding::UTF8->GetBytes(variationEdit->Text);
     if (encodedVar->Length == 0) {
         variationEdit->Text = "A";
@@ -1076,6 +1078,7 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
 
 System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ e)
 {
+    mUserChangedVariation = true;
     if (frameEdit->Text == String::Empty) {
         frameEdit->Text = "1";
         renderParams->frame = 1;
@@ -1096,6 +1099,7 @@ System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ 
 
 System::Void Document::Size_Changed(System::Object^ sender, System::EventArgs^ e)
 {
+    mUserChangedVariation = true;
     int s = 0;
     TextBox^ box = (TextBox^)sender;
     if (!System::Int32::TryParse(box->Text, s) || s < 1) {
