@@ -59,7 +59,7 @@ namespace ContextFreeNet {
               idleAction(Form1::IdleAction::Nothing),
               mSystem(0),
               mRenderButtonIndex(0),
-              mUserChangedVariation(true),
+              mReuseVariation(true),
               mEngine(new cfdg_ptr()),
               mRenderer(0),
               mCanvas(0),
@@ -1589,7 +1589,7 @@ protected:
     void updateRenderBox();
     int mProgressDelay;
     int mResizeDelay;
-    bool mUserChangedVariation;
+    bool mReuseVariation;
     int imageListBase;
 
     cfdg_ptr* mEngine;

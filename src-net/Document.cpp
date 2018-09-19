@@ -428,6 +428,8 @@ void Document::setStatusText(String^ txt, bool sendToPane)
 System::Void Document::modifiedCFDG(System::Object^ sender, System::EventArgs^ e)
 {
     TabText = cfdgText->Modified ? (Text + "*") : Text;
+    if (cfdgText->Modified)
+        variationEdit->ForeColor = Color::Blue;
 }
 
 System::Void Document::menuRRender_Click(System::Object^ sender, System::EventArgs^ e)
@@ -878,7 +880,8 @@ System::Void Document::actionToolStripMenuItem_Click(System::Object^ sender, Sys
 
 System::Void Document::PrevVar_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     --currentVariation;
     if (currentVariation > maxVariation || currentVariation < minVariation)
         currentVariation = maxVariation;
@@ -888,7 +891,8 @@ System::Void Document::PrevVar_Click(System::Object^ sender, System::EventArgs^ 
 
 System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     ++currentVariation;
     if (currentVariation > maxVariation || currentVariation < minVariation)
         currentVariation = minVariation;
@@ -898,7 +902,8 @@ System::Void Document::NextVar_Click(System::Object^ sender, System::EventArgs^ 
 
 System::Void Document::PrevFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     if (renderParams->frame <= 1)
         return;
     --renderParams->frame;
@@ -907,7 +912,8 @@ System::Void Document::PrevFrame_Click(System::Object^ sender, System::EventArgs
 
 System::Void Document::NextFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     if (renderParams->frame >= renderParams->animateFrameCount)
         return;
     ++renderParams->frame;
@@ -1058,7 +1064,8 @@ System::Void Document::Frame_KeyPress(Object^ sender, System::Windows::Forms::Ke
 
 System::Void Document::variationChanged(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     if (variationEdit->Text == String::Empty) {
         variationEdit->Text = "A";
         currentVariation = Variation::fromString("A");
@@ -1078,7 +1085,8 @@ System::Void Document::variationChanged(System::Object^ sender, System::EventArg
 
 System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     if (frameEdit->Text == String::Empty) {
         frameEdit->Text = "1";
         renderParams->frame = 1;
@@ -1099,7 +1107,8 @@ System::Void Document::Frame_Changed(System::Object^ sender, System::EventArgs^ 
 
 System::Void Document::Size_Changed(System::Object^ sender, System::EventArgs^ e)
 {
-    mUserChangedVariation = true;
+    mReuseVariation = true;
+    variationEdit->ForeColor = Color::Blue;
     int s = 0;
     TextBox^ box = (TextBox^)sender;
     if (!System::Int32::TryParse(box->Text, s) || s < 1) {
@@ -1189,10 +1198,11 @@ void Document::DoRender()
 
     bool modifiedSinceRender = SyncToSystem();
 
-    if (!modifiedSinceRender && !mUserChangedVariation) {
+    if (!modifiedSinceRender && !mReuseVariation) {
         NextVar_Click(nullptr, nullptr);
     }
-    mUserChangedVariation = false;
+    mReuseVariation = false;
+    variationEdit->ForeColor = Color::Black;
 
     *mEngine = CFDG::ParseFile(mSystem->mName.c_str(), mSystem, currentVariation);
     if (!(*mEngine)) {
