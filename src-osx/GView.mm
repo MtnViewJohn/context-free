@@ -996,8 +996,10 @@ namespace {
 - (void)controlTextDidChange:(NSNotification *)notification
 {
     NSTextField *textField = [notification object];
+    if (textField == mRenderWidth || textField == mRenderHeight)
+        [self reuseVariation];
     if (textField == mFrameField)
-        [self adjustFrame: textField];
+        [self adjustFrame: textField];  // which calls reuseVariation
     if (textField == mFindText) {
         BOOL canFind = [[mFindText stringValue] length] > 0;
         [mFindButtons setEnabled: canFind];
@@ -1623,6 +1625,7 @@ namespace {
 
 - (IBAction)adjustFrame:(id)sender
 {
+    [self reuseVariation];
     int f1 = [sender intValue];
     int f2 = [self checkFrame: f1];
     if (f1 != f2)
