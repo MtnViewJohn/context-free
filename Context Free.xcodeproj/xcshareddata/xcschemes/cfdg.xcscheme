@@ -73,7 +73,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-J input/tests/xyztext1.cfdg -"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"
@@ -84,8 +84,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-qP input/tests/pass2test1.cfdg output/test.png"
-            isEnabled = "NO">
+            argument = "-P input/i_pix_v2.cfdg output/test.png"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 - output/square.png"

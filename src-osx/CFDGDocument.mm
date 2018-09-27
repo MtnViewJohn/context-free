@@ -74,7 +74,7 @@ namespace {
         void syntaxError(const CfdgError& err) override;
         void catastrophicError(const char* what) override;
         
-        std::istream* openFileForRead(const std::string& path) override;
+        istr_ptr openFileForRead(const std::string& path) override;
         const FileChar* tempFileDirectory() override;
         std::string relativeFilePath(const std::string& base, const std::string& rel) override;
         
@@ -154,20 +154,18 @@ namespace {
                             waitUntilDone: YES];
     }
     
-    std::istream*
+    AbstractSystem::istr_ptr
     CocoaSystem::openFileForRead(const std::string& path)
     {
         CFDGDocument* doc = findDocFor(path);
                 
         if (doc) {
             NSData* data = [doc getContent];
-            std::basic_stringstream<char>* s = new std::stringstream;
-            s->write(reinterpret_cast<const char*>([data bytes]), [data length]);
-            s->seekp(0, std::ios::beg);
-            return s;
+            std::string s{reinterpret_cast<const char*>([data bytes]), [data length]};
+            return std::make_unique<std::istringstream>(s);
         }
 
-        return new std::ifstream(path.c_str(), std::ios::in);
+        return std::make_unique<std::ifstream>(path.c_str(), std::ios::in);
     }
     
     const AbstractSystem::FileChar*
