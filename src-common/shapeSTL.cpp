@@ -34,9 +34,8 @@
 void
 OutputMerge::addTempFile(TempFile& t)
 {
-    std::istream* f = t.forRead();
-    mStreams.emplace_back(f);
-    mIters.push_back(FileIter(*f));
+    mStreams.push_back(t.forRead());
+    mIters.push_back(FileIter(*(mStreams.back())));
     
     insertNext(mIters.size() - 1);
 }

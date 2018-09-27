@@ -69,7 +69,7 @@ public:
     cfdgi_ptr                   m_CFDG;
     std::unique_ptr<std::string> m_basePath;
     std::stack<std::string*>    m_filesToLoad;
-    std::stack<std::unique_ptr<std::istream>> m_streamsToLoad;
+    std::stack<AbstractSystem::istr_ptr> m_streamsToLoad;
     std::stack<bool>            m_includeNamespace;
     std::string*          m_currentPath;
     int             m_pathCount;

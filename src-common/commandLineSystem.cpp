@@ -100,7 +100,7 @@ CommandLineSystem::error(bool errorOccurred)
     return mErrorMode;
 }
 
-std::istream*
+AbstractSystem::istr_ptr
 CommandLineSystem::openFileForRead(const std::string& path)
 {
     if (path == "-") {
@@ -110,7 +110,7 @@ CommandLineSystem::openFileForRead(const std::string& path)
             mInputBuffer = std::make_unique<std::string>(ss.str());
         }
         mFirstCfdgRead = false;
-        return new imemstream(mInputBuffer->data(), mInputBuffer->length());
+        return std::make_unique<imemstream>(mInputBuffer->data(), mInputBuffer->length());
     }
     
     if (!mFirstCfdgRead) {
@@ -126,17 +126,17 @@ CommandLineSystem::openFileForRead(const std::string& path)
         auto example = ExamplesMap.find(exfile);
         if (example != ExamplesMap.end()) {
             auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
-            return new imemstream(cfdg, strlen(cfdg));
+            return std::make_unique<imemstream>(cfdg, strlen(cfdg));
         }
     } else {
         mFirstCfdgRead = false;
     }
     
-    std::unique_ptr<std::istream> f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
-    if (f && (bool)(*f))
-        return f.release();
+    istr_ptr f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
+    if (f && !f->good())
+        f.reset();
 
-    return nullptr;
+    return f;
 }
 
 void

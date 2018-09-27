@@ -188,10 +188,10 @@ AbstractSystem::~AbstractSystem() = default;
 void AbstractSystem::stats(const Stats&)
     { }
 
-std::istream*
+AbstractSystem::istr_ptr
 AbstractSystem::tempFileForRead(const FileString& path)
 {
-    return new std::ifstream(path.c_str(), std::ios::binary);
+    return std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
 }
 
 Canvas::~Canvas() = default;
@@ -230,7 +230,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
                                           yy::CfdgParser::token::CFDG3;
         
         yy::CfdgParser parser(b);
-        std::unique_ptr<std::istream> input(system->openFileForRead(fname));
+        auto input = system->openFileForRead(fname);
         if (!input || !input->good()) {
             system->error();
             system->message("Couldn't open rules file %s", fname);

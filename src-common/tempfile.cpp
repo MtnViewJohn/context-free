@@ -40,7 +40,7 @@
 
 
 
-std::ostream*
+AbstractSystem::ostr_ptr
 TempFile::forWrite()
 {
     if (mWritten)
@@ -53,7 +53,7 @@ TempFile::forWrite()
     return mSystem->tempFileForWrite(mType, mPath);
 }
 
-std::istream*
+AbstractSystem::istr_ptr
 TempFile::forRead()
 {
     if (!mWritten)

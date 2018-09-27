@@ -100,6 +100,9 @@ class AbstractSystem {
         using FileString = std::string;
 #define FileFormat "%s"
 #endif
+        using istr_ptr = std::unique_ptr<std::istream>;
+        using ostr_ptr = std::unique_ptr<std::ostream>;
+    
         int cfdgVersion = 2;
         bool mFirstCfdgRead = true;
 
@@ -108,9 +111,9 @@ class AbstractSystem {
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
         virtual void catastrophicError(const char* what) = 0;
     
-        virtual std::istream* openFileForRead(const std::string& path) = 0;
-        virtual std::istream* tempFileForRead(const FileString& path);
-        virtual std::ostream* tempFileForWrite(TempType tt, FileString& nameOut) = 0;
+        virtual istr_ptr openFileForRead(const std::string& path) = 0;
+        virtual istr_ptr tempFileForRead(const FileString& path);
+        virtual ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) = 0;
         virtual const FileChar* tempFileDirectory() = 0;
             // caller must delete returned streams when done
         virtual std::vector<FileString> findTempFiles() = 0;

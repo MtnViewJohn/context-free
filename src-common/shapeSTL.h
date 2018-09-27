@@ -77,7 +77,7 @@ public:
     
     
 private:
-    using file_ptr    = std::unique_ptr<std::istream>;
+    using file_ptr    = AbstractSystem::istr_ptr;
     using FileIter    = std::istream_iterator<FinishedShape>;
     using FileStreams = std::vector<file_ptr>;
     using FileIters   = std::vector<FileIter>;

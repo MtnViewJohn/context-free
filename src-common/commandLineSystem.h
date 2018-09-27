@@ -62,7 +62,7 @@ public:
     void syntaxError(const CfdgError& err) override;
     bool error(bool errorOccurred = true) override;
     
-    std::istream* openFileForRead(const std::string& path) override;
+    istr_ptr openFileForRead(const std::string& path) override;
     
     void stats(const Stats&) override;
     void orphan() override {};

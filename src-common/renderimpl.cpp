@@ -745,12 +745,12 @@ RendererImpl::moveUnfinishedToTwoFiles()
 {
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    ++mUnfinishedFileCount);
-    std::unique_ptr<std::ostream> f1(m_unfinishedFiles.back().forWrite());
+    auto f1 = m_unfinishedFiles.back().forWrite();
     int num1 = m_unfinishedFiles.back().number();
 
     m_unfinishedFiles.emplace_back(system(), AbstractSystem::ExpansionTemp,
                                    ++mUnfinishedFileCount);
-    std::unique_ptr<std::ostream> f2(m_unfinishedFiles.back().forWrite());
+    auto f2 = m_unfinishedFiles.back().forWrite();
     int num2 = m_unfinishedFiles.back().number();
     
     system()->message("Writing %s temp files %d & %d",
@@ -804,7 +804,7 @@ RendererImpl::getUnfinishedFromFile()
     TempFile t(std::move(m_unfinishedFiles.front()));
     m_unfinishedFiles.pop_front();
     
-    std::unique_ptr<std::istream> f(t.forRead());
+    auto f = t.forRead();
 
     if (f->good()) {
         AbstractSystem::Stats outStats = m_stats;
@@ -875,7 +875,7 @@ RendererImpl::moveFinishedToFile()
 {
     m_finishedFiles.emplace_back(system(), AbstractSystem::ShapeTemp, ++mFinishedFileCount);
     
-    std::unique_ptr<std::ostream> f(m_finishedFiles.back().forWrite());
+    auto f = m_finishedFiles.back().forWrite();
 
     if (f && f->good()) {
         if (mFinishedShapes.size() > 10000)
@@ -959,7 +959,7 @@ RendererImpl::forEachShape(bool final, ShapeFunction op)
                 for (auto it = begin; it != end; ++it)
                     merger.addTempFile(*it);
                 
-                std::unique_ptr<std::ostream> f(t.forWrite());
+                auto f = t.forWrite();
                 if (!f) {
                     system()->message("Cannot open temporary file for shapes");
                     requestStop = true;

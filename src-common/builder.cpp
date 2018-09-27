@@ -228,7 +228,7 @@ Builder::IncludeFile(const std::string& fname)
 {
     std::string path =
         m_CFDG->system()->relativeFilePath(*m_currentPath, fname.c_str());
-    std::unique_ptr<std::istream> input(m_CFDG->system()->openFileForRead(path));
+    auto input = m_CFDG->system()->openFileForRead(path);
     if (!input || !input->good()) {
         m_CFDG->system()->error();
         mErrorOccured = true;

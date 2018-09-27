@@ -35,8 +35,8 @@
 class TempFile
 {
 public:
-    std::ostream* forWrite();
-    std::istream* forRead();
+    AbstractSystem::ostr_ptr forWrite();
+    AbstractSystem::istr_ptr forRead();
 
     const std::string& type() const;
     const AbstractSystem::FileString& name() const { return mPath; }
