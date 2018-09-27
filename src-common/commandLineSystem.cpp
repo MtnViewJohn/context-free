@@ -113,9 +113,7 @@ CommandLineSystem::openFileForRead(const std::string& path)
         return new imemstream(mInputBuffer->data(), mInputBuffer->length());
     }
     
-    if (!mFirstCfdgRead && path.length() > 5 && 
-        path.compare(path.length() - 5, 5, ".cfdg") == 0)
-    {
+    if (!mFirstCfdgRead) {
         char dirchar =
 #ifdef _WIN32
             '\\';
@@ -125,11 +123,11 @@ CommandLineSystem::openFileForRead(const std::string& path)
         auto dirloc = path.rfind(dirchar);
         auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
     
-        if (cfdgVersion == 2)
-            exfile.replace(exfile.end() - 5, exfile.end(), "_v2.cfdg");
         auto example = ExamplesMap.find(exfile);
-        if (example != ExamplesMap.end())
-            return new imemstream(example->second, strlen(example->second));
+        if (example != ExamplesMap.end()) {
+            auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
+            return new imemstream(cfdg, strlen(cfdg));
+        }
     } else {
         mFirstCfdgRead = false;
     }

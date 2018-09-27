@@ -7,7 +7,7 @@ def print_cfdg(cfdg_name):
         sys.stderr.write('Cannot find file: %s\n' % cfdg_file)
         sys.exit(2)
 
-    sys.stdout.write('    { "%s", R"&&&(' % cfdg_name)
+    sys.stdout.write('R"&&&(')
     length = 0
 
     with open(cfdg_file, 'r') as fp:
@@ -21,14 +21,22 @@ def print_cfdg(cfdg_name):
                 sys.stderr.write('String exceeds 16384 characters: %s\n' % cfdg_file)
                 sys.exit(3)
 
-    print(')&&&" },')
+    sys.stdout.write(')&&&"')
 
 def print_examples(cfdg_files):
-    print('const std::map<std::string, const char*>')
+    print('const std::map<std::string, std::pair<const char*, const char*>>')
     print('CommandLineSystem::ExamplesMap{')
 
     for cfdg in cfdg_files:
-        print_cfdg(cfdg)
+        if cfdg.endswith('_v2.cfdg'):
+            pass
+        else:
+            print('    { "%s", {' % cfdg)
+            print_cfdg(cfdg)
+            print(' ,')
+            print_cfdg(cfdg.replace('.cfdg', '_v2.cfdg'))
+            print('    } },')
+
 
     print('};')
 
