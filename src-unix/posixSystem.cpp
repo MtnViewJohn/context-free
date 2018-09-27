@@ -169,7 +169,7 @@ namespace {
     };
 }
 
-std::ostream*
+AbstractSystem::ostr_ptr
 PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {
     std::string t(tempFileDirectory());
@@ -179,7 +179,7 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
     t.append("XXXXXX");
     t.append(TempSuffixes[tt]);
     
-    std::unique_ptr<std::ostream> f;
+    ostr_ptr f;
     
     std::unique_ptr<char, MallocDeleter> b(strdup(t.c_str()));
     int tfd = mkstemps(b.get(), (int)strlen(TempSuffixes[tt]));
@@ -188,7 +188,7 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
         nameOut.assign(b.get());
     }
     
-    return f.release();
+    return f;
 }
 
 std::string
