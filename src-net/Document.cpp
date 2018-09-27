@@ -1256,7 +1256,7 @@ void Document::DoRender()
     {
         mMovieFile = new TempFile(mSystem, AbstractSystem::MovieTemp, 0);
         auto stream = mMovieFile->forWrite();
-        delete stream;
+        stream.reset();
 
         String^ tname = gcnew String(mMovieFile->name().c_str());
         array<Byte>^ bytes = System::Text::Encoding::UTF8->GetBytes(tname);

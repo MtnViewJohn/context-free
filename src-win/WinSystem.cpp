@@ -37,7 +37,7 @@
 
 
 //map<const string, WinSystem*> WinSystem::PathMap;
-std::map<const std::string, std::string> WinSystem::ExampleMap;
+std::map<const std::string, std::pair<std::string, std::string>> WinSystem::ExampleMap;
 
 WinSystem::WinSystem(void* h)
 :   mWindow(h)
@@ -50,7 +50,16 @@ WinSystem::~WinSystem()
 
 void WinSystem::AddExample(const char* newName, const char* newText)
 {
-    ExampleMap[newName] = newText;
+    std::string name(newName);
+    bool v3 = true;
+    if (auto pos = name.find("_v2"); pos != std::string::npos) {
+        name.erase(pos, 3);
+        v3 = false;
+    }
+    if (v3)
+        ExampleMap[name].first = newText;
+    else
+        ExampleMap[name].second = newText;
 }
 
 bool WinSystem::updateInfo(const char* newName, const char* newText)
@@ -109,20 +118,20 @@ void WinSystem::catastrophicError(const char* what)
         (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK);
 }
 
-std::istream* WinSystem::openFileForRead(const std::string& path)
+AbstractSystem::istr_ptr WinSystem::openFileForRead(const std::string& path)
 {
     auto filepos = path.rfind('\\');
     filepos = filepos == std::string::npos ? 0 : filepos + 1;
-    std::string exname{ path, filepos, path.length() - (filepos + 5) };
-    exname.append(cfdgVersion == 2 ? "_v2.cfdg" : ".cfdg");
+    std::string exname{ path, filepos };
     auto exText = ExampleMap.find(exname);
 
     if (path == mName) {
-        return new std::stringstream(mText);
+        return std::make_unique<std::stringstream>(mText);
     } else if (exText != ExampleMap.end()) {
-        return new std::stringstream(exText->second, std::ios_base::in);
+        auto cfdg = cfdgVersion == 2 ? exText->second.second : exText->second.first;
+        return std::make_unique<std::stringstream>(cfdg, std::ios_base::in);
     } else {
-        return new std::ifstream(path.c_str(), std::ios::binary);
+        return std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
     }
 }
 

@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <utility>
 #include "Win32System.h"
 
 #define myWM_USER (0x400)
@@ -50,7 +51,7 @@ public:
     virtual bool error(bool errorOccurred = true);
     virtual void catastrophicError(const char* what);
 
-    virtual std::istream* openFileForRead(const std::string& path) override;
+    virtual istr_ptr openFileForRead(const std::string& path) override;
     // caller must delete returned streams when done
     
     virtual void orphan();
@@ -60,7 +61,7 @@ public:
 
     bool updateInfo(const char* name, const char* text);
 
-    static std::map<const std::string, std::string> ExampleMap;
+    static std::map<const std::string, std::pair<std::string, std::string>> ExampleMap;
     static void AddExample(const char* name, const char* text);
     std::string mName;
     std::string mText;

@@ -65,10 +65,10 @@ Win32System::tempFileDirectory()
     return tempPathBufferW;
 }
 
-std::istream*
+AbstractSystem::istr_ptr
 Win32System::tempFileForRead(const FileString& path)
 {
-    return new std::ifstream(path.c_str(), std::ios::binary);
+    return std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
 }
 
 namespace {
@@ -79,7 +79,7 @@ namespace {
     };
 }
 
-std::ostream*
+AbstractSystem::ostr_ptr
 Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {    
     const FileChar* wtempdir = tempFileDirectory();
@@ -89,11 +89,11 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
         return nullptr;
     FileString bcopy = b.get();
     bcopy.append(TempSuffixes_w[tt]);
-    std::unique_ptr<std::ofstream> f = std::make_unique<std::ofstream>(bcopy, 
+    ostr_ptr f = std::make_unique<std::ofstream>(bcopy, 
         std::ios::binary | std::ios::trunc | std::ios::out);
     nameOut.assign(bcopy);
     
-    return f.release();
+    return f;
 }
 
 std::string
