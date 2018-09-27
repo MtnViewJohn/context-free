@@ -57,7 +57,18 @@ Modification::isFinite() const
             isfinite(m_transform.shx) &&
             isfinite(m_transform.sy) &&
             isfinite(m_transform.tx) &&
-            isfinite(m_transform.ty);
+            isfinite(m_transform.ty) &&
+            isfinite(m_Z.sz) && isfinite(m_Z.tz) &&
+            isfinite(m_time.tbegin) && isfinite(m_time.tend) && isfinite(m_time.st) &&
+            isfinite(m_Color.h) &&
+            isfinite(m_Color.s) &&
+            isfinite(m_Color.b) &&
+            isfinite(m_Color.a) &&
+            isfinite(m_ColorTarget.h) &&
+            isfinite(m_ColorTarget.s) &&
+            isfinite(m_ColorTarget.b) &&
+            isfinite(m_ColorTarget.a)
+    ;
 }
 
 bool

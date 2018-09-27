@@ -582,10 +582,10 @@ void
 RendererImpl::processShape(Shape& s)
 {
     double area = s.area();
-    if (!isfinite(area)) {
+    if (!s.mWorldState.isFinite()) {
         requestStop = true;
         system()->error();
-        system()->message("A shape got too big.");
+        system()->message("A shape has undefined or infinite state: %s", m_cfdg->decodeShapeName(s.mShapeType).c_str());
         return;
     }
     
