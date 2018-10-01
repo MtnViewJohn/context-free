@@ -813,7 +813,7 @@ namespace CF {
     _IntType
     poisson_distribution<_IntType>::operator()(_URNG& __urng, const param_type& __pr)
     {
-        result_type __x;
+        result_type __x = 0; 
         CF::uniform_real_distribution<double> __urd;
         if (__pr.__mean_ < 10)
         {
@@ -823,9 +823,9 @@ namespace CF {
         }
         else
         {
-            double __difmuk;
+            double __difmuk = 0;
             double __g = __pr.__mean_ + __pr.__s_ * CF::normal_distribution<double>()(__urng);
-            double __u;
+            double __u = 0;
             if (__g >= 0)
             {
                 __x = static_cast<result_type>(__g);
