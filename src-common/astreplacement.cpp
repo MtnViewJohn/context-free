@@ -636,6 +636,7 @@ namespace AST {
     {
         ASTexpression* r;
         r = mShapeSpec.compile(ph, b);             // always returns nullptr
+        _unused(r);
         assert(r == nullptr);
         r = mChildChange.compile(ph, b);           // ditto
         assert(r == nullptr);
