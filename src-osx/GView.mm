@@ -1347,7 +1347,7 @@ namespace {
         [self tearDownPlayer];
         mMovieFile = std::make_unique<TempFile>([mDocument system], AbstractSystem::MovieTemp, 0);
         auto stream = mMovieFile->forWrite();
-        delete stream;  // close the temp file, we need its name
+        stream.reset();  // close the temp file, we need its name
         NSString* path = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         
         mCanvas = std::make_unique<AVcanvas>(path, [bits autorelease],
