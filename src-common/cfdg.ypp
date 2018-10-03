@@ -705,7 +705,7 @@ element_simple:
             exp_ptr args($exp2);        $exp2 = nullptr;
             mod_ptr mod($modification); $modification = nullptr;
             str_ptr func(new std::string("if"));
-            args.reset(driver.MakeFunction(std::move(func), std::move(args), @IF, @exp2, false));
+            args.reset(driver.MakeFunction(std::move(func), std::move(args), @IF, @2 + @4, false));
             func.reset(new std::string("if"));
             $element_simple = driver.MakeElement(std::move(func), std::move(mod), std::move(args), @element_simple, false);
         }
@@ -1138,7 +1138,7 @@ exp[res]:
         USER_STRING[funcName] '(' arglist ')'   {
             str_ptr func($funcName); $funcName = nullptr;
             exp_ptr args($arglist);  $arglist = nullptr;
-            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, true);
+            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @2 + @4, true);
         }
         |
         '-' exp[unop]       { $res = new ASToperator('N', $unop, nullptr);; }
@@ -1147,12 +1147,12 @@ exp[res]:
         |
         exp[start] RANGEOP exp[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res, &driver);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @RANGEOP, @start + @end, &driver);
         }
         |
         exp[center] PLUSMINUSOP exp[range] {
             exp_ptr pair($center->append($range)); $center = nullptr; $range = nullptr;
-            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res, &driver);
+            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @PLUSMINUSOP, @center + @range, &driver);
         }
         ;
 
@@ -1172,17 +1172,17 @@ exp3[res]:
         USER_STRING[funcName] '(' arglist ')'   {
             str_ptr func($funcName); $funcName = nullptr;
             exp_ptr args($arglist);  $arglist = nullptr;
-            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @arglist, false);
+            $res = driver.MakeFunction(std::move(func), std::move(args), @funcName, @2 + @4, false);
         }
         |
         exp3[start] RANGEOP exp3[end] {
             exp_ptr pair($start->append($end)); $start = nullptr; $end = nullptr;
-            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @start, @res, &driver);
+            $res = new ASTfunction("rand.", std::move(pair), driver.mSeed, @RANGEOP, @start + @end, &driver);
         }
         |
         exp3[center] PLUSMINUSOP exp3[range] {
             exp_ptr pair($center->append($range)); $center = nullptr; $range = nullptr;
-            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @center, @res, &driver);
+            $res = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, @PLUSMINUSOP, @center + @range, &driver);
         }
         |
         exp3[l] '+' exp3[r]        { $res = new ASToperator('+', $l, $r); }
@@ -1235,19 +1235,19 @@ expfunc:
         USER_ARRAYNAME '[' exp2 ']'   { 
             str_ptr func($USER_ARRAYNAME); $USER_ARRAYNAME = nullptr;
             exp_ptr args($exp2);           $exp2 = nullptr;
-            $expfunc = driver.MakeArray(std::move(func), std::move(args), @USER_ARRAYNAME, @exp2);
+            $expfunc = driver.MakeArray(std::move(func), std::move(args), @USER_ARRAYNAME, @2 + @4);
         }
         |
         IF '(' exp2 ')'   { 
             str_ptr func(new std::string("if"));
             exp_ptr args($exp2); $exp2 = nullptr;
-            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @IF, @exp2, false);
+            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @IF, @2 + @4, false);
         }
         |
         USER_STRING '(' BECOMES ')'   {
             str_ptr func($USER_STRING); $USER_STRING = nullptr;
             exp_ptr args(new ASTexpression(@$, false, false, AST::ReuseType));
-            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @USER_STRING, @BECOMES, false);
+            $expfunc = driver.MakeFunction(std::move(func), std::move(args), @USER_STRING, @2 + @4, false);
         }
         |
         letHeader letBody {

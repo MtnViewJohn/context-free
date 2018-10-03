@@ -1734,7 +1734,7 @@ namespace yy {
             exp_ptr args((yystack_[2].value.expression));        (yystack_[2].value.expression) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             str_ptr func(new std::string("if"));
-            args.reset(driver.MakeFunction(std::move(func), std::move(args), yystack_[4].location, yystack_[2].location, false));
+            args.reset(driver.MakeFunction(std::move(func), std::move(args), yystack_[4].location, yystack_[3].location + yystack_[1].location, false));
             func.reset(new std::string("if"));
             (yylhs.value.component) = driver.MakeElement(std::move(func), std::move(mod), std::move(args), yylhs.location, false);
         }
@@ -2368,7 +2368,7 @@ namespace yy {
     {
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));  (yystack_[1].value.expression) = nullptr;
-            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, true);
+            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[2].location + yystack_[0].location, true);
         }
 #line 2374 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2389,7 +2389,7 @@ namespace yy {
 #line 1148 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
+            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[1].location, yystack_[2].location + yystack_[0].location, &driver);
         }
 #line 2395 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2398,7 +2398,7 @@ namespace yy {
 #line 1153 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
+            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[1].location, yystack_[2].location + yystack_[0].location, &driver);
         }
 #line 2404 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2438,7 +2438,7 @@ namespace yy {
     {
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));  (yystack_[1].value.expression) = nullptr;
-            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
+            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[2].location + yystack_[0].location, false);
         }
 #line 2444 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2447,7 +2447,7 @@ namespace yy {
 #line 1178 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
+            (yylhs.value.expression) = new ASTfunction("rand.", std::move(pair), driver.mSeed, yystack_[1].location, yystack_[2].location + yystack_[0].location, &driver);
         }
 #line 2453 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2456,7 +2456,7 @@ namespace yy {
 #line 1183 "../../src-common/cfdg.ypp" // lalr1.cc:859
     {
             exp_ptr pair((yystack_[2].value.expression)->append((yystack_[0].value.expression))); (yystack_[2].value.expression) = nullptr; (yystack_[0].value.expression) = nullptr;
-            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[2].location, yylhs.location, &driver);
+            (yylhs.value.expression) = new ASTfunction("rand+/-", std::move(pair), driver.mSeed, yystack_[1].location, yystack_[2].location + yystack_[0].location, &driver);
         }
 #line 2462 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2595,7 +2595,7 @@ namespace yy {
     { 
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args((yystack_[1].value.expression));           (yystack_[1].value.expression) = nullptr;
-            (yylhs.value.expression) = driver.MakeArray(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location);
+            (yylhs.value.expression) = driver.MakeArray(std::move(func), std::move(args), yystack_[3].location, yystack_[2].location + yystack_[0].location);
         }
 #line 2601 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2605,7 +2605,7 @@ namespace yy {
     { 
             str_ptr func(new std::string("if"));
             exp_ptr args((yystack_[1].value.expression)); (yystack_[1].value.expression) = nullptr;
-            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
+            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[2].location + yystack_[0].location, false);
         }
 #line 2611 "cfdg.tab.cpp" // lalr1.cc:859
     break;
@@ -2615,7 +2615,7 @@ namespace yy {
     {
             str_ptr func((yystack_[3].value.string)); (yystack_[3].value.string) = nullptr;
             exp_ptr args(new ASTexpression(yylhs.location, false, false, AST::ReuseType));
-            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[1].location, false);
+            (yylhs.value.expression) = driver.MakeFunction(std::move(func), std::move(args), yystack_[3].location, yystack_[2].location + yystack_[0].location, false);
         }
 #line 2621 "cfdg.tab.cpp" // lalr1.cc:859
     break;
