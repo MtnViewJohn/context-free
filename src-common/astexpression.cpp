@@ -3210,7 +3210,10 @@ namespace AST {
             case CompilePhase::TypeCheck: {
                 bool isGlobal;
                 auto boundp = b->findExpression(mName, isGlobal);
-                assert(boundp);
+                if (!boundp) {
+                    CfdgError::Error(where, "Cannot find this vector", b);
+                    return nullptr;
+                }
                 bound = *boundp;
                 if (bound.mType != NumericType) {
                     CfdgError::Error(where, "Vectors can only have numeric components", b);
