@@ -2627,7 +2627,7 @@ namespace AST {
                                 isConstant = false;
                                 mLocality = arguments->mLocality;
                             } else {
-                                CfdgError::Error(arguments->where, "Function does not return a shape", b);
+                                CfdgError::Error(arguments ? arguments->where : where, "Function does not return a shape", b);
                             }
                             
                             if (arguments)
