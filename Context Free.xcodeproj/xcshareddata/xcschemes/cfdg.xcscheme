@@ -72,6 +72,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-s100 /Users/john/Documents/Context\ Free/crashtest.cfdg output/test.png"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-J input/tests/xyztext1.cfdg -"
             isEnabled = "NO">
          </CommandLineArgument>
@@ -85,7 +89,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-P input/i_pix_v2.cfdg output/test.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 - output/square.png"
