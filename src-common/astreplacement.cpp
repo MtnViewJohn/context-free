@@ -652,6 +652,8 @@ namespace AST {
                     {
                         if (mRepType != op)
                             CfdgError::Error(mShapeSpec.where, "Error in subpath specification", b);
+                        if (mShapeSpec.shapeType == primShape::fillType)
+                            CfdgError::Error(mShapeSpec.where, "FILL cannot be a subpath", b);
                     } else {
                         const ASTrule* rule = b->GetRule(mShapeSpec.shapeType);
                         if (!rule || !rule->isPath)
