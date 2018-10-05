@@ -2651,7 +2651,7 @@ namespace AST {
                         
                         if (arguments && arguments->mType == AST::ReuseType) {
                             argSource = ParentArgs;
-                            if (!typeSignature) {
+                            if (!typeSignature || !parentSignature) {
                                 CfdgError::Error(where, "Parameter reuse only allowed when shape has parameters to reuse.", b);
                             } else if (typeSignature != parentSignature) {
                                 ASTparameters::const_iterator param_it = typeSignature->begin();
