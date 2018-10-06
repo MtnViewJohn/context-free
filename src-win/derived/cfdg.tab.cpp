@@ -2020,7 +2020,7 @@ namespace yy {
             str_ptr name((yystack_[1].value.string)); (yystack_[1].value.string) = nullptr;
             mod_ptr mod((yystack_[0].value.mod)); (yystack_[0].value.mod) = nullptr;
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, yystack_[1].location));
-            (yylhs.value.component) = new ASTreplacement(std::move(*r), std::move(mod), yylhs.location);
+            (yylhs.value.component) = new ASTreplacement(std::move(r), std::move(mod), yylhs.location);
         }
 #line 2026 "cfdg.tab.cpp" // lalr1.cc:859
     break;
