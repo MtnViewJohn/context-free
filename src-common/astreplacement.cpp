@@ -809,6 +809,11 @@ namespace AST {
         mThenBody.compile(ph, b);
         mElseBody.compile(ph, b);
         
+        if (!mCondition) {
+            CfdgError::Error(mLocation, "If condition missing", b);
+            return;
+        }
+        
         switch (ph) {
             case CompilePhase::TypeCheck:
                 if (mCondition->mType != NumericType || mCondition->evaluate() != 1)
@@ -831,6 +836,11 @@ namespace AST {
         }
         mElseBody.compile(ph, b);
         
+        if (!mSwitchExp) {
+            CfdgError::Error(mLocation, "Switch selector missing", b);
+            return;
+        }
+        
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 if (mSwitchExp->mType != NumericType || mSwitchExp->evaluate() != 1)
@@ -840,9 +850,17 @@ namespace AST {
                 double val[2] = { 0.0 };
                 for (auto&& _case: mCases) {
                     const ASTexpression* valExp = _case.first.get();
+                    if (!valExp) {
+                        CfdgError::Error(mLocation, "Case value missing", b);
+                        return;
+                    }
                     ASTrepContainer* body = _case.second.get();
                     for (size_t i = 0; i < valExp->size(); ++i) {
                         const ASTexpression* term = valExp->getChild(i);
+                        if (!term) {
+                            CfdgError::Error(term->where, "Case term cannot be evaluated", b);
+                            continue;
+                        }
                         const ASTfunction* func = dynamic_cast<const ASTfunction*>(term);
                         caseType high = 0, low = 0;
                         try {
@@ -1664,6 +1682,10 @@ namespace AST {
     void
     ASTpathOp::makePositional(Builder* b)
     {
+        if (!mOldStyleArguments) {
+            CfdgError::Error(mLocation, "Path operation arguments missing");
+            return;
+        }
         exp_ptr w = GetFlagsAndStroke(mOldStyleArguments->modExp, mFlags, b);
         if (w)
             CfdgError::Error(w->where, "Stroke width not allowed in a path operation", b);

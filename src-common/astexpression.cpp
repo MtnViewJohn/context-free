@@ -2019,7 +2019,10 @@ namespace AST {
             if (bound.mType != RuleType)
                 return nullptr;
             if (bound.mStackIndex == -1) {
-                assert(bound.mDefinition);
+                if (!bound.mDefinition || !bound.mDefinition->mExpression) {
+                    CfdgError::Error(where, "Error processing shape variable.", b);
+                    return nullptr;
+                }
                 if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound.mDefinition->mExpression.get())) {
                     // The source ASTruleSpec must already be type-checked
                     // because it is lexically earlier
@@ -2090,7 +2093,10 @@ namespace AST {
     ASTexpression*
     ASTlet::simplify(Builder* b)
     {
-        assert(definition);
+        if (!definition) {
+            CfdgError::Error(where, "Error in let expression", b);
+            return nullptr;
+        }
         definition->compile(CompilePhase::Simplify, b);
         if (isConstant) {
             std::string ent;
@@ -2139,6 +2145,10 @@ namespace AST {
     ASTvariable::simplify(Builder* b)
     {
         if (bound.mStackIndex == -1) {
+            if (!bound.mDefinition) {
+                CfdgError::Error(where, "internal error", b);
+                return nullptr;
+            }
             assert(bound.mDefinition);
             std::string name = b->ShapeToString(stringIndex);
             ASTexpression* ret = bound.constCopy(where, name);
@@ -2259,6 +2269,10 @@ namespace AST {
     {
         if (bound.mType == NumericType && bound.mStackIndex == -1) {
             mData = std::make_unique<double[]>(mCount);
+            if (!bound.mDefinition || !bound.mDefinition->mExpression) {
+                CfdgError::Error(where, "Error in array element", b);
+                return nullptr;
+            }
             if (bound.mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
                 CfdgError::Error(where, "Error computing vector data", b);
                 isConstant = false;
@@ -2272,8 +2286,8 @@ namespace AST {
             return nullptr;
         
         double i;
-        if (mArgs->evaluate(&i, 1) != 1) {
-            CfdgError::Error(mArgs->where, "Cannot evaluate array index", b);
+        if (!mArgs || mArgs->evaluate(&i, 1) != 1) {
+            CfdgError::Error(mArgs ? mArgs->where : where, "Cannot evaluate array index", b);
             return nullptr;
         }
         int index = static_cast<int>(i);
@@ -2510,6 +2524,11 @@ namespace AST {
             Compile(arg, ph, b);
         Compile(selector, ph, b);
         
+        if (!selector) {
+            CfdgError::Error(where, "Missing selector expression", b);
+            return nullptr;
+        }
+        
         switch (ph) {
             case CompilePhase::TypeCheck: {
                 selector->entropy(ent);
@@ -2572,7 +2591,10 @@ namespace AST {
             case CompilePhase::TypeCheck: {
                 switch (argSource) {
                     case ShapeArgs:
-                        assert(arguments);
+                        if (!arguments) {
+                            CfdgError::Error(where, "Error in shape specification", b);
+                            return nullptr;
+                        }
                         if (arguments->mType != AST::RuleType)
                             CfdgError::Error(arguments->where, "Expression does not return a shape", b);
                         isConstant = false;
@@ -2580,15 +2602,20 @@ namespace AST {
                         arguments->entropy(entropyVal);
                         return nullptr;
                     case SimpleParentArgs:
-                        assert(typeSignature == parentSignature);
-                        assert(arguments && arguments->mType == ReuseType);
+                        if (typeSignature != parentSignature || !arguments || arguments->mType != ReuseType) {
+                            CfdgError::Error(where, "Error reusing parent shape's parameters", b);
+                            return nullptr;
+                        }
                         isConstant = true;
                         mLocality = PureLocal;
                         return nullptr;
                     case StackArgs: {
                         bool isGlobal;
                         auto boundp = b->findExpression(shapeType, isGlobal);
-                        assert(boundp);
+                        if (!boundp) {
+                            CfdgError::Error(where, "Shape name does not bind to a rule variable", b);
+                            return nullptr;
+                        }
                         bound = *boundp;
                         if (bound.mType != RuleType) {
                             CfdgError::Error(where, "Shape name does not bind to a rule variable", b);
@@ -2709,6 +2736,10 @@ namespace AST {
             case CompilePhase::Simplify: {
                 if (argSource == StackArgs) {
                     if (bound.mStackIndex == -1) {
+                        if (!bound.mDefinition) {
+                            CfdgError::Error(where, "Error processing shape variable.", b);
+                            return nullptr;
+                        }
                         const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound.mDefinition->mExpression.get());
                         if (r == nullptr) {
                             CfdgError::Error(where, "Error processing shape variable.", b);
@@ -2857,6 +2888,10 @@ namespace AST {
     {
         switch (ph) {
             case CompilePhase::TypeCheck: {
+                if (!mDefinitions) {
+                    CfdgError::Error(where, "Error in let function", b);
+                    return nullptr;
+                }
                 mDefinitions->compile(ph, b, nullptr, definition);
                 cont_ptr constDefs = std::make_unique<ASTrepContainer>();
                 
@@ -2864,7 +2899,9 @@ namespace AST {
                 ASTexpression* args = nullptr;
                 for (auto& rep: mDefinitions->mBody) {
                     if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get())) {
-                        if (def->mDefineType == ASTdefine::StackDefine) {
+                        if (!def) {
+                            CfdgError::Error(where, "Missing let() definition", b);
+                        } else if (def->mDefineType == ASTdefine::StackDefine) {
                             definition->mParamSize += def->mTuplesize;
                             args = ASTexpression::Append(args, def->mExpression.release());
                             mNames.push_back(def->mName);
@@ -2899,6 +2936,11 @@ namespace AST {
     {
         Compile(left, ph, b);
         Compile(right, ph, b);
+        
+        if (!left) {
+            CfdgError::Error(where, "Left operand missing", b);
+            return nullptr;
+        }
         
         switch (ph) {
             case CompilePhase::TypeCheck: {
@@ -3100,7 +3142,7 @@ namespace AST {
                         modExp.emplace_back(std::move(*term));
                         continue;
                     }
-                    int argcount = (*term)->args->evaluate();
+                    int argcount = (*term)->args ? (*term)->args->evaluate() : -1;
                     switch ((*term)->modType) {
                             // Try to merge consecutive x and y adjustments
                         case ASTmodTerm::x:
@@ -3212,6 +3254,10 @@ namespace AST {
                 auto boundp = b->findExpression(mName, isGlobal);
                 if (!boundp) {
                     CfdgError::Error(where, "Cannot find this vector", b);
+                    return nullptr;
+                }
+                if (!mArgs) {
+                    CfdgError::Error(where, "Missing array arguments", b);
                     return nullptr;
                 }
                 bound = *boundp;
