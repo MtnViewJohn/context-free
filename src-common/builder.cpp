@@ -502,11 +502,11 @@ Builder::TypeCheckConfig(ASTdefine* cfg)
     if (cfgNum == CFG::MaxNatural && MaxNaturalDepth > cfg->mConfigDepth) {
         auto max = cfg->mExpression.get();
         double v = -1.0;
-        if (!max->isConstant ||
+        if (!max || !max->isConstant ||
             max->mType != AST::NumericType ||
             max->evaluate(&v, 1) != 1)
         {
-            error(max->where, "CF::MaxNatural requires a constant numeric expression");
+            error(max ? max->where : cfg->mLocation, "CF::MaxNatural requires a constant numeric expression");
         } else if (v < 1.0 || (v - 1.0) == v) {
             error(max->where, (v < 1.0) ? "CF::MaxNatural must be >= 1" :
                   "CF::MaxNatural must be < 9007199254740992");
@@ -572,7 +572,7 @@ Builder::MakeLet(const yy::location& letLoc, AST::cont_ptr vars, exp_ptr exp)
 {
     std::string name("let");
     int nameIndex = StringToShape(name, letLoc, false);
-    yy::location defLoc = exp->where;
+    yy::location defLoc = exp ? exp->where : letLoc;
     def_ptr def = std::make_unique<ASTdefine>(name, defLoc);
     def->mShapeSpec.shapeType = nameIndex;
     def->mExpression = std::move(exp);
@@ -585,6 +585,11 @@ Builder::MakeRuleSpec(std::string& name, exp_ptr args,
                       const yy::location& loc, mod_ptr mod, bool makeStart)
 {
     if (name == "if" || name == "let" || name == "select") {
+        if (!args) {
+            error(loc, "Arguments required here");
+            return std::make_unique<ASTruleSpecifier>(0, name, std::move(args),
+                                                      loc, nullptr);
+        }
         // if and let are handled by the parser, select is handled here
         if (name == "select") {
             yy::location argsLoc = args->where;
@@ -721,9 +726,11 @@ Builder::MakeFunction(str_ptr name, exp_ptr args, const yy::location& nameLoc,
 AST::ASTmodification*
 Builder::MakeModification(mod_ptr mod, const yy::location& loc, bool canonical)
 {
-    mod->isConstant = mod->modExp.empty();
-    mod->where = loc;
-    mod->canonical = canonical;
+    if (mod) {
+        mod->isConstant = mod->modExp.empty();
+        mod->where = loc;
+        mod->canonical = canonical;
+    }
     
     return mod.release();
 }
