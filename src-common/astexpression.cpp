@@ -322,12 +322,12 @@ namespace AST {
     {
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(ASTruleSpecifier&& r) noexcept
-    : ASTexpression(r.where, r.isConstant, false, r.mType), shapeType(r.shapeType),
-      argSize(r.argSize), entropyVal(r.entropyVal), argSource(r.argSource),
-      arguments(std::move(r.arguments)), simpleRule(std::move(r.simpleRule)),
-      mStackIndex(r.mStackIndex), typeSignature(r.typeSignature),
-      parentSignature(r.parentSignature)
+    ASTruleSpecifier::ASTruleSpecifier(ruleSpec_ptr r) noexcept
+    : ASTexpression(r->where, r->isConstant, false, r->mType), shapeType(r->shapeType),
+      argSize(r->argSize), entropyVal(r->entropyVal), argSource(r->argSource),
+      arguments(std::move(r->arguments)), simpleRule(std::move(r->simpleRule)),
+      mStackIndex(r->mStackIndex), typeSignature(r->typeSignature),
+      parentSignature(r->parentSignature)
     {
     }
     

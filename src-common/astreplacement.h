@@ -63,7 +63,7 @@ namespace AST {
         void replace(Shape& s, RendererAST* r) const;
         
         ASTreplacement(const ASTreplacement&) = delete;
-        ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
+        ASTreplacement(ruleSpec_ptr shapeSpec, mod_ptr mods,
                        const yy::location& loc = CfdgError::Default,
                        repElemListEnum t = replacement) noexcept;
         ASTreplacement(mod_ptr mods, const yy::location& loc = CfdgError::Default,

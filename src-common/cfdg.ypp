@@ -895,7 +895,7 @@ replacement_simple_v2:
             str_ptr name($shapeName); $shapeName = nullptr;
             mod_ptr mod($modification_v2); $modification_v2 = nullptr;
             ruleSpec_ptr r(driver.MakeRuleSpec(*name, nullptr, @shapeName));
-            $replacement_simple_v2 = new ASTreplacement(std::move(*r), std::move(mod), @replacement_simple_v2);
+            $replacement_simple_v2 = new ASTreplacement(std::move(r), std::move(mod), @replacement_simple_v2);
         }
         ;
 

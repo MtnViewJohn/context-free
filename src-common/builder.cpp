@@ -447,35 +447,39 @@ Builder::MakeConfig(ASTdefine* cfg)
         //    CF::StartShape = foo(foo params), [mods]
         // It converts the ASTruleSpec and optional ASTmod to a single ASTstartSpec
         
-        ASTruleSpecifier* rule = nullptr;
+        ruleSpec_ptr rule;
         mod_ptr mod;
         ASTexpArray specAndMod = Extract(std::move(cfg->mExpression));
         switch (specAndMod.size()) {
-            case 2:
-                mod.reset(dynamic_cast<ASTmodification*>(specAndMod[1].get()));
-                if (!mod) {
+            case 2: {
+                ASTmodification* temp_mod = dynamic_cast<ASTmodification*>(specAndMod[1].get());
+                if (!temp_mod) {
                     error(specAndMod[1]->where, "CF::StartShape second term must be a modification");
                     return;
                 }
                 specAndMod[1].release();
-                // fall through
-            case 1:
-                rule = dynamic_cast<ASTruleSpecifier*>(specAndMod[0].get());
-                if (!rule) {
+                mod.reset(temp_mod);
+            }
+            // fall through
+            case 1: {
+                ASTruleSpecifier* temp_rule = dynamic_cast<ASTruleSpecifier*>(specAndMod[0].get());
+                if (!temp_rule) {
                     error(specAndMod[0]->where, "CF::StartShape must start with a shape specification");
                     return;
                 }
                 specAndMod[0].release();
+                rule.reset(temp_rule);
                 break;
+            }
             default:
-                error(expLoc, "CF::StartShape expression must have the form shape_spec or shape_spec, modification]");
+                error(expLoc, "CF::StartShape expression must have the form shape_spec or shape_spec, [modification]");
                 return;
         }
         
         if (!mod)
             mod = std::make_unique<ASTmodification>(expLoc);
         
-        cfg->mExpression = std::make_unique<ASTstartSpecifier>(std::move(*rule), std::move(mod));
+        cfg->mExpression = std::make_unique<ASTstartSpecifier>(std::move(rule), std::move(mod));
     }
     m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth));
 }
@@ -678,7 +682,7 @@ Builder::MakeElement(AST::str_ptr s, mod_ptr mods, exp_ptr params,
             t = ASTreplacement::op;
         }
     }
-    return new ASTreplacement(std::move(*r), std::move(mods), loc, t);
+    return new ASTreplacement(std::move(r), std::move(mods), loc, t);
 }
 
 AST::ASTexpression*

@@ -115,7 +115,7 @@ namespace AST {
     }
 
     
-    ASTreplacement::ASTreplacement(ASTruleSpecifier&& shapeSpec, mod_ptr mods,
+    ASTreplacement::ASTreplacement(ruleSpec_ptr shapeSpec, mod_ptr mods,
                                    const yy::location& loc, repElemListEnum t) noexcept
     : mShapeSpec(std::move(shapeSpec)), mRepType(t), mPathOp(unknownPathop),
       mChildChange(std::move(mods), loc), mLocation(loc)

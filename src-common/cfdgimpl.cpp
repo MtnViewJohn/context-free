@@ -651,7 +651,9 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
 
     if (ASTstartSpecifier* startSpec = dynamic_cast<ASTstartSpecifier*>(startExp)) {
         ParamExp[CFG::StartShape].release();
-        mInitShape = std::make_unique<ASTreplacement>(std::move(*startSpec), std::move(startSpec->mModification));
+        mod_ptr mods = std::move(startSpec->mModification);
+        ruleSpec_ptr start(static_cast<ASTruleSpecifier*>(startSpec));
+        mInitShape = std::make_unique<ASTreplacement>(std::move(start), std::move(mods));
         mInitShape->mChildChange.addEntropy(mInitShape->mShapeSpec.entropyVal);
     } else {
         CfdgError err(startExp->where, "Type error in startshape");
