@@ -404,7 +404,10 @@ namespace AST {
         
         modTypeEnum modType;
         exp_ptr args;
-        int argCount;
+        union {
+            int argCount;
+            int flags;
+        };
         
         ASTmodTerm(modTypeEnum t, ASTexpression* a, const yy::location& loc)
         : ASTexpression(loc, a->isConstant, false, ModType), modType(t), args(a), argCount(0) {};

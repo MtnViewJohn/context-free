@@ -1243,7 +1243,7 @@ namespace AST {
         for (term_ptr& term: temp) {
             switch (term->modType) {
                 case AST::ASTmodTerm::param:
-                    flags |= term->argCount;    // ctor stashes parsed params here and
+                    flags |= term->flags;       // ctor stashes parsed params here and
                     break;                      // ASTmodTerm::compile() does not overwrite them
                 case AST::ASTmodTerm::stroke:
                     if (ret)

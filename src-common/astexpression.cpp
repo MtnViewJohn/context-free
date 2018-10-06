@@ -475,7 +475,7 @@ namespace AST {
     }
 
     ASTmodTerm::ASTmodTerm(modTypeEnum t, const std::string& paramString, const yy::location& loc)
-    : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), argCount(0)
+    : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), flags(0)
     {
         static const std::vector<std::pair<std::string, int>> paramStrings = {
             { "evenodd",    CF_EVEN_ODD },
@@ -493,7 +493,7 @@ namespace AST {
         
         for (const auto& pp: paramStrings)
             if (paramString.find(pp.first) != std::string::npos)
-                argCount |= pp.second;
+                flags |= pp.second;
     }
 
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
