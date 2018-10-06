@@ -263,11 +263,11 @@
                                 <rect key="frame" x="5" y="5" width="471" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
-                                    <rect key="frame" x="2" y="2" width="467" height="44"/>
+                                    <rect key="frame" x="3" y="3" width="465" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" id="bIH-dW-BZL">
-                                            <rect key="frame" x="0.0" y="0.0" width="91" height="24"/>
+                                            <rect key="frame" x="0.0" y="-2" width="91" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="t6T-Od-L9R">
                                                 <font key="font" metaFont="system"/>
@@ -344,7 +344,7 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </textField>
                                         <popUpButton hidden="YES" verticalHuggingPriority="750" id="N40-Ev-FF7">
-                                            <rect key="frame" x="22" y="-5" width="76" height="26"/>
+                                            <rect key="frame" x="22" y="-7" width="76" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
