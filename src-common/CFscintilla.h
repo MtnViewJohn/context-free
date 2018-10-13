@@ -33,18 +33,25 @@
 #define strncasecmp _strincmp
 #endif
 
-namespace ContextFree {
-    extern const char major_keywords[];
-    extern const char functions[];
-    extern const char built_ins[];
-    extern std::vector<const char*> autoComplete;
-    
+class CFscintilla {
+public:
     struct AutoCmp {
         inline bool operator()(const char* a, const char* b)
         {
             return strcasecmp(a, b) < 0;        // a POSIX function
         }
     };
-}
+    
+    static std::vector<const char*> AutoComplete;
+    
+    enum Style {
+        StyleDefault, StyleComment, StyleSymbol, StyleIdentifier,
+        StyleKeywords, StyleBuiltins, StyleString, StyleNumber
+    };
+    
+    static Style StyleLine(size_t length, const char* text, char* styles, Style initStyle);
+private:
+    static void StyleId(size_t length, const char* text, char* styles);
+};
 
 #endif /* CFscintilla_h */
