@@ -240,7 +240,7 @@ namespace {
         PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
         PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
         PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
-        std::sort(ContextFree::autoComplete.begin(), ContextFree::autoComplete.end(), ContextFree::AutoCmp());
+        std::sort(CFscintilla::AutoComplete.begin(), CFscintilla::AutoComplete.end(), CFscintilla::AutoCmp());
     }
 }
 
@@ -1053,10 +1053,10 @@ namespace {
                 Sci_TextRange r{{wordPos, pos}, word.data()};
                 [mEditor getGeneralProperty:SCI_GETTEXTRANGE
                                         ref:(const void*)(&r)];
-                auto iter = std::lower_bound(ContextFree::autoComplete.begin(),
-                                             ContextFree::autoComplete.end(),
-                                             word.c_str(), ContextFree::AutoCmp());
-                while (iter != ContextFree::autoComplete.end() &&
+                auto iter = std::lower_bound(CFscintilla::AutoComplete.begin(),
+                                             CFscintilla::AutoComplete.end(),
+                                             word.c_str(), CFscintilla::AutoCmp());
+                while (iter != CFscintilla::AutoComplete.end() &&
                        strncasecmp(*iter, word.c_str(), len) == 0)
                 {
                     if (!list.empty()) list.append(1, ' ');
@@ -1148,6 +1148,30 @@ namespace {
                 [mEditor getGeneralProperty:SCI_BRACEHIGHLIGHT
                                   parameter:INVALID_POSITION
                                       extra:INVALID_POSITION];
+            }
+            break;
+        }
+        case SCN_STYLENEEDED: {
+            auto startpos = [mEditor getGeneralProperty:SCI_GETENDSTYLED];
+            auto startline = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:startpos];
+            startpos = [mEditor getGeneralProperty:SCI_POSITIONFROMLINE parameter:startline];
+            long endpos = notification->position;
+            auto endline = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:endpos];
+            CFscintilla::Style state = CFscintilla::StyleDefault;
+            if (startline > 0)
+                state = static_cast<CFscintilla::Style>([mEditor getGeneralProperty:SCI_GETSTYLEAT parameter:(startpos-1)]);
+            std::vector<char> text, styles;
+            [mEditor setGeneralProperty:SCI_STARTSTYLING parameter:startpos value:0];
+            for (auto i = startline; i <= endline; ++i) {
+                auto length = [mEditor getGeneralProperty:SCI_LINELENGTH parameter:i];
+                if (static_cast<long>(text.size()) < length + 1)
+                    text.resize(length + 1);
+                if (static_cast<long>(styles.size()) < length)
+                    styles.resize(length);
+                [mEditor setReferenceProperty:SCI_GETLINE parameter:i value:text.data()];
+                text[length] = '\0';
+                state = CFscintilla::StyleLine(length, text.data(), styles.data(), state);
+                [mEditor setReferenceProperty:SCI_SETSTYLINGEX parameter:length value:styles.data()];
             }
             break;
         }
@@ -1642,18 +1666,7 @@ namespace {
 
 - (void)setupEditor
 {
-    [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CPP value: 0];
-
-    // Keywords to highlight. Indices are:
-    // 0 - Primary keywords and identifiers
-    // 1 - Secondary keywords and identifiers
-    // 2 - Documentation comment keywords
-    // 3 - Global classes and typedefs
-    // 4 - Preprocessor definitions
-    // 5 - Task marker and error marker keywords
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 0 value: ContextFree::major_keywords];
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 1 value: ContextFree::built_ins];
-    [mEditor setReferenceProperty: SCI_SETKEYWORDS parameter: 3 value: ContextFree::functions];
+    [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CONTAINER value: 0];
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     // Colors and styles for various syntactic elements. First the default style.
@@ -1664,17 +1677,17 @@ namespace {
     
     [mEditor setGeneralProperty: SCI_STYLECLEARALL parameter: 0 value: 0];
 
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_COMMENT fromHTML: @"#097BF7"];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_COMMENTLINE fromHTML: @"#097BF7"];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_NUMBER fromHTML: @"#7F7F00"];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_STRING fromHTML: @"#FFAA3E"];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_WORD fromHTML: @"#007F00"];
-    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_WORD value: 1];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_WORD2 fromHTML: @"#007F00"];
-    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_WORD2 value: 1];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: SCE_C_GLOBALCLASS fromHTML: @"#56007F"];
-    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: SCE_C_GLOBALCLASS value: 1];
-    
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleComment fromHTML: @"#097BF7"];
+    [mEditor setGeneralProperty: SCI_STYLESETITALIC parameter: CFscintilla::StyleComment value: 1];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleNumber fromHTML: @"#7F7F00"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleString fromHTML: @"#FFAA3E"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleBuiltins fromHTML: @"#007F00"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: CFscintilla::StyleBuiltins value: 1];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleKeywords fromHTML: @"#56007F"];
+    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: CFscintilla::StyleKeywords value: 1];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleSymbol fromHTML: @"#101010"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleIdentifier fromHTML: @"#00567F"];
+
     [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#8a2be2"];
     [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#e6e6fa"];
     [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD fromHTML:@"#ff0000"];
