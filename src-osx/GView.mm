@@ -1106,13 +1106,6 @@ namespace {
         case SCN_SAVEPOINTREACHED:
             [mDocument setDirty:NO];
             break;
-        case SCN_MARGINCLICK:
-            if (notification->margin == 2) {
-                // Click on the folder margin. Toggle the current line if possible.
-                long line = [mEditor getGeneralProperty: SCI_LINEFROMPOSITION parameter: notification->position];
-                [mEditor setGeneralProperty: SCI_TOGGLEFOLD value: line];
-            }
-            break;
         case SCN_FOCUSOUT:
             [[NSNotificationCenter defaultCenter] postNotificationName: NSTextDidEndEditingNotification object: mEditor];
             break;
@@ -1697,32 +1690,8 @@ namespace {
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: 35];
     
     // Markers.
-    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 16];
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 0];
     
-    // Some special lexer properties.
-    [mEditor setLexerProperty: @"fold" value: @"1"];
-    [mEditor setLexerProperty: @"fold.compact" value: @"0"];
-    [mEditor setLexerProperty: @"fold.comment" value: @"1"];
-    
-    // Folder setup.
-    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 2 value: 16];
-    [mEditor setGeneralProperty: SCI_SETMARGINMASKN parameter: 2 value: SC_MASK_FOLDERS];
-    [mEditor setGeneralProperty: SCI_SETMARGINSENSITIVEN parameter: 2 value: 1];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEROPEN value: SC_MARK_BOXMINUS];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDER value: SC_MARK_BOXPLUS];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERSUB value: SC_MARK_VLINE];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERTAIL value: SC_MARK_LCORNER];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEREND value: SC_MARK_BOXPLUSCONNECTED];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDEROPENMID value: SC_MARK_BOXMINUSCONNECTED];
-    [mEditor setGeneralProperty: SCI_MARKERDEFINE parameter: SC_MARKNUM_FOLDERMIDTAIL value: SC_MARK_TCORNER];
-
-    for (int n= 25; n < 32; ++n) // Markers 25..31 are reserved for folding.
-    {
-        SC_MARKNUM_FOLDER;
-        [mEditor setColorProperty: SCI_MARKERSETFORE parameter: n value: [NSColor whiteColor]];
-        [mEditor setColorProperty: SCI_MARKERSETBACK parameter: n value: [NSColor blackColor]];
-    }
-
     InfoBar* infoBar = [[[InfoBar alloc] initWithFrame: NSMakeRect(0, 0, 400, 0)] autorelease];
     [infoBar setDisplay: IBShowAll];
     [mEditor setInfoBar: infoBar top: NO];
