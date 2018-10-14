@@ -93,6 +93,7 @@ namespace ContextFreeNet {
 
     public: System::Windows::Forms::ToolStripMenuItem^  menuFile;
     public: static array<System::Drawing::Bitmap^>^ busyList;
+            array<System::String^>^ AutoComplete;
     public: static System::Collections::SortedList^ exampleSet;
     public: static System::Collections::Generic::Dictionary<System::String^, System::Windows::Forms::Form^>^ openFiles;
     private: System::Windows::Forms::ToolStripMenuItem^  menuWelcome;

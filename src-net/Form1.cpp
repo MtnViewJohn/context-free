@@ -30,6 +30,8 @@
 #include "PreferenceDialog.h"
 #include "AboutBox.h"
 #include "ColorCalculator.h"
+#include <algorithm>
+#include "CFscintilla.h"
 
 using namespace ContextFreeNet;
 using namespace System;
@@ -149,6 +151,15 @@ void Form1::MoreInitialization()
 
     ClientSize = System::Drawing::Size(prefs->FormWidth, prefs->FormHeight);
 
+
+    isResizing = iResized = false;
+
+    std::sort(CFscintilla::AutoComplete.begin(), CFscintilla::AutoComplete.end(), CFscintilla::AutoCmp());
+    int sz = static_cast<int>(CFscintilla::AutoComplete.size());
+    AutoComplete = gcnew cli::array<System::String^>(sz);
+    for (int i = 0; i < sz; ++i)
+        AutoComplete[i] = gcnew System::String(CFscintilla::AutoComplete[i]);
+
     bool updateKeys = false;
     try { 
         RegistryKey^ key;
@@ -190,8 +201,6 @@ void Form1::MoreInitialization()
         newKey->Close();
         classKey->Close();
     } catch (Exception^) {}
-
-    isResizing = iResized = false;
 }
 
 System::Void Form1::Window_DropDown_Opening(System::Object^  sender, System::EventArgs^  e)

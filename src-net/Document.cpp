@@ -192,7 +192,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->AutoCIgnoreCase = true;
     cfdgText->AutoCStops("[]{}<>,1234567890()/*+-|=!&^ \t.\r\n");
-    cfdgText->WordChars = "[]{}<>,1234567890()/*+-|=!&^ \t.\r\n";
+    cfdgText->WordChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:";
 
     cfdgText->Lexer = ScintillaNET::Lexer::Container;
 
@@ -1213,6 +1213,7 @@ System::Void Document::Style_Cfdg(System::Object ^ sender, ScintillaNET::StyleNe
 
 System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::InsertCheckEventArgs ^ e)
 {
+    // auto indent
     if (e->Text->Equals("\r\n") || e->Text->Equals("\r") || e->Text->Equals("\n")) {
         auto lineno = cfdgText->LineFromPosition(e->Position);
         String^ line = cfdgText->Lines[lineno]->Text;
@@ -1236,6 +1237,7 @@ System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::Ins
 
 System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAddedEventArgs ^ e)
 {
+    // auto unindent
     if (e->Char == '}') {
         auto pos = cfdgText->CurrentPosition;
         auto lineno = cfdgText->LineFromPosition(pos);
@@ -1247,6 +1249,23 @@ System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAdde
                 indent = 0;
             cfdgText->Lines[lineno]->Indentation = indent;
         }
+    }
+
+    // autocomplete
+    auto pos = cfdgText->CurrentPosition;
+    auto wordPos = cfdgText->WordStartPosition(pos, true);
+    auto len = pos - wordPos;
+    if (len > 1) {
+        String^ frag = cfdgText->GetTextRange(wordPos, len);
+        System::Text::StringBuilder^ list = gcnew System::Text::StringBuilder(1500);
+        for each (String^ word in ((Form1^)MdiParent)->AutoComplete)
+            if (word->StartsWith(frag, System::StringComparison::OrdinalIgnoreCase)) {
+                if (list->Length > 0)
+                    list->Append(" ");
+                list->Append(word);
+            }
+        if (list->Length > 0)
+            cfdgText->AutoCShow(len, list->ToString());
     }
 }
 
