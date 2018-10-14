@@ -143,6 +143,8 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     cfdgText->SavePointLeft += changed;
     cfdgText->SavePointReached += changed;
 
+    cfdgText->StyleNeeded += gcnew EventHandler<ScintillaNET::StyleNeededEventArgs^>(this, &Document::Style_Cfdg);
+
     System::Drawing::Font^ f = ((Form1^)MdiParent)->TextFont;
     ((Form1^)MdiParent)->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
     cfdgMessage->Font = f;
@@ -1168,6 +1170,34 @@ System::Void Document::Size_Changed(System::Object^ sender, System::EventArgs^ e
     else
         renderParams->height = s;
     renderParams->saveToPrefs();
+}
+
+System::Void Document::Style_Cfdg(System::Object ^ sender, ScintillaNET::StyleNeededEventArgs ^ e)
+{
+    auto startPos = cfdgText->GetEndStyled();
+    auto startLine = cfdgText->LineFromPosition(startPos);
+    startPos = cfdgText->Lines[startLine]->Position;
+    long endPos = e->Position;
+    auto endLine = cfdgText->LineFromPosition(endPos);
+
+    CFscintilla::Style state = CFscintilla::StyleDefault;
+    if (startLine > 0 && static_cast<CFscintilla::Style>(cfdgText->GetStyleAt(startPos - 1)) == CFscintilla::StyleComment)
+        state = CFscintilla::StyleComment;
+
+    std::vector<char> text, styles;
+
+    cfdgText->StartStyling(startPos);
+    for (auto i = startLine; i <= endLine; ++i) {
+        auto length = cfdgText->Lines[i]->Length;
+        if (static_cast<long>(text.size()) < length + 1)
+            text.resize(length + 1);
+        if (static_cast<long>(styles.size()) < length)
+            styles.resize(length);
+        cfdgText->DirectMessage(2153, IntPtr(i), IntPtr(text.data()));  // SCI_GETLINE = 2153
+        text[length] = '\0';
+        state = CFscintilla::StyleLine(length, text.data(), styles.data(), state);
+        cfdgText->DirectMessage(2073, IntPtr(length), IntPtr(styles.data()));   // SCI_SETSTYLINGEX = 2073
+    }
 }
 
 void Document::updateRenderButton()

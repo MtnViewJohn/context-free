@@ -1655,5 +1655,6 @@ private: System::Void NextFrame_Click(System::Object^  sender, System::EventArgs
 private: System::Void Frame_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e);
 private: System::Void Frame_Changed(System::Object^ sender, System::EventArgs^ e);
 private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e);
+         System::Void Style_Cfdg(System::Object^ sender, ScintillaNET::StyleNeededEventArgs^ e);
 };
 }
