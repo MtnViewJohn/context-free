@@ -145,8 +145,10 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->StyleNeeded += gcnew EventHandler<ScintillaNET::StyleNeededEventArgs^>(this, &Document::Style_Cfdg);
 
+    Form1^ appForm = (Form1^)MdiParent;
+    appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
+    appForm->TabWidthChanged += gcnew EventHandler(this, &Document::TabWidthChanged);
     System::Drawing::Font^ f = ((Form1^)MdiParent)->TextFont;
-    ((Form1^)MdiParent)->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
     cfdgMessage->Font = f;
 
     cfdgText->IndentationGuides = ScintillaNET::IndentView::LookBoth;
@@ -180,7 +182,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->TabDrawMode = ScintillaNET::TabDrawMode::LongArrow;
     cfdgText->UseTabs = false;
-    cfdgText->TabWidth = 4;
+    cfdgText->TabWidth = Form1::prefs->TabWidth;
     cfdgText->IndentWidth = 0;
     cfdgText->DirectMessage(2260, IntPtr(1), IntPtr(0));    // SCI_SETTABINDENTS = 2260
     cfdgText->DirectMessage(2262, IntPtr(1), IntPtr(0));    // SCI_SETBACKSPACEUNINDENTS = 2262
@@ -194,7 +196,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     cfdgText->Invalidate();
 
     // enable/disable File->Revert menu command
-    ((Form1^)MdiParent)->menuFile->DropDownOpened += 
+    appForm->menuFile->DropDownOpened +=
         gcnew EventHandler(this, &Document::menuFile_Popup);
 
     // load the bitmaps used in the render button
@@ -852,6 +854,12 @@ System::Void Document::textFontHandler(System::Object^ sender, System::EventArgs
     cfdgText->Margins[0]->Width = static_cast<int>(w.Width + 0.9);
     cfdgMessage->Font = f;
     setMessageText(nullptr);
+}
+
+System::Void Document::TabWidthChanged(System::Object ^ sender, System::EventArgs ^ e)
+{
+    cfdgText->TabWidth = ((Form1^)MdiParent)->TabWidth;
+    return System::Void();
 }
 
 System::Void Document::errorNavigation(System::Object^ sender, System::Windows::Forms::WebBrowserNavigatingEventArgs^ e)

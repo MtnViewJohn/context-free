@@ -109,6 +109,7 @@ namespace ContextFreeNet {
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
     private: System::Drawing::Font^ textFont;
+             int tabWidth;
     public: event System::EventHandler^ TextFontChanged;
     public: property System::Drawing::Font^ TextFont {
                 System::Drawing::Font^ get()
@@ -122,6 +123,14 @@ namespace ContextFreeNet {
                     textFont = v;
                     prefs->TextFont = v;
                     TextFontChanged(this, gcnew System::EventArgs());
+                }
+            }
+            event System::EventHandler^ TabWidthChanged;
+            property int TabWidth {
+                int get() { return tabWidth; }
+                void set(int v) { 
+                    tabWidth = v;
+                    TabWidthChanged(this, gcnew System::EventArgs());
                 }
             }
 
@@ -454,5 +463,6 @@ private: System::Void saveFileDialog1_FileOk(System::Object^  sender, System::Co
          }
 public:  System::Void FindReplace_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void child_activate(System::Object^  sender, System::EventArgs^  e);
+         System::Void Prefs_OK(System::Object^ sender, System::EventArgs^ e);
 };
 }

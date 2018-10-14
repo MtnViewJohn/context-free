@@ -243,6 +243,12 @@ System::Void Form1::child_activate(System::Object^  sender, System::EventArgs^  
     }
 }
 
+System::Void ContextFreeNet::Form1::Prefs_OK(System::Object ^ sender, System::EventArgs ^ e)
+{
+    TabWidth = prefs->TabWidth;
+    return System::Void();
+}
+
 
 System::Void Form1::menuFNew_Click(System::Object^  sender, System::EventArgs^  e) 
 {
@@ -402,6 +408,7 @@ System::Void Form1::menuFPrefs_Click(System::Object^  sender, System::EventArgs^
     if (prefsDialog == nullptr) {
         prefsDialog = gcnew PreferenceDialog(prefs);
         prefsDialog->fontChange->Click += gcnew System::EventHandler(this, &Form1::Font_Click);
+        prefsDialog->buttonOK->Click += gcnew System::EventHandler(this, &Form1::Prefs_OK);
         updateFontDisplay();
     }
 

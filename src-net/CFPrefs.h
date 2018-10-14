@@ -174,6 +174,10 @@ namespace ContextFreeNet {
             void set(System::String^ setTo) { SetPrefString("ccName", setTo); }
             System::String^ get() { return GetPrefString("ccName", ""); }
         }
+        property int TabWidth {
+            void set(int setTo) { SetPrefInt("TabWidth", setTo); }
+            int get() { return GetPrefInt("TabWidth", 4); }
+        }
         property System::Drawing::Font^ TextFont {
             void set(System::Drawing::Font^ setTo)
             {
