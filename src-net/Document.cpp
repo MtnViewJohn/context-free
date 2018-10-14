@@ -145,6 +145,9 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->StyleNeeded += gcnew EventHandler<ScintillaNET::StyleNeededEventArgs^>(this, &Document::Style_Cfdg);
 
+    cfdgText->InsertCheck += gcnew EventHandler<ScintillaNET::InsertCheckEventArgs^>(this, &Document::InsertionCheck);
+    cfdgText->CharAdded += gcnew EventHandler<ScintillaNET::CharAddedEventArgs^>(this, &Document::CharAdded);
+
     Form1^ appForm = (Form1^)MdiParent;
     appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
     appForm->TabWidthChanged += gcnew EventHandler(this, &Document::TabWidthChanged);
@@ -1205,6 +1208,45 @@ System::Void Document::Style_Cfdg(System::Object ^ sender, ScintillaNET::StyleNe
         text[length] = '\0';
         state = CFscintilla::StyleLine(length, text.data(), styles.data(), state);
         cfdgText->DirectMessage(2073, IntPtr(length), IntPtr(styles.data()));   // SCI_SETSTYLINGEX = 2073
+    }
+}
+
+System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::InsertCheckEventArgs ^ e)
+{
+    if (e->Text->Equals("\r\n") || e->Text->Equals("\r") || e->Text->Equals("\n")) {
+        auto lineno = cfdgText->LineFromPosition(e->Position);
+        String^ line = cfdgText->Lines[lineno]->Text;
+        auto indent = cfdgText->Lines[lineno]->Indentation;
+        int tabWidth = ((Form1^)MdiParent)->prefs->TabWidth;
+        bool white = true;
+        for each (char c in line) {
+            if (c == '{')
+                indent += tabWidth;
+            if (c == '}' && !white)
+                indent -= tabWidth;
+            if (!isspace(c))
+                white = false;
+        }
+        if (indent > 0) {
+            String^ nextline = e->Text->PadRight(e->Text->Length + indent);
+            e->Text = nextline;
+        }
+    }
+}
+
+System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAddedEventArgs ^ e)
+{
+    if (e->Char == '}') {
+        auto pos = cfdgText->CurrentPosition;
+        auto lineno = cfdgText->LineFromPosition(pos);
+        int indentPos = cfdgText->DirectMessage(2128, IntPtr(lineno), IntPtr(0)).ToInt32(); // SCI_GETLINEINDENTPOSITION = 2128
+        if (indentPos + 1 == pos) {
+            auto indent = cfdgText->Lines[lineno]->Indentation;
+            indent -= ((Form1^)MdiParent)->prefs->TabWidth;
+            if (indent < 0)
+                indent = 0;
+            cfdgText->Lines[lineno]->Indentation = indent;
+        }
     }
 }
 
