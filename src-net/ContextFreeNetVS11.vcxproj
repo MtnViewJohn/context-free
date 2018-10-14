@@ -415,6 +415,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="ScintillaNET">
+      <HintPath>packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -478,6 +481,16 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+    </ClCompile>
+    <ClCompile Include="..\src-common\CFscintilla.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src-common\CmdInfo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -1404,6 +1417,7 @@
   <ItemGroup>
     <ClInclude Include="..\src-common\astexpression.h" />
     <ClInclude Include="..\src-common\astreplacement.h" />
+    <ClInclude Include="..\src-common\CFscintilla.h" />
     <ClInclude Include="..\src-common\chunk_vector.h" />
     <ClInclude Include="..\src-common\CmdInfo.h" />
     <ClInclude Include="..\src-common\config.h" />
@@ -1531,6 +1545,7 @@
     <None Include="..\input\mtree.cfdg" />
     <None Include="..\input\octopi.cfdg" />
     <None Include="..\input\quadcity.cfdg" />
+    <None Include="packages.config" />
     <None Include="ReadMe.txt" />
     <None Include="..\input\rose.cfdg" />
     <None Include="..\input\sierpinski.cfdg" />

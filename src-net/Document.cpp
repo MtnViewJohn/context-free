@@ -40,6 +40,7 @@
 #include "upload.h"
 #include "tempfile.h"
 #include "TempFileDeleter.h"
+#include "CFscintilla.h"
 
 using namespace ContextFreeNet;
 using namespace System;
@@ -64,9 +65,6 @@ void Document::InitializeStuff()
     // Some initialization needs to be deferred until all the handles are made
     moreInitHandler = gcnew EventHandler(this, &Document::moreInitialization);
     this->Load += moreInitHandler;
-
-    // keep track of when the cfdg file is modified
-    cfdgText->ModifiedChanged += gcnew EventHandler(this, &Document::modifiedCFDG);
 
     // get resize events so that the status and message text fields can stay the
     // right size
@@ -140,14 +138,56 @@ void Document::DestroyStuff()
 
 System::Void Document::moreInitialization(System::Object^ sender, System::EventArgs^ e)
 {
-    // shrink the tabs to a reasonable size
-    int tabs[1] = {12};
-    IntPtr hr = cfdgText->Handle; 
-    int ret = ::SendMessage(hr.ToInt32(), WinSystem::EM_SETTABSTOPS, 0, nullptr);
-    ret = ::SendMessage(hr.ToInt32(), WinSystem::EM_SETTABSTOPS, 1, tabs);
+    // keep track of when the cfdg file is modified
+    EventHandler<EventArgs^>^ changed = gcnew EventHandler<EventArgs^>(this, &Document::modifiedCFDG);
+    cfdgText->SavePointLeft += changed;
+    cfdgText->SavePointReached += changed;
 
-    cfdgText->Font = ((Form1^)MdiParent)->TextFont;
+    System::Drawing::Font^ f = ((Form1^)MdiParent)->TextFont;
     ((Form1^)MdiParent)->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
+    cfdgMessage->Font = f;
+
+    cfdgText->IndentationGuides = ScintillaNET::IndentView::LookBoth;
+
+    cfdgText->Styles[ScintillaNET::Style::Default]->Font = f->Name;
+    cfdgText->Styles[ScintillaNET::Style::Default]->SizeF = f->SizeInPoints;
+    cfdgText->StyleClearAll();
+    cfdgText->SetSelectionBackColor(true, ColorTranslator::FromHtml("#114D9C"));
+    cfdgText->SetSelectionForeColor(true, ColorTranslator::FromHtml("#FFFFFF"));
+    cfdgText->Styles[CFscintilla::StyleComment   ]->ForeColor = ColorTranslator::FromHtml("#097BF7");
+    cfdgText->Styles[CFscintilla::StyleComment   ]->Italic = true;
+    cfdgText->Styles[CFscintilla::StyleNumber    ]->ForeColor = ColorTranslator::FromHtml("#7F7F00");
+    cfdgText->Styles[CFscintilla::StyleString    ]->ForeColor = ColorTranslator::FromHtml("#FFAA3E");
+    cfdgText->Styles[CFscintilla::StyleBuiltins  ]->ForeColor = ColorTranslator::FromHtml("#007F00");
+    cfdgText->Styles[CFscintilla::StyleBuiltins  ]->Bold = true;
+    cfdgText->Styles[CFscintilla::StyleKeywords  ]->ForeColor = ColorTranslator::FromHtml("#56007F");
+    cfdgText->Styles[CFscintilla::StyleKeywords  ]->Bold = true;
+    cfdgText->Styles[CFscintilla::StyleSymbol    ]->ForeColor = ColorTranslator::FromHtml("#101010");
+    cfdgText->Styles[CFscintilla::StyleIdentifier]->ForeColor = ColorTranslator::FromHtml("#00567F");
+
+    cfdgText->Styles[ScintillaNET::Style::BraceLight]->ForeColor = ColorTranslator::FromHtml("#8a2be2");
+    cfdgText->Styles[ScintillaNET::Style::BraceLight]->BackColor = ColorTranslator::FromHtml("#e6e6fa");
+    cfdgText->Styles[ScintillaNET::Style::BraceBad]->ForeColor = ColorTranslator::FromHtml("#ff0000");
+    cfdgText->Styles[ScintillaNET::Style::BraceBad]->Bold = true;
+
+    cfdgText->Margins[0]->Type = ScintillaNET::MarginType::Number;
+    auto w = cfdgText->CreateGraphics()->MeasureString("8888", f);
+    cfdgText->Margins[0]->Width = static_cast<int>(w.Width + 0.9);
+
+    cfdgText->Margins[1]->Width = 0;
+
+    cfdgText->TabDrawMode = ScintillaNET::TabDrawMode::LongArrow;
+    cfdgText->UseTabs = false;
+    cfdgText->TabWidth = 4;
+    cfdgText->IndentWidth = 0;
+    cfdgText->DirectMessage(2260, IntPtr(1), IntPtr(0));    // SCI_SETTABINDENTS = 2260
+    cfdgText->DirectMessage(2262, IntPtr(1), IntPtr(0));    // SCI_SETBACKSPACEUNINDENTS = 2262
+
+    cfdgText->AutoCIgnoreCase = true;
+    cfdgText->AutoCStops("[]{}<>,1234567890()/*+-|=!&^ \t.\r\n");
+    cfdgText->WordChars = "[]{}<>,1234567890()/*+-|=!&^ \t.\r\n";
+
+    cfdgText->Lexer = ScintillaNET::Lexer::Container;
 
     cfdgText->Invalidate();
 
@@ -260,7 +300,7 @@ System::Void Document::menuFSave_Click(System::Object^ sender, System::EventArgs
         try {
             StreamWriter sw(Name);
             sw.Write(cfdgText->Text);
-            cfdgText->Modified = false;
+            cfdgText->SetSavePoint();
         } catch (Exception^) {
             setMessageText("The file could not be written." );
         }
@@ -353,25 +393,25 @@ void Document::reload(bool justClear)
 {
     if (justClear) {
         cfdgText->Text = String::Empty;
-        cfdgText->Modified = false;
+        cfdgText->SetSavePoint();
         return;
     }
 
     int pos = Form1::exampleSet->IndexOfKey(this->Name);
     if (pos >= 0) {
         cfdgText->Text = (String^)Form1::exampleSet->GetByIndex(pos);
-        cfdgText->Modified = false;
+        cfdgText->SetSavePoint();
         return;
     }
 
     try {
         StreamReader sr(Name);
         cfdgText->Text = sr.ReadToEnd();
-        cfdgText->Modified = false;
+        cfdgText->SetSavePoint();
     } catch (Exception^) {
         ((Form1^)MdiParent)->mruManager->Remove(Name);
         cfdgText->Text = String::Empty;
-        cfdgText->Modified = false;
+        cfdgText->SetSavePoint();
         setMessageText("The file could not be read." );
     }
 }
@@ -766,13 +806,13 @@ System::Void Document::menuERedo_Click(System::Object^ sender, System::EventArgs
 
 System::Void Document::menuECut_Click(System::Object^  sender, System::EventArgs^  e)
 {
-    if (cfdgText->SelectionLength > 0)
+    if (cfdgText->SelectionStart != cfdgText->SelectionEnd)
         cfdgText->Cut();
 }
 
 System::Void Document::menuECopy_Click(System::Object^  sender, System::EventArgs^  e)
 {
-    if (cfdgText->SelectionLength > 0)
+    if (cfdgText->SelectionStart != cfdgText->SelectionEnd)
         cfdgText->Copy();
 }
 
@@ -784,24 +824,32 @@ System::Void Document::menuEPaste_Click(System::Object^  sender, System::EventAr
 
 System::Void Document::menuEDelete_Click(System::Object^  sender, System::EventArgs^  e)
 {
-    if (cfdgText->SelectionLength > 0)
-        cfdgText->SelectedText = String::Empty;
+    if (cfdgText->SelectionStart != cfdgText->SelectionEnd)
+        cfdgText->ReplaceSelection(nullptr);
 }
 
 System::Void Document::toolStripMenuUnicode_Click(System::Object^  sender, System::EventArgs^  e)
 {
     ToolStripMenuItem^ i = dynamic_cast<ToolStripMenuItem^>(sender);
     if (i != nullptr)
-        cfdgText->SelectedText = i->Text;
+        cfdgText->ReplaceSelection(i->Text);
 }
 
 System::Void Document::textFontHandler(System::Object^ sender, System::EventArgs^ e)
 {
-    bool mod = cfdgText->Modified;
-    cfdgText->Font = ((Form1^)MdiParent)->TextFont;
-    if (mod != cfdgText->Modified)
-        cfdgText->Modified = mod;
-    setMessageText(String::Empty);
+    System::Drawing::Font^ f = ((Form1^)MdiParent)->TextFont;
+    cfdgText->Styles[ScintillaNET::Style::Default]->Font = f->Name;
+    cfdgText->Styles[ScintillaNET::Style::Default]->SizeF = f->SizeInPoints;
+    for (int i = CFscintilla::StyleDefault; i <= CFscintilla::StyleNumber; ++i) {
+        cfdgText->Styles[i]->Font = f->Name;
+        cfdgText->Styles[i]->SizeF = f->SizeInPoints;
+    }
+    cfdgText->Styles[ScintillaNET::Style::LineNumber]->Font = f->Name;
+    cfdgText->Styles[ScintillaNET::Style::LineNumber]->SizeF = f->SizeInPoints;
+    auto w = cfdgText->CreateGraphics()->MeasureString("8888", f);
+    cfdgText->Margins[0]->Width = static_cast<int>(w.Width + 0.9);
+    cfdgMessage->Font = f;
+    setMessageText(nullptr);
 }
 
 System::Void Document::errorNavigation(System::Object^ sender, System::Windows::Forms::WebBrowserNavigatingEventArgs^ e)
@@ -816,12 +864,12 @@ System::Void Document::errorNavigation(System::Object^ sender, System::Windows::
             int b_col = Convert::ToInt32(split[2]);
             int e_line = Convert::ToInt32(split[3]) - 1;
             int e_col = Convert::ToInt32(split[4]);
-            int start = cfdgText->GetFirstCharIndexFromLine(b_line) + b_col;
-            int end = cfdgText->GetFirstCharIndexFromLine(e_line) + e_col;
+            int start = cfdgText->Lines[b_line]->Position + b_col;
+            int end = cfdgText->Lines[e_line]->Position + e_col;
             cfdgText->Focus();
             cfdgText->SelectionStart = start;
-            cfdgText->SelectionLength = end - start;
-            cfdgText->ScrollToCaret();
+            cfdgText->SelectionEnd = end;
+            cfdgText->ScrollCaret();
         } catch (...) {
         }
     }
@@ -834,10 +882,10 @@ System::Void Document::menuFile_Popup(System::Object^  sender, System::EventArgs
 
 System::Void Document::menuEdit_Popup(System::Object^  sender, System::EventArgs^  e)
 {
-    menuECopy->Enabled = cfdgText->SelectionLength > 0;
-    menuECut->Enabled = cfdgText->SelectionLength > 0;
+    menuECopy->Enabled = cfdgText->SelectionStart != cfdgText->SelectionEnd;
+    menuECut->Enabled = cfdgText->SelectionStart != cfdgText->SelectionEnd;
     menuEPaste->Enabled = Clipboard::GetDataObject()->GetDataPresent(DataFormats::Text);
-    menuEDelete->Enabled = cfdgText->SelectionLength > 0;
+    menuEDelete->Enabled = cfdgText->SelectionStart != cfdgText->SelectionEnd;
     menuEUndo->Enabled = cfdgText->CanUndo;
     menuERedo->Enabled = cfdgText->CanRedo;
 }

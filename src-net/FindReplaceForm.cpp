@@ -18,7 +18,7 @@ namespace ContextFreeNet {
 
     System::Void FindReplaceForm::find_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        RichTextBox^ haystack = getRTB();
+        ScintillaNET::Scintilla^ haystack = getRTB();
         if (findText->Text->Length == 0 || haystack == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
@@ -30,26 +30,25 @@ namespace ContextFreeNet {
 
     System::Void FindReplaceForm::replace_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        RichTextBox^ haystack = doReplace(nullptr);
+        ScintillaNET::Scintilla^ haystack = doReplace(nullptr);
         if (haystack != nullptr) haystack->Focus();
     }
 
     System::Void FindReplaceForm::replaceAll_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        RichTextBox^ haystack = getRTB();
+        ScintillaNET::Scintilla^ haystack = getRTB();
         if (findText->Text->Length == 0 || haystack == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
         haystack->SelectionStart = 0;
-        haystack->SelectionLength = 0;
+        haystack->SelectionEnd = 0;
 
         if (!doFind(haystack, true)) {
             notFound->Visible = true;
             System::Media::SystemSounds::Beep->Play();
-            haystack->SelectionStart = haystack->Text->Length;
-            haystack->SelectionLength = 0;
+            haystack->ClearSelections();
             haystack->Focus();
             return;
         }
@@ -62,14 +61,14 @@ namespace ContextFreeNet {
 
     System::Void FindReplaceForm::replaceFind_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        RichTextBox^ haystack = doReplace(nullptr);
+        ScintillaNET::Scintilla^ haystack = doReplace(nullptr);
         if (haystack != nullptr) {
             doFind(haystack, false);
             haystack->Focus();
         }
     }
 
-    bool FindReplaceForm::doFind(RichTextBox^ haystack, bool allMode)
+    bool FindReplaceForm::doFind(ScintillaNET::Scintilla^ haystack, bool allMode)
     {
         bool found = false;
         if (haystack == nullptr) return false;
@@ -78,21 +77,39 @@ namespace ContextFreeNet {
         bool whole = wholeCheck->Checked;
         bool ic = ignoreCaseCheck->Checked;
         bool wrap = !allMode && wrapAroundCheck->Checked;
-        RichTextBoxFinds finds = 
-            (up ? RichTextBoxFinds::Reverse : RichTextBoxFinds::None) |
-            (whole ? RichTextBoxFinds::WholeWord : RichTextBoxFinds::None) |
-            (ic ? RichTextBoxFinds::None : RichTextBoxFinds::MatchCase);
-        int at = haystack->SelectionStart;
-        if (!up) at += haystack->SelectionLength;
+        auto finds = 
+            (whole ? ScintillaNET::SearchFlags::WholeWord : ScintillaNET::SearchFlags::None) |
+            (ic ? ScintillaNET::SearchFlags::None : ScintillaNET::SearchFlags::MatchCase);
 
-        int needle = up ? haystack->Find(findText->Text, 0, at, finds) : 
-            haystack->Find(findText->Text, at, -1, finds);
+        if (up) {
+            haystack->TargetStart = haystack->AnchorPosition;
+            haystack->TargetEnd = 0;
+        } else {
+            haystack->TargetStart = haystack->CurrentPosition;
+            haystack->TargetEnd = haystack->TextLength;
+        }
+        haystack->SearchFlags = finds;
 
+        auto needle = haystack->SearchInTarget(findText->Text);
         found = needle >= 0;
+
         if (!found && wrap) {
-            needle = up ? haystack->Find(findText->Text, at, -1, finds) : 
-                needle = haystack->Find(findText->Text, 0, at, finds);
+            if (up) {
+                haystack->TargetStart = haystack->TextLength;
+                haystack->TargetEnd = 0;
+            } else {
+                haystack->TargetStart = 0;
+                haystack->TargetEnd = haystack->TextLength;
+            }
+            needle = haystack->SearchInTarget(findText->Text);
             found = needle >= 0;
+        }
+
+        if (found) {
+            haystack->SetSelection(haystack->TargetEnd, haystack->TargetStart);
+            haystack->ScrollCaret();
+        } else {
+            haystack->ClearSelections();
         }
 
         replaceButton->Enabled = found;
@@ -103,9 +120,9 @@ namespace ContextFreeNet {
         return found;
     }
 
-    System::Windows::Forms::RichTextBox^ FindReplaceForm::doReplace(System::Windows::Forms::RichTextBox^ rtb)
+    ScintillaNET::Scintilla^ FindReplaceForm::doReplace(ScintillaNET::Scintilla^ rtb)
     {
-        RichTextBox^ haystack = rtb;
+        ScintillaNET::Scintilla^ haystack = rtb;
         if (haystack == nullptr) haystack = getRTB();
         if (findText->Text->Length == 0 || haystack == nullptr ||
             String::Compare(haystack->SelectedText, findText->Text, ignoreCaseCheck->Checked) != 0)
@@ -114,16 +131,15 @@ namespace ContextFreeNet {
             return nullptr;
         }
 
-        haystack->SelectedText = replaceText->Text;
+        haystack->ReplaceSelection(replaceText->Text);
 
         if (!upwardCheck->Checked)
-            haystack->SelectionStart += haystack->SelectionLength;
-        haystack->SelectionLength = 0;
+            haystack->SelectionStart = haystack->SelectionEnd;
 
         return haystack;
     }
 
-    System::Windows::Forms::RichTextBox^ FindReplaceForm::getRTB()
+    ScintillaNET::Scintilla^ FindReplaceForm::getRTB()
     {
         Document^ cfdg = dynamic_cast<Document^>(DockPanel->ActiveDocument);
         return (cfdg != nullptr) ? cfdg->cfdgText : nullptr;

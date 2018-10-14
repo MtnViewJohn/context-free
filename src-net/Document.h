@@ -248,8 +248,7 @@ public: System::Windows::Forms::SplitContainer^  documentSplitter;
 private:
 
 
-	public:  System::Windows::Forms::RichTextBox^  cfdgText;
-
+	public:  ScintillaNET::Scintilla^               cfdgText;
 
     private: System::Windows::Forms::ToolStripSplitButton^ toolStripRenderButton;
 
@@ -355,7 +354,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripStatus = (gcnew System::Windows::Forms::ToolStripLabel());
             this->documentSplitter = (gcnew System::Windows::Forms::SplitContainer());
             this->editorSplitter = (gcnew System::Windows::Forms::SplitContainer());
-            this->cfdgText = (gcnew System::Windows::Forms::RichTextBox());
+            this->cfdgText = (gcnew ScintillaNET::Scintilla());
             this->cfdgMessage = (gcnew System::Windows::Forms::WebBrowser());
             this->renderBox = (gcnew System::Windows::Forms::PictureBox());
             this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
@@ -718,15 +717,13 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             // cfdgText
             // 
-            this->cfdgText->AcceptsTab = true;
             this->cfdgText->Dock = System::Windows::Forms::DockStyle::Fill;
             this->cfdgText->Location = System::Drawing::Point(0, 0);
-            this->cfdgText->MaxLength = 1000000;
             this->cfdgText->Name = L"cfdgText";
             this->cfdgText->Size = System::Drawing::Size(386, 594);
             this->cfdgText->TabIndex = 0;
             this->cfdgText->Text = L"";
-            this->cfdgText->WordWrap = false;
+            this->cfdgText->WrapMode = ScintillaNET::WrapMode::None;
             // 
             // cfdgMessage
             // 

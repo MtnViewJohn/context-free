@@ -256,8 +256,8 @@ private: System::Void find_Click(System::Object^  sender, System::EventArgs^  e)
 private: System::Void replace_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void replaceAll_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void replaceFind_Click(System::Object^  sender, System::EventArgs^  e);
-private: bool doFind(System::Windows::Forms::RichTextBox^ rtb, bool allMode);
-private: System::Windows::Forms::RichTextBox^ doReplace(System::Windows::Forms::RichTextBox^ rtb);
-private: System::Windows::Forms::RichTextBox^ getRTB();
+private: bool doFind(ScintillaNET::Scintilla^ rtb, bool allMode);
+private: ScintillaNET::Scintilla^ doReplace(ScintillaNET::Scintilla^ rtb);
+private: ScintillaNET::Scintilla^ getRTB();
 };
 }
