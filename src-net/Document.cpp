@@ -196,6 +196,18 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->Lexer = ScintillaNET::Lexer::Container;
 
+    // Render menu shortcuts
+    cfdgText->ClearCmdKey(Keys::Control | Keys::R);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::Shift | Keys::R);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::Alt | Keys::R);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::Alt | Keys::A);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::Alt | Keys::F);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::O);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::U);
+    // indent/unindent shortcuts
+    cfdgText->ClearCmdKey(Keys::Control | Keys::OemOpenBrackets);
+    cfdgText->ClearCmdKey(Keys::Control | Keys::OemCloseBrackets);
+
     cfdgText->Invalidate();
 
     // enable/disable File->Revert menu command
@@ -1267,6 +1279,36 @@ System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAdde
         if (list->Length > 0)
             cfdgText->AutoCShow(len, list->ToString());
     }
+}
+
+System::Void Document::Indent_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+    bool didIndent = false;
+    try {
+        ToolStripMenuItem^ ctrl = dynamic_cast<ToolStripMenuItem^>(sender);
+        String^ tag = dynamic_cast<String^>(ctrl->Tag);
+        int delta = ((Form1^)MdiParent)->prefs->TabWidth * Int32::Parse(tag);
+        auto start = cfdgText->AnchorPosition;
+        auto end = cfdgText->CurrentPosition;
+        start = cfdgText->LineFromPosition(start);
+        end = cfdgText->LineFromPosition(end);
+        if (end < start) {
+            auto t = start; start = end; end = t;
+        }
+        for (; start <= end; ++start) {
+            auto indent = cfdgText->Lines[start]->Indentation;
+            auto newIndent = indent  +delta;
+            if (newIndent < 0) newIndent = 0;
+            if (indent != newIndent) {
+                if (!didIndent)
+                    cfdgText->BeginUndoAction();
+                didIndent = true;
+                cfdgText->Lines[start]->Indentation = newIndent;
+            }
+        }
+    } catch (...) { }
+    if (didIndent)
+        cfdgText->EndUndoAction();
 }
 
 void Document::updateRenderButton()
