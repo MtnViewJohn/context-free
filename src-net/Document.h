@@ -248,7 +248,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  addIndentToolStripMenuItem;
 	private: System::Windows::Forms::ToolStrip^  toolStrip1;
 public: System::Windows::Forms::SplitContainer^  documentSplitter;
 private:
-    bool    lastCaretPosition;
+    int    lastCaretPosition;
 
 	public:  ScintillaNET::Scintilla^               cfdgText;
 
