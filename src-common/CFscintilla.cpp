@@ -63,6 +63,7 @@ static size_t isUTF8op(const char* text)
 CFscintilla::Style
 CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style initStyle)
 {
+    const unsigned char* utext = reinterpret_cast<const unsigned char*>(text);
     Style state = initStyle;
     size_t idStart = 0;
     bool afterColon = false;
@@ -74,7 +75,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
             // continue == restart current character with a new state
             // It's always safe to read text[i+1] because of null termination
             case StyleDefault:
-                if (std::isspace(text[i])) {
+                if (std::isspace(utext[i])) {
                     styles[i] = StyleDefault;
                     break;
                 }
@@ -83,7 +84,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     ++i;
                     break;
                 }
-                if ((text[i] == '.' && std::isdigit(text[i+1])) || std::isdigit(text[i])) {
+                if ((text[i] == '.' && std::isdigit(utext[i+1])) || std::isdigit(utext[i])) {
                     decimalPointFound = false;
                     digits = 0;
                     state = StyleNumber;
@@ -95,7 +96,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     i += sz;
                     continue;   // don't break, i is already incremented
                 }
-                if ((text[i] & 0x80) || std::isalpha(text[i]) || text[i] == '_') {
+                if ((utext[i] & 0x80) || std::isalpha(utext[i]) || text[i] == '_') {
                     idStart = i; afterColon = false;
                     state = StyleIdentifier;
                     continue;
@@ -118,7 +119,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     styles[i] = StyleString;
                     break;
                 }
-                if (strchr("<>[]{}()+-*/|=^&@:;,!", text[i])) {
+                if (strchr("<>[]{}()+-*/|=^&@:;,!", utext[i])) {
                     styles[i] = StyleSymbol;
                     break;
                 }
@@ -145,7 +146,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                 styles[i] = StyleString;
                 break;
             case StyleNumber:
-                if (std::isdigit(text[i])) {
+                if (std::isdigit(utext[i])) {
                     ++digits;
                     styles[i] = StyleNumber;
                     break;
@@ -162,11 +163,11 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                 }
                 if ((text[i] == 'e' || text[i] == 'E') && (digits > 0)) {
                     if ((text[i+1] == '+' || text[i+1] == '-') && (i + 2 < length) &&
-                        std::isdigit(text[i+2]))
+                        std::isdigit(utext[i+2]))
                     {
                         styles[i] = styles[i+1] = StyleNumber;
                         i += 2;     // style the e/E and +/-
-                    } else if (std::isdigit(text[i+1])) {
+                    } else if (std::isdigit(utext[i+1])) {
                         styles[i] = StyleNumber;
                         ++i;        // style the e/E
                     } else {
@@ -174,7 +175,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                         continue;   // e/E is not part of number
                     }
                     // style the exponent
-                    while (i < length && std::isdigit(text[i]))
+                    while (i < length && std::isdigit(utext[i]))
                         styles[i++] = StyleNumber;
                     state = StyleDefault;
                     continue;       // don't break, i is already incremented
@@ -182,7 +183,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                 state = StyleDefault;
                 continue;
             case StyleIdentifier:
-                if (std::isdigit(text[i]) && !afterColon) {
+                if (std::isdigit(utext[i]) && !afterColon) {
                     styles[i] = StyleIdentifier;
                     break;
                 }
@@ -193,8 +194,8 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     break;
                 }
                 afterColon = false;
-                if (((text[i] & 0x80) && !isUTF8op(text + i)) ||
-                    std::isalpha(text[i]) || text[i] == '_')
+                if (((utext[i] & 0x80) && !isUTF8op(text + i)) ||
+                    std::isalpha(utext[i]) || text[i] == '_')
                 {
                     styles[i] = StyleIdentifier;
                     break;
