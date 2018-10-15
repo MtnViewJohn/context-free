@@ -1045,7 +1045,8 @@ namespace {
             // auto-completion
             long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
             long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION
-                                             parameter:pos];
+                                             parameter:pos
+                                                 extra:1];
             long len = pos - wordPos;
             if (len > 1) {
                 std::string list; list.reserve(1500);
@@ -1714,7 +1715,7 @@ namespace {
     
     [mEditor setGeneralProperty:SCI_AUTOCSETIGNORECASE value:1];
     [mEditor setReferenceProperty:SCI_AUTOCSTOPS parameter:0 value:"[]{}<>,1234567890()/*+-|=!&^ \t.\r\n"];
-    [mEditor setReferenceProperty:SCI_SETWORDCHARS parameter:0 value:"[]{}<>,1234567890()/*+-|=!&^ \t.\r\n"];
+    [mEditor setReferenceProperty:SCI_SETWORDCHARS parameter:0 value:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"];
 }
 
 
