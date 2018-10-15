@@ -1084,11 +1084,14 @@ namespace {
                     auto line = std::string([mEditor getGeneralProperty:SCI_LINELENGTH parameter: lineno], ' ');
                     [mEditor setReferenceProperty:SCI_GETLINE parameter:lineno value:(void*)line.data()];
                     long indent = [mEditor getGeneralProperty:SCI_GETLINEINDENTATION parameter:lineno];
+                    bool white = true;
                     for (char c: line) {
                         if (c == '{')
                             indent += CurrentTabWidth;
-                        if (c == '}')
+                        if (c == '}' && !white)
                             indent -= CurrentTabWidth;
+                        if (!isspace((unsigned char)c))
+                            white = false;
                     }
                     if (indent > 0) {
                         auto nextline = std::string(notification->text);
