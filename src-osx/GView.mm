@@ -1151,8 +1151,10 @@ namespace {
             long endpos = notification->position;
             auto endline = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:endpos];
             CFscintilla::Style state = CFscintilla::StyleDefault;
-            if (startline > 0)
-                state = static_cast<CFscintilla::Style>([mEditor getGeneralProperty:SCI_GETSTYLEAT parameter:(startpos-1)]);
+            if (startline > 0 && static_cast<CFscintilla::Style>
+                ([mEditor getGeneralProperty:SCI_GETSTYLEAT
+                                   parameter:(startpos-1)]) == CFscintilla::StyleComment)
+                state = CFscintilla::StyleComment;
             std::vector<char> text, styles;
             [mEditor setGeneralProperty:SCI_STARTSTYLING parameter:startpos value:0];
             for (auto i = startline; i <= endline; ++i) {
