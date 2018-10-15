@@ -1103,6 +1103,9 @@ namespace {
                     }
                 }
             }
+            if (notification->modificationType & (SC_PERFORMED_REDO | SC_PERFORMED_UNDO) &&
+                [mEditor getGeneralProperty:SCI_AUTOCACTIVE])
+                [mEditor setGeneralProperty:SCI_AUTOCCANCEL value:0];
             break;
         case SCN_SAVEPOINTLEFT:
             [mDocument setDirty:YES];
