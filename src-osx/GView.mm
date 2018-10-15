@@ -1662,9 +1662,12 @@ namespace {
     [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CONTAINER value: 0];
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* fontName = [defaults stringForKey: prefKeyEditorFontName];
+    float fontSize = [defaults floatForKey: prefKeyEditorFontSize];
+    
     // Colors and styles for various syntactic elements. First the default style.
-    [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: [defaults stringForKey: prefKeyEditorFontName]];
-    long sz = static_cast<long>([defaults floatForKey: prefKeyEditorFontSize] * 100.0f);
+    [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: fontName];
+    long sz = static_cast<long>(fontSize * 100.0f);
     [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_DEFAULT value: sz];
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: STYLE_DEFAULT value: [NSColor blackColor]];
     
@@ -1687,7 +1690,8 @@ namespace {
     [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter:STYLE_BRACEBAD value: 1];
 
     [mEditor setGeneralProperty: SCI_SETMARGINTYPEN parameter: 0 value: SC_MARGIN_NUMBER];
-    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: 35];
+    NSSize size = [@"8888" sizeWithAttributes:[NSDictionary dictionaryWithObject:[NSFont fontWithName:fontName size:fontSize] forKey:NSFontAttributeName]];
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: static_cast<long>(size.width + 10.9)];
     
     // Markers.
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 0];

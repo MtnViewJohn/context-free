@@ -38,6 +38,7 @@
 #include "location.hh"
 
 #include "variation.h"
+#include "CFscintilla.h"
 
 @interface CfdgErrorWrapper : NSObject
 {
@@ -428,10 +429,14 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     long isz = static_cast<long>(sz * 100.0f);
     [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: name];
     [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_DEFAULT value: isz];
-    for (int i = SCE_C_DEFAULT; i <= SCE_C_ESCAPESEQUENCE; ++i) {
+    [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_LINENUMBER value: name];
+    [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_LINENUMBER value: isz];
+    for (int i = CFscintilla::StyleDefault; i <= CFscintilla::StyleNumber; ++i) {
         [mEditor setStringProperty: SCI_STYLESETFONT parameter: i value: name];
         [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: i value: isz];
     }
+    NSSize size = [@"8888" sizeWithAttributes:[NSDictionary dictionaryWithObject:[NSFont fontWithName:name size:sz] forKey:NSFontAttributeName]];
+    [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: static_cast<long>(size.width + 10.9)];
 }
 
 - (void)tabWidthDidChange:(NSInteger)tab
