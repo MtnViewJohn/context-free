@@ -1236,12 +1236,12 @@ System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::Ins
         auto indent = cfdgText->Lines[lineno]->Indentation;
         int tabWidth = ((Form1^)MdiParent)->prefs->TabWidth;
         bool white = true;
-        for each (char c in line) {
-            if (c == '{')
+        for each (Char c in line) {
+            if (c == L'{')
                 indent += tabWidth;
-            if (c == '}' && !white)
+            if (c == L'}' && !white)
                 indent -= tabWidth;
-            if (!isspace(c))
+            if (c < 0 || c > 255 || !isspace(c))
                 white = false;
         }
         if (indent > 0) {
