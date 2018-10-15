@@ -1215,7 +1215,7 @@ System::Void Document::Style_Cfdg(System::Object ^ sender, ScintillaNET::StyleNe
 
     cfdgText->StartStyling(startPos);
     for (auto i = startLine; i <= endLine; ++i) {
-        auto length = cfdgText->Lines[i]->Length;
+        int length = static_cast<int>(cfdgText->DirectMessage(2350, IntPtr(i), IntPtr(0)));    // SCI_LINELENGTH = 2350
         if (static_cast<long>(text.size()) < length + 1)
             text.resize(length + 1);
         if (static_cast<long>(styles.size()) < length)
