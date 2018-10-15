@@ -248,7 +248,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  addIndentToolStripMenuItem;
 	private: System::Windows::Forms::ToolStrip^  toolStrip1;
 public: System::Windows::Forms::SplitContainer^  documentSplitter;
 private:
-
+    bool    lastCaretPosition;
 
 	public:  ScintillaNET::Scintilla^               cfdgText;
 
@@ -1681,6 +1681,7 @@ private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e)
          System::Void TabWidthChanged(System::Object^ sender, System::EventArgs^ e);
          System::Void InsertionCheck(System::Object^ sender, ScintillaNET::InsertCheckEventArgs^ e);
          System::Void CharAdded(System::Object^ sender, ScintillaNET::CharAddedEventArgs^ e);
+         System::Void UpdateUI(System::Object^ sender, ScintillaNET::UpdateUIEventArgs^ e);
 private: System::Void Indent_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }

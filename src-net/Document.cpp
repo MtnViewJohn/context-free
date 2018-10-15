@@ -58,6 +58,8 @@ extern "C" int SendMessage(int hWnd, unsigned int Msg, int wParam, int* lParam);
 
 void Document::InitializeStuff()
 {
+    lastCaretPosition = -1;
+
     // catch form closing to handle worker thread and saving cfdg file if it 
     // is modified
     FormClosing += gcnew FormClosingEventHandler(this, &Document::FormIsClosing);
@@ -147,6 +149,8 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->InsertCheck += gcnew EventHandler<ScintillaNET::InsertCheckEventArgs^>(this, &Document::InsertionCheck);
     cfdgText->CharAdded += gcnew EventHandler<ScintillaNET::CharAddedEventArgs^>(this, &Document::CharAdded);
+
+    cfdgText->UpdateUI += gcnew EventHandler<ScintillaNET::UpdateUIEventArgs^>(this, &Document::UpdateUI);
 
     Form1^ appForm = (Form1^)MdiParent;
     appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
@@ -1278,6 +1282,36 @@ System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAdde
             }
         if (list->Length > 0)
             cfdgText->AutoCShow(len, list->ToString());
+    }
+}
+
+static char safechar(ScintillaNET::Scintilla^ editor, int pos)
+{
+    if (!editor || pos < 0) return 'A';
+    auto c = editor->GetCharAt(pos);
+    if (c < 1 || c > 255) return 'B';
+    return (char)c;
+}
+
+System::Void Document::UpdateUI(System::Object ^ sender, ScintillaNET::UpdateUIEventArgs ^ e)
+{
+    auto caretPos = cfdgText->CurrentPosition;
+    if (caretPos == lastCaretPosition) return;
+    lastCaretPosition = caretPos;
+    int bracePos1 = -1;
+    int bracePos2 = -1;
+    if (strchr("[]{}()", safechar(cfdgText, caretPos - 1)))
+        bracePos1 = caretPos - 1;
+    else if (strchr("[]{}()", safechar(cfdgText, caretPos)))
+        bracePos1 = caretPos;
+    if (bracePos1 >= 0) {
+        bracePos2 = cfdgText->BraceMatch(bracePos1);
+        if (bracePos2 == cfdgText->InvalidPosition)
+            cfdgText->BraceBadLight(bracePos1);
+        else
+            cfdgText->BraceHighlight(bracePos1, bracePos2);
+    } else {
+        cfdgText->BraceHighlight(cfdgText->InvalidPosition, cfdgText->InvalidPosition);
     }
 }
 
