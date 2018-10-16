@@ -152,6 +152,12 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->UpdateUI += gcnew EventHandler<ScintillaNET::UpdateUIEventArgs^>(this, &Document::UpdateUI);
 
+    EventHandler<ScintillaNET::ModificationEventArgs^>^ mod = gcnew EventHandler<ScintillaNET::ModificationEventArgs^>(this, &Document::Text_Changed);
+    cfdgText->Insert += mod;
+    cfdgText->Delete += mod;
+
+    cfdgText->AutoCCharDeleted += gcnew EventHandler<EventArgs^>(this, &Document::AutoCCharDeleted);
+
     Form1^ appForm = (Form1^)MdiParent;
     appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
     appForm->TabWidthChanged += gcnew EventHandler(this, &Document::TabWidthChanged);
@@ -1227,6 +1233,12 @@ System::Void Document::Style_Cfdg(System::Object ^ sender, ScintillaNET::StyleNe
     }
 }
 
+System::Void Document::Text_Changed(System::Object ^ sender, ScintillaNET::ModificationEventArgs ^ e)
+{
+    if (cfdgText->AutoCActive && (static_cast<int>(e->Source) & 0x60))
+        CheckAutoC();
+}
+
 System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::InsertCheckEventArgs ^ e)
 {
     // auto indent
@@ -1251,6 +1263,11 @@ System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::Ins
     }
 }
 
+System::Void Document::AutoCCharDeleted(System::Object ^ sender, System::EventArgs ^ e)
+{
+    CheckAutoC();
+}
+
 System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAddedEventArgs ^ e)
 {
     // auto unindent
@@ -1268,6 +1285,11 @@ System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAdde
     }
 
     // autocomplete
+    CheckAutoC();
+}
+
+System::Void Document::CheckAutoC()
+{
     auto pos = cfdgText->CurrentPosition;
     auto wordPos = cfdgText->WordStartPosition(pos, true);
     auto len = pos - wordPos;
@@ -1280,9 +1302,13 @@ System::Void Document::CharAdded(System::Object ^ sender, ScintillaNET::CharAdde
                     list->Append(" ");
                 list->Append(word);
             }
-        if (list->Length > 0)
+        if (list->Length > 0) {
             cfdgText->AutoCShow(len, list->ToString());
+            return;
+        }
     }
+    if (cfdgText->AutoCActive)
+        cfdgText->AutoCCancel();
 }
 
 static char safechar(ScintillaNET::Scintilla^ editor, int pos)

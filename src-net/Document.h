@@ -1682,6 +1682,9 @@ private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e)
          System::Void InsertionCheck(System::Object^ sender, ScintillaNET::InsertCheckEventArgs^ e);
          System::Void CharAdded(System::Object^ sender, ScintillaNET::CharAddedEventArgs^ e);
          System::Void UpdateUI(System::Object^ sender, ScintillaNET::UpdateUIEventArgs^ e);
+         System::Void Text_Changed(System::Object^ sender, ScintillaNET::ModificationEventArgs^ e);
+         System::Void AutoCCharDeleted(System::Object^ sender, System::EventArgs^ e);
+         System::Void CheckAutoC();
 private: System::Void Indent_Click(System::Object^  sender, System::EventArgs^  e);
 };
 }
