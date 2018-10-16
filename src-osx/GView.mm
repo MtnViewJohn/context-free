@@ -150,6 +150,7 @@ BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 - (BOOL)findNext:(BOOL)reversed;
 - (void)replaceNext:(BOOL)find;
 - (void)replaceAll;
+- (void)checkAutoC;
 
 - (void)drawCheckerboardRect:(NSRect)rect;
 
@@ -1043,32 +1044,7 @@ namespace {
             }
             
             // auto-completion
-            long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
-            long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION
-                                             parameter:pos
-                                                 extra:1];
-            long len = pos - wordPos;
-            if (len > 1) {
-                std::string list; list.reserve(1500);
-                std::string word(len, ' ');
-                Sci_TextRange r{{wordPos, pos}, word.data()};
-                [mEditor getGeneralProperty:SCI_GETTEXTRANGE
-                                        ref:(const void*)(&r)];
-                auto iter = std::lower_bound(CFscintilla::AutoComplete.begin(),
-                                             CFscintilla::AutoComplete.end(),
-                                             word.c_str(), CFscintilla::AutoCmp());
-                while (iter != CFscintilla::AutoComplete.end() &&
-                       strncasecmp(*iter, word.c_str(), len) == 0)
-                {
-                    if (!list.empty()) list.append(1, ' ');
-                    list.append(*iter);
-                    ++iter;
-                }
-                if (!list.empty())
-                    [mEditor setReferenceProperty:SCI_AUTOCSHOW
-                                        parameter:len
-                                            value:list.c_str()];
-            }
+            [self checkAutoC];
             break;
         }
         case SCN_MODIFIED:
@@ -1105,7 +1081,10 @@ namespace {
             }
             if (notification->modificationType & (SC_PERFORMED_REDO | SC_PERFORMED_UNDO) &&
                 [mEditor getGeneralProperty:SCI_AUTOCACTIVE])
-                [mEditor setGeneralProperty:SCI_AUTOCCANCEL value:0];
+                [self checkAutoC];
+            break;
+        case SCN_AUTOCCHARDELETED:
+            [self checkAutoC];
             break;
         case SCN_SAVEPOINTLEFT:
             [mDocument setDirty:YES];
@@ -1819,6 +1798,40 @@ namespace {
         default:
             [mEditor setStatusText: [NSString stringWithFormat:@"%d replacements", cnt]];
     }
+}
+
+- (void)checkAutoC
+{
+    long pos = [mEditor getGeneralProperty:SCI_GETCURRENTPOS];
+    long wordPos = [mEditor getGeneralProperty:SCI_WORDSTARTPOSITION
+                                     parameter:pos
+                                         extra:1];
+    long len = pos - wordPos;
+    if (len > 1) {
+        std::string list; list.reserve(1500);
+        std::string word(len, ' ');
+        Sci_TextRange r{{wordPos, pos}, word.data()};
+        [mEditor getGeneralProperty:SCI_GETTEXTRANGE
+                                ref:(const void*)(&r)];
+        auto iter = std::lower_bound(CFscintilla::AutoComplete.begin(),
+                                     CFscintilla::AutoComplete.end(),
+                                     word.c_str(), CFscintilla::AutoCmp());
+        while (iter != CFscintilla::AutoComplete.end() &&
+               strncasecmp(*iter, word.c_str(), len) == 0)
+        {
+            if (!list.empty()) list.append(1, ' ');
+            list.append(*iter);
+            ++iter;
+        }
+        if (!list.empty()) {
+            [mEditor setReferenceProperty:SCI_AUTOCSHOW
+                                parameter:len
+                                    value:list.c_str()];
+            return;
+        }
+    }
+    if ([mEditor getGeneralProperty:SCI_AUTOCACTIVE])
+        [mEditor setGeneralProperty:SCI_AUTOCCANCEL value:0];
 }
 
 - (void)drawCheckerboardRect:(NSRect)rect
