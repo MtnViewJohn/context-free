@@ -1253,7 +1253,7 @@ System::Void Document::InsertionCheck(System::Object ^ sender, ScintillaNET::Ins
                 indent += tabWidth;
             if (c == L'}' && !white)
                 indent -= tabWidth;
-            if (c < 0 || c > 255 || !isspace(c))
+            if (c < 0 || c > 0x80 || !isspace(c))
                 white = false;
         }
         if (indent > 0) {
