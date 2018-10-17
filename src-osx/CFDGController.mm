@@ -389,8 +389,10 @@ namespace {
 
 + (void)setupExamples
 {
-    examples = [[[NSBundle mainBundle] pathsForResourcesOfType: @"cfdg"
-        inDirectory: @"Examples"] retain];
+    examples = [[[[NSBundle mainBundle] pathsForResourcesOfType: @"cfdg"
+                                                    inDirectory: @"Examples"]
+                 sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]
+                retain];
 }
 
 + (void)setupDefaults
