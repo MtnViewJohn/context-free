@@ -1067,6 +1067,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DRAW_UTF8_LENGTH=1",
+					"$(OTHER_CFLAGS)",
+				);
 				OTHER_LDFLAGS = "-lagg";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
@@ -1302,6 +1306,10 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DRAW_UTF8_LENGTH=1",
+					"$(OTHER_CFLAGS)",
+				);
 				OTHER_LDFLAGS = "-lagg";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
@@ -1394,6 +1402,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DRAW_UTF8_LENGTH=1",
+					"$(OTHER_CFLAGS)",
+				);
 				OTHER_LDFLAGS = "-lagg";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
@@ -1439,6 +1451,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DRAW_UTF8_LENGTH=1",
+					"$(OTHER_CFLAGS)",
+				);
 				OTHER_LDFLAGS = "-lagg";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;

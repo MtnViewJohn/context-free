@@ -230,10 +230,14 @@ EOL         \n|\r\n|\r
         // return the token for the operator.
         delete yylval->string;
         yylval->string = nullptr;
-        size_t len = strlen(utf8chars[tok]);
+        int len = static_cast<int>(strlen(utf8chars[tok]));
         (yylloc->end) = (yylloc->begin);
+#ifdef RAW_UTF8_LENGTH
+        yylloc->columns(len);
+#else
         yylloc->columns(1);
-        yyless(static_cast<int>(len));
+#endif
+        yyless(len);
         return tok;
     }
     
@@ -402,7 +406,13 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         if (j)
             i += j - 1;
     }
+#ifdef RAW_UTF8_LENGTH
+    // Check UTF-8 encoding but return raw length
+    return static_cast<unsigned int>(len);
+#else
+    // Return number of code points
     return length;
+#endif
 }
 
 CfdgParser::token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
