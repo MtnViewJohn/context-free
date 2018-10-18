@@ -1664,7 +1664,7 @@ namespace {
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleComment fromHTML: @"#097BF7"];
     [mEditor setGeneralProperty: SCI_STYLESETITALIC parameter: CFscintilla::StyleComment value: 1];
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleNumber fromHTML: @"#7F7F00"];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleString fromHTML: @"#FFAA3E"];
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleString fromHTML: @"#C1802C"];
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleBuiltins fromHTML: @"#007F00"];
     [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter: CFscintilla::StyleBuiltins value: 1];
     [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleKeywords fromHTML: @"#56007F"];
