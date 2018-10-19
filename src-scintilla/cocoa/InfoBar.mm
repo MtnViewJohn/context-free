@@ -223,12 +223,15 @@ static float BarFontSize = 10.0;
  * Fill the background.
  */
 - (void) drawRect: (NSRect) rect {
+    [[NSColor controlBackgroundColor] set];
+    [NSBezierPath fillRect: rect];
+
 	// Since the background is seamless, we don't need to take care for the proper offset.
 	// Simply tile the background over the invalid rectangle.
 	if (mBackground.size.width != 0) {
 		NSPoint target = {rect.origin.x, 0};
 		while (target.x < rect.origin.x + rect.size.width) {
-			[mBackground drawAtPoint: target fromRect: NSZeroRect operation: NSCompositingOperationCopy fraction: 1];
+			[mBackground drawAtPoint: target fromRect: NSZeroRect operation: NSCompositingOperationSourceOver fraction: 1];
 			target.x += mBackground.size.width;
 		}
 	}
