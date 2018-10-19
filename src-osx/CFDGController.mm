@@ -159,8 +159,8 @@ namespace {
     [self buildExamplesMenu];
     [self buildHelpMenu];
     [self updateFontDisplay: [mFontDisplay font]];
-    SInt32 vers;
-    if (Gestalt(gestaltSystemVersionMinor, &vers) != noErr || vers < 7) {
+    [self darkModeEnabled];         // make sure OSXversion is set
+    if (OSXversion < 7) {
         [mFullScreenMenu setHidden: YES];
         [mFullScreenMenu setEnabled: NO];
     } else {
@@ -171,6 +171,20 @@ namespace {
             [mFullScreenMenu setTitle: @"Exit Full Screen"];
         }
     }
+}
+
+static NSInteger OSXversion = 0;
+
+- (BOOL)darkModeEnabled
+{
+    if (OSXversion == 0) {
+        NSString* versionString = [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"];
+        NSArray* versions = [versionString componentsSeparatedByString:@"."];
+        NSUInteger count = [versions count];
+        if (count > 1 && [[versions objectAtIndex:0] integerValue] == 10)
+            OSXversion = [[versions objectAtIndex:1] integerValue];
+    }
+    return OSXversion >= 14;
 }
 
 - (IBAction)gotoURL:(id)sender
@@ -239,7 +253,17 @@ namespace {
     for (NSDocument* nsdoc in [[NSDocumentController sharedDocumentController] documents])
         if ([nsdoc isKindOfClass:[CFDGDocument class]]) {
             CFDGDocument* cfdoc = (CFDGDocument*)nsdoc;
-            [cfdoc updateFont: name size: size];
+            [cfdoc updateStyling];
+        }
+}
+
+- (IBAction)changeStyle:(id)sender
+{
+    // No font pref binding, so the existing windows have to be updated
+    for (NSDocument* nsdoc in [[NSDocumentController sharedDocumentController] documents])
+        if ([nsdoc isKindOfClass:[CFDGDocument class]]) {
+            CFDGDocument* cfdoc = (CFDGDocument*)nsdoc;
+            [cfdoc updateStyling];
         }
 }
 

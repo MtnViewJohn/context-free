@@ -87,6 +87,7 @@
 - (void)showContent;
 - (NSData*)getContent;
 - (void)updateFont:(NSString*)name size:(float)sz;
+- (void)updateStyling;
 - (void)textDidChange:(NSNotification *)notification;
 - (void)setDirty:(BOOL)dirty;
 - (void)tabWidthDidChange:(NSInteger)tab;

@@ -11,6 +11,7 @@
 		5200D9661D8C96BF00F60731 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9651D8C96BF00F60731 /* AVFoundation.framework */; };
 		5200D9681D8C96F400F60731 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9671D8C96F400F60731 /* CoreMedia.framework */; };
 		5200D96A1D8C972C00F60731 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9691D8C972C00F60731 /* CoreVideo.framework */; };
+		520CAE5A21795A39001EA749 /* HtmlColorFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 520CAE5921795A39001EA749 /* HtmlColorFormatter.mm */; };
 		520EC5F60A0C61DC00853FF3 /* i_polygons.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 520EC5C00A0C3BA800853FF3 /* i_polygons.cfdg */; };
 		52100A7F0D3A9F1800F7070D /* Rand64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52100A7E0D3A9F1800F7070D /* Rand64.cpp */; };
 		52154E811DD038690031905B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52154E801DD038690031905B /* Security.framework */; };
@@ -300,6 +301,8 @@
 		5200D9671D8C96F400F60731 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5200D9691D8C972C00F60731 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		5205AE8C14455E4C00245A6F /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = "src-common/version.h"; sourceTree = "<group>"; };
+		520CAE5821795A39001EA749 /* HtmlColorFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HtmlColorFormatter.h; sourceTree = "<group>"; };
+		520CAE5921795A39001EA749 /* HtmlColorFormatter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HtmlColorFormatter.mm; sourceTree = "<group>"; };
 		520EC5C00A0C3BA800853FF3 /* i_polygons.cfdg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = i_polygons.cfdg; sourceTree = "<group>"; };
 		52100A7D0D3A9F1800F7070D /* Rand64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rand64.h; sourceTree = "<group>"; };
 		52100A7E0D3A9F1800F7070D /* Rand64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rand64.cpp; sourceTree = "<group>"; };
@@ -689,6 +692,8 @@
 				FD32FA2B08934E0900DB40F4 /* GrammarTextView.mm */,
 				5200D95E1D8B27FC00F60731 /* AVcanvas.mm */,
 				5200D9611D8B2F9400F60731 /* AVcanvas.h */,
+				520CAE5821795A39001EA749 /* HtmlColorFormatter.h */,
+				520CAE5921795A39001EA749 /* HtmlColorFormatter.mm */,
 			);
 			path = "src-osx";
 			sourceTree = "<group>";
@@ -989,6 +994,7 @@
 				5276ACE9137A513B000FA1AB /* stacktype.cpp in Sources */,
 				52BA888B155F30490026AF04 /* ast.cpp in Sources */,
 				528EC35216C5DAA0004DAEC2 /* posixSystem.cpp in Sources */,
+				520CAE5A21795A39001EA749 /* HtmlColorFormatter.mm in Sources */,
 				528EC35516D53B3D004DAEC2 /* rendererAST.cpp in Sources */,
 				52954E62175EFCC800AE6516 /* GalleryDownloader.mm in Sources */,
 			);

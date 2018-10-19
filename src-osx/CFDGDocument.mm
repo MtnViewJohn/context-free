@@ -439,6 +439,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: static_cast<long>(size.width + 10.9)];
 }
 
+- (void)updateStyling
+{
+    [mGView updateStyling];
+}
+
 - (void)tabWidthDidChange:(NSInteger)tab
 {
     [mEditor setGeneralProperty:SCI_SETTABWIDTH value:tab];

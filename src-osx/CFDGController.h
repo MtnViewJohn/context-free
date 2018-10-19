@@ -43,6 +43,10 @@
     IBOutlet NSPopUpButton* mTabWidth;
 }
 
+@property (readonly) BOOL darkModeEnabled;
+
+- (BOOL)darkModeEnabled;
+
 - (IBAction) checkForUpdateNow:(id)sender;
 
 - (IBAction) gotoURL:(id)sender;
@@ -50,6 +54,7 @@
 
 - (IBAction) setEditorFont:(id)sender;
 - (void)changeFont:(id)sender;
+- (IBAction)changeStyle:(id)sender;
 - (IBAction)changeTabWidth:(id)sender;
 
 -(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error;

@@ -178,6 +178,7 @@ typedef NS_ENUM(NSInteger, FindReplaceShowEnum) {
 - (void)controlTextDidChange:(NSNotification *)notification;
 - (void)notification:(SCNotification *)notification;
 - (void)suspendNotifications:(BOOL)suspend;
+- (void)updateStyling;
 @end
 
 @interface GView (renderControl)
