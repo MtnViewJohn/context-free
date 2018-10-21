@@ -1678,7 +1678,7 @@ private: System::Void Frame_KeyPress(System::Object^ sender, System::Windows::Fo
 private: System::Void Frame_Changed(System::Object^ sender, System::EventArgs^ e);
 private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e);
          System::Void Style_Cfdg(System::Object^ sender, ScintillaNET::StyleNeededEventArgs^ e);
-         System::Void TabWidthChanged(System::Object^ sender, System::EventArgs^ e);
+         System::Void StyleChanged(System::Object^ sender, System::EventArgs^ e);
          System::Void InsertionCheck(System::Object^ sender, ScintillaNET::InsertCheckEventArgs^ e);
          System::Void CharAdded(System::Object^ sender, ScintillaNET::CharAddedEventArgs^ e);
          System::Void UpdateUI(System::Object^ sender, ScintillaNET::UpdateUIEventArgs^ e);

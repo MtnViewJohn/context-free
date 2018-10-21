@@ -160,8 +160,8 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     Form1^ appForm = (Form1^)MdiParent;
     appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
-    appForm->TabWidthChanged += gcnew EventHandler(this, &Document::TabWidthChanged);
-    System::Drawing::Font^ f = ((Form1^)MdiParent)->TextFont;
+    appForm->StyleChanged += gcnew EventHandler(this, &Document::StyleChanged);
+    System::Drawing::Font^ f = appForm->TextFont;
     cfdgMessage->Font = f;
 
     cfdgText->IndentationGuides = ScintillaNET::IndentView::LookBoth;
@@ -171,16 +171,8 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     cfdgText->StyleClearAll();
     cfdgText->SetSelectionBackColor(true, ColorTranslator::FromHtml("#114D9C"));
     cfdgText->SetSelectionForeColor(true, ColorTranslator::FromHtml("#FFFFFF"));
-    cfdgText->Styles[CFscintilla::StyleComment   ]->ForeColor = ColorTranslator::FromHtml("#097BF7");
-    cfdgText->Styles[CFscintilla::StyleComment   ]->Italic = true;
-    cfdgText->Styles[CFscintilla::StyleNumber    ]->ForeColor = ColorTranslator::FromHtml("#7F7F00");
-    cfdgText->Styles[CFscintilla::StyleString    ]->ForeColor = ColorTranslator::FromHtml("#FFAA3E");
-    cfdgText->Styles[CFscintilla::StyleBuiltins  ]->ForeColor = ColorTranslator::FromHtml("#007F00");
-    cfdgText->Styles[CFscintilla::StyleBuiltins  ]->Bold = true;
-    cfdgText->Styles[CFscintilla::StyleKeywords  ]->ForeColor = ColorTranslator::FromHtml("#56007F");
-    cfdgText->Styles[CFscintilla::StyleKeywords  ]->Bold = true;
-    cfdgText->Styles[CFscintilla::StyleSymbol    ]->ForeColor = ColorTranslator::FromHtml("#101010");
-    cfdgText->Styles[CFscintilla::StyleIdentifier]->ForeColor = ColorTranslator::FromHtml("#00567F");
+
+    this->StyleChanged(nullptr, nullptr);       // grab tab width and styles from prefs
 
     cfdgText->Styles[ScintillaNET::Style::BraceLight]->ForeColor = ColorTranslator::FromHtml("#8a2be2");
     cfdgText->Styles[ScintillaNET::Style::BraceLight]->BackColor = ColorTranslator::FromHtml("#e6e6fa");
@@ -195,7 +187,6 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
     cfdgText->TabDrawMode = ScintillaNET::TabDrawMode::LongArrow;
     cfdgText->UseTabs = false;
-    cfdgText->TabWidth = Form1::prefs->TabWidth;
     cfdgText->IndentWidth = 0;
     cfdgText->DirectMessage(2260, IntPtr(1), IntPtr(0));    // SCI_SETTABINDENTS = 2260
     cfdgText->DirectMessage(2262, IntPtr(1), IntPtr(0));    // SCI_SETBACKSPACEUNINDENTS = 2262
@@ -881,10 +872,36 @@ System::Void Document::textFontHandler(System::Object^ sender, System::EventArgs
     setMessageText(nullptr);
 }
 
-System::Void Document::TabWidthChanged(System::Object ^ sender, System::EventArgs ^ e)
+System::Void Document::StyleChanged(System::Object ^ sender, System::EventArgs ^ e)
 {
-    cfdgText->TabWidth = ((Form1^)MdiParent)->TabWidth;
-    return System::Void();
+    cfdgText->TabWidth = Form1::prefs->TabWidth;
+
+    cfdgText->Styles[CFscintilla::StyleDefault]->Bold = Form1::prefs->StyleDefaultBold;
+    cfdgText->Styles[CFscintilla::StyleComment]->Bold = Form1::prefs->StyleCommentsBold;
+    cfdgText->Styles[CFscintilla::StyleSymbol]->Bold = Form1::prefs->StyleSymbolsBold;
+    cfdgText->Styles[CFscintilla::StyleIdentifier]->Bold = Form1::prefs->StyleIdentifiersBold;
+    cfdgText->Styles[CFscintilla::StyleKeywords]->Bold = Form1::prefs->StyleKeywordsBold;
+    cfdgText->Styles[CFscintilla::StyleBuiltins]->Bold = Form1::prefs->StyleBuiltinsBold;
+    cfdgText->Styles[CFscintilla::StyleString]->Bold = Form1::prefs->StyleStringsBold;
+    cfdgText->Styles[CFscintilla::StyleNumber]->Bold = Form1::prefs->StyleNumbersBold;
+
+    cfdgText->Styles[CFscintilla::StyleDefault]->Italic = Form1::prefs->StyleDefaultItalic;
+    cfdgText->Styles[CFscintilla::StyleComment]->Italic = Form1::prefs->StyleCommentsItalic;
+    cfdgText->Styles[CFscintilla::StyleSymbol]->Italic = Form1::prefs->StyleSymbolsItalic;
+    cfdgText->Styles[CFscintilla::StyleIdentifier]->Italic = Form1::prefs->StyleIdentifiersItalic;
+    cfdgText->Styles[CFscintilla::StyleKeywords]->Italic = Form1::prefs->StyleKeywordsItalic;
+    cfdgText->Styles[CFscintilla::StyleBuiltins]->Italic = Form1::prefs->StyleBuiltinsItalic;
+    cfdgText->Styles[CFscintilla::StyleString]->Italic = Form1::prefs->StyleStringsItalic;
+    cfdgText->Styles[CFscintilla::StyleNumber]->Italic = Form1::prefs->StyleNumbersItalic;
+
+    cfdgText->Styles[CFscintilla::StyleDefault]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleDefaultColor);
+    cfdgText->Styles[CFscintilla::StyleComment]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleCommentsColor);
+    cfdgText->Styles[CFscintilla::StyleSymbol]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleSymbolsColor);
+    cfdgText->Styles[CFscintilla::StyleIdentifier]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleIdentifiersColor);
+    cfdgText->Styles[CFscintilla::StyleKeywords]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleKeywordsColor);
+    cfdgText->Styles[CFscintilla::StyleBuiltins]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleBuiltinsColor);
+    cfdgText->Styles[CFscintilla::StyleString]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleStringsColor);
+    cfdgText->Styles[CFscintilla::StyleNumber]->ForeColor = ColorTranslator::FromHtml(Form1::prefs->StyleNumbersColor);
 }
 
 System::Void Document::errorNavigation(System::Object^ sender, System::Windows::Forms::WebBrowserNavigatingEventArgs^ e)

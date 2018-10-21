@@ -139,6 +139,17 @@ void PreferenceManager::SetPrefString(String^ name, String^ value)
     baseKey->SetValue(name, value, RegistryValueKind::String);
 }
 
+void PreferenceManager::SetPrefColorString(System::String ^ name, System::String ^ value, System::String ^ defValue)
+{
+    try {
+        System::Drawing::Color c = System::Drawing::ColorTranslator::FromHtml(value);
+        if (value->Length > 0)
+            baseKey->SetValue(name, value, RegistryValueKind::String);
+        else
+            baseKey->SetValue(name, defValue, RegistryValueKind::String);
+    } catch (System::Exception^) {}
+}
+
 void PreferenceManager::SetPrefProtectedString(String^ name, array<Byte>^ entropy, String^ value)
 {
     try {

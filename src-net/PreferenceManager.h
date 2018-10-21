@@ -62,6 +62,7 @@ namespace OzoneUtil {
         void SetPrefBool(System::String^ name, bool value);
         void SetPrefDouble(System::String^ name, double value);
         void SetPrefString(System::String^ name, System::String^ value);
+        void SetPrefColorString(System::String^ name, System::String^ value, System::String ^ defValue);
         void SetPrefProtectedString(System::String^ name, array<System::Byte>^ entropy, System::String^ value);
 		void SetPrefBinary(System::String^ name, array<System::Byte>^ defValue);
         void DeletePref(System::String^ name);

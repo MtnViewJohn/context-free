@@ -208,5 +208,101 @@ namespace ContextFreeNet {
                 return gcnew System::Drawing::Font("Microsoft Sans Serif", 8.0);
             }
         }
+        property bool StyleDefaultBold {
+            void set(bool setTo) { SetPrefBool("StyleDefaultBold", setTo); }
+            bool get() { return GetPrefBool("StyleDefaultBold", false); }
+        }
+        property bool StyleCommentsBold {
+            void set(bool setTo) { SetPrefBool("StyleCommentsBold", setTo); }
+            bool get() { return GetPrefBool("StyleCommentsBold", false); }
+        }
+        property bool StyleSymbolsBold {
+            void set(bool setTo) { SetPrefBool("StyleSymbolsBold", setTo); }
+            bool get() { return GetPrefBool("StyleSymbolsBold", false); }
+        }
+        property bool StyleIdentifiersBold {
+            void set(bool setTo) { SetPrefBool("StyleIdentifiersBold", setTo); }
+            bool get() { return GetPrefBool("StyleIdentifiersBold", false); }
+        }
+        property bool StyleKeywordsBold {
+            void set(bool setTo) { SetPrefBool("StyleKeywordsBold", setTo); }
+            bool get() { return GetPrefBool("StyleKeywordsBold", true); }
+        }
+        property bool StyleBuiltinsBold {
+            void set(bool setTo) { SetPrefBool("StyleBuiltinsBold", setTo); }
+            bool get() { return GetPrefBool("StyleBuiltinsBold", true); }
+        }
+        property bool StyleStringsBold {
+            void set(bool setTo) { SetPrefBool("StyleStringsBold", setTo); }
+            bool get() { return GetPrefBool("StyleStringsBold", false); }
+        }
+        property bool StyleNumbersBold {
+            void set(bool setTo) { SetPrefBool("StyleNumbersBold", setTo); }
+            bool get() { return GetPrefBool("StyleNumbersBold", false); }
+        }
+        property bool StyleDefaultItalic {
+            void set(bool setTo) { SetPrefBool("StyleDefaultItalic", setTo); }
+            bool get() { return GetPrefBool("StyleDefaultItalic", false); }
+        }
+        property bool StyleCommentsItalic {
+            void set(bool setTo) { SetPrefBool("StyleCommentsItalic", setTo); }
+            bool get() { return GetPrefBool("StyleCommentsItalic", true); }
+        }
+        property bool StyleSymbolsItalic {
+            void set(bool setTo) { SetPrefBool("StyleSymbolsItalic", setTo); }
+            bool get() { return GetPrefBool("StyleSymbolsItalic", false); }
+        }
+        property bool StyleIdentifiersItalic {
+            void set(bool setTo) { SetPrefBool("StyleIdentifiersItalic", setTo); }
+            bool get() { return GetPrefBool("StyleIdentifiersItalic", false); }
+        }
+        property bool StyleKeywordsItalic {
+            void set(bool setTo) { SetPrefBool("StyleKeywordsItalic", setTo); }
+            bool get() { return GetPrefBool("StyleKeywordsItalic", false); }
+        }
+        property bool StyleBuiltinsItalic {
+            void set(bool setTo) { SetPrefBool("StyleBuiltinsItalic", setTo); }
+            bool get() { return GetPrefBool("StyleBuiltinsItalic", false); }
+        }
+        property bool StyleStringsItalic {
+            void set(bool setTo) { SetPrefBool("StyleStringsItalic", setTo); }
+            bool get() { return GetPrefBool("StyleStringsItalic", false); }
+        }
+        property bool StyleNumbersItalic {
+            void set(bool setTo) { SetPrefBool("StyleNumbersItalic", setTo); }
+            bool get() { return GetPrefBool("StyleNumbersItalic", false); }
+        }
+        property System::String^ StyleDefaultColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleDefaultColor", setTo, "#000"); }
+            System::String^ get() { return GetPrefString("StyleDefaultColor", "#000"); }
+        }
+        property System::String^ StyleCommentsColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleCommentsColor", setTo, "#097BF7"); }
+            System::String^ get() { return GetPrefString("StyleCommentsColor", "#097BF7"); }
+        }
+        property System::String^ StyleSymbolsColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleSymbolsColor", setTo, "#101010"); }
+            System::String^ get() { return GetPrefString("StyleSymbolsColor", "#101010"); }
+        }
+        property System::String^ StyleIdentifiersColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleIdentifiersColor", setTo, "#00567F"); }
+            System::String^ get() { return GetPrefString("StyleIdentifiersColor", "#00567F"); }
+        }
+        property System::String^ StyleKeywordsColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleKeywordsColor", setTo, "#56007F"); }
+            System::String^ get() { return GetPrefString("StyleKeywordsColor", "#56007F"); }
+        }
+        property System::String^ StyleBuiltinsColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleBuiltinsColor", setTo, "#007F00"); }
+            System::String^ get() { return GetPrefString("StyleBuiltinsColor", "#007F00"); }
+        }
+        property System::String^ StyleStringsColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleStringsColor", setTo, "#FFAA3E"); }
+            System::String^ get() { return GetPrefString("StyleStringsColor", "#FFAA3E"); }
+        }
+        property System::String^ StyleNumbersColor {
+            void set(System::String^ setTo) { SetPrefColorString("StyleNumbersColor", setTo, "#7F7F00"); }
+            System::String^ get() { return GetPrefString("StyleNumbersColor", "#7F7F00"); }
+        }
     } ;
 }

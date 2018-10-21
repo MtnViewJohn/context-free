@@ -126,12 +126,12 @@ namespace ContextFreeNet {
                     TextFontChanged(this, gcnew System::EventArgs());
                 }
             }
-            event System::EventHandler^ TabWidthChanged;
+            event System::EventHandler^ StyleChanged;
             property int TabWidth {
                 int get() { return tabWidth; }
                 void set(int v) { 
                     tabWidth = v;
-                    TabWidthChanged(this, gcnew System::EventArgs());
+                    StyleChanged(this, gcnew System::EventArgs());
                 }
             }
 
