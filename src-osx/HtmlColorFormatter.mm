@@ -29,12 +29,21 @@
 - (BOOL)isPartialStringValid:(NSString *)partialString
             newEditingString:(NSString *__autoreleasing *)newString
             errorDescription:(NSString *__autoreleasing *)error {
-    if ([partialString length] == 0) return YES;
-    if ([partialString length] > 7) return NO;
-    if ([partialString characterAtIndex:0] != (unichar)'#') return NO;
-    for (NSUInteger i = 1; i < [partialString length]; i++) {
-        unichar c = [partialString characterAtIndex:i];
-        if (c > 0x80 || !std::isxdigit(c)) return NO;
+    NSUInteger len = [partialString length];
+    unichar buffer[len+1];
+    [partialString getCharacters:buffer range:NSMakeRange(0, len)];
+    if (len == 0) return YES;
+    if (buffer[0] == (unichar)'#') {
+        if (len > 7) return NO;
+        for (NSUInteger i = 1; i < len; i++) {
+            unichar c = buffer[i];
+            if (c >= 0x80 || !std::isxdigit(c)) return NO;
+        }
+    } else {
+        for (NSUInteger i = 0; i < len; ++i) {
+            unichar c = buffer[i];
+            if (c >= 0x80 || !std::isalpha(c)) return NO;
+        }
     }
     return YES;
 }
