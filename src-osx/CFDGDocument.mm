@@ -65,6 +65,9 @@ NSString* PrefKeyHiresHeight = @"HiresHeight";
 extern NSInteger CurrentTabWidth;
 
 namespace {
+    NSDictionary<NSAttributedStringKey, id>* textDict = @{
+        NSForegroundColorAttributeName: NSColor.textColor
+    };
     
     class CocoaSystem : public PosixSystem
     {
@@ -345,10 +348,16 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return mSystem;
 }
 
+
+
 - (void)noteStatus:(NSString*)s
 {
     if (mStatusText != nil) {
-        [[[mStatusText textStorage] mutableString] appendString: s];
+        NSAttributedString* astr = [[[NSAttributedString alloc]
+                                     initWithString:s
+                                         attributes:textDict
+                                     ] autorelease];
+        [[mStatusText textStorage] appendAttributedString: astr];
         [[[mStatusText textStorage] mutableString] appendString: @"\n"];
         // scroll to the end
         NSRange range = NSMakeRange ([[mStatusText string] length], 0);
@@ -377,7 +386,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 - (void)noteError:(CfdgErrorWrapper*)e
 {
     NSMutableAttributedString* msg = [[[NSMutableAttributedString alloc] 
-                                       initWithString: @"Parse error - "] 
+                                       initWithString: @"Parse error - "
+                                           attributes: textDict]
                                       autorelease];
     NSUInteger start = [msg length];
     [[msg mutableString] appendString: [e message]];
@@ -395,8 +405,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
             
             [msg addAttribute: NSLinkAttributeName value: e range: r];
             
-            // make the text appear in blue
-            [msg addAttribute: NSForegroundColorAttributeName value: [NSColor blueColor] range: r];
+            // make the text appear in link color
+            [msg addAttribute: NSForegroundColorAttributeName value: [NSColor linkColor] range: r];
             
             // next make the text appear with an underline
             [msg addAttribute:

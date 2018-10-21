@@ -204,7 +204,7 @@ namespace {
     NSString* PrefKeyEditorDefaultBold = @"EditorDefaultBold";
     NSString* PrefKeyEditorCommentsBold = @"EditorCommentsBold";
     NSString* PrefKeyEditorSymbolsBold = @"EditorSymbolsBold";
-    NSString* PrefKeyEditorIdentifeirsBold = @"EditorIdentifiersBold";
+    NSString* PrefKeyEditorIdentifiersBold = @"EditorIdentifiersBold";
     NSString* PrefKeyEditorKeywordsBold = @"EditorKeywordsBold";
     NSString* PrefKeyEditorBuiltinsBold = @"EditorBuiltinsBold";
     NSString* PrefKeyEditorStringsBold = @"EditorStringsBold";
@@ -212,7 +212,7 @@ namespace {
     NSString* PrefKeyEditorDefaultItalic = @"EditorDefaultItalic";
     NSString* PrefKeyEditorCommentsItalic = @"EditorCommentsItalic";
     NSString* PrefKeyEditorSymbolsItalic = @"EditorSymbolsItalic";
-    NSString* PrefKeyEditorIdentifeirsItalic = @"EditorIdentifiersItalic";
+    NSString* PrefKeyEditorIdentifiersItalic = @"EditorIdentifiersItalic";
     NSString* PrefKeyEditorKeywordsItalic = @"EditorKeywordsItalic";
     NSString* PrefKeyEditorBuiltinsItalic = @"EditorBuiltinsItalic";
     NSString* PrefKeyEditorStringsItalic = @"EditorStringsItalic";
@@ -220,11 +220,19 @@ namespace {
     NSString* PrefKeyEditorDefaultColor = @"EditorDefaultColor";
     NSString* PrefKeyEditorCommentsColor = @"EditorCommentsColor";
     NSString* PrefKeyEditorSymbolsColor = @"EditorSymbolsColor";
-    NSString* PrefKeyEditorIdentifeirsColor = @"EditorIdentifiersColor";
+    NSString* PrefKeyEditorIdentifiersColor = @"EditorIdentifiersColor";
     NSString* PrefKeyEditorKeywordsColor = @"EditorKeywordsColor";
     NSString* PrefKeyEditorBuiltinsColor = @"EditorBuiltinsColor";
     NSString* PrefKeyEditorStringsColor = @"EditorStringsColor";
     NSString* PrefKeyEditorNumbersColor = @"EditorNumbersColor";
+    NSString* PrefKeyEditorDefaultDarkColor = @"EditorDefaultDarkColor";
+    NSString* PrefKeyEditorCommentsDarkColor = @"EditorCommentsDarkColor";
+    NSString* PrefKeyEditorSymbolsDarkColor = @"EditorSymbolsDarkColor";
+    NSString* PrefKeyEditorIdentifiersDarkColor = @"EditorIdentifiersDarkColor";
+    NSString* PrefKeyEditorKeywordsDarkColor = @"EditorKeywordsDarkColor";
+    NSString* PrefKeyEditorBuiltinsDarkColor = @"EditorBuiltinsDarkColor";
+    NSString* PrefKeyEditorStringsDarkColor = @"EditorStringsDarkColor";
+    NSString* PrefKeyEditorNumbersDarkColor = @"EditorNumbersDarkColor";
 
     class RenderParameters
     {
@@ -704,6 +712,11 @@ namespace {
 {
     [super viewDidEndLiveResize];
     [self setNeedsDisplay:YES];
+}
+
+- (void)viewDidChangeEffectiveAppearance
+{
+    [self updateStyling];
 }
 
 - (IBAction)toggleRender:(id)sender
@@ -1186,6 +1199,61 @@ namespace {
     }
 }
 
+static sptr_t MakeColor(id v)
+{
+    if ([v isKindOfClass:[NSString class]]) {
+        NSString* fromHTML = (NSString*)v;
+        if (fromHTML.length > 3 && [fromHTML characterAtIndex: 0] == '#') {
+            bool longVersion = fromHTML.length > 6;
+            int index = 1;
+            
+            char value[3] = {0, 0, 0};
+            value[0] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            if (longVersion)
+                value[1] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            else
+                value[1] = value[0];
+            
+            unsigned rawRed;
+            [[NSScanner scannerWithString: @(value)] scanHexInt: &rawRed];
+            
+            value[0] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            if (longVersion)
+                value[1] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            else
+                value[1] = value[0];
+            
+            unsigned rawGreen;
+            [[NSScanner scannerWithString: @(value)] scanHexInt: &rawGreen];
+            
+            value[0] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            if (longVersion)
+                value[1] = static_cast<char>([fromHTML characterAtIndex: index++]);
+            else
+                value[1] = value[0];
+            
+            unsigned rawBlue;
+            [[NSScanner scannerWithString: @(value)] scanHexInt: &rawBlue];
+            
+            sptr_t color = (rawBlue << 16) + (rawGreen << 8) + rawRed;
+            return color;
+        } else {
+            return -1;
+        }
+    }
+    if ([v isKindOfClass:[NSColor class]]) {
+        NSColor* value = (NSColor*)v;
+        if (value.colorSpaceName != NSDeviceRGBColorSpace)
+            value = [value colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+        long red = static_cast<long>(value.redComponent * 255);
+        long green = static_cast<long>(value.greenComponent * 255);
+        long blue = static_cast<long>(value.blueComponent * 255);
+        
+        sptr_t color = (blue << 16) + (green << 8) + red;
+        return color;
+    }
+    return -1;
+}
 
 - (void)updateStyling
 {
@@ -1197,47 +1265,153 @@ namespace {
     [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: fontName];
     long sz = static_cast<long>(fontSize * 100.0f);
     [mEditor setGeneralProperty: SCI_STYLESETSIZEFRACTIONAL parameter: STYLE_DEFAULT value: sz];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: STYLE_DEFAULT value: [NSColor blackColor]];
     
+    NSApplication* me = [NSApplication sharedApplication];
+    NSAppearance* saved = nil;
+    bool darkMode = false; __MAC_10_7;
+#ifndef __MAC_10_14
+    NSString* NSAppearanceNameDarkAqua = @"foo";
+#endif
+    if (@available(macOS 10_14, *)) {
+        saved = [NSAppearance currentAppearance];
+        NSAppearance* next = [me effectiveAppearance];
+        [NSAppearance setCurrentAppearance: next];
+        darkMode = [[next bestMatchFromAppearancesWithNames:
+                     @[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]]
+                        isEqualToString:NSAppearanceNameDarkAqua];
+    }
+
+    [mEditor setColorProperty: SCI_STYLESETFORE parameter: STYLE_DEFAULT value: [NSColor textColor]];
+    [mEditor setColorProperty: SCI_STYLESETBACK parameter: STYLE_DEFAULT value: [NSColor textBackgroundColor]];
     [mEditor setGeneralProperty: SCI_STYLECLEARALL parameter: 0 value: 0];
+
+    [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_LINENUMBER value:[NSColor textColor]];
+    [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_LINENUMBER value:[NSColor underPageBackgroundColor]];
+    [mEditor setColorProperty:SCI_SETSELFORE parameter:1 value:[NSColor selectedTextColor]];
+    [mEditor setColorProperty:SCI_SETSELBACK parameter:1 value:[NSColor selectedTextBackgroundColor]];
+    [mEditor message:SCI_SETCARETFORE wParam:MakeColor([NSColor textColor])];
+
+    if (saved)
+        [NSAppearance setCurrentAppearance: saved];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleDefault value:[defaults boolForKey:PrefKeyEditorDefaultBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleDefault value:[defaults boolForKey:PrefKeyEditorDefaultItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleDefault fromHTML:[defaults stringForKey:PrefKeyEditorDefaultColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleDefault
+                          value:[defaults boolForKey:PrefKeyEditorDefaultBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleDefault
+                          value:[defaults boolForKey:PrefKeyEditorDefaultItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleComment value:[defaults boolForKey:PrefKeyEditorCommentsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleComment value:[defaults boolForKey:PrefKeyEditorCommentsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleComment fromHTML:[defaults stringForKey:PrefKeyEditorCommentsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleComment
+                          value:[defaults boolForKey:PrefKeyEditorCommentsBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleComment
+                          value:[defaults boolForKey:PrefKeyEditorCommentsItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleSymbol value:[defaults boolForKey:PrefKeyEditorSymbolsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleSymbol value:[defaults boolForKey:PrefKeyEditorSymbolsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleSymbol fromHTML:[defaults stringForKey:PrefKeyEditorSymbolsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleSymbol
+                          value:[defaults boolForKey:PrefKeyEditorSymbolsBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleSymbol
+                          value:[defaults boolForKey:PrefKeyEditorSymbolsItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleIdentifier value:[defaults boolForKey:PrefKeyEditorIdentifeirsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleIdentifier value:[defaults boolForKey:PrefKeyEditorIdentifeirsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleIdentifier fromHTML:[defaults stringForKey:PrefKeyEditorIdentifeirsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleIdentifier
+                          value:[defaults boolForKey:PrefKeyEditorIdentifiersBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleIdentifier
+                          value:[defaults boolForKey:PrefKeyEditorIdentifiersItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleKeywords value:[defaults boolForKey:PrefKeyEditorKeywordsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleKeywords value:[defaults boolForKey:PrefKeyEditorKeywordsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleKeywords fromHTML:[defaults stringForKey:PrefKeyEditorKeywordsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleKeywords
+                          value:[defaults boolForKey:PrefKeyEditorKeywordsBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleKeywords
+                          value:[defaults boolForKey:PrefKeyEditorKeywordsItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleBuiltins value:[defaults boolForKey:PrefKeyEditorBuiltinsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleBuiltins value:[defaults boolForKey:PrefKeyEditorBuiltinsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleBuiltins fromHTML:[defaults stringForKey:PrefKeyEditorBuiltinsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleBuiltins
+                          value:[defaults boolForKey:PrefKeyEditorBuiltinsBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleBuiltins
+                          value:[defaults boolForKey:PrefKeyEditorBuiltinsItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleString value:[defaults boolForKey:PrefKeyEditorStringsBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleString value:[defaults boolForKey:PrefKeyEditorStringsItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleString fromHTML:[defaults stringForKey:PrefKeyEditorStringsColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleString
+                          value:[defaults boolForKey:PrefKeyEditorStringsBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleString
+                          value:[defaults boolForKey:PrefKeyEditorStringsItalic]];
     
-    [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:CFscintilla::StyleNumber value:[defaults boolForKey:PrefKeyEditorNumbersBold]];
-    [mEditor setGeneralProperty:SCI_STYLESETITALIC parameter:CFscintilla::StyleNumber value:[defaults boolForKey:PrefKeyEditorNumbersItalic]];
-    [mEditor setColorProperty: SCI_STYLESETFORE parameter: CFscintilla::StyleNumber fromHTML:[defaults stringForKey:PrefKeyEditorNumbersColor]];
+    [mEditor setGeneralProperty:SCI_STYLESETBOLD
+                      parameter:CFscintilla::StyleNumber
+                          value:[defaults boolForKey:PrefKeyEditorNumbersBold]];
+    [mEditor setGeneralProperty:SCI_STYLESETITALIC
+                      parameter:CFscintilla::StyleNumber
+                          value:[defaults boolForKey:PrefKeyEditorNumbersItalic]];
     
-    [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#8a2be2"];
-    [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#e6e6fa"];
-    [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD fromHTML:@"#ff0000"];
-    [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter:STYLE_BRACEBAD value: 1];
-    
+    if (darkMode) {
+        [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#fff"];
+        [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#7a7a85"];
+        [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD   fromHTML:@"#ff6969"];
+        [mEditor setGeneralProperty:SCI_STYLESETBOLD parameter:STYLE_BRACEBAD value: 1];
+        
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleDefault
+                         fromHTML: [defaults stringForKey:PrefKeyEditorDefaultDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleComment
+                         fromHTML: [defaults stringForKey:PrefKeyEditorCommentsDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleSymbol
+                         fromHTML: [defaults stringForKey:PrefKeyEditorSymbolsDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleIdentifier
+                         fromHTML: [defaults stringForKey:PrefKeyEditorIdentifiersDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleKeywords
+                         fromHTML: [defaults stringForKey:PrefKeyEditorKeywordsDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleBuiltins
+                         fromHTML: [defaults stringForKey:PrefKeyEditorBuiltinsDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleString
+                         fromHTML: [defaults stringForKey:PrefKeyEditorStringsDarkColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleNumber
+                         fromHTML: [defaults stringForKey:PrefKeyEditorNumbersDarkColor]];
+    } else {
+        [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#8a2be2"];
+        [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#e6e6fa"];
+        [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD   fromHTML:@"#ff0000"];
+        [mEditor setGeneralProperty: SCI_STYLESETBOLD parameter:STYLE_BRACEBAD value: 1];
+        
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleDefault
+                         fromHTML: [defaults stringForKey:PrefKeyEditorDefaultColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleComment
+                         fromHTML: [defaults stringForKey:PrefKeyEditorCommentsColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleSymbol
+                         fromHTML: [defaults stringForKey:PrefKeyEditorSymbolsColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleIdentifier
+                         fromHTML: [defaults stringForKey:PrefKeyEditorIdentifiersColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleKeywords
+                         fromHTML: [defaults stringForKey:PrefKeyEditorKeywordsColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleBuiltins
+                         fromHTML: [defaults stringForKey:PrefKeyEditorBuiltinsColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleString
+                         fromHTML: [defaults stringForKey:PrefKeyEditorStringsColor]];
+        [mEditor setColorProperty: SCI_STYLESETFORE
+                        parameter: CFscintilla::StyleNumber
+                         fromHTML: [defaults stringForKey:PrefKeyEditorNumbersColor]];
+    }
+
     NSSize size = [@"8888" sizeWithAttributes:[NSDictionary dictionaryWithObject:[NSFont fontWithName:fontName size:fontSize] forKey:NSFontAttributeName]];
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: static_cast<long>(size.width + 10.9)];
 }
@@ -1736,7 +1910,7 @@ namespace {
     [self updateStyling];
     
     InfoBar* infoBar = [[[InfoBar alloc] initWithFrame: NSMakeRect(0, 0, 400, 0)] autorelease];
-    [infoBar setDisplay: IBShowAll];
+    [infoBar setDisplay: IBShowStatusText | IBShowCaretPosition];
     [mEditor setInfoBar: infoBar top: NO];
     [mEditor setStatusText: @"Operation complete"];
     [mEditor setGeneralProperty:SCI_SETSEARCHFLAGS value:SCFIND_MATCHCASE];

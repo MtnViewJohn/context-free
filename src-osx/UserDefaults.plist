@@ -9,7 +9,7 @@
 	<key>EditorDefaultColor</key>
 	<string>#000</string>
 	<key>EditorDefaultDarkColor</key>
-	<string>0</string>
+	<string>#FFF</string>
 	<key>EditorCommentsBold</key>
 	<false/>
 	<key>EditorCommentsItalic</key>
@@ -17,7 +17,7 @@
 	<key>EditorCommentsColor</key>
 	<string>#097BF7</string>
 	<key>EditorCommentsDarkColor</key>
-	<string>1</string>
+	<string>#097BF7</string>
 	<key>EditorSymbolsBold</key>
 	<false/>
 	<key>EditorSymbolsItalic</key>
@@ -25,7 +25,7 @@
 	<key>EditorSymbolsColor</key>
 	<string>#111</string>
 	<key>EditorSymbolsDarkColor</key>
-	<string>0</string>
+	<string>#EEE</string>
 	<key>EditorIdentifiersBold</key>
 	<false/>
 	<key>EditorIdentifiersItalic</key>
@@ -33,7 +33,7 @@
 	<key>EditorIdentifiersColor</key>
 	<string>#00567F</string>
 	<key>EditorIdentifiersDarkColor</key>
-	<string>0</string>
+	<string>#009AE4</string>
 	<key>EditorKeywordsBold</key>
 	<true/>
 	<key>EditorKeywordsItalic</key>
@@ -41,7 +41,7 @@
 	<key>EditorKeywordsColor</key>
 	<string>#56007F</string>
 	<key>EditorKeywordsDarkColor</key>
-	<string>0</string>
+	<string>#A300F1</string>
 	<key>EditorBuiltinsBold</key>
 	<true/>
 	<key>EditorBuiltinsItalic</key>
@@ -49,7 +49,7 @@
 	<key>EditorBuiltinsColor</key>
 	<string>#007F00</string>
 	<key>EditorBuiltinsDarkColor</key>
-	<string>0</string>
+	<string>#00D300</string>
 	<key>EditorStringsBold</key>
 	<false/>
 	<key>EditorStringsItalic</key>
@@ -57,7 +57,7 @@
 	<key>EditorStringsColor</key>
 	<string>#C1802C</string>
 	<key>EditorStringsDarkColor</key>
-	<string>0</string>
+	<string>#EB9C35</string>
 	<key>EditorNumbersBold</key>
 	<false/>
 	<key>EditorNumbersItalic</key>
@@ -65,7 +65,7 @@
 	<key>EditorNumbersColor</key>
 	<string>#7F7F00</string>
 	<key>EditorNumbersDarkColor</key>
-	<string>0</string>
+	<string>#D6D600</string>
 	<key>TabWidth</key>
 	<integer>2</integer>
 	<key>MovieFrameRate</key>
