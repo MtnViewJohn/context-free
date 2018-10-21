@@ -21,7 +21,7 @@
 ;
 
 !define VER_MAJOR 3
-!define VER_MINOR 0
+!define VER_MINOR 1
 
 SetCompressor bzip2
 RequestExecutionLevel user
@@ -102,28 +102,30 @@ SectionIn RO
     File "..\\..\\src-net\\Release64\\ContextFree.exe" 
     File "..\\..\\Release64\\ContextFreeCLI.exe" 
     File "..\\..\\src-net\\Release64\\CFControls.dll" 
-    File "..\\..\\src-net\\Release64\\Controls.dll" 
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\vcruntime140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\concrt140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x64\\Microsoft.VC150.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x64\\Microsoft.VC141.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x64\\Microsoft.VC141.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x64\\Microsoft.VC141.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x64\\Microsoft.VC141.CRT\\msvcp140_1.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x64\\Microsoft.VC141.CRT\\msvcp140_2.dll"
     File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x64\\*.dll"
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
     File "..\\..\\Release\\ContextFreeCLI.exe" 
     File "..\\..\\src-net\\Release\\CFControls.dll" 
-    File "..\\..\\src-net\\Release\\Controls.dll" 
     File "..\\..\\src-net\\Release\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.dll" 
     File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\vcruntime140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\concrt140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\\14.10.25008\\x86\\Microsoft.VC150.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x86\\Microsoft.VC141.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x86\\Microsoft.VC141.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x86\\Microsoft.VC141.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x86\\Microsoft.VC141.CRT\\msvcp140_1.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Redist\\MSVC\14.15.26706\\x86\\Microsoft.VC141.CRT\\msvcp140_2.dll"
     File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x86\\*.dll"
   ${EndIf}
-
+  File "..\\..\\src-net\\packages\\jacobslusser.ScintillaNET.3.6.3\\lib\\net40\\ScintillaNET.dll"
 SectionEnd
 
 
