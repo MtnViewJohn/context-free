@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -1358,11 +1359,11 @@
                                                         </textFieldCell>
                                                         <connections>
                                                             <action selector="changeStyle:" target="230" id="qwd-x1-I8d"/>
-                                                            <binding destination="268" name="value" keyPath="values.EditorDefaultColor" id="ZDV-dy-NEI"/>
+                                                            <binding destination="268" name="value" keyPath="values.EditorDefaultColor" id="wtG-DU-OHe"/>
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="rZa-hI-xSP"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="Sy7-yK-VhC">
+                                                    <textField verticalHuggingPriority="750" tag="621559" id="Sy7-yK-VhC">
                                                         <rect key="frame" x="146" y="125" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="drC-Va-8kj">
@@ -1376,7 +1377,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="ObK-Dr-pau"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="tfI-aD-LGv">
+                                                    <textField verticalHuggingPriority="750" tag="1118481" id="tfI-aD-LGv">
                                                         <rect key="frame" x="146" y="105" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="8Rm-8d-eNE">
@@ -1390,7 +1391,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="pQl-bl-gGd"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="ZU3-Lh-xfJ">
+                                                    <textField verticalHuggingPriority="750" tag="22143" id="ZU3-Lh-xfJ">
                                                         <rect key="frame" x="146" y="85" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="op8-aS-f2t">
@@ -1404,7 +1405,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="ful-QD-E8n"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="HzJ-1G-sjJ">
+                                                    <textField verticalHuggingPriority="750" tag="5636223" id="HzJ-1G-sjJ">
                                                         <rect key="frame" x="146" y="65" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="1hb-vt-5xH">
@@ -1418,7 +1419,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="cWg-xx-7Ow"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="sGj-nh-fNJ">
+                                                    <textField verticalHuggingPriority="750" tag="32512" id="sGj-nh-fNJ">
                                                         <rect key="frame" x="146" y="45" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="EeB-Co-wqK">
@@ -1432,7 +1433,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="dsU-NF-1C6"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="Ckp-hh-urp">
+                                                    <textField verticalHuggingPriority="750" tag="12681260" id="Ckp-hh-urp">
                                                         <rect key="frame" x="146" y="25" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="SIS-yA-qtx">
@@ -1446,7 +1447,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="lza-5a-hB0"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="6GM-Tq-vAL">
+                                                    <textField verticalHuggingPriority="750" tag="8355584" id="6GM-Tq-vAL">
                                                         <rect key="frame" x="146" y="5" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="xnU-61-X8U">
@@ -1460,7 +1461,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="Z0i-zT-GEG"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="6dD-rX-8JM">
+                                                    <textField verticalHuggingPriority="750" tag="14079488" id="6dD-rX-8JM">
                                                         <rect key="frame" x="224" y="5" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="Bf9-pH-Qgf">
@@ -1475,7 +1476,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="y7G-tI-FH1"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="cer-VM-GiE">
+                                                    <textField verticalHuggingPriority="750" tag="16777215" id="cer-VM-GiE">
                                                         <rect key="frame" x="224" y="145" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="4Qv-p5-FVF">
@@ -1490,7 +1491,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="bhQ-Yj-Ffk"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="jZY-rB-sKw">
+                                                    <textField verticalHuggingPriority="750" tag="15440949" id="jZY-rB-sKw">
                                                         <rect key="frame" x="224" y="25" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="cnb-Of-AzA">
@@ -1505,7 +1506,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="VCT-Gd-SM7"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="xOQ-sW-wPt">
+                                                    <textField verticalHuggingPriority="750" tag="10682609" id="xOQ-sW-wPt">
                                                         <rect key="frame" x="224" y="65" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="ZDH-aP-gBh">
@@ -1520,7 +1521,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="J2Y-dS-6uD"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="Yq8-NK-EIO">
+                                                    <textField verticalHuggingPriority="750" tag="621559" id="Yq8-NK-EIO">
                                                         <rect key="frame" x="224" y="125" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="5BC-lu-xnX">
@@ -1535,7 +1536,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="KiQ-pV-hXS"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="c8t-KH-gow">
+                                                    <textField verticalHuggingPriority="750" tag="39652" id="c8t-KH-gow">
                                                         <rect key="frame" x="224" y="85" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="mGV-Q0-zcG">
@@ -1550,7 +1551,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="gCI-ML-F72"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="SUo-8Q-uXc">
+                                                    <textField verticalHuggingPriority="750" tag="15658734" id="SUo-8Q-uXc">
                                                         <rect key="frame" x="224" y="105" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="Jsl-aL-xpp">
@@ -1565,7 +1566,7 @@
                                                             <outlet property="formatter" destination="4Ay-oJ-ScV" id="Kmj-sy-jz7"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="aZm-jP-w4h">
+                                                    <textField verticalHuggingPriority="750" tag="54016" id="aZm-jP-w4h">
                                                         <rect key="frame" x="224" y="45" width="70" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="#FFFFFF" drawsBackground="YES" id="JhL-bG-DpQ">

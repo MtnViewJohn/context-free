@@ -1349,13 +1349,13 @@ namespace {
     }
 }
 
-static sptr_t MakeColor(id v)
+long MakeColor(id v)
 {
     if ([v isKindOfClass:[NSString class]]) {
         NSString* fromHTML = (NSString*)v;
         if (NSString* cvalue = [ColorNames objectForKey:[fromHTML lowercaseString]])
             fromHTML = cvalue;
-        if (fromHTML.length > 3 && [fromHTML characterAtIndex: 0] == '#') {
+        if ((fromHTML.length == 4 || fromHTML.length == 7) && [fromHTML characterAtIndex: 0] == '#') {
             bool longVersion = fromHTML.length > 6;
             int index = 1;
             
@@ -1387,7 +1387,7 @@ static sptr_t MakeColor(id v)
             unsigned rawBlue;
             [[NSScanner scannerWithString: @(value)] scanHexInt: &rawBlue];
             
-            sptr_t color = (rawBlue << 16) + (rawGreen << 8) + rawRed;
+            long color = (rawBlue << 16) + (rawGreen << 8) + rawRed;
             return color;
         } else {
             return -1;
@@ -1401,7 +1401,7 @@ static sptr_t MakeColor(id v)
         long green = static_cast<long>(value.greenComponent * 255);
         long blue = static_cast<long>(value.blueComponent * 255);
         
-        sptr_t color = (blue << 16) + (green << 8) + red;
+        long color = (blue << 16) + (green << 8) + red;
         return color;
     }
     return -1;

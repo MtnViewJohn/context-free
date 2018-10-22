@@ -33,6 +33,7 @@
 #include "SystemConfiguration/SCNetwork.h"
 #include <SystemConfiguration/SCNetworkReachability.h>
 #include "cfdg.h"
+#include "GView.h"
 
 @interface CFDGController (setup)
 + (void)setupURLs;
@@ -267,7 +268,14 @@ static NSInteger OSXversion = 0;
 
 - (IBAction)changeStyle:(id)sender
 {
-    // No font pref binding, so the existing windows have to be updated
+    // Bad field data causes restore to default (which is stored in the field tag)
+    if ([sender isKindOfClass:[NSTextField class]]) {
+        NSTextField* field = sender;
+        if (MakeColor(field.stringValue) < 0) {
+            field.stringValue = [NSString stringWithFormat:@"#%06lX", [field tag]];
+        }
+    }
+    // No style binding, so the existing windows have to be updated
     for (NSDocument* nsdoc in [[NSDocumentController sharedDocumentController] documents])
         if ([nsdoc isKindOfClass:[CFDGDocument class]]) {
             CFDGDocument* cfdoc = (CFDGDocument*)nsdoc;

@@ -61,6 +61,7 @@ typedef NS_ENUM(NSInteger, FindReplaceShowEnum) {
     ShowFindReplace     = 2
 };
 
+long MakeColor(id v);
 
 @interface GView : NSView<NSWindowDelegate, ScintillaNotificationProtocol> {
     NSSize              mRenderSize;    // size we asked to render to
