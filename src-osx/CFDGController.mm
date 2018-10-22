@@ -237,6 +237,14 @@ static NSInteger OSXversion = 0;
     [mTabWidth selectItemWithTag:tab];
 }
 
+- (BOOL)windowShouldClose:(NSWindow *)sender
+{
+    // Make the color fields validate and write out their data
+    NSWindow* window = (NSWindow*)sender;
+    [window makeFirstResponder:window];
+    return YES;
+}
+
 - (void)changeFont:(id)sender
 {
     NSFont* oldFont = [mFontDisplay font];
