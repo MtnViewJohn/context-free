@@ -1412,7 +1412,15 @@ long MakeColor(id v)
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     NSString* fontName = [defaults stringForKey: prefKeyEditorFontName];
     float fontSize = [defaults floatForKey: prefKeyEditorFontSize];
-    
+    NSFont* font = [NSFont fontWithName:fontName size:fontSize];
+    if (!font) {
+        fontName = @"Courier";
+        fontSize = 12.0;
+        font = [NSFont fontWithName:fontName size:fontSize];
+        [defaults setObject:fontName forKey:prefKeyEditorFontName];
+        [defaults setFloat:fontSize forKey:prefKeyEditorFontSize];
+    }
+
     // Colors and styles for various syntactic elements. First the default style.
     [mEditor setStringProperty: SCI_STYLESETFONT parameter: STYLE_DEFAULT value: fontName];
     long sz = static_cast<long>(fontSize * 100.0f);
@@ -1420,7 +1428,7 @@ long MakeColor(id v)
     
     NSApplication* me = [NSApplication sharedApplication];
     NSAppearance* saved = nil;
-    bool darkMode = false; __MAC_10_7;
+    bool darkMode = false;
 #ifndef __MAC_10_14
     NSString* NSAppearanceNameDarkAqua = @"foo";
 #endif
@@ -1438,7 +1446,7 @@ long MakeColor(id v)
     [mEditor setGeneralProperty: SCI_STYLECLEARALL parameter: 0 value: 0];
 
     [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_LINENUMBER value:[NSColor textColor]];
-    [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_LINENUMBER value:[NSColor underPageBackgroundColor]];
+    [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_LINENUMBER value:[NSColor gridColor]];
     [mEditor setColorProperty:SCI_SETSELFORE parameter:1 value:[NSColor selectedTextColor]];
     [mEditor setColorProperty:SCI_SETSELBACK parameter:1 value:[NSColor selectedTextBackgroundColor]];
     [mEditor message:SCI_SETCARETFORE wParam:MakeColor([NSColor textColor])];
@@ -1564,7 +1572,7 @@ long MakeColor(id v)
                               value: MakeColor([defaults stringForKey:PrefKeyEditorNumbersColor])];
     }
 
-    NSSize size = [@"8888" sizeWithAttributes:[NSDictionary dictionaryWithObject:[NSFont fontWithName:fontName size:fontSize] forKey:NSFontAttributeName]];
+    NSSize size = [@"8888" sizeWithAttributes: @{NSFontAttributeName: font}];
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 0 value: static_cast<long>(size.width + 10.9)];
 }
 
