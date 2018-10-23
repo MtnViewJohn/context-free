@@ -254,7 +254,7 @@
                     </splitView>
                     <customView id="126" customClass="TopBar">
                         <rect key="frame" x="0.0" y="758" width="1200" height="42"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
                             <progressIndicator hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" maxValue="100" bezeled="NO" style="bar" id="111">
                                 <rect key="frame" x="1098" y="8" width="72" height="20"/>
@@ -264,7 +264,7 @@
                                 <rect key="frame" x="5" y="5" width="471" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
-                                    <rect key="frame" x="2" y="2" width="467" height="25"/>
+                                    <rect key="frame" x="3" y="3" width="465" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" id="bIH-dW-BZL">
@@ -415,7 +415,7 @@ The variation code is a one to six letter sequence.</string>
                             </box>
                             <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="60">
                                 <rect key="frame" x="1176" y="10" width="16" height="16"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <textField verticalHuggingPriority="750" id="61">
                                 <rect key="frame" x="815" y="12" width="280" height="14"/>
@@ -428,7 +428,7 @@ The variation code is a one to six letter sequence.</string>
                             </textField>
                             <box hidden="YES" misplaced="YES" borderType="none" title="MovieBox" titlePosition="noTitle" id="NKb-OZ-zg6">
                                 <rect key="frame" x="802" y="0.0" width="232" height="42"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <view key="contentView" id="Hbp-dZ-A4c">
                                     <rect key="frame" x="0.0" y="0.0" width="232" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
