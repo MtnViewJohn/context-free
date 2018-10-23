@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -259,16 +260,16 @@
                                 <rect key="frame" x="1098" y="8" width="72" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
-                            <box title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
-                                <rect key="frame" x="5" y="5" width="471" height="48"/>
+                            <box misplaced="YES" title="Render Controls" titlePosition="noTitle" transparent="YES" id="81">
+                                <rect key="frame" x="5" y="5" width="471" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                 <view key="contentView" id="Jyt-NW-G0k">
-                                    <rect key="frame" x="3" y="3" width="465" height="42"/>
+                                    <rect key="frame" x="2" y="2" width="467" height="25"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" id="bIH-dW-BZL">
-                                            <rect key="frame" x="0.0" y="-2" width="91" height="24"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="91" height="24"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="t6T-Od-L9R">
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
@@ -344,8 +345,8 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </textField>
                                         <popUpButton hidden="YES" verticalHuggingPriority="750" id="N40-Ev-FF7">
-                                            <rect key="frame" x="22" y="-7" width="76" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <rect key="frame" x="22" y="-5" width="76" height="26"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
@@ -414,7 +415,7 @@ The variation code is a one to six letter sequence.</string>
                             </box>
                             <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="60">
                                 <rect key="frame" x="1176" y="10" width="16" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask"/>
                             </progressIndicator>
                             <textField verticalHuggingPriority="750" id="61">
                                 <rect key="frame" x="815" y="12" width="280" height="14"/>
@@ -425,15 +426,15 @@ The variation code is a one to six letter sequence.</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <box hidden="YES" borderType="none" title="MovieBox" titlePosition="noTitle" id="NKb-OZ-zg6">
-                                <rect key="frame" x="802" y="0.0" width="232" height="44"/>
+                            <box hidden="YES" misplaced="YES" borderType="none" title="MovieBox" titlePosition="noTitle" id="NKb-OZ-zg6">
+                                <rect key="frame" x="802" y="0.0" width="232" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <view key="contentView" id="Hbp-dZ-A4c">
-                                    <rect key="frame" x="0.0" y="0.0" width="232" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="232" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" id="BOb-PW-Ohi">
-                                            <rect key="frame" x="-6" y="0.0" width="39" height="38"/>
+                                            <rect key="frame" x="-6" y="-2" width="39" height="38"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="round" bezelStyle="circular" image="RemotePlay_norm.tif" imagePosition="overlaps" alignment="center" alternateImage="RemotePlay_press.tif" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3qn-hH-uZw">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -444,7 +445,7 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="ZZH-fi-HFl">
-                                            <rect key="frame" x="22" y="0.0" width="39" height="38"/>
+                                            <rect key="frame" x="22" y="-2" width="39" height="38"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="round" bezelStyle="circular" image="rewind.norm" imagePosition="overlaps" alignment="center" alternateImage="rewind.press" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pFT-b1-ADs">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -455,7 +456,7 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="RXc-Hd-mgh">
-                                            <rect key="frame" x="128" y="8" width="38" height="14"/>
+                                            <rect key="frame" x="128" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="center" title="0" bezelStyle="round" id="wrh-9d-w2T">
                                                 <font key="font" metaFont="smallSystem"/>
@@ -467,7 +468,7 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </textField>
                                         <slider verticalHuggingPriority="750" id="255-aH-Z3p">
-                                            <rect key="frame" x="60" y="19" width="174" height="19"/>
+                                            <rect key="frame" x="60" y="17" width="174" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="UlB-il-bj9"/>
                                             <connections>
@@ -475,7 +476,7 @@ The variation code is a one to six letter sequence.</string>
                                             </connections>
                                         </slider>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="q7E-1c-gJL">
-                                            <rect key="frame" x="60" y="8" width="38" height="14"/>
+                                            <rect key="frame" x="60" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0" id="9ep-fS-FTM">
                                                 <font key="font" metaFont="smallSystem"/>
@@ -484,7 +485,7 @@ The variation code is a one to six letter sequence.</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="bNs-Sr-c94">
-                                            <rect key="frame" x="196" y="8" width="38" height="14"/>
+                                            <rect key="frame" x="196" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="10" id="x7Y-SU-clC">
                                                 <font key="font" metaFont="smallSystem"/>
@@ -1355,7 +1356,7 @@ Gw
         <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSRefreshTemplate" width="11" height="15"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
-        <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
+        <image name="NSStopProgressFreestandingTemplate" width="11" height="11"/>
         <image name="RemotePlay_norm.tif" width="32" height="32"/>
         <image name="RemotePlay_press.tif" width="32" height="32"/>
         <image name="doc" width="128" height="128"/>
