@@ -657,7 +657,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     float movieWidth = [defaults floatForKey: PrefKeyMovieWidth];
-    float movieFrame =  1.0;
+    float movieFrame =  0.0;
     NSString* message = nil;
     NSString* problem = nil;
     if (![mAnimationFrame isHidden]) {
