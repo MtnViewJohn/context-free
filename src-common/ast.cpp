@@ -207,54 +207,51 @@ namespace AST {
         }
         bool justCount = args->mType == AST::NoType;
         
-        size_t count = 0, size = 0;
-        size_t expect = args->size();
+        size_t size = 0;
         ASTparameters::const_iterator param_it = types->begin(),
-        param_end = types->end();
+                                      param_end = types->end();
         
-        for (; param_it != param_end; size += param_it->mTuplesize,
-             ++count, ++param_it)
-        {
-            if (justCount) continue;
-            
-            if (count >= expect) {
-                CfdgError::Error(args->where, "Not enough arguments", b);
+        for (auto&& arg: *args) {
+            if (param_it == param_end) {
+                CfdgError::Error(args->where, "Too many arguments", b);
                 return -1;
             }
             
-            const ASTexpression* arg = args->getChild(count);
-            assert(arg);
-            
-            if (param_it->mType != arg->mType) {
-                CfdgError::Error(arg->where, "Incorrect argument type.", b);
-                CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
-                return -1;
+            if (!justCount) {
+                if (param_it->mType != arg.mType) {
+                    CfdgError::Error(arg.where, "Incorrect argument type.", b);
+                    CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
+                    return -1;
+                }
+                if (param_it->isNatural && !arg.isNatural && !b->impure()) {
+                    CfdgError::Error(arg.where, "this expression does not satisfy the natural number requirement", b);
+                    return -1;
+                }
+                if (param_it->mType == AST::NumericType &&
+                    param_it->mTuplesize != arg.evaluate())
+                {
+                    if (param_it->mTuplesize == 1)
+                        CfdgError::Error(arg.where, "This argument should be scalar", b);
+                    else
+                        CfdgError::Error(arg.where, "This argument should be a vector", b);
+                    CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
+                    return -1;
+                }
+                if (arg.mLocality != PureLocal && arg.mLocality != PureNonlocal &&
+                    param_it->mType == AST::NumericType && !param_it->isNatural &&
+                    !b->impure() && checkNumber)
+                {
+                    CfdgError::Error(arg.where, "This expression does not satisfy the number parameter requirement", b);
+                    return -1;
+                }
             }
-            if (param_it->isNatural && !arg->isNatural && !b->impure()) {
-                CfdgError::Error(arg->where, "this expression does not satisfy the natural number requirement", b);
-                return -1;
-            }
-            if (param_it->mType == AST::NumericType &&
-                param_it->mTuplesize != arg->evaluate())
-            {
-                if (param_it->mTuplesize == 1)
-                    CfdgError::Error(arg->where, "This argument should be scalar", b);
-                else
-                    CfdgError::Error(arg->where, "This argument should be a vector", b);
-                CfdgError::Error(param_it->mLocation, "This is the expected type.", b);
-                return -1;
-            }
-            if (arg->mLocality != PureLocal && arg->mLocality != PureNonlocal &&
-                param_it->mType == AST::NumericType && !param_it->isNatural &&
-                !b->impure() && checkNumber)
-            {
-                CfdgError::Error(arg->where, "This expression does not satisfy the number parameter requirement", b);
-                return -1;
-            }
+            size += param_it->mTuplesize;
+            ++param_it;
         }
         
-        if (count < expect) {
-            CfdgError::Error(args->getChild(count)->where, "Too many arguments.", b);
+        if (param_it != param_end) {
+            CfdgError::Error(args->where, "Not enough arguments.", b);
+            CfdgError::Error(param_it->mLocation, "Expecting this argument.", b);
             return -1;
         }
 
@@ -1025,52 +1022,58 @@ namespace AST {
         
         std::vector<double> symmSpec;
         yy::location where;
-        for (size_t i = 0; i < e->size(); ++i)
-        {
-            const ASTexpression* cit = e->getChild(i);
-            switch (cit->mType) {
+        bool snarfFlagOpts = false;
+        for (auto&& kid: *e) {
+            switch (kid.mType) {
                 case FlagType:
+                    if (snarfFlagOpts)
+                        processSymmSpec(syms, tile, tiled, symmSpec, where);
                     // Snarf and process the numeric arguments for the symmetry spec
-                    where = cit->where;
-                    do {
-                        int sz = cit->evaluate();
-                        if (sz < 1) {
-                            CfdgError::Error(cit->where, "Could not evaluate this");
-                        } else {
-                            size_t oldsize = symmSpec.size();
-                            symmSpec.resize(oldsize + sz);
-                            if (cit->evaluate(symmSpec.data() + oldsize, sz, r) != sz)
-                                CfdgError::Error(cit->where, "Could not evaluate this");
-                        }
-                        where = where + cit->where;
-                    } while (++i < e->size() && (cit = e->getChild(i))->mType == NumericType);
-                    processSymmSpec(syms, tile, tiled, symmSpec, where);
-                    --i;    // back-up loop variable to end of symmetry spec
-                    break;
+                    where = kid.where;
+                    snarfFlagOpts = true;
+                    FALLTHROUGH;
                 case NumericType:
-                    CfdgError::Error(cit->where, "Symmetry flag expected here");
+                    if (!snarfFlagOpts) {
+                        CfdgError::Error(kid.where, "Symmetry flag expected here");
+                        break;
+                    }
+                    
+                    if (int sz = kid.evaluate(); sz < 1) {
+                        CfdgError::Error(kid.where, "Could not evaluate this");
+                    } else {
+                        size_t oldsize = symmSpec.size();
+                        symmSpec.resize(oldsize + sz);
+                        if (kid.evaluate(symmSpec.data() + oldsize, sz, r) != sz)
+                            CfdgError::Error(kid.where, "Could not evaluate this");
+                    }
+                    where = where + kid.where;
                     break;
                 case ModType:
-                    if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(&*cit)) {
+                    if (snarfFlagOpts)
+                        processSymmSpec(syms, tile, tiled, symmSpec, where);
+                    snarfFlagOpts = false;
+                    if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(&kid)) {
                         if ((m->modClass &
                              (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
                             m->modClass && (r || m->isConstant))
                         {
                             Modification mod;
-                            cit->evaluate(mod, false, r);
+                            kid.evaluate(mod, false, r);
                             addUnique(syms, mod.m_transform);
                         } else {
                             ret.push_back(m);
                         }
                     } else {
-                        CfdgError::Error(cit->where, "Wrong type");
+                        CfdgError::Error(kid.where, "Wrong type");
                     }
                     break;
                 default:
-                    CfdgError::Error(cit->where, "Wrong type");
+                    CfdgError::Error(kid.where, "Wrong type");
                     break;
             }
         }
+        if (snarfFlagOpts)
+            processSymmSpec(syms, tile, tiled, symmSpec, where);
         return ret;
     }
 }

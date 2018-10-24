@@ -287,35 +287,35 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
          StackType::iterator& end, const AST::ASTexpression* arguments,
          bool onStack)
 {
-    for (size_t i = 0; i < arguments->size(); ++i, ++dest) {
+    for (auto&& arg: *arguments) {
         assert(dest != end);
         _unused(end);
         if (onStack)
             rti->mLogicalStackTop = &(*dest);
-        const AST::ASTexpression* arg = arguments->getChild(i);
-        switch (arg->mType) {
+        switch (arg.mType) {
             case AST::NumericType: {
-                int num = arg->evaluate(&(dest->number), dest.type().mTuplesize, rti);
+                int num = arg.evaluate(&(dest->number), dest.type().mTuplesize, rti);
                 if (dest.type().isNatural && !RendererAST::isNatural(rti, dest->number))
-                    CfdgError::Error(arg->where, "Expression does not evaluate to a legal natural number");
+                    CfdgError::Error(arg.where, "Expression does not evaluate to a legal natural number");
                 if (num != dest.type().mTuplesize)
-                    CfdgError::Error(arg->where, "Expression does not evaluate to the correct size");
+                    CfdgError::Error(arg.where, "Expression does not evaluate to the correct size");
                 break;
             }
             case AST::ModType: {
                 static const Modification zeroMod;
                 Modification& m = reinterpret_cast<Modification&> (dest->number);
                 m = zeroMod;
-                arg->evaluate(m, false, rti);
+                arg.evaluate(m, false, rti);
                 break;
             }
             case AST::RuleType: {
-                new (&(dest->rule)) param_ptr(arg->evalArgs(rti, parent));
+                new (&(dest->rule)) param_ptr(arg.evalArgs(rti, parent));
                 break;
             }
             default:
                 break;
         }
+        ++dest;
     }
     assert(dest == end);
 }

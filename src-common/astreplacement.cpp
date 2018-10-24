@@ -702,27 +702,28 @@ namespace AST {
                 if (mLoopArgs->isConstant) {
                     bodyNatural = finallyNatural = mLoopArgs->isNatural;
                 } else {
-                    for (size_t i = 0, count = 0; i < mLoopArgs->size(); ++i) {
-                        const ASTexpression* loopArg = mLoopArgs->getChild(i);
-                        int num = loopArg->evaluate();
+                    size_t count = 0;
+                    for (auto&& loopArg: *mLoopArgs) {
+                        int num = loopArg.evaluate();
                         switch (count) {
                             case 0:
-                                if (loopArg->isNatural)
+                                if (loopArg.isNatural)
                                     bodyNatural = finallyNatural = true;
                                 break;
                             case 2: {
                                 // Special case: if 1st & 2nd args are natural and 3rd
                                 // is -1 then that is ok
                                 double step;
-                                if (loopArg->isConstant &&
-                                    loopArg->evaluate(&step, 1) == 1 &&
+                                if (loopArg.isConstant &&
+                                    loopArg.evaluate(&step, 1) == 1 &&
                                     step == -1.0)
                                 {
                                     break;
                                 }
                             }   // else fall through
+                                FALLTHROUGH;
                             case 1:
-                                if (!loopArg->isNatural)
+                                if (!loopArg.isNatural)
                                     bodyNatural = finallyNatural = false;
                                 break;
                             default:
@@ -855,13 +856,8 @@ namespace AST {
                         return;
                     }
                     ASTrepContainer* body = _case.second.get();
-                    for (size_t i = 0; i < valExp->size(); ++i) {
-                        const ASTexpression* term = valExp->getChild(i);
-                        if (!term) {
-                            CfdgError::Error(term->where, "Case term cannot be evaluated", b);
-                            continue;
-                        }
-                        const ASTfunction* func = dynamic_cast<const ASTfunction*>(term);
+                    for (auto&& term: *valExp) {
+                        const ASTfunction* func = dynamic_cast<const ASTfunction*>(&term);
                         caseType high = 0, low = 0;
                         try {
                             if (func && func->functype == ASTfunction::RandOp) {
@@ -879,8 +875,8 @@ namespace AST {
                                 }
                             } else {
                                 // Not a range, must be a single value
-                                if (term->evaluate(val, 1) != 1) {
-                                    CfdgError::Error(term->where, "Case value cannot be evaluated", b);
+                                if (term.evaluate(val, 1) != 1) {
+                                    CfdgError::Error(term.where, "Case value cannot be evaluated", b);
                                     continue;
                                 } else {
                                     low = high = static_cast<caseType>(floor(val[0]));
@@ -889,12 +885,12 @@ namespace AST {
                             
                             caseRange range{low, high};
                             if (mCaseMap.count(range)) {
-                                CfdgError::Error(term->where, "Case value already in use", b);
+                                CfdgError::Error(term.where, "Case value already in use", b);
                             } else {
                                 mCaseMap[range] = body;
                             }
                         } catch (DeferUntilRuntime&) {
-                            CfdgError::Error(term->where, "Case expression is not constant", b);
+                            CfdgError::Error(term.where, "Case expression is not constant", b);
                         }
                     }
                 }
@@ -1578,28 +1574,33 @@ namespace AST {
     void
     ASTpathOp::checkArguments(Builder* b)
     {
-        if (mArguments)
+        if (mArguments) {
             mArgCount = mArguments->evaluate();
 
-        for (size_t i = 0; mArguments && i < mArguments->size(); ++i) {
-            const ASTexpression* temp = mArguments->getChild(i);
-            assert(temp);
-            switch (temp->mType) {
-                case FlagType: {
-                    if (i != mArguments->size() - 1)
-                        CfdgError::Error(temp->where, "Flags must be the last argument", b);
-                    if (const ASTreal* rf = dynamic_cast<const ASTreal*> (temp))
-                        mFlags |= rf ? static_cast<int>(rf->value) : 0;
-                    else
-                        CfdgError::Error(temp->where, "Flag expressions must be constant", b);
-                    --mArgCount;
-                    break;
+            const ASTexpression* flag = nullptr;
+            for (auto&& arg: *mArguments) {
+                switch (arg.mType) {
+                    case FlagType: {
+                        if (flag)
+                            CfdgError::Error(flag->where, "There can only be one flag argument", b);
+                        flag = &arg;
+                        if (const ASTreal* rf = dynamic_cast<const ASTreal*> (&arg))
+                            mFlags |= rf ? static_cast<int>(rf->value) : 0;
+                        else
+                            CfdgError::Error(arg.where, "Flag expressions must be constant", b);
+                        --mArgCount;    // don't count flags
+                        break;
+                    }
+                    case NumericType:
+                        if (flag) {
+                            CfdgError::Error(flag->where, "Flags must be the last argument", b);
+                            flag = nullptr;
+                        }
+                        break;
+                    default:
+                        CfdgError::Error(arg.where, "Path operation arguments must be numeric expressions or flags", b);
+                        break;
                 }
-                case NumericType:
-                    break;
-                default:
-                    CfdgError::Error(temp->where, "Path operation arguments must be numeric expressions or flags", b);
-                    break;
             }
         }
         

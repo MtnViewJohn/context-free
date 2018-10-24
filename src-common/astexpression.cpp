@@ -961,15 +961,19 @@ namespace AST {
     static double MinMax(const ASTexpression* e, RendererAST* rti, bool isMin)
     {
         double res = 0.0;
-        if (e->getChild(0)->evaluate(&res, 1, rti) != 1)
-            CfdgError::Error(e->getChild(0)->where, "Error computing min/max here.");
-        for (size_t i = 1; i < e->size(); ++i) {
-            double v;
-            if (e->getChild(i)->evaluate(&v, 1, rti) != 1)
-                CfdgError::Error(e->getChild(i)->where, "Error computing min/max here.");
-            bool leftMin = res < v;
-            res = ((isMin && leftMin) || (!isMin && !leftMin)) ? res : v;
-        }
+        bool first = true;
+        for (auto&& kid: *e)
+            if (first) {
+                if (kid.evaluate(&res, 1, rti) != 1)
+                    CfdgError::Error(kid.where, "Error computing min/max here.");
+                first = false;
+            } else {
+                double v;
+                if (kid.evaluate(&v, 1, rti) != 1)
+                    CfdgError::Error(kid.where, "Error computing min/max here.");
+                bool leftMin = res < v;
+                res = ((isMin && leftMin) || (!isMin && !leftMin)) ? res : v;
+            }
         return res;
     }
     
@@ -3459,8 +3463,9 @@ namespace AST {
         if (mType == NumericType)
             j["length"] = definition->mTuplesize;
         json j2 = json::array();
-        for (size_t i = 0; i < mNames.size(); ++i)
-            j2.push_back(json{{"variable", mNames[i]}, {"expression", *(arguments->getChild(i))}});
+        size_t i = 0;
+        for (auto&& exp: *arguments)
+            j2.push_back(json{{"variable", mNames[i++]}, {"expression", exp}});
         j["let variables"] = j2;
     }
     

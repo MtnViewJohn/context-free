@@ -98,6 +98,59 @@ namespace AST {
     
     class ASTdefine;
     class ASTrepContainer;
+    class ASTexpression;
+    
+    struct ASTexp_iter {
+        using size_type = size_t;
+        using difference_type = ptrdiff_t;
+        using value_type = const ASTexpression;
+        using reference = value_type&;
+        using pointer = value_type*;
+        using iterator_category = std::random_access_iterator_tag;
+
+        const ASTexpression&    e;
+        size_t                  i;
+        ASTexp_iter(const ASTexp_iter&) = default;
+        ~ASTexp_iter() = default;
+        ASTexp_iter& operator=(const ASTexp_iter&) = default;
+        ASTexp_iter& operator++() {++i; return *this;}
+        ASTexp_iter  operator++(int) {auto temp = *this; ++i; return temp;}
+        ASTexp_iter& operator--() {--i; return *this;}
+        ASTexp_iter  operator--(int) {auto temp = *this; --i; return temp;}
+        reference operator*() const;
+        pointer operator->() const;
+        friend bool operator==(const ASTexp_iter& l, const ASTexp_iter& r);
+        friend bool operator!=(const ASTexp_iter& l, const ASTexp_iter& r);
+        friend bool operator<(const ASTexp_iter& l, const ASTexp_iter& r);
+        friend bool operator>(const ASTexp_iter& l, const ASTexp_iter& r);
+        friend bool operator<=(const ASTexp_iter& l, const ASTexp_iter& r);
+        friend bool operator>=(const ASTexp_iter& l, const ASTexp_iter& r);
+
+        ASTexp_iter& operator+=(size_type j) {i += j; return *this;}
+        friend ASTexp_iter operator+(const ASTexp_iter&, size_type j);
+        friend ASTexp_iter operator+(size_type j, const ASTexp_iter&);
+        ASTexp_iter& operator-=(size_type j) {i -= j; return *this;}
+        friend ASTexp_iter operator-(const ASTexp_iter&, size_type j);
+        friend difference_type operator-(const ASTexp_iter&, const ASTexp_iter&);
+        
+        reference operator[](size_type) const;
+    };
+
+    inline bool operator==(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i == r.i;}
+    inline bool operator!=(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i != r.i;}
+    inline bool operator<(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i < r.i;}
+    inline bool operator>(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i > r.i;}
+    inline bool operator<=(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i <= r.i;}
+    inline bool operator>=(const ASTexp_iter& l, const ASTexp_iter& r) {return l.i >= r.i;}
+
+    inline ASTexp_iter operator+(const ASTexp_iter& iter, ASTexp_iter::size_type j)
+    {auto temp = iter; temp.i += j; return temp;}
+    inline ASTexp_iter operator+(ASTexp_iter::size_type j, const ASTexp_iter& iter)
+    {auto temp = iter; temp.i += j; return temp;}
+    inline ASTexp_iter operator-(const ASTexp_iter& iter, ASTexp_iter::size_type j)
+    {auto temp = iter; temp.i -= j; return temp;}
+    inline ASTexp_iter::difference_type operator-(const ASTexp_iter& l, const ASTexp_iter& r)
+    {return l.i - r.i;}
 
     class ASTexpression {
     public:
@@ -138,8 +191,19 @@ namespace AST {
         // will fail.
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
         virtual void to_json(json& j) const;
+        ASTexp_iter begin() { return ASTexp_iter{*this, 0};}
+        ASTexp_iter begin() const {return ASTexp_iter{*this, 0};}
+        ASTexp_iter end() {return ASTexp_iter{*this, size()};}
+        ASTexp_iter end() const {return ASTexp_iter{*this, size()};}
     };
     
+    inline ASTexp_iter::reference ASTexp_iter::operator*() const
+    {return *e.getChild(i);}
+    inline ASTexp_iter::pointer ASTexp_iter::operator->() const
+    {return e.getChild(i);}
+    inline ASTexp_iter::reference ASTexp_iter::operator[](ASTexp_iter::size_type j) const
+    {return *e.getChild(i+j);}
+
     void to_json(json& j, const ASTexpression& e);
     void args_to_json(json& j, const ASTexpression& e);
     
