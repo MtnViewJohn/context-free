@@ -42,6 +42,7 @@
 #include <limits>
 #include "scanner.h"
 #include <typeinfo>
+#include "backwards.h"
 
 using namespace AST;
 
@@ -811,14 +812,12 @@ Builder::push_rep(ASTreplacement* r, bool global)
 ASTparameter*
 Builder::findExpression(int nameIndex, bool& isGlobal)
 {
-    for (auto cit = mContainerStack.rbegin(); cit != mContainerStack.rend(); ++cit) {
-        for (auto pit = (*cit)->mParameters.rbegin(); pit != (*cit)->mParameters.rend(); ++pit) {
-            if (pit->mName == nameIndex) {
-                isGlobal = (*cit)->isGlobal;
-                return &(*pit);
+    for (auto&& container: backwards(mContainerStack))
+        for (auto&& param: backwards(container->mParameters))
+            if (param.mName == nameIndex) {
+                isGlobal = container->isGlobal;
+                return &param;
             }
-        }
-    }
     return nullptr;
 }
 
@@ -858,14 +857,11 @@ Builder::CheckVariableName(int index, const yy::location& loc, bool param)
     
     const ASTrepContainer* thisLevel = param ? &mParamDecls : mContainerStack.back();
     
-    for (auto pit = thisLevel->mParameters.rbegin(),
-         epit = thisLevel->mParameters.rend(); pit != epit; ++pit)
-    {
-        if (pit->mName == index) {
+    for (auto&& param: backwards(thisLevel->mParameters))
+        if (param.mName == index) {
             warning(loc, "Scope of name overlaps variable/parameter with same name");
-            warning(pit->mLocation, "previous variable/parameter declared here");
+            warning(param.mLocation, "previous variable/parameter declared here");
         }
-    }
 }
 
 void
