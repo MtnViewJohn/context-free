@@ -162,10 +162,13 @@
 			fileType = sourcecode.yacc;
 			isEditable = 1;
 			outputFiles = (
+				"$(DERIVED_FILE_DIR)/location.hh",
+				"$(DERIVED_FILE_DIR)/position.hh",
+				"$(DERIVED_FILE_DIR)/stack.hh",
 				"${DERIVED_FILES_DIR}/cfdg.tab.cpp",
 				"${DERIVED_FILES_DIR}/cfdg.tab.hpp",
 			);
-			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"";
+			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"\n";
 		};
 		524D22EB13BA0318002732C2 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -175,7 +178,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
 			);
-			script = "cd \"${DERIVED_FILES_DIR}\"\n/usr/local/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"";
+			script = "cd \"${DERIVED_FILES_DIR}\"\n/usr/local/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"\n";
 		};
 		529049B90F3E9C9B00484FED /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -193,6 +196,9 @@
 			fileType = sourcecode.yacc;
 			isEditable = 1;
 			outputFiles = (
+				"$(DERIVED_FILE_DIR)/location.hh",
+				"$(DERIVED_FILE_DIR)/position.hh",
+				"$(DERIVED_FILE_DIR)/stack.hh",
 				"$(DERIVED_FILES_DIR)/cfdg.tab.cpp",
 				"$(DERIVED_FILES_DIR)/cfdg.tab.hpp",
 			);
@@ -1173,6 +1179,7 @@
 					"src-common",
 					"src-common/agg-extras",
 					"src-unix",
+					"$(DERIVED_FILES_DIR)",
 				);
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
@@ -1277,6 +1284,7 @@
 					"src-common",
 					"src-common/agg-extras",
 					"src-unix",
+					"$(DERIVED_FILES_DIR)",
 				);
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
