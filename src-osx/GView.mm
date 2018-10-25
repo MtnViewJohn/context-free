@@ -1511,6 +1511,7 @@ long MakeColor(id v)
                           value:[defaults boolForKey:PrefKeyEditorNumbersItalic]];
     
     if (darkMode) {
+        [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_LINENUMBER fromHTML:@"#363636"];
         [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#fff"];
         [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#7a7a85"];
         [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD   fromHTML:@"#ff6969"];
