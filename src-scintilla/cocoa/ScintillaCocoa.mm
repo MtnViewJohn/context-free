@@ -1969,7 +1969,7 @@ void ScintillaCocoa::NotifyChange() {
 //--------------------------------------------------------------------------------------------------
 
 void ScintillaCocoa::NotifyFocus(bool focus) {
-	if (notifyProc != NULL)
+	if (commandEvents && notifyProc)
 		notifyProc(notifyObj, WM_COMMAND, Platform::LongFromTwoShorts(static_cast<short>(GetCtrlID()),
 				(focus ? SCEN_SETFOCUS : SCEN_KILLFOCUS)),
 			   (uintptr_t) this);

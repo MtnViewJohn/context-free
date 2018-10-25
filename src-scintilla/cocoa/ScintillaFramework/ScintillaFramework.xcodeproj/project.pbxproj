@@ -227,6 +227,8 @@
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		F437405F9F32C7DEFCA38C11 /* LexIndent.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 282E41F3B9E2BFEDD6A05BE7 /* LexIndent.cxx */; };
+		FDC7442CAD70B9A67EF1639D /* LexSAS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = A95147A1AB7CADB00DAFE724 /* LexSAS.cxx */; };
+		5F804AA6B60FE695863A39FE /* LexStata.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7623427695416AB1270EE023 /* LexStata.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -457,6 +459,8 @@
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* Scintilla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Scintilla.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		A95147A1AB7CADB00DAFE724 /* LexSAS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexSAS.cxx; path = ../../lexers/LexSAS.cxx; sourceTree = SOURCE_ROOT; };
+		7623427695416AB1270EE023 /* LexStata.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexStata.cxx; path = ../../lexers/LexStata.cxx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -640,6 +644,7 @@
 				28A7D6041995E47D0062D204 /* LexRegistry.cxx */,
 				114B6EFB11FA7526004FB6AB /* LexRuby.cxx */,
 				1160E0371803651C00BCEBCB /* LexRust.cxx */,
+				A95147A1AB7CADB00DAFE724 /* LexSAS.cxx */,
 				114B6EFC11FA7526004FB6AB /* LexScriptol.cxx */,
 				114B6EFD11FA7526004FB6AB /* LexSmalltalk.cxx */,
 				114B6EFE11FA7526004FB6AB /* LexSML.cxx */,
@@ -647,6 +652,7 @@
 				114B6F0011FA7526004FB6AB /* LexSpecman.cxx */,
 				114B6F0111FA7526004FB6AB /* LexSpice.cxx */,
 				114B6F0211FA7526004FB6AB /* LexSQL.cxx */,
+				7623427695416AB1270EE023 /* LexStata.cxx */,
 				11FDAEB6174E1A9700FA161B /* LexSTTXT.cxx */,
 				114B6F0311FA7526004FB6AB /* LexTACL.cxx */,
 				114B6F0411FA7526004FB6AB /* LexTADS3.cxx */,
@@ -1112,6 +1118,8 @@
 				11FF3FE21810EB3900E13F13 /* LexDMAP.cxx in Sources */,
 				F437405F9F32C7DEFCA38C11 /* LexIndent.cxx in Sources */,
 				3D994BD7A5EAC4FA5B3CFBDF /* LexMaxima.cxx in Sources */,
+				FDC7442CAD70B9A67EF1639D /* LexSAS.cxx in Sources */,
+				5F804AA6B60FE695863A39FE /* LexStata.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1143,7 +1151,6 @@
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = ".bzr *.nib *.lproj *.framework *.gch (*) CVS .svn *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_FAST_MATH = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1176,7 +1183,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_FAST_MATH = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Scintilla_Prefix.pch;

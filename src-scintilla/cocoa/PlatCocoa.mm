@@ -164,13 +164,15 @@ public:
 
 ScreenLineLayout::ScreenLineLayout(const IScreenLine *screenLine) : text(screenLine->Text()) {
 	const UInt8 *puiBuffer = reinterpret_cast<const UInt8 *>(text.data());
+	std::string_view sv = text;
 
 	// Start with an empty mutable attributed string and add each character to it.
 	CFMutableAttributedStringRef mas = CFAttributedStringCreateMutable(NULL, 0);
 
 	for (size_t bp=0; bp<text.length();) {
 		const unsigned char uch = text[bp];
-		const unsigned int byteCount = UTF8BytesOfLead[uch];
+		const int utf8Status = UTF8Classify(sv);
+		const unsigned int byteCount = utf8Status & UTF8MaskWidth;
 		XYPOSITION repWidth = screenLine->RepresentationWidth(bp);
 		if (uch == '\t') {
 			// Find the size up to the tab
@@ -207,6 +209,7 @@ ScreenLineLayout::ScreenLineLayout(const IScreenLine *screenLine) : text(screenL
 							  CFRangeMake(CFAttributedStringGetLength(mas), 0),
 							  as);
 		bp += byteCount;
+		sv.remove_prefix(byteCount);
 		CFRelease(as);
 	}
 

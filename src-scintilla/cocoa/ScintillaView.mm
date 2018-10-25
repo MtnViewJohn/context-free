@@ -1195,7 +1195,7 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 
 		path = [bundle pathForResource: @"mac_cursor_flipped" ofType: @"tiff" inDirectory: nil];
 		image = [[NSImage alloc] initWithContentsOfFile: path];
-		reverseArrowCursor = [[NSCursor alloc] initWithImage: image hotSpot: NSMakePoint(12, 2)];
+		reverseArrowCursor = [[NSCursor alloc] initWithImage: image hotSpot: NSMakePoint(15, 2)];
 	}
 }
 
@@ -1948,7 +1948,7 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 /**
  * For backwards compatibility.
  */
-- (FindResult) findAndHighlightText: (NSString *) searchText
+- (BOOL) findAndHighlightText: (NSString *) searchText
 		    matchCase: (BOOL) matchCase
 		    wholeWord: (BOOL) wholeWord
 		     scrollTo: (BOOL) scrollTo
@@ -1968,7 +1968,7 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
  *
  * @result YES if something was found, NO otherwise.
  */
-- (FindResult) findAndHighlightText: (NSString *) searchText
+- (BOOL) findAndHighlightText: (NSString *) searchText
 		    matchCase: (BOOL) matchCase
 		    wholeWord: (BOOL) wholeWord
 		     scrollTo: (BOOL) scrollTo
@@ -1992,7 +1992,6 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 	[self setGeneralProperty: SCI_SEARCHANCHOR value: 0];
 	sptr_t result;
 	const char *textToSearch = searchText.UTF8String;
-    bool didWrap = false;
 
 	// The following call will also set the selection if something was found.
 	if (backwards) {
@@ -2009,7 +2008,6 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 						   message: SCI_SEARCHNEXT
 						    wParam: searchFlags
 						    lParam: (sptr_t) textToSearch];
-            didWrap = true;
 		}
 	} else {
 		result = [ScintillaView directCall: self
@@ -2025,7 +2023,6 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 						   message: SCI_SEARCHNEXT
 						    wParam: searchFlags
 						    lParam: (sptr_t) textToSearch];
-            didWrap = true;
 		}
 	}
 
@@ -2037,8 +2034,7 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 		[self setGeneralProperty: SCI_SETSELECTIONSTART value: selectionStart];
 		[self setGeneralProperty: SCI_SETSELECTIONEND value: selectionEnd];
 	}
-    return (result < 0) ? FindResultNotFound : (didWrap ? FindResultFoundWrapped
-                                                        : FindResultFound);
+	return (result >= 0) ? YES : NO;
 }
 
 //--------------------------------------------------------------------------------------------------

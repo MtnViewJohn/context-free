@@ -64,13 +64,6 @@ extern NSString *const SCIUpdateUINotification;
 
 @end
 
-typedef NS_ENUM(signed char, FindResult) {
-    FindResultNotFound,
-    FindResultFound,
-    FindResultFoundWrapped
-};
-
-
 /**
  * ScintillaView is the class instantiated by client code.
  * It contains an NSScrollView which contains a SCIMarginView and a SCIContentView.
@@ -146,18 +139,18 @@ typedef NS_ENUM(signed char, FindResult) {
 - (void) setInfoBar: (NSView <InfoBarCommunicator> *) aView top: (BOOL) top;
 - (void) setStatusText: (NSString *) text;
 
-- (FindResult) findAndHighlightText: (NSString *) searchText
-          matchCase: (BOOL) matchCase
-          wholeWord: (BOOL) wholeWord
-           scrollTo: (BOOL) scrollTo
-               wrap: (BOOL) wrap;
+- (BOOL) findAndHighlightText: (NSString *) searchText
+		    matchCase: (BOOL) matchCase
+		    wholeWord: (BOOL) wholeWord
+		     scrollTo: (BOOL) scrollTo
+			 wrap: (BOOL) wrap;
 
-- (FindResult) findAndHighlightText: (NSString *) searchText
-          matchCase: (BOOL) matchCase
-          wholeWord: (BOOL) wholeWord
-           scrollTo: (BOOL) scrollTo
-               wrap: (BOOL) wrap
-          backwards: (BOOL) backwards;
+- (BOOL) findAndHighlightText: (NSString *) searchText
+		    matchCase: (BOOL) matchCase
+		    wholeWord: (BOOL) wholeWord
+		     scrollTo: (BOOL) scrollTo
+			 wrap: (BOOL) wrap
+		    backwards: (BOOL) backwards;
 
 - (int) findAndReplaceText: (NSString *) searchText
 		    byText: (NSString *) newText

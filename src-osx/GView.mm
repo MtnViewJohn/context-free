@@ -139,14 +139,21 @@ BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 
 @interface GView (internal)
 
+typedef NS_ENUM(signed char, FindResult) {
+    FindResultNotFound,
+    FindResultFound,
+    FindResultFoundWrapped
+};
+
+
+
 - (void)setupEditor;
-//- (long)findInTarget:(NSString*)text start:(long)startPosition end:(long)endPosition;
-//- (FindResult) findAndHighlightText: (NSString *) searchText
-//                          matchCase: (BOOL) matchCase
-//                          wholeWord: (BOOL) wholeWord
-//                           scrollTo: (BOOL) scrollTo
-//                               wrap: (BOOL) wrap
-//                          backwards: (BOOL) backwards;
+- (FindResult) findAndHighlightText: (NSString *) searchText
+                          matchCase: (BOOL) matchCase
+                          wholeWord: (BOOL) wholeWord
+                           scrollTo: (BOOL) scrollTo
+                               wrap: (BOOL) wrap
+                          backwards: (BOOL) backwards;
 - (BOOL)findNext:(BOOL)reversed;
 - (void)replaceNext:(BOOL)find;
 - (void)replaceAll;
@@ -2086,6 +2093,84 @@ long MakeColor(id v)
     [mEditor setReferenceProperty:SCI_SETWORDCHARS parameter:0 value:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"];
 }
 
+/**
+ * Searches and marks the first occurrence of the given text and optionally scrolls it into view.
+ *
+ * @result YES if something was found, NO otherwise.
+ */
+- (FindResult) findAndHighlightText: (NSString *) searchText
+                          matchCase: (BOOL) matchCase
+                          wholeWord: (BOOL) wholeWord
+                           scrollTo: (BOOL) scrollTo
+                               wrap: (BOOL) wrap
+                          backwards: (BOOL) backwards {
+    int searchFlags= 0;
+    if (matchCase)
+        searchFlags |= SCFIND_MATCHCASE;
+    if (wholeWord)
+        searchFlags |= SCFIND_WHOLEWORD;
+    
+    long selectionStart = [mEditor getGeneralProperty: SCI_GETSELECTIONSTART parameter: 0];
+    long selectionEnd = [mEditor getGeneralProperty: SCI_GETSELECTIONEND parameter: 0];
+    
+    // Sets the start point for the coming search to the beginning of the current selection.
+    // For forward searches we have therefore to set the selection start to the current selection end
+    // for proper incremental search. This does not harm as we either get a new selection if something
+    // is found or the previous selection is restored.
+    if (!backwards)
+        [mEditor getGeneralProperty: SCI_SETSELECTIONSTART parameter: selectionEnd];
+    [mEditor setGeneralProperty: SCI_SEARCHANCHOR value: 0];
+    sptr_t result;
+    const char *textToSearch = searchText.UTF8String;
+    bool didWrap = false;
+    
+    // The following call will also set the selection if something was found.
+    if (backwards) {
+        result = [ScintillaView directCall: mEditor
+                                   message: SCI_SEARCHPREV
+                                    wParam: searchFlags
+                                    lParam: (sptr_t) textToSearch];
+        if (result < 0 && wrap) {
+            // Try again from the end of the document if nothing could be found so far and
+            // wrapped search is set.
+            [mEditor getGeneralProperty: SCI_SETSELECTIONSTART parameter: [mEditor getGeneralProperty: SCI_GETTEXTLENGTH parameter: 0]];
+            [mEditor setGeneralProperty: SCI_SEARCHANCHOR value: 0];
+            result = [ScintillaView directCall: mEditor
+                                       message: SCI_SEARCHNEXT
+                                        wParam: searchFlags
+                                        lParam: (sptr_t) textToSearch];
+            didWrap = true;
+        }
+    } else {
+        result = [ScintillaView directCall: mEditor
+                                   message: SCI_SEARCHNEXT
+                                    wParam: searchFlags
+                                    lParam: (sptr_t) textToSearch];
+        if (result < 0 && wrap) {
+            // Try again from the start of the document if nothing could be found so far and
+            // wrapped search is set.
+            [mEditor getGeneralProperty: SCI_SETSELECTIONSTART parameter: 0];
+            [mEditor setGeneralProperty: SCI_SEARCHANCHOR value: 0];
+            result = [ScintillaView directCall: mEditor
+                                       message: SCI_SEARCHNEXT
+                                        wParam: searchFlags
+                                        lParam: (sptr_t) textToSearch];
+            didWrap = true;
+        }
+    }
+    
+    if (result >= 0) {
+        if (scrollTo)
+            [mEditor setGeneralProperty: SCI_SCROLLCARET value: 0];
+    } else {
+        // Restore the former selection if we did not find anything.
+        [mEditor setGeneralProperty: SCI_SETSELECTIONSTART value: selectionStart];
+        [mEditor setGeneralProperty: SCI_SETSELECTIONEND value: selectionEnd];
+    }
+    return (result < 0) ? FindResultNotFound : (didWrap ? FindResultFoundWrapped
+                                                : FindResultFound);
+}
+
 
 
 - (BOOL)findNext:(BOOL)reversed
@@ -2097,12 +2182,12 @@ long MakeColor(id v)
         return NO;
     }
     
-    auto found = [mEditor findAndHighlightText:text
-                                     matchCase:mMatchCase
-                                     wholeWord:mWholeWord
-                                      scrollTo:YES
-                                          wrap:mWrapSearch
-                                     backwards:reversed];
+    auto found = [self findAndHighlightText:text
+                                  matchCase:mMatchCase
+                                  wholeWord:mWholeWord
+                                   scrollTo:YES
+                                       wrap:mWrapSearch
+                                  backwards:reversed];
     
     switch (found) {
         case FindResultNotFound:

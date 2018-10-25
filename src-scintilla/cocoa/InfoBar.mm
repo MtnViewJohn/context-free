@@ -223,8 +223,8 @@ static float BarFontSize = 10.0;
  * Fill the background.
  */
 - (void) drawRect: (NSRect) rect {
-    [[NSColor controlBackgroundColor] set];
-    [NSBezierPath fillRect: rect];
+	[[NSColor controlBackgroundColor] set];
+	[NSBezierPath fillRect: rect];
 
 	// Since the background is seamless, we don't need to take care for the proper offset.
 	// Simply tile the background over the invalid rectangle.

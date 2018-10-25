@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <chrono>
 
 #include "Platform.h"
 
@@ -54,6 +55,7 @@
 #include "MarginView.h"
 #include "EditView.h"
 #include "Editor.h"
+#include "ElapsedPeriod.h"
 
 using namespace Scintilla;
 
@@ -89,7 +91,7 @@ static bool IsLastStep(const DocModification &mh) {
 }
 
 Timer::Timer() :
-		ticking(false), ticksToWait(0), tickerID(0) {}
+		ticking(false), ticksToWait(0), tickerID{} {}
 
 Idler::Idler() :
 		state(false), idlerID(0) {}
@@ -103,7 +105,7 @@ static inline bool IsAllSpacesOrTabs(const char *s, unsigned int len) {
 	return true;
 }
 
-Editor::Editor() {
+Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 	ctrlID = 0;
 
 	stylesValid = false;
@@ -181,6 +183,7 @@ Editor::Editor() {
 	needIdleStyling = false;
 
 	modEventMask = SC_MODEVENTMASKALL;
+	commandEvents = true;
 
 	pdoc->AddWatcher(this, 0);
 
@@ -206,7 +209,7 @@ void Editor::SetRepresentations() {
 	reprs.Clear();
 
 	// C0 control set
-	const char * const reps[] = {
+	const char *const reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
 		"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB",
@@ -220,7 +223,7 @@ void Editor::SetRepresentations() {
 	// C1 control set
 	// As well as Unicode mode, ISO-8859-1 should use these
 	if (IsUnicodeMode()) {
-		const char * const repsC1[] = {
+		const char *const repsC1[] = {
 			"PAD", "HOP", "BPH", "NBH", "IND", "NEL", "SSA", "ESA",
 			"HTS", "HTJ", "VTS", "PLD", "PLU", "RI", "SS2", "SS3",
 			"DCS", "PU1", "PU2", "STS", "CCH", "MW", "SPA", "EPA",
@@ -294,7 +297,7 @@ void Editor::RefreshStyleData() {
 }
 
 Point Editor::GetVisibleOriginInMain() const {
-	return Point(0,0);
+	return Point(0, 0);
 }
 
 PointDocument Editor::DocumentPointFromView(Point ptView) const {
@@ -1535,7 +1538,12 @@ bool Editor::WrapLines(WrapScope ws) {
 				return false;
 			}
 		} else if (ws == WrapScope::wsIdle) {
-			lineToWrapEnd = lineToWrap + LinesOnScreen() + 100;
+			// Try to keep time taken by wrapping reasonable so interaction remains smooth.
+			const double secondsAllowed = 0.01;
+			const Sci::Line linesInAllowedTime = std::clamp<Sci::Line>(
+				static_cast<Sci::Line>(secondsAllowed / durationWrapOneLine.Duration()),
+				LinesOnScreen() + 50, 0x10000);
+			lineToWrapEnd = lineToWrap + linesInAllowedTime;
 		}
 		const Sci::Line lineEndNeedWrap = std::min(wrapPending.end, pdoc->LinesTotal());
 		lineToWrapEnd = std::min(lineToWrapEnd, lineEndNeedWrap);
@@ -1554,6 +1562,8 @@ bool Editor::WrapLines(WrapScope ws) {
 			if (surface) {
 //Platform::DebugPrintf("Wraplines: scope=%0d need=%0d..%0d perform=%0d..%0d\n", ws, wrapPending.start, wrapPending.end, lineToWrap, lineToWrapEnd);
 
+				const Sci::Line linesBeingWrapped = lineToWrapEnd - lineToWrap;
+				ElapsedPeriod epWrapping;
 				while (lineToWrap < lineToWrapEnd) {
 					if (WrapOneLine(surface, lineToWrap)) {
 						wrapOccurred = true;
@@ -1561,6 +1571,7 @@ bool Editor::WrapLines(WrapScope ws) {
 					wrapPending.Wrapped(lineToWrap);
 					lineToWrap++;
 				}
+				durationWrapOneLine.AddSample(linesBeingWrapped, epWrapping.Duration());
 
 				goodTopLine = pcs->DisplayFromDoc(lineDocTop) + std::min(
 					subLineTop, static_cast<Sci::Line>(pcs->GetHeight(lineDocTop)-1));
@@ -2677,9 +2688,11 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 
 	// If client wants to see this modification
 	if (mh.modificationType & modEventMask) {
-		if ((mh.modificationType & (SC_MOD_CHANGESTYLE | SC_MOD_CHANGEINDICATOR)) == 0) {
-			// Real modification made to text of document.
-			NotifyChange();	// Send EN_CHANGE
+		if (commandEvents) {
+			if ((mh.modificationType & (SC_MOD_CHANGESTYLE | SC_MOD_CHANGEINDICATOR)) == 0) {
+				// Real modification made to text of document.
+				NotifyChange();	// Send EN_CHANGE
+			}
 		}
 
 		SCNotification scn = {};
@@ -4158,9 +4171,7 @@ std::string Editor::RangeText(Sci::Position start, Sci::Position end) const {
 	if (start < end) {
 		const Sci::Position len = end - start;
 		std::string ret(len, '\0');
-		for (int i = 0; i < len; i++) {
-			ret[i] = pdoc->CharAt(start + i);
-		}
+		pdoc->GetCharRange(ret.data(), start, len);
 		return ret;
 	}
 	return std::string();
@@ -4458,7 +4469,7 @@ void Editor::DwellEnd(bool mouseMoved) {
 void Editor::MouseLeave() {
 	SetHotSpotRange(nullptr);
 	if (!HaveMouseCapture()) {
-		ptMouseLast = Point(-1,-1);
+		ptMouseLast = Point(-1, -1);
 		DwellEnd(true);
 	}
 }
@@ -4813,7 +4824,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 		if (hotspot.Valid() && !PointIsHotspot(pt))
 			SetHotSpotRange(nullptr);
 
-		if (hotSpotClickPos != INVALID_POSITION && PositionFromLocation(pt,true,true) != hotSpotClickPos) {
+		if (hotSpotClickPos != INVALID_POSITION && PositionFromLocation(pt, true, true) != hotSpotClickPos) {
 			if (inDragDrop == ddNone) {
 				DisplayCursor(Window::cursorText);
 			}
@@ -5054,7 +5065,8 @@ Sci::Position Editor::PositionAfterMaxStyling(Sci::Position posMax, bool scrolli
 	// When scrolling, allow less time to ensure responsive
 	const double secondsAllowed = scrolling ? 0.005 : 0.02;
 
-	const Sci::Line linesToStyle = std::clamp(static_cast<int>(secondsAllowed / pdoc->durationStyleOneLine),
+	const Sci::Line linesToStyle = std::clamp(
+		static_cast<int>(secondsAllowed / pdoc->durationStyleOneLine.Duration()),
 		10, 0x10000);
 	const Sci::Line stylingMaxLine = std::min(
 		pdoc->SciLineFromPosition(pdoc->GetEndStyled()) + linesToStyle,
@@ -5204,7 +5216,7 @@ void Editor::SetDocPointer(Document *document) {
 	//Platform::DebugPrintf("** %x setdoc to %x\n", pdoc, document);
 	pdoc->RemoveWatcher(this, 0);
 	pdoc->Release();
-	if (document == NULL) {
+	if (!document) {
 		pdoc = new Document(SC_DOCUMENTOPTION_DEFAULT);
 	} else {
 		pdoc = document;
@@ -5523,7 +5535,7 @@ void Editor::NeedShown(Sci::Position pos, Sci::Position len) {
 }
 
 Sci::Position Editor::GetTag(char *tagValue, int tagNumber) {
-	const char *text = 0;
+	const char *text = nullptr;
 	Sci::Position length = 0;
 	if ((tagNumber >= 1) && (tagNumber <= 9)) {
 		char name[3] = "\\?";
@@ -6020,6 +6032,11 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			static_cast<Sci::Position>(wParam), lParam),
 			0, pdoc->Length());
 
+	case SCI_POSITIONRELATIVECODEUNITS:
+		return std::clamp<Sci::Position>(pdoc->GetRelativePositionUTF16(
+			static_cast<Sci::Position>(wParam), lParam),
+			0, pdoc->Length());
+
 	case SCI_LINESCROLL:
 		ScrollTo(topLine + static_cast<Sci::Line>(lParam));
 		HorizontalScrollTo(xOffset + static_cast<int>(wParam) * static_cast<int>(vs.spaceWidth));
@@ -6496,15 +6513,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_CLEARTABSTOPS:
 		if (view.ClearTabstops(static_cast<Sci::Line>(wParam))) {
-			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, 0, static_cast<Sci::Line>(wParam));
-			NotifyModified(pdoc, mh, NULL);
+			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, nullptr, static_cast<Sci::Line>(wParam));
+			NotifyModified(pdoc, mh, nullptr);
 		}
 		break;
 
 	case SCI_ADDTABSTOP:
 		if (view.AddTabstop(static_cast<Sci::Line>(wParam), static_cast<int>(lParam))) {
-			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, 0, static_cast<Sci::Line>(wParam));
-			NotifyModified(pdoc, mh, NULL);
+			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, nullptr, static_cast<Sci::Line>(wParam));
+			NotifyModified(pdoc, mh, nullptr);
 		}
 		break;
 
@@ -6784,6 +6801,23 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETBIDIRECTIONAL:
 		return static_cast<sptr_t>(bidirectional);
+
+	case SCI_GETLINECHARACTERINDEX:
+		return pdoc->LineCharacterIndex();
+
+	case SCI_ALLOCATELINECHARACTERINDEX:
+		pdoc->AllocateLineCharacterIndex(static_cast<int>(wParam));
+		break;
+
+	case SCI_RELEASELINECHARACTERINDEX:
+		pdoc->ReleaseLineCharacterIndex(static_cast<int>(wParam));
+		break;
+
+	case SCI_LINEFROMINDEXPOSITION:
+		return pdoc->LineFromPositionIndex(static_cast<Sci::Position>(wParam), static_cast<int>(lParam));
+
+	case SCI_INDEXPOSITIONFROMLINE:
+		return pdoc->IndexLineStart(static_cast<Sci::Line>(wParam), static_cast<int>(lParam));
 
 		// Marker definition and setting
 	case SCI_MARKERDEFINE:
@@ -7534,11 +7568,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_SETZOOM:
-		vs.zoomLevel = static_cast<int>(wParam);
-		InvalidateStyleRedraw();
-		NotifyZoom();
-		break;
+	case SCI_SETZOOM: {
+			const int zoomLevel = static_cast<int>(wParam);
+			if (zoomLevel != vs.zoomLevel) {
+				vs.zoomLevel = zoomLevel;
+				InvalidateStyleRedraw();
+				NotifyZoom();
+			}
+			break;
+		}
 
 	case SCI_GETZOOM:
 		return vs.zoomLevel;
@@ -7626,6 +7664,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETMODEVENTMASK:
 		return modEventMask;
+
+	case SCI_SETCOMMANDEVENTS:
+		commandEvents = static_cast<bool>(wParam);
+		return 0;
+
+	case SCI_GETCOMMANDEVENTS:
+		return commandEvents;
 
 	case SCI_CONVERTEOLS:
 		pdoc->ConvertLineEnds(static_cast<int>(wParam));
@@ -8190,6 +8235,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_COUNTCHARACTERS:
 		return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), lParam);
+
+	case SCI_COUNTCODEUNITS:
+		return pdoc->CountUTF16(static_cast<Sci::Position>(wParam), lParam);
 
 	default:
 		return DefWndProc(iMessage, wParam, lParam);
