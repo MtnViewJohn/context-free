@@ -406,7 +406,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
             [msg addAttribute: NSLinkAttributeName value: e range: r];
             
             // make the text appear in link color
-            [msg addAttribute: NSForegroundColorAttributeName value: [NSColor linkColor] range: r];
+            [msg addAttribute: NSForegroundColorAttributeName value: [NSColor systemBlueColor] range: r];
             
             // next make the text appear with an underline
             [msg addAttribute:
