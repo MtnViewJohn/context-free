@@ -145,15 +145,27 @@ typedef NS_ENUM(signed char, FindResult) {
     FindResultFoundWrapped
 };
 
+typedef NS_ENUM(NSInteger, FindType) {
+    FindContains = 1,
+    FindWholeWord = 2,
+    FindStartsWith = 3
+};
+
 
 
 - (void)setupEditor;
 - (FindResult) findAndHighlightText: (NSString *) searchText
                           matchCase: (BOOL) matchCase
-                          wholeWord: (BOOL) wholeWord
+                           findType: (FindType) findType
                            scrollTo: (BOOL) scrollTo
                                wrap: (BOOL) wrap
                           backwards: (BOOL) backwards;
+- (int) findAndReplaceText: (NSString *) searchText
+                    byText: (NSString *) newText
+                 matchCase: (BOOL) matchCase
+                  findType: (FindType) findType
+                     doAll: (BOOL) doAll
+               inSelection: (BOOL) inSelection;
 - (BOOL)findNext:(BOOL)reversed;
 - (void)replaceNext;
 - (void)replaceAll:(BOOL)inSelection;
@@ -420,7 +432,7 @@ namespace {
 
 @implementation GView {
     bool mMatchCase;
-    bool mWholeWord;
+    FindType mFindType;
     bool mWrapSearch;
     NSInteger mLastCaretPos;
 }
@@ -459,7 +471,7 @@ namespace {
         
         mFindTextVersion = NSIntegerMin;
         mMatchCase = true;
-        mWholeWord = false;
+        mFindType = FindContains;
         mWrapSearch = true;
         mSuspendNotifications = false;
         mLastCaretPos = -1;
@@ -601,14 +613,16 @@ namespace {
 
 - (void)findOptions:(id)sender
 {
-    switch ([sender tag]) {
+    switch (NSInteger t = [sender tag]) {
         case 0:
             mMatchCase = !mMatchCase;
             break;
         case 1:
-            mWholeWord = !mWholeWord;
-            break;
         case 2:
+        case 3:
+            mFindType = (FindType)t;
+            break;
+        case 4:
             mWrapSearch = !mWrapSearch;
             break;
         default:
@@ -1011,15 +1025,18 @@ namespace {
         return [[mFindText stringValue] length] > 0;
     
     if (action == @selector(findOptions:)) {
+        NSMenuItem* menu = (NSMenuItem*)anItem;
         switch (tag) {
             case 0:
-                mMatchCaseMenu.state = mMatchCase ? NSOnState : NSOffState;
+                menu.state = mMatchCase ? NSOnState : NSOffState;
                 break;
             case 1:
-                mWholeWordMenu.state = mWholeWord ? NSOnState : NSOffState;
-                break;
             case 2:
-                mWrapSearchMenu.state = mWrapSearch ? NSOnState : NSOffState;
+            case 3:
+                menu.state = mFindType == tag;
+                break;
+            case 4:
+                menu.state = mWrapSearch ? NSOnState : NSOffState;
                 break;
             default:
                 break;
@@ -2101,16 +2118,18 @@ long MakeColor(id v)
  */
 - (FindResult) findAndHighlightText: (NSString *) searchText
                           matchCase: (BOOL) matchCase
-                          wholeWord: (BOOL) wholeWord
+                           findType: (FindType) findType
                            scrollTo: (BOOL) scrollTo
                                wrap: (BOOL) wrap
                           backwards: (BOOL) backwards {
     int searchFlags= 0;
     if (matchCase)
         searchFlags |= SCFIND_MATCHCASE;
-    if (wholeWord)
+    if (findType == FindWholeWord)
         searchFlags |= SCFIND_WHOLEWORD;
-    
+    if (findType == FindStartsWith)
+        searchFlags |= SCFIND_WORDSTART;
+
     long selectionStart = [mEditor getGeneralProperty: SCI_GETSELECTIONSTART parameter: 0];
     long selectionEnd = [mEditor getGeneralProperty: SCI_GETSELECTIONEND parameter: 0];
     
@@ -2182,7 +2201,7 @@ long MakeColor(id v)
 - (int) findAndReplaceText: (NSString *) searchText
                     byText: (NSString *) newText
                  matchCase: (BOOL) matchCase
-                 wholeWord: (BOOL) wholeWord
+                  findType: (FindType) findType
                      doAll: (BOOL) doAll
                inSelection: (BOOL) inSelection {
     // The current position is where we start searching for single occurrences. Otherwise we start at
@@ -2207,8 +2226,10 @@ long MakeColor(id v)
     int searchFlags= 0;
     if (matchCase)
         searchFlags |= SCFIND_MATCHCASE;
-    if (wholeWord)
+    if (findType == FindWholeWord)
         searchFlags |= SCFIND_WHOLEWORD;
+    if (findType == FindStartsWith)
+        searchFlags |= SCFIND_WORDSTART;
     [mEditor setGeneralProperty: SCI_SETSEARCHFLAGS value: searchFlags];
     [mEditor setGeneralProperty: SCI_SETTARGETSTART value: startPosition];
     [mEditor setGeneralProperty: SCI_SETTARGETEND value: endPosition];
@@ -2293,7 +2314,7 @@ long MakeColor(id v)
     
     auto found = [self findAndHighlightText:text
                                   matchCase:mMatchCase
-                                  wholeWord:mWholeWord
+                                   findType:mFindType
                                    scrollTo:YES
                                        wrap:mWrapSearch
                                   backwards:reversed];
@@ -2337,7 +2358,7 @@ long MakeColor(id v)
     int cnt = [self findAndReplaceText:text
                                 byText:replaceText
                              matchCase:mMatchCase
-                             wholeWord:mWholeWord
+                              findType:mFindType
                                  doAll:NO
                            inSelection:NO];
     if (cnt == 0) {
@@ -2364,7 +2385,7 @@ long MakeColor(id v)
     int cnt = [self findAndReplaceText:text
                                 byText:replaceText
                              matchCase:mMatchCase
-                             wholeWord:mWholeWord
+                              findType:mFindType
                                  doAll:YES
                            inSelection:inSelection];
     canUndo = [mEditor getGeneralProperty:SCI_CANUNDO];

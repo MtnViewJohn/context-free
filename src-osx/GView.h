@@ -102,9 +102,6 @@ long MakeColor(id v);
     NSInteger                       mFindTextVersion;
     IBOutlet NSSegmentedControl*    mFindButtons;
     IBOutlet NSSegmentedControl*    mReplaceButtons;
-    IBOutlet NSMenuItem*            mMatchCaseMenu;
-    IBOutlet NSMenuItem*            mWholeWordMenu;
-    IBOutlet NSMenuItem*            mWrapSearchMenu;
 
     int     mCurrentVariation;
     bool    mIncrementVariationOnRender;

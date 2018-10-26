@@ -116,12 +116,24 @@
                                                                         <action selector="findOptions:" target="19" id="9x2-zb-jcI"/>
                                                                     </connections>
                                                                 </menuItem>
-                                                                <menuItem title="Whole words" tag="1" id="c8d-6K-fGZ">
+                                                                <menuItem isSeparatorItem="YES" id="8Jb-c8-qae"/>
+                                                                <menuItem title="Contains" state="on" tag="1" id="c8d-6K-fGZ">
                                                                     <connections>
                                                                         <action selector="findOptions:" target="19" id="nFR-Ey-8Ma"/>
                                                                     </connections>
                                                                 </menuItem>
-                                                                <menuItem title="Wrap" state="on" tag="2" id="2Z5-8p-m47">
+                                                                <menuItem title="Whole words" tag="2" id="8Aj-Jc-g64">
+                                                                    <connections>
+                                                                        <action selector="findOptions:" target="19" id="Lur-l4-d8c"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem title="Starts with" tag="3" id="lCG-K9-1dw">
+                                                                    <connections>
+                                                                        <action selector="findOptions:" target="19" id="I8H-Vg-f4N"/>
+                                                                    </connections>
+                                                                </menuItem>
+                                                                <menuItem isSeparatorItem="YES" id="obI-o3-E4J"/>
+                                                                <menuItem title="Wrap" state="on" tag="4" id="2Z5-8p-m47">
                                                                     <connections>
                                                                         <action selector="findOptions:" target="19" id="nR0-FT-Xcz"/>
                                                                     </connections>
@@ -150,9 +162,9 @@
                                                     <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Gba-B4-FFG">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <segments>
-                                                            <segment label="Replace" width="56" tag="6"/>
-                                                            <segment label="All" width="22" tag="4"/>
-                                                            <segment label="in Selection" toolTip="Replace all" width="71" tag="8"/>
+                                                            <segment label="Replace" toolTip="Replace next" width="56" tag="6"/>
+                                                            <segment label="All" toolTip="Replace all in document" width="22" tag="4"/>
+                                                            <segment label="in Selection" toolTip="Replace all in selection" width="71" tag="8"/>
                                                         </segments>
                                                     </segmentedCell>
                                                     <connections>
@@ -217,7 +229,6 @@
                                     <outlet property="mFrameField" destination="K4z-to-cnJ" id="RdA-OU-hir"/>
                                     <outlet property="mFrameLabel" destination="3lN-Sg-Kwl" id="mZ9-We-c0W"/>
                                     <outlet property="mFrameStepper" destination="p8c-G8-kLd" id="dv2-g6-l61"/>
-                                    <outlet property="mMatchCaseMenu" destination="4z1-NF-CMK" id="ymy-iK-fDn"/>
                                     <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
@@ -241,8 +252,6 @@
                                     <outlet property="mVariationField" destination="68" id="71"/>
                                     <outlet property="mVariationLabel" destination="67" id="70"/>
                                     <outlet property="mVariationStepper" destination="69" id="72"/>
-                                    <outlet property="mWholeWordMenu" destination="c8d-6K-fGZ" id="VaC-Sn-D3s"/>
-                                    <outlet property="mWrapSearchMenu" destination="2Z5-8p-m47" id="uQF-yG-P02"/>
                                 </connections>
                             </customView>
                         </subviews>
