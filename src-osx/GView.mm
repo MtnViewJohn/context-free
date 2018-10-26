@@ -2221,6 +2221,7 @@ long MakeColor(id v)
     
     int replaceCount = 0;
     if (doAll) {
+        bool replaced = false;
         while (true) {
             result = [ScintillaView directCall: mEditor
                                        message: SCI_SEARCHINTARGET
@@ -2228,6 +2229,13 @@ long MakeColor(id v)
                                         lParam: (sptr_t) textToSearch];
             if (result < 0)
                 break;
+
+            if (!replaced)
+                [ScintillaView directCall: mEditor
+                                  message: SCI_BEGINUNDOACTION
+                                   wParam: 0
+                                   lParam: 0];
+            replaced = true;
             
             replaceCount++;
             [ScintillaView directCall: mEditor
@@ -2246,6 +2254,11 @@ long MakeColor(id v)
             [mEditor setGeneralProperty: SCI_SETTARGETSTART value: [mEditor getGeneralProperty: SCI_GETTARGETEND]];
             [mEditor setGeneralProperty: SCI_SETTARGETEND value: endPosition];
         }
+        if (replaced)
+            [ScintillaView directCall: mEditor
+                              message: SCI_ENDUNDOACTION
+                               wParam: 0
+                               lParam: 0];
     } else {
         result = [ScintillaView directCall: mEditor
                                    message: SCI_SEARCHINTARGET
@@ -2347,13 +2360,15 @@ long MakeColor(id v)
         return;
     }
     
+    bool canUndo = [mEditor getGeneralProperty:SCI_CANUNDO];
     int cnt = [self findAndReplaceText:text
                                 byText:replaceText
                              matchCase:mMatchCase
                              wholeWord:mWholeWord
                                  doAll:YES
                            inSelection:inSelection];
-    
+    canUndo = [mEditor getGeneralProperty:SCI_CANUNDO];
+
     switch (cnt) {
         case 0:
             [mEditor setStatusText: @"Text not found"];
