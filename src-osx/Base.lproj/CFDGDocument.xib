@@ -72,7 +72,7 @@
                                                     </connections>
                                                 </textField>
                                                 <textField verticalHuggingPriority="750" id="e7S-vb-lWZ">
-                                                    <rect key="frame" x="51" y="565" width="224" height="19"/>
+                                                    <rect key="frame" x="51" y="565" width="209" height="19"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Replace" usesSingleLineMode="YES" bezelStyle="round" id="kf7-6c-A1w">
                                                         <font key="font" metaFont="smallSystem"/>
@@ -145,14 +145,14 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <segmentedControl verticalHuggingPriority="750" id="Ob9-iI-Nhp">
-                                                    <rect key="frame" x="281" y="564" width="139" height="21"/>
+                                                    <rect key="frame" x="266" y="564" width="157" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Gba-B4-FFG">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <segments>
-                                                            <segment label="Replace" width="56" tag="5"/>
-                                                            <segment label="&amp; Find" toolTip="Replace &amp; Find" width="46" tag="6"/>
-                                                            <segment label="All" toolTip="Replace all" width="29" tag="4"/>
+                                                            <segment label="Replace" width="56" tag="6"/>
+                                                            <segment label="All" width="22" tag="4"/>
+                                                            <segment label="in Selection" toolTip="Replace all" width="71" tag="8"/>
                                                         </segments>
                                                     </segmentedCell>
                                                     <connections>

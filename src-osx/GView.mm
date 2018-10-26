@@ -155,8 +155,8 @@ typedef NS_ENUM(signed char, FindResult) {
                                wrap: (BOOL) wrap
                           backwards: (BOOL) backwards;
 - (BOOL)findNext:(BOOL)reversed;
-- (void)replaceNext:(BOOL)find;
-- (void)replaceAll;
+- (void)replaceNext;
+- (void)replaceAll:(BOOL)inSelection;
 - (void)checkAutoC;
 
 - (void)drawCheckerboardRect:(NSRect)rect;
@@ -568,13 +568,13 @@ namespace {
             [self findNext:YES];
             break;
         case NSTextFinderActionReplaceAll:
-            [self replaceAll];
+            [self replaceAll: NO];
             break;
-        case NSTextFinderActionReplace:
-            [self replaceNext: NO];
+        case NSTextFinderActionReplaceAllInSelection:
+            [self replaceAll: YES];
             break;
         case NSTextFinderActionReplaceAndFind:
-            [self replaceNext: YES];
+            [self replaceNext];
             break;
         case NSTextFinderActionSetSearchString: {
             BOOL canFind = [[mEditor selectedString] length] > 0;
@@ -980,7 +980,7 @@ namespace {
         NSTextFinderActionNextMatch,
         NSTextFinderActionPreviousMatch,
         NSTextFinderActionReplaceAll,
-        NSTextFinderActionReplace,
+        NSTextFinderActionReplaceAllInSelection,
         NSTextFinderActionReplaceAndFind
     };
     
@@ -2096,7 +2096,8 @@ long MakeColor(id v)
 /**
  * Searches and marks the first occurrence of the given text and optionally scrolls it into view.
  *
- * @result YES if something was found, NO otherwise.
+ * @result FindResultFound if something was found, FindResultFoundWrapped is the
+ * editor wrapped beforer finding the text, FindResultNotFound otherwise.
  */
 - (FindResult) findAndHighlightText: (NSString *) searchText
                           matchCase: (BOOL) matchCase
@@ -2173,6 +2174,101 @@ long MakeColor(id v)
 
 
 
+/**
+ * Searches the given text and replaces
+ *
+ * @result Number of entries replaced, 0 if none.
+ */
+- (int) findAndReplaceText: (NSString *) searchText
+                    byText: (NSString *) newText
+                 matchCase: (BOOL) matchCase
+                 wholeWord: (BOOL) wholeWord
+                     doAll: (BOOL) doAll
+               inSelection: (BOOL) inSelection {
+    // The current position is where we start searching for single occurrences. Otherwise we start at
+    // the beginning of the document.
+    long startPosition;
+    if (doAll && !inSelection)
+        startPosition = 0; // Start at the beginning of the text if we replace all occurrences.
+    else
+        // For a single replacement we start at the current caret position.
+        startPosition = [mEditor getGeneralProperty: SCI_GETCURRENTPOS];
+    long endPosition;
+    if (doAll && inSelection)
+        endPosition = [mEditor getGeneralProperty: SCI_GETANCHOR];
+    else
+        endPosition = [mEditor getGeneralProperty: SCI_GETTEXTLENGTH];
+    
+    if (doAll && endPosition < startPosition)
+        std::swap(startPosition, endPosition);
+    if (doAll && endPosition == startPosition)
+        return 0;
+
+    int searchFlags= 0;
+    if (matchCase)
+        searchFlags |= SCFIND_MATCHCASE;
+    if (wholeWord)
+        searchFlags |= SCFIND_WHOLEWORD;
+    [mEditor setGeneralProperty: SCI_SETSEARCHFLAGS value: searchFlags];
+    [mEditor setGeneralProperty: SCI_SETTARGETSTART value: startPosition];
+    [mEditor setGeneralProperty: SCI_SETTARGETEND value: endPosition];
+    
+    const char *textToSearch = searchText.UTF8String;
+    long sourceLength = strlen(textToSearch); // Length in bytes.
+    const char *replacement = newText.UTF8String;
+    long targetLength = strlen(replacement);  // Length in bytes.
+    sptr_t result;
+    
+    int replaceCount = 0;
+    if (doAll) {
+        while (true) {
+            result = [ScintillaView directCall: mEditor
+                                       message: SCI_SEARCHINTARGET
+                                        wParam: sourceLength
+                                        lParam: (sptr_t) textToSearch];
+            if (result < 0)
+                break;
+            
+            replaceCount++;
+            [ScintillaView directCall: mEditor
+                              message: SCI_REPLACETARGET
+                               wParam: targetLength
+                               lParam: (sptr_t) replacement];
+            
+            if (inSelection)
+                endPosition += targetLength - sourceLength;
+            else
+                endPosition = [mEditor getGeneralProperty: SCI_GETTEXTLENGTH];
+
+            // The replacement changes the target range to the replaced text. Continue after that till the end.
+            // The text length might be changed by the replacement so make sure the target end is the actual
+            // text end.
+            [mEditor setGeneralProperty: SCI_SETTARGETSTART value: [mEditor getGeneralProperty: SCI_GETTARGETEND]];
+            [mEditor setGeneralProperty: SCI_SETTARGETEND value: endPosition];
+        }
+    } else {
+        result = [ScintillaView directCall: mEditor
+                                   message: SCI_SEARCHINTARGET
+                                    wParam: sourceLength
+                                    lParam: (sptr_t) textToSearch];
+        replaceCount = (result < 0) ? 0 : 1;
+        
+        if (replaceCount > 0) {
+            [ScintillaView directCall: mEditor
+                              message: SCI_REPLACETARGET
+                               wParam: targetLength
+                               lParam: (sptr_t) replacement];
+            
+            // For a single replace we set the new selection to the replaced text.
+            [mEditor setGeneralProperty: SCI_SETSELECTIONSTART value: [mEditor getGeneralProperty: SCI_GETTARGETSTART]];
+            [mEditor setGeneralProperty: SCI_SETSELECTIONEND value: [mEditor getGeneralProperty: SCI_GETTARGETEND]];
+        }
+    }
+    
+    return replaceCount;
+}
+
+
 - (BOOL)findNext:(BOOL)reversed
 {
     NSString* text = [mFindText stringValue];
@@ -2215,7 +2311,7 @@ long MakeColor(id v)
 }
 
 
-- (void)replaceNext:(BOOL)find
+- (void)replaceNext
 {
     NSString* text = [mFindText stringValue];
     NSString* replaceText = [mReplaceText stringValue];
@@ -2225,11 +2321,12 @@ long MakeColor(id v)
         return;
     }
     
-    int cnt = [mEditor findAndReplaceText:text
-                                   byText:replaceText
-                                matchCase:mMatchCase
-                                wholeWord:mWholeWord
-                                    doAll:NO];
+    int cnt = [self findAndReplaceText:text
+                                byText:replaceText
+                             matchCase:mMatchCase
+                             wholeWord:mWholeWord
+                                 doAll:NO
+                           inSelection:NO];
     if (cnt == 0) {
         [mEditor setStatusText: @"Text not found"];
         NSBeep();
@@ -2237,12 +2334,10 @@ long MakeColor(id v)
     }
     [mEditor setStatusText: @"Replaced"];
 
-    if (find) {
-        [self findNext:NO];
-    }
+    [self findNext:NO];
 }
 
-- (void)replaceAll
+- (void)replaceAll: (BOOL)inSelection
 {
     NSString* text = [mFindText stringValue];
     NSString* replaceText = [mReplaceText stringValue];
@@ -2252,11 +2347,12 @@ long MakeColor(id v)
         return;
     }
     
-    int cnt = [mEditor findAndReplaceText:text
-                                   byText:replaceText
-                                matchCase:mMatchCase
-                                wholeWord:mWholeWord
-                                    doAll:YES];
+    int cnt = [self findAndReplaceText:text
+                                byText:replaceText
+                             matchCase:mMatchCase
+                             wholeWord:mWholeWord
+                                 doAll:YES
+                           inSelection:inSelection];
     
     switch (cnt) {
         case 0:
