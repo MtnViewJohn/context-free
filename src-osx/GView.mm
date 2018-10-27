@@ -998,14 +998,15 @@ namespace {
         NSTextFinderActionReplaceAndFind
     };
     
-    if (action == @selector(startRender:))
+    if (action == @selector(startRender:) || action == @selector(toggleRender:))
         return !mRestartRenderer;
     
     if (action == @selector(enterFullscreen:))
         return YES;
         
     if (action == @selector(showHiresRenderSheet:)
-    ||  action == @selector(showAnimateSheet:))
+        ||  action == @selector(showAnimateSheet:)
+        ||  action == @selector(showAnimateFrameSheet:))
         return !mRendering;
             
     if (action == @selector(finishRender:))
