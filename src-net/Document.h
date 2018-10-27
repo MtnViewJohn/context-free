@@ -129,7 +129,8 @@ namespace ContextFreeNet {
 	private: 
 	private: System::Windows::Forms::WebBrowser^  cfdgMessage;
     private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator6;
-    private: System::Windows::Forms::ToolStripMenuItem^  menuEFind;
+    private: System::Windows::Forms::ToolStripMenuItem^  menuEFindPrev;
+
     private: System::Windows::Forms::ToolStripMenuItem^  insertCharacterToolStripMenuItem;
     private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem2;
     private: System::Windows::Forms::ToolStripMenuItem^  toolStripMenuItem3;
@@ -215,6 +216,10 @@ private: System::Windows::Forms::ToolStripTextBox^  toolStripHeightBox;
 private: System::Windows::Forms::ToolStripSeparator^  toolStripSizeSeparator;
 private: System::Windows::Forms::ToolStripMenuItem^  removeIndentToolStripMenuItem;
 private: System::Windows::Forms::ToolStripMenuItem^  addIndentToolStripMenuItem;
+private: System::Windows::Forms::ToolStripMenuItem^  menuEFind;
+private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator2;
+private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator8;
+
 
     public:
 
@@ -440,7 +445,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->cFAlignToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFEvenOddToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->cFIsoWidthToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-            this->menuEFind = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->menuEFindPrev = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->removeIndentToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->addIndentToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRender = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -453,6 +458,9 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
             this->menuROutput = (gcnew System::Windows::Forms::ToolStripMenuItem());
             this->menuRUpload = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->menuEFind = (gcnew System::Windows::Forms::ToolStripMenuItem());
+            this->toolStripSeparator2 = (gcnew System::Windows::Forms::ToolStripSeparator());
+            this->toolStripSeparator8 = (gcnew System::Windows::Forms::ToolStripSeparator());
             this->toolStrip1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->documentSplitter))->BeginInit();
             this->documentSplitter->Panel1->SuspendLayout();
@@ -820,11 +828,12 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             // menuEdit
             // 
-            this->menuEdit->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(15) {
+            this->menuEdit->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(18) {
                 this->menuEUndo,
-                    this->menuERedo, this->toolStripSeparator5, this->menuECut, this->menuECopy, this->menuEPaste, this->menuEDelete, this->toolStripSeparator6,
+                    this->menuERedo, this->toolStripSeparator2, this->menuECut, this->menuECopy, this->menuEPaste, this->menuEDelete, this->toolStripSeparator6,
                     this->insertCharacterToolStripMenuItem, this->insertSymmetryToolStripMenuItem, this->insertVariableToolStripMenuItem, this->insertFlagToolStripMenuItem,
-                    this->menuEFind, this->removeIndentToolStripMenuItem, this->addIndentToolStripMenuItem
+                    this->toolStripSeparator5, this->menuEFind, this->menuEFindPrev, this->toolStripSeparator8, this->removeIndentToolStripMenuItem,
+                    this->addIndentToolStripMenuItem
             });
             this->menuEdit->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuEdit->MergeIndex = 1;
@@ -838,7 +847,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuEUndo->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEUndo->Name = L"menuEUndo";
             this->menuEUndo->ShortcutKeyDisplayString = L"Ctrl-Z";
-            this->menuEUndo->Size = System::Drawing::Size(370, 38);
+            this->menuEUndo->Size = System::Drawing::Size(405, 38);
             this->menuEUndo->Text = L"&Undo";
             this->menuEUndo->Click += gcnew System::EventHandler(this, &Document::menuEUndo_Click);
             // 
@@ -848,14 +857,14 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuERedo->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuERedo->Name = L"menuERedo";
             this->menuERedo->ShortcutKeyDisplayString = L"Ctrl-Y";
-            this->menuERedo->Size = System::Drawing::Size(370, 38);
+            this->menuERedo->Size = System::Drawing::Size(405, 38);
             this->menuERedo->Text = L"&Redo";
             this->menuERedo->Click += gcnew System::EventHandler(this, &Document::menuERedo_Click);
             // 
             // toolStripSeparator5
             // 
             this->toolStripSeparator5->Name = L"toolStripSeparator5";
-            this->toolStripSeparator5->Size = System::Drawing::Size(367, 6);
+            this->toolStripSeparator5->Size = System::Drawing::Size(402, 6);
             // 
             // menuECut
             // 
@@ -863,7 +872,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuECut->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuECut->Name = L"menuECut";
             this->menuECut->ShortcutKeyDisplayString = L"Ctrl-X";
-            this->menuECut->Size = System::Drawing::Size(370, 38);
+            this->menuECut->Size = System::Drawing::Size(405, 38);
             this->menuECut->Text = L"Cu&t";
             this->menuECut->Click += gcnew System::EventHandler(this, &Document::menuECut_Click);
             // 
@@ -873,7 +882,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuECopy->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuECopy->Name = L"menuECopy";
             this->menuECopy->ShortcutKeyDisplayString = L"Ctrl-C";
-            this->menuECopy->Size = System::Drawing::Size(370, 38);
+            this->menuECopy->Size = System::Drawing::Size(405, 38);
             this->menuECopy->Text = L"&Copy";
             this->menuECopy->Click += gcnew System::EventHandler(this, &Document::menuECopy_Click);
             // 
@@ -883,7 +892,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuEPaste->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEPaste->Name = L"menuEPaste";
             this->menuEPaste->ShortcutKeyDisplayString = L"Ctrl-V";
-            this->menuEPaste->Size = System::Drawing::Size(370, 38);
+            this->menuEPaste->Size = System::Drawing::Size(405, 38);
             this->menuEPaste->Text = L"&Paste";
             this->menuEPaste->Click += gcnew System::EventHandler(this, &Document::menuEPaste_Click);
             // 
@@ -893,14 +902,14 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuEDelete->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuEDelete->Name = L"menuEDelete";
             this->menuEDelete->ShortcutKeyDisplayString = L"DEL";
-            this->menuEDelete->Size = System::Drawing::Size(370, 38);
+            this->menuEDelete->Size = System::Drawing::Size(405, 38);
             this->menuEDelete->Text = L"&Delete";
             this->menuEDelete->Click += gcnew System::EventHandler(this, &Document::menuEDelete_Click);
             // 
             // toolStripSeparator6
             // 
             this->toolStripSeparator6->Name = L"toolStripSeparator6";
-            this->toolStripSeparator6->Size = System::Drawing::Size(367, 6);
+            this->toolStripSeparator6->Size = System::Drawing::Size(402, 6);
             // 
             // insertCharacterToolStripMenuItem
             // 
@@ -910,7 +919,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->piToolStripMenuItem
             });
             this->insertCharacterToolStripMenuItem->Name = L"insertCharacterToolStripMenuItem";
-            this->insertCharacterToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->insertCharacterToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->insertCharacterToolStripMenuItem->Text = L"Insert Character";
             // 
             // toolStripMenuItem2
@@ -979,7 +988,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->friezeToolStripMenuItem, this->cFp3m1ToolStripMenuItem, this->cFp31mToolStripMenuItem, this->cFp6ToolStripMenuItem, this->cFp6mToolStripMenuItem
             });
             this->insertSymmetryToolStripMenuItem->Name = L"insertSymmetryToolStripMenuItem";
-            this->insertSymmetryToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->insertSymmetryToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->insertSymmetryToolStripMenuItem->Text = L"Insert Symmetry";
             // 
             // cFCyclicToolStripMenuItem
@@ -1170,7 +1179,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->cFSizeToolStripMenuItem, this->cFSymmetryToolStripMenuItem, this->cFTileToolStripMenuItem, this->cFTimeToolStripMenuItem
             });
             this->insertVariableToolStripMenuItem->Name = L"insertVariableToolStripMenuItem";
-            this->insertVariableToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->insertVariableToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->insertVariableToolStripMenuItem->Text = L"Insert Variable";
             // 
             // cFAllowOverlapToolStripMenuItem
@@ -1300,7 +1309,7 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
                     this->cFAlignToolStripMenuItem, this->cFEvenOddToolStripMenuItem, this->cFIsoWidthToolStripMenuItem
             });
             this->insertFlagToolStripMenuItem->Name = L"insertFlagToolStripMenuItem";
-            this->insertFlagToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->insertFlagToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->insertFlagToolStripMenuItem->Text = L"Insert Flag";
             // 
             // cFMiterJoinToolStripMenuItem
@@ -1387,20 +1396,22 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->cFIsoWidthToolStripMenuItem->Text = L"CF::IsoWidth";
             this->cFIsoWidthToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::toolStripMenuUnicode_Click);
             // 
-            // menuEFind
+            // menuEFindPrev
             // 
-            this->menuEFind->Name = L"menuEFind";
-            this->menuEFind->ShortcutKeyDisplayString = L"Ctrl-F";
-            this->menuEFind->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::F));
-            this->menuEFind->Size = System::Drawing::Size(370, 38);
-            this->menuEFind->Text = L"Find/Replace...";
+            this->menuEFindPrev->Name = L"menuEFindPrev";
+            this->menuEFindPrev->ShortcutKeyDisplayString = L"Shift-Ctrl-F";
+            this->menuEFindPrev->ShortcutKeys = static_cast<System::Windows::Forms::Keys>(((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Shift)
+                | System::Windows::Forms::Keys::F));
+            this->menuEFindPrev->Size = System::Drawing::Size(405, 38);
+            this->menuEFindPrev->Tag = L"prev";
+            this->menuEFindPrev->Text = L"Find Previous...";
             // 
             // removeIndentToolStripMenuItem
             // 
             this->removeIndentToolStripMenuItem->Name = L"removeIndentToolStripMenuItem";
             this->removeIndentToolStripMenuItem->ShortcutKeyDisplayString = L"Ctrl-[";
             this->removeIndentToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::OemOpenBrackets));
-            this->removeIndentToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->removeIndentToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->removeIndentToolStripMenuItem->Tag = L"-1";
             this->removeIndentToolStripMenuItem->Text = L"Remove Indent";
             this->removeIndentToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::Indent_Click);
@@ -1409,8 +1420,8 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             // 
             this->addIndentToolStripMenuItem->Name = L"addIndentToolStripMenuItem";
             this->addIndentToolStripMenuItem->ShortcutKeyDisplayString = L"Ctrl-]";
-            this->addIndentToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::OemCloseBrackets));
-            this->addIndentToolStripMenuItem->Size = System::Drawing::Size(370, 38);
+            this->addIndentToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Oem6));
+            this->addIndentToolStripMenuItem->Size = System::Drawing::Size(405, 38);
             this->addIndentToolStripMenuItem->Tag = L"1";
             this->addIndentToolStripMenuItem->Text = L"Add Indent";
             this->addIndentToolStripMenuItem->Click += gcnew System::EventHandler(this, &Document::Indent_Click);
@@ -1518,6 +1529,24 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
             this->menuRUpload->Size = System::Drawing::Size(432, 38);
             this->menuRUpload->Text = L"&Upload to gallery...";
             this->menuRUpload->Click += gcnew System::EventHandler(this, &Document::menuRUpload_Click);
+            // 
+            // menuEFind
+            // 
+            this->menuEFind->Name = L"menuEFind";
+            this->menuEFind->ShortcutKeyDisplayString = L"Ctrl-F";
+            this->menuEFind->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::F));
+            this->menuEFind->Size = System::Drawing::Size(405, 38);
+            this->menuEFind->Text = L"Find/Replace...";
+            // 
+            // toolStripSeparator2
+            // 
+            this->toolStripSeparator2->Name = L"toolStripSeparator2";
+            this->toolStripSeparator2->Size = System::Drawing::Size(402, 6);
+            // 
+            // toolStripSeparator8
+            // 
+            this->toolStripSeparator8->Name = L"toolStripSeparator8";
+            this->toolStripSeparator8->Size = System::Drawing::Size(402, 6);
             // 
             // Document
             // 

@@ -212,7 +212,7 @@ namespace ContextFreeNet {
             this->menuStrip1->Name = L"menuStrip1";
             this->menuStrip1->Padding = System::Windows::Forms::Padding(12, 4, 0, 4);
             this->menuStrip1->RenderMode = System::Windows::Forms::ToolStripRenderMode::Professional;
-            this->menuStrip1->Size = System::Drawing::Size(2200, 44);
+            this->menuStrip1->Size = System::Drawing::Size(2200, 46);
             this->menuStrip1->TabIndex = 1;
             this->menuStrip1->Text = L"menuStrip1";
             // 
@@ -224,7 +224,7 @@ namespace ContextFreeNet {
             });
             this->menuFile->MergeAction = System::Windows::Forms::MergeAction::Insert;
             this->menuFile->Name = L"menuFile";
-            this->menuFile->Size = System::Drawing::Size(64, 36);
+            this->menuFile->Size = System::Drawing::Size(64, 38);
             this->menuFile->Text = L"&File";
             // 
             // menuFNew
@@ -234,7 +234,7 @@ namespace ContextFreeNet {
             this->menuFNew->Name = L"menuFNew";
             this->menuFNew->ShortcutKeyDisplayString = L"Ctrl-N";
             this->menuFNew->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-            this->menuFNew->Size = System::Drawing::Size(314, 38);
+            this->menuFNew->Size = System::Drawing::Size(324, 38);
             this->menuFNew->Text = L"&New";
             this->menuFNew->Click += gcnew System::EventHandler(this, &Form1::menuFNew_Click);
             // 
@@ -245,21 +245,21 @@ namespace ContextFreeNet {
             this->menuFOpen->Name = L"menuFOpen";
             this->menuFOpen->ShortcutKeyDisplayString = L"Ctrl-O";
             this->menuFOpen->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-            this->menuFOpen->Size = System::Drawing::Size(314, 38);
+            this->menuFOpen->Size = System::Drawing::Size(324, 38);
             this->menuFOpen->Text = L"&Open";
             this->menuFOpen->Click += gcnew System::EventHandler(this, &Form1::menuFOpen_Click);
             // 
             // menuFRecent
             // 
             this->menuFRecent->Name = L"menuFRecent";
-            this->menuFRecent->Size = System::Drawing::Size(314, 38);
+            this->menuFRecent->Size = System::Drawing::Size(324, 38);
             this->menuFRecent->Text = L"Recent files";
             this->menuFRecent->Visible = false;
             // 
             // menuFmruSeparator
             // 
             this->menuFmruSeparator->Name = L"menuFmruSeparator";
-            this->menuFmruSeparator->Size = System::Drawing::Size(311, 6);
+            this->menuFmruSeparator->Size = System::Drawing::Size(321, 6);
             // 
             // menuFPrefs
             // 
@@ -268,21 +268,21 @@ namespace ContextFreeNet {
             this->menuFPrefs->Name = L"menuFPrefs";
             this->menuFPrefs->ShortcutKeyDisplayString = L"Ctrl-P";
             this->menuFPrefs->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::P));
-            this->menuFPrefs->Size = System::Drawing::Size(314, 38);
+            this->menuFPrefs->Size = System::Drawing::Size(324, 38);
             this->menuFPrefs->Text = L"Preferences";
             this->menuFPrefs->Click += gcnew System::EventHandler(this, &Form1::menuFPrefs_Click);
             // 
             // menuFExit
             // 
             this->menuFExit->Name = L"menuFExit";
-            this->menuFExit->Size = System::Drawing::Size(314, 38);
+            this->menuFExit->Size = System::Drawing::Size(324, 38);
             this->menuFExit->Text = L"E&xit";
             this->menuFExit->Click += gcnew System::EventHandler(this, &Form1::menuFExit_Click);
             // 
             // menuExamples
             // 
             this->menuExamples->Name = L"menuExamples";
-            this->menuExamples->Size = System::Drawing::Size(126, 36);
+            this->menuExamples->Size = System::Drawing::Size(126, 38);
             this->menuExamples->Text = L"E&xamples";
             // 
             // menuWindow
@@ -292,7 +292,7 @@ namespace ContextFreeNet {
                     this->menuWMsgConsole, this->toolStripSeparator2
             });
             this->menuWindow->Name = L"menuWindow";
-            this->menuWindow->Size = System::Drawing::Size(114, 36);
+            this->menuWindow->Size = System::Drawing::Size(114, 38);
             this->menuWindow->Text = L"&Window";
             this->menuWindow->DropDownOpened += gcnew System::EventHandler(this, &Form1::Window_DropDown_Opening);
             // 
@@ -301,7 +301,7 @@ namespace ContextFreeNet {
             this->menuRColor->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuRColor.Image")));
             this->menuRColor->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuRColor->Name = L"menuRColor";
-            this->menuRColor->Size = System::Drawing::Size(298, 38);
+            this->menuRColor->Size = System::Drawing::Size(297, 38);
             this->menuRColor->Text = L"&Color calculator";
             this->menuRColor->Click += gcnew System::EventHandler(this, &Form1::menuRColor_Click);
             // 
@@ -310,14 +310,14 @@ namespace ContextFreeNet {
             this->menuWMsgConsole->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"menuWMsgConsole.Image")));
             this->menuWMsgConsole->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
             this->menuWMsgConsole->Name = L"menuWMsgConsole";
-            this->menuWMsgConsole->Size = System::Drawing::Size(298, 38);
+            this->menuWMsgConsole->Size = System::Drawing::Size(297, 38);
             this->menuWMsgConsole->Text = L"&Message console";
             this->menuWMsgConsole->Click += gcnew System::EventHandler(this, &Form1::menuWMsgConsole_Click);
             // 
             // toolStripSeparator2
             // 
             this->toolStripSeparator2->Name = L"toolStripSeparator2";
-            this->toolStripSeparator2->Size = System::Drawing::Size(295, 6);
+            this->toolStripSeparator2->Size = System::Drawing::Size(294, 6);
             // 
             // helpToolStripMenuItem
             // 
@@ -327,53 +327,53 @@ namespace ContextFreeNet {
                     this->sendFeedbackToolStripMenuItem, this->aboutContextFreeToolStripMenuItem
             });
             this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
-            this->helpToolStripMenuItem->Size = System::Drawing::Size(77, 36);
+            this->helpToolStripMenuItem->Size = System::Drawing::Size(77, 38);
             this->helpToolStripMenuItem->Text = L"&Help";
             // 
             // contextFreeSiteToolStripMenuItem
             // 
             this->contextFreeSiteToolStripMenuItem->Name = L"contextFreeSiteToolStripMenuItem";
-            this->contextFreeSiteToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->contextFreeSiteToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->contextFreeSiteToolStripMenuItem->Tag = L"http://www.contextfreeart.org/index.html";
             this->contextFreeSiteToolStripMenuItem->Text = L"&Context Free Site...";
             // 
             // galleryToolStripMenuItem
             // 
             this->galleryToolStripMenuItem->Name = L"galleryToolStripMenuItem";
-            this->galleryToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->galleryToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->galleryToolStripMenuItem->Tag = L"http://www.contextfreeart.org/gallery/";
             this->galleryToolStripMenuItem->Text = L"&Gallery...";
             // 
             // forumsToolStripMenuItem
             // 
             this->forumsToolStripMenuItem->Name = L"forumsToolStripMenuItem";
-            this->forumsToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->forumsToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->forumsToolStripMenuItem->Tag = L"http://www.contextfreeart.org/phpbb/index.php";
             this->forumsToolStripMenuItem->Text = L"&Forums...";
             // 
             // writingCFDGFilesToolStripMenuItem
             // 
             this->writingCFDGFilesToolStripMenuItem->Name = L"writingCFDGFilesToolStripMenuItem";
-            this->writingCFDGFilesToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->writingCFDGFilesToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->writingCFDGFilesToolStripMenuItem->Tag = L"http://www.contextfreeart.org/mediawiki/index.php/CFDG_HOWTO";
             this->writingCFDGFilesToolStripMenuItem->Text = L"&Writing CFDG files...";
             // 
             // toolStripSeparator1
             // 
             this->toolStripSeparator1->Name = L"toolStripSeparator1";
-            this->toolStripSeparator1->Size = System::Drawing::Size(322, 6);
+            this->toolStripSeparator1->Size = System::Drawing::Size(321, 6);
             // 
             // sendFeedbackToolStripMenuItem
             // 
             this->sendFeedbackToolStripMenuItem->Name = L"sendFeedbackToolStripMenuItem";
-            this->sendFeedbackToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->sendFeedbackToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->sendFeedbackToolStripMenuItem->Tag = L"mailto:info@contextfreeart.org";
             this->sendFeedbackToolStripMenuItem->Text = L"&Send feedback...";
             // 
             // aboutContextFreeToolStripMenuItem
             // 
             this->aboutContextFreeToolStripMenuItem->Name = L"aboutContextFreeToolStripMenuItem";
-            this->aboutContextFreeToolStripMenuItem->Size = System::Drawing::Size(325, 38);
+            this->aboutContextFreeToolStripMenuItem->Size = System::Drawing::Size(324, 38);
             this->aboutContextFreeToolStripMenuItem->Text = L"&About Context Free";
             this->aboutContextFreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::aboutContextFreeToolStripMenuItem_Click);
             // 
@@ -389,10 +389,10 @@ namespace ContextFreeNet {
             this->dockPanel->DockBottomPortion = 85;
             this->dockPanel->DockLeftPortion = 100;
             this->dockPanel->DockRightPortion = 365;
-            this->dockPanel->Location = System::Drawing::Point(0, 44);
+            this->dockPanel->Location = System::Drawing::Point(0, 46);
             this->dockPanel->Margin = System::Windows::Forms::Padding(6);
             this->dockPanel->Name = L"dockPanel";
-            this->dockPanel->Size = System::Drawing::Size(2200, 1331);
+            this->dockPanel->Size = System::Drawing::Size(2200, 1329);
             this->dockPanel->TabIndex = 4;
             // 
             // Form1

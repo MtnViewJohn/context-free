@@ -1611,6 +1611,9 @@
   <ItemGroup>
     <Image Include="copyright.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\src-win\res\Speech Misrecognition.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

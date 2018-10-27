@@ -851,11 +851,11 @@ Builder::PopNameSpace()
 }
 
 void
-Builder::CheckVariableName(int index, const yy::location& loc, bool param)
+Builder::CheckVariableName(int index, const yy::location& loc, bool isParam)
 {
-    if (mAllowOverlap && !param) return;
+    if (mAllowOverlap && !isParam) return;
     
-    const ASTrepContainer* thisLevel = param ? &mParamDecls : mContainerStack.back();
+    const ASTrepContainer* thisLevel = isParam ? &mParamDecls : mContainerStack.back();
     
     for (auto&& param: backwards(thisLevel->mParameters))
         if (param.mName == index) {

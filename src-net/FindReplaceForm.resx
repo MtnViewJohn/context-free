@@ -112,9 +112,32 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="nextButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAM1JREFUOE+tk6EOwjAYhPsGvBLvgIXnQQ6FIiHBIqawaAQGNU+CQgCinez6dW3S
+        lhYC2yWXNf3vrv/fbWJ0tG07VUrVhjphTc3J8jCiqrne9Xx11JPFTovZxpI1e9SklFsnj0Hh1NwiY0pq
+        aDjI2XrQGumfzJ5o0EbjMB8tpuL14aKfj5d9hvto8Ti7DSiengtBi8fZ+wBfRFxiGDJ+QGmE5f78Zs6N
+        MOwSB79GYBKrvz8kDwqk02IYxJo9akWzB60xn6G9qIDff6bfIUQHDybXZJrkj7YAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="prevButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAMVJREFUOE+tkzEOwjAQBP0DvsQfaOFNoUqFhMQHUtFSp6VKH4mKAihsl8bj+CQ7
+        IkHgrLSK5dtd3zmJWhzW2rUxpvF0IzbUouwzvKjq+rvb7i9utTs5tTkEsmaPmtb6GOU5KLTdLTOOSQ0N
+        B0XbAFojfc4sRIM2G4f5aDEV1uerez5e4ZnuQ7R4oj0EZKfPmSFaPNE+BEhRzFMU3fIBpSOUXWLxawQ+
+        sfr7QxJQIJ0W0yDW7FGbNAtojfk8w0Ul/P4z/Q6l3qCG14L/QunsAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Speech Misrecognition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\src-win\res\Speech Misrecognition.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

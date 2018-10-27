@@ -132,6 +132,8 @@ void Form1::MoreInitialization()
 
     Load += gcnew EventHandler(this, &Form1::Form_Loaded);
 
+    MdiChildActivate += gcnew EventHandler(this, &Form1::child_activate);
+
     idleHandler = gcnew EventHandler(this, &Form1::appIsIdle);
     Application::Idle += idleHandler;
     Application::ApplicationExit += gcnew EventHandler(this, &Form1::appIsExiting);
@@ -275,10 +277,13 @@ System::Void Form1::FindReplace_Click(System::Object^  sender, System::EventArgs
         dockPanel->DockBottomPortion = 85;
         findForm->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::DockBottom);
     } else {
-        if (findForm->findButton->Enabled)
-            findForm->findButton->PerformClick();
-        else
-            System::Media::SystemSounds::Beep->Play();
+        if (ToolStripMenuItem^ menu = dynamic_cast<ToolStripMenuItem^>(sender)) {
+            auto button = menu->Tag ? findForm->prevButton : findForm->nextButton;
+            if (button->Enabled)
+                button->PerformClick();
+            else
+                System::Media::SystemSounds::Beep->Play();
+        }
     }
 }
 

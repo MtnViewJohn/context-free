@@ -308,6 +308,7 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     }
 
     menuEFind->Click += gcnew EventHandler((Form1^)MdiParent, &Form1::FindReplace_Click);
+    menuEFindPrev->Click += gcnew EventHandler((Form1^)MdiParent, &Form1::FindReplace_Click);
 
     cfdgMessage->DocumentCompleted += 
         gcnew WebBrowserDocumentCompletedEventHandler(this, &Document::messageWindowReady);
