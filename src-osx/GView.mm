@@ -219,6 +219,8 @@ namespace {
     NSImage*    PlayPressImage = nil;
     NSImage*    PauseNormalImage = nil;
     NSImage*    PausePressImage = nil;
+    NSImage*    MagnifyingGlassLight = nil;
+    NSImage*    MagnifyingGlassDark = nil;
     
     NSString* PrefKeyEditorDefaultBold = @"EditorDefaultBold";
     NSString* PrefKeyEditorCommentsBold = @"EditorCommentsBold";
@@ -443,6 +445,8 @@ namespace {
         PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
         PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
         PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
+        MagnifyingGlassLight = [[NSImage imageNamed:@"magnifying-glass.icns"] retain];
+        MagnifyingGlassDark = [[NSImage imageNamed:@"magnifying-glass-white.icns"] retain];
         std::sort(CFscintilla::AutoComplete.begin(), CFscintilla::AutoComplete.end(), CFscintilla::AutoCmp());
     }
 }
@@ -1536,6 +1540,7 @@ long MakeColor(id v)
                           value:[defaults boolForKey:PrefKeyEditorNumbersItalic]];
     
     if (darkMode) {
+        mFindOptionsButton.image = MagnifyingGlassDark;
         [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_LINENUMBER fromHTML:@"#363636"];
         [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#fff"];
         [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#7a7a85"];
@@ -1567,6 +1572,7 @@ long MakeColor(id v)
                           parameter: CFscintilla::StyleNumber
                               value: MakeColor([defaults stringForKey:PrefKeyEditorNumbersDarkColor])];
     } else {
+        mFindOptionsButton.image = MagnifyingGlassLight;
         [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACELIGHT fromHTML:@"#8a2be2"];
         [mEditor setColorProperty:SCI_STYLESETBACK parameter:STYLE_BRACELIGHT fromHTML:@"#e6e6fa"];
         [mEditor setColorProperty:SCI_STYLESETFORE parameter:STYLE_BRACEBAD   fromHTML:@"#ff0000"];

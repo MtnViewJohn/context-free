@@ -16,6 +16,7 @@
 		52100A7F0D3A9F1800F7070D /* Rand64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52100A7E0D3A9F1800F7070D /* Rand64.cpp */; };
 		52154E811DD038690031905B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52154E801DD038690031905B /* Security.framework */; };
 		5226EFAE1071BB7600A30CC3 /* BitmapImageHolder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */; };
+		5235D4CB21868E4800920D9E /* magnifying-glass-white.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5235D4CA21868E4700920D9E /* magnifying-glass-white.icns */; };
 		524464E709BAAD5C007E722B /* primShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524464E509BAAD5C007E722B /* primShape.cpp */; };
 		524D22B513BA0123002732C2 /* aggCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2D472308411CB600697CE7 /* aggCanvas.cpp */; };
 		524D22B613BA0123002732C2 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
@@ -316,6 +317,7 @@
 		52197499218047C10038AF1C /* backwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = backwards.h; sourceTree = "<group>"; };
 		5226EFAA1071BB3900A30CC3 /* BitmapImageHolder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = BitmapImageHolder.h; sourceTree = "<group>"; };
 		5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BitmapImageHolder.mm; sourceTree = "<group>"; };
+		5235D4CA21868E4700920D9E /* magnifying-glass-white.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass-white.icns"; sourceTree = "<group>"; };
 		524464E509BAAD5C007E722B /* primShape.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = primShape.cpp; sourceTree = "<group>"; };
 		524464E609BAAD5C007E722B /* primShape.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = primShape.h; sourceTree = "<group>"; };
 		5249137A1FE7724A001A8371 /* json3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json3.hpp; sourceTree = "<group>"; };
@@ -709,6 +711,7 @@
 		FD1EF0AF0811AE6500FD38C6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5235D4CA21868E4700920D9E /* magnifying-glass-white.icns */,
 				5260DC672144ED8C0099D906 /* GalleryUploader.xib */,
 				5260DC642144ED440099D906 /* CFDGDocument.xib */,
 				5260DC612144EC8B0099D906 /* MainMenu.xib */,
@@ -901,6 +904,7 @@
 				527D30B51EB1C56D00F03EF6 /* RemotePlay_press.tif.icns in Resources */,
 				FDB2FAF8081CD10A00901B0E /* app.icns in Resources */,
 				FDCD3F10081E145E00D4A589 /* doc.icns in Resources */,
+				5235D4CB21868E4800920D9E /* magnifying-glass-white.icns in Resources */,
 				FDC5D4AC082433AF00B5990D /* UserDefaults.plist in Resources */,
 				5260DC632144EC8B0099D906 /* MainMenu.xib in Resources */,
 				527D30B81EB1CEFA00F03EF6 /* rewind.norm.icns in Resources */,

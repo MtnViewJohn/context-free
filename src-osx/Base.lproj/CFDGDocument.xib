@@ -99,6 +99,7 @@
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system" size="14"/>
                                                     </buttonCell>
+                                                    <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <connections>
                                                         <action selector="performClick:" target="S0t-up-AMx" id="nVC-Cn-q6j"/>
                                                     </connections>
@@ -225,6 +226,7 @@
                                     <outlet property="mDocument" destination="-2" id="42"/>
                                     <outlet property="mEditorBox" destination="XA2-UN-xFF" id="JqG-4U-ydm"/>
                                     <outlet property="mFindButtons" destination="hVl-9P-zsR" id="yao-i7-K1C"/>
+                                    <outlet property="mFindOptionsButton" destination="8VC-wN-PVJ" id="NlJ-9g-obM"/>
                                     <outlet property="mFindText" destination="R4D-nu-TpI" id="Dco-Xl-5Mo"/>
                                     <outlet property="mFrameField" destination="K4z-to-cnJ" id="RdA-OU-hir"/>
                                     <outlet property="mFrameLabel" destination="3lN-Sg-Kwl" id="mZ9-We-c0W"/>

@@ -102,6 +102,7 @@ long MakeColor(id v);
     NSInteger                       mFindTextVersion;
     IBOutlet NSSegmentedControl*    mFindButtons;
     IBOutlet NSSegmentedControl*    mReplaceButtons;
+    IBOutlet NSButton*              mFindOptionsButton;
 
     int     mCurrentVariation;
     bool    mIncrementVariationOnRender;
