@@ -1,5 +1,23 @@
   Change Log
-  
+
+V3.1 - November 2018
+--------------------
+* Editor upgraded to the Scintille cross-platform code editor. Context Free now has syntax
+  highlighting, auto-completion, auto indentation, and more.
+* Uploads to and downloads from the new Galler API at https://www.contextfreeart.org/index.html
+* Command-line version adds a feature to output the abstract syntax tree (AST) of a parsed cfdg 
+  file as a JSON object.
+* Action bar at the top of the window has more capabilities.
+* Update gallery uploader to use v4 Creative Commons licenses.
+* Supports macos Mojave dark mode.
+
+  Bug fixes:
+
+* Some code changes used methods that are not supported on OSX Lion (10.7), causing 
+  Context Free to crash on those systems.
+* Typos in example cfdg files fixed.
+* Better input sanitization so that ill-formed cfdg code cannot crash Context Free.
+
 V3.0.11.4 - July 2017
 ---------------------
 * Including examples in version 2 cfdg files includes the version 2 variant
