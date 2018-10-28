@@ -543,14 +543,13 @@ namespace yy {
 #line 163 "../../src-common/cfdg.ypp" // lalr1.cc:392
 
 #include "scanner.h"
-#include "math.h"
 #include "builder.h"
 #include <cassert>
 
 #undef yylex
 #define yylex driver.lexer->lex
 
-#line 554 "cfdg.tab.hpp" // lalr1.cc:392
+#line 553 "cfdg.tab.hpp" // lalr1.cc:392
 
 
 #endif // !YY_YY_CFDG_TAB_HPP_INCLUDED

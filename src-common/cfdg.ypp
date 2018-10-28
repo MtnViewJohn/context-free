@@ -162,7 +162,6 @@
 
 %code provides {
 #include "scanner.h"
-#include "math.h"
 #include "builder.h"
 #include <cassert>
 

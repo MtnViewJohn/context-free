@@ -1527,10 +1527,14 @@ YY_RULE_SETUP
         // return the token for the operator.
         delete yylval->string;
         yylval->string = nullptr;
-        size_t len = strlen(utf8chars[tok]);
+        int len = static_cast<int>(strlen(utf8chars[tok]));
         (yylloc->end) = (yylloc->begin);
+#ifdef RAW_UTF8_LENGTH
+        yylloc->columns(len);
+#else
         yylloc->columns(1);
-        yyless(static_cast<int>(len));
+#endif
+        yyless(len);
         return tok;
     }
     
@@ -1550,17 +1554,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 254 "../../src-common/cfdg.l"
+#line 258 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 255 "../../src-common/cfdg.l"
+#line 259 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 256 "../../src-common/cfdg.l"
+#line 260 "../../src-common/cfdg.l"
 {
     yylval->string = new std::string(yytext, yyleng - 2);
     yyless(yyleng - 2);
@@ -1570,18 +1574,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 262 "../../src-common/cfdg.l"
+#line 266 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 263 "../../src-common/cfdg.l"
+#line 267 "../../src-common/cfdg.l"
 {yylval->string = new std::string(yytext); return token::USER_FILENAME;}
 	YY_BREAK
 /* gobble up white-spaces */
 case 86:
 YY_RULE_SETUP
-#line 266 "../../src-common/cfdg.l"
+#line 270 "../../src-common/cfdg.l"
 {
     yylloc->step();
 }
@@ -1590,7 +1594,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 271 "../../src-common/cfdg.l"
+#line 275 "../../src-common/cfdg.l"
 {
     yylloc->lines(1); yylloc->step();
 }
@@ -1598,13 +1602,13 @@ YY_RULE_SETUP
 /* pass all other characters up to bison */
 case 88:
 YY_RULE_SETUP
-#line 276 "../../src-common/cfdg.l"
+#line 280 "../../src-common/cfdg.l"
 {
     return static_cast<int>(*yytext);
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 280 "../../src-common/cfdg.l"
+#line 284 "../../src-common/cfdg.l"
 {
     if (!YY_CURRENT_BUFFER)
         yyterminate();
@@ -1618,10 +1622,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 291 "../../src-common/cfdg.l"
+#line 295 "../../src-common/cfdg.l"
 ECHO;
 	YY_BREAK
-#line 1624 "lex.yy.cpp"
+#line 1628 "lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2584,7 +2588,7 @@ void Cfdgfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 291 "../../src-common/cfdg.l"
+#line 295 "../../src-common/cfdg.l"
 
 
 namespace yy {
@@ -2700,7 +2704,13 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         if (j)
             i += j - 1;
     }
+#ifdef RAW_UTF8_LENGTH
+    // Check UTF-8 encoding but return raw length
+    return static_cast<unsigned int>(len);
+#else
+    // Return number of code points
     return length;
+#endif
 }
 
 CfdgParser::token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
