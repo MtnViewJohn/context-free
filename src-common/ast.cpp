@@ -1033,20 +1033,20 @@ namespace AST {
                     snarfFlagOpts = true;
                     FALLTHROUGH;
                 case NumericType:
-                    if (!snarfFlagOpts) {
-                        CfdgError::Error(kid.where, "Symmetry flag expected here");
-                        break;
-                    }
-                    
-                    if (int sz = kid.evaluate(); sz < 1) {
-                        CfdgError::Error(kid.where, "Could not evaluate this");
-                    } else {
-                        size_t oldsize = symmSpec.size();
-                        symmSpec.resize(oldsize + sz);
-                        if (kid.evaluate(symmSpec.data() + oldsize, sz, r) != sz)
+                    if (snarfFlagOpts) {
+                        int sz = kid.evaluate();
+                        if (sz < 1) {
                             CfdgError::Error(kid.where, "Could not evaluate this");
+                        } else {
+                            size_t oldsize = symmSpec.size();
+                            symmSpec.resize(oldsize + sz);
+                            if (kid.evaluate(symmSpec.data() + oldsize, sz, r) != sz)
+                                CfdgError::Error(kid.where, "Could not evaluate this");
+                        }
+                        where = where + kid.where;
+                    } else {
+                        CfdgError::Error(kid.where, "Symmetry flag expected here");
                     }
-                    where = where + kid.where;
                     break;
                 case ModType:
                     if (snarfFlagOpts)
