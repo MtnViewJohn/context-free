@@ -173,6 +173,8 @@ typedef NS_ENUM(NSInteger, FindType) {
 
 - (void)drawCheckerboardRect:(NSRect)rect;
 
+- (void) setMovieImagesPlay:(BOOL)play;
+
 - (void)buildEngine;
 - (void)buildRendererSize:(NSSize)size minimum:(double)minSize;
 - (void)buildImageCanvasSize;
@@ -219,6 +221,8 @@ namespace {
     NSImage*    PlayPressImage = nil;
     NSImage*    PauseNormalImage = nil;
     NSImage*    PausePressImage = nil;
+    NSImage*    RewindNormalImage = nil;
+    NSImage*    RewindPressImage = nil;
     NSImage*    MagnifyingGlassLight = nil;
     NSImage*    MagnifyingGlassDark = nil;
     
@@ -445,6 +449,8 @@ namespace {
         PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
         PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
         PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
+        RewindNormalImage =  [[NSImage imageNamed:@"rewind.norm.icns"] retain];
+        RewindPressImage =   [[NSImage imageNamed:@"rewind.press.icns"] retain];
         MagnifyingGlassLight = [[NSImage imageNamed:@"magnifying-glass.icns"] retain];
         MagnifyingGlassDark = [[NSImage imageNamed:@"magnifying-glass-white.icns"] retain];
         std::sort(CFscintilla::AutoComplete.begin(), CFscintilla::AutoComplete.end(), CFscintilla::AutoCmp());
@@ -765,12 +771,10 @@ namespace {
             [mMoviePlayer seekToTime: kCMTimeZero];
         [mMoviePlayer play];
         mAtEndofMovie = false;
-        mStartStopButton.image = PauseNormalImage;
-        mStartStopButton.alternateImage = PausePressImage;
+        [self setMovieImagesPlay: YES];
     } else {
         [mMoviePlayer pause];
-        mStartStopButton.image = PlayNormalImage;
-        mStartStopButton.alternateImage = PlayPressImage;
+        [self setMovieImagesPlay: NO];
     }
 }
 
@@ -892,6 +896,7 @@ namespace {
 - (void)viewDidChangeEffectiveAppearance
 {
     [self updateStyling];
+    [self setMovieImagesPlay: mMoviePlayer && mMoviePlayer.rate > 0.0f];
 }
 
 - (IBAction)toggleRender:(id)sender
@@ -2444,6 +2449,30 @@ long MakeColor(id v)
         [mEditor setGeneralProperty:SCI_AUTOCCANCEL value:0];
 }
 
+- (void) setMovieImagesPlay:(BOOL)play
+{
+    bool dark = false;
+#ifndef __MAC_10_14
+    NSString* NSAppearanceNameDarkAqua = @"foo";
+#endif
+    if (@available(macOS 10_14, *)) {
+        NSAppearance* next = [[NSApplication sharedApplication] effectiveAppearance];
+        dark = [[next bestMatchFromAppearancesWithNames:
+                 @[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]]
+                isEqualToString:NSAppearanceNameDarkAqua];
+    }
+
+    if (play) {
+        mStartStopButton.image = dark ? PausePressImage : PauseNormalImage;
+        mStartStopButton.alternateImage = dark ? PauseNormalImage : PausePressImage;
+    } else {
+        mStartStopButton.image = dark ? PlayPressImage : PlayNormalImage;
+        mStartStopButton.alternateImage = dark ? PlayPressImage : PlayNormalImage;
+    }
+    mRewindButton.image = dark ? RewindPressImage : RewindNormalImage;
+    mRewindButton.alternateImage = dark ? RewindNormalImage : RewindPressImage;
+}
+
 - (void)drawCheckerboardRect:(NSRect)rect
 {
     [[NSColor whiteColor] set];
@@ -2732,8 +2761,7 @@ long MakeColor(id v)
                                                                             queue:[NSOperationQueue mainQueue]
                                                                        usingBlock:^(NSNotification *note) {
                                                                            mAtEndofMovie = true;
-                                                                           mStartStopButton.image = PlayNormalImage;
-                                                                           mStartStopButton.alternateImage = PlayPressImage;
+                                                                           [self setMovieImagesPlay: NO];
                                                                        }
                           ];
     }
@@ -2751,8 +2779,7 @@ long MakeColor(id v)
         mTimeSlider.maxValue = length;
         mTimeLabel.doubleValue = length;
         mTimeSlider.doubleValue = 0.0;
-        mStartStopButton.image = PlayNormalImage;
-        mStartStopButton.alternateImage = PlayPressImage;
+        [self setMovieImagesPlay: NO];
         return true;
     }
     return false;
