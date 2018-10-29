@@ -39,7 +39,7 @@
 #include "AVcanvas.h"
 #include "tiledCanvas.h"
 #include "Rand64.h"
-#include <tgmath.h>
+#include <cmath>
 #include "tempfile.h"
 #include <algorithm>
 #include <cstring>
@@ -844,8 +844,8 @@ namespace {
     // center scaled image rectangle
     dRect.size.width = rSize.width * scale;
     dRect.size.height = rSize.height * scale;
-    int ox = static_cast<int>(dRect.origin.x = floor((fSize.width - dRect.size.width) * ((CGFloat)0.5)));
-    int oy = static_cast<int>(dRect.origin.y = floor((fSize.height - dRect.size.height) * ((CGFloat)0.5)));
+    int ox = static_cast<int>(dRect.origin.x = std::floor((fSize.width - dRect.size.width) * ((CGFloat)0.5)));
+    int oy = static_cast<int>(dRect.origin.y = std::floor((fSize.height - dRect.size.height) * ((CGFloat)0.5)));
 
     if (mTiled && mRenderer && mRenderer->m_tiledCanvas && scale == 1.0) {
         tileList points = mRenderer->m_tiledCanvas->getTessellation(static_cast<int>(fSize.width), static_cast<int>(fSize.height), ox, oy);
@@ -2247,9 +2247,9 @@ long MakeColor(id v)
     [mEditor setGeneralProperty: SCI_SETTARGETEND value: endPosition];
     
     const char *textToSearch = searchText.UTF8String;
-    long sourceLength = strlen(textToSearch); // Length in bytes.
+    long sourceLength = std::strlen(textToSearch); // Length in bytes.
     const char *replacement = newText.UTF8String;
-    long targetLength = strlen(replacement);  // Length in bytes.
+    long targetLength = std::strlen(replacement);  // Length in bytes.
     sptr_t result;
     
     int replaceCount = 0;
@@ -2492,19 +2492,13 @@ long MakeColor(id v)
     box.size.width = u;
     box.size.height = u;
     
-#if defined(CGFLOAT_IS_DOUBLE) && CGFLOAT_IS_DOUBLE
-#define MYfmod fmod
-#else
-#define MYfmod fmodf
-#endif
-
-    for (box.origin.y = floor(NSMinY(rect) / box.size.height) * box.size.height;
+    for (box.origin.y = std::floor(NSMinY(rect) / box.size.height) * box.size.height;
         box.origin.y < NSMaxY(rect);
         box.origin.y += box.size.height)
     {
         for (box.origin.x = 
-                (floor(NSMinX(rect) / (2.0 * box.size.width)) * 2.0
-                + MYfmod(box.origin.y / box.size.height, 2.0))
+                (std::floor(NSMinX(rect) / (2.0 * box.size.width)) * 2.0
+                 + std::fmod(box.origin.y / box.size.height, 2.0))
                 * box.size.width;
             box.origin.x < NSMaxX(rect);
             box.origin.x += 2*box.size.width)

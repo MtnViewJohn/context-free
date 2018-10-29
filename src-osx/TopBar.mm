@@ -23,7 +23,6 @@
 //
 
 #import "TopBar.h"
-#include <math.h>
 
 namespace {
     void
