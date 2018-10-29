@@ -25,6 +25,7 @@
 #include "CFscintilla.h"
 #include <cctype>
 #include <string>
+#include <cstring>
 #include <set>
 
 
@@ -53,8 +54,8 @@ static size_t isUTF8op(const char* text)
         "\xe2\x80\xa6", "\xc2\xb1", "\xe2\x89\xa4", "\xe2\x89\xa5", "\xe2\x89\xa0", "\xe2\x88\x9e"
     };
     for (int op = 0; op < 6; ++op) {
-        auto len = strlen(utf8ops[op]);
-        if (strncmp(text, utf8ops[op], len) == 0)
+        auto len = std::strlen(utf8ops[op]);
+        if (std::strncmp(text, utf8ops[op], len) == 0)
             return len;
     }
     return 0;
@@ -200,7 +201,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     styles[i] = StyleIdentifier;
                     break;
                 }
-                if (i + 5 <= length && strncmp(text + i, ".cfdg", 5) == 0) {
+                if (i + 5 <= length && std::strncmp(text + i, ".cfdg", 5) == 0) {
                     // identifier will be restyled as a string
                     i += 5;
                 }
@@ -269,7 +270,7 @@ CFscintilla::StyleId(size_t length, const char* text, char* styles)
     
     Style state = StyleIdentifier;
     std::string temp{text, length};
-    if (length > 5 && strncmp(text + (length - 5), ".cfdg", 5) == 0)
+    if (length > 5 && std::strncmp(text + (length - 5), ".cfdg", 5) == 0)
         state = StyleString;
     else if (keywords.count(temp))
         state = StyleKeywords;

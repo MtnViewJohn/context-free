@@ -34,7 +34,6 @@
 
 #include "builder.h"
 #include "cfdgimpl.h"
-#include <string.h>
 #include <cmath>
 #include "astexpression.h"
 #include "scanner.h"

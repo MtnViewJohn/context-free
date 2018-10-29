@@ -29,7 +29,8 @@
 #include "commandLineSystem.h"
 
 #include <cstdlib>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstring>
 
 #include <string>
 #include <fstream>
@@ -71,9 +72,9 @@ CommandLineSystem::message(const char* fmt, ...)
     
     char buf[256];
     {
-        va_list args;
+        std::va_list args;
         va_start(args, fmt);
-        vsnprintf(buf, sizeof(buf), fmt, args);
+        std::vsnprintf(buf, sizeof(buf), fmt, args);
         buf[sizeof(buf)-1] = '\0';
         va_end(args);
     }
@@ -127,7 +128,7 @@ CommandLineSystem::openFileForRead(const std::string& path)
         auto example = ExamplesMap.find(exfile);
         if (example != ExamplesMap.end()) {
             auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
-            return std::make_unique<imemstream>(cfdg, strlen(cfdg));
+            return std::make_unique<imemstream>(cfdg, std::strlen(cfdg));
         }
     } else {
         mFirstCfdgRead = false;

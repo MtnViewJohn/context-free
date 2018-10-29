@@ -32,11 +32,12 @@
 #include "builder.h"
 #include "renderimpl.h"
 #include "primShape.h"
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include "astreplacement.h"
 #include <limits>
 #include <cstring>
+#include <cmath>
 #include <iomanip>
 #include "agg_trans_affine_time.h"
 
@@ -466,7 +467,7 @@ CFDGImpl::rulesLoaded()
     // Wait until done and then update these members
     double value;
     uses16bitColor = hasParameter(CFG::ColorDepth, value, nullptr) &&
-        floor(value) == 16.0;
+        std::floor(value) == 16.0;
     
     if (hasParameter(CFG::Color, value, nullptr))
         usesColor = value != 0.0;

@@ -27,7 +27,6 @@
 #include "primShape.h"
 #include "bounds.h"
 #include <cstdlib>
-#include <stdlib.h>
 
 void tiledCanvas::start(bool clear, const agg::rgba& bk, int w, int h)
 {
@@ -86,8 +85,8 @@ tiledCanvas::tileTransform(const Bounds& b)
     double centx = (b.mMin_X + b.mMax_X) * 0.5;
     double centy = (b.mMin_Y + b.mMax_Y) * 0.5;
     mInvert.transform(&centx, &centy);          // transform to unit square tessellation
-    centx = floor(centx + 0.5);                 // round to nearest integer
-    centy = floor(centy + 0.5);                 // round to nearest integer
+    centx = std::floor(centx + 0.5);            // round to nearest integer
+    centy = std::floor(centy + 0.5);            // round to nearest integer
 
     mTileList.clear();
     double dx = -centx, dy = -centy;
@@ -151,8 +150,8 @@ tiledCanvas::checkTileInt(const agg::rect_i& screen,
     double dx = x;
     double dy = y;
     screenTessellation.transform(&dx, &dy);
-    int px = static_cast<int>(floor(dx + 0.5));
-    int py = static_cast<int>(floor(dy + 0.5));
+    int px = static_cast<int>(std::floor(dx + 0.5));
+    int py = static_cast<int>(std::floor(dy + 0.5));
     
     // If the tile is visible then record it
     agg::rect_i tile(px, py, px + mWidth - 1, py + mHeight - 1);

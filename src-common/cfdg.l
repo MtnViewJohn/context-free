@@ -35,6 +35,7 @@
     #include "scanner.h"
     #include "astexpression.h"
     #include "cfdg.tab.hpp"
+    #include <cstring>
 
     /* import the parser's token type into a local typedef */
     typedef yy::CfdgParser::token token;
@@ -230,7 +231,7 @@ EOL         \n|\r\n|\r
         // return the token for the operator.
         delete yylval->string;
         yylval->string = nullptr;
-        int len = static_cast<int>(strlen(utf8chars[tok]));
+        int len = static_cast<int>(std::strlen(utf8chars[tok]));
         (yylloc->end) = (yylloc->begin);
 #ifdef RAW_UTF8_LENGTH
         yylloc->columns(len);

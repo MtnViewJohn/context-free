@@ -32,6 +32,8 @@
 #include <cmath>
 #include <cassert>
 
+using std::floor;
+
 using namespace std::string_literals;
 
 void to_json(json& j, json_float f)

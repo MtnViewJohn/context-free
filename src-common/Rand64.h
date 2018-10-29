@@ -28,6 +28,7 @@
 
 #include "xorshift64star.h"
 #include <cmath>
+#include <cstdint>
 #include <string>
 
 class Rand64 {
@@ -47,13 +48,13 @@ public:
     }
     
     // Return int in [l,u]
-    int64_t getInt(int64_t l, int64_t u);
+    int64_t getInt(std::int64_t l, std::int64_t u);
     
     // Return int in [0,trials]
-    int64_t getBinomial(int64_t trials, double prob);
+    int64_t getBinomial(std::int64_t trials, double prob);
     
     // Return int in [0,trials]
-    int64_t getNegativeBinomial(int64_t trials, double prob);
+    int64_t getNegativeBinomial(std::int64_t trials, double prob);
     
     bool getBernoulli(double prob);
     
@@ -98,7 +99,7 @@ public:
     void xorChar(unsigned char c, unsigned i);
     static double GetDouble()
     { return Common.getDouble(); }
-    static int64_t GetInt(int64_t l, int64_t u)
+    static std::int64_t GetInt(std::int64_t l, std::int64_t u)
     { return Common.getInt(l,u); }
     static void Seed(result_type s = XORshift64star::RAND64_SEED)
     { Common.seed(s); }
@@ -112,8 +113,8 @@ private:
     static Rand64   Common;
     double prob(double p) { return p < 0.0 ? 0.0 : (p > 1.0 ? 1.0 : p); };
     double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
-    double degree(double n) { return n >= 1.0 ? floor(n) : 1.0; }
-    int64_t nat(int64_t i) { return i < 1 ? 1 : i; }
+    double degree(double n) { return n >= 1.0 ? std::floor(n) : 1.0; }
+    std::int64_t nat(std::int64_t i) { return i < 1 ? 1 : i; }
 };
 
 #endif  // INCLUDE_RAND64_H

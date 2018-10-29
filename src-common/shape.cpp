@@ -41,8 +41,6 @@
 //
 
 #include "shape.h"
-#include <cassert>
-#include <stdint.h>
 #include "stacktype.h"
 #include <iostream>
 

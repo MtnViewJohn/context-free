@@ -135,7 +135,7 @@ Bounds::computeScale(int& width, int& height, double borderX, double borderY,
         virtual_height / target_height)
     {
         scale = target_width / virtual_width;
-        newHeight = static_cast<int>(floor(scale * virtual_height + 2.0 * borderY + 0.5));
+        newHeight = static_cast<int>(std::floor(scale * virtual_height + 2.0 * borderY + 0.5));
         if (!exact)
             newHeight = newHeight + ((newHeight ^ height) & 0x1);
         
@@ -145,7 +145,7 @@ Bounds::computeScale(int& width, int& height, double borderX, double borderY,
     }
     else {
         scale = target_height / virtual_height;
-        newWidth = static_cast<int>(floor(scale * virtual_width + 2.0 * borderX + 0.5));
+        newWidth = static_cast<int>(std::floor(scale * virtual_width + 2.0 * borderX + 0.5));
         if (!exact)
             newWidth = newWidth + ((newWidth ^ width) & 0x1);
         

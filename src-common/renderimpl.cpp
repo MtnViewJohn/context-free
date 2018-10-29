@@ -409,8 +409,8 @@ OutputBounds::apply(const FinishedShape& s)
     agg::trans_affine_time frameTime(s.mWorldState.m_time);
     frameTime.translate(-mTimeBounds.tbegin);
     frameTime.scale(mFrameScale);
-    int begin = (frameTime.tbegin < mFrames) ? static_cast<int>(floor(frameTime.tbegin)) : (mFrames - 1);
-    int end = (frameTime.tend < mFrames) ? static_cast<int>(floor(frameTime.tend)) : (mFrames - 1);
+    int begin = (frameTime.tbegin < mFrames) ? static_cast<int>(std::floor(frameTime.tbegin)) : (mFrames - 1);
+    int end = (frameTime.tend < mFrames) ? static_cast<int>(std::floor(frameTime.tend)) : (mFrames - 1);
     if (begin < 0) begin = 0;
     if (end < 0) end = 0;
     for (int frame = begin; frame <= end; ++frame) {

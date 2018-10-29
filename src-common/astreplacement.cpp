@@ -34,7 +34,9 @@
 #include "attributes.h"
 #include "builder.h"
 #include <typeinfo>
+#include <cmath>
 
+using std::floor;
 
 namespace AST {
     void to_json(json& j, const ASTparameter& m)

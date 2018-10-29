@@ -33,14 +33,14 @@
 #include "agg2/agg_math_stroke.h"
 #include "agg2/agg_trans_affine.h"
 #include "location.hh"
-#include <stdint.h>
+#include <cstdint>
 
 class RendererAST;
 class Builder;
 
 namespace AST {
     using SymmList = std::vector<agg::trans_affine>;
-    using UIDdatatype = uint_fast32_t;
+    using UIDdatatype = std::uint_fast32_t;
 
     class ASTpath;
     class ASTreplacement;

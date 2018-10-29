@@ -28,7 +28,7 @@
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include <stdint.h>               // Use the C99 official header
+#include <cstdint>
 #include <vector>
 #include <iosfwd>
 #include "ast.h"
@@ -147,14 +147,14 @@ public:
 
 
 struct StackRule {
-    enum const_t : uint32_t { MaxRefCount = UINT32_MAX, HeaderSize = 2 };
+    enum const_t : std::uint32_t { MaxRefCount = UINT32_MAX, HeaderSize = 2 };
 
     using iterator       = StackTypeIterator<StackType>;
     using const_iterator = StackTypeIterator<const StackType>;
     
-    int16_t     mRuleName;
-    uint16_t    mParamCount;
-    mutable uint32_t    mRefCount;
+    std::int16_t     mRuleName;
+    std::uint16_t    mParamCount;
+    mutable std::uint32_t    mRefCount;
     
     bool operator==(const StackRule& o) const;
     static bool Equal(const StackRule* a, const StackRule* b);

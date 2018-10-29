@@ -67,7 +67,7 @@ RendererAST::isNatural(RendererAST* r, double n)
     if (Builder::CurrentBuilder &&
         Builder::CurrentBuilder->isMyBuilder() &&
         Builder::CurrentBuilder->impure()) return true;
-    return n >= 0 && n <= (r ? r->mMaxNatural : Builder::MaxNatural) && n == floor(n);
+    return n >= 0 && n <= (r ? r->mMaxNatural : Builder::MaxNatural) && n == std::floor(n);
 }
 
 void

@@ -31,6 +31,7 @@
 #include "cfdg.h"
 #include "shape.h"
 #include <string>
+#include <cmath>
 #include <limits>
 #include "Rand64.h"
 #include <map>
@@ -353,12 +354,12 @@ namespace AST {
         { 
             if (negative) text.insert(0, 1, '-');
             value = CFatof(text.c_str()); 
-            isNatural = floor(value) == value && value >= 0.0 && value < 9007199254740992.;
+            isNatural = std::floor(value) == value && value >= 0.0 && value < 9007199254740992.;
             mLocality = PureLocal;
         };
         ASTreal(double v, const yy::location& loc) 
         : ASTexpression(loc, true, 
-                        floor(v) == v && v >= 0.0 && v < 9007199254740992.,
+                        std::floor(v) == v && v >= 0.0 && v < 9007199254740992.,
                         NumericType), value(v) { mLocality = PureLocal; };
         ~ASTreal() final = default;
         int evaluate(double* dest = nullptr, int size = 0, RendererAST* rti = nullptr) const final;

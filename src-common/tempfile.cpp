@@ -29,11 +29,9 @@
 
 #include "tempfile.h"
 
-#include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-#include <cstdio>
 
 #include <iostream>
 #include <cassert>

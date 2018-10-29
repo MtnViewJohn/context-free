@@ -78,9 +78,9 @@ StackRule::alloc(int name, int size, const AST::ASTparameters* ti)
     ++Renderer::ParamCount;
     StackType* newrule = size ? new StackType[size + HeaderSize] : new StackType;
     assert((reinterpret_cast<intptr_t>(newrule) & 3) == 0);   // confirm 32-bit alignment
-    newrule[0].ruleHeader.mRuleName = static_cast<int16_t>(name);
+    newrule[0].ruleHeader.mRuleName = static_cast<std::int16_t>(name);
     newrule[0].ruleHeader.mRefCount = 0;
-    newrule[0].ruleHeader.mParamCount = static_cast<uint16_t>(size);
+    newrule[0].ruleHeader.mParamCount = static_cast<std::uint16_t>(size);
     if (size)
         newrule[1].typeInfo = ti;
 #ifdef EXTREME_PARAM_DEBUG

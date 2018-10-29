@@ -29,14 +29,13 @@
 #include <string>
 #include "variation.h"
 #include <cstring>
-#include <string.h>
 
 
 std::string makeCFfilename(const char* fmt, int frame, int frameCount, int variation)
 {
     std::stringstream namestream(std::stringstream::out);
     
-    if (strcmp(fmt, "-") == 0)
+    if (std::strcmp(fmt, "-") == 0)
         return namestream.str();        // empty string becomes stdout
     
     int numLength = 0;
@@ -45,7 +44,7 @@ std::string makeCFfilename(const char* fmt, int frame, int frameCount, int varia
 
     const char* p = fmt;
     while (*p) {
-        const char* perc = strchr(p, '%');
+        const char* perc = std::strchr(p, '%');
         
         if (perc) {
             namestream.write(p, perc - p);

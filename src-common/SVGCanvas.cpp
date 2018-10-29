@@ -24,7 +24,7 @@
 
 
 #include "SVGCanvas.h"
-#include <assert.h>
+#include <cassert>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -273,7 +273,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
     mEndline[0] = '\n';
     mEndline[1] = '\0';
     if (mLength == -1 && mDescription)
-        mLength = static_cast<int>(strlen(mDescription));
+        mLength = static_cast<int>(std::strlen(mDescription));
 }
 
 
