@@ -1592,6 +1592,17 @@
                                                 </subviews>
                                             </view>
                                         </box>
+                                        <button toolTip="Restart Context Free for change to take effect" verticalHuggingPriority="750" id="hbz-58-aSU">
+                                            <rect key="frame" x="17" y="8" width="207" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Enable character accent menu" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6EU-ZL-Ouz">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="268" name="value" keyPath="values.ApplePressAndHoldEnabled" id="KiN-82-wxo"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
