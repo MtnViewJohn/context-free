@@ -35,6 +35,7 @@
 #include <memory>
 #include <map>
 #include <utility>
+#include <vector>
 
 #ifdef _WIN32
 #include "Win32System.h"
@@ -68,6 +69,7 @@ public:
     void orphan() override {};
 private:
     static const std::map<std::string, std::pair<const char*, const char*>> ExamplesMap;
+    std::vector<char> buf;
 };
 
 #endif // INCLUDE_COMMANDLINE_SYSTEM

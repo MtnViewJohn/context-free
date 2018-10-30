@@ -70,16 +70,18 @@ CommandLineSystem::message(const char* fmt, ...)
 {
     if (mQuiet && !mErrorMode) return;
     
-    char buf[256];
-    {
-        std::va_list args;
-        va_start(args, fmt);
-        std::vsnprintf(buf, sizeof(buf), fmt, args);
-        buf[sizeof(buf)-1] = '\0';
-        va_end(args);
-    }
-    
-    cerr << maybeLF() << buf << endl;
+    std::va_list args1;
+    va_start(args1, fmt);
+    std::va_list args2;
+    va_copy(args2, args1);
+    size_t sz = 1 + std::vsnprintf(nullptr, 0, fmt, args1);
+    if (sz > buf.size())
+        buf.resize(2 * sz);
+    va_end(args1);
+    std::vsnprintf(buf.data(), buf.size(), fmt, args2);
+    va_end(args2);
+        
+    cerr << maybeLF() << buf.data() << endl;
     mNeedEndl = false;
 }
 
