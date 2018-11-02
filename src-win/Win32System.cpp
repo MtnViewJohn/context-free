@@ -84,11 +84,11 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 {    
     const FileChar* wtempdir = tempFileDirectory();
 
-    std::unique_ptr<wchar_t, MallocDeleter> b{ _wtempnam(wtempdir, TempPrefixes_w[tt]) };
+    std::unique_ptr<wchar_t, MallocDeleter> b{ _wtempnam(wtempdir, TempPrefixes[tt]) };
     if (!b)
         return nullptr;
     FileString bcopy = b.get();
-    bcopy.append(TempSuffixes_w[tt]);
+    bcopy.append(TempSuffixes[tt]);
     ostr_ptr f = std::make_unique<std::ofstream>(bcopy, 
         std::ios::binary | std::ios::trunc | std::ios::out);
     nameOut.assign(bcopy);
@@ -135,7 +135,7 @@ Win32System::findTempFiles()
 
     wchar_t wtempdir[32768];
     if (wcscpy_s(wtempdir, 32768, tempFileDirectory()) ||
-        !::PathAppendW(wtempdir, TempPrefixAll_w) || 
+        !::PathAppendW(wtempdir, TempPrefixAll) || 
         wcsncat_s(wtempdir, 32768, L"*", 1))
         return ret;
 
