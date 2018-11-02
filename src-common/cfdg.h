@@ -93,13 +93,15 @@ class AbstractSystem {
 
 #ifdef _WIN32
         using FileChar = wchar_t;
-        using FileString = std::wstring;
 #define FileFormat "%S"
+#define FileStr(x) L##x
 #else
         using FileChar = char;
-        using FileString = std::string;
 #define FileFormat "%s"
+#define FileStr(x) x
 #endif
+
+        using FileString = std::basic_string<FileChar>;
         using istr_ptr = std::unique_ptr<std::istream>;
         using ostr_ptr = std::unique_ptr<std::ostream>;
     
@@ -159,12 +161,9 @@ class AbstractSystem {
         
         virtual ~AbstractSystem();
     protected:
-        static const char* TempPrefixes[NumberofTempTypes];
-        static const char* TempSuffixes[NumberofTempTypes];
-        static const char* TempPrefixAll;
-        static const wchar_t* TempPrefixes_w[NumberofTempTypes];
-        static const wchar_t* TempSuffixes_w[NumberofTempTypes];
-        static const wchar_t* TempPrefixAll_w;
+        static const FileChar* TempPrefixes[NumberofTempTypes];
+        static const FileChar* TempSuffixes[NumberofTempTypes];
+        static const FileChar* TempPrefixAll;
         virtual void clearAndCR() {};
 };
 
