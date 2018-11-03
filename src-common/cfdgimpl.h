@@ -131,7 +131,7 @@ class CFDGImpl : public CFDG {
         CFDGImpl(AbstractSystem*);
         ~CFDGImpl() override;
         
-        Renderer* renderer(const cfdg_ptr& ptr,
+        renderer_ptr renderer(const cfdg_ptr& ptr,
                 int width, int height, double minSize,
                 int variation, double border = 2.0) override;
         

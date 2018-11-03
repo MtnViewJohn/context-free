@@ -638,7 +638,7 @@ CFDGImpl::findFunction(int nameIndex)
     return nullptr;
 }
 
-Renderer*
+renderer_ptr
 CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
                     int variation, double border)
 {
@@ -726,6 +726,6 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
         m_system->syntaxError(e);
         return nullptr;     // deletes this
     }
-    return r.release();
+    return r;
 }
 

@@ -191,6 +191,7 @@ class Renderer;
 class CFDG;
 
 using cfdg_ptr = std::shared_ptr<CFDG>;
+using renderer_ptr = std::unique_ptr<Renderer>;
 
 class CFDG {
     public:
@@ -198,7 +199,7 @@ class CFDG {
         static cfdg_ptr ParseFile(const char* fname, AbstractSystem*, int variation);
         virtual ~CFDG();
 
-        virtual Renderer* renderer(const cfdg_ptr& ptr,
+        virtual renderer_ptr renderer(const cfdg_ptr& ptr,
                 int width, int height, double minSize,
                 int variation, double border = 2.0
             ) = 0;
