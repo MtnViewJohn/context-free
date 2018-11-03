@@ -1496,7 +1496,7 @@ void Document::DoRender()
     }
 
     mRenderer = (*mEngine)->renderer(*mEngine, width, height,
-        (float)renderParams->minimumSize, currentVariation, renderParams->borderSize);
+        (float)renderParams->minimumSize, currentVariation, renderParams->borderSize).release();
 	if (!mRenderer) {
 		mEngine->reset();
 		return;
