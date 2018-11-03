@@ -2520,11 +2520,11 @@ long MakeColor(id v)
     if (!mEngine) return;
     
     assert(!mRenderer);
-    mRenderer.reset(mEngine->renderer(mEngine,
+    mRenderer = mEngine->renderer(mEngine,
         (int)size.width, (int)size.height,
         minSize,
         mCurrentVariation,
-        [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]));
+        [[NSUserDefaults standardUserDefaults] floatForKey: @"BorderSize"]);
     if (!mRenderer)
         mEngine.reset();
 }
