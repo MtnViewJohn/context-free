@@ -25,6 +25,7 @@
 
 #include "SVGCanvas.h"
 #include <cassert>
+#include <cstring>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
