@@ -840,9 +840,8 @@ RendererImpl::fixupHeap()
 {
     // Restore heap property to mUnfinishedShapes
     auto first = mUnfinishedShapes.begin();
-    auto last = mUnfinishedShapes.end();
-    using difference_type = UnfinishedContainer::iterator::difference_type;
-    difference_type n = last - first;
+    auto end = mUnfinishedShapes.end();
+    auto n = mUnfinishedShapes.size();
     if (n < 2)
         return;
 
@@ -852,10 +851,8 @@ RendererImpl::fixupHeap()
     outStats.outputDone = 0;
     outStats.showProgress = true;
     
-    last = first;
-    ++last;
-    for (difference_type i = 1; i < n; ++i) {
-        std::push_heap(first, ++last);
+    for (auto last = first + 2; last <= end; ++last) {
+        std::push_heap(first, last);
     
         ++outStats.outputDone;
         if (requestUpdate) {
