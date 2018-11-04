@@ -50,6 +50,8 @@ public:
 
     virtual std::string relativeFilePath(
         const std::string& base, const std::string& rel);
+
+    std::wstring normalize(const std::string&) override;
 };
 
 #endif // INCLUDE_WIN32_SYSTEM

@@ -171,3 +171,44 @@ Win32System::getPhysicalMemory()
         return (size_t)2147483648ULL;
     return (size_t)status.ullTotalPhys;
 }
+
+std::wstring
+Win32System::normalize(const std::string& u8name)
+{
+    if (u8name.empty())
+        return std::wstring();
+
+    // Convert from utf-8 to utf-16
+    std::wstring u16name(u8name.length(), L' ');
+    for (;;) {
+        // Null termination is neither passed in nor returned
+        auto sz = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
+            u8name.data(), static_cast<int>(u8name.length()), 
+            u16name.data(), static_cast<int>(u16name.length()));
+        if (sz) {
+            u16name.resize(sz);
+            break;
+        } else if (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+            u16name.resize(u16name.length() * 2, L' ');
+        } else {
+            return std::wstring();
+        }
+    }
+
+    // normalize the utf-16 string
+    std::wstring ret(u16name.length() + 20, L' ');
+    for (;;) {
+        // Null termination is neither passed in nor returned
+        auto sz = ::NormalizeString(NormalizationKC,
+            u16name.data(), static_cast<int>(u16name.length()), 
+            ret.data(), static_cast<int>(ret.length()));
+        if (sz > 0) {
+            ret.resize(sz);
+            return ret;
+        } else if (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+            ret.resize(ret.length() * 2, L' ');
+        } else {
+            return std::wstring();
+        }
+    }
+}
