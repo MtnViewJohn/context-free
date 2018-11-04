@@ -608,8 +608,10 @@ RendererImpl::processShape(Shape& s)
     } else if (primShape::isPrimShape(s.mShapeType)) {
         processPrimShape(s);
     } else {
-        CfdgError::Error(m_cfdg->decodeShapeLocation(s.mShapeType),
-                         "Shape with no rules encountered.");
+        requestStop = true;
+        system()->error();
+        system()->message("Shape with no rules encountered: %s", m_cfdg->decodeShapeName(s.mShapeType).c_str());
+        return;
     }
 }
 
@@ -695,7 +697,7 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
     if (!fs.mWorldState.isFinite()) {
         requestStop = true;
         system()->error();
-        system()->message("A shape got too big.");
+        system()->message("A shape has undefined or infinite state: %s", m_cfdg->decodeShapeName(fs.mShapeType).c_str());
         return;
     }
     // Drop shapes outside the current frame if we are animating and rerunning
