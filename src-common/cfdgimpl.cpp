@@ -511,8 +511,15 @@ CFDGImpl::decodeShapeLocation(int shapetype)
 int
 CFDGImpl::tryEncodeShapeName(const std::string& s) const
 {
+    std::wstring c = m_system->normalize(s);
+    return tryEncodeShapeName(c);
+}
+
+int
+CFDGImpl::tryEncodeShapeName(const std::wstring& s) const
+{
     for (unsigned int i = 0; i < m_shapeTypes.size(); i++) {
-        if (s == m_shapeTypes[i].name) {
+        if (s == m_shapeTypes[i].canonicalName) {
             return i;
         }
     }
@@ -523,10 +530,11 @@ CFDGImpl::tryEncodeShapeName(const std::string& s) const
 int
 CFDGImpl::encodeShapeName(const std::string& s, const yy::location& where)
 {
-    int i = tryEncodeShapeName(s);
+    std::wstring c = m_system->normalize(s);
+    int i = tryEncodeShapeName(c);
     if (i >= 0) return i;
 
-    m_shapeTypes.emplace_back(s, where);
+    m_shapeTypes.emplace_back(std::move(s), std::move(c), where);
     return static_cast<int>(m_shapeTypes.size()) - 1;
 }
 

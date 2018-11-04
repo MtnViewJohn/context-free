@@ -70,6 +70,7 @@ class CFDGImpl : public CFDG {
 
         struct ShapeType {
             std::string  name;
+            std::wstring canonicalName;
             yy::location firstUse;
             bool    hasRules;
             bool    isShape;
@@ -79,15 +80,16 @@ class CFDGImpl : public CFDG {
             int     argSize;
             bool    shouldHaveNoParams;
             
-            ShapeType(const std::string& s, const yy::location& where)
-            : name(s), firstUse(where), hasRules(false), isShape(false),
-              shapeType(newShape), parameters(nullptr), argSize(0),
+            ShapeType(std::string s, std::wstring cname, const yy::location& where)
+            : name(std::move(s)), canonicalName(std::move(cname)), firstUse(where), hasRules(false),
+              isShape(false), shapeType(newShape), parameters(nullptr), argSize(0),
               shouldHaveNoParams(false) { }
 
             ShapeType(ShapeType&& from) noexcept = default;
             ShapeType& operator=(ShapeType&& from) noexcept(std::is_nothrow_move_assignable<std::string>::value)
             {
                 name = std::move(from.name);
+                canonicalName = std::move(from.canonicalName);
                 firstUse = from.firstUse;
                 hasRules = from.hasRules;
                 isShape = from.isShape;
@@ -166,6 +168,7 @@ class CFDGImpl : public CFDG {
         const yy::location& decodeShapeLocation(int shapetype);
         int     encodeShapeName(const std::string& s, const yy::location& where);
         int     tryEncodeShapeName(const std::string& s) const;
+        int     tryEncodeShapeName(const std::wstring& c) const;
         int     getShapeType(int shapetype);
         bool    shapeHasRules(int shapetype);
         const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size, bool isPath);

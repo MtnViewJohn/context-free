@@ -124,6 +124,8 @@ class AbstractSystem {
     
         virtual std::string relativeFilePath(
             const std::string& base, const std::string& rel) = 0;
+    
+        virtual std::wstring normalize(const std::string&) = 0;
         
         struct Stats {
             int     shapeCount;     // finished shapes in image
