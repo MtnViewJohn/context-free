@@ -31,13 +31,16 @@
 
 #include "cfdg.h"
 
+struct UConverter;
+struct UNormalizer2;
+
 class PosixSystem : public AbstractSystem
 {
 protected:
     virtual void clearAndCR() override;
 public:
-    PosixSystem() = default;
-    ~PosixSystem() override = default;
+    PosixSystem();
+    ~PosixSystem() override;
     
     void catastrophicError(const char* what) override;
     
@@ -49,6 +52,12 @@ public:
         const std::string& base, const std::string& rel) override;
     int deleteTempFile(const FileString& name) override;
     size_t getPhysicalMemory() override;
+    
+    std::wstring normalize(const std::string&) override;
+    
+private:
+    UConverter* mConverter;
+    const UNormalizer2* mNormalizer;
 };
 
 #endif // INCLUDE_POSIX_SYSTEM

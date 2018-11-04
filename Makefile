@@ -73,9 +73,9 @@ LIBS = png m
 
 # Use the first one for clang and the second one for gcc
 ifeq ($(shell uname -s), Darwin)
-  LIBS += c++
+  LIBS += c++ icucore
 else
-  LIBS += stdc++ atomic
+  LIBS += stdc++ atomic icui18n icuuc icudata
 endif
 
 #

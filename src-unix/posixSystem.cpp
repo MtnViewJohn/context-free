@@ -28,6 +28,14 @@
 
 #include "posixSystem.h"
 
+#ifdef __APPLE__
+// Linking with libicucore, not full libicu
+#define U_DISABLE_RENAMING 1
+#endif
+
+#include <unicode/ucnv.h>
+#include <unicode/unorm2.h>
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -276,5 +284,69 @@ PosixSystem::getPhysicalMemory()
     }
     return 0;
 #endif // __linux__ || NOSYSCTL
+}
+
+PosixSystem::PosixSystem()
+: mConverter(nullptr), mNormalizer(nullptr)
+{
+}
+
+PosixSystem::~PosixSystem()
+{
+    if (mConverter)
+        ucnv_close(mConverter);
+}
+
+std::wstring
+PosixSystem::normalize(const std::string& u8name)
+{
+    // Setup ICU library items
+    UErrorCode status = U_ZERO_ERROR;
+    if (!mConverter)
+        mConverter = ucnv_open("utf-8", &status);
+    if (!mNormalizer && U_SUCCESS(status))
+        mNormalizer = unorm2_getNFKCInstance(&status);
+    if (!mConverter || !mNormalizer) {
+        catastrophicError("String conversion initialization error");
+        return std::wstring();
+    }
+    
+    // Convert from utf-8 to utf-16
+    std::u16string u16name(u8name.length(), L' ');
+    for (;;) {
+        auto sz = ucnv_toUChars(mConverter,
+                                &u16name[0], static_cast<int32_t>(u16name.length()+1),
+                                u8name.data(), static_cast<int32_t>(u8name.length()),
+                                &status);
+        if (U_FAILURE(status) && status != U_BUFFER_OVERFLOW_ERROR) {
+            CfdgError::Error(CfdgError::Default, "String conversion error");
+        }
+        if (sz <= static_cast<int32_t>(u16name.length())) {
+            u16name.resize(sz);
+            break;
+        } else {
+            u16name.resize(sz + 1, L' ');
+        }
+    }
+    
+    // NFKC normalize utf-16 text 
+    std::wstring ret(u16name.length(), L' ');
+    for (;;) {
+        UChar* dest = reinterpret_cast<UChar*>(&ret[0]);
+        auto sz = unorm2_normalize(mNormalizer,
+                                   u16name.data(), static_cast<int32_t>(u16name.length()),
+                                   dest, static_cast<int32_t>(ret.length()+1),
+                                   &status);
+        if (U_FAILURE(status) && status != U_BUFFER_OVERFLOW_ERROR) {
+            CfdgError::Error(CfdgError::Default, "String conversion error");
+        }
+        if (sz <= static_cast<int32_t>(ret.length())) {
+            ret.resize(sz);
+            break;
+        } else {
+            ret.resize(sz + 1, L' ');
+        }
+    }
+    return ret;
 }
 

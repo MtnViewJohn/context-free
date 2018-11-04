@@ -1172,7 +1172,10 @@
 					"-DRAW_UTF8_LENGTH=1",
 					"$(OTHER_CFLAGS)",
 				);
-				OTHER_LDFLAGS = "-lagg";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-lagg",
+				);
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
@@ -1277,7 +1280,10 @@
 					"-DRAW_UTF8_LENGTH=1",
 					"$(OTHER_CFLAGS)",
 				);
-				OTHER_LDFLAGS = "-lagg";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-lagg",
+				);
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ozonehouse.ContextFree;
 				PRODUCT_NAME = "Context Free";
