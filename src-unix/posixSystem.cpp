@@ -287,7 +287,7 @@ PosixSystem::getPhysicalMemory()
 }
 
 PosixSystem::PosixSystem()
-: mConverter(nullptr), mNormalizer(nullptr)
+: mConverter(nullptr), mNormalizer(nullptr), mErrorReported(false)
 {
 }
 
@@ -307,7 +307,9 @@ PosixSystem::normalize(const std::string& u8name)
     if (!mNormalizer && U_SUCCESS(status))
         mNormalizer = unorm2_getNFKCInstance(&status);
     if (!mConverter || !mNormalizer) {
-        catastrophicError("String conversion initialization error");
+        if (!mErrorReported)
+            catastrophicError("String conversion initialization error");
+        mErrorReported = true;
         return std::wstring();
     }
     

@@ -58,6 +58,7 @@ public:
 private:
     UConverter* mConverter;
     const UNormalizer2* mNormalizer;
+    bool mErrorReported;
 };
 
 #endif // INCLUDE_POSIX_SYSTEM
