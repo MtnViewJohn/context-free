@@ -115,7 +115,10 @@ void WinSystem::catastrophicError(const char* what)
 {
     wchar_t wbuf[32768];
     if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf, 32768))
-        (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK);
+        (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
+    else
+        (void)::MessageBoxW(NULL, L"", L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
+    ::PostMessageW((HWND)mWindow, WM_CLOSE, NULL, NULL);
 }
 
 AbstractSystem::istr_ptr WinSystem::openFileForRead(const std::string& path)

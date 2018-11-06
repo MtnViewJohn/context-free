@@ -151,6 +151,7 @@ void
 PosixSystem::catastrophicError(const char* what)
 {
     cerr << "\n\nUnexpected error: " << what << endl;
+    std::exit(33);
 }
 
 const AbstractSystem::FileChar*
