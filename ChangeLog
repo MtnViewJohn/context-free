@@ -4,12 +4,14 @@ V3.1 - November 2018
 --------------------
 * Editor upgraded to the Scintille cross-platform code editor. Context Free now has syntax
   highlighting, auto-completion, auto indentation, and more.
-* Uploads to and downloads from the new Galler API at https://www.contextfreeart.org/index.html
+* Uploads to and downloads from the new Gallery API at https://www.contextfreeart.org/index.html
 * Command-line version adds a feature to output the abstract syntax tree (AST) of a parsed cfdg 
   file as a JSON object.
 * Action bar at the top of the window has more capabilities.
 * Update gallery uploader to use v4 Creative Commons licenses.
-* Supports macos Mojave dark mode.
+* Supports macOS Mojave dark mode.
+* All Unicode identifiers (shape, variable, and function names) are normalized so that 
+  if they look the same then they will be treated as the same (NFKC normalization).
 
   Bug fixes:
 
