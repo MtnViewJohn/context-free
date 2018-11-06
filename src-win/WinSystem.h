@@ -65,6 +65,7 @@ public:
     static void AddExample(const char* name, const char* text);
     std::string mName;
     std::string mText;
+    static void* MainWindow;
 private:
     void* mWindow;
     bool mErrorMode;

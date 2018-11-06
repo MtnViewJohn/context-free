@@ -363,6 +363,8 @@ System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
         return;
     }
 
+    WinSystem::MainWindow = this->Handle.ToPointer();
+
     switch (prefs->StartupDocument) {
         case CFPrefs::OpenAction::Welcome:
             if (menuWelcome != nullptr) Example_Click(menuWelcome, nullptr);

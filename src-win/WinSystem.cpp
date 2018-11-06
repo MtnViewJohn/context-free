@@ -39,6 +39,8 @@
 //map<const string, WinSystem*> WinSystem::PathMap;
 std::map<const std::string, std::pair<std::string, std::string>> WinSystem::ExampleMap;
 
+void* WinSystem::MainWindow = nullptr;
+
 WinSystem::WinSystem(void* h)
 :   mWindow(h)
 {
@@ -113,12 +115,15 @@ bool WinSystem::error(bool errorOccurred)
 
 void WinSystem::catastrophicError(const char* what)
 {
+    if (!MainWindow)
+        return;
     wchar_t wbuf[32768];
     if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf, 32768))
         (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
     else
         (void)::MessageBoxW(NULL, L"", L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
-    ::PostMessageW((HWND)mWindow, WM_CLOSE, NULL, NULL);
+    ::PostMessageW((HWND)MainWindow, WM_CLOSE, NULL, NULL);
+    MainWindow = nullptr;   // Only do this once
 }
 
 AbstractSystem::istr_ptr WinSystem::openFileForRead(const std::string& path)
