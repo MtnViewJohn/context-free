@@ -48,6 +48,11 @@ namespace {
         return s;
     }
 
+    NSString* asNSString(const std::string& s)
+    {
+        return [NSString stringWithUTF8String: s.c_str()];
+    }
+    
     static NSString* ccURI   = @"CreativeCommonsLicenseURI";
     static NSString* ccName  = @"CreativeCommonsLicenseName";
     static NSString* ccImage = @"CreativeCommonsLicenseImage";
@@ -56,11 +61,12 @@ namespace {
     static NSString* galPath = @"/gallery/";
 
     static NSString* uploadUrl =
-        //@"http://localhost:5000/postdesign";
-        @"https://www.contextfreeart.org/gallery/gallerydb/postdesign";
+        //@"http://localhost:5000/fpostdesign";
+        @"https://www.contextfreeart.org/gallery/gallerydb/fpostdesign";
 
     static NSString* displayUrl =
         //@"http://localhost:8000/main.html#design/%d";
+        //@"https://localhost/~john/cfa2/gallery2/index.html#design/%d";
         @"https://www.contextfreeart.org/gallery/index.html#design/%d";
 
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
@@ -237,11 +243,12 @@ namespace {
     upload.mTextLen     = [textData length];
     upload.mImage       = reinterpret_cast<const char*>([imageData bytes]);
     upload.mImageLen    = [imageData length];
+    
+    std::ostringstream design;
+    upload.generatePayload(design);
 
-    std::string payloadString = upload.generateJSON();
-
-    return [NSData dataWithBytes: payloadString.data()
-                    length: payloadString.length()];
+    return [NSData dataWithBytes: design.str().data()
+                    length: design.str().length()];
 }
 
 - (void)setView:(NSView*)view
@@ -532,7 +539,7 @@ namespace {
                             timeoutInterval: 120.0
         ];
     [request setHTTPMethod: @"POST"];
-    [request setValue: @"application/json"
+    [request setValue: asNSString(Upload::generateContentType())
                 forHTTPHeaderField: @"Content-Type"];
     [request setHTTPBody: body];
 
