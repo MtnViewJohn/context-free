@@ -27,159 +27,127 @@
 //
 
 #include "upload.h"
+#include <ostream>
 
 #include "variation.h"
+
 #include "json3.hpp"
 using json = nlohmann::json;
 
-// Base64 Encoder (MIT License)
-// Copyright (C) 2013 Tomas Kislan
-// Copyright (C) 2013 Adam Rudd
-
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-static inline void
-a3_to_a4(unsigned char* a4, unsigned char* a3)
-{
-    a4[0] = (a3[0] & 0xfc) >> 2;
-    a4[1] = ((a3[0] & 0x03) << 4) | ((a3[1] & 0xf0) >> 4);
-    a4[2] = ((a3[1] & 0x0f) << 2) | ((a3[2] & 0xc0) >> 6);
-    a4[3] = (a3[2] & 0x3f);
-}
-
-static std::string
-Encode64(const char* in, size_t input_len)
-{
-    static const char kBase64Alphabet[] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz"
-        "0123456789+/";
-    int i = 0, j = 0;
-    size_t enc_len = 0;
-    unsigned char a3[3];
-    unsigned char a4[4];
+namespace {
+    const char mime_boundary[] = "a3c8dfd7-dce4-443c-ae3c-446df50f28c0";
+    const char mime_endl[] = "\r\n";
     
-    size_t expected_len = (input_len + 2 - ((input_len + 2) % 3)) / 3 * 4;
-    std::string out(expected_len, ' ');
+    void generateMimeBoundary(std::ostream& out)
+    {
+        out << mime_endl << "--" << mime_boundary << mime_endl;
+    }
     
-    auto input = in;
+    void generateMimeFooter(std::ostream& out)
+    {
+        out << mime_endl << "--" << mime_boundary << "--" << mime_endl;
+    }
     
-    while (input_len--) {
-        a3[i++] = *(input++);
-        if (i == 3) {
-            a3_to_a4(a4, a3);
-            
-            for (j = 0; j < 4; j++)
-                out[enc_len++] = kBase64Alphabet[a4[j]];
-            
-            i = 0;
+    void generateTextField(std::ostream& out, const char* field,
+                           const std::string& value)
+    {
+        generateMimeBoundary(out);
+        
+        out << "Content-Disposition: form-data"
+            << "; name=" << field       // shouldn't need quotes
+            << mime_endl
+            << "Content-Type: text/plain; charset=UTF-8" << mime_endl
+            << mime_endl;
+        
+        out << value; 
+    }
+    
+    void generateTextField(std::ostream& out, const char* field,
+                           char value)
+    {
+        generateMimeBoundary(out);
+        
+        out << "Content-Disposition: form-data"
+            << "; name=" << field       // shouldn't need quotes
+            << mime_endl
+            << "Content-Type: text/plain; charset=UTF-8" << mime_endl
+            << mime_endl;
+        
+        out << value; 
+    }
+    
+    void generateFileField(std::ostream& out, const char* field,
+                           const char* data, size_t length, const std::string& fileName)
+    {
+        generateMimeBoundary(out);
+        
+        out << "Content-Disposition: form-data"
+            << "; name=" << field       // shouldn't need quotes
+            << "; filename=\"" << fileName << '"'
+            << mime_endl
+            << "Content-Type: application/octet-stream" << mime_endl
+            << mime_endl;
+        
+        out.write(data, length);
+    }
+    
+    std::string compressionName(Upload::Compression compression)
+    {
+        switch (compression) {
+            default:
+            case Upload::CompressJPEG:  return "JPEG";
+            case Upload::CompressPNG8:  return "PNG-8";
         }
     }
     
-    if (i) {
-        for (j = i; j < 3; j++)
-            a3[j] = '\0';
-        
-        a3_to_a4(a4, a3);
-        
-        for (j = 0; j < i + 1; j++)
-            out[enc_len++] = kBase64Alphabet[a4[j]];
-        
-        while ((i++ < 3))
-            out[enc_len++] = '=';
+    std::string variationName(int variation)
+    {
+        return Variation::toString(variation, false);
     }
     
-    return (enc_len == expected_len) ? out : std::string();
 }
-// end of Base64 encoder
 
-class FileObject {
-public:
-    FileObject(const char* name, const char* content, std::size_t length)
-    : mName(name), mContent(content), mLength(length)
-    {}
+std::string Upload::generateHeader()
+{
+    return std::string("Content-Type: multipart/form-data; boundary=") + 
+        mime_boundary;
+}
+
+std::string Upload::generateContentType()
+{
+    return std::string("multipart/form-data; boundary=") +
+        mime_boundary;
+}
+
+void
+Upload::generatePayload(std::ostream& out)
+{
+    generateTextField(out, "screenname", mUserName);
+    generateTextField(out, "password", mPassword);
     
-    std::string mName;
-    const char* mContent;
-    std::size_t mLength;
-};
-
-static void
-to_json(json& j, const FileObject& fo)
-{
-    auto contents64 = Encode64(fo.mContent, fo.mLength);
-    j = json{{"filename", fo.mName}, {"contents", contents64}};
-}
-
-static void
-to_json(json& j, const Upload& u)
-{
-    j = json{
-        {"agent", "ContextFree"},
-        {"screenname", u.mUserName},
-        {"password", u.mPassword},
-        {"designid", u.mId},
-        {"title", u.mTitle},
-        {"notes", u.mNotes},
-        {"variation", u.variationName()},
-        {"tiledtype", u.tiledName()},
-        {"compression", u.compressionName()},
-        {"ccURI", u.mccLicenseURI},
-        {"ccImage", u.mccLicenseImage},
-        {"ccName", u.mccLicenseName},
-        {"cfdgfile", FileObject(u.mFileName.c_str(), u.mText, u.mTextLen)},
-        {"imagefile", FileObject("image.png", u.mImage, u.mImageLen)}
-    };
-}
-
-std::string
-Upload::compressionName() const
-{
-    switch (mCompression) {
-        default:
-        case Upload::CompressJPEG:  return "JPEG";
-        case Upload::CompressPNG8:  return "PNG-8";
-    }
-}
-
-std::string
-Upload::variationName() const
-{
-    return Variation::toString(mVariation, false);
-}
-
-std::string
-Upload::tiledName() const
-{
-    return std::string(1, (char)(mTiled + '0'));
-}
-
-std::string
-Upload::generateJSON()
-{
-    json j;
-    to_json(j, *this);
-    return j.dump();
+    generateTextField(out, "agent", "ContextFree");
+    
+    generateTextField(out, "title", mTitle);
+    generateFileField(out, "cfdgfile", mText, mTextLen, mFileName);
+    generateFileField(out, "imagefile", mImage, mImageLen, "image.png");
+    generateTextField(out, "compression", compressionName(mCompression));
+    generateTextField(out, "cc_js_result_uri", mccLicenseURI);
+    generateTextField(out, "cc_js_result_name", mccLicenseName);
+    generateTextField(out, "cc_js_result_img", mccLicenseImage);
+    if (mccLicenseURI.length())
+        generateTextField(out, "cc_js_want_cc_license", "sure");
+    if (mTiled)
+        generateTextField(out, "tiled", "on");
+    generateTextField(out, "tiledtype", (char)(mTiled + '0'));
+    generateTextField(out, "variation", variationName(mVariation));
+    generateTextField(out, "notes", mNotes);
+    
+    // generateTextField(out, "submit", "Upload!");
+    
+    generateMimeFooter(out);
 }
 
 Upload::Upload(const std::string& json)
-: mId(0)
 {
     try {
         auto j = json::parse(json);

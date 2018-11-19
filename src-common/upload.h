@@ -29,13 +29,14 @@
 #ifndef INCLUDE_UPLOAD_H
 #define INCLUDE_UPLOAD_H
 
+#include <iosfwd>
 #include <string>
-#include <cstdlib>
 
 class Upload {
 public:
-    Upload() : mId(0), mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
+    Upload() : mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
     Upload(const std::string&);
+    
     enum Compression {
         CompressJPEG = 0,
         CompressPNG8 = 1
@@ -63,11 +64,10 @@ public:
     const char*         mImage;        // png data
     std::size_t         mImageLen;
     
-    std::string generateJSON();
+    void generatePayload(std::ostream&);
     
-    std::string compressionName() const;
-    std::string variationName() const;
-    std::string tiledName() const;
+    static std::string generateHeader();
+    static std::string generateContentType();
 };
 
 #endif // INCLUDE_UPLOAD_H
