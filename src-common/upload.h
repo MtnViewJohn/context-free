@@ -31,6 +31,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 class Upload {
 public:
@@ -53,6 +54,7 @@ public:
     int             mVariation;
     Compression     mCompression;
     int             mTiled;
+    std::string     mTags;
     
     std::string     mccLicenseURI;
     std::string     mccLicenseName;
@@ -68,6 +70,7 @@ public:
     
     static std::string generateHeader();
     static std::string generateContentType();
+    static std::vector<std::string> AllTags(const std::string&);
 };
 
 #endif // INCLUDE_UPLOAD_H

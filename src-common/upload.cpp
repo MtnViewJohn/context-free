@@ -140,6 +140,8 @@ Upload::generatePayload(std::ostream& out)
         generateTextField(out, "tiled", "on");
     generateTextField(out, "tiledtype", (char)(mTiled + '0'));
     generateTextField(out, "variation", variationName(mVariation));
+    if (mTags.length())
+        generateTextField(out, "tags", mTags);
     generateTextField(out, "notes", mNotes);
     
     // generateTextField(out, "submit", "Upload!");
@@ -155,4 +157,24 @@ Upload::Upload(const std::string& json)
     } catch (...) {
         mId = 0;
     }
+}
+
+std::vector<std::string>
+Upload::AllTags(const std::string& json)
+{
+    std::vector<std::string> ret;
+
+    try {
+        auto j = json::parse(json);
+        auto tags = j.at("tags");
+        if (!tags.is_array())
+            return ret;
+        for (auto&&tag : tags) {
+            std::string name = tag.at("name").get<std::string>();
+            if (!name.empty())
+                ret.emplace_back(std::move(name));
+        }
+    } catch (...) {}
+    
+    return ret;
 }
