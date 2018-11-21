@@ -31,6 +31,7 @@
                 <outlet property="mRetryButton" destination="320" id="322"/>
                 <outlet property="mSaveTileHeight" destination="513" id="517"/>
                 <outlet property="mSaveTileWidth" destination="510" id="516"/>
+                <outlet property="mTagsView" destination="7tl-Kj-V0g" id="Mzp-lk-0n0"/>
                 <outlet property="mTiled" destination="461" id="463"/>
                 <outlet property="mTitleField" destination="103" id="297"/>
                 <outlet property="mUserNameField" destination="107" id="295"/>
@@ -85,11 +86,11 @@
         <window title="Upload to Gallery" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="83" userLabel="Upload Form" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="724" y="209" width="355" height="636"/>
+            <rect key="contentRect" x="724" y="209" width="355" height="710"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
             <value key="minSize" type="size" width="200" height="100"/>
-            <view key="contentView" id="84">
-                <rect key="frame" x="0.0" y="0.0" width="355" height="636"/>
+            <view key="contentView" misplaced="YES" id="84">
+                <rect key="frame" x="0.0" y="0.0" width="355" height="710"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="102">
@@ -121,7 +122,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="111">
-                        <rect key="frame" x="9" y="546" width="337" height="70"/>
+                        <rect key="frame" x="9" y="620" width="337" height="70"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="484">
                             <font key="font" metaFont="smallSystem"/>
@@ -133,8 +134,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="88">
-                        <rect key="frame" x="254" y="490" width="92" height="28"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="254" y="564" width="92" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="center" title="Don't have an account?" id="471">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -142,8 +143,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="87">
-                        <rect key="frame" x="9" y="497" width="76" height="17"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="9" y="571" width="76" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="User name:" id="470">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -151,8 +152,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="112">
-                        <rect key="frame" x="9" y="465" width="68" height="17"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="9" y="539" width="68" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Password:" id="485">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -160,8 +161,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="107">
-                        <rect key="frame" x="90" y="495" width="153" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="90" y="569" width="153" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="480">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -172,8 +173,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="97" customClass="NSSecureTextField">
-                        <rect key="frame" x="90" y="463" width="153" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="90" y="537" width="153" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="475">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -181,8 +182,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="114">
-                        <rect key="frame" x="262" y="458" width="86" height="28"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="262" y="532" width="86" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Create One" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="487">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -192,12 +193,12 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </connections>
                     </button>
                     <box verticalHuggingPriority="750" boxType="separator" id="116">
-                        <rect key="frame" x="12" y="446" width="331" height="5"/>
+                        <rect key="frame" x="12" y="520" width="331" height="5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     </box>
-                    <textField verticalHuggingPriority="750" id="98">
-                        <rect key="frame" x="9" y="414" width="36" height="17"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="98">
+                        <rect key="frame" x="18" y="488" width="36" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Title:" id="476">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -205,8 +206,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103">
-                        <rect key="frame" x="59" y="412" width="284" height="22"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="59" y="486" width="284" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="478">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -214,8 +215,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="109">
-                        <rect key="frame" x="9" y="389" width="45" height="17"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="9" y="463" width="45" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Notes:" id="482">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -223,8 +224,8 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </textFieldCell>
                     </textField>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="0.0" verticalPageScroll="0.0" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="95">
-                        <rect key="frame" x="59" y="310" width="284" height="94"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="59" y="384" width="284" height="94"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <clipView key="contentView" id="j1g-si-QqB">
                             <rect key="frame" x="1" y="1" width="282" height="92"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -250,7 +251,7 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         </scroller>
                     </scrollView>
                     <box verticalHuggingPriority="750" boxType="separator" id="91">
-                        <rect key="frame" x="12" y="529" width="331" height="5"/>
+                        <rect key="frame" x="12" y="603" width="331" height="5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     </box>
                     <textField verticalHuggingPriority="750" id="110">
@@ -307,7 +308,7 @@ compression:</string>
                     </textField>
                     <box verticalHuggingPriority="750" boxType="separator" id="85">
                         <rect key="frame" x="12" y="294" width="331" height="5"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     </box>
                     <textField verticalHuggingPriority="750" id="90">
                         <rect key="frame" x="59" y="263" width="146" height="22"/>
@@ -345,7 +346,7 @@ compression:</string>
                     </box>
                     <button id="317">
                         <rect key="frame" x="10" y="209" width="120" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <buttonCell key="cell" type="check" title="Crop the image" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="488">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -369,7 +370,7 @@ compression:</string>
                     </textField>
                     <textField verticalHuggingPriority="750" misplaced="YES" id="396">
                         <rect key="frame" x="183" y="103" width="163" height="55"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="491">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -378,7 +379,7 @@ compression:</string>
                     </textField>
                     <button misplaced="YES" id="398">
                         <rect key="frame" x="65" y="100" width="114" height="60"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="492">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
@@ -389,7 +390,7 @@ compression:</string>
                     </button>
                     <button id="461">
                         <rect key="frame" x="10" y="186" width="120" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <buttonCell key="cell" type="check" title="Upload as tiled" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="494">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -397,7 +398,7 @@ compression:</string>
                     </button>
                     <textField verticalHuggingPriority="750" id="506">
                         <rect key="frame" x="33" y="210" width="150" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Width" id="507">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -406,7 +407,7 @@ compression:</string>
                     </textField>
                     <textField verticalHuggingPriority="750" id="508">
                         <rect key="frame" x="136" y="182" width="46" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Height" id="509">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -415,7 +416,7 @@ compression:</string>
                     </textField>
                     <textField verticalHuggingPriority="750" id="510">
                         <rect key="frame" x="190" y="208" width="75" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="511">
                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="512"/>
                             <font key="font" metaFont="system"/>
@@ -425,7 +426,7 @@ compression:</string>
                     </textField>
                     <textField verticalHuggingPriority="750" id="513">
                         <rect key="frame" x="190" y="180" width="75" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="514">
                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="515"/>
                             <font key="font" metaFont="system"/>
@@ -435,7 +436,7 @@ compression:</string>
                     </textField>
                     <textField verticalHuggingPriority="750" id="521">
                         <rect key="frame" x="160" y="236" width="98" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Size Multiplier:" id="522">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -444,7 +445,7 @@ compression:</string>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" id="U3R-YN-pJH">
                         <rect key="frame" x="65" y="68" width="281" height="26"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <popUpButtonCell key="cell" type="push" title="No change" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ahE-JN-qaS" id="qLW-k1-T4F">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -481,9 +482,30 @@ compression:</string>
                             <action selector="changeLicense:" target="-2" id="4B3-eP-Cx6"/>
                         </connections>
                     </popUpButton>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="9BN-yj-5hq">
+                        <rect key="frame" x="9" y="357" width="45" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Tags:" id="H74-PS-OJy">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <tokenField verticalHuggingPriority="750" misplaced="YES" id="7tl-Kj-V0g">
+                        <rect key="frame" x="59" y="305" width="284" height="69"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <tokenFieldCell key="cell" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="koR-eG-Tcq">
+                            <font key="font" metaFont="cellTitle"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </tokenFieldCell>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="Ggs-73-le8"/>
+                        </connections>
+                    </tokenField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="131.5" y="147"/>
+            <point key="canvasLocation" x="131.5" y="184"/>
         </window>
         <window title="Upload to Gallery" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="190" userLabel="Upload Progress" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
@@ -562,7 +584,7 @@ DQ
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="VMf-wF-GtU">
                             <rect key="frame" x="1" y="1" width="329" height="137"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView editable="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="314">
                                     <rect key="frame" x="0.0" y="0.0" width="329" height="137"/>

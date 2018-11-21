@@ -68,6 +68,10 @@ namespace {
         //@"http://localhost:8000/main.html#design/%d";
         //@"https://localhost/~john/cfa2/gallery2/index.html#design/%d";
         @"https://www.contextfreeart.org/gallery/index.html#design/%d";
+    
+    static NSString* tagsUrl =
+        //@"http://localhost:5000/tags";
+        @"https://www.contextfreeart.org/gallery/gallerydb/tags";
 
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
     {
@@ -185,6 +189,7 @@ namespace {
     mDocument = document;
     mView = view;
     mStatus = 0;
+    
         // no need to retain - the document is retaining us!
 
     [self loadWindow];
@@ -200,8 +205,10 @@ namespace {
     [mFormView release];
     [mConnection release];
     [mResponseBody release];
+    [mTagConnection release];
     [mOrigPassword release];
     [mOrigName release];
+    [mTags release];
     [super dealloc];
 }
 
@@ -214,6 +221,7 @@ namespace {
     upload.mPassword    = asString([mPasswordField stringValue]);
     upload.mTitle       = asString([mTitleField stringValue]);
     upload.mNotes       = asString([mNotesView string]);
+    upload.mTags        = asString([[mTagsView objectValue] componentsJoinedByString: @" "]);
     upload.mFileName    = asString([mFileField stringValue]) + ".cfdg";
     upload.mVariation   = [mView variation];
     upload.mTiled       = 0;
@@ -280,8 +288,6 @@ namespace {
 
 - (void)allDone:(NSString*)message
 {
-    [mConnection release];      mConnection = nil;
-
     if (message) mStatus = -1;
     
     [mRetryButton setEnabled:NO];
@@ -293,7 +299,20 @@ namespace {
             [mMessage setString: @"Upload completed without a status code (?!?!?!)."];
             break;
         case 200: {
+            if (mTagConnection) {
+                std::string json(static_cast<const char*>([mResponseBody bytes]), [mResponseBody length]);
+                auto tags = Upload::AllTags(json);
+                NSMutableArray<NSString*>* tagset = [NSMutableArray arrayWithCapacity: tags.size()];
+                for (auto&& tag: tags)
+                    [tagset addObject: [NSString stringWithUTF8String:tag.c_str()]];
+                [tagset sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+                mTags = [tagset retain];
+                [mTagConnection release];      mTagConnection = nil;
+                return;
+            }
+            
             std::string json(static_cast<const char*>([mResponseBody bytes]), [mResponseBody length]);
+            
             Upload response(json);
             mSuccessId = response.mId;
             if (mSuccessId) {
@@ -339,6 +358,7 @@ namespace {
             break;
         }
     }
+    [mConnection release];      mConnection = nil;
     [mResponseBody release];    mResponseBody = nil;
     [self setView: mDoneView];
 }
@@ -358,6 +378,20 @@ namespace {
 {
     [self setView: mFormView];
     
+    NSMutableURLRequest* request =
+    [NSMutableURLRequest requestWithURL: [NSURL URLWithString: tagsUrl]
+                            cachePolicy: NSURLRequestReloadIgnoringCacheData
+                        timeoutInterval: 120.0
+     ];
+    [request setHTTPMethod: @"GET"];
+    [request setValue: @"application/json"
+        forHTTPHeaderField: @"Content-Type"];
+    
+    mResponseBody = [[NSMutableData data] retain];
+    
+    mTagConnection = [NSURLConnection alloc];
+    [mTagConnection initWithRequest: request delegate: self];
+
     mOrigName = [[NSString alloc] initWithString: [mUserNameField stringValue]];
     mOrigPassword = [GalleryUploader copyPassword: mOrigName];
     if (mOrigPassword)
@@ -533,6 +567,12 @@ namespace {
         return;
     }
     
+    if (mTagConnection) {
+        [mTagConnection cancel];
+        [mTagConnection release];
+        mTagConnection = nil;
+    }
+    
     NSMutableURLRequest* request =
         [NSMutableURLRequest requestWithURL: [NSURL URLWithString: uploadUrl]
                                 cachePolicy: NSURLRequestReloadIgnoringCacheData
@@ -542,8 +582,6 @@ namespace {
     [request setValue: asNSString(Upload::generateContentType())
                 forHTTPHeaderField: @"Content-Type"];
     [request setHTTPBody: body];
-
-    mResponseBody = [[NSMutableData data] retain];
 
     mConnection = [NSURLConnection alloc];
     [mConnection initWithRequest: request delegate: self];
@@ -606,5 +644,28 @@ namespace {
     [NSApp endSheet: window];
     [window orderOut: sender];
 }
+
+- (NSArray<NSString*>*)tokenField:(NSTokenField *)tokenField
+          completionsForSubstring:(NSString *)substring
+                     indexOfToken:(NSInteger)tokenIndex
+              indexOfSelectedItem:(NSInteger *)selectedIndex
+{
+    NSInteger start = -1;
+    for (NSUInteger i = 0; i < [mTags count]; ++i)
+        if ([mTags[i] hasPrefix: substring]) {
+            start = i;
+            break;
+        }
+    if (start == -1)
+        return nil;
+    NSUInteger count = 1;
+    for (NSUInteger i = start + 1; i < [mTags count]; ++i)
+        if ([mTags[i] hasPrefix: substring])
+            ++count;
+        else
+            break;
+    return [mTags subarrayWithRange: NSMakeRange(start, count)];
+}
+
 
 @end

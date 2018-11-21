@@ -46,6 +46,7 @@
     IBOutlet NSTextField*      mPasswordField;
     IBOutlet NSTextField*      mTitleField;
     IBOutlet NSTextView*       mNotesView;
+    IBOutlet NSTokenField*     mTagsView;
     IBOutlet NSTextField*      mFileField;
     IBOutlet NSTextField*      mVariationField;
     IBOutlet NSMatrix*         mCompressionMatrix;
@@ -68,6 +69,9 @@
 
     NSURLConnection*           mConnection;
     NSMutableData*             mResponseBody;
+    NSURLConnection*           mTagConnection;
+    
+    NSArray<NSString*>*        mTags;
     
     NSString* mDefccURI;
     NSString* mDefccName;
