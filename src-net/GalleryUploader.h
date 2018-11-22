@@ -80,6 +80,7 @@ namespace ContextFreeNet {
 
     private: System::Windows::Forms::Button^  addTag;
     private: System::Windows::Forms::ImageList^  imageList1;
+    private: System::Windows::Forms::ToolTip^  toolTip1;
     private: System::ComponentModel::IContainer^  components;
 
 
@@ -137,6 +138,7 @@ namespace ContextFreeNet {
             this->message = (gcnew System::Windows::Forms::Label());
             this->cancel = (gcnew System::Windows::Forms::Button());
             this->upload = (gcnew System::Windows::Forms::Button());
+            this->toolTip1 = (gcnew System::Windows::Forms::ToolTip(this->components));
             this->groupBox1->SuspendLayout();
             this->groupBox2->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ccicon))->BeginInit();
@@ -161,9 +163,9 @@ namespace ContextFreeNet {
             this->groupBox1->Controls->Add(this->username);
             this->groupBox1->Controls->Add(this->label2);
             this->groupBox1->Location = System::Drawing::Point(9, 76);
-            this->groupBox1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->groupBox1->Margin = System::Windows::Forms::Padding(2);
             this->groupBox1->Name = L"groupBox1";
-            this->groupBox1->Padding = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->groupBox1->Padding = System::Windows::Forms::Padding(2);
             this->groupBox1->Size = System::Drawing::Size(292, 66);
             this->groupBox1->TabIndex = 1;
             this->groupBox1->TabStop = false;
@@ -193,7 +195,7 @@ namespace ContextFreeNet {
             // password
             // 
             this->password->Location = System::Drawing::Point(64, 39);
-            this->password->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->password->Margin = System::Windows::Forms::Padding(2);
             this->password->Name = L"password";
             this->password->PasswordChar = '*';
             this->password->Size = System::Drawing::Size(127, 20);
@@ -202,7 +204,7 @@ namespace ContextFreeNet {
             // username
             // 
             this->username->Location = System::Drawing::Point(64, 15);
-            this->username->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->username->Margin = System::Windows::Forms::Padding(2);
             this->username->Name = L"username";
             this->username->Size = System::Drawing::Size(127, 20);
             this->username->TabIndex = 1;
@@ -247,9 +249,9 @@ namespace ContextFreeNet {
             this->groupBox2->Controls->Add(this->label5);
             this->groupBox2->Controls->Add(this->label7);
             this->groupBox2->Location = System::Drawing::Point(9, 144);
-            this->groupBox2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->groupBox2->Margin = System::Windows::Forms::Padding(2);
             this->groupBox2->Name = L"groupBox2";
-            this->groupBox2->Padding = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->groupBox2->Padding = System::Windows::Forms::Padding(2);
             this->groupBox2->Size = System::Drawing::Size(292, 358);
             this->groupBox2->TabIndex = 2;
             this->groupBox2->TabStop = false;
@@ -260,7 +262,7 @@ namespace ContextFreeNet {
             this->tagsList->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->tagsList->FormattingEnabled = true;
             this->tagsList->Location = System::Drawing::Point(178, 134);
-            this->tagsList->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->tagsList->Margin = System::Windows::Forms::Padding(2);
             this->tagsList->Name = L"tagsList";
             this->tagsList->Size = System::Drawing::Size(106, 21);
             this->tagsList->TabIndex = 28;
@@ -270,10 +272,11 @@ namespace ContextFreeNet {
             this->addTag->ImageIndex = 0;
             this->addTag->ImageList = this->imageList1;
             this->addTag->Location = System::Drawing::Point(149, 134);
-            this->addTag->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->addTag->Margin = System::Windows::Forms::Padding(2);
             this->addTag->Name = L"addTag";
             this->addTag->Size = System::Drawing::Size(20, 20);
             this->addTag->TabIndex = 27;
+            this->toolTip1->SetToolTip(this->addTag, L"Save tag to list");
             this->addTag->UseVisualStyleBackColor = true;
             // 
             // imageList1
@@ -297,7 +300,7 @@ namespace ContextFreeNet {
             // 
             this->tagBox->AcceptsReturn = true;
             this->tagBox->Location = System::Drawing::Point(43, 134);
-            this->tagBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->tagBox->Margin = System::Windows::Forms::Padding(2);
             this->tagBox->Name = L"tagBox";
             this->tagBox->Size = System::Drawing::Size(102, 20);
             this->tagBox->TabIndex = 25;
@@ -311,7 +314,7 @@ namespace ContextFreeNet {
                     L"CC Attribution-NonCommercial-NoDerivatives", L"No CC license, full copyright"
             });
             this->cc_change->Location = System::Drawing::Point(54, 329);
-            this->cc_change->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->cc_change->Margin = System::Windows::Forms::Padding(2);
             this->cc_change->Name = L"cc_change";
             this->cc_change->Size = System::Drawing::Size(230, 21);
             this->cc_change->TabIndex = 24;
@@ -328,7 +331,7 @@ namespace ContextFreeNet {
             // ccicon
             // 
             this->ccicon->Location = System::Drawing::Point(196, 252);
-            this->ccicon->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->ccicon->Margin = System::Windows::Forms::Padding(2);
             this->ccicon->Name = L"ccicon";
             this->ccicon->Size = System::Drawing::Size(88, 31);
             this->ccicon->TabIndex = 22;
@@ -349,7 +352,7 @@ namespace ContextFreeNet {
             // 
             this->radioPNG8->AutoSize = true;
             this->radioPNG8->Location = System::Drawing::Point(238, 194);
-            this->radioPNG8->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->radioPNG8->Margin = System::Windows::Forms::Padding(2);
             this->radioPNG8->Name = L"radioPNG8";
             this->radioPNG8->Size = System::Drawing::Size(54, 17);
             this->radioPNG8->TabIndex = 20;
@@ -361,7 +364,7 @@ namespace ContextFreeNet {
             // 
             this->radioJPEG->AutoSize = true;
             this->radioJPEG->Location = System::Drawing::Point(185, 194);
-            this->radioJPEG->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->radioJPEG->Margin = System::Windows::Forms::Padding(2);
             this->radioJPEG->Name = L"radioJPEG";
             this->radioJPEG->Size = System::Drawing::Size(52, 17);
             this->radioJPEG->TabIndex = 19;
@@ -401,7 +404,7 @@ namespace ContextFreeNet {
             // multheight
             // 
             this->multheight->Location = System::Drawing::Point(184, 225);
-            this->multheight->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->multheight->Margin = System::Windows::Forms::Padding(2);
             this->multheight->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->multheight->Name = L"multheight";
             this->multheight->Size = System::Drawing::Size(60, 20);
@@ -421,7 +424,7 @@ namespace ContextFreeNet {
             // multwidth
             // 
             this->multwidth->Location = System::Drawing::Point(75, 225);
-            this->multwidth->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->multwidth->Margin = System::Windows::Forms::Padding(2);
             this->multwidth->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->multwidth->Name = L"multwidth";
             this->multwidth->Size = System::Drawing::Size(60, 20);
@@ -442,7 +445,7 @@ namespace ContextFreeNet {
             // 
             this->uptiled->AutoSize = true;
             this->uptiled->Location = System::Drawing::Point(6, 204);
-            this->uptiled->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->uptiled->Margin = System::Windows::Forms::Padding(2);
             this->uptiled->Name = L"uptiled";
             this->uptiled->Size = System::Drawing::Size(94, 17);
             this->uptiled->TabIndex = 11;
@@ -453,7 +456,7 @@ namespace ContextFreeNet {
             // 
             this->crop->AutoSize = true;
             this->crop->Location = System::Drawing::Point(6, 204);
-            this->crop->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->crop->Margin = System::Windows::Forms::Padding(2);
             this->crop->Name = L"crop";
             this->crop->Size = System::Drawing::Size(96, 17);
             this->crop->TabIndex = 10;
@@ -493,7 +496,7 @@ namespace ContextFreeNet {
             // filename
             // 
             this->filename->Location = System::Drawing::Point(43, 162);
-            this->filename->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->filename->Margin = System::Windows::Forms::Padding(2);
             this->filename->Name = L"filename";
             this->filename->Size = System::Drawing::Size(102, 20);
             this->filename->TabIndex = 5;
@@ -501,7 +504,7 @@ namespace ContextFreeNet {
             // title
             // 
             this->title->Location = System::Drawing::Point(43, 20);
-            this->title->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->title->Margin = System::Windows::Forms::Padding(2);
             this->title->Name = L"title";
             this->title->Size = System::Drawing::Size(240, 20);
             this->title->TabIndex = 3;
@@ -509,7 +512,7 @@ namespace ContextFreeNet {
             // notes
             // 
             this->notes->Location = System::Drawing::Point(43, 44);
-            this->notes->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->notes->Margin = System::Windows::Forms::Padding(2);
             this->notes->Multiline = true;
             this->notes->Name = L"notes";
             this->notes->Size = System::Drawing::Size(240, 84);
@@ -528,7 +531,7 @@ namespace ContextFreeNet {
             // label7
             // 
             this->label7->AutoSize = true;
-            this->label7->Location = System::Drawing::Point(142, 165);
+            this->label7->Location = System::Drawing::Point(145, 165);
             this->label7->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
             this->label7->Name = L"label7";
             this->label7->Size = System::Drawing::Size(31, 13);
@@ -547,7 +550,7 @@ namespace ContextFreeNet {
             // 
             this->cancel->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->cancel->Location = System::Drawing::Point(193, 506);
-            this->cancel->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->cancel->Margin = System::Windows::Forms::Padding(2);
             this->cancel->Name = L"cancel";
             this->cancel->Size = System::Drawing::Size(50, 25);
             this->cancel->TabIndex = 4;
@@ -558,7 +561,7 @@ namespace ContextFreeNet {
             // upload
             // 
             this->upload->Location = System::Drawing::Point(251, 506);
-            this->upload->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->upload->Margin = System::Windows::Forms::Padding(2);
             this->upload->Name = L"upload";
             this->upload->Size = System::Drawing::Size(50, 25);
             this->upload->TabIndex = 5;
@@ -581,7 +584,7 @@ namespace ContextFreeNet {
             this->Controls->Add(this->groupBox1);
             this->Controls->Add(this->label1);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
-            this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+            this->Margin = System::Windows::Forms::Padding(2);
             this->MaximizeBox = false;
             this->MinimizeBox = false;
             this->Name = L"GalleryUploader";
