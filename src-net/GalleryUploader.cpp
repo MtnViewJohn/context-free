@@ -6,6 +6,7 @@
 #include <string.h>
 #include "upload.h"
 #include "Document.h"
+#include <sstream>
 
 using namespace System;
 using namespace System::IO;
@@ -15,6 +16,15 @@ using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Runtime::InteropServices;
 using namespace System::Net;
+
+namespace {
+    struct iccomp {
+        bool operator()(const std::string& a, const std::string& b)
+        {
+            return  _stricmp(a.c_str(), b.c_str()) < 0;
+        }
+    };
+}
 
 namespace ContextFreeNet {
     void GalleryUploader::MoreInitialzation(String^ name, CFDG::frieze_t fr, int tiled, bool png)
@@ -62,6 +72,23 @@ namespace ContextFreeNet {
         copyrightSymbol = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"copyright")));
         cc_change->SelectedIndex = 0;   // Load license info from the preferences
 
+        addTag->Click += gcnew EventHandler(this, &GalleryUploader::tag_click);
+        tagBox->GotFocus += gcnew EventHandler(this, &GalleryUploader::tag_focus);
+        tagsList->SelectedIndexChanged += gcnew EventHandler(this, &GalleryUploader::tag_select);
+        tagBox->PreviewKeyDown += gcnew PreviewKeyDownEventHandler(this, &GalleryUploader::tag_previewkey);
+        tagBox->KeyPress += gcnew KeyPressEventHandler(this, &GalleryUploader::tag_keypress);
+        tagBox->KeyDown += gcnew KeyEventHandler(this, &GalleryUploader::tag_keydown);
+
+        addTag->ImageIndex = 0;
+        ignore_next_selection = false;
+
+        WebClient^ req = gcnew WebClient();
+        req->DownloadDataCompleted += gcnew DownloadDataCompletedEventHandler(this, &GalleryUploader::OnTags);
+        req->DownloadDataAsync(gcnew Uri(
+            "http://192.168.86.72:5000/tags"
+            //"https://www.contextfreeart.org/gallery/gallerydb/tags"
+        ));
+
         uploadThread = gcnew BackgroundWorker();
         uploadThread->WorkerSupportsCancellation = true;
         uploadThread->RunWorkerCompleted += gcnew RunWorkerCompletedEventHandler(this, &GalleryUploader::UploadCompleted);
@@ -73,6 +100,86 @@ namespace ContextFreeNet {
         this->title->Focus();
     }
 
+    void GalleryUploader::OnTags(System::Object ^ sender, System::Net::DownloadDataCompletedEventArgs ^ e)
+    {
+        pin_ptr<Byte> utf8arraypin = &e->Result[0];
+        std::string tags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
+        auto tagvector = Upload::AllTags(tags);
+
+        if (tagvector.empty()) {
+            tagBox->AutoCompleteMode = AutoCompleteMode::None;
+            return;
+        }
+
+        std::sort(tagvector.begin(), tagvector.end(), iccomp());
+
+        AutoCompleteStringCollection ^ tagC = gcnew AutoCompleteStringCollection();
+        for (auto&& tag : tagvector)
+            tagC->Add(gcnew String(tag.c_str(), 0, tag.length(), System::Text::Encoding::UTF8));
+
+        tagBox->AutoCompleteMode = AutoCompleteMode::Suggest;
+        tagBox->AutoCompleteSource = AutoCompleteSource::CustomSource;
+        tagBox->AutoCompleteCustomSource = tagC;
+    }
+
+    void GalleryUploader::tag_click(System::Object^  sender, System::EventArgs^  e)
+    {
+        if (addTag->ImageIndex == 0) {
+            String^ newTag = tagBox->Text->Trim();
+            if (newTag->Length == 0)
+                return;
+
+            tagBox->Text = String::Empty;
+
+            for each (Object^ otag in tagsList->Items)
+                if (String^ tag = dynamic_cast<String^>(otag))
+                    if (tag->Equals(newTag))
+                        return;
+
+            ignore_next_selection = true;
+            tagsList->SelectedIndex = tagsList->Items->Add(newTag);
+        } else {
+            auto i = tagsList->SelectedIndex;
+            if (i >= 0) {
+                tagsList->Items->RemoveAt(i);
+                addTag->ImageIndex = 0;
+            }
+        }
+    }
+
+    void GalleryUploader::tag_focus(System::Object^  sender, System::EventArgs^  e)
+    {
+        addTag->ImageIndex = 0;
+    }
+
+    void GalleryUploader::tag_select(System::Object^  sender, System::EventArgs^  e)
+    {
+        if (ignore_next_selection)
+            ignore_next_selection = false;
+        else
+            addTag->ImageIndex = 1;
+    }
+
+    void GalleryUploader::tag_previewkey(System::Object^ sender, System::Windows::Forms::PreviewKeyDownEventArgs^ e)
+    {
+        if (e->KeyCode == Keys::Return)
+            e->IsInputKey = true;
+    }
+
+    void GalleryUploader::tag_keypress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)
+    {
+        if (e->KeyChar == (char)13) {
+            e->Handled = true;
+        }
+    }
+
+    void GalleryUploader::tag_keydown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
+    {
+        if (e->KeyCode == Keys::Enter) {
+            addTag->PerformClick();
+            e->Handled = true;
+        }
+    }
 
     System::Void GalleryUploader::needaccount_Click(System::Object^  sender, System::EventArgs^  e) {
         System::Diagnostics::Process::Start("https://www.contextfreeart.org/phpbb/ucp.php?mode=register");
@@ -116,6 +223,9 @@ namespace ContextFreeNet {
             return;
         }
 
+        if (tagBox->Text->Length > 0)
+            addTag->PerformClick();
+
         if (!origUsername->Equals(username->Text))
             Form1::prefs->GalUsername = username->Text;
         if (!origPassword->Equals(password->Text))
@@ -149,6 +259,15 @@ namespace ContextFreeNet {
             utf8arraypin = &utf8array[0];
             upload.mNotes = reinterpret_cast<const char*>(utf8arraypin);
         }
+
+        array<String^>^ tagarray = gcnew array<String^>(tagsList->Items->Count);
+        for (int i = 0; i < tagsList->Items->Count; ++i)
+            if (String^ tag = dynamic_cast<String^>(tagsList->Items[i]))
+                tagarray[i] = tag;
+        String^ tags = String::Join(" ", tagarray);
+        utf8array = encodeutf8->GetBytes(tags);
+        utf8arraypin = &utf8array[0];
+        upload.mTags = reinterpret_cast<const char*>(utf8arraypin);
 
         utf8array = encodeutf8->GetBytes(filename->Text + ".cfdg");
         utf8arraypin = &utf8array[0];
@@ -199,37 +318,46 @@ namespace ContextFreeNet {
         upload.mImage = reinterpret_cast<const char*>(imageData);
         upload.mImageLen = imageDataArray->Length;
 
-        std::string payload = upload.generateJSON();
+        std::ostringstream design;
+        upload.generatePayload(design);
+
         imageData = nullptr;
-        String^ postbody = gcnew String(payload.c_str());
+
+        array<Byte>^ postbody = gcnew array<Byte>(design.str().length());
+        Marshal::Copy(static_cast<System::IntPtr>(design.str().data()),
+            postbody, 0, design.str().length());
         uploadThread->RunWorkerAsync(postbody);
         this->upload->Enabled = false;
     }
 
     void GalleryUploader::RunUploadThread(Object^ sender, DoWorkEventArgs^ e)
     {
-        String^ postbody = dynamic_cast<String^>(e->Argument);
+        array<Byte>^ postbody = dynamic_cast<array<Byte>^>(e->Argument);
         BackgroundWorker^ bw = dynamic_cast<BackgroundWorker^>(sender);
         if (postbody == nullptr || bw == nullptr) {
             e->Cancel = true;
             e->Result = (Object^)0;
             return;
         }
+        String^ header = gcnew String(Upload::generateContentType().c_str());
 
         auto len = postbody->Length;
 
-        HttpWebRequest^ req = dynamic_cast<HttpWebRequest^>(WebRequest::Create("https://www.contextfreeart.org/gallery/gallerydb/postdesign"));
+        HttpWebRequest^ req = dynamic_cast<HttpWebRequest^>(WebRequest::Create(
+            // "https://www.contextfreeart.org/gallery/gallerydb/fpostdesign"
+            "http://192.168.86.72:5000/fpostdesign"
+        ));
         req->Method = "POST";
-        req->ContentType = "application/json; charset=UTF-8";
-        req->Accept = "application/json";
+        req->ContentType = header;
         req->ContentLength = len;
         req->ProtocolVersion = HttpVersion::Version11;
         req->KeepAlive = false;
         ServicePointManager::SecurityProtocol = SecurityProtocolType::Tls11 | SecurityProtocolType::Tls12;
 
         try {
-            StreamWriter writer(req->GetRequestStream());
-            writer.Write(postbody);
+            Stream^ newStream = req->GetRequestStream();
+            newStream->Write(postbody, 0, len);
+            newStream->Close();
         } catch (Exception^) {
             String^ msg = "A network error occured.";
             e->Result = msg;
@@ -264,9 +392,11 @@ namespace ContextFreeNet {
         } catch (WebException^ we) {
             HttpWebResponse^ resp = dynamic_cast<HttpWebResponse^>(we->Response);
             String^ respbody = nullptr;
-            {
-                StreamReader reader(resp->GetResponseStream());
+            if (Stream^ respStream = resp ? resp->GetResponseStream() : nullptr) {
+                StreamReader reader(respStream);
                 respbody = reader.ReadToEnd();
+            } else {
+                respbody = "";
             }
             int pstart = respbody ? respbody->IndexOf("<p>") : -1;
             int pend = pstart >= 0 ? respbody->IndexOf("</p>", pstart) : -1;
@@ -298,15 +428,18 @@ namespace ContextFreeNet {
                 message->Text = "An error occurred during the upload.";
             }
         } 
+
         if (design_id > 0) {
             message->Text = "Upload completed. Click View to see design in gallery.";
             cancel->Text = "View";
-        }
-        upload->Text = "Ok";
-        if (!msg && !design_id) {
+            upload->Text = "Done";
+            upload->Enabled = true;
+        } else if (!msg) {
             message->Text = "An unknown error occurred.";
+            upload->Text = "Done";
             upload->Enabled = false;
         } else {
+            upload->Text = "Retry";
             upload->Enabled = true;
         }
     }

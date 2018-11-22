@@ -117,13 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="copyright" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>copyright.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>You can share this image and CFDG file with the Context Free community on the Internet.
 
-By uploading, you will be sharing this particular image, the CFDG source text, and the variation code with the public.</value>
+By uploading, you will be publically sharing this particular image, the CFDG source text, and the variation code. </value>
   </data>
+  <metadata name="imageList1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="imageList1.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACG
+        BwAAAk1TRnQBSQFMAgEBAgEAARgBAAEYAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        AwABEAMAAQEBAAEgBgABEBYAA0YBwgMAAf8DSwGeBAADBAEGBAADFAEbAyoB5wMAAf8DPwFuBAADBQEH
+        EAADBAEFBAADMAFLAycBOgQAAwQBBggAAwQBBgQAAyUBNwMxAU8EAAMEAQWIAAMpAT4DAAH/AwAB/wMw
+        AU0EAAMEAQYEAAM8AWgDAAH/AzIB4gMdASkEAAMGAQgIAAMEAQUEAAMtAUUDAAH/AxUB9AMfASwEAAME
+        AQUDBAEFBAADHAEoAxwB8AMAAf8DLwFJBAADBAEFgwABAQQAA0wBoQMAAf8DQQHRAwcBCggAAwgBCwNF
+        AccDAAH/A0wBoQgAAwMBBAgAAy0BRQMAAf8DAAH/AwAB/wMZAfIDHwEtCAADHgErAxwB8AMAAf8DAAH/
+        AwAB/wMuAUeHAAEBBAADGgEkAxIB9gMAAf8DRwGIBAADBgEIBAADMAFMAwAB/wMAAf8DNgFZBAADBgEI
+        BAADMAFLAwAB/wMAAf8DAwH8AwYB+wMAAf8DFQH0AxwBKAMbASYDGAHzAwAB/wMGAfsDAwH8AwAB/wMA
+        Af8DMAFMhwABAQQAA0QBfwMAAf8DHAHxAyUBNwcAAQEDAAEBA0wBpwMAAf8DQgHMAxIBGAQAAwUBBwMn
+        AToDGAHzAwAB/wMGAfsDAAH/AwYB+wMAAf8DKAHpAygB6QMAAf8DBgH7AwAB/wMGAfsDAAH/AxUB9AMn
+        ATqHAAEBBAADDAEQAzQB3gMAAf8DSQG8DAADJAE2Aw8B+AMAAf8DSAGLDAADHQEqAxwB8AMAAf8DBgH7
+        AwAB/wMDAfwDAAH/AwAB/wMDAfwDAAH/AwYB+wMAAf8DGQHyAx8BLIsAAQEDAAEBBAADOQFgAwAB/wMA
+        Af8DPwFwBAADAgEDBAADSAGLAwAB/wMgAe4DLQFFBAADBAEGBAADHQEpAxwB8QMAAf8DAwH8AwAB/wMD
+        Af0DAwH9AwAB/wMDAfwDAAH/AxUB9AMfAS0EAAMEAQaLAAEBBwABAQNJAbsDAAH/Ay4B5QMdASkIAAMY
+        ASEDOwHYAwAB/wNJAb4DCwEPBAADBAEFBAADGAEiAy4B5QMAAf8DAwH9AwAB/wMAAf8DAwH9AwAB/wMo
+        AekDHAEnBAADBAEFjwABAQcAAQEDSgG2AwAB/wMsAeYDIAEvCAADFgEfAz4B1AMAAf8DSAHAAw4BEwQA
+        AwQBBQQAAxgBIgMuAeUDAAH/AwMB/QMAAf8DAAH/AwMB/QMAAf8DKAHpAxwBJwQAAwQBBYsAAQEDAAEB
+        BAADOQFfAwAB/wMAAf8DPwFwBAADAwEEBAADSAGLAwAB/wMcAfADKwFDBAADBAEGBAADHQEpAxwB8QMA
+        Af8DAwH8AwAB/wMDAf0DAwH9AwAB/wMDAfwDAAH/AxgB8wMfASwEAAMEAQaHAAEBBAADCwEPAzcB3QMA
+        Af8DSgG9BAADAQECBAADJAE1AxIB9gMAAf8DSAGMBwABAQQAAx0BKQMcAfADAAH/AwYB+wMAAf8DAwH8
+        AwAB/wMAAf8DAwH8AwAB/wMGAfsDAAH/AxkB8gMeASuLAAEBBAADRAF+AwAB/wMcAfEDJgE5BAADAQEC
+        BAADTAGmAwAB/wNDAc0DEwEaBAADBgEIAyYBOQMZAfIDAAH/AwYB+wMAAf8DBgH7AwAB/wMoAekDKAHp
+        AwAB/wMGAfsDAAH/AwYB+wMAAf8DGAHzAycBOoAAAwEBAgQAAxgBIgMVAfQDAAH/A0gBiQQAAwcBCQQA
+        AzABSwMAAf8DAAH/AzcBWgQAAwYBCAQAAzABTAMAAf8DAAH/AwMB/AMGAfsDAAH/AxUB9AMcAScDGwEm
+        AxkB8gMAAf8DBgH7AwMB/AMAAf8DAAH/AzABTYgAA0wBoQMAAf8DQQHQAwcBCggAAwcBCQNHAcgDAAH/
+        A0wBoQgAAwMBBAgAAy0BRQMAAf8DAAH/AwAB/wMZAfIDHwEtCAADHgErAxwB8AMAAf8DAAH/AwAB/wMu
+        AUiIAAMpAT8DAAH/AwAB/wMxAU4EAAMFAQcEAAM9AWkDAAH/AzIB3wMdASoEAAMHAQkIAAMEAQUEAAMt
+        AUUDAAH/AxUB9AMfASwEAAMEAQUDBAEFBAADHAEoAxwB8AMAAf8DLwFKBAADBAEFhAADSQG/AwAB/wNM
+        AaEEAAMFAQcEAAMTARoDLgHkAwAB/wNAAXEEAAMGAQgQAAMEAQUEAAMwAUsDJwE6BAADBAEGCAADBAEG
+        BAADJAE2AzEBTwQAAwQBBYQAAUIBTQE+BwABPgMAASgDAAFAAwABEAMAAQEBAAEBBQABgBcAA/8BAAGK
+        ARcCpQQAAYUBCwJCBAABQwENAoEEAAFCAYUGAAGhAQIGAAGhAcMBgAEBBAABkAGhAUABAgQAAdABYAGg
+        AQUEAAHQAWABoAEFBAABkAGhAUABAgQAAaEBQgGAAQEEAAGhAUIGAAFCAYUGAAHDAQ0CgQQAAYUBCwJC
+        BAABigEXAqUEAAs=
+</value>
+  </data>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>62</value>
+  </metadata>
 </root>
