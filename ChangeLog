@@ -12,6 +12,8 @@ V3.1 - November 2018
 * Supports macOS Mojave dark mode.
 * All Unicode identifiers (shape, variable, and function names) are normalized so that 
   if they look the same then they will be treated as the same (NFKC normalization).
+* You can set the tags when you upload a cfdg from Context Free and it even does auto-
+  completion to help reuse tags and prevent typos.
 
   Bug fixes:
 
