@@ -150,32 +150,35 @@ namespace ContextFreeNet {
     void GalleryUploader::tag_focus(System::Object^  sender, System::EventArgs^  e)
     {
         addTag->ImageIndex = 0;
+        toolTip1->SetToolTip(addTag, "Save tag to tag list");
     }
 
     void GalleryUploader::tag_select(System::Object^  sender, System::EventArgs^  e)
     {
-        if (ignore_next_selection)
+        if (ignore_next_selection) {
             ignore_next_selection = false;
-        else
+        } else {
             addTag->ImageIndex = 1;
+            toolTip1->SetToolTip(addTag, "Delete tag from tag list");
+        }
     }
 
     void GalleryUploader::tag_previewkey(System::Object^ sender, System::Windows::Forms::PreviewKeyDownEventArgs^ e)
     {
-        if (e->KeyCode == Keys::Return)
+        if (e->KeyCode == Keys::Return || e->KeyCode == Keys::Tab)
             e->IsInputKey = true;
     }
 
     void GalleryUploader::tag_keypress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)
     {
-        if (e->KeyChar == (char)13) {
+        if (e->KeyChar == (char)13 || e->KeyChar == ' ') {
             e->Handled = true;
         }
     }
 
     void GalleryUploader::tag_keydown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
     {
-        if (e->KeyCode == Keys::Enter) {
+        if (e->KeyCode == Keys::Return || e->KeyCode == Keys::Tab || e->KeyCode == Keys::Space) {
             addTag->PerformClick();
             e->Handled = true;
         }
