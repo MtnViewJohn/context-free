@@ -990,6 +990,7 @@ namespace AST {
         b->mInPathContainer = isPath;
         ASTreplacement::compile(ph, b);
         mRuleBody.compile(ph, b);
+        b->mInPathContainer = false;
     }
     
     void

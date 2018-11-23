@@ -457,7 +457,9 @@ CFDGImpl::rulesLoaded()
     
     try {
         m_builder->mLocalStackDepth = 0;
+        m_builder->mInPathContainer = false;
         mCFDGcontents.compile(CompilePhase::TypeCheck, m_builder);
+        m_builder->mInPathContainer = false;
         if (!m_builder->mErrorOccured)
             mCFDGcontents.compile(CompilePhase::Simplify, m_builder);
     } catch (DeferUntilRuntime&) {

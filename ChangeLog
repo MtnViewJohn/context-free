@@ -21,6 +21,9 @@ V3.1 - November 2018
   Context Free to crash on those systems.
 * Typos in example cfdg files fixed.
 * Better input sanitization so that ill-formed cfdg code cannot crash Context Free.
+* Context Free may issue false warnings about time or Z changes not being allowed
+  inside paths if the time or Z change is in a global variable and at least one path
+  exists in the file.
 
 V3.0.11.4 - July 2017
 ---------------------
