@@ -1194,7 +1194,7 @@ namespace {
         
         bits = [png_bm getImageRep];
     }
-    else if (cropped && !mult) {
+    else if (cropped) {
         bits = [mRenderBitmap getImageRepCropped: mRenderedRect];
     }
     else {
