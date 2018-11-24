@@ -263,14 +263,16 @@ namespace ContextFreeNet {
             upload.mNotes = reinterpret_cast<const char*>(utf8arraypin);
         }
 
-        array<String^>^ tagarray = gcnew array<String^>(tagsList->Items->Count);
-        for (int i = 0; i < tagsList->Items->Count; ++i)
-            if (String^ tag = dynamic_cast<String^>(tagsList->Items[i]))
-                tagarray[i] = tag;
-        String^ tags = String::Join(" ", tagarray);
-        utf8array = encodeutf8->GetBytes(tags);
-        utf8arraypin = &utf8array[0];
-        upload.mTags = reinterpret_cast<const char*>(utf8arraypin);
+        if (auto count = tagsList->Items->Count) {
+            array<String^>^ tagarray = gcnew array<String^>(count);
+            for (int i = 0; i < count; ++i)
+                if (String^ tag = dynamic_cast<String^>(tagsList->Items[i]))
+                    tagarray[i] = tag;
+            String^ tags = String::Join(" ", tagarray);
+            utf8array = encodeutf8->GetBytes(tags);
+            utf8arraypin = &utf8array[0];
+            upload.mTags = reinterpret_cast<const char*>(utf8arraypin);
+        }
 
         utf8array = encodeutf8->GetBytes(filename->Text + ".cfdg");
         utf8arraypin = &utf8array[0];
