@@ -131,11 +131,9 @@ Upload::generatePayload(std::ostream& out)
     generateFileField(out, "cfdgfile", mText, mTextLen, mFileName);
     generateFileField(out, "imagefile", mImage, mImageLen, "image.png");
     generateTextField(out, "compression", compressionName(mCompression));
-    generateTextField(out, "cc_js_result_uri", mccLicenseURI);
-    generateTextField(out, "cc_js_result_name", mccLicenseName);
-    generateTextField(out, "cc_js_result_img", mccLicenseImage);
-    if (mccLicenseURI.length())
-        generateTextField(out, "cc_js_want_cc_license", "sure");
+    generateTextField(out, "ccURI", mccLicenseURI);
+    generateTextField(out, "ccName", mccLicenseName);
+    generateTextField(out, "ccImage", mccLicenseImage);
     if (mTiled)
         generateTextField(out, "tiled", "on");
     generateTextField(out, "tiledtype", (char)(mTiled + '0'));
