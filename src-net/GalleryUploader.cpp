@@ -85,8 +85,11 @@ namespace ContextFreeNet {
         WebClient^ req = gcnew WebClient();
         req->DownloadDataCompleted += gcnew DownloadDataCompletedEventHandler(this, &GalleryUploader::OnTags);
         req->DownloadDataAsync(gcnew Uri(
+#ifdef NDEBUG
+            "https://www.contextfreeart.org/gallery/gallerydb/tags"
+#else
             "http://192.168.86.72:5000/tags"
-            //"https://www.contextfreeart.org/gallery/gallerydb/tags"
+#endif
         ));
 
         uploadThread = gcnew BackgroundWorker();
@@ -201,7 +204,11 @@ namespace ContextFreeNet {
         if (design_id == 0) {
             this->DialogResult = ::DialogResult::Cancel;
         } else {
-            String^ url = String::Format("https://www.contextfreeart.org/gallery/index.html#design/{0}", design_id);
+#ifdef NDEBUG
+            String^ url = String::Format("https://www.contextfreeart.org/gallery2/index.html#design/{0}", design_id);
+#else
+            String^ url = String::Format("https://192.168.86.72/~john/cfa2/gallery2/index.html#design/{0}", design_id);
+#endif
             System::Diagnostics::Process::Start(url);
             this->DialogResult = ::DialogResult::OK;
         }
@@ -349,8 +356,11 @@ namespace ContextFreeNet {
         auto len = postbody->Length;
 
         HttpWebRequest^ req = dynamic_cast<HttpWebRequest^>(WebRequest::Create(
-            // "https://www.contextfreeart.org/gallery/gallerydb/fpostdesign"
+#ifdef NDEBUG
+            "https://www.contextfreeart.org/gallery/gallerydb/fpostdesign"
+#else
             "http://192.168.86.72:5000/fpostdesign"
+#endif
         ));
         req->Method = "POST";
         req->ContentType = header;
