@@ -60,19 +60,27 @@ namespace {
     static NSString* galDomain = @"www.contextfreeart.org";
     static NSString* galPath = @"/gallery/";
 
+#ifdef NDEBUG
     static NSString* uploadUrl =
-        //@"http://localhost:5000/fpostdesign";
         @"https://www.contextfreeart.org/gallery/gallerydb/fpostdesign";
 
     static NSString* displayUrl =
-        //@"http://localhost:8000/main.html#design/%d";
-        //@"https://localhost/~john/cfa2/gallery2/index.html#design/%d";
-        @"https://www.contextfreeart.org/gallery/index.html#design/%d";
+        @"https://www.contextfreeart.org/gallery2/index.html#design/%d";
     
     static NSString* tagsUrl =
-        //@"http://localhost:5000/tags";
         @"https://www.contextfreeart.org/gallery/gallerydb/tags";
-
+#else
+    static NSString* uploadUrl =
+        @"http://localhost:5000/fpostdesign";
+    
+    static NSString* displayUrl =
+        //@"http://localhost:8000/main.html#design/%d";
+        @"https://localhost/~john/cfa2/gallery2/index.html#design/%d";
+    
+    static NSString* tagsUrl =
+        @"http://localhost:5000/tags";
+#endif
+    
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
     {
         SecKeychainItemRef itemRef = nil;
