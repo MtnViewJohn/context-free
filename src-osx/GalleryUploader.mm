@@ -399,7 +399,10 @@ namespace {
     
 
     if ([[mTitleField stringValue] length] == 0) {
-        [mTitleField setStringValue: [mDocument displayName]];
+        NSString* name = [mDocument displayName];
+        name = name.stringByDeletingPathExtension;
+        name = name.capitalizedString;
+        [mTitleField setStringValue: name];
     }
 
     if ([[mFileField stringValue] length] == 0) {
