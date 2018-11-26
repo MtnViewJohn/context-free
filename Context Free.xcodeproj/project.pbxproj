@@ -1080,6 +1080,7 @@
 				OTHER_LDFLAGS = (
 					"-lpng",
 					"-lagg",
+					"-licucore",
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
@@ -1118,6 +1119,7 @@
 				OTHER_LDFLAGS = (
 					"-lpng",
 					"-lagg",
+					"-licucore",
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
