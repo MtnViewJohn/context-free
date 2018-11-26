@@ -2116,6 +2116,7 @@ long MakeColor(id v)
     [mEditor setGeneralProperty:SCI_SETINDENT value:0];
     [mEditor setGeneralProperty:SCI_SETTABINDENTS value:1];
     [mEditor setGeneralProperty:SCI_SETBACKSPACEUNINDENTS value:1];
+    [mEditor setGeneralProperty:SCI_SETINDENTATIONGUIDES value:SC_IV_LOOKBOTH];
     
     [mEditor setGeneralProperty:SCI_AUTOCSETIGNORECASE value:1];
     [mEditor setReferenceProperty:SCI_AUTOCSTOPS parameter:0 value:"[]{}<>,1234567890()/*+-|=!&^ \t.\r\n"];
