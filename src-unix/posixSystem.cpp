@@ -33,6 +33,7 @@
 #define U_DISABLE_RENAMING 1
 #endif
 
+#define UCHAR_TYPE char16_t
 #include <unicode/ucnv.h>
 #include <unicode/unorm2.h>
 
