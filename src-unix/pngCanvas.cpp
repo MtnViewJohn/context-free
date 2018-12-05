@@ -95,6 +95,9 @@ void pngCanvas::output(const char* outfilename, int frame)
             cerr << "Couldn't open " << outfilename << "\n";
             throw false;
         }
+        
+        if (setjmp(png_jmpbuf(png_ptr)))
+            throw "Unspecified PNG output failure.";
 
         png_init_io(png_ptr, out.get());
         
