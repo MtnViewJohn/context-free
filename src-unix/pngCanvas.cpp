@@ -27,8 +27,10 @@
 //
 
 #include "pngCanvas.h"
+#include <setjmp.h>  // not <csetjmp>
 #include "png.h"
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstdio>
 #include <iostream>
 #include <arpa/inet.h>
 #include "prettyint.h"
@@ -54,16 +56,16 @@ namespace {
 namespace {
     struct FileCloser
     {
-        void operator()(FILE* ptr) const {
+        void operator()(std::FILE* ptr) const {
             if (ptr != stdout)
-                fclose(ptr);        // Not called if nullptr
+                std::fclose(ptr);        // Not called if nullptr
         }
     };
 }
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
-    std::unique_ptr<FILE, FileCloser> out(nullptr);
+    std::unique_ptr<std::FILE, FileCloser> out(nullptr);
     png_structp png_ptr = nullptr;
     png_infop info_ptr = nullptr;
 
@@ -84,7 +86,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         if (!info_ptr) throw "couldn't create png info struct";
 
         if (*outfilename) {
-            out.reset(fopen(outfilename, "wb"));
+            out.reset(std::fopen(outfilename, "wb"));
         } else {
             out.reset(stdout);
 #ifdef WIN32
@@ -144,7 +146,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         char myKey[] = "Software", myValue[] = "Context Free";
         
         png_text comments[1];
-        memset(comments, 0, sizeof(comments));
+        std::memset(comments, 0, sizeof(comments));
         comments[0].compression = PNG_TEXT_COMPRESSION_NONE;
         comments[0].key = myKey;
         comments[0].text = myValue;

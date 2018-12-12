@@ -43,7 +43,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
-#include <string.h>
+#include <cstring>
 
 #if defined(__GNU__) || (defined(__ILP32__) && defined(__x86_64__))
   #define NOSYSCTL
@@ -169,7 +169,7 @@ PosixSystem::tempFileDirectory()
 namespace {
     struct MallocDeleter {
         void operator()(void* ptr) const {
-            free(ptr);
+            std::free(ptr);
         }
     };
     struct DirCloser {
@@ -192,7 +192,7 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
     ostr_ptr f;
     
     std::unique_ptr<char, MallocDeleter> b(strdup(t.c_str()));
-    int tfd = mkstemps(b.get(), (int)strlen(TempSuffixes[tt]));
+    int tfd = mkstemps(b.get(), (int)std::strlen(TempSuffixes[tt]));
     if (tfd != -1) {
         f = std::make_unique<boost::fdostream>(tfd);
         nameOut.assign(b.get());
@@ -226,11 +226,11 @@ PosixSystem::findTempFiles()
 {
     std::vector<FileString> ret;
     const char* dirname = tempFileDirectory();
-    size_t len = strlen(TempPrefixAll);
+    std::size_t len = std::strlen(TempPrefixAll);
     std::unique_ptr<DIR, DirCloser> dirp(opendir(dirname));
     if (!dirp) return ret;
     while (dirent* der = readdir(dirp.get())) {
-        if (strncmp(TempPrefixAll, der->d_name, len) == 0) {
+        if (std::strncmp(TempPrefixAll, der->d_name, len) == 0) {
             ret.emplace_back(dirname);
             if (ret.back().back() != '/')
                 ret.back().push_back('/');
@@ -248,10 +248,10 @@ PosixSystem::getPhysicalMemory()
     return 0;
 #elif defined(__linux__)
   #if defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
-    uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<uint64_t>(sysconf(_SC_PAGESIZE));
+    std::uint64_t size = sysconf(_SC_PHYS_PAGES) * static_cast<std::uint64_t>(sysconf(_SC_PAGESIZE));
     if (size > MaximumMemory)
         size = MaximumMemory;
-    return static_cast<size_t>(size);
+    return static_cast<std::size_t>(size);
   #else
     return 0;
   #endif
@@ -264,10 +264,10 @@ PosixSystem::getPhysicalMemory()
   #endif
   #if defined(HW_MEMSIZE)
     mib[1] = HW_MEMSIZE;    // OSX
-    uint64_t size = 0;      // 64-bit
+    std::uint64_t size = 0;      // 64-bit
   #elif defined(HW_PHYSMEM64)
     mib[1] = HW_PHYSMEM64;  // NetBSD, OpenBSD
-    uint64_t size = 0;      // 64-bit
+    std::uint64_t size = 0;      // 64-bit
   #elif defined(HW_REALMEM)
     mib[1] = HW_REALMEM;    // FreeBSD
     unsigned int size = 0;  // 32-bit
@@ -275,14 +275,14 @@ PosixSystem::getPhysicalMemory()
     mib[1] = HW_PHYSMEM;    // DragonFly BSD
     unsigned int size = 0;  // 32-bit
   #else
-    uint64_t size = 0;      // need to define this anyway
+    std::uint64_t size = 0;      // need to define this anyway
     return 0;
   #endif
-    size_t len = sizeof(size);
+    std::size_t len = sizeof(size);
     if (sysctl(mib, 2, &size, &len, NULL, 0) == 0) {
         if (size > MaximumMemory)
             size = MaximumMemory;
-        return static_cast<size_t>(size);
+        return static_cast<std::size_t>(size);
     }
     return 0;
 #endif // __linux__ || NOSYSCTL
