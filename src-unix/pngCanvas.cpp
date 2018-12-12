@@ -30,6 +30,7 @@
 #include <setjmp.h>  // not <csetjmp>
 #include "png.h"
 #include <cstdlib>
+#include <cstring>
 #include <cstdio>
 #include <iostream>
 #include <arpa/inet.h>
