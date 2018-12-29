@@ -3,15 +3,15 @@
 <plist version="1.0">
 <array>
 	<string>Context Free Site</string>
-	<string>http://www.contextfreeart.org/</string>
+	<string>https://www.contextfreeart.org/index.html</string>
 	<string>Forums</string>
-	<string>http://www.contextfreeart.org/phpbb/</string>
+	<string>https://www.contextfreeart.org/phpbb/index.php</string>
 	<string>Gallery</string>
-	<string>http://www.contextfreeart.org/gallery/</string>
+	<string>https://www.contextfreeart.org/gallery2/</string>
 	<string></string>
 	<string></string>
 	<string>Original CFDG Site</string>
-	<string>http://chriscoyne.com/cfdg/</string>
+	<string>https://www.flickr.com/groups/cfdg/pool/</string>
 	<string></string>
 	<string></string>
 	<string>Send Feedback</string>
