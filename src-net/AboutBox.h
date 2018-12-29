@@ -101,10 +101,9 @@ namespace ContextFreeNet {
             // 
             this->pictureBox1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.Image")));
             this->pictureBox1->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.InitialImage")));
-            this->pictureBox1->Location = System::Drawing::Point(24, 23);
-            this->pictureBox1->Margin = System::Windows::Forms::Padding(6, 6, 6, 6);
+            this->pictureBox1->Location = System::Drawing::Point(12, 12);
             this->pictureBox1->Name = L"pictureBox1";
-            this->pictureBox1->Size = System::Drawing::Size(256, 246);
+            this->pictureBox1->Size = System::Drawing::Size(128, 128);
             this->pictureBox1->TabIndex = 0;
             this->pictureBox1->TabStop = false;
             // 
@@ -113,10 +112,9 @@ namespace ContextFreeNet {
             this->label1->AutoSize = true;
             this->label1->Font = (gcnew System::Drawing::Font(L"Verdana", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label1->Location = System::Drawing::Point(294, 25);
-            this->label1->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label1->Location = System::Drawing::Point(147, 13);
             this->label1->Name = L"label1";
-            this->label1->Size = System::Drawing::Size(336, 59);
+            this->label1->Size = System::Drawing::Size(166, 29);
             this->label1->TabIndex = 1;
             this->label1->Text = L"Context Free";
             // 
@@ -125,10 +123,9 @@ namespace ContextFreeNet {
             this->label2->AutoSize = true;
             this->label2->Font = (gcnew System::Drawing::Font(L"Verdana", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label2->Location = System::Drawing::Point(304, 88);
-            this->label2->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label2->Location = System::Drawing::Point(152, 46);
             this->label2->Name = L"label2";
-            this->label2->Size = System::Drawing::Size(352, 32);
+            this->label2->Size = System::Drawing::Size(179, 16);
             this->label2->TabIndex = 2;
             this->label2->Text = L"version 3.1 (v43) - 64-bit";
             // 
@@ -136,10 +133,9 @@ namespace ContextFreeNet {
             // 
             this->label3->Font = (gcnew System::Drawing::Font(L"Verdana", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label3->Location = System::Drawing::Point(304, 137);
-            this->label3->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label3->Location = System::Drawing::Point(152, 71);
             this->label3->Name = L"label3";
-            this->label3->Size = System::Drawing::Size(536, 78);
+            this->label3->Size = System::Drawing::Size(305, 41);
             this->label3->TabIndex = 3;
             this->label3->Text = L"Context Free Copyright © 2005 to 2017 Mark Lentczner and John Horigan";
             // 
@@ -147,10 +143,9 @@ namespace ContextFreeNet {
             // 
             this->label4->Font = (gcnew System::Drawing::Font(L"Verdana", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label4->Location = System::Drawing::Point(304, 215);
-            this->label4->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label4->Location = System::Drawing::Point(152, 112);
             this->label4->Name = L"label4";
-            this->label4->Size = System::Drawing::Size(516, 31);
+            this->label4->Size = System::Drawing::Size(258, 16);
             this->label4->TabIndex = 4;
             this->label4->Text = L"CFDG Copyright © 2005 Chris Coyne";
             // 
@@ -158,10 +153,9 @@ namespace ContextFreeNet {
             // 
             this->label5->Font = (gcnew System::Drawing::Font(L"Verdana", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label5->Location = System::Drawing::Point(304, 263);
-            this->label5->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label5->Location = System::Drawing::Point(152, 137);
             this->label5->Name = L"label5";
-            this->label5->Size = System::Drawing::Size(536, 79);
+            this->label5->Size = System::Drawing::Size(268, 41);
             this->label5->TabIndex = 5;
             this->label5->Text = L"Anti-Grain Geometry library Copyright © 2002 to 2006 Maxim Shemanarev";
             // 
@@ -169,20 +163,18 @@ namespace ContextFreeNet {
             // 
             this->label6->Font = (gcnew System::Drawing::Font(L"Verdana", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label6->Location = System::Drawing::Point(304, 342);
-            this->label6->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label6->Location = System::Drawing::Point(152, 178);
             this->label6->Name = L"label6";
-            this->label6->Size = System::Drawing::Size(544, 78);
+            this->label6->Size = System::Drawing::Size(272, 41);
             this->label6->TabIndex = 6;
             this->label6->Text = L"DockPanel Suite Copyright © 2005 to 2007 Weifen Luo";
             // 
             // okButton
             // 
             this->okButton->DialogResult = System::Windows::Forms::DialogResult::OK;
-            this->okButton->Location = System::Drawing::Point(688, 444);
-            this->okButton->Margin = System::Windows::Forms::Padding(6, 6, 6, 6);
+            this->okButton->Location = System::Drawing::Point(372, 231);
             this->okButton->Name = L"okButton";
-            this->okButton->Size = System::Drawing::Size(150, 44);
+            this->okButton->Size = System::Drawing::Size(75, 23);
             this->okButton->TabIndex = 7;
             this->okButton->Text = L"OK";
             this->okButton->UseVisualStyleBackColor = true;
@@ -191,10 +183,10 @@ namespace ContextFreeNet {
             // AboutBox
             // 
             this->AcceptButton = this->okButton;
-            this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
+            this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->CancelButton = this->okButton;
-            this->ClientSize = System::Drawing::Size(862, 512);
+            this->ClientSize = System::Drawing::Size(469, 266);
             this->Controls->Add(this->okButton);
             this->Controls->Add(this->label6);
             this->Controls->Add(this->label5);
@@ -205,7 +197,6 @@ namespace ContextFreeNet {
             this->Controls->Add(this->pictureBox1);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
             this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
-            this->Margin = System::Windows::Forms::Padding(6, 6, 6, 6);
             this->MaximizeBox = false;
             this->MinimizeBox = false;
             this->Name = L"AboutBox";
