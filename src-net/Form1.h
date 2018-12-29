@@ -334,28 +334,28 @@ namespace ContextFreeNet {
             // 
             this->contextFreeSiteToolStripMenuItem->Name = L"contextFreeSiteToolStripMenuItem";
             this->contextFreeSiteToolStripMenuItem->Size = System::Drawing::Size(324, 38);
-            this->contextFreeSiteToolStripMenuItem->Tag = L"http://www.contextfreeart.org/index.html";
+            this->contextFreeSiteToolStripMenuItem->Tag = L"https://www.contextfreeart.org/index.html";
             this->contextFreeSiteToolStripMenuItem->Text = L"&Context Free Site...";
             // 
             // galleryToolStripMenuItem
             // 
             this->galleryToolStripMenuItem->Name = L"galleryToolStripMenuItem";
             this->galleryToolStripMenuItem->Size = System::Drawing::Size(324, 38);
-            this->galleryToolStripMenuItem->Tag = L"http://www.contextfreeart.org/gallery/";
+            this->galleryToolStripMenuItem->Tag = L"https://www.contextfreeart.org/gallery2/";
             this->galleryToolStripMenuItem->Text = L"&Gallery...";
             // 
             // forumsToolStripMenuItem
             // 
             this->forumsToolStripMenuItem->Name = L"forumsToolStripMenuItem";
             this->forumsToolStripMenuItem->Size = System::Drawing::Size(324, 38);
-            this->forumsToolStripMenuItem->Tag = L"http://www.contextfreeart.org/phpbb/index.php";
+            this->forumsToolStripMenuItem->Tag = L"https://www.contextfreeart.org/phpbb/index.php";
             this->forumsToolStripMenuItem->Text = L"&Forums...";
             // 
             // writingCFDGFilesToolStripMenuItem
             // 
             this->writingCFDGFilesToolStripMenuItem->Name = L"writingCFDGFilesToolStripMenuItem";
             this->writingCFDGFilesToolStripMenuItem->Size = System::Drawing::Size(324, 38);
-            this->writingCFDGFilesToolStripMenuItem->Tag = L"http://www.contextfreeart.org/mediawiki/index.php/CFDG_HOWTO";
+            this->writingCFDGFilesToolStripMenuItem->Tag = L"https://github.com/MtnViewJohn/context-free/wiki";
             this->writingCFDGFilesToolStripMenuItem->Text = L"&Writing CFDG files...";
             // 
             // toolStripSeparator1
