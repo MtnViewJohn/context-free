@@ -43,6 +43,13 @@ extern NSString *const SCIUpdateUINotification;
 @end
 
 /**
+ * SCIScrollView provides pre-macOS 10.14 tiling behavior.
+ */
+@interface SCIScrollView : NSScrollView;
+
+@end
+
+/**
  * SCIMarginView draws line numbers and other margins next to the text view.
  */
 @interface SCIMarginView : NSRulerView;

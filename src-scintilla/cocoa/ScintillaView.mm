@@ -53,6 +53,21 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 	}
 }
 
+@implementation SCIScrollView
+- (void) tile {
+	[super tile];
+
+#if defined(MAC_OS_X_VERSION_10_14)
+	if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_13) {
+		NSRect frame = self.contentView.frame;
+		frame.origin.x = self.verticalRulerView.requiredThickness;
+		frame.size.width -= frame.origin.x;
+		self.contentView.frame = frame;
+	}
+#endif
+}
+@end
+
 // Add marginWidth and owner properties as a private category.
 @interface SCIMarginView()
 @property(assign) int marginWidth;
@@ -1379,7 +1394,15 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 		// Pick an arbitrary size, just to make NSScroller selecting the proper scroller direction
 		// (horizontal or vertical).
 		NSRect scrollerRect = NSMakeRect(0, 0, 100, 10);
-		scrollView = [[NSScrollView alloc] initWithFrame: scrollerRect];
+		scrollView = (NSScrollView *)[[SCIScrollView alloc] initWithFrame: scrollerRect];
+#if defined(MAC_OS_X_VERSION_10_14)
+		// Let SCIScrollView account for other subviews such as vertical ruler by turning off
+		// automaticallyAdjustsContentInsets.
+		if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_13) {
+			scrollView.contentView.automaticallyAdjustsContentInsets = NO;
+			scrollView.contentView.contentInsets = NSEdgeInsetsMake(0., 0., 0., 0.);
+		}
+#endif
 		scrollView.documentView = mContent;
 		[scrollView setHasVerticalScroller: YES];
 		[scrollView setHasHorizontalScroller: YES];
