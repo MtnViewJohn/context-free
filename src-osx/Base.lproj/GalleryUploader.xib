@@ -49,7 +49,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="35">
-                        <rect key="frame" x="18" y="103" width="362" height="17"/>
+                        <rect key="frame" x="88" y="103" width="292" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Upload to Context Free Gallery on-line" id="468">
                             <font key="font" metaFont="systemBold"/>
@@ -58,13 +58,18 @@
                         </textFieldCell>
                     </textField>
                     <box boxType="oldStyle" borderType="none" title="Box" titlePosition="noTitle" id="188">
-                        <rect key="frame" x="5" y="0.0" width="440" height="103"/>
+                        <rect key="frame" x="90" y="0.0" width="355" height="103"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <view key="contentView" id="SmD-mE-16C">
-                            <rect key="frame" x="0.0" y="0.0" width="440" height="103"/>
+                            <rect key="frame" x="0.0" y="0.0" width="355" height="103"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                     </box>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="brl-eo-6Nf">
+                        <rect key="frame" x="18" y="56" width="64" height="64"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="NSNetwork" id="cOT-8u-gir"/>
+                    </imageView>
                 </subviews>
             </view>
             <connections>
@@ -612,4 +617,7 @@ DQ
             </view>
         </window>
     </objects>
+    <resources>
+        <image name="NSNetwork" width="32" height="32"/>
+    </resources>
 </document>
