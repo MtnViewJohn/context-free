@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14113"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,7 +11,6 @@
                 <outlet property="mCC" destination="7Df-W5-ko2" id="vwq-nT-KWI"/>
                 <outlet property="mCompressionMatrix" destination="99" id="301"/>
                 <outlet property="mContentView" destination="188" id="291"/>
-                <outlet property="mCreativeCommonsWidget" destination="414" id="415"/>
                 <outlet property="mCropCheck" destination="317" id="520"/>
                 <outlet property="mDoneView" destination="259" id="305"/>
                 <outlet property="mFileField" destination="90" id="299"/>
@@ -21,7 +18,6 @@
                 <outlet property="mHeightLabel" destination="508" id="519"/>
                 <outlet property="mLicenseImage" destination="398" id="402"/>
                 <outlet property="mLicenseName" destination="396" id="403"/>
-                <outlet property="mLicenseView" destination="409" id="418"/>
                 <outlet property="mMessage" destination="314" id="315"/>
                 <outlet property="mMultLabel" destination="521" id="523"/>
                 <outlet property="mNotesView" destination="96" id="298"/>
@@ -53,7 +49,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="35">
-                        <rect key="frame" x="99" y="103" width="281" height="17"/>
+                        <rect key="frame" x="18" y="103" width="362" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Upload to Context Free Gallery on-line" id="468">
                             <font key="font" metaFont="systemBold"/>
@@ -61,16 +57,11 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <imageView id="40">
-                        <rect key="frame" x="20" y="56" width="64" height="64"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="GenericNetworkIcon" id="469"/>
-                    </imageView>
                     <box boxType="oldStyle" borderType="none" title="Box" titlePosition="noTitle" id="188">
-                        <rect key="frame" x="90" y="0.0" width="355" height="103"/>
+                        <rect key="frame" x="5" y="0.0" width="440" height="103"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <view key="contentView" id="SmD-mE-16C">
-                            <rect key="frame" x="0.0" y="0.0" width="355" height="103"/>
+                            <rect key="frame" x="0.0" y="0.0" width="440" height="103"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                     </box>
@@ -79,7 +70,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="64"/>
             </connections>
-            <point key="canvasLocation" x="360" y="482"/>
+            <point key="canvasLocation" x="359.5" y="482"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="59" userLabel="Shared Defaults"/>
         <customObject id="67" userLabel="VariationFormatter1" customClass="VariationFormatter"/>
@@ -89,7 +80,7 @@
             <rect key="contentRect" x="724" y="209" width="355" height="710"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
             <value key="minSize" type="size" width="200" height="100"/>
-            <view key="contentView" misplaced="YES" id="84">
+            <view key="contentView" id="84">
                 <rect key="frame" x="0.0" y="0.0" width="355" height="710"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -165,7 +156,7 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="480">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
@@ -177,7 +168,7 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="475">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
@@ -196,7 +187,7 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         <rect key="frame" x="12" y="520" width="331" height="5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     </box>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="98">
+                    <textField verticalHuggingPriority="750" id="98">
                         <rect key="frame" x="18" y="488" width="36" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Title:" id="476">
@@ -210,7 +201,7 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="478">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
@@ -226,20 +217,20 @@ By uploading, you will be sharing this particular image, the CFDG source text, a
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="0.0" verticalPageScroll="0.0" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="95">
                         <rect key="frame" x="59" y="384" width="284" height="94"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                        <clipView key="contentView" id="j1g-si-QqB">
+                        <clipView key="contentView" drawsBackground="NO" id="j1g-si-QqB">
                             <rect key="frame" x="1" y="1" width="282" height="92"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="96">
                                     <rect key="frame" x="0.0" y="0.0" width="282" height="92"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="282" height="92"/>
                                     <size key="maxSize" width="284" height="10000000"/>
                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="503">
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
@@ -315,7 +306,7 @@ compression:</string>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="473">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
@@ -368,7 +359,7 @@ compression:</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="396">
+                    <textField verticalHuggingPriority="750" id="396">
                         <rect key="frame" x="183" y="103" width="163" height="55"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="491">
@@ -377,7 +368,7 @@ compression:</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button misplaced="YES" id="398">
+                    <button id="398">
                         <rect key="frame" x="65" y="100" width="114" height="60"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="492">
@@ -420,7 +411,7 @@ compression:</string>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="511">
                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="512"/>
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
@@ -430,7 +421,7 @@ compression:</string>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="514">
                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="515"/>
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
@@ -443,7 +434,7 @@ compression:</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" misplaced="YES" id="U3R-YN-pJH">
+                    <popUpButton verticalHuggingPriority="750" id="U3R-YN-pJH">
                         <rect key="frame" x="65" y="68" width="281" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <popUpButtonCell key="cell" type="push" title="No change" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ahE-JN-qaS" id="qLW-k1-T4F">
@@ -482,7 +473,7 @@ compression:</string>
                             <action selector="changeLicense:" target="-2" id="4B3-eP-Cx6"/>
                         </connections>
                     </popUpButton>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="9BN-yj-5hq">
+                    <textField verticalHuggingPriority="750" id="9BN-yj-5hq">
                         <rect key="frame" x="9" y="357" width="45" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Tags:" id="H74-PS-OJy">
@@ -491,7 +482,7 @@ compression:</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <tokenField verticalHuggingPriority="750" misplaced="YES" id="7tl-Kj-V0g">
+                    <tokenField verticalHuggingPriority="750" id="7tl-Kj-V0g">
                         <rect key="frame" x="59" y="305" width="284" height="69"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <tokenFieldCell key="cell" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="koR-eG-Tcq">
@@ -582,20 +573,20 @@ DQ
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="313">
                         <rect key="frame" x="12" y="60" width="331" height="139"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <clipView key="contentView" id="VMf-wF-GtU">
+                        <clipView key="contentView" drawsBackground="NO" id="VMf-wF-GtU">
                             <rect key="frame" x="1" y="1" width="329" height="137"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="314">
                                     <rect key="frame" x="0.0" y="0.0" width="329" height="137"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="329" height="137"/>
                                     <size key="maxSize" width="331" height="10000000"/>
                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="505">
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
@@ -620,50 +611,5 @@ DQ
                 </subviews>
             </view>
         </window>
-        <window title="Upload to Gallery" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="408" userLabel="Upload License" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="344" width="510" height="503"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
-            <view key="contentView" id="409">
-                <rect key="frame" x="0.0" y="0.0" width="510" height="503"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <button verticalHuggingPriority="750" id="410">
-                        <rect key="frame" x="395" y="12" width="101" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Set License" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="499">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="updateLicense:" target="-2" id="416"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" id="412">
-                        <rect key="frame" x="299" y="12" width="96" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="500">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="noChangeLicense:" target="-2" id="417"/>
-                        </connections>
-                    </button>
-                    <webView maintainsBackForwardList="NO" id="414">
-                        <rect key="frame" x="20" y="60" width="470" height="423"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
-                            <nil key="identifier"/>
-                        </webPreferences>
-                    </webView>
-                </subviews>
-            </view>
-            <point key="canvasLocation" x="882" y="401.5"/>
-        </window>
     </objects>
-    <resources>
-        <image name="GenericNetworkIcon" width="128" height="128"/>
-    </resources>
 </document>
