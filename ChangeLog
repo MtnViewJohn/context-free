@@ -1,8 +1,8 @@
   Change Log
 
-V3.1 - November 2018
+V3.1 - January 2019
 --------------------
-* Editor upgraded to the Scintille cross-platform code editor. Context Free now has syntax
+* Editor upgraded to the Scintilla cross-platform code editor. Context Free now has syntax
   highlighting, auto-completion, auto indentation, and more.
 * Uploads to and downloads from the new Gallery API at https://www.contextfreeart.org/index.html
 * Command-line version adds a feature to output the abstract syntax tree (AST) of a parsed cfdg 
