@@ -678,7 +678,8 @@ namespace {
     if (version != mFindTextVersion) {
         NSString* find = [pBoard stringForType:NSPasteboardTypeString];
         mFindTextVersion = version;
-        [mFindText setStringValue: find];
+        if (find)
+            [mFindText setStringValue: find];
     }
 }
 
