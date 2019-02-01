@@ -1,0 +1,156 @@
+contextfree (3.1+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Updated Standards-Version to 4.3.0.0
+  * Fixed several lintian warnings: excluded files still present, no Vcs-*,
+    upstream metadata
+
+ -- John Horigan <john@glyphic.com>  Tue, 15 Jan 2019 21:11:31 -0800
+
+contextfree (3.0.11.5+dfsg1-1) unstable; urgency=medium
+
+  * Upstream fix for FTBFS w.r.t. ppc64el. (Closes: #872738)
+  * Upstream fix for FTBFS for Alpha in myrandom.h
+  * Upstream fix for FTBFS for gnu/Hurd and x32
+  * Upstream fix for warnings about [[fallthrough]] and readdir_r
+  * Updated Standards-Version to 4.1.0 and debhelper to 10
+
+ -- John Horigan <john@glyphic.com>  Mon, 21 Aug 2017 16:23:29 -0700
+
+contextfree (3.0.11.4+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release and new maintainer. (Closes: #770324)
+  * Remove src-ffmpeg, src-osx, src-net, src-win, src-net from
+    upstream source tarball. (Closes: #823144)
+  * Remove patches 01_disable_ffmpeg_support.patch,
+    02_do_not_link_against_libz.patch, 04-gcc-4.8-atomic.patch.
+    All have been fixed in upstream.
+  * Context Free depends on the latest version of libagg, which
+    has been added to package libagg-dev at version 1:2.4. Added
+    patch 02_use_external_libagg.patch to use libagg-dev. src-agg
+    has been removed from the upstream tarball.
+  * Added libagg-dev to Build-Depends (because of the above patch).
+  * Updated Standards-Version to 4.0.1. Priority changed from
+    extra to optional. copyright-format URL uses https.
+  * Remove debian/repack.sh. Use a Files-Exluded line in
+    debian/copyright instead.
+  * Add explicit dependence on package libfl-dev as it is a
+    recommended dependence of flex but contextfree requires it.
+
+ -- John Horigan <john@glyphic.com>  Wed, 16 Aug 2017 12:46:24 -0700
+
+contextfree (3.0.5+dfsg1-2.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Build using the default GCC. Closes: #751304.
+
+ -- Matthias Klose <doko@debian.org>  Sat, 09 Aug 2014 14:31:18 +0200
+
+contextfree (3.0.5+dfsg1-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix "FTBFS: undefined reference to `__sync_bool_compare_and_swap_8'"
+    Add 04-gcc-4.8-atomic.patch
+    Patch by Aurelien Jarno
+    Closes: #733456
+
+ -- Anibal Monsalve Salazar <anibal@debian.org>  Tue, 04 Mar 2014 13:34:23 +0000
+
+contextfree (3.0.5+dfsg1-2) unstable; urgency=low
+
+  * Added patch 03_fix-arch-native.patch; fixes FTBFS on several architectures.
+    Thanks to Roland Stigge for the patch (Closes: #731005).
+  * Update Standards-Version to 3.9.5 (no changes required).
+
+ -- Bram Senders <bram@luon.net>  Mon, 02 Dec 2013 22:04:22 +0100
+
+contextfree (3.0.5+dfsg1-1) unstable; urgency=low
+
+  * New upstream release (Closes: #720699).
+  * Acknowledge NMU by Jari Aalto (thanks for helping!)
+  * Change Build-Depends on libpng12-dev to libpng-dev (Closes: #662291).
+  * Port debian/rules to using dh.
+  * Add debian/repack.sh script based on that of owncloud Debian package.
+  * Add debian/watch file, that also calls the repack script.
+  * Drop patch 01_use_external_libagg.patch.
+    Building against external libagg does not work anymore, so just use the
+    included copy.  Also document this in debian/README.source.
+  * Refresh patch 02_do_not_link_against_libz.patch.
+  * Drop patch 03_link_against_libm.patch.
+    Upstream now links against libm in Makefile.
+  * Remove src-ffmpeg/ from upstream source tarball.
+    Reasons documented in debian/README.source.
+  * Add patch 01_disable_ffmpeg_support.patch.
+    Disable building against FFmpeg.
+  * Update copyright years in debian/copyright.
+  * Update Standards-Version to 3.9.4 (no changes required).
+  * Update manpage to take new upstream options into account.
+
+ -- Bram Senders <bram@luon.net>  Thu, 28 Nov 2013 16:17:33 +0100
+
+contextfree (2.2+dfsg1-2.1) unstable; urgency=low
+
+  * Non-maintainer upload; ACKed by the maintainer, see #664418.
+  * Remove deprecated dpatch and upgrade to packaging format "3.0 quilt"
+    (Closes: #664418).
+  * Update to Standards-Version to 3.9.3.1 and debhelper to 9.
+  * Add build-arch and build-indep targets; use dh_prep in rules file.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 04 Apr 2012 19:46:02 +0300
+
+contextfree (2.2+dfsg1-2) unstable; urgency=low
+
+  * Added patch 03_link_against_libm to fix FTBFS with --no-add-needed, which
+    is the default when building using binutils-gold.  Thanks to Ilya Barygin
+    <barygin@gmail.com>, who fixed this in Ubuntu (closes: #554116).
+  * Added ${misc:Depends} to the depends of the contextfree binary package.
+  * Updated Standards-Version to 3.9.1.
+
+ -- Bram Senders <bram@luon.net>  Fri, 14 Jan 2011 19:37:13 +0100
+
+contextfree (2.2+dfsg1-1) unstable; urgency=low
+
+  * Removed src-net/ directory from upstream source, which contained files
+    which are undistributable according to the DFSG.
+  * Updated debian/README.source to note this fact.
+
+ -- Bram Senders <bram@luon.net>  Thu, 12 Mar 2009 16:42:39 +0100
+
+contextfree (2.2-2) experimental; urgency=low
+
+  * Added patch 02_do_not_link_against_libz, to not uselessly link agains libz
+    (thanks to dpkg-shlibdeps for the warning).
+
+ -- Bram Senders <bram@luon.net>  Mon, 09 Feb 2009 22:50:20 +0100
+
+contextfree (2.2-1) experimental; urgency=low
+
+  * New upstream release (thanks to Paul van Tilburg and Joachim Breitner for
+    motivating me to actually package this!).
+  * Dropped patch 01_add_headers; fixed upstream.
+  * Updated manpage for cfdg 2.2.
+  * Update Standards-Version to 3.8.0.  This requires contextfree to be built
+    against an external version of libagg instead of the included sources, so
+    added patch 01_use_external_libagg to do that.  Note that we are still
+    using the included libagg header files instead of the external ones, as the
+    included copy has modifications that are needed for building contextfree.
+    This has also been noted in debian/README.source.
+  * Added libagg-dev to Build-Depends (because of the above patch).
+  * Updated copyright years in debian/copyright.
+  * Initial upload to Debian (closes: #461751).
+
+ -- Bram Senders <bram@luon.net>  Sat, 07 Feb 2009 13:41:02 +0100
+
+contextfree (2.2~beta2-1) unstable; urgency=low
+
+  * New upstream beta release.
+  * Dropped patch 01_int_for_getopt; fixed upstream.
+  * Added patch 01_add_headers for missing headers to make gcc happy.
+
+ -- Bram Senders <bram@luon.net>  Wed, 24 Sep 2008 20:51:58 +0200
+
+contextfree (2.1-1) unstable; urgency=low
+
+  * Initial creation of Debian package.
+
+ -- Bram Senders <bram@luon.net>  Sun, 20 Jan 2008 14:42:26 +0100

@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+	dh $@
+
+override_dh_usrlocal:
+
+override_dh_auto_install:
+
+# .cfdg example files should not be compressed
+override_dh_compress:
+	dh_compress -X.cfdg
+
+override_dh_installchangelogs:
+	dh_installchangelogs ChangeLog

@@ -1,0 +1,40 @@
+Removal of src-agg/ directory from upstream source tarball
+----------------------------------------------------------
+Context Free builds against libagg-dev 1:2.4 so src-agg/ has been removed.
+A patch modifies the Makefile to use the system version of AGG.
+
+Removal of src-net/ and src-win/ directories from upstream source tarball
+-------------------------------------------------------------------------
+The entire src-net/ directory was removed from the upstream contexfree source
+tarball.  This directory contained files not distributable according to the
+DFSG, either because they were written by third-party authors and had no
+license information attached, or because their license terms forbid
+redistribution.  Since this directory only contained files relevant to the
+Windows build of contextfree, the package's functionality is not affected by
+this removal.
+
+Removal of src-osx/ directory from upstream source tarball
+----------------------------------------------------------
+This source directory is only used for OS X builds and contains non-free
+code.
+
+Removal of src-ffmpeg/ directory from upstream source tarball
+-------------------------------------------------------------
+The Context Free source includes FFmpeg header and precompiled object files in
+src-ffmpeg/ in the upstream source tarball.  These are used to provide support
+for rendering animations to video files, in addition to the rendering of
+animations to a series of PNG files that is provided when not using FFmpeg.
+
+I have removed this directory from the Debian source package, for a number of
+reasons:
+
+ 1. We cannot use the included header files and link to e.g. the libav*
+    packages in Debian, as the included header files use functions that are
+    incompatible with Debian's libav* packages.
+ 2. Keeping the src-ffmpeg/ directory in the Debian source package without
+    using it would mean keeping track of all the copyrights and different
+    authors of all those files and inventorying then in debian/copyright, which
+    is a lot of work with no apparent benefit.
+
+This means that Context Free in Debian can only render to sequences of PNG
+files for animation (which doesn't require FFmpeg).

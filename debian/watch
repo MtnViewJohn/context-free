@@ -1,0 +1,4 @@
+version=4
+options="pgpsigurlmangle=s%$%.asc%,dversionmangle=s/\+dfsg[0-9]*//,repacksuffix=+dfsg1" \
+  https://www.contextfreeart.org/downloads.html \
+  download/ContextFreeSource([\d\.]+)\.tar\.xz debian

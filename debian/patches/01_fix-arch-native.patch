@@ -1,0 +1,15 @@
+From: Roland Stigge <stigge@antcom.de>
+Subject: Remove -march=native; fixes FTBFS on several architectures
+
+--- a/Makefile
++++ b/Makefile
+@@ -195,7 +195,7 @@
+ #
+ 
+ CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
+-CXXFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
++CXXFLAGS += -O2 -Wall -Wextra -Wno-parentheses -std=c++14
+ CXXFLAGS += -g -D_GLIBCXX_USE_C99_MATH=1
+ CPPFLAGS += -DNDEBUG
+ 
+ # Add this for clang
