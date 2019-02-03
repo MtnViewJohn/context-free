@@ -247,7 +247,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     try {
         if (!parser.ParseCLI(argc, argv))
             bailout("Too many arguments.");
-    } catch (args::Help) {
+    } catch (args::Help&) {
         std::cout << parser;
         exit(0);
     } catch (args::Error& e) {
