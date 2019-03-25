@@ -314,6 +314,7 @@
 		52100A7D0D3A9F1800F7070D /* Rand64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rand64.h; sourceTree = "<group>"; };
 		52100A7E0D3A9F1800F7070D /* Rand64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rand64.cpp; sourceTree = "<group>"; };
 		52154E801DD038690031905B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		52169A7122497285000B920E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		52197499218047C10038AF1C /* backwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = backwards.h; sourceTree = "<group>"; };
 		5226EFAA1071BB3900A30CC3 /* BitmapImageHolder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = BitmapImageHolder.h; sourceTree = "<group>"; };
 		5226EFAD1071BB7600A30CC3 /* BitmapImageHolder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BitmapImageHolder.mm; sourceTree = "<group>"; };
@@ -411,7 +412,6 @@
 		FD1EF08C0811ADE500FD38C6 /* cfdg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = cfdg.h; sourceTree = "<group>"; };
 		FD1EF08D0811ADE500FD38C6 /* cfdg.l */ = {isa = PBXFileReference; explicitFileType = sourcecode.lex; fileEncoding = 4; path = cfdg.l; sourceTree = "<group>"; };
 		FD1EF0980811AE1900FD38C6 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		FD1EF09A0811AE1900FD38C6 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FD1EF09F0811AE1900FD38C6 /* GView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GView.h; sourceTree = "<group>"; };
 		FD1EF0A00811AE1900FD38C6 /* GView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GView.mm; sourceTree = "<group>"; };
 		FD1EF0A10811AE1900FD38C6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -856,14 +856,14 @@
 			};
 			buildConfigurationList = FDB0D3D3085CEE00002FBEED /* Build configuration list for PBXProject "Context Free" */;
 			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
 				Base,
+				fr,
+				de,
+				en,
+				ja,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CFDA */;
 			projectDirPath = "";
@@ -1050,7 +1050,7 @@
 		FD1EF0990811AE1900FD38C6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FD1EF09A0811AE1900FD38C6 /* English */,
+				52169A7122497285000B920E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
