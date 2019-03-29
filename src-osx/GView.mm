@@ -683,6 +683,12 @@ namespace {
         if (find)
             [mFindText setStringValue: find];
     }
+    [mEditor message:SCI_SETCARETPERIOD wParam:500];
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification
+{
+    [mEditor message:SCI_SETCARETPERIOD wParam:0];
 }
 
 - (void)updateFullScreenMenu
@@ -2106,6 +2112,7 @@ long MakeColor(id v)
     [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CONTAINER value: 0];
     [mEditor setGeneralProperty: SCI_SETMARGINTYPEN parameter: 0 value: SC_MARGIN_NUMBER];
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 0];
+    [mEditor message:SCI_SETCARETPERIOD wParam:0];
 
     [self updateStyling];
     
