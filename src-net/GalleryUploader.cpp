@@ -335,8 +335,9 @@ namespace ContextFreeNet {
 
         imageData = nullptr;
 
-        array<Byte>^ postbody = gcnew array<Byte>(design.str().length());
-        Marshal::Copy(static_cast<System::IntPtr>(design.str().data()),
+		std::string designstr = design.str();
+        array<Byte>^ postbody = gcnew array<Byte>(designstr.length());
+        Marshal::Copy(static_cast<System::IntPtr>(&designstr[0]),
             postbody, 0, design.str().length());
         uploadThread->RunWorkerAsync(postbody);
         this->upload->Enabled = false;

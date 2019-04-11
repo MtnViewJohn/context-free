@@ -54,7 +54,8 @@ void WinSystem::AddExample(const char* newName, const char* newText)
 {
     std::string name(newName);
     bool v3 = true;
-    if (auto pos = name.find("_v2"); pos != std::string::npos) {
+	auto pos = name.find("_v2");
+    if (pos != std::string::npos) {
         name.erase(pos, 3);
         v3 = false;
     }
