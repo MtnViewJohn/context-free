@@ -182,10 +182,11 @@ Win32System::normalize(const std::string& u8name)
     // Convert from utf-8 to utf-16
     std::wstring u16name(u8name.length(), L' ');
     for (;;) {
+		wchar_t* wbuf = &u16name[0];	// can't use uname16.data() pre-C++17
         // Null termination is neither passed in nor returned
         auto sz = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
             u8name.data(), static_cast<int>(u8name.length()), 
-            u16name.data(), static_cast<int>(u16name.length()));
+            wbuf, static_cast<int>(u16name.length()));
         if (sz) {
             u16name.resize(sz);
             break;
@@ -199,10 +200,11 @@ Win32System::normalize(const std::string& u8name)
     // normalize the utf-16 string
     std::wstring ret(u16name.length() + 20, L' ');
     for (;;) {
+		wchar_t* retbuf = &ret[0];
         // Null termination is neither passed in nor returned
         auto sz = ::NormalizeString(NormalizationKC,
             u16name.data(), static_cast<int>(u16name.length()), 
-            ret.data(), static_cast<int>(ret.length()));
+            retbuf, static_cast<int>(ret.length()));
         if (sz > 0) {
             ret.resize(sz);
             return ret;
