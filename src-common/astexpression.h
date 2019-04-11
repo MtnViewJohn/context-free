@@ -111,7 +111,6 @@ namespace AST {
 
         const ASTexpression&    e;
         size_t                  i;
-        ASTexp_iter(const ASTexp_iter&) = default;
         ~ASTexp_iter() = default;
         ASTexp_iter& operator=(const ASTexp_iter&) = default;
         ASTexp_iter& operator++() {++i; return *this;}
