@@ -50,6 +50,7 @@
 #include "makeCFfilename.h"
 #include <cassert>
 #include <memory>
+#include <string>
 #include "astexpression.h"
 #include "prettyint.h"
 
@@ -109,6 +110,7 @@ struct options {
     int   maxShapes;
     double minSize;
     double borderSize;
+    std::string definitions;
     
     int   variation;
     bool  crop;
@@ -206,6 +208,8 @@ processCommandLine(int argc, char* argv[], options& opt)
                                        {'b', "bordersize"}, 2.0);
     args::ValueFlag<string> variation(parser, "VARIATION",
         "Set the variation code (default is random)", {'v', "variation"}, "");
+    args::ValueFlagList<string> definition(parser, "NAME=VALUE",
+        "Define a variable, configuration, or function. Overrides definitions in the input file.", {'D'});
     args::ValueFlag<string> outputFileTemplate(parser, "NAME TEMPLATE",
         "Set the output file name, supports variable expansion %f expands to the "
         "animation frame number, %v and %V expands to the variation code in lower "
@@ -281,6 +285,16 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.variation = Variation::fromString(args::get(variation).c_str());
         if (opt.variation == -1)
             bailout("Error parsing variation");
+    }
+    if (definition) {
+        auto defs = definition.Get();
+        for (auto&& def: defs) {
+            auto equal = def.find("=");
+            if (equal == std::string::npos || equal == 0 || equal == def.length() - 1)
+                bailout("Definitions must be of the form -Dname=value");
+            opt.definitions.append(def);
+            opt.definitions += ' ';
+        }
     }
     if (outputFileTemplate) opt.output = args::get(outputFileTemplate);
     if (animation) {
@@ -451,7 +465,8 @@ int main (int argc, char* argv[]) {
     }
     
     AST::ASTfunction::RandStaticIsConst = opts.format != options::JSONfile;
-    cfdg_ptr myDesign = CFDG::ParseFile(opts.input.c_str(), &system, opts.variation);
+    cfdg_ptr myDesign = CFDG::ParseFile(opts.input.c_str(), &system,
+                                        opts.variation, opts.definitions);
     if (!myDesign) return 3;
     if (opts.check) return 0;
     if (opts.format == options::JSONfile) {

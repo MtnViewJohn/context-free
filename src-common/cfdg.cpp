@@ -41,6 +41,7 @@
 #include <limits>
 #include "tiledCanvas.h"
 #include <fstream>
+#include <sstream>
 
 
 yy::location CfdgError::Default;
@@ -206,10 +207,15 @@ CFDG::~CFDG() = default;
 
 
 cfdg_ptr
-CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
+CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
+                std::string defs)
 {
     cfdgi_ptr pCfdg;
     for (int version = 2; version <= 3; ++version) {
+        if (!defs.empty() && version == 2) {
+            system->message("Pre-definitions found, assuming version 3 syntax.");
+            continue;       // Predefines are only allowed with v3 syntax
+        }
         system->cfdgVersion = version;
         system->mFirstCfdgRead = true;
         if (!pCfdg)
@@ -225,7 +231,17 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation)
                                           yy::CfdgParser::token::CFDG3;
         
         yy::CfdgParser parser(b);
-        auto input = system->openFileForRead(fname);
+        AbstractSystem::istr_ptr input;
+        if (defs.empty()) {
+            input = system->openFileForRead(fname);
+        } else {
+            defs.append("import \"");
+            defs.append(fname);
+            defs += '"';
+            fname = "pre-defines buffer";
+            input = std::make_unique<std::istringstream>(defs.c_str());
+            b.mIncludeDepth = -1;   // pre-defs buffer is at level -1
+        }
         if (!input || !input->good()) {
             system->error();
             system->message("Couldn't open rules file %s", fname);

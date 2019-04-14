@@ -1,0 +1,14 @@
+startshape scene
+
+ashape = CIRCLE
+
+avar = 4
+
+amod = [b 0.5]
+
+afunc(n) = n*2
+
+shape scene
+{
+    ashape[s afunc(0.5) avar trans amod]
+}

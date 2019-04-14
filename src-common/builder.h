@@ -87,7 +87,7 @@ public:
 
     int mLocalStackDepth;
     
-    unsigned    mIncludeDepth;
+    int         mIncludeDepth;
     
     bool        mAllowOverlap;
     

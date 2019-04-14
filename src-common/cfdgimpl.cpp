@@ -392,7 +392,7 @@ CFDGImpl::hasParameter(CFG name) const
 }
 
 void
-CFDGImpl::addParameter(CFG var, exp_ptr e, unsigned depth)
+CFDGImpl::addParameter(CFG var, exp_ptr e, int depth)
 {
     if (depth < ParamDepth[var]) {
         ParamDepth[var] = depth;

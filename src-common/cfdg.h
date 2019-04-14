@@ -198,7 +198,8 @@ using renderer_ptr = std::unique_ptr<Renderer>;
 class CFDG {
     public:
         enum frieze_t { no_frieze = 0, frieze_x, frieze_y };
-        static cfdg_ptr ParseFile(const char* fname, AbstractSystem*, int variation);
+        static cfdg_ptr ParseFile(const char* fname, AbstractSystem*,
+                                  int variation, std::string defs = "");
         virtual ~CFDG();
 
         virtual renderer_ptr renderer(const cfdg_ptr& ptr,

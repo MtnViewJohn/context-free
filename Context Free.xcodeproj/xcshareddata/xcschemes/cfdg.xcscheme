@@ -68,12 +68,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-s 1000 -DCF::StartShape=Either input/mtree.cfdg output/test.png"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "input/demo2_v2.cfdg output/test.png"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 /Users/john/Documents/Context\ Free/crashtest.cfdg output/test.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-J input/tests/xyztext1.cfdg -"

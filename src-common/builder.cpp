@@ -346,7 +346,7 @@ Builder::MakeDefinition(CFG cfgnum, const yy::location& cfgLoc, exp_ptr exp)
     }
     std::string name(CFDG::ParamNames[cfgnum]);         // copy the name
     ASTdefine* cfg = new ASTdefine(name, cfgLoc);
-    cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
+    cfg->mConfigDepth = mIncludeDepth;
     cfg->mDefineType = ASTdefine::ConfigDefine;
     cfg->mExpression = std::move(exp);
     return cfg;
@@ -366,7 +366,7 @@ Builder::MakeDefinition(AST::str_ptr name, const yy::location& nameLoc,
             return nullptr;
         }
         ASTdefine* cfg = new ASTdefine(*name, nameLoc);
-        cfg->mConfigDepth = static_cast<int>(mIncludeDepth);
+        cfg->mConfigDepth = mIncludeDepth;
         cfg->mDefineType = ASTdefine::ConfigDefine;
         return cfg;
     }
@@ -375,6 +375,14 @@ Builder::MakeDefinition(AST::str_ptr name, const yy::location& nameLoc,
         error(nameLoc, "Internal function names are reserved");
         return nullptr;
     }
+    
+    // Check if a global definition shadows a pre-definition. If it does then
+    // drop the global definition.
+    if (mContainerStack.back()->isGlobal && mIncludeDepth >= 0)
+        for (auto&& rep: mContainerStack.back()->mBody)
+            if (const ASTdefine* def = dynamic_cast<const ASTdefine*>(rep.get()))
+                if (def->mName == *name && def->mConfigDepth == -1)
+                    return nullptr;
     
     int nameIndex = StringToShape(*name, nameLoc, false);
     if (ASTdefine* funcDef = m_CFDG->findFunction(nameIndex)) {
@@ -482,7 +490,7 @@ Builder::MakeConfig(ASTdefine* cfg)
         
         cfg->mExpression = std::make_unique<ASTstartSpecifier>(std::move(rule), std::move(mod));
     }
-    m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), static_cast<unsigned>(cfg->mConfigDepth));
+    m_CFDG->addParameter(cfgNum, std::move(cfg->mExpression), cfg->mConfigDepth);
 }
 
 void

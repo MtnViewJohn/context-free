@@ -46,7 +46,7 @@
 class Builder;
 
 class CFDGImpl : public CFDG {
-    enum consts_t: unsigned { NoParameter = static_cast<unsigned>(-1) };
+    enum consts_t: int { NoParameter = std::numeric_limits<int>::max() };
     public:
         enum {newShape = 0, ruleType = 1, pathType = 2};
     private:
@@ -117,7 +117,7 @@ class CFDGImpl : public CFDG {
     
         int m_Parameters;
     
-        CfgArray<unsigned>                  ParamDepth;
+        CfgArray<int>                       ParamDepth;
         CfgArray<AST::exp_ptr>              ParamExp;
     
     
@@ -184,7 +184,7 @@ class CFDGImpl : public CFDG {
 
         enum Parameter {Color = 1, Alpha = 2, Time = 4, FrameTime = 8};
         void addParameter(Parameter);
-        void addParameter(CFG var, AST::exp_ptr e, unsigned depth);
+        void addParameter(CFG var, AST::exp_ptr e, int depth);
 
         AST::ASTrepContainer    mCFDGcontents;
     
