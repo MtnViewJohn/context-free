@@ -109,6 +109,7 @@ namespace ContextFreeNet {
 			tagBox->AutoCompleteMode = AutoCompleteMode::None;
 			return;
 		}
+
         pin_ptr<Byte> utf8arraypin = &e->Result[0];
         std::string tags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
         auto tagvector = Upload::AllTags(tags);
@@ -122,7 +123,7 @@ namespace ContextFreeNet {
 
         AutoCompleteStringCollection ^ tagC = gcnew AutoCompleteStringCollection();
         for (auto&& tag : tagvector)
-            tagC->Add(gcnew String(tag.c_str(), 0, tag.length(), System::Text::Encoding::UTF8));
+            tagC->Add(gcnew String(tag.c_str(), 0, static_cast<int>(tag.length()), System::Text::Encoding::UTF8));
 
         tagBox->AutoCompleteMode = AutoCompleteMode::Suggest;
         tagBox->AutoCompleteSource = AutoCompleteSource::CustomSource;
@@ -340,9 +341,9 @@ namespace ContextFreeNet {
         imageData = nullptr;
 
 		std::string designstr = design.str();
-        array<Byte>^ postbody = gcnew array<Byte>(designstr.length());
+        array<Byte>^ postbody = gcnew array<Byte>(static_cast<int>(designstr.length()));
         Marshal::Copy(static_cast<System::IntPtr>(&designstr[0]),
-            postbody, 0, design.str().length());
+            postbody, 0, static_cast<int>(design.str().length()));
         uploadThread->RunWorkerAsync(postbody);
         this->upload->Enabled = false;
     }
