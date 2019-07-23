@@ -304,7 +304,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AGG_NO_ASM;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -389,7 +389,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)\..\src-ffmpeg\include;$(SolutionDir)\..\src-win;$(SolutionDir)\..\src-win\derived;$(SolutionDir)\..\src-common\agg-extras;$(SolutionDir)\..\src-agg;$(SolutionDir)\..\src-agg\agg2;$(SolutionDir)\..\src-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>AGG_NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AGG_NO_ASM;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
