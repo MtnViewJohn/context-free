@@ -105,6 +105,10 @@ namespace ContextFreeNet {
 
     void GalleryUploader::OnTags(System::Object ^ sender, System::Net::DownloadDataCompletedEventArgs ^ e)
     {
+		if (e->Error || e->Cancelled) {
+			tagBox->AutoCompleteMode = AutoCompleteMode::None;
+			return;
+		}
         pin_ptr<Byte> utf8arraypin = &e->Result[0];
         std::string tags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
         auto tagvector = Upload::AllTags(tags);
