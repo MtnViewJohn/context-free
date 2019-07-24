@@ -1,5 +1,17 @@
   Change Log
 
+V3.2 - July 2019
+----------------
+* -D option added to Posix and Windows command-line versions. This option permits the 
+  declaration of global scope values from the command line. The values can be numbers, vectors,
+  shapes, adjustments, configuration declarations, or function declarations.
+
+  Bug fixes:
+
+* Fixed Windows bug where gallery uploader tries to upload to the debug gallery server, 
+  not to www.contextfreeart.org.
+* Fixed bug where the gallery uploader crashes Context Free if it cannot connect to the server.
+
 V3.1 - January 2019
 --------------------
 * Editor upgraded to the Scintilla cross-platform code editor. Context Free now has syntax
