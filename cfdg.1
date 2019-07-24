@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH CONTEXTFREE 1 "2017-06-01" "3.0.11" "Context Free"
+.TH CONTEXTFREE 1 "2019-07-24" "3.2" "Context Free"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -37,48 +37,56 @@ depending on the specified extension, but must be explicitly set using the
 .B -V/--svg
 option.
 .SH OPTIONS
-All command-line options consist of a single letter, and an optional argument.
-A summary of options supported by
+All command-line options consist of a single letter, and an optional argument. Longer
+"GNU-style" options exist as well. A summary of options supported by
 .B cfdg
 is included below.
 .TP
-.BI \-w,\ \-\-width= WIDTH
+.BI \-w\  WIDTH ,\ \-\-width= WIDTH
 Set width of the output image in pixels (for PNG) or millimeters (for SVG)
 (default: 500).
 .TP
-.BI \-h,\ \-\-height= HEIGHT
+.BI \-h\  HEIGHT ,\ \-\-height= HEIGHT
 Set height of the output image in pixels (for PNG) or millimeters (for SVG)
 (default: 500).
 .TP
-.BI \-s,\ \-\-size= SIZE
+.BI \-s\  SIZE ,\ \-\-size= SIZE
 Set both width and height of the output image in pixels (for PNG) or
 millimeters (for SVG) to the same value.
 .TP
-.BI \-s,\ \-\-size= WIDTH x HEIGHT
+.BI \-s\  WIDTH x HEIGHT ,\ \-\-size= WIDTH x HEIGHT
 Set both width and height of the output image in pixels (for PNG) or
 millimeters (for SVG).
 .TP
-.BI \-T,\ \-\-tile= SIZE
+.BI \-T\  SIZE ,\ \-\-tile= SIZE
 Multiply both width and height of the tiled output image by the same amount.
 .TP
-.BI \-T,\ \-\-tile= WIDTH x HEIGHT
+.BI \-T\  WIDTH x HEIGHT ,\ \-\-tile= WIDTH x HEIGHT
 Multiply both width and height of the tiled output image by the given amounts.
 .TP
-.BI \-m,\ \-\-maxshapes= MAXSHAPES
+.BI \-m\  MAXSHAPES ,\ \-\-maxshapes= MAXSHAPES
 Set the maximum number of shapes rendered (default: no maximum).
 .TP
-.BI \-x,\ \-\-minimumsize= MINIMUMSIZE
+.BI \-x\  MINIMUMSIZE ,\ \-\-minimumsize= MINIMUMSIZE
 Set the minimum size for a shape to be rendered in pixels/mm (default: 0.3).
 .TP
-.BI \-b,\ \-\-bordersize= BORDERSIZE
+.BI \-b\  BORDERSIZE ,\ \-\-bordersize= BORDERSIZE
 Set the border size: \-1 for a \-8 pixel border, 0 for no border, 1 for an 8
 pixel border, or 2 for a variable-sized border.
 .TP
-.BI \-v,\ \-\-variation= VARIATION
+.BI \-v\  VARIATION ,\ \-\-variation= VARIATION
 Set the variation code (default: random).  This code determines what the final
 image will look like when the input contains non-deterministic rules.
 .TP
-.BI \-o,\ \-\-outputtemplate= NAMETEMPLATE
+.BI \-D NAME = VALUE
+Declare a variable, configuration, or function. Any declaration that can be made at
+global scope can be entered at the command line with this option. Command line 
+declarations override any global-scope declarations in the cfdg file with the same name. 
+Note that function declarations require a space-delimited type identifier in front, so 
+quotes would be required to force the shell to group the function declaration parts as 
+one entity. 
+.TP
+.BI \-o\  NAMETEMPLATE ,\ \-\-outputtemplate= NAMETEMPLATE
 Set the output filename.  In this filename,
 .I %f
 is replaced by the animation frame number (if any),
@@ -87,19 +95,19 @@ are replaced by the variation code (in lower or upper case, respectively), and
 .I %%
 is replaced by a literal %.
 .TP
-.BI \-a,\ \-\-animate= NUM
+.BI \-a\  NUM ,\ \-\-animate= NUM
 Generate
 .I NUM
 animation frames at 15 fps (only possible using PNG output).
 .TP
-.BI \-a,\ \-\-animate= TIME x FPS
+.BI \-a\  TIME x FPS ,\ \-\-animate= TIME x FPS
 Generate
 .I TIME
 x
 .I FPS
 animation frames at the specified fps (only possible using PNG output).
 .TP
-.BI \-f,\ \-\-frame= FRAME
+.BI \-f\  FRAME ,\ \-\-frame= FRAME
 Generate animation 
 .I FRAME
 only (only possible using PNG output).
