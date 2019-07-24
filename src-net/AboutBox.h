@@ -45,9 +45,9 @@ namespace ContextFreeNet {
 			//TODO: Add the constructor code here
 			//
 #ifdef _WIN64
-            this->label2->Text = L"version 3.1 (v43) - 64-bit";
+            this->label2->Text = L"version 3.2 (v44) - 64-bit";
 #else
-            this->label2->Text = L"version 3.1 (v43) - 32-bit";
+            this->label2->Text = L"version 3.2 (v44) - 32-bit";
 #endif
         }
 
