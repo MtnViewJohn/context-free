@@ -628,7 +628,11 @@ namespace {
 
 - (void)connection:(NSURLConnection *)c didFailWithError:(NSError *)error
 {
-    [self allDone: [error localizedDescription]];
+    if (mTagConnection) {
+        [mTagConnection release];   mTagConnection = nil;
+    } else {
+        [self allDone: [error localizedDescription]];
+    }
 }
 
 
@@ -647,8 +651,12 @@ namespace {
     if (mConnection) {
         [mConnection cancel];
     }
+    if (mTagConnection) {
+        [mTagConnection cancel];
+    }
 
     [mConnection release];      mConnection = nil;
+    [mTagConnection release];   mTagConnection = nil;
     [mResponseBody release];    mResponseBody = nil;
 
     NSWindow* window = [self window];
