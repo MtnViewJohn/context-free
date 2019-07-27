@@ -423,8 +423,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
             
             // next make the text appear with an underline
             [msg addAttribute:
-             NSUnderlineStyleAttributeName value:[NSNumber numberWithInt: NSSingleUnderlineStyle] 
-                        range:r];
+             NSUnderlineStyleAttributeName value:[NSNumber numberWithInt: NSUnderlineStyleSingle] 
+                                           range:r];
         }
         [msg endEditing];
         
