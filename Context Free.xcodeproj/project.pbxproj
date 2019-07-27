@@ -161,6 +161,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/location.hh",
@@ -175,6 +177,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.lex;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
@@ -185,6 +189,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.lex;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
@@ -195,6 +201,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/location.hh",
@@ -1168,7 +1176,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-DRAW_UTF8_LENGTH=1",
@@ -1240,7 +1248,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";
 				USE_HEADERMAP = NO;
@@ -1278,7 +1286,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-DRAW_UTF8_LENGTH=1",
 					"$(OTHER_CFLAGS)",
@@ -1350,7 +1358,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";

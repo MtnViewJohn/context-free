@@ -211,9 +211,16 @@ namespace {
     [mDoneView release];
     [mProgressView release];
     [mFormView release];
-    [mConnection release];
-    [mResponseBody release];
-    [mTagConnection release];
+    if (mTagsTask) {
+        if ([mTagsTask state] == NSURLSessionTaskStateRunning)
+            [mTagsTask cancel];
+        [mTagsTask release];
+    }
+    if (mUploadTask) {
+        if ([mUploadTask state] == NSURLSessionTaskStateRunning)
+            [mUploadTask cancel];
+        [mUploadTask release];
+    }
     [mOrigPassword release];
     [mOrigName release];
     [mTags release];
@@ -269,6 +276,11 @@ namespace {
 
 - (void)setView:(NSView*)view
 {
+    if (view == mProgressView)
+        [mProgressBar startAnimation: nil];
+    else
+        [mProgressBar stopAnimation: nil];
+    
     NSRect contentFrame = [mContentView frame];
 
     NSSize oldContentSize = contentFrame.size;
@@ -294,82 +306,6 @@ namespace {
     [window setFrame: f display: YES animate: YES];
 }
 
-- (void)allDone:(NSString*)message
-{
-    if (message) mStatus = -1;
-    
-    [mRetryButton setEnabled:NO];
-    switch (mStatus) {
-        case -1:
-            [mMessage setString: message];
-            break;
-        case 0:
-            [mMessage setString: @"Upload completed without a status code (?!?!?!)."];
-            break;
-        case 200: {
-            if (mTagConnection) {
-                std::string json(static_cast<const char*>([mResponseBody bytes]), [mResponseBody length]);
-                auto tags = Upload::AllTags(json);
-                NSMutableArray<NSString*>* tagset = [NSMutableArray arrayWithCapacity: tags.size()];
-                for (auto&& tag: tags)
-                    [tagset addObject: [NSString stringWithUTF8String:tag.c_str()]];
-                [tagset sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-                mTags = [tagset retain];
-                [mTagConnection release];      mTagConnection = nil;
-                return;
-            }
-            
-            std::string json(static_cast<const char*>([mResponseBody bytes]), [mResponseBody length]);
-            
-            Upload response(json);
-            mSuccessId = response.mId;
-            if (mSuccessId) {
-                [mMessage setString: @"Upload completed successfully."];
-                [mRetryButton setTitle: @"See Design"];
-                [mRetryButton setEnabled:YES];
-            } else {
-                [mMessage setString: @"The gallery indicates that the upload succeeded but did not return a design number."];
-            }
-            break;
-        }
-        case 409:
-        case 401:
-        case 400:
-        case 404:
-        case 500:
-            [mRetryButton setEnabled:YES];
-        default: {
-            NSAttributedString *theParsedHTML;
-
-            // Take the raw HTML data and then initialize an NSMutableAttributed
-            // string with HTML code
-            theParsedHTML = [[NSAttributedString alloc] initWithHTML:mResponseBody 
-                        documentAttributes: nil];
-            
-            NSUInteger responseLength = [mResponseBody length];
-            char* rawHTML = reinterpret_cast<char*>([mResponseBody mutableBytes]);
-            
-            // This UUID will only be found in the response body if the upload
-            // failed. Give the user another chance if failure occured.
-            if (responseLength && strnstr(rawHTML, "AFD8D2F0-B6EB-4569-9D89-954604507F3B", 
-                                          responseLength)) 
-            {
-                [mRetryButton setEnabled:YES];
-            }
-            
-            // no parsing or fetching error.. so lets display it
-            
-            if (theParsedHTML) {
-                [[mMessage textStorage] setAttributedString:theParsedHTML];
-                [theParsedHTML release];
-            }
-            break;
-        }
-    }
-    [mConnection release];      mConnection = nil;
-    [mResponseBody release];    mResponseBody = nil;
-    [self setView: mDoneView];
-}
 
 - (IBAction)retry:(id)sender
 {
@@ -395,11 +331,24 @@ namespace {
     [request setValue: @"application/json"
         forHTTPHeaderField: @"Content-Type"];
     
-    mResponseBody = [[NSMutableData data] retain];
-    
-    mTagConnection = [NSURLConnection alloc];
-    [mTagConnection initWithRequest: request delegate: self];
-
+    mTagsTask = [[NSURLSession sharedSession] dataTaskWithRequest: request
+                                                completionHandler:^(NSData *data,
+                                                                    NSURLResponse *response,
+                                                                    NSError *error)
+                    {
+                        if (data) {
+                            std::string json(static_cast<const char*>([data bytes]), [data length]);
+                            auto tags = Upload::AllTags(json);
+                            NSMutableArray<NSString*>* tagset = [NSMutableArray arrayWithCapacity: tags.size()];
+                            for (auto&& tag: tags)
+                                [tagset addObject: [NSString stringWithUTF8String:tag.c_str()]];
+                            [tagset sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+                            dispatch_async(dispatch_get_main_queue(), ^{mTags = [tagset retain];});
+                        }
+                    }];
+    [mTagsTask retain];
+    [mTagsTask resume];
+        
     mOrigName = [[NSString alloc] initWithString: [mUserNameField stringValue]];
     mOrigPassword = [GalleryUploader copyPassword: mOrigName];
     if (mOrigPassword)
@@ -578,12 +527,6 @@ namespace {
         return;
     }
     
-    if (mTagConnection) {
-        [mTagConnection cancel];
-        [mTagConnection release];
-        mTagConnection = nil;
-    }
-    
     NSMutableURLRequest* request =
         [NSMutableURLRequest requestWithURL: [NSURL URLWithString: uploadUrl]
                                 cachePolicy: NSURLRequestReloadIgnoringCacheData
@@ -592,73 +535,99 @@ namespace {
     [request setHTTPMethod: @"POST"];
     [request setValue: asNSString(Upload::generateContentType())
                 forHTTPHeaderField: @"Content-Type"];
-    [request setHTTPBody: body];
-
-    mConnection = [NSURLConnection alloc];
-    [mConnection initWithRequest: request delegate: self];
-    if (!mConnection) {
-        [self cancel: sender];
-    }
+    
+    mUploadTask = [[NSURLSession sharedSession] uploadTaskWithRequest: request
+                                                             fromData: body
+                                                    completionHandler:^(NSData *data,
+                                                                        NSURLResponse *response,
+                                                                        NSError *error)
+    {
+        NSString* newmsg = nil;
+        BOOL retry = NO;
+        unsigned design = 0;
+        NSAttributedString *theParsedHTML = nil;
+        if (error) {
+            newmsg = [error localizedDescription];
+        } else {
+            NSInteger status = 0;
+            if ([response isKindOfClass:[NSHTTPURLResponse class]] ) {
+                status = [(NSHTTPURLResponse *)response statusCode];
+            }
+            
+            switch (status) {
+                case 0:
+                    newmsg = @"Upload completed without a status code (?!?!?!).";
+                    break;
+                case 200: {
+                    std::string json(static_cast<const char*>([data bytes]), [data length]);
+                    
+                    Upload response(json);
+                    design = response.mId;
+                    if (design) {
+                        newmsg =  @"Upload completed successfully.";
+                        retry = YES;
+                    } else {
+                        newmsg = @"The gallery indicates that the upload succeeded but did not return a design number.";
+                    }
+                    break;
+                }
+                case 409:
+                case 401:
+                case 400:
+                case 404:
+                case 500:
+                    retry = YES;
+                default: {
+                    // Take the raw HTML data and then initialize an NSMutableAttributed
+                    // string with HTML code
+                    theParsedHTML = [[NSAttributedString alloc] initWithHTML:data
+                                                          documentAttributes: nil];
+                    
+                    // Make a copy of retry with __block storage. We don't want to make retry
+                    // a __block variable because this block is going to end up on the
+                    // heap.
+                    __block BOOL stopped = retry;
+                    // This UUID will only be found in the response body if the upload
+                    // failed. Give the user another chance if failure occured.
+                    [data enumerateByteRangesUsingBlock: ^(const void *bytes, NSRange byteRange, BOOL *stop)
+                        {
+                            if (byteRange.length && strnstr(static_cast<const char*>(bytes),
+                                                            "AFD8D2F0-B6EB-4569-9D89-954604507F3B",
+                                                            byteRange.length))
+                            {
+                                stopped = YES;
+                                *stop = YES;
+                            }
+                        }];
+                    retry = stopped;
+                    break;
+                }
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (theParsedHTML) {
+                [[mMessage textStorage] setAttributedString:theParsedHTML];
+                [mMessage setBackgroundColor:[NSColor whiteColor]];
+                [theParsedHTML release];
+            } else if (newmsg) {
+                [mMessage setString: newmsg];
+            }
+            [mRetryButton setEnabled: retry];
+            if (retry && design)
+                [mRetryButton setTitle: @"See Design"];
+            [self setView: mDoneView];
+        });
+    }];
+    [mUploadTask retain];
+    [mUploadTask resume];
 
     [mRetryButton setEnabled:NO];
     [self setView: mProgressView];
 }
 
 
--(void)connection:(NSURLConnection *)c didReceiveResponse:(NSURLResponse *)response
-{
-    [mResponseBody setLength: 0];
-    
-    if ([response isKindOfClass:[NSHTTPURLResponse class]] ) {
-        mStatus = [(NSHTTPURLResponse *)response statusCode];
-    }
-}
-
-- (void)connection:(NSURLConnection *)c didReceiveData:(NSData *)data
-{
-    [mResponseBody appendData: data];
-}
-
--(void)connectionDidFinishLoading:(NSURLConnection *)c
-{
-    [self performSelector:@selector( allDone: )
-               withObject:0
-               afterDelay:0.0];
-}
-
-- (void)connection:(NSURLConnection *)c didFailWithError:(NSError *)error
-{
-    if (mTagConnection) {
-        [mTagConnection release];   mTagConnection = nil;
-    } else {
-        [self allDone: [error localizedDescription]];
-    }
-}
-
-
-- (NSURLRequest *)connection:(NSURLConnection *)connection
-             willSendRequest:(NSURLRequest *)request
-            redirectResponse:(NSURLResponse *)redirectresponse
-{
-    if (redirectresponse)
-        return nil;     // Reject redirects
-    else
-        return request;
-}
-
 - (IBAction)cancel:(id)sender
 {
-    if (mConnection) {
-        [mConnection cancel];
-    }
-    if (mTagConnection) {
-        [mTagConnection cancel];
-    }
-
-    [mConnection release];      mConnection = nil;
-    [mTagConnection release];   mTagConnection = nil;
-    [mResponseBody release];    mResponseBody = nil;
-
     NSWindow* window = [self window];
     [NSApp endSheet: window];
     [window orderOut: sender];

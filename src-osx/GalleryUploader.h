@@ -67,9 +67,8 @@
     IBOutlet NSTextView*       mMessage;
     IBOutlet NSButton*         mRetryButton;
 
-    NSURLConnection*           mConnection;
-    NSMutableData*             mResponseBody;
-    NSURLConnection*           mTagConnection;
+    NSURLSessionDataTask*      mUploadTask;
+    NSURLSessionDataTask*      mTagsTask;
     
     NSArray<NSString*>*        mTags;
     
