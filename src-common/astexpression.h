@@ -109,7 +109,7 @@ namespace AST {
         using pointer = value_type*;
         using iterator_category = std::random_access_iterator_tag;
 
-        const ASTexpression&    e;
+        const ASTexpression*    e;
         size_t                  i;
         ~ASTexp_iter() = default;
         ASTexp_iter& operator=(const ASTexp_iter&) = default;
@@ -191,18 +191,18 @@ namespace AST {
         // will fail.
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
         virtual void to_json(json& j) const;
-        ASTexp_iter begin() noexcept { return ASTexp_iter{*this, 0};}
-        ASTexp_iter begin() const noexcept {return ASTexp_iter{*this, 0};}
-        ASTexp_iter end() noexcept {return ASTexp_iter{*this, size()};}
-        ASTexp_iter end() const noexcept {return ASTexp_iter{*this, size()};}
+        ASTexp_iter begin() noexcept { return ASTexp_iter{this, 0};}
+        ASTexp_iter begin() const noexcept {return ASTexp_iter{this, 0};}
+        ASTexp_iter end() noexcept {return ASTexp_iter{this, size()};}
+        ASTexp_iter end() const noexcept {return ASTexp_iter{this, size()};}
     };
     
     inline ASTexp_iter::reference ASTexp_iter::operator*() const
-    {return *e.getChild(i);}
+    {return *e->getChild(i);}
     inline ASTexp_iter::pointer ASTexp_iter::operator->() const
-    {return e.getChild(i);}
+    {return e->getChild(i);}
     inline ASTexp_iter::reference ASTexp_iter::operator[](ASTexp_iter::size_type j) const
-    {return *e.getChild(i+j);}
+    {return *e->getChild(i+j);}
 
     void to_json(json& j, const ASTexpression& e);
     void args_to_json(json& j, const ASTexpression& e);
