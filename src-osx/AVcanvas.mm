@@ -204,6 +204,13 @@
 
 - (void) finishUp
 {
+    void (^cleanup)(void) = ^{
+        CVPixelBufferPoolRelease([_assetInputAdaptor pixelBufferPool]);
+        [_assetInput removeObserver: self
+                         forKeyPath: @"readyForMoreMediaData"];
+        dispatch_release(_writeSemaphore);
+    };
+    
     if (_error == nil) {
         if (!_assetInput.isReadyForMoreMediaData) {
             _isWaitingForInputReady = YES;
@@ -211,13 +218,13 @@
         }
         
         [_assetInput markAsFinished];
-        [_assetWriter finishWriting];
+        [_assetWriter finishWritingWithCompletionHandler:
+        ^{
+            dispatch_async(dispatch_get_main_queue(), cleanup);
+        }];
+    } else {
+        cleanup();
     }
-    
-    CVPixelBufferPoolRelease([_assetInputAdaptor pixelBufferPool]);
-    [_assetInput removeObserver: self
-                     forKeyPath: @"readyForMoreMediaData"];
-    dispatch_release(_writeSemaphore);
 }
 
 - (NSError*) error
