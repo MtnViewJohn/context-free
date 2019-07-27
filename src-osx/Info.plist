@@ -40,7 +40,7 @@
 	<key>CFBundleVersion</key>
 	<string>$CURRENT_PROJECT_VERSION</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string>public.app-category.graphics-design</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
