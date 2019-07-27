@@ -337,8 +337,8 @@ namespace {
                                                                     NSError *error)
                     {
                         if (data) {
-                            std::string json(static_cast<const char*>([data bytes]), [data length]);
-                            auto tags = Upload::AllTags(json);
+                            auto tags = Upload::AllTags(static_cast<const char*>([data bytes]),
+                                                        static_cast<std::size_t>([data length]));
                             NSMutableArray<NSString*>* tagset = [NSMutableArray arrayWithCapacity: tags.size()];
                             for (auto&& tag: tags)
                                 [tagset addObject: [NSString stringWithUTF8String:tag.c_str()]];
@@ -559,9 +559,8 @@ namespace {
                     newmsg = @"Upload completed without a status code (?!?!?!).";
                     break;
                 case 200: {
-                    std::string json(static_cast<const char*>([data bytes]), [data length]);
-                    
-                    Upload response(json);
+                    Upload response(static_cast<const char*>([data bytes]),
+                                    static_cast<std::size_t>([data length]));
                     design = response.mId;
                     if (design) {
                         newmsg =  @"Upload completed successfully.";
