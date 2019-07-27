@@ -36,7 +36,7 @@
 class Upload {
 public:
     Upload() : mVariation(0), mCompression(CompressJPEG), mTiled(false) {}
-    Upload(const std::string&);
+    Upload(const char* jsonbuf, std::size_t jsonlen);
     
     enum Compression {
         CompressJPEG = 0,
@@ -70,7 +70,7 @@ public:
     
     static std::string generateHeader();
     static std::string generateContentType();
-    static std::vector<std::string> AllTags(const std::string&);
+    static std::vector<std::string> AllTags(const char* jsonbuf, std::size_t jsonlen);
 };
 
 #endif // INCLUDE_UPLOAD_H

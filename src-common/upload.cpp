@@ -147,10 +147,10 @@ Upload::generatePayload(std::ostream& out)
     generateMimeFooter(out);
 }
 
-Upload::Upload(const std::string& json)
+Upload::Upload(const char* jsonbuf, std::size_t jsonlen)
 {
     try {
-        auto j = json::parse(json);
+        auto j = json::parse({jsonbuf, jsonlen});
         mId = j.at("design").at("designid").get<int>();
     } catch (...) {
         mId = 0;
@@ -158,12 +158,12 @@ Upload::Upload(const std::string& json)
 }
 
 std::vector<std::string>
-Upload::AllTags(const std::string& json)
+Upload::AllTags(const char* jsonbuf, std::size_t jsonlen)
 {
     std::vector<std::string> ret;
 
     try {
-        auto j = json::parse(json);
+        auto j = json::parse({jsonbuf, jsonlen});
         auto tags = j.at("tags");
         if (!tags.is_array())
             return ret;
