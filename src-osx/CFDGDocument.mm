@@ -66,8 +66,6 @@ NSString* PrefKeyHiresHeight = @"HiresHeight";
 extern NSInteger CurrentTabWidth;
 
 namespace {
-    NSDictionary<NSAttributedStringKey, id>* textDict = nil;
-    
     class CocoaSystem : public PosixSystem
     {
     public:
@@ -258,14 +256,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 @implementation CFDGDocument
 
-+ (void)initialize {
-    if (self == [CFDGDocument self]) {
-        textDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    NSForegroundColorAttributeName, NSColor.textColor,
-                    nil];
-    }
-}
-
 + (NSString*) documentType
 {
     return CFDGDocumentType;
@@ -367,7 +357,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (mStatusText != nil) {
         NSAttributedString* astr = [[[NSAttributedString alloc]
                                      initWithString:s
-                                         attributes:textDict
+                                     attributes:@{NSForegroundColorAttributeName: NSColor.textColor}
                                      ] autorelease];
         [[mStatusText textStorage] appendAttributedString: astr];
         [[[mStatusText textStorage] mutableString] appendString: @"\n"];
@@ -400,7 +390,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     NSMutableAttributedString* msg = [[[NSMutableAttributedString alloc] 
                                        initWithString: @"Parse error - "
-                                           attributes: textDict]
+                                           attributes: @{NSForegroundColorAttributeName: NSColor.textColor}]
                                       autorelease];
     NSUInteger start = [msg length];
     [[msg mutableString] appendString: [e message]];
