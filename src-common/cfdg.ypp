@@ -29,9 +29,9 @@
 
 
 %skeleton "lalr1.cc"                          /*  -*- C++ -*- */
-%require "2.5"
+%require "3.3"
 %defines
-%define parser_class_name "CfdgParser"
+%define api.parser.class {CfdgParser}
 %locations
 %expect 3
 //%debug
