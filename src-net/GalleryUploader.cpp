@@ -345,6 +345,8 @@ namespace ContextFreeNet {
             postbody, 0, static_cast<int>(design.str().length()));
         uploadThread->RunWorkerAsync(postbody);
         this->upload->Enabled = false;
+		message->Visible = false;
+		uploadProgress->Visible = true;
     }
 
     void GalleryUploader::RunUploadThread(Object^ sender, DoWorkEventArgs^ e)
@@ -433,7 +435,9 @@ namespace ContextFreeNet {
 
     void GalleryUploader::UploadCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
     {
-        if (e->Cancelled) {
+		message->Visible = true;
+		uploadProgress->Visible = false;
+		if (e->Cancelled) {
             this->DialogResult = ::DialogResult::Cancel;
             return;
         }
