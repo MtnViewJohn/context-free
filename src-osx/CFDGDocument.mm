@@ -356,9 +356,9 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     if (mStatusText != nil) {
         NSAttributedString* astr = [[[NSAttributedString alloc]
-                                     initWithString:s
-                                     attributes:@{NSForegroundColorAttributeName: NSColor.textColor}
-                                     ] autorelease];
+                                     initWithString: s
+                                         attributes: @{NSForegroundColorAttributeName: NSColor.textColor}]
+                                    autorelease];
         [[mStatusText textStorage] appendAttributedString: astr];
         [[[mStatusText textStorage] mutableString] appendString: @"\n"];
         // scroll to the end
