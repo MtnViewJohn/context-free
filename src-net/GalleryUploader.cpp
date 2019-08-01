@@ -111,8 +111,7 @@ namespace ContextFreeNet {
 		}
 
         pin_ptr<Byte> utf8arraypin = &e->Result[0];
-        std::string tags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
-        auto tagvector = Upload::AllTags(tags);
+		auto tagvector = Upload::AllTags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
 
         if (tagvector.empty()) {
             tagBox->AutoCompleteMode = AutoCompleteMode::None;
@@ -406,9 +405,8 @@ namespace ContextFreeNet {
             System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
             array<Byte>^ utf8array = encodeutf8->GetBytes(respbody);
             pin_ptr<Byte> utf8arraypin = &utf8array[0];
-            std::string respstr = reinterpret_cast<const char*>(utf8arraypin);
 
-            Upload upload(respstr);
+			Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
             e->Result = upload.mId;
         } catch (WebException^ we) {
             HttpWebResponse^ resp = dynamic_cast<HttpWebResponse^>(we->Response);
