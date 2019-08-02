@@ -13,7 +13,7 @@ redistribution.  Since this directory only contained files relevant to the
 Windows build of contextfree, the package's functionality is not affected by
 this removal.
 
-Removal of src-osx/ directory from upstream source tarball
+Removal of src-osx/ and src-scintilla/ directories from upstream source tarball
 ----------------------------------------------------------
 This source directory is only used for OS X builds and contains non-free
 code.

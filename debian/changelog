@@ -1,3 +1,10 @@
+contextfree (3.2+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Updated Standards-Version to 4.4.0.1
+
+ -- John Horigan <john@glyphic.com>  Thu, 01 Aug 2019 14:08:33 -0700
+
 contextfree (3.1+dfsg1-1) unstable; urgency=medium
 
   * New upstream release.
