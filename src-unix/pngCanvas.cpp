@@ -27,7 +27,6 @@
 //
 
 #include "pngCanvas.h"
-#include <setjmp.h>  // not <csetjmp>
 #include "png.h"
 #include <cstdlib>
 #include <cstring>
