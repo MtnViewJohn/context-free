@@ -1133,26 +1133,25 @@ namespace {
     [mStatus setStringValue: message];
     
     if ((s.inOutput && s.fullOutput) || s.showProgress) {
-        if (mOutputProgressDelay == PROGRESS_DELAY) {
-            [mOutputProgress setHidden: NO];
-            [mTopBar relayout];
-            mOutputProgressDelay += 1;
-        }
         if (mOutputProgressDelay >= PROGRESS_DELAY) {
+            if ([mOutputProgress isHidden]) {
+                [mOutputProgress setHidden: NO];
+                [mTopBar relayout];
+            }
             double v = 100.0 * s.outputDone / s.outputCount;
             [mOutputProgress setDoubleValue: v];
-        }
-        else {
+        } else {
             mOutputProgressDelay += 1;
         }
-    }
-    else {
+    } else {
         if (![mOutputProgress isHidden]) {
             [mOutputProgress setHidden: YES];
             [mTopBar relayout];
             mOutputProgressDelay = 0;
         }
     }
+    
+    s.inOutput = s.showProgress = false;    // prevent s dtor from clearing progress bar
 }
 
 
