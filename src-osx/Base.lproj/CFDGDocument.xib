@@ -278,13 +278,13 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <segmentedControl verticalHuggingPriority="750" id="bIH-dW-BZL">
-                                            <rect key="frame" x="0.0" y="0.0" width="91" height="24"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="97" height="24"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="t6T-Od-L9R">
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
-                                                    <segment label="Render" width="65"/>
-                                                    <segment label="▿" width="19" tag="1"/>
+                                                    <segment label="Render" width="68"/>
+                                                    <segment label="▿" width="22" tag="1"/>
                                                 </segments>
                                             </segmentedCell>
                                             <connections>
