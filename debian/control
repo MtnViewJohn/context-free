@@ -5,7 +5,7 @@ Maintainer: John Horigan <john@glyphic.com>
 Uploaders: Paul van Tilburg <paulvt@debian.org>
 Build-Depends: debhelper (>= 12),
                flex (>= 2.6),
-	       bison (>=2:3.3),
+	       bison (>=2:3.0),
 	       libpng-dev,
 	       libagg-dev (>= 1:2.4),
 	       libfl-dev (>= 2.6),
