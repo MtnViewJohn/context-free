@@ -920,6 +920,7 @@ namespace {
         [self finishRender: sender];
     } else {
         float frame = 0.0;
+        [[sender window] makeFirstResponder: sender];   // end editing of all NSTextFields
         switch (mCurrentAction) {
             case RenderAction:
                 [self startRender: sender];
