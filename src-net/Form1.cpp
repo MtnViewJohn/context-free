@@ -352,6 +352,19 @@ void Form1::OpenDoc(String^ name)
     }
 }
 
+void Form1::OpenUrl(String^ url)
+{
+	Document^ newMDIchild = gcnew Document();
+	newMDIchild->Name = url;
+	newMDIchild->TabText = "Download.cfdg";
+	newMDIchild->isNamed = false;
+	newMDIchild->reloadWhenReady = true;
+	newMDIchild->Text = newMDIchild->TabText;
+	newMDIchild->MdiParent = this;
+	newMDIchild->Closing += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::File_Closed);
+	newMDIchild->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::Document);
+}
+
 System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
 {
     messagePane->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::DockRightAutoHide);

@@ -1715,5 +1715,8 @@ private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e)
          System::Void AutoCCharDeleted(System::Object^ sender, System::EventArgs^ e);
          System::Void CheckAutoC();
 private: System::Void Indent_Click(System::Object^  sender, System::EventArgs^  e);
+		 System::Void PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
+		 System::Void PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
+		 System::Void DownLoaded(System::Object^ sender, System::Net::DownloadStringCompletedEventArgs^ e);
 };
 }

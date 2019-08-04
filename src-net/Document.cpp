@@ -121,6 +121,10 @@ void Document::InitializeStuff()
         menuRAnimate->ToolTipText = "Install FFmpeg subsystem to enable";
 
     mMoviePlayer = nullptr;
+
+	renderBox->AllowDrop = true;
+	renderBox->DragEnter += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragEnter);
+	renderBox->DragDrop += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragDrop);
 }
 
 void Document::DestroyStuff()
@@ -315,6 +319,47 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     setMessageText(nullptr);
 }
 
+System::Void Document::PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e)
+{
+	if (e->Data->GetDataPresent(DataFormats::Text))
+		e->Effect = DragDropEffects::Copy;
+	else
+		e->Effect = DragDropEffects::None;
+}
+
+System::Void Document::PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e)
+{
+	if (!e->Data->GetDataPresent(DataFormats::Text))
+		return;
+	String^ url = e->Data->GetData(DataFormats::Text)->ToString();
+	if (!url->StartsWith("https://www.contextfreeart.org/gallery") &&
+		!url->StartsWith("http://www.contextfreeart.org/gallery") &&
+		!url->StartsWith("https://contextfreeart.org/gallery") &&
+		!url->StartsWith("http://contextfreeart.org/gallery"))
+	{
+		return;
+	}
+
+	int idx = url->IndexOf("id=");
+	if (idx < 0) {
+		idx = url->IndexOf("#design/");
+		if (idx >= 0) idx += 8;
+	} else {
+		idx += 3;
+	}
+	if (idx >= 0) {
+		Int32 design;
+		if (Int32::TryParse(url->Substring(idx), design))
+			url = String::Format("https://www.contextfreeart.org/gallery/data.php?type=cfdg&id={0}", design);
+		else
+			return;
+	} else if (!url->EndsWith(".cfdg")) {
+		return;
+	}
+
+	((Form1^)MdiParent)->OpenUrl(url);
+}
+
 System::Void Document::menuFSave_Click(System::Object^ sender, System::EventArgs^ e)
 {
     if (isNamed) {
@@ -409,7 +454,7 @@ System::Void Document::menuFRevert_Click(System::Object^ sender, System::EventAr
 }
 
 // Load or reload the cfdg edit box from the documents named source, which
-// is either a file path or the name of an example.
+// is either a url, file path, or the name of an example.
 void Document::reload(bool justClear)
 {
     if (justClear) {
@@ -417,6 +462,20 @@ void Document::reload(bool justClear)
         cfdgText->SetSavePoint();
         return;
     }
+
+	if (Name->StartsWith("http://") || Name->StartsWith("https://")) {
+		try {
+			setMessageText("Downloading the design&hellip;");
+			Uri^ url = gcnew Uri(Name);
+			Net::WebClient^ req = gcnew Net::WebClient();
+			req->DownloadStringCompleted += gcnew System::Net::DownloadStringCompletedEventHandler(this, &ContextFreeNet::Document::DownLoaded);
+			req->DownloadStringAsync(url);
+		}
+		catch (...) {
+			setMessageText("The design could not be downloaded.");
+		}
+		return;
+	}
 
     int pos = Form1::exampleSet->IndexOfKey(this->Name);
     if (pos >= 0) {
@@ -435,6 +494,17 @@ void Document::reload(bool justClear)
         cfdgText->SetSavePoint();
         setMessageText("The file could not be read." );
     }
+}
+
+void Document::DownLoaded(Object^ , Net::DownloadStringCompletedEventArgs^ e)
+{
+	if (e->Cancelled || e->Error) {
+		setMessageText("The design could not be downloaded.");
+	} else {
+		setMessageText("Download complete.");
+		cfdgText->Text = dynamic_cast<String^>(e->Result);
+		cfdgText->SetSavePoint();
+	}
 }
 
 void Document::setMessageText(String^ txt)
