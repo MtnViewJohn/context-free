@@ -24,7 +24,7 @@
 
 
 #import "GalleryDownloader.h"
-#import "CFDGController.h"
+#import "CFDGDocument.h"
 #include "variation.h"
 #include <errno.h>
 
@@ -34,13 +34,13 @@
 
 @implementation GalleryDownloader
 
-- (id)initWithDesignID:(int)design controller:(CFDGController*)ctrl
+- (id)initWithDesignID:(int)design document:(CFDGDocument*)doc
 {
     self = [super init];
     if (self) {
         designID = design;
         variation = Variation::random();
-        controller = ctrl;
+        document = doc;
         NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php?type=cfdg&id=%d", designID];
         NSURL* url = [NSURL URLWithString: urlstring];
         NSURLRequest* req = [NSURLRequest requestWithURL: url];
@@ -55,13 +55,13 @@
     return self;
 }
 
-- (id)initWithUrl:(NSURL*)url controller:(CFDGController*)ctrl
+- (id)initWithUrl:(NSURL*)url document:(CFDGDocument*)doc
 {
     self = [super init];
     if (self) {
         designID = 0;
         variation = Variation::random();
-        controller = ctrl;
+        document = doc;
         NSURLRequest* req = [NSURLRequest requestWithURL: url];
         galleryConnection = [[NSURLConnection alloc] initWithRequest: req delegate: self];
         if (galleryConnection) {
@@ -139,10 +139,10 @@
 
 - (void)allDone
 {
-    [controller performSelector: @selector(downloadDone:)
-                       onThread: [NSThread mainThread]
-                     withObject: self
-                  waitUntilDone: NO];
+    [document performSelector: @selector(downloadDone:)
+                     onThread: [NSThread mainThread]
+                   withObject: self
+                waitUntilDone: NO];
 }
 
 @end

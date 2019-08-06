@@ -25,7 +25,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class CFDGController;
+@class CFDGDocument;
 
 @interface GalleryDownloader : NSObject <NSURLConnectionDelegate>
 {
@@ -39,11 +39,11 @@
 @private
     NSURLConnection*    galleryConnection;
     NSMutableData*      receivedData;
-    CFDGController*     controller;
+    CFDGDocument*       document;
 }
 
-- (id)initWithDesignID:(int)design controller:(CFDGController*)ctrl;
-- (id)initWithUrl:(NSURL*)url controller:(CFDGController*)ctrl;
+- (id)initWithDesignID:(int)design document:(CFDGDocument*)doc;
+- (id)initWithUrl:(NSURL*)url document:(CFDGDocument*)doc;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 - (NSURLRequest *)connection:(NSURLConnection *)connection

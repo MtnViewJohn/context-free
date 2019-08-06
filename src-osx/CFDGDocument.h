@@ -31,6 +31,7 @@
 #include "cfdg.h"
 
 @class GalleryUploader;
+@class GalleryDownloader;
 @class GView;
 @class CfdgErrorWrapper;
 
@@ -104,5 +105,7 @@
 + (NSString*)documentType;
 + (BOOL)autosavesInPlace;
 + (NSArray*) checkForTempFiles;
+
+-(void)downloadDone:(GalleryDownloader*)downloader;
 
 @end

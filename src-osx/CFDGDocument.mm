@@ -29,6 +29,7 @@
 #import "CFDGDocument.h"
 #import "GView.h"
 #import "GalleryUploader.h"
+#import "GalleryDownloader.h"
 
 #include <fstream>
 #include <sstream>
@@ -856,5 +857,19 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 }
 
+
+- (void)downloadDone:(GalleryDownloader*)downloader
+{
+    if (!downloader || !downloader->cfdgContents || downloader->DLerror) {
+        [self noteStatus: @"Download failed!"];
+        return;
+    }
+    
+    [self noteStatus: @"Download complete."];
+    [self readDesign: downloader->fileName
+            cfdgText: downloader->cfdgContents];
+    [self setVariation: downloader->variation];
+    [downloader release];
+}
 @end
 

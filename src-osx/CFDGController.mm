@@ -360,6 +360,9 @@ static NSInteger OSXversion = 0;
         return;
     }
     
+    NSError* err = nil;
+    id doc = nil;
+
     // CFA gallery URL drop
     for (id cfaurl in CFAdomains) {
         if ([pboardString hasPrefix: cfaurl]) {
@@ -368,20 +371,30 @@ static NSInteger OSXversion = 0;
                 idLoc = [pboardString rangeOfString: @"#design/"];
             if (idLoc.location != NSNotFound) {
                 int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
-                [[GalleryDownloader alloc] initWithDesignID: designID controller: self];
+                doc = [[NSDocumentController sharedDocumentController]
+                       openUntitledDocumentAndDisplay: NO error: nil];
+                [[GalleryDownloader alloc] initWithDesignID: designID document: doc];
             }
             if ([pboardString hasSuffix: @".cfdg"]) {
                 NSURL* cfdgurl = [NSURL URLWithString: pboardString];
-                [[GalleryDownloader alloc] initWithUrl:cfdgurl controller: self];
+                doc = [[NSDocumentController sharedDocumentController]
+                       openUntitledDocumentAndDisplay: NO error: nil];
+                [[GalleryDownloader alloc] initWithUrl:cfdgurl document: doc];
+            }
+            if (doc) {
+                [doc makeWindowControllers];
+                [doc showWindows];
+                [doc noteStatus: @"Downloading from the gallery…"];
+            } else {
+                NSBeep();
             }
             return;
         }
     }
     
     // cfdg text drop
-    NSError* err = nil;
-    id doc = [[NSDocumentController sharedDocumentController]
-              openUntitledDocumentAndDisplay: NO error: nil];
+    doc = [[NSDocumentController sharedDocumentController]
+           openUntitledDocumentAndDisplay: NO error: nil];
     
     if (doc) {
         [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding]
@@ -389,26 +402,6 @@ static NSInteger OSXversion = 0;
                     error: &err];
         [doc makeWindowControllers];
         [doc showWindows];
-    } else {
-        NSBeep();
-    }
-}
-
-- (void)downloadDone:(GalleryDownloader*)downloader
-{
-    if (!downloader || !downloader->cfdgContents || downloader->DLerror)
-        return;
-    
-    id doc = [[NSDocumentController sharedDocumentController]
-              openUntitledDocumentAndDisplay: NO error: nil];
-
-    if (doc) {
-        [doc readDesign: downloader->fileName
-               cfdgText: downloader->cfdgContents];
-        [doc makeWindowControllers];
-        [doc showWindows];
-        [doc setVariation: downloader->variation];
-        [downloader release];
     } else {
         NSBeep();
     }
