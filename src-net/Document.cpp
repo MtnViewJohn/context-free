@@ -332,32 +332,44 @@ System::Void Document::PictureDragDrop(System::Object^ sender, System::Windows::
 	if (!e->Data->GetDataPresent(DataFormats::Text))
 		return;
 	String^ url = e->Data->GetData(DataFormats::Text)->ToString();
-	if (!url->StartsWith("https://www.contextfreeart.org/gallery") &&
-		!url->StartsWith("http://www.contextfreeart.org/gallery") &&
-		!url->StartsWith("https://contextfreeart.org/gallery") &&
-		!url->StartsWith("http://contextfreeart.org/gallery"))
+
+	if (url->StartsWith("file://")) {
+		((Form1^)MdiParent)->OpenUrl(url);
+		return;
+	}
+
+	if (url->StartsWith("https://www.contextfreeart.org/gallery") ||
+		url->StartsWith("http://www.contextfreeart.org/gallery") ||
+		url->StartsWith("https://contextfreeart.org/gallery") ||
+		url->StartsWith("http://contextfreeart.org/gallery"))
 	{
-		return;
-	}
+		int idx = url->IndexOf("id=");
+		if (idx < 0) {
+			idx = url->IndexOf("#design/");
+			if (idx >= 0) idx += 8;
+		}
+		else {
+			idx += 3;
+		}
+		if (idx >= 0) {
+			Int32 design;
+			if (Int32::TryParse(url->Substring(idx), design))
+				url = String::Format("https://www.contextfreeart.org/gallery/gallerydb/cfdg/{0}", design);
+			else
+				url = nullptr;
+		}
+		else if (!url->EndsWith(".cfdg")) {
+			url = nullptr;
+		}
 
-	int idx = url->IndexOf("id=");
-	if (idx < 0) {
-		idx = url->IndexOf("#design/");
-		if (idx >= 0) idx += 8;
-	} else {
-		idx += 3;
-	}
-	if (idx >= 0) {
-		Int32 design;
-		if (Int32::TryParse(url->Substring(idx), design))
-			url = String::Format("https://www.contextfreeart.org/gallery/data.php?type=cfdg&id={0}", design);
+		if (url)
+			((Form1^)MdiParent)->OpenUrl(url);
 		else
-			return;
-	} else if (!url->EndsWith(".cfdg")) {
+			System::Media::SystemSounds::Beep->Play();
 		return;
 	}
 
-	((Form1^)MdiParent)->OpenUrl(url);
+	((Form1^)MdiParent)->OpenText(url);
 }
 
 System::Void Document::menuFSave_Click(System::Object^ sender, System::EventArgs^ e)
@@ -463,7 +475,7 @@ void Document::reload(bool justClear)
         return;
     }
 
-	if (Name->StartsWith("http://") || Name->StartsWith("https://")) {
+	if (Name->StartsWith("http://") || Name->StartsWith("https://") || Name->StartsWith("file://")) {
 		try {
 			setMessageText("Downloading the design&hellip;");
 			Uri^ url = gcnew Uri(Name);
@@ -474,6 +486,15 @@ void Document::reload(bool justClear)
 		catch (...) {
 			setMessageText("The design could not be downloaded.");
 		}
+		return;
+	}
+	if (Name->StartsWith("data:text/plain;charset=UTF-8,") || 
+		Name->StartsWith("data:text/plain;charset=US-ASCII,") || 
+		Name->StartsWith("data:,"))
+	{
+		cfdgText->Text = Name->Substring(Name->IndexOf(",") + 1);
+		cfdgText->SetSavePoint();
+		Name = TabText;
 		return;
 	}
 
@@ -502,8 +523,36 @@ void Document::DownLoaded(Object^ , Net::DownloadStringCompletedEventArgs^ e)
 		setMessageText("The design could not be downloaded.");
 	} else {
 		setMessageText("Download complete.");
-		cfdgText->Text = dynamic_cast<String^>(e->Result);
-		cfdgText->SetSavePoint();
+		if (Name->EndsWith(".cfdg")) {
+			cfdgText->Text = dynamic_cast<String^>(e->Result);
+			Uri^ uri = gcnew Uri(Name);
+			TabText = Path::GetFileName(uri->AbsolutePath);
+			Name = TabText;
+			Text = TabText;
+			cfdgText->SetSavePoint();
+		} else {
+			System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
+			array<Byte>^ utf8array = encodeutf8->GetBytes(dynamic_cast<String^>(e->Result));
+			pin_ptr<Byte> utf8arraypin = &utf8array[0];
+
+			Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
+			if (upload.mId) {
+				cfdgText->Text = gcnew System::String(upload.mPassword.c_str(), 0,
+					static_cast<int>(upload.mPassword.length()),
+					System::Text::Encoding::UTF8);
+				currentVariation = upload.mVariation - 1;
+				NextVar_Click(nullptr, nullptr);
+				String^ path = gcnew System::String(upload.mFileName.c_str(), 0,
+					static_cast<int>(upload.mFileName.length()),
+					System::Text::Encoding::UTF8);
+				Name = Path::GetFileName(path);
+				TabText = Name;
+				Text = TabText;
+				cfdgText->SetSavePoint();
+			} else {
+				setMessageText("Failed to extract cfdg data!");
+			}
+		}
 	}
 }
 

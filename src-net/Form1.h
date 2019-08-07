@@ -458,6 +458,7 @@ public: void AddMessage(System::String^ sender, System::String^ msg);
 private: System::Void menuWMsgConsole_Click(System::Object^  sender, System::EventArgs^  e);
 private: void OpenDoc(System::String^ name);
 public:  void OpenUrl(System::String^ url);
+		 void OpenText(System::String^ cfdg);
 public: delegate void ProcessParametersDelegate(array<System::String^>^ args);
 public: System::Void processArgs(array<System::String^>^ args);
 private: void updateFontDisplay();

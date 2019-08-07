@@ -365,6 +365,19 @@ void Form1::OpenUrl(String^ url)
 	newMDIchild->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::Document);
 }
 
+void Form1::OpenText(String^ cfdg)
+{
+	Document^ newMDIchild = gcnew Document();
+	newMDIchild->TabText = "Document.cfdg";
+	newMDIchild->Name = cfdg->Insert(0, "data:text/plain;charset=UTF-8,");
+	newMDIchild->isNamed = false;
+	newMDIchild->reloadWhenReady = true;
+	newMDIchild->Text = newMDIchild->TabText;
+	newMDIchild->MdiParent = this;
+	newMDIchild->Closing += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::File_Closed);
+	newMDIchild->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::Document);
+}
+
 System::Void Form1::Form_Loaded(System::Object^  sender, System::EventArgs^  e)
 {
     messagePane->Show(dockPanel, WeifenLuo::WinFormsUI::Docking::DockState::DockRightAutoHide);
