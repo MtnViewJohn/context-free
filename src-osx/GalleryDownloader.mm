@@ -27,6 +27,7 @@
 #import "CFDGDocument.h"
 #include "variation.h"
 #include <errno.h>
+#include "upload.h"
 
 @interface GalleryDownloader (internal)
 - (void)allDone;
@@ -41,16 +42,41 @@
         designID = design;
         variation = Variation::random();
         document = doc;
-        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php?type=cfdg&id=%d", designID];
+        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/gallerydb/cfdg/%d", designID];
         NSURL* url = [NSURL URLWithString: urlstring];
-        NSURLRequest* req = [NSURLRequest requestWithURL: url];
-        galleryConnection = [[NSURLConnection alloc] initWithRequest: req delegate: self];
-        if (galleryConnection) {
-            receivedData = [[NSMutableData data] retain];
-        } else {
-            DLerror = [[NSError alloc] initWithDomain: NSPOSIXErrorDomain code: ECONNABORTED userInfo: nil];
-            [self allDone];
-        }
+        
+        NSURLSessionDataTask* download = [[NSURLSession sharedSession]
+                                            dataTaskWithURL: url
+                                          completionHandler:^(NSData *data,
+                                                              NSURLResponse *response,
+                                                              NSError *error)
+                                              {
+                                                  if (data) {
+                                                      Upload response(static_cast<const char*>([data bytes]),
+                                                                      static_cast<std::size_t>([data length]));
+                                                      if (response.mId == 0) {
+                                                          DLerror = [[NSError alloc]
+                                                                     initWithDomain: NSURLErrorDomain
+                                                                               code: NSURLErrorFileDoesNotExist
+                                                                           userInfo: nil];
+                                                      } else {
+                                                          cfdgContents = [[NSData alloc]
+                                                                          initWithBytes: response.mPassword.c_str()
+                                                                          length: response.mPassword.length()];
+                                                          variation = response.mVariation;
+                                                          fileName = [[[NSString stringWithUTF8String: response.mFileName.c_str()]
+                                                                       lastPathComponent] retain];
+                                                      }
+                                                  } else {
+                                                      DLerror = [error retain];
+                                                  }
+                                                  [document performSelector: @selector(downloadDone:)
+                                                                   onThread: [NSThread mainThread]
+                                                                 withObject: self
+                                                              waitUntilDone: NO];
+                                              }];
+        [download resume];
+        [download retain];
     }
     return self;
 }
@@ -61,15 +87,24 @@
     if (self) {
         designID = 0;
         variation = Variation::random();
+        fileName = [[[url pathComponents] lastObject] retain];
         document = doc;
-        NSURLRequest* req = [NSURLRequest requestWithURL: url];
-        galleryConnection = [[NSURLConnection alloc] initWithRequest: req delegate: self];
-        if (galleryConnection) {
-            receivedData = [[NSMutableData data] retain];
-        } else {
-            DLerror = [[NSError alloc] initWithDomain: NSPOSIXErrorDomain code: ECONNABORTED userInfo: nil];
-            [self allDone];
-        }
+        
+        NSURLSessionDataTask* download = [[NSURLSession sharedSession]
+                                          dataTaskWithURL: url
+                                          completionHandler:^(NSData *data,
+                                                              NSURLResponse *response,
+                                                              NSError *error)
+                                          {
+                                              cfdgContents = [data retain];
+                                              DLerror = [error retain];
+                                              [document performSelector: @selector(downloadDone:)
+                                                               onThread: [NSThread mainThread]
+                                                             withObject: self
+                                                          waitUntilDone: NO];
+                                          }];
+        [download resume];
+        [download retain];
     }
     return self;
 }
@@ -79,70 +114,12 @@
     [cfdgContents release]; cfdgContents = nil;
     [fileName release];     fileName = nil;
     [DLerror release];      DLerror = nil;
-    if (galleryConnection) {
-        [galleryConnection cancel];
-        [galleryConnection autorelease];    galleryConnection = nil;
+    if (download) {
+        if ([download state] == NSURLSessionTaskStateRunning)
+            [download cancel];
+        [download release];
     }
-    [receivedData release]; receivedData = nil;
     [super dealloc];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    [receivedData setLength: 0];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [receivedData appendData: data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    [galleryConnection release];    galleryConnection = nil;
-    [receivedData release];         receivedData = nil;
-    DLerror = [error retain];
-    [self allDone];
-}
-
-- (NSURLRequest *)connection:(NSURLConnection *)connection
-             willSendRequest:(NSURLRequest *)request
-            redirectResponse:(NSURLResponse *)redirectResponse
-{
-    NSURL* newURL = [request URL];
-    NSArray* pathbits = [newURL pathComponents];
-    fileName = [pathbits lastObject];
-    if (fileName)
-        [fileName retain];
-    NSString* var = [newURL query];
-    if (var) {
-        NSRange varLoc = [var rangeOfString: @"variation="];
-        if (varLoc.location != NSNotFound) {
-            variation = Variation::fromString([[var substringFromIndex: (varLoc.location + varLoc.length)] UTF8String]);
-            if (variation == -1)
-                variation = 1;
-        }
-    }
-    return request;
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    cfdgContents = [receivedData retain];
-    [galleryConnection release];    galleryConnection = nil;
-    [receivedData release];         receivedData = nil;
-    [self allDone];
-}
-@end
-
-@implementation GalleryDownloader (internal)
-
-- (void)allDone
-{
-    [document performSelector: @selector(downloadDone:)
-                     onThread: [NSThread mainThread]
-                   withObject: self
-                waitUntilDone: NO];
 }
 
 @end

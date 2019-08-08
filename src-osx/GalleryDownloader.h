@@ -37,19 +37,10 @@
     NSError*    DLerror;
     
 @private
-    NSURLConnection*    galleryConnection;
-    NSMutableData*      receivedData;
-    CFDGDocument*       document;
+    NSURLSessionDataTask*   download;
+    CFDGDocument*           document;
 }
 
 - (id)initWithDesignID:(int)design document:(CFDGDocument*)doc;
 - (id)initWithUrl:(NSURL*)url document:(CFDGDocument*)doc;
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
-- (NSURLRequest *)connection:(NSURLConnection *)connection
-             willSendRequest:(NSURLRequest *)request
-            redirectResponse:(NSURLResponse *)redirectResponse;
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 @end
