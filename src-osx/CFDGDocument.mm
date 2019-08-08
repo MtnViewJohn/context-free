@@ -782,6 +782,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     if (name) {
         [mDisplayName release];
         mDisplayName = [name retain];
+        [self setDisplayName: name];
+        [[mGView window] setTitleWithRepresentedFilename: name];
     }
 }
 
