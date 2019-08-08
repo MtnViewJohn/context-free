@@ -1034,9 +1034,11 @@ namespace {
     if (action == @selector(stopRender:))
         return mRendering && !mRendererStopping;
     
-    if (action == @selector(saveAsSVG:)
-    ||  action == @selector(uploadToGallery:))
+    if (action == @selector(saveAsSVG:))
         return !mRendering && mRenderBitmap;
+    
+    if (action == @selector(uploadToGallery:))
+        return !mRendering && mRenderBitmap && NSAppKitVersionNumber >= NSAppKitVersionNumber10_9;
     
     if (action == @selector(saveOutput:))
         return !mRendering && (mRenderBitmap || mMovieFile);

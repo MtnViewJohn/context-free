@@ -352,6 +352,10 @@ static NSInteger OSXversion = 0;
                                   @"https://www.contextfreeart.org/gallery",
                                   @"https://contextfreeart.org/gallery",
                                   nil];
+    
+    if (NSAppKitVersionNumber < NSAppKitVersionNumber10_9)
+        return;
+    
     NSString * pboardString = [pboard stringForType:NSStringPboardType];
 
     // File drop
