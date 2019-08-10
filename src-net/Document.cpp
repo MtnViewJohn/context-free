@@ -114,7 +114,7 @@ void Document::InitializeStuff()
     mOutputMultiplier[0] = 1.0;
     mOutputMultiplier[1] = 1.0;
 
-	mRenderButtonAction = RenderButtonAction::Render;
+    mRenderButtonAction = RenderButtonAction::Render;
 
     menuRAnimate->Enabled = ffCanvas::Available();
     if (!menuRAnimate->Enabled)
@@ -122,9 +122,9 @@ void Document::InitializeStuff()
 
     mMoviePlayer = nullptr;
 
-	renderBox->AllowDrop = true;
-	renderBox->DragEnter += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragEnter);
-	renderBox->DragDrop += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragDrop);
+    renderBox->AllowDrop = true;
+    renderBox->DragEnter += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragEnter);
+    renderBox->DragDrop += gcnew System::Windows::Forms::DragEventHandler(this, &ContextFreeNet::Document::PictureDragDrop);
 }
 
 void Document::DestroyStuff()
@@ -321,55 +321,55 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
 
 System::Void Document::PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e)
 {
-	if (e->Data->GetDataPresent(DataFormats::Text))
-		e->Effect = DragDropEffects::Copy;
-	else
-		e->Effect = DragDropEffects::None;
+    if (e->Data->GetDataPresent(DataFormats::Text))
+        e->Effect = DragDropEffects::Copy;
+    else
+        e->Effect = DragDropEffects::None;
 }
 
 System::Void Document::PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e)
 {
-	if (!e->Data->GetDataPresent(DataFormats::Text))
-		return;
-	String^ url = e->Data->GetData(DataFormats::Text)->ToString();
+    if (!e->Data->GetDataPresent(DataFormats::Text))
+        return;
+    String^ url = e->Data->GetData(DataFormats::Text)->ToString();
 
-	if (url->StartsWith("file://")) {
-		((Form1^)MdiParent)->OpenUrl(url);
-		return;
-	}
+    if (url->StartsWith("file://")) {
+        ((Form1^)MdiParent)->OpenUrl(url);
+        return;
+    }
 
-	if (url->StartsWith("https://www.contextfreeart.org/gallery") ||
-		url->StartsWith("http://www.contextfreeart.org/gallery") ||
-		url->StartsWith("https://contextfreeart.org/gallery") ||
-		url->StartsWith("http://contextfreeart.org/gallery"))
-	{
-		int idx = url->IndexOf("id=");
-		if (idx < 0) {
-			idx = url->IndexOf("#design/");
-			if (idx >= 0) idx += 8;
-		}
-		else {
-			idx += 3;
-		}
-		if (idx >= 0) {
-			Int32 design;
-			if (Int32::TryParse(url->Substring(idx), design))
-				url = String::Format("https://www.contextfreeart.org/gallery/gallerydb/cfdg/{0}", design);
-			else
-				url = nullptr;
-		}
-		else if (!url->EndsWith(".cfdg")) {
-			url = nullptr;
-		}
+    if (url->StartsWith("https://www.contextfreeart.org/gallery") ||
+        url->StartsWith("http://www.contextfreeart.org/gallery") ||
+        url->StartsWith("https://contextfreeart.org/gallery") ||
+        url->StartsWith("http://contextfreeart.org/gallery"))
+    {
+        int idx = url->IndexOf("id=");
+        if (idx < 0) {
+            idx = url->IndexOf("#design/");
+            if (idx >= 0) idx += 8;
+        }
+        else {
+            idx += 3;
+        }
+        if (idx >= 0) {
+            Int32 design;
+            if (Int32::TryParse(url->Substring(idx), design))
+                url = String::Format("https://www.contextfreeart.org/gallery/gallerydb/cfdg/{0}", design);
+            else
+                url = nullptr;
+        }
+        else if (!url->EndsWith(".cfdg")) {
+            url = nullptr;
+        }
 
-		if (url)
-			((Form1^)MdiParent)->OpenUrl(url);
-		else
-			System::Media::SystemSounds::Beep->Play();
-		return;
-	}
+        if (url)
+            ((Form1^)MdiParent)->OpenUrl(url);
+        else
+            System::Media::SystemSounds::Beep->Play();
+        return;
+    }
 
-	((Form1^)MdiParent)->OpenText(url);
+    ((Form1^)MdiParent)->OpenText(url);
 }
 
 System::Void Document::menuFSave_Click(System::Object^ sender, System::EventArgs^ e)
@@ -475,28 +475,28 @@ void Document::reload(bool justClear)
         return;
     }
 
-	if (Name->StartsWith("http://") || Name->StartsWith("https://") || Name->StartsWith("file://")) {
-		try {
-			setMessageText("Downloading the design&hellip;");
-			Uri^ url = gcnew Uri(Name);
-			Net::WebClient^ req = gcnew Net::WebClient();
-			req->DownloadStringCompleted += gcnew System::Net::DownloadStringCompletedEventHandler(this, &ContextFreeNet::Document::DownLoaded);
-			req->DownloadStringAsync(url);
-		}
-		catch (...) {
-			setMessageText("The design could not be downloaded.");
-		}
-		return;
-	}
-	if (Name->StartsWith("data:text/plain;charset=UTF-8,") || 
-		Name->StartsWith("data:text/plain;charset=US-ASCII,") || 
-		Name->StartsWith("data:,"))
-	{
-		cfdgText->Text = Name->Substring(Name->IndexOf(",") + 1);
-		cfdgText->SetSavePoint();
-		Name = TabText;
-		return;
-	}
+    if (Name->StartsWith("http://") || Name->StartsWith("https://") || Name->StartsWith("file://")) {
+        try {
+            setMessageText("Downloading the design&hellip;");
+            Uri^ url = gcnew Uri(Name);
+            Net::WebClient^ req = gcnew Net::WebClient();
+            req->DownloadStringCompleted += gcnew System::Net::DownloadStringCompletedEventHandler(this, &ContextFreeNet::Document::DownLoaded);
+            req->DownloadStringAsync(url);
+        }
+        catch (...) {
+            setMessageText("The design could not be downloaded.");
+        }
+        return;
+    }
+    if (Name->StartsWith("data:text/plain;charset=UTF-8,") || 
+        Name->StartsWith("data:text/plain;charset=US-ASCII,") || 
+        Name->StartsWith("data:,"))
+    {
+        cfdgText->Text = Name->Substring(Name->IndexOf(",") + 1);
+        cfdgText->SetSavePoint();
+        Name = TabText;
+        return;
+    }
 
     int pos = Form1::exampleSet->IndexOfKey(this->Name);
     if (pos >= 0) {
@@ -519,41 +519,41 @@ void Document::reload(bool justClear)
 
 void Document::DownLoaded(Object^ , Net::DownloadStringCompletedEventArgs^ e)
 {
-	if (e->Cancelled || e->Error) {
-		setMessageText("The design could not be downloaded.");
-	} else {
-		setMessageText("Download complete.");
-		if (Name->EndsWith(".cfdg")) {
-			cfdgText->Text = dynamic_cast<String^>(e->Result);
-			Uri^ uri = gcnew Uri(Name);
-			TabText = Path::GetFileName(uri->AbsolutePath);
-			Name = TabText;
-			Text = TabText;
-			cfdgText->SetSavePoint();
-		} else {
-			System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
-			array<Byte>^ utf8array = encodeutf8->GetBytes(dynamic_cast<String^>(e->Result));
-			pin_ptr<Byte> utf8arraypin = &utf8array[0];
+    if (e->Cancelled || e->Error) {
+        setMessageText("The design could not be downloaded.");
+    } else {
+        setMessageText("Download complete.");
+        if (Name->EndsWith(".cfdg")) {
+            cfdgText->Text = dynamic_cast<String^>(e->Result);
+            Uri^ uri = gcnew Uri(Name);
+            TabText = Path::GetFileName(uri->AbsolutePath);
+            Name = TabText;
+            Text = TabText;
+            cfdgText->SetSavePoint();
+        } else {
+            System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
+            array<Byte>^ utf8array = encodeutf8->GetBytes(dynamic_cast<String^>(e->Result));
+            pin_ptr<Byte> utf8arraypin = &utf8array[0];
 
-			Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
-			if (upload.mId) {
-				cfdgText->Text = gcnew System::String(upload.mPassword.c_str(), 0,
-					static_cast<int>(upload.mPassword.length()),
-					System::Text::Encoding::UTF8);
-				currentVariation = upload.mVariation - 1;
-				NextVar_Click(nullptr, nullptr);
-				String^ path = gcnew System::String(upload.mFileName.c_str(), 0,
-					static_cast<int>(upload.mFileName.length()),
-					System::Text::Encoding::UTF8);
-				Name = Path::GetFileName(path);
-				TabText = Name;
-				Text = TabText;
-				cfdgText->SetSavePoint();
-			} else {
-				setMessageText("Failed to extract cfdg data!");
-			}
-		}
-	}
+            Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
+            if (upload.mId) {
+                cfdgText->Text = gcnew System::String(upload.mPassword.c_str(), 0,
+                    static_cast<int>(upload.mPassword.length()),
+                    System::Text::Encoding::UTF8);
+                currentVariation = upload.mVariation - 1;
+                NextVar_Click(nullptr, nullptr);
+                String^ path = gcnew System::String(upload.mFileName.c_str(), 0,
+                    static_cast<int>(upload.mFileName.length()),
+                    System::Text::Encoding::UTF8);
+                Name = Path::GetFileName(path);
+                TabText = Name;
+                Text = TabText;
+                cfdgText->SetSavePoint();
+            } else {
+                setMessageText("Failed to extract cfdg data!");
+            }
+        }
+    }
 }
 
 void Document::setMessageText(String^ txt)
@@ -619,7 +619,7 @@ System::Void Document::menuRRender_Click(System::Object^ sender, System::EventAr
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
-	if (renderThread->IsBusy) {
+    if (renderThread->IsBusy) {
         postAction = PostRenderAction::Render;
         return;
     }
@@ -634,8 +634,8 @@ System::Void Document::menuRRender_Click(System::Object^ sender, System::EventAr
 
 System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	RenderButtonAction oldAction = mRenderButtonAction;
-	mRenderButtonAction = RenderButtonAction::RenderSized;
+    RenderButtonAction oldAction = mRenderButtonAction;
+    mRenderButtonAction = RenderButtonAction::RenderSized;
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
@@ -659,12 +659,12 @@ System::Void Document::menuRRenderSize_Click(System::Object^ sender, System::Eve
 
 System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	RenderButtonAction oldAction = mRenderButtonAction;
-	mRenderButtonAction = RenderButtonAction::Animate;
+    RenderButtonAction oldAction = mRenderButtonAction;
+    mRenderButtonAction = RenderButtonAction::Animate;
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
-	if (renderThread->IsBusy) {
+    if (renderThread->IsBusy) {
         postAction = PostRenderAction::Animate;
         return;
     }
@@ -687,12 +687,12 @@ System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventA
 
 System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	RenderButtonAction oldAction = mRenderButtonAction;
-	mRenderButtonAction = RenderButtonAction::AnimateFrame;
+    RenderButtonAction oldAction = mRenderButtonAction;
+    mRenderButtonAction = RenderButtonAction::AnimateFrame;
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
-	if (renderThread->IsBusy) {
+    if (renderThread->IsBusy) {
         postAction = PostRenderAction::AnimateFrame;
         return;
     }
@@ -1072,20 +1072,20 @@ System::Void Document::RenderButton_Click(System::Object^ sender, System::EventA
             updateRenderButton();
         }
     } else {
-		switch (mRenderButtonAction) {
-		case RenderButtonAction::Render:
-			menuRRender_Click(sender, e);
-			break;
+        switch (mRenderButtonAction) {
+        case RenderButtonAction::Render:
+            menuRRender_Click(sender, e);
+            break;
         case RenderButtonAction::RenderSized:
             menuRRenderSize_Click(sender, e);
             break;
-		case RenderButtonAction::Animate:
-			menuRAnimate_Click(sender, e);
-			break;
-		case RenderButtonAction::AnimateFrame:
-			menuRAnimateFrame_Click(sender, e);
-			break;
-		}
+        case RenderButtonAction::Animate:
+            menuRAnimate_Click(sender, e);
+            break;
+        case RenderButtonAction::AnimateFrame:
+            menuRAnimateFrame_Click(sender, e);
+            break;
+        }
     }
 }
 
@@ -1521,20 +1521,20 @@ void Document::updateRenderButton()
             toolStripRenderButton->Text = "Stop";
         }
     } else {
-		switch (mRenderButtonAction) {
-		case RenderButtonAction::Render:
-			toolStripRenderButton->Text = "Render";
-			break;
+        switch (mRenderButtonAction) {
+        case RenderButtonAction::Render:
+            toolStripRenderButton->Text = "Render";
+            break;
         case RenderButtonAction::RenderSized:
             toolStripRenderButton->Text = "Sized";
             break;
         case RenderButtonAction::Animate:
-			toolStripRenderButton->Text = "Animate";
-			break;
-		case RenderButtonAction::AnimateFrame:
-			toolStripRenderButton->Text = "Frame";
-			break;
-		}
+            toolStripRenderButton->Text = "Animate";
+            break;
+        case RenderButtonAction::AnimateFrame:
+            toolStripRenderButton->Text = "Frame";
+            break;
+        }
         mRenderButtonIndex = 0;
 
         bool visFrame = mRenderButtonAction == RenderButtonAction::AnimateFrame;
@@ -1570,7 +1570,7 @@ void Document::updateRenderButton()
 void Document::DoRender()
 {
     Form1::DeleteRenderer(mRenderer); mRenderer = nullptr; 
-	mEngine->reset();
+    mEngine->reset();
     setMessageText(nullptr);
 
     if (mMovieFile || mMoviePlayer) {
@@ -1616,10 +1616,10 @@ void Document::DoRender()
 
     mRenderer = (*mEngine)->renderer(*mEngine, width, height,
         (float)renderParams->minimumSize, currentVariation, renderParams->borderSize).release();
-	if (!mRenderer) {
-		mEngine->reset();
-		return;
-	}
+    if (!mRenderer) {
+        mEngine->reset();
+        return;
+    }
 
     if (renderParams->action == RenderParameters::RenderActions::Render) {
         renderParams->width = mRenderer->m_width;

@@ -105,13 +105,13 @@ namespace ContextFreeNet {
 
     void GalleryUploader::OnTags(System::Object ^ sender, System::Net::DownloadDataCompletedEventArgs ^ e)
     {
-		if (e->Error || e->Cancelled) {
-			tagBox->AutoCompleteMode = AutoCompleteMode::None;
-			return;
-		}
+        if (e->Error || e->Cancelled) {
+            tagBox->AutoCompleteMode = AutoCompleteMode::None;
+            return;
+        }
 
         pin_ptr<Byte> utf8arraypin = &e->Result[0];
-		auto tagvector = Upload::AllTags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
+        auto tagvector = Upload::AllTags(reinterpret_cast<const char*>(utf8arraypin), e->Result->Length);
 
         if (tagvector.empty()) {
             tagBox->AutoCompleteMode = AutoCompleteMode::None;
@@ -339,14 +339,14 @@ namespace ContextFreeNet {
 
         imageData = nullptr;
 
-		std::string designstr = design.str();
+        std::string designstr = design.str();
         array<Byte>^ postbody = gcnew array<Byte>(static_cast<int>(designstr.length()));
         Marshal::Copy(static_cast<System::IntPtr>(&designstr[0]),
             postbody, 0, static_cast<int>(design.str().length()));
         uploadThread->RunWorkerAsync(postbody);
         this->upload->Enabled = false;
-		message->Visible = false;
-		uploadProgress->Visible = true;
+        message->Visible = false;
+        uploadProgress->Visible = true;
     }
 
     void GalleryUploader::RunUploadThread(Object^ sender, DoWorkEventArgs^ e)
@@ -408,7 +408,7 @@ namespace ContextFreeNet {
             array<Byte>^ utf8array = encodeutf8->GetBytes(respbody);
             pin_ptr<Byte> utf8arraypin = &utf8array[0];
 
-			Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
+            Upload upload(reinterpret_cast<const char*>(utf8arraypin), utf8array->Length);
             e->Result = upload.mId;
         } catch (WebException^ we) {
             HttpWebResponse^ resp = dynamic_cast<HttpWebResponse^>(we->Response);
@@ -435,9 +435,9 @@ namespace ContextFreeNet {
 
     void GalleryUploader::UploadCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
     {
-		message->Visible = true;
-		uploadProgress->Visible = false;
-		if (e->Cancelled) {
+        message->Visible = true;
+        uploadProgress->Visible = false;
+        if (e->Cancelled) {
             this->DialogResult = ::DialogResult::Cancel;
             return;
         }

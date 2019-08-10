@@ -42,18 +42,18 @@ namespace agg {
 
 namespace ContextFreeNet {
 
-	/// <summary>
-	/// Summary for Document
-	///
-	/// WARNING: If you change the name of this class, you will need to change the
-	///          'Resource File Name' property for the managed resource compiler tool
-	///          associated with all .resx files this class depends on.  Otherwise,
-	///          the designers will not be able to interact properly with localized
-	///          resources associated with this form.
-	/// </summary>
+    /// <summary>
+    /// Summary for Document
+    ///
+    /// WARNING: If you change the name of this class, you will need to change the
+    ///          'Resource File Name' property for the managed resource compiler tool
+    ///          associated with all .resx files this class depends on.  Otherwise,
+    ///          the designers will not be able to interact properly with localized
+    ///          resources associated with this form.
+    /// </summary>
     public ref class Document : public WeifenLuo::WinFormsUI::Docking::DockContent
-	{
-	public:
+    {
+    public:
         Document(void) :
               reloadWhenReady(false),
               idleAction(Form1::IdleAction::Nothing),
@@ -67,13 +67,13 @@ namespace ContextFreeNet {
               mSVGCanvas(0),
               mAnimationCanvas(0),
               mPostAction(PostRenderAction::DoNothing)
-		{
-			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+        {
+            InitializeComponent();
+            //
+            //TODO: Add the constructor code here
+            //
             InitializeStuff();
-		}
+        }
         bool isNamed;
         bool reloadWhenReady;
         Form1::IdleAction idleAction;
@@ -83,7 +83,7 @@ namespace ContextFreeNet {
 
         enum class PostRenderAction { DoNothing, Render, RenderSize, RenderRepeat, 
             Animate, AnimateFrame, SaveOutput, Close, Exit };
-		enum class RenderButtonAction { Render, RenderSized, Animate, AnimateFrame };
+        enum class RenderButtonAction { Render, RenderSized, Animate, AnimateFrame };
         property PostRenderAction postAction {
             void set(PostRenderAction a) {
                 if (a == PostRenderAction::DoNothing || a == PostRenderAction::Exit) {
@@ -102,7 +102,7 @@ namespace ContextFreeNet {
 
     private:
         PostRenderAction mPostAction;
-		RenderButtonAction mRenderButtonAction;
+        RenderButtonAction mRenderButtonAction;
         bool nonAlphaInVariation;
         WinSystem* mSystem;
         System::ComponentModel::BackgroundWorker^ renderThread;
@@ -126,8 +126,8 @@ namespace ContextFreeNet {
     private:
 
 
-	private: 
-	private: System::Windows::Forms::WebBrowser^  cfdgMessage;
+    private: 
+    private: System::Windows::Forms::WebBrowser^  cfdgMessage;
     private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator6;
     private: System::Windows::Forms::ToolStripMenuItem^  menuEFindPrev;
 
@@ -237,39 +237,39 @@ private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator8;
         void setStatusText(System::String^ txt, bool addToMessages);
     public: void reload(bool justClear);
 
-	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~Document()
-		{
-			if (components)
-			{
-				delete components;
-			}
+    protected:
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        ~Document()
+        {
+            if (components)
+            {
+                delete components;
+            }
             DestroyStuff();
-			delete mEngine;
-		}
-	private: System::Windows::Forms::ToolStrip^  toolStrip1;
+            delete mEngine;
+        }
+    private: System::Windows::Forms::ToolStrip^  toolStrip1;
 public: System::Windows::Forms::SplitContainer^  documentSplitter;
 private:
     int    lastCaretPosition;
 
-	public:  ScintillaNET::Scintilla^               cfdgText;
+    public:  ScintillaNET::Scintilla^               cfdgText;
 
     private: System::Windows::Forms::ToolStripSplitButton^ toolStripRenderButton;
 
-	private: System::Windows::Forms::ToolStripTextBox^  toolStripVariation;
-	private: System::Windows::Forms::ToolStripButton^  toolStripPrevVar;
-	private: System::Windows::Forms::ToolStripButton^  toolStripNextVar;
+    private: System::Windows::Forms::ToolStripTextBox^  toolStripVariation;
+    private: System::Windows::Forms::ToolStripButton^  toolStripPrevVar;
+    private: System::Windows::Forms::ToolStripButton^  toolStripNextVar;
 
-	private: System::Windows::Forms::ToolStripProgressBar^  toolStripProgressBar;
+    private: System::Windows::Forms::ToolStripProgressBar^  toolStripProgressBar;
 
 
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
+    private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
 private: System::Windows::Forms::ToolStripSeparator^  toolStripVariationSeparator;
 
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+    private: System::Windows::Forms::MenuStrip^  menuStrip1;
     private: System::Windows::Forms::ToolStripMenuItem^  menuFile;
 
     private: System::Windows::Forms::ToolStripMenuItem^  menuEdit;
@@ -319,21 +319,21 @@ private: System::Windows::Forms::ToolStripMenuItem^  menuROutput;
 
 
 
-	protected: 
+    protected: 
 
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
+    private:
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		void InitializeComponent(void)
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        void InitializeComponent(void)
+        {
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Document::typeid));
             this->toolStrip1 = (gcnew System::Windows::Forms::ToolStrip());
             this->toolStripRenderButton = (gcnew System::Windows::Forms::ToolStripSplitButton());
@@ -1715,8 +1715,8 @@ private: System::Void Size_Changed(System::Object^ sender, System::EventArgs^ e)
          System::Void AutoCCharDeleted(System::Object^ sender, System::EventArgs^ e);
          System::Void CheckAutoC();
 private: System::Void Indent_Click(System::Object^  sender, System::EventArgs^  e);
-		 System::Void PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
-		 System::Void PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
-		 System::Void DownLoaded(System::Object^ sender, System::Net::DownloadStringCompletedEventArgs^ e);
+         System::Void PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
+         System::Void PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
+         System::Void DownLoaded(System::Object^ sender, System::Net::DownloadStringCompletedEventArgs^ e);
 };
 }

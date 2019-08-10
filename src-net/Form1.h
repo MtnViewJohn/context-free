@@ -38,18 +38,18 @@ class Renderer;
 namespace ContextFreeNet {
 
 
-	/// <summary>
-	/// Summary for Form1
-	///
-	/// WARNING: If you change the name of this class, you will need to change the
-	///          'Resource File Name' property for the managed resource compiler tool
-	///          associated with all .resx files this class depends on.  Otherwise,
-	///          the designers will not be able to interact properly with localized
-	///          resources associated with this form.
-	/// </summary>
-	public ref class Form1 : public System::Windows::Forms::Form
-	{
-	public:
+    /// <summary>
+    /// Summary for Form1
+    ///
+    /// WARNING: If you change the name of this class, you will need to change the
+    ///          'Resource File Name' property for the managed resource compiler tool
+    ///          associated with all .resx files this class depends on.  Otherwise,
+    ///          the designers will not be able to interact properly with localized
+    ///          resources associated with this form.
+    /// </summary>
+    public ref class Form1 : public System::Windows::Forms::Form
+    {
+    public:
         Form1(array<System::String^>^ args) : StartArgs(args)
         {
             InitializeComponent();
@@ -63,18 +63,18 @@ namespace ContextFreeNet {
             StaticInitialization();
         }
 
-	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~Form1()
-		{
-			if (components)
-			{
-				delete components;
-			}
-			delete mruManager;
-		}
+    protected:
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        ~Form1()
+        {
+            if (components)
+            {
+                delete components;
+            }
+            delete mruManager;
+        }
 
     public: bool isResizing;
     public: bool iResized;
@@ -88,7 +88,7 @@ namespace ContextFreeNet {
     private: MessageCtrl^ messagePane;
     private: array<System::String^>^ StartArgs;
     public: static System::Windows::Forms::Cursor^ dropperCursor;
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+    private: System::Windows::Forms::MenuStrip^  menuStrip1;
     private: System::Windows::Forms::ToolStripMenuItem^  menuWindow;
 
     public: System::Windows::Forms::ToolStripMenuItem^  menuFile;
@@ -107,7 +107,7 @@ namespace ContextFreeNet {
     public:  static void DeleteRenderer(Renderer* r);
     private: static void RunDeleteThread(System::Object^ data);
 
-	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+    private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
     private: System::Drawing::Font^ textFont;
              int tabWidth;
@@ -158,19 +158,19 @@ namespace ContextFreeNet {
 
     protected: 
 
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
+    private:
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		void InitializeComponent(void)
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        void InitializeComponent(void)
+        {
             System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
             this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
             this->menuFile = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -458,7 +458,7 @@ public: void AddMessage(System::String^ sender, System::String^ msg);
 private: System::Void menuWMsgConsole_Click(System::Object^  sender, System::EventArgs^  e);
 private: void OpenDoc(System::String^ name);
 public:  void OpenUrl(System::String^ url);
-		 void OpenText(System::String^ cfdg);
+         void OpenText(System::String^ cfdg);
 public: delegate void ProcessParametersDelegate(array<System::String^>^ args);
 public: System::Void processArgs(array<System::String^>^ args);
 private: void updateFontDisplay();
