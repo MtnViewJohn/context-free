@@ -544,7 +544,7 @@ RendererImpl::animate(Canvas* canvas, int frames, int frame, bool zoom)
             mCurrentTime = (mFrameTimeBounds.tbegin + mFrameTimeBounds.tend) * 0.5;
             mCurrentFrame = (frameCount - 1.0)/(frames - 1.0);
             try {
-                init();
+                initBounds();
             } catch (CfdgError& err) {
                 system()->error();
                 system()->syntaxError(err);
