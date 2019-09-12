@@ -318,8 +318,9 @@ namespace AST {
     double
     CFatof(const char* s)
     {
-        double ret = atof(s);
-        return strchr(s, '%') ? ret / 100.0 : ret;
+        char* after = nullptr;
+        double ret = std::strtod(s, &after);
+        return *after == '%' ? ret / 100.0 : ret;
     }
     
     void
