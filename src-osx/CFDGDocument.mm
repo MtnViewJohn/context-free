@@ -829,34 +829,45 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-    BOOL OKToClose = YES;
-    if ([self isDocumentEdited]) {
-        NSString* fileName = [[self fileURL] lastPathComponent];
-        if (fileName == nil)
-            fileName = [self displayName];
-        NSInteger result = NSRunAlertPanel([[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"],
-                                     @"The %@ file has changed. \n\nDo you want to save the changes?",
-                                     @"Yes", @"No", @"Cancel",
-                                     fileName);
-        switch (result) {
-            case NSAlertDefaultReturn:
-                [self saveDocumentWithDelegate:delegate
-                               didSaveSelector:shouldCloseSelector
-                                   contextInfo:contextInfo];
-                return;
-            case NSAlertAlternateReturn:
-                break;  // OKToClose = YES;
-            default:
-                OKToClose = NO;
-                break;
-        }
-    }
-    if ([delegate respondsToSelector:shouldCloseSelector]) {
+    if (![delegate respondsToSelector:shouldCloseSelector])
+        return;         // what else can we do?
+    if (![self isDocumentEdited] || NSAppKitVersionNumber < NSAppKitVersionNumber10_9) {
         void (*delegateMethod)(id, SEL, id, BOOL, void *);
         delegateMethod = (void (*)(id, SEL, id, BOOL, void *))[delegate methodForSelector:shouldCloseSelector];
-        delegateMethod(delegate, shouldCloseSelector, self, OKToClose, contextInfo);
+        delegateMethod(delegate, shouldCloseSelector, self, YES, contextInfo);
+        return;
     }
-
+    NSString* fileName = [[self fileURL] lastPathComponent];
+    if (fileName == nil)
+        fileName = [self displayName];
+    NSAlert* alert = [[[NSAlert alloc] init] autorelease];
+    alert.alertStyle = NSAlertStyleCritical;
+    alert.messageText = @"Document closing";
+    alert.informativeText = [NSString stringWithFormat: @"The %@ file has changed. \n\nDo you want to save the changes?", fileName];
+    [alert addButtonWithTitle: @"Save"];
+    [alert addButtonWithTitle: @"Don’t Save"];
+    [alert addButtonWithTitle: @"Cancel"];
+    [alert beginSheetModalForWindow: [mGView window] completionHandler: ^(NSModalResponse returnCode)
+     {
+         BOOL OKToClose = YES;
+         switch (returnCode) {
+             case NSAlertFirstButtonReturn:     // Save & close
+                 [self saveDocumentWithDelegate: delegate
+                                didSaveSelector: shouldCloseSelector
+                                    contextInfo: contextInfo];
+                 return;                        // save dialog calls close delegate
+             case NSAlertSecondButtonReturn:    // Close without saving
+                 break;
+             case NSAlertThirdButtonReturn:     // Cancel close
+                 OKToClose = NO;
+                 break;
+             default:
+                 break;
+         }
+         void (*delegateMethod)(id, SEL, id, BOOL, void *);
+         delegateMethod = (void (*)(id, SEL, id, BOOL, void *))[delegate methodForSelector: shouldCloseSelector];
+         delegateMethod(delegate, shouldCloseSelector, self, OKToClose, contextInfo);
+     }];
 }
 
 
