@@ -1,9 +1,18 @@
 contextfree (3.2+dfsg1-1) unstable; urgency=medium
 
   * New upstream release.
+  * Remove strip from Makefile so that dh_strip can do it instead.
+    (Closes: #940662)
   * Updated Standards-Version to 4.4.0.1
+  * Update debhelper to v12
 
- -- John Horigan <john@glyphic.com>  Thu, 01 Aug 2019 14:08:33 -0700
+ -- John Horigan <john@glyphic.com>  Mon, 23 Sep 2019 20:55:48 -0700
+
+contextfree (3.1+dfsg1-2) unstable; urgency=medium
+
+  * Use shared library for libagg (Closes: #920920)
+
+ -- John Horigan <john@glyphic.com>  Thu, 31 Jan 2019 19:36:50 -0800
 
 contextfree (3.1+dfsg1-1) unstable; urgency=medium
 

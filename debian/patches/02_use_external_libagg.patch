@@ -19,7 +19,7 @@ libagg and this patch makes this change to the Makefile.
  # Configuration for system AGG
  #
 -#LIBS += agg
-+LIBS += agg_pic
++LIBS += agg
  
  
  OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))

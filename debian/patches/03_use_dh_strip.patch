@@ -1,0 +1,16 @@
+From Helmut Grohne <helmut@subdivi.de> Debian QA
+contextfree fails to cross build from source, because it strips with the
+wrong strip. Such stripping also breaks DEB_BUILD_OPTIONS=nostrip as
+well as generation of -dbgsym packages. stripping is best deferred to
+dh_strip. 
+
+--- a/Makefile
++++ b/Makefile
+@@ -133,7 +133,6 @@
+ 
+ cfdg: $(OBJS)
+ 	$(LINK.o) $^ $(LINKFLAGS) -o $@
+-	strip $@
+ 
+ 
+ #
