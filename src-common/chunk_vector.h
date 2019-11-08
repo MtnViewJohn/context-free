@@ -64,28 +64,28 @@ private:
     friend class chunk_vector;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator==(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator==(const chunk_vector_iterator<_valType1, _p2>& _x,
+                           const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator!=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator!=(const chunk_vector_iterator<_valType1, _p2>& _x,
+                           const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator<(const chunk_vector_iterator<_valType1, _p2>& __x,
-                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator<(const chunk_vector_iterator<_valType1, _p2>& _x,
+                          const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator>(const chunk_vector_iterator<_valType1, _p2>& __x,
-                          const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator>(const chunk_vector_iterator<_valType1, _p2>& _x,
+                          const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator<=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator<=(const chunk_vector_iterator<_valType1, _p2>& _x,
+                           const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
     template<typename _valType1, typename _valType2, unsigned _p2>
-    friend bool operator>=(const chunk_vector_iterator<_valType1, _p2>& __x,
-                           const chunk_vector_iterator<_valType2, _p2>& __y) noexcept;
+    friend bool operator>=(const chunk_vector_iterator<_valType1, _p2>& _x,
+                           const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
 public:
     chunk_vector_iterator(const chunk_vector_iterator& cvi)
@@ -212,69 +212,69 @@ private:
 };
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& __x,
-                       const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator==(const chunk_vector_iterator<_valType1, _power2>& _x,
+                       const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index == __y._index;
+    return _x._index == _y._index;
 }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& __x,
-                       const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator!=(const chunk_vector_iterator<_valType1, _power2>& _x,
+                       const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index != __y._index;
+    return _x._index != _y._index;
 }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& __x,
-                      const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator<(const chunk_vector_iterator<_valType1, _power2>& _x,
+                      const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index < __y._index;
+    return _x._index < _y._index;
 }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& __x,
-                      const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator>(const chunk_vector_iterator<_valType1, _power2>& _x,
+                      const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index > __y._index;
+    return _x._index > _y._index;
 }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& __x,
-                       const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator<=(const chunk_vector_iterator<_valType1, _power2>& _x,
+                       const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index <= __y._index;
+    return _x._index <= _y._index;
 }
 
 template<typename _valType1, typename _valType2, unsigned _power2>
-inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& __x,
-                       const chunk_vector_iterator<_valType2, _power2>& __y) noexcept
+inline bool operator>=(const chunk_vector_iterator<_valType1, _power2>& _x,
+                       const chunk_vector_iterator<_valType2, _power2>& _y) noexcept
 {
     static_assert(std::is_same<typename std::remove_const<_valType1>::type,
                                typename std::remove_const<_valType2>::type>::value,
                   "Types must match, modulo const");
-    return __x._index >= __y._index;
+    return _x._index >= _y._index;
 }
 
 template<typename _valType, unsigned _power2>
-inline chunk_vector_iterator<_valType, _power2> operator+(std::ptrdiff_t __n,
-                       const chunk_vector_iterator<_valType, _power2>& __x) noexcept
-{ return __x + __n; }
+inline chunk_vector_iterator<_valType, _power2> operator+(std::ptrdiff_t _n,
+                       const chunk_vector_iterator<_valType, _power2>& _x) noexcept
+{ return _x + _n; }
 
 template<typename _valType, unsigned _power2>
 void swap(chunk_vector_iterator<_valType, _power2>& s, chunk_vector_iterator<_valType, _power2>& t)

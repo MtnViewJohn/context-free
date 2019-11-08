@@ -97,27 +97,27 @@ public:
     
 private:
     template <class _CharT, class _Traits>
-    class __save_flags
+    class _save_flags
     {
-        using __stream_type = std::basic_ios<_CharT, _Traits>;
-        using fmtflags = typename __stream_type::fmtflags;
+        using _stream_type = std::basic_ios<_CharT, _Traits>;
+        using fmtflags = typename _stream_type::fmtflags;
         
-        __stream_type& __stream_;
-        fmtflags       __fmtflags_;
-        _CharT         __fill_;
+        _stream_type& _stream_;
+        fmtflags       _fmtflags_;
+        _CharT         _fill_;
         
-        __save_flags(const __save_flags&);
-        __save_flags& operator=(const __save_flags&);
+        _save_flags(const _save_flags&);
+        _save_flags& operator=(const _save_flags&);
     public:
-        explicit __save_flags(__stream_type& __stream)
-        : __stream_(__stream),
-        __fmtflags_(__stream.flags()),
-        __fill_(__stream.fill())
+        explicit _save_flags(_stream_type& _stream)
+        : _stream_(_stream),
+        _fmtflags_(_stream.flags()),
+        _fill_(_stream.fill())
         {}
-        ~__save_flags()
+        ~_save_flags()
         {
-            __stream_.flags(__fmtflags_);
-            __stream_.fill(__fill_);
+            _stream_.flags(_fmtflags_);
+            _stream_.fill(_fill_);
         }
     };
 };
@@ -125,7 +125,7 @@ private:
 template <class CharT, class Traits>
 std::basic_ostream<CharT,Traits>& operator<<(std::basic_ostream<CharT,Traits>& ost, const XORshift64star& rhs)
 {
-    XORshift64star::__save_flags<CharT, Traits> lx(ost);
+    XORshift64star::_save_flags<CharT, Traits> lx(ost);
     ost.flags(std::ios_base::dec | std::ios_base::left);
     ost.fill(ost.widen(' '));
     return ost << rhs.mSeed;
@@ -134,7 +134,7 @@ std::basic_ostream<CharT,Traits>& operator<<(std::basic_ostream<CharT,Traits>& o
 template <class CharT, class Traits>
 std::basic_istream<CharT,Traits>& operator>>(std::basic_istream<CharT,Traits>& ist, XORshift64star& rhs)
 {
-    XORshift64star::__save_flags<CharT, Traits> lx(ist);
+    XORshift64star::_save_flags<CharT, Traits> lx(ist);
     ist.flags(std::ios_base::dec | std::ios_base::skipws);
     XORshift64star::result_type tmp;
     ist >> tmp;

@@ -26,8 +26,8 @@
 //
 //
 
-#ifndef __HSBCOLOR_H_
-#define __HSBCOLOR_H_
+#ifndef HSBCOLOR_H_
+#define HSBCOLOR_H_
 
 namespace agg {
     struct rgba;
