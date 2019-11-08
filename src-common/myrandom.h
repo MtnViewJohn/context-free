@@ -110,51 +110,51 @@
 
 namespace CF {
     template <unsigned long long _Xp, size_t _Rp>
-    struct __log2_imp
+    struct _mr_log2_imp
     {
         static const size_t value = _Xp & ((unsigned long long)(1) << _Rp) ? _Rp
-        : __log2_imp<_Xp, _Rp - 1>::value;
+        : _mr_log2_imp<_Xp, _Rp - 1>::value;
     };
     
     template <unsigned long long _Xp>
-    struct __log2_imp<_Xp, 0>
+    struct _mr_log2_imp<_Xp, 0>
     {
         static const size_t value = 0;
     };
     
     template <size_t _Rp>
-    struct __log2_imp<0, _Rp>
+    struct _mr_log2_imp<0, _Rp>
     {
         static const size_t value = _Rp + 1;
     };
     
     template <class _UI, _UI _Xp>
-    struct __log2
+    struct _mr_log2
     {
-        static const size_t value = __log2_imp<_Xp, sizeof(_UI) * 8 - 1>::value;
+        static const size_t value = _mr_log2_imp<_Xp, sizeof(_UI) * 8 - 1>::value;
     };
     
     
     // generate_canonical
     
-    template<class _RealType, std::size_t __bits, class _URNG>
+    template<class _RealType, std::size_t _mr_bits, class _URNG>
     _RealType
-    generate_canonical(_URNG& __g)
+    generate_canonical(_URNG& _mr_g)
     {
         const std::size_t _Dt = std::numeric_limits<_RealType>::digits;
-        const std::size_t __b = _Dt < __bits ? _Dt : __bits;
+        const std::size_t _mr_b = _Dt < _mr_bits ? _Dt : _mr_bits;
 #ifdef CF_HAS_NO_CONSTEXPR
-        const std::size_t __logR = __log2<std::uint64_t, _URNG::_Max - _URNG::_Min + std::uint64_t(1)>::value;
+        const std::size_t _mr_logR = _mr_log2<std::uint64_t, _URNG::_Max - _URNG::_Min + std::uint64_t(1)>::value;
 #else
-        const std::size_t __logR = __log2<std::uint64_t, _URNG::max() - _URNG::min() + std::uint64_t(1)>::value;
+        const std::size_t _mr_logR = _mr_log2<std::uint64_t, _URNG::max() - _URNG::min() + std::uint64_t(1)>::value;
 #endif
-        const std::size_t __k = __b / __logR + (__b % __logR != 0) + (__b == 0);
+        const std::size_t _mr_k = _mr_b / _mr_logR + (_mr_b % _mr_logR != 0) + (_mr_b == 0);
         const _RealType _Rp = _URNG::max() - _URNG::min() + _RealType(1);
-        _RealType __base = _Rp;
-        _RealType _Sp = __g() - _URNG::min();
-        for (std::size_t __i = 1; __i < __k; ++__i, __base *= _Rp)
-            _Sp += (__g() - _URNG::min()) * __base;
-        return _Sp / __base;
+        _RealType _mr_base = _Rp;
+        _RealType _Sp = _mr_g() - _URNG::min();
+        for (std::size_t _mr_i = 1; _mr_i < _mr_k; ++_mr_i, _mr_base *= _Rp)
+            _Sp += (_mr_g() - _URNG::min()) * _mr_base;
+        return _Sp / _mr_base;
     }
     
     // uniform_real_distribution
@@ -168,71 +168,71 @@ namespace CF {
         
         class param_type
         {
-            result_type __a_;
-            result_type __b_;
+            result_type _mr_a_;
+            result_type _mr_b_;
         public:
             typedef uniform_real_distribution distribution_type;
             
-            explicit param_type(result_type __a = 0,
-                                result_type __b = 1)
-            : __a_(__a), __b_(__b) {}
+            explicit param_type(result_type _mr_a = 0,
+                                result_type _mr_b = 1)
+            : _mr_a_(_mr_a), _mr_b_(_mr_b) {}
             
-            result_type a() const {return __a_;}
-            result_type b() const {return __b_;}
+            result_type a() const {return _mr_a_;}
+            result_type b() const {return _mr_b_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__a_ == __y.__a_ && __x.__b_ == __y.__b_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_a_ == _mr_y._mr_a_ && _mr_x._mr_b_ == _mr_y._mr_b_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit uniform_real_distribution(result_type __a = 0, result_type __b = 1)
-        : __p_(param_type(__a, __b)) {}
-        explicit uniform_real_distribution(const param_type& __p) : __p_(__p) {}
+        explicit uniform_real_distribution(result_type _mr_a = 0, result_type _mr_b = 1)
+        : _mr_p_(param_type(_mr_a, _mr_b)) {}
+        explicit uniform_real_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type a() const {return __p_.a();}
-        result_type b() const {return __p_.b();}
+        result_type a() const {return _mr_p_.a();}
+        result_type b() const {return _mr_p_.b();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return a();}
         result_type max() const {return b();}
         
         friend
-        bool operator==(const uniform_real_distribution& __x,
-                        const uniform_real_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const uniform_real_distribution& _mr_x,
+                        const uniform_real_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const uniform_real_distribution& __x,
-                        const uniform_real_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const uniform_real_distribution& _mr_x,
+                        const uniform_real_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _RealType>
     template<class _URNG>
     inline
     typename uniform_real_distribution<_RealType>::result_type
-    uniform_real_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    uniform_real_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        return (__p.b() - __p.a())
-        * generate_canonical<_RealType, std::numeric_limits<_RealType>::digits>(__g)
-        + __p.a();
+        return (_mr_p.b() - _mr_p.a())
+        * generate_canonical<_RealType, std::numeric_limits<_RealType>::digits>(_mr_g)
+        + _mr_p.a();
     }
     
     // uniform_int_distribution
@@ -246,80 +246,80 @@ namespace CF {
         
         class param_type
         {
-            result_type __a_;
-            result_type __b_;
+            result_type _mr_a_;
+            result_type _mr_b_;
         public:
             typedef uniform_int_distribution distribution_type;
             
-            explicit param_type(result_type __a = 0,
-                                result_type __b = std::numeric_limits<result_type>::max())
-            : __a_(__a), __b_(__b) {}
+            explicit param_type(result_type _mr_a = 0,
+                                result_type _mr_b = std::numeric_limits<result_type>::max())
+            : _mr_a_(_mr_a), _mr_b_(_mr_b) {}
             
-            result_type a() const {return __a_;}
-            result_type b() const {return __b_;}
+            result_type a() const {return _mr_a_;}
+            result_type b() const {return _mr_b_;}
             
-            friend bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__a_ == __y.__a_ && __x.__b_ == __y.__b_;}
-            friend bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            friend bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_a_ == _mr_y._mr_a_ && _mr_x._mr_b_ == _mr_y._mr_b_;}
+            friend bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit uniform_int_distribution(result_type __a = 0,
-                                          result_type __b = std::numeric_limits<result_type>::max())
-        : __p_(param_type(__a, __b)) {}
-        explicit uniform_int_distribution(const param_type& __p) : __p_(__p) {}
+        explicit uniform_int_distribution(result_type _mr_a = 0,
+                                          result_type _mr_b = std::numeric_limits<result_type>::max())
+        : _mr_p_(param_type(_mr_a, _mr_b)) {}
+        explicit uniform_int_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
-        template<class _URNG> result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        template<class _URNG> result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type a() const {return __p_.a();}
-        result_type b() const {return __p_.b();}
+        result_type a() const {return _mr_p_.a();}
+        result_type b() const {return _mr_p_.b();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return a();}
         result_type max() const {return b();}
         
-        friend bool operator==(const uniform_int_distribution& __x,
-                               const uniform_int_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
-        friend bool operator!=(const uniform_int_distribution& __x,
-                               const uniform_int_distribution& __y)
-        {return !(__x == __y);}
+        friend bool operator==(const uniform_int_distribution& _mr_x,
+                               const uniform_int_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
+        friend bool operator!=(const uniform_int_distribution& _mr_x,
+                               const uniform_int_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _IntType>
     template<class _URNG>
     typename uniform_int_distribution<_IntType>::result_type
-    uniform_int_distribution<_IntType>::operator()(_URNG& __g, const param_type& __p)
+    uniform_int_distribution<_IntType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
         typedef typename _URNG::result_type eng_type;
         static_assert(sizeof(eng_type) >= sizeof(result_type),
                       "quick & dirty int distribution won't work");
         
-        typename _URNG::result_type diff = static_cast<eng_type>(__p.b()) -
-                                           static_cast<eng_type>(__p.a()) + 1;
+        typename _URNG::result_type diff = static_cast<eng_type>(_mr_p.b()) -
+                                           static_cast<eng_type>(_mr_p.a()) + 1;
         if (diff == 0)
-            return static_cast<result_type>(__g() - __g.min());
+            return static_cast<result_type>(_mr_g() - _mr_g.min());
         
-        eng_type tooBig = __g.max() - __g.min();
+        eng_type tooBig = _mr_g.max() - _mr_g.min();
         tooBig -= tooBig % diff;
         
         for(;;) {
-            eng_type gen = __g() - __g.min();
+            eng_type gen = _mr_g() - _mr_g.min();
             
             if (gen < tooBig)
-                return static_cast<result_type>(gen % diff) + __p.a();
+                return static_cast<result_type>(gen % diff) + _mr_p.a();
         }
     }
     
@@ -335,119 +335,119 @@ namespace CF {
         
         class param_type
         {
-            result_type __t_;
-            double __p_;
-            double __pr_;
-            double __odds_ratio_;
-            result_type __r0_;
+            result_type _mr_t_;
+            double _mr_p_;
+            double _mr_pr_;
+            double _mr_odds_ratio_;
+            result_type _mr_r0_;
         public:
             typedef binomial_distribution distribution_type;
             
-            explicit param_type(result_type __t = 1, double __p = 0.5);
+            explicit param_type(result_type _mr_t = 1, double _mr_p = 0.5);
             
             inline
-            result_type t() const {return __t_;}
+            result_type t() const {return _mr_t_;}
             inline
-            double p() const {return __p_;}
+            double p() const {return _mr_p_;}
             
             friend inline
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__t_ == __y.__t_ && __x.__p_ == __y.__p_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_t_ == _mr_y._mr_t_ && _mr_x._mr_p_ == _mr_y._mr_p_;}
             friend inline
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
             
             friend class binomial_distribution;
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit binomial_distribution(result_type __t = 1, double __p = 0.5)
-        : __p_(param_type(__t, __p)) {}
-        explicit binomial_distribution(const param_type& __p) : __p_(__p) {}
+        explicit binomial_distribution(result_type _mr_t = 1, double _mr_p = 0.5)
+        : _mr_p_(param_type(_mr_t, _mr_p)) {}
+        explicit binomial_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type t() const {return __p_.t();}
-        double p() const {return __p_.p();}
+        result_type t() const {return _mr_p_.t();}
+        double p() const {return _mr_p_.p();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return t();}
         
         friend inline
-        bool operator==(const binomial_distribution& __x,
-                        const binomial_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const binomial_distribution& _mr_x,
+                        const binomial_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend inline
-        bool operator!=(const binomial_distribution& __x,
-                        const binomial_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const binomial_distribution& _mr_x,
+                        const binomial_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _IntType>
-    binomial_distribution<_IntType>::param_type::param_type(result_type __t, double __p)
-    : __t_(__t), __p_(__p)
+    binomial_distribution<_IntType>::param_type::param_type(result_type _mr_t, double _mr_p)
+    : _mr_t_(_mr_t), _mr_p_(_mr_p)
     {
-        if (0 < __p_ && __p_ < 1)
+        if (0 < _mr_p_ && _mr_p_ < 1)
         {
-            __r0_ = static_cast<result_type>((__t_ + 1) * __p_);
-            __pr_ = std::exp(std::lgamma(__t_ + 1.) - std::lgamma(__r0_ + 1.) -
-                               std::lgamma(__t_ - __r0_ + 1.) + __r0_ * std::log(__p_) +
-                               (__t_ - __r0_) * std::log(1 - __p_));
-            __odds_ratio_ = __p_ / (1 - __p_);
+            _mr_r0_ = static_cast<result_type>((_mr_t_ + 1) * _mr_p_);
+            _mr_pr_ = std::exp(std::lgamma(_mr_t_ + 1.) - std::lgamma(_mr_r0_ + 1.) -
+                               std::lgamma(_mr_t_ - _mr_r0_ + 1.) + _mr_r0_ * std::log(_mr_p_) +
+                               (_mr_t_ - _mr_r0_) * std::log(1 - _mr_p_));
+            _mr_odds_ratio_ = _mr_p_ / (1 - _mr_p_);
         }
-	else
-	{
-	    __r0_ = __pr_ = __odds_ratio_ = 0;
-	}
+        else
+        {
+            _mr_r0_ = _mr_pr_ = _mr_odds_ratio_ = 0;
+        }
     }
     
     template<class _IntType>
     template<class _URNG>
     _IntType
-    binomial_distribution<_IntType>::operator()(_URNG& __g, const param_type& __pr)
+    binomial_distribution<_IntType>::operator()(_URNG& _mr_g, const param_type& _mr_pr)
     {
-        if (__pr.__t_ == 0 || __pr.__p_ == 0)
+        if (_mr_pr._mr_t_ == 0 || _mr_pr._mr_p_ == 0)
             return 0;
-        if (__pr.__p_ == 1)
-            return __pr.__t_;
-        uniform_real_distribution<double> __gen;
-        double __u = __gen(__g) - __pr.__pr_;
-        if (__u < 0)
-            return __pr.__r0_;
-        double __pu = __pr.__pr_;
-        double __pd = __pu;
-        result_type __ru = __pr.__r0_;
-        result_type __rd = __ru;
+        if (_mr_pr._mr_p_ == 1)
+            return _mr_pr._mr_t_;
+        uniform_real_distribution<double> _mr_gen;
+        double _mr_u = _mr_gen(_mr_g) - _mr_pr._mr_pr_;
+        if (_mr_u < 0)
+            return _mr_pr._mr_r0_;
+        double _mr_pu = _mr_pr._mr_pr_;
+        double _mr_pd = _mr_pu;
+        result_type _mr_ru = _mr_pr._mr_r0_;
+        result_type _mr_rd = _mr_ru;
         while (true)
         {
-            if (__rd >= 1)
+            if (_mr_rd >= 1)
             {
-                __pd *= __rd / (__pr.__odds_ratio_ * (__pr.__t_ - __rd + 1));
-                __u -= __pd;
-                if (__u < 0)
-                    return __rd - 1;
+                _mr_pd *= _mr_rd / (_mr_pr._mr_odds_ratio_ * (_mr_pr._mr_t_ - _mr_rd + 1));
+                _mr_u -= _mr_pd;
+                if (_mr_u < 0)
+                    return _mr_rd - 1;
             }
-            --__rd;
-            ++__ru;
-            if (__ru <= __pr.__t_)
+            --_mr_rd;
+            ++_mr_ru;
+            if (_mr_ru <= _mr_pr._mr_t_)
             {
-                __pu *= (__pr.__t_ - __ru + 1) * __pr.__odds_ratio_ / __ru;
-                __u -= __pu;
-                if (__u < 0)
-                    return __ru;
+                _mr_pu *= (_mr_pr._mr_t_ - _mr_ru + 1) * _mr_pr._mr_odds_ratio_ / _mr_ru;
+                _mr_u -= _mr_pu;
+                if (_mr_u < 0)
+                    return _mr_ru;
             }
         }
     }
@@ -463,64 +463,64 @@ namespace CF {
         
         class param_type
         {
-            double __p_;
+            double _mr_p_;
         public:
             typedef bernoulli_distribution distribution_type;
             
-            explicit param_type(double __p = 0.5) : __p_(__p) {}
+            explicit param_type(double _mr_p = 0.5) : _mr_p_(_mr_p) {}
             
-            double p() const {return __p_;}
+            double p() const {return _mr_p_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__p_ == __y.__p_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_p_ == _mr_y._mr_p_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit bernoulli_distribution(double __p = 0.5)
-        : __p_(param_type(__p)) {}
-        explicit bernoulli_distribution(const param_type& __p) : __p_(__p) {}
+        explicit bernoulli_distribution(double _mr_p = 0.5)
+        : _mr_p_(param_type(_mr_p)) {}
+        explicit bernoulli_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        double p() const {return __p_.p();}
+        double p() const {return _mr_p_.p();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return false;}
         result_type max() const {return true;}
         
         friend
-        bool operator==(const bernoulli_distribution& __x,
-                        const bernoulli_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const bernoulli_distribution& _mr_x,
+                        const bernoulli_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const bernoulli_distribution& __x,
-                        const bernoulli_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const bernoulli_distribution& _mr_x,
+                        const bernoulli_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _URNG>
     inline
     bernoulli_distribution::result_type
-    bernoulli_distribution::operator()(_URNG& __g, const param_type& __p)
+    bernoulli_distribution::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        CF::uniform_real_distribution<double> __gen;
-        return __gen(__g) < __p.p();
+        CF::uniform_real_distribution<double> _mr_gen;
+        return _mr_gen(_mr_g) < _mr_p.p();
     }
         
     // exponential_distribution
@@ -534,68 +534,68 @@ namespace CF {
         
         class param_type
         {
-            result_type __lambda_;
+            result_type _mr_lambda_;
         public:
             typedef exponential_distribution distribution_type;
             
-            explicit param_type(result_type __lambda = 1) : __lambda_(__lambda) {}
+            explicit param_type(result_type _mr_lambda = 1) : _mr_lambda_(_mr_lambda) {}
             
-            result_type lambda() const {return __lambda_;}
+            result_type lambda() const {return _mr_lambda_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__lambda_ == __y.__lambda_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_lambda_ == _mr_y._mr_lambda_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit exponential_distribution(result_type __lambda = 1)
-        : __p_(param_type(__lambda)) {}
-        explicit exponential_distribution(const param_type& __p) : __p_(__p) {}
+        explicit exponential_distribution(result_type _mr_lambda = 1)
+        : _mr_p_(param_type(_mr_lambda)) {}
+        explicit exponential_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type lambda() const {return __p_.lambda();}
+        result_type lambda() const {return _mr_p_.lambda();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const exponential_distribution& __x,
-                        const exponential_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const exponential_distribution& _mr_x,
+                        const exponential_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const exponential_distribution& __x,
-                        const exponential_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const exponential_distribution& _mr_x,
+                        const exponential_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     _RealType
-    exponential_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    exponential_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
         return -std::log
         (
          result_type(1) -
-         CF::generate_canonical<result_type, std::numeric_limits<result_type>::digits>(__g)
+         CF::generate_canonical<result_type, std::numeric_limits<result_type>::digits>(_mr_g)
          )
-        / __p.lambda();
+        / _mr_p.lambda();
     }
     
     
@@ -611,69 +611,69 @@ namespace CF {
         
         class param_type
         {
-            result_type __mean_;
-            result_type __stddev_;
+            result_type _mr_mean_;
+            result_type _mr_stddev_;
         public:
             typedef normal_distribution distribution_type;
             
-            explicit param_type(result_type __mean = 0, result_type __stddev = 1)
-            : __mean_(__mean), __stddev_(__stddev) {}
+            explicit param_type(result_type _mr_mean = 0, result_type _mr_stddev = 1)
+            : _mr_mean_(_mr_mean), _mr_stddev_(_mr_stddev) {}
             
-            result_type mean() const {return __mean_;}
-            result_type stddev() const {return __stddev_;}
+            result_type mean() const {return _mr_mean_;}
+            result_type stddev() const {return _mr_stddev_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__mean_ == __y.__mean_ && __x.__stddev_ == __y.__stddev_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_mean_ == _mr_y._mr_mean_ && _mr_x._mr_stddev_ == _mr_y._mr_stddev_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         result_type _V_;
         bool _V_hot_;
         
     public:
         // constructors and reset functions
-        explicit normal_distribution(result_type __mean = 0, result_type __stddev = 1)
-        : __p_(param_type(__mean, __stddev)), _V_hot_(false) {}
-        explicit normal_distribution(const param_type& __p)
-        : __p_(__p), _V_hot_(false) {}
+        explicit normal_distribution(result_type _mr_mean = 0, result_type _mr_stddev = 1)
+        : _mr_p_(param_type(_mr_mean, _mr_stddev)), _V_hot_(false) {}
+        explicit normal_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p), _V_hot_(false) {}
         void reset() {_V_hot_ = false;}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type mean() const {return __p_.mean();}
-        result_type stddev() const {return __p_.stddev();}
+        result_type mean() const {return _mr_p_.mean();}
+        result_type stddev() const {return _mr_p_.stddev();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return -std::numeric_limits<result_type>::infinity();}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const normal_distribution& __x,
-                        const normal_distribution& __y)
-        {return __x.__p_ == __y.__p_ && __x._V_hot_ == __y._V_hot_ &&
-            (!__x._V_hot_ || __x._V_ == __y._V_);}
+        bool operator==(const normal_distribution& _mr_x,
+                        const normal_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_ && _mr_x._V_hot_ == _mr_y._V_hot_ &&
+            (!_mr_x._V_hot_ || _mr_x._V_ == _mr_y._V_);}
         friend
-        bool operator!=(const normal_distribution& __x,
-                        const normal_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const normal_distribution& _mr_x,
+                        const normal_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     _RealType
-    normal_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    normal_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
         result_type _Up;
         if (_V_hot_)
@@ -684,21 +684,21 @@ namespace CF {
         else
         {
             CF::uniform_real_distribution<result_type> _Uni(-1, 1);
-            result_type __u;
-            result_type __v;
-            result_type __s;
+            result_type _mr_u;
+            result_type _mr_v;
+            result_type _mr_s;
             do
             {
-                __u = _Uni(__g);
-                __v = _Uni(__g);
-                __s = __u * __u + __v * __v;
-            } while (__s > 1 || __s == 0);
-            result_type _Fp = std::sqrt(-2 * std::log(__s) / __s);
-            _V_ = __v * _Fp;
+                _mr_u = _Uni(_mr_g);
+                _mr_v = _Uni(_mr_g);
+                _mr_s = _mr_u * _mr_u + _mr_v * _mr_v;
+            } while (_mr_s > 1 || _mr_s == 0);
+            result_type _Fp = std::sqrt(-2 * std::log(_mr_s) / _mr_s);
+            _V_ = _mr_v * _Fp;
             _V_hot_ = true;
-            _Up = __u * _Fp;
+            _Up = _mr_u * _Fp;
         }
-        return _Up * __p.stddev() + __p.mean();
+        return _Up * _mr_p.stddev() + _mr_p.mean();
     }
     
     
@@ -714,192 +714,192 @@ namespace CF {
         
         class param_type
         {
-            double __mean_;
-            double __s_;
-            double __d_;
-            double __l_;
-            double __omega_;
-            double __c0_;
-            double __c1_;
-            double __c2_;
-            double __c3_;
-            double __c_;
+            double _mr_mean_;
+            double _mr_s_;
+            double _mr_d_;
+            double _mr_l_;
+            double _mr_omega_;
+            double _mr_c0_;
+            double _mr_c1_;
+            double _mr_c2_;
+            double _mr_c3_;
+            double _mr_c_;
             
         public:
             typedef poisson_distribution distribution_type;
             
-            explicit param_type(double __mean = 1.0);
+            explicit param_type(double _mr_mean = 1.0);
             
-            double mean() const {return __mean_;}
+            double mean() const {return _mr_mean_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__mean_ == __y.__mean_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_mean_ == _mr_y._mr_mean_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
             
             friend class poisson_distribution;
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit poisson_distribution(double __mean = 1.0) : __p_(__mean) {}
-        explicit poisson_distribution(const param_type& __p) : __p_(__p) {}
+        explicit poisson_distribution(double _mr_mean = 1.0) : _mr_p_(_mr_mean) {}
+        explicit poisson_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        double mean() const {return __p_.mean();}
+        double mean() const {return _mr_p_.mean();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::max();}
         
         friend
-        bool operator==(const poisson_distribution& __x,
-                        const poisson_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const poisson_distribution& _mr_x,
+                        const poisson_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const poisson_distribution& __x,
-                        const poisson_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const poisson_distribution& _mr_x,
+                        const poisson_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _IntType>
-    poisson_distribution<_IntType>::param_type::param_type(double __mean)
-    : __mean_(__mean)
+    poisson_distribution<_IntType>::param_type::param_type(double _mr_mean)
+    : _mr_mean_(_mr_mean)
     {
-        if (__mean_ < 10)
+        if (_mr_mean_ < 10)
         {
-            __s_ = 0;
-            __d_ = 0;
-            __l_ = std::exp(-__mean_);
-            __omega_ = 0;
-            __c3_ = 0;
-            __c2_ = 0;
-            __c1_ = 0;
-            __c0_ = 0;
-            __c_ = 0;
+            _mr_s_ = 0;
+            _mr_d_ = 0;
+            _mr_l_ = std::exp(-_mr_mean_);
+            _mr_omega_ = 0;
+            _mr_c3_ = 0;
+            _mr_c2_ = 0;
+            _mr_c1_ = 0;
+            _mr_c0_ = 0;
+            _mr_c_ = 0;
         }
         else
         {
-            __s_ = std::sqrt(__mean_);
-            __d_ = 6 * __mean_ * __mean_;
-            __l_ = static_cast<result_type>(__mean_ - 1.1484);
-            __omega_ = .3989423 / __s_;
-            double __b1_ = .4166667E-1 / __mean_;
-            double __b2_ = .3 * __b1_ * __b1_;
-            __c3_ = .1428571 * __b1_ * __b2_;
-            __c2_ = __b2_ - 15. * __c3_;
-            __c1_ = __b1_ - 6. * __b2_ + 45. * __c3_;
-            __c0_ = 1. - __b1_ + 3. * __b2_ - 15. * __c3_;
-            __c_ = .1069 / __mean_;
+            _mr_s_ = std::sqrt(_mr_mean_);
+            _mr_d_ = 6 * _mr_mean_ * _mr_mean_;
+            _mr_l_ = static_cast<result_type>(_mr_mean_ - 1.1484);
+            _mr_omega_ = .3989423 / _mr_s_;
+            double _mr_b1_ = .4166667E-1 / _mr_mean_;
+            double _mr_b2_ = .3 * _mr_b1_ * _mr_b1_;
+            _mr_c3_ = .1428571 * _mr_b1_ * _mr_b2_;
+            _mr_c2_ = _mr_b2_ - 15. * _mr_c3_;
+            _mr_c1_ = _mr_b1_ - 6. * _mr_b2_ + 45. * _mr_c3_;
+            _mr_c0_ = 1. - _mr_b1_ + 3. * _mr_b2_ - 15. * _mr_c3_;
+            _mr_c_ = .1069 / _mr_mean_;
         }
     }
     
     template <class _IntType>
     template<class _URNG>
     _IntType
-    poisson_distribution<_IntType>::operator()(_URNG& __urng, const param_type& __pr)
+    poisson_distribution<_IntType>::operator()(_URNG& _mr_urng, const param_type& _mr_pr)
     {
-        result_type __x = 0;
-        CF::uniform_real_distribution<double> __urd;
-        if (__pr.__mean_ < 10)
+        result_type _mr_x = 0;
+        CF::uniform_real_distribution<double> _mr_urd;
+        if (_mr_pr._mr_mean_ < 10)
         {
-            __x = 0;
-            for (double __p = __urd(__urng); __p > __pr.__l_; ++__x)
-                __p *= __urd(__urng);
+            _mr_x = 0;
+            for (double _mr_p = _mr_urd(_mr_urng); _mr_p > _mr_pr._mr_l_; ++_mr_x)
+                _mr_p *= _mr_urd(_mr_urng);
         }
         else
         {
-            double __difmuk = 0;
-            double __g = __pr.__mean_ + __pr.__s_ * CF::normal_distribution<double>()(__urng);
-            double __u = 0;
-            if (__g >= 0)
+            double _mr_difmuk = 0;
+            double _mr_g = _mr_pr._mr_mean_ + _mr_pr._mr_s_ * CF::normal_distribution<double>()(_mr_urng);
+            double _mr_u = 0;
+            if (_mr_g >= 0)
             {
-                __x = static_cast<result_type>(__g);
-                if (__x >= __pr.__l_)
-                    return __x;
-                __difmuk = __pr.__mean_ - __x;
-                __u = __urd(__urng);
-                if (__pr.__d_ * __u >= __difmuk * __difmuk * __difmuk)
-                    return __x;
+                _mr_x = static_cast<result_type>(_mr_g);
+                if (_mr_x >= _mr_pr._mr_l_)
+                    return _mr_x;
+                _mr_difmuk = _mr_pr._mr_mean_ - _mr_x;
+                _mr_u = _mr_urd(_mr_urng);
+                if (_mr_pr._mr_d_ * _mr_u >= _mr_difmuk * _mr_difmuk * _mr_difmuk)
+                    return _mr_x;
             }
-            CF::exponential_distribution<double> __edist;
-            for (bool __using_exp_dist = false; true; __using_exp_dist = true)
+            CF::exponential_distribution<double> _mr_edist;
+            for (bool _mr_using_exp_dist = false; true; _mr_using_exp_dist = true)
             {
-                double __e;
-                if (__using_exp_dist || __g < 0)
+                double _mr_e;
+                if (_mr_using_exp_dist || _mr_g < 0)
                 {
-                    double __t;
+                    double _mr_t;
                     do
                     {
-                        __e = __edist(__urng);
-                        __u = __urd(__urng);
-                        __u += __u - 1;
-                        __t = 1.8 + (__u < 0 ? -__e : __e);
-                    } while (__t <= -.6744);
-                    __x = __pr.__mean_ + __pr.__s_ * __t;
-                    __difmuk = __pr.__mean_ - __x;
-                    __using_exp_dist = true;
+                        _mr_e = _mr_edist(_mr_urng);
+                        _mr_u = _mr_urd(_mr_urng);
+                        _mr_u += _mr_u - 1;
+                        _mr_t = 1.8 + (_mr_u < 0 ? -_mr_e : _mr_e);
+                    } while (_mr_t <= -.6744);
+                    _mr_x = _mr_pr._mr_mean_ + _mr_pr._mr_s_ * _mr_t;
+                    _mr_difmuk = _mr_pr._mr_mean_ - _mr_x;
+                    _mr_using_exp_dist = true;
                 }
-                double __px;
-                double __py;
-                if (__x < 10)
+                double _mr_px;
+                double _mr_py;
+                if (_mr_x < 10)
                 {
-                    const result_type __fac[] = {1, 1, 2, 6, 24, 120, 720, 5040,
+                    const result_type _mr_fac[] = {1, 1, 2, 6, 24, 120, 720, 5040,
                         40320, 362880};
-                    __px = -__pr.__mean_;
-                    __py = std::pow(__pr.__mean_, (double)__x) / __fac[__x];
+                    _mr_px = -_mr_pr._mr_mean_;
+                    _mr_py = std::pow(_mr_pr._mr_mean_, (double)_mr_x) / _mr_fac[_mr_x];
                 }
                 else
                 {
-                    double __del = .8333333E-1 / __x;
-                    __del -= 4.8 * __del * __del * __del;
-                    double __v = __difmuk / __x;
-                    if (std::abs(__v) > 0.25)
-                        __px = __x * std::log(1 + __v) - __difmuk - __del;
+                    double _mr_del = .8333333E-1 / _mr_x;
+                    _mr_del -= 4.8 * _mr_del * _mr_del * _mr_del;
+                    double _mr_v = _mr_difmuk / _mr_x;
+                    if (std::abs(_mr_v) > 0.25)
+                        _mr_px = _mr_x * std::log(1 + _mr_v) - _mr_difmuk - _mr_del;
                     else
-                        __px = __x * __v * __v * (((((((.1250060 * __v + -.1384794) *
-                                                       __v + .1421878) * __v + -.1661269) * __v + .2000118) *
-                                                    __v + -.2500068) * __v + .3333333) * __v + -.5) - __del;
-                    __py = .3989423 / std::sqrt(__x);
+                        _mr_px = _mr_x * _mr_v * _mr_v * (((((((.1250060 * _mr_v + -.1384794) *
+                                                       _mr_v + .1421878) * _mr_v + -.1661269) * _mr_v + .2000118) *
+                                                    _mr_v + -.2500068) * _mr_v + .3333333) * _mr_v + -.5) - _mr_del;
+                    _mr_py = .3989423 / std::sqrt(_mr_x);
                 }
-                double __r = (0.5 - __difmuk) / __pr.__s_;
-                double __r2 = __r * __r;
-                double __fx = -0.5 * __r2;
-                double __fy = __pr.__omega_ * (((__pr.__c3_ * __r2 + __pr.__c2_) *
-                                                __r2 + __pr.__c1_) * __r2 + __pr.__c0_);
-                if (__using_exp_dist)
+                double _mr_r = (0.5 - _mr_difmuk) / _mr_pr._mr_s_;
+                double _mr_r2 = _mr_r * _mr_r;
+                double _mr_fx = -0.5 * _mr_r2;
+                double _mr_fy = _mr_pr._mr_omega_ * (((_mr_pr._mr_c3_ * _mr_r2 + _mr_pr._mr_c2_) *
+                                                _mr_r2 + _mr_pr._mr_c1_) * _mr_r2 + _mr_pr._mr_c0_);
+                if (_mr_using_exp_dist)
                 {
-                    if (__pr.__c_ * std::abs(__u) <= __py * std::exp(__px + __e) -
-                        __fy * std::exp(__fx + __e))
+                    if (_mr_pr._mr_c_ * std::abs(_mr_u) <= _mr_py * std::exp(_mr_px + _mr_e) -
+                        _mr_fy * std::exp(_mr_fx + _mr_e))
                         break;
                 }
                 else
                 {
-                    if (__fy - __u * __fy <= __py * std::exp(__px - __fx))
+                    if (_mr_fy - _mr_u * _mr_fy <= _mr_py * std::exp(_mr_px - _mr_fx))
                         break;
                 }
             }
         }
-        return __x;
+        return _mr_x;
     }
         
         
-#ifdef __alpha
-#undef __alpha
+#ifdef _mr_alpha
+#undef _mr_alpha
 #endif
 
     // gamma_distribution
@@ -913,120 +913,120 @@ namespace CF {
         
         class param_type
         {
-            result_type __alpha_;
-            result_type __beta_;
+            result_type _mr_alpha_;
+            result_type _mr_beta_;
         public:
             typedef gamma_distribution distribution_type;
             
-            explicit param_type(result_type __alpha = 1, result_type __beta = 1)
-            : __alpha_(__alpha), __beta_(__beta) {}
+            explicit param_type(result_type _mr_alpha = 1, result_type _mr_beta = 1)
+            : _mr_alpha_(_mr_alpha), _mr_beta_(_mr_beta) {}
             
-            result_type alpha() const {return __alpha_;}
-            result_type beta() const {return __beta_;}
+            result_type alpha() const {return _mr_alpha_;}
+            result_type beta() const {return _mr_beta_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__alpha_ == __y.__alpha_ && __x.__beta_ == __y.__beta_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_alpha_ == _mr_y._mr_alpha_ && _mr_x._mr_beta_ == _mr_y._mr_beta_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit gamma_distribution(result_type __alpha = 1, result_type __beta = 1)
-        : __p_(param_type(__alpha, __beta)) {}
-        explicit gamma_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit gamma_distribution(result_type _mr_alpha = 1, result_type _mr_beta = 1)
+        : _mr_p_(param_type(_mr_alpha, _mr_beta)) {}
+        explicit gamma_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type alpha() const {return __p_.alpha();}
-        result_type beta() const {return __p_.beta();}
+        result_type alpha() const {return _mr_p_.alpha();}
+        result_type beta() const {return _mr_p_.beta();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const gamma_distribution& __x,
-                        const gamma_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const gamma_distribution& _mr_x,
+                        const gamma_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const gamma_distribution& __x,
-                        const gamma_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const gamma_distribution& _mr_x,
+                        const gamma_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     _RealType
-    gamma_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    gamma_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        result_type __a = __p.alpha();
-        CF::uniform_real_distribution<result_type> __gen(0, 1);
-        CF::exponential_distribution<result_type> __egen;
-        result_type __x;
-        if (__a == 1)
-            __x = __egen(__g);
-        else if (__a > 1)
+        result_type _mr_a = _mr_p.alpha();
+        CF::uniform_real_distribution<result_type> _mr_gen(0, 1);
+        CF::exponential_distribution<result_type> _mr_egen;
+        result_type _mr_x;
+        if (_mr_a == 1)
+            _mr_x = _mr_egen(_mr_g);
+        else if (_mr_a > 1)
         {
-            const result_type __b = __a - 1;
-            const result_type __c = 3 * __a - result_type(0.75);
+            const result_type _mr_b = _mr_a - 1;
+            const result_type _mr_c = 3 * _mr_a - result_type(0.75);
             while (true)
             {
-                const result_type __u = __gen(__g);
-                const result_type __v = __gen(__g);
-                const result_type __w = __u * (1 - __u);
-                if (__w != 0)
+                const result_type _mr_u = _mr_gen(_mr_g);
+                const result_type _mr_v = _mr_gen(_mr_g);
+                const result_type _mr_w = _mr_u * (1 - _mr_u);
+                if (_mr_w != 0)
                 {
-                    const result_type __y = std::sqrt(__c / __w) *
-                    (__u - result_type(0.5));
-                    __x = __b + __y;
-                    if (__x >= 0)
+                    const result_type _mr_y = std::sqrt(_mr_c / _mr_w) *
+                    (_mr_u - result_type(0.5));
+                    _mr_x = _mr_b + _mr_y;
+                    if (_mr_x >= 0)
                     {
-                        const result_type __z = 64 * __w * __w * __w * __v * __v;
-                        if (__z <= 1 - 2 * __y * __y / __x)
+                        const result_type _mr_z = 64 * _mr_w * _mr_w * _mr_w * _mr_v * _mr_v;
+                        if (_mr_z <= 1 - 2 * _mr_y * _mr_y / _mr_x)
                             break;
-                        if (std::log(__z) <= 2 * (__b * std::log(__x / __b) - __y))
+                        if (std::log(_mr_z) <= 2 * (_mr_b * std::log(_mr_x / _mr_b) - _mr_y))
                             break;
                     }
                 }
             }
         }
-        else  // __a < 1
+        else  // _mr_a < 1
         {
             while (true)
             {
-                const result_type __u = __gen(__g);
-                const result_type __es = __egen(__g);
-                if (__u <= 1 - __a)
+                const result_type _mr_u = _mr_gen(_mr_g);
+                const result_type _mr_es = _mr_egen(_mr_g);
+                if (_mr_u <= 1 - _mr_a)
                 {
-                    __x = std::pow(__u, 1 / __a);
-                    if (__x <= __es)
+                    _mr_x = std::pow(_mr_u, 1 / _mr_a);
+                    if (_mr_x <= _mr_es)
                         break;
                 }
                 else
                 {
-                    const result_type __e = -std::log((1-__u)/__a);
-                    __x = std::pow(1 - __a + __a * __e, 1 / __a);
-                    if (__x <= __e + __es)
+                    const result_type _mr_e = -std::log((1-_mr_u)/_mr_a);
+                    _mr_x = std::pow(1 - _mr_a + _mr_a * _mr_e, 1 / _mr_a);
+                    if (_mr_x <= _mr_e + _mr_es)
                         break;
                 }
             }
         }
-        return __x * __p.beta();
+        return _mr_x * _mr_p.beta();
     }
     
     
@@ -1041,84 +1041,84 @@ namespace CF {
         
         class param_type
         {
-            result_type __k_;
-            double __p_;
+            result_type _mr_k_;
+            double _mr_p_;
         public:
             typedef negative_binomial_distribution distribution_type;
             
-            explicit param_type(result_type __k = 1, double __p = 0.5)
-            : __k_(__k), __p_(__p) {}
+            explicit param_type(result_type _mr_k = 1, double _mr_p = 0.5)
+            : _mr_k_(_mr_k), _mr_p_(_mr_p) {}
             
-            result_type k() const {return __k_;}
-            double p() const {return __p_;}
+            result_type k() const {return _mr_k_;}
+            double p() const {return _mr_p_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__k_ == __y.__k_ && __x.__p_ == __y.__p_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_k_ == _mr_y._mr_k_ && _mr_x._mr_p_ == _mr_y._mr_p_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit negative_binomial_distribution(result_type __k = 1, double __p = 0.5)
-        : __p_(__k, __p) {}
-        explicit negative_binomial_distribution(const param_type& __p) : __p_(__p) {}
+        explicit negative_binomial_distribution(result_type _mr_k = 1, double _mr_p = 0.5)
+        : _mr_p_(_mr_k, _mr_p) {}
+        explicit negative_binomial_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type k() const {return __p_.k();}
-        double p() const {return __p_.p();}
+        result_type k() const {return _mr_p_.k();}
+        double p() const {return _mr_p_.p();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::max();}
         
         friend
-        bool operator==(const negative_binomial_distribution& __x,
-                        const negative_binomial_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const negative_binomial_distribution& _mr_x,
+                        const negative_binomial_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const negative_binomial_distribution& __x,
-                        const negative_binomial_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const negative_binomial_distribution& _mr_x,
+                        const negative_binomial_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _IntType>
     template<class _URNG>
     _IntType
-    negative_binomial_distribution<_IntType>::operator()(_URNG& __urng, const param_type& __pr)
+    negative_binomial_distribution<_IntType>::operator()(_URNG& _mr_urng, const param_type& _mr_pr)
     {
-        result_type __k = __pr.k();
-        double __p = __pr.p();
-        if (__k <= 21 * __p)
+        result_type _mr_k = _mr_pr.k();
+        double _mr_p = _mr_pr.p();
+        if (_mr_k <= 21 * _mr_p)
         {
-            bernoulli_distribution __gen(__p);
-            result_type __f = 0;
-            result_type __s = 0;
-            while (__s < __k)
+            bernoulli_distribution _mr_gen(_mr_p);
+            result_type _mr_f = 0;
+            result_type _mr_s = 0;
+            while (_mr_s < _mr_k)
             {
-                if (__gen(__urng))
-                    ++__s;
+                if (_mr_gen(_mr_urng))
+                    ++_mr_s;
                 else
-                    ++__f;
+                    ++_mr_f;
             }
-            return __f;
+            return _mr_f;
         }
         return CF::poisson_distribution<result_type>(CF::gamma_distribution<double>
-                                                 (__k, (1-__p)/__p)(__urng))(__urng);
+                                                 (_mr_k, (1-_mr_p)/_mr_p)(_mr_urng))(_mr_urng);
     }
     
     // geometric_distribution
@@ -1132,56 +1132,56 @@ namespace CF {
         
         class param_type
         {
-            double __p_;
+            double _mr_p_;
         public:
             typedef geometric_distribution distribution_type;
             
-            explicit param_type(double __p = 0.5) : __p_(__p) {}
+            explicit param_type(double _mr_p = 0.5) : _mr_p_(_mr_p) {}
             
-            double p() const {return __p_;}
+            double p() const {return _mr_p_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__p_ == __y.__p_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_p_ == _mr_y._mr_p_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructors and reset functions
-        explicit geometric_distribution(double __p = 0.5) : __p_(__p) {}
-        explicit geometric_distribution(const param_type& __p) : __p_(__p) {}
+        explicit geometric_distribution(double _mr_p = 0.5) : _mr_p_(_mr_p) {}
+        explicit geometric_distribution(const param_type& _mr_p) : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
         template<class _URNG>
-        result_type operator()(_URNG& __g, const param_type& __p)
-        {return CF::negative_binomial_distribution<result_type>(1, __p.p())(__g);}
+        result_type operator()(_URNG& _mr_g, const param_type& _mr_p)
+        {return CF::negative_binomial_distribution<result_type>(1, _mr_p.p())(_mr_g);}
         
         // property functions
-        double p() const {return __p_.p();}
+        double p() const {return _mr_p_.p();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::max();}
         
         friend
-        bool operator==(const geometric_distribution& __x,
-                        const geometric_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const geometric_distribution& _mr_x,
+                        const geometric_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const geometric_distribution& __x,
-                        const geometric_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const geometric_distribution& _mr_x,
+                        const geometric_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
         
@@ -1196,63 +1196,63 @@ namespace CF {
         
         class param_type
         {
-            result_type __a_;
-            result_type __b_;
+            result_type _mr_a_;
+            result_type _mr_b_;
         public:
             typedef weibull_distribution distribution_type;
             
-            explicit param_type(result_type __a = 1, result_type __b = 1)
-            : __a_(__a), __b_(__b) {}
+            explicit param_type(result_type _mr_a = 1, result_type _mr_b = 1)
+            : _mr_a_(_mr_a), _mr_b_(_mr_b) {}
             
-            result_type a() const {return __a_;}
-            result_type b() const {return __b_;}
+            result_type a() const {return _mr_a_;}
+            result_type b() const {return _mr_b_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__a_ == __y.__a_ && __x.__b_ == __y.__b_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_a_ == _mr_y._mr_a_ && _mr_x._mr_b_ == _mr_y._mr_b_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit weibull_distribution(result_type __a = 1, result_type __b = 1)
-        : __p_(param_type(__a, __b)) {}
-        explicit weibull_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit weibull_distribution(result_type _mr_a = 1, result_type _mr_b = 1)
+        : _mr_p_(param_type(_mr_a, _mr_b)) {}
+        explicit weibull_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
         template<class _URNG>
-        result_type operator()(_URNG& __g, const param_type& __p)
-        {return __p.b() *
-            std::pow(CF::exponential_distribution<result_type>()(__g), 1/__p.a());}
+        result_type operator()(_URNG& _mr_g, const param_type& _mr_p)
+        {return _mr_p.b() *
+            std::pow(CF::exponential_distribution<result_type>()(_mr_g), 1/_mr_p.a());}
         
         // property functions
-        result_type a() const {return __p_.a();}
-        result_type b() const {return __p_.b();}
+        result_type a() const {return _mr_p_.a();}
+        result_type b() const {return _mr_p_.b();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const weibull_distribution& __x,
-                        const weibull_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const weibull_distribution& _mr_x,
+                        const weibull_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const weibull_distribution& __x,
-                        const weibull_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const weibull_distribution& _mr_x,
+                        const weibull_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     // extreme_value_distribution
@@ -1266,69 +1266,69 @@ namespace CF {
         
         class param_type
         {
-            result_type __a_;
-            result_type __b_;
+            result_type _mr_a_;
+            result_type _mr_b_;
         public:
             typedef extreme_value_distribution distribution_type;
             
-            explicit param_type(result_type __a = 0, result_type __b = 1)
-            : __a_(__a), __b_(__b) {}
+            explicit param_type(result_type _mr_a = 0, result_type _mr_b = 1)
+            : _mr_a_(_mr_a), _mr_b_(_mr_b) {}
             
-            result_type a() const {return __a_;}
-            result_type b() const {return __b_;}
+            result_type a() const {return _mr_a_;}
+            result_type b() const {return _mr_b_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__a_ == __y.__a_ && __x.__b_ == __y.__b_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_a_ == _mr_y._mr_a_ && _mr_x._mr_b_ == _mr_y._mr_b_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit extreme_value_distribution(result_type __a = 0, result_type __b = 1)
-        : __p_(param_type(__a, __b)) {}
-        explicit extreme_value_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit extreme_value_distribution(result_type _mr_a = 0, result_type _mr_b = 1)
+        : _mr_p_(param_type(_mr_a, _mr_b)) {}
+        explicit extreme_value_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type a() const {return __p_.a();}
-        result_type b() const {return __p_.b();}
+        result_type a() const {return _mr_p_.a();}
+        result_type b() const {return _mr_p_.b();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return -std::numeric_limits<result_type>::infinity();}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const extreme_value_distribution& __x,
-                        const extreme_value_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const extreme_value_distribution& _mr_x,
+                        const extreme_value_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const extreme_value_distribution& __x,
-                        const extreme_value_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const extreme_value_distribution& _mr_x,
+                        const extreme_value_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _RealType>
     template<class _URNG>
     _RealType
-    extreme_value_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    extreme_value_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        return __p.a() - __p.b() *
-        std::log(-std::log(1-CF::uniform_real_distribution<result_type>()(__g)));
+        return _mr_p.a() - _mr_p.b() *
+        std::log(-std::log(1-CF::uniform_real_distribution<result_type>()(_mr_g)));
     }
     
         
@@ -1343,62 +1343,62 @@ namespace CF {
         
         class param_type
         {
-            CF::normal_distribution<result_type> __nd_;
+            CF::normal_distribution<result_type> _mr_nd_;
         public:
             typedef lognormal_distribution distribution_type;
             
-            explicit param_type(result_type __m = 0, result_type __s = 1)
-            : __nd_(__m, __s) {}
+            explicit param_type(result_type _mr_m = 0, result_type _mr_s = 1)
+            : _mr_nd_(_mr_m, _mr_s) {}
             
-            result_type m() const {return __nd_.mean();}
-            result_type s() const {return __nd_.stddev();}
+            result_type m() const {return _mr_nd_.mean();}
+            result_type s() const {return _mr_nd_.stddev();}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__nd_ == __y.__nd_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_nd_ == _mr_y._mr_nd_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
             friend class lognormal_distribution;
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit lognormal_distribution(result_type __m = 0, result_type __s = 1)
-        : __p_(param_type(__m, __s)) {}
-        explicit lognormal_distribution(const param_type& __p)
-        : __p_(__p) {}
-        void reset() {__p_.__nd_.reset();}
+        explicit lognormal_distribution(result_type _mr_m = 0, result_type _mr_s = 1)
+        : _mr_p_(param_type(_mr_m, _mr_s)) {}
+        explicit lognormal_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
+        void reset() {_mr_p_._mr_nd_.reset();}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
         template<class _URNG>
-        result_type operator()(_URNG& __g, const param_type& __p)
-        {return std::exp(const_cast<CF::normal_distribution<result_type>&>(__p.__nd_)(__g));}
+        result_type operator()(_URNG& _mr_g, const param_type& _mr_p)
+        {return std::exp(const_cast<CF::normal_distribution<result_type>&>(_mr_p._mr_nd_)(_mr_g));}
         
         // property functions
-        result_type m() const {return __p_.m();}
-        result_type s() const {return __p_.s();}
+        result_type m() const {return _mr_p_.m();}
+        result_type s() const {return _mr_p_.s();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const lognormal_distribution& __x,
-                        const lognormal_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const lognormal_distribution& _mr_x,
+                        const lognormal_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const lognormal_distribution& __x,
-                        const lognormal_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const lognormal_distribution& _mr_x,
+                        const lognormal_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
         
@@ -1413,58 +1413,58 @@ namespace CF {
         
         class param_type
         {
-            result_type __n_;
+            result_type _mr_n_;
         public:
             typedef chi_squared_distribution distribution_type;
             
-            explicit param_type(result_type __n = 1) : __n_(__n) {}
+            explicit param_type(result_type _mr_n = 1) : _mr_n_(_mr_n) {}
             
-            result_type n() const {return __n_;}
+            result_type n() const {return _mr_n_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__n_ == __y.__n_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_n_ == _mr_y._mr_n_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit chi_squared_distribution(result_type __n = 1)
-        : __p_(param_type(__n)) {}
-        explicit chi_squared_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit chi_squared_distribution(result_type _mr_n = 1)
+        : _mr_p_(param_type(_mr_n)) {}
+        explicit chi_squared_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
         template<class _URNG>
-        result_type operator()(_URNG& __g, const param_type& __p)
-        {return CF::gamma_distribution<result_type>(__p.n() / 2, 2)(__g);}
+        result_type operator()(_URNG& _mr_g, const param_type& _mr_p)
+        {return CF::gamma_distribution<result_type>(_mr_p.n() / 2, 2)(_mr_g);}
         
         // property functions
-        result_type n() const {return __p_.n();}
+        result_type n() const {return _mr_p_.n();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const chi_squared_distribution& __x,
-                        const chi_squared_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const chi_squared_distribution& _mr_x,
+                        const chi_squared_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const chi_squared_distribution& __x,
-                        const chi_squared_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const chi_squared_distribution& _mr_x,
+                        const chi_squared_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
         
@@ -1479,71 +1479,71 @@ namespace CF {
         
         class param_type
         {
-            result_type __a_;
-            result_type __b_;
+            result_type _mr_a_;
+            result_type _mr_b_;
         public:
             typedef cauchy_distribution distribution_type;
             
-            explicit param_type(result_type __a = 0, result_type __b = 1)
-            : __a_(__a), __b_(__b) {}
+            explicit param_type(result_type _mr_a = 0, result_type _mr_b = 1)
+            : _mr_a_(_mr_a), _mr_b_(_mr_b) {}
             
-            result_type a() const {return __a_;}
-            result_type b() const {return __b_;}
+            result_type a() const {return _mr_a_;}
+            result_type b() const {return _mr_b_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__a_ == __y.__a_ && __x.__b_ == __y.__b_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_a_ == _mr_y._mr_a_ && _mr_x._mr_b_ == _mr_y._mr_b_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit cauchy_distribution(result_type __a = 0, result_type __b = 1)
-        : __p_(param_type(__a, __b)) {}
-        explicit cauchy_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit cauchy_distribution(result_type _mr_a = 0, result_type _mr_b = 1)
+        : _mr_p_(param_type(_mr_a, _mr_b)) {}
+        explicit cauchy_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type a() const {return __p_.a();}
-        result_type b() const {return __p_.b();}
+        result_type a() const {return _mr_p_.a();}
+        result_type b() const {return _mr_p_.b();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return -std::numeric_limits<result_type>::infinity();}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const cauchy_distribution& __x,
-                        const cauchy_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const cauchy_distribution& _mr_x,
+                        const cauchy_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const cauchy_distribution& __x,
-                        const cauchy_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const cauchy_distribution& _mr_x,
+                        const cauchy_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     inline
     _RealType
-    cauchy_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    cauchy_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        CF::uniform_real_distribution<result_type> __gen;
+        CF::uniform_real_distribution<result_type> _mr_gen;
         // purposefully let tan arg get as close to pi/2 as it wants, tan will return a finite
-        return __p.a() + __p.b() * std::tan(3.1415926535897932384626433832795 * __gen(__g));
+        return _mr_p.a() + _mr_p.b() * std::tan(3.1415926535897932384626433832795 * _mr_gen(_mr_g));
     }
     
         
@@ -1558,70 +1558,70 @@ namespace CF {
         
         class param_type
         {
-            result_type __m_;
-            result_type __n_;
+            result_type _mr_m_;
+            result_type _mr_n_;
         public:
             typedef fisher_f_distribution distribution_type;
             
-            explicit param_type(result_type __m = 1, result_type __n = 1)
-            : __m_(__m), __n_(__n) {}
+            explicit param_type(result_type _mr_m = 1, result_type _mr_n = 1)
+            : _mr_m_(_mr_m), _mr_n_(_mr_n) {}
             
-            result_type m() const {return __m_;}
-            result_type n() const {return __n_;}
+            result_type m() const {return _mr_m_;}
+            result_type n() const {return _mr_n_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__m_ == __y.__m_ && __x.__n_ == __y.__n_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_m_ == _mr_y._mr_m_ && _mr_x._mr_n_ == _mr_y._mr_n_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
-        explicit fisher_f_distribution(result_type __m = 1, result_type __n = 1)
-        : __p_(param_type(__m, __n)) {}
-        explicit fisher_f_distribution(const param_type& __p)
-        : __p_(__p) {}
+        explicit fisher_f_distribution(result_type _mr_m = 1, result_type _mr_n = 1)
+        : _mr_p_(param_type(_mr_m, _mr_n)) {}
+        explicit fisher_f_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type m() const {return __p_.m();}
-        result_type n() const {return __p_.n();}
+        result_type m() const {return _mr_p_.m();}
+        result_type n() const {return _mr_p_.n();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const fisher_f_distribution& __x,
-                        const fisher_f_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const fisher_f_distribution& _mr_x,
+                        const fisher_f_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const fisher_f_distribution& __x,
-                        const fisher_f_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const fisher_f_distribution& _mr_x,
+                        const fisher_f_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     _RealType
-    fisher_f_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    fisher_f_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        CF::gamma_distribution<result_type> __gdm(__p.m() * result_type(.5));
-        CF::gamma_distribution<result_type> __gdn(__p.n() * result_type(.5));
-        return __p.n() * __gdm(__g) / (__p.m() * __gdn(__g));
+        CF::gamma_distribution<result_type> _mr_gdm(_mr_p.m() * result_type(.5));
+        CF::gamma_distribution<result_type> _mr_gdn(_mr_p.n() * result_type(.5));
+        return _mr_p.n() * _mr_gdm(_mr_g) / (_mr_p.m() * _mr_gdn(_mr_g));
     }
     
         
@@ -1636,66 +1636,66 @@ namespace CF {
         
         class param_type
         {
-            result_type __n_;
+            result_type _mr_n_;
         public:
             typedef student_t_distribution distribution_type;
             
-            explicit param_type(result_type __n = 1) : __n_(__n) {}
+            explicit param_type(result_type _mr_n = 1) : _mr_n_(_mr_n) {}
             
-            result_type n() const {return __n_;}
+            result_type n() const {return _mr_n_;}
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__n_ == __y.__n_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_n_ == _mr_y._mr_n_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
         };
         
     private:
-        param_type __p_;
-        normal_distribution<result_type> __nd_;
+        param_type _mr_p_;
+        normal_distribution<result_type> _mr_nd_;
         
     public:
         // constructor and reset functions
-        explicit student_t_distribution(result_type __n = 1)
-        : __p_(param_type(__n)) {}
-        explicit student_t_distribution(const param_type& __p)
-        : __p_(__p) {}
-        void reset() {__nd_.reset();}
+        explicit student_t_distribution(result_type _mr_n = 1)
+        : _mr_p_(param_type(_mr_n)) {}
+        explicit student_t_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
+        void reset() {_mr_nd_.reset();}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        result_type n() const {return __p_.n();}
+        result_type n() const {return _mr_p_.n();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return -std::numeric_limits<result_type>::infinity();}
         result_type max() const {return std::numeric_limits<result_type>::infinity();}
         
         friend
-        bool operator==(const student_t_distribution& __x,
-                        const student_t_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const student_t_distribution& _mr_x,
+                        const student_t_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const student_t_distribution& __x,
-                        const student_t_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const student_t_distribution& _mr_x,
+                        const student_t_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template <class _RealType>
     template<class _URNG>
     _RealType
-    student_t_distribution<_RealType>::operator()(_URNG& __g, const param_type& __p)
+    student_t_distribution<_RealType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        CF::gamma_distribution<result_type> __gd(__p.n() * .5, 2);
-        return __nd_(__g) * std::sqrt(__p.n()/__gd(__g));
+        CF::gamma_distribution<result_type> _mr_gd(_mr_p.n() * .5, 2);
+        return _mr_nd_(_mr_g) * std::sqrt(_mr_p.n()/_mr_gd(_mr_g));
     }
     
         
@@ -1710,117 +1710,117 @@ namespace CF {
         
         class param_type
         {
-            std::vector<double> __p_;
+            std::vector<double> _mr_p_;
         public:
             typedef discrete_distribution distribution_type;
             
             param_type() {}
             template<class _InputIterator>
-            param_type(_InputIterator __f, _InputIterator __l)
-            : __p_(__f, __l) {__init();}
-            param_type(std::initializer_list<double> __wl)
-            : __p_(__wl.begin(), __wl.end()) {__init();}
+            param_type(_InputIterator _mr_f, _InputIterator _mr_l)
+            : _mr_p_(_mr_f, _mr_l) {_mr_init();}
+            param_type(std::initializer_list<double> _mr_wl)
+            : _mr_p_(_mr_wl.begin(), _mr_wl.end()) {_mr_init();}
             template<class _UnaryOperation>
-            param_type(size_t __nw, double __xmin, double __xmax,
-                       _UnaryOperation __fw);
+            param_type(size_t _mr_nw, double _mr_xmin, double _mr_xmax,
+                       _UnaryOperation _mr_fw);
             
             std::vector<double> probabilities() const;
             
             friend
-            bool operator==(const param_type& __x, const param_type& __y)
-            {return __x.__p_ == __y.__p_;}
+            bool operator==(const param_type& _mr_x, const param_type& _mr_y)
+            {return _mr_x._mr_p_ == _mr_y._mr_p_;}
             friend
-            bool operator!=(const param_type& __x, const param_type& __y)
-            {return !(__x == __y);}
+            bool operator!=(const param_type& _mr_x, const param_type& _mr_y)
+            {return !(_mr_x == _mr_y);}
             
         private:
-            void __init();
+            void _mr_init();
             
             friend class discrete_distribution;
         };
         
     private:
-        param_type __p_;
+        param_type _mr_p_;
         
     public:
         // constructor and reset functions
         discrete_distribution() {}
         template<class _InputIterator>
-        discrete_distribution(_InputIterator __f, _InputIterator __l)
-        : __p_(__f, __l) {}
-        discrete_distribution(std::initializer_list<double> __wl)
-        : __p_(__wl) {}
+        discrete_distribution(_InputIterator _mr_f, _InputIterator _mr_l)
+        : _mr_p_(_mr_f, _mr_l) {}
+        discrete_distribution(std::initializer_list<double> _mr_wl)
+        : _mr_p_(_mr_wl) {}
         template<class _UnaryOperation>
-        discrete_distribution(size_t __nw, double __xmin, double __xmax,
-                              _UnaryOperation __fw)
-        : __p_(__nw, __xmin, __xmax, __fw) {}
-        explicit discrete_distribution(const param_type& __p)
-        : __p_(__p) {}
+        discrete_distribution(size_t _mr_nw, double _mr_xmin, double _mr_xmax,
+                              _UnaryOperation _mr_fw)
+        : _mr_p_(_mr_nw, _mr_xmin, _mr_xmax, _mr_fw) {}
+        explicit discrete_distribution(const param_type& _mr_p)
+        : _mr_p_(_mr_p) {}
         void reset() {}
         
         // generating functions
         template<class _URNG>
-        result_type operator()(_URNG& __g)
-        {return (*this)(__g, __p_);}
-        template<class _URNG> result_type operator()(_URNG& __g, const param_type& __p);
+        result_type operator()(_URNG& _mr_g)
+        {return (*this)(_mr_g, _mr_p_);}
+        template<class _URNG> result_type operator()(_URNG& _mr_g, const param_type& _mr_p);
         
         // property functions
-        std::vector<double> probabilities() const {return __p_.probabilities();}
+        std::vector<double> probabilities() const {return _mr_p_.probabilities();}
         
-        param_type param() const {return __p_;}
-        void param(const param_type& __p) {__p_ = __p;}
+        param_type param() const {return _mr_p_;}
+        void param(const param_type& _mr_p) {_mr_p_ = _mr_p;}
         
         result_type min() const {return 0;}
-        result_type max() const {return __p_.__p_.size();}
+        result_type max() const {return _mr_p_._mr_p_.size();}
         
         friend
-        bool operator==(const discrete_distribution& __x,
-                        const discrete_distribution& __y)
-        {return __x.__p_ == __y.__p_;}
+        bool operator==(const discrete_distribution& _mr_x,
+                        const discrete_distribution& _mr_y)
+        {return _mr_x._mr_p_ == _mr_y._mr_p_;}
         friend
-        bool operator!=(const discrete_distribution& __x,
-                        const discrete_distribution& __y)
-        {return !(__x == __y);}
+        bool operator!=(const discrete_distribution& _mr_x,
+                        const discrete_distribution& _mr_y)
+        {return !(_mr_x == _mr_y);}
     };
     
     template<class _IntType>
     template<class _UnaryOperation>
-    discrete_distribution<_IntType>::param_type::param_type(size_t __nw,
-                                                            double __xmin,
-                                                            double __xmax,
-                                                            _UnaryOperation __fw)
+    discrete_distribution<_IntType>::param_type::param_type(size_t _mr_nw,
+                                                            double _mr_xmin,
+                                                            double _mr_xmax,
+                                                            _UnaryOperation _mr_fw)
     {
-        if (__nw > 1)
+        if (_mr_nw > 1)
         {
-            __p_.reserve(__nw - 1);
-            double __d = (__xmax - __xmin) / __nw;
-            double __d2 = __d / 2;
-            for (size_t __k = 0; __k < __nw; ++__k)
-                __p_.push_back(__fw(__xmin + __k * __d + __d2));
-            __init();
+            _mr_p_.reserve(_mr_nw - 1);
+            double _mr_d = (_mr_xmax - _mr_xmin) / _mr_nw;
+            double _mr_d2 = _mr_d / 2;
+            for (size_t _mr_k = 0; _mr_k < _mr_nw; ++_mr_k)
+                _mr_p_.push_back(_mr_fw(_mr_xmin + _mr_k * _mr_d + _mr_d2));
+            _mr_init();
         }
     }
     
     template<class _IntType>
     void
-    discrete_distribution<_IntType>::param_type::__init()
+    discrete_distribution<_IntType>::param_type::_mr_init()
     {
-        if (!__p_.empty())
+        if (!_mr_p_.empty())
         {
-            if (__p_.size() > 1)
+            if (_mr_p_.size() > 1)
             {
-                double __s = std::accumulate(__p_.begin(), __p_.end(), 0.0);
-                for (std::vector<double>::iterator __i = __p_.begin(), __e = __p_.end();
-                     __i < __e; ++__i)
-                    *__i /= __s;
-                std::vector<double> __t(__p_.size() - 1);
-                std::partial_sum(__p_.begin(), __p_.end() - 1, __t.begin());
-                std::swap(__p_, __t);
+                double _mr_s = std::accumulate(_mr_p_.begin(), _mr_p_.end(), 0.0);
+                for (std::vector<double>::iterator _mr_i = _mr_p_.begin(), _mr_e = _mr_p_.end();
+                     _mr_i < _mr_e; ++_mr_i)
+                    *_mr_i /= _mr_s;
+                std::vector<double> _mr_t(_mr_p_.size() - 1);
+                std::partial_sum(_mr_p_.begin(), _mr_p_.end() - 1, _mr_t.begin());
+                std::swap(_mr_p_, _mr_t);
             }
             else
             {
-                __p_.clear();
-                __p_.shrink_to_fit();
+                _mr_p_.clear();
+                _mr_p_.shrink_to_fit();
             }
         }
     }
@@ -1829,25 +1829,25 @@ namespace CF {
     std::vector<double>
     discrete_distribution<_IntType>::param_type::probabilities() const
     {
-        std::size_t __n = __p_.size();
-        std::vector<double> __p(__n+1);
-        std::adjacent_difference(__p_.begin(), __p_.end(), __p.begin());
-        if (__n > 0)
-            __p[__n] = 1 - __p_[__n-1];
+        std::size_t _mr_n = _mr_p_.size();
+        std::vector<double> _mr_p(_mr_n+1);
+        std::adjacent_difference(_mr_p_.begin(), _mr_p_.end(), _mr_p.begin());
+        if (_mr_n > 0)
+            _mr_p[_mr_n] = 1 - _mr_p_[_mr_n-1];
         else
-            __p[0] = 1;
-        return __p;
+            _mr_p[0] = 1;
+        return _mr_p;
     }
     
     template<class _IntType>
     template<class _URNG>
     _IntType
-    discrete_distribution<_IntType>::operator()(_URNG& __g, const param_type& __p)
+    discrete_distribution<_IntType>::operator()(_URNG& _mr_g, const param_type& _mr_p)
     {
-        CF::uniform_real_distribution<double> __gen;
+        CF::uniform_real_distribution<double> _mr_gen;
         return static_cast<_IntType>(
-                                     std::upper_bound(__p.__p_.begin(), __p.__p_.end(), __gen(__g)) -
-                                     __p.__p_.begin());
+                                     std::upper_bound(_mr_p._mr_p_.begin(), _mr_p._mr_p_.end(), _mr_gen(_mr_g)) -
+                                     _mr_p._mr_p_.begin());
     }
     
 }
