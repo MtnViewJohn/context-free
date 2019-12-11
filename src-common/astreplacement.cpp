@@ -1215,8 +1215,8 @@ namespace AST {
                 {"flags", flags.get()}
             };
         } else {
-            static const char* joinNames[5] = {"CF::MiterJoin", "???", "CF::RoundJoin", "CF::BevelJoin", "???"};
-            static const char* capNames[3] = {"CF::ButtCap", "CF::SquareCap", "CF::RoundCap"};
+            static const char* joinNames[8] = {"CF::MiterJoin", "???", "CF::RoundJoin", "CF::BevelJoin", "???"};
+            static const char* capNames[8] = {"CF::ButtCap", "CF::SquareCap", "CF::RoundCap", "???"};
             flags = joinNames[mFlags & 7];
             flags += capNames[(mFlags >> 4) & 7];
             if (mFlags & CF_ISO_WIDTH)

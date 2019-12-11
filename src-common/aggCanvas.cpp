@@ -161,7 +161,7 @@ class aggCanvas::impl {
               shapeSquare(unitSquare, unitTrans),
               shapeEllipse(unitEllipse, unitTrans), unitTriangle(primShape::shapeMap[primShape::triangleType]),
               shapeTriangle(unitTriangle, unitTrans), 
-              cropWidth(0), cropHeight(0)
+              offsetX(0), offsetY(0), cropWidth(0), cropHeight(0)
         {
 //            rasterizer.gamma(agg::gamma_power(1.0));
         }
