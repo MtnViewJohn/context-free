@@ -354,7 +354,7 @@ namespace AST {
         argSize = 0;
         argSource = src->argSource;
         arguments.reset();
-        simpleRule = std::move(src->simpleRule);
+        simpleRule = src->simpleRule;
         mStackIndex = 0;
         typeSignature = src->typeSignature;
         parentSignature = src->parentSignature;

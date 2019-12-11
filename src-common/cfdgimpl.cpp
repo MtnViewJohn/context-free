@@ -536,7 +536,7 @@ CFDGImpl::encodeShapeName(const std::string& s, const yy::location& where)
     int i = tryEncodeShapeName(c);
     if (i >= 0) return i;
 
-    m_shapeTypes.emplace_back(std::move(s), std::move(c), where);
+    m_shapeTypes.emplace_back(s, std::move(c), where);
     return static_cast<int>(m_shapeTypes.size()) - 1;
 }
 
