@@ -81,8 +81,11 @@ extern NSInteger CurrentTabWidth;
     
     switch (fmt) {
         case aggCanvas::RGBA8_Blend:
+        case aggCanvas::RGBA8_Custom_Blend:
         case aggCanvas::AV_Blend:
+        case aggCanvas::AV_Custom_Blend:
         case aggCanvas::RGBA16_Blend:
+        case aggCanvas::RGBA16_Custom_Blend:
             self = [super initWithBitmapDataPlanes: nullptr
                                         pixelsWide: width
                                         pixelsHigh: height
@@ -1801,10 +1804,11 @@ long MakeColor(id v)
                                 mRenderer->m_width, mRenderer->m_height]];
 
     if (parameters.animateFrame == 0) {
+        auto pixfmt = mEngine->usesBlendMode ? aggCanvas::AV_Custom_Blend : aggCanvas::AV_Blend;
         [self setCurrentAction: ActionType::AnimateAction];
 
         BitmapAndFormat* bits = [BitmapAndFormat alloc];
-        [bits initWithAggPixFmt: aggCanvas::AV_Blend
+        [bits initWithAggPixFmt: pixfmt
                      pixelsWide: (NSInteger)width
                      pixelsHigh: (NSInteger)height];
         if (!bits) {
@@ -1819,7 +1823,7 @@ long MakeColor(id v)
         stream.reset();  // close the temp file, we need its name
         NSString* path = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         
-        mCanvas = std::make_unique<AVcanvas>(path, [bits autorelease],
+        mCanvas = std::make_unique<AVcanvas>(path, [bits autorelease], pixfmt,
                                              static_cast<int>(movieFrameRate), fmt);
         
         if (!mCanvas->mError) {
