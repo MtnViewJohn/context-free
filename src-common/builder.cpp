@@ -83,7 +83,31 @@ const std::map<std::string, int> Builder::FlagNames = {
     {"CF::p3m1",        AST::CF_P3M1},
     {"CF::p31m",        AST::CF_P31M},
     {"CF::p6",          AST::CF_P6},
-    {"CF::p6m",         AST::CF_P6M}
+    {"CF::p6m",         AST::CF_P6M},
+    {"CF::Clear",       AST::CF_CLEAR},
+    {"CF::Src",         AST::CF_SRC},
+    {"CF::Dest",        AST::CF_DEST},
+    {"CF::SrcOver",     AST::CF_SRC_OVER},
+    {"CF::DestOver",    AST::CF_DEST_OVER},
+    {"CF::SrcIn",       AST::CF_SRC_IN},
+    {"CF::DestIn",      AST::CF_DEST_IN},
+    {"CF::SrcOut",      AST::CF_SRC_OUT},
+    {"CF::DestOut",     AST::CF_DEST_OUT},
+    {"CF::SrcAtop",     AST::CF_SRC_ATOP},
+    {"CF::DestAtop",    AST::CF_DEST_ATOP},
+    {"CF::Xor",         AST::CF_XOR},
+    {"CF::Plus",        AST::CF_PLUS},
+    {"CF::Multiply",    AST::CF_MULTIPLY},
+    {"CF::Screen",      AST::CF_SCREEN},
+    {"CF::Overlay",     AST::CF_OVERLAY},
+    {"CF::Darken",      AST::CF_DARKEN},
+    {"CF::Lighten",     AST::CF_LIGHTEN},
+    {"CF::ColorDodge",  AST::CF_COLOR_DODGE},
+    {"CF::ColorBurn",   AST::CF_COLOR_BURN},
+    {"CF::HardLight",   AST::CF_HARD_LIGHT},
+    {"CF::SoftLight",   AST::CF_SOFT_LIGHT},
+    {"CF::Difference",  AST::CF_DIFFERENCE},
+    {"CF::Exclusion",   AST::CF_EXCLUSION},
 };
 Builder* Builder::CurrentBuilder = nullptr;
 std::recursive_mutex Builder::BuilderMutex;
@@ -648,6 +672,8 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         timeWise();
     if (t->modType == ASTmodTerm::sat || t->modType == ASTmodTerm::satTarg)
         inColor();
+    if (t->modType == ASTmodTerm::blend)
+        blended();
     
     if (lexer->startToken == yy::CfdgParser::token_type::CFDG3 &&
         t->modType >= ASTmodTerm::hueTarg && t->modType <= ASTmodTerm::targAlpha)
@@ -906,6 +932,12 @@ void
 Builder::timeWise()
 {
     m_CFDG->addParameter(CFDGImpl::Time);
+}
+
+void
+Builder::blended()
+{
+    m_CFDG->addParameter(CFDGImpl::Blend);
 }
 
 bool

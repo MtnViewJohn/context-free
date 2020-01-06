@@ -46,15 +46,20 @@ class aggCanvas : public Canvas {
             FF24_Blend = 5,
             AV_Blend = 6,
             Has_16bit_Color = 8,
+            Has_Custom_Blend = 16,
             Gray16_Blend = Gray8_Blend | Has_16bit_Color, 
             RGBA16_Blend = RGBA8_Blend | Has_16bit_Color, 
-            RGB16_Blend = RGB8_Blend | Has_16bit_Color
+            RGB16_Blend = RGB8_Blend | Has_16bit_Color,
+            RGBA8_Custom_Blend = RGBA8_Blend | Has_Custom_Blend,
+            RGBA16_Custom_Blend = RGBA16_Blend | Has_Custom_Blend,
+            FF_Custom_Blend = FF_Blend | Has_Custom_Blend,
+            AV_Custom_Blend = AV_Blend | Has_Custom_Blend
         };
         static const std::map<PixelFormat, int> BytesPerPixel;
         void start(bool clear, const agg::rgba& bk, int width, int height) override;
         void end() override;
 
-        void primitive(int shape, RGBA8 c, agg::trans_affine tr) override;
+        void primitive(int shape, RGBA8 c, agg::trans_affine tr, agg::comp_op_e blend) override;
         void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
         
         bool colorCount256();

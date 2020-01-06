@@ -155,7 +155,7 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
     indent(-padding); 
 }
 
-void SVGCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
+void SVGCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr, agg::comp_op_e)
 {
     tr *= mOffset;
     static const int padding[3] = { 8, 6, 5 };

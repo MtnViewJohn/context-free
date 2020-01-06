@@ -182,7 +182,7 @@ class CFDGImpl : public CFDG {
         AST::ASTdefine* declareFunction(int nameIndex, AST::ASTdefine* def);
         AST::ASTdefine* findFunction(int nameIndex);
 
-        enum Parameter {Color = 1, Alpha = 2, Time = 4, FrameTime = 8};
+        enum Parameter {Color = 1, Alpha = 2, Time = 4, FrameTime = 8, Blend = 16};
         void addParameter(Parameter);
         void addParameter(CFG var, AST::exp_ptr e, int depth);
 

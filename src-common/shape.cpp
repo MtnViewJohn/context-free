@@ -84,6 +84,8 @@ Modification::merge(const Modification& m)
     m_Z.premultiply(m.m_Z);
     m_time.premultiply(m.m_time);
     mRand64Seed ^= m.mRand64Seed;
+    if (m.m_BlendMode)
+        m_BlendMode = m.m_BlendMode;
     
     m_ColorTarget.h += m.m_ColorTarget.h;
     m_ColorTarget.b += m.m_ColorTarget.b;

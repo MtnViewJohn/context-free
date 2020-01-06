@@ -1508,11 +1508,24 @@ namespace AST {
         int argcount = 0;
 
         if (args) {
-            if (args->mType == NumericType) {
-                argcount = args->evaluate(modArgs, 6, rti);
-            } else {
-                CfdgError::Error(where, "Adjustments require numeric arguments");
-                return;
+            switch (args->mType) {
+                case NumericType:
+                    if (modType == ASTmodTerm::blend) {
+                        CfdgError::Error(where, "Blend adjustments require flag arguments");
+                        return;
+                    }
+                    argcount = args->evaluate(modArgs, 6, rti);
+                    break;
+                case FlagType:
+                    if (modType != ASTmodTerm::blend) {
+                        CfdgError::Error(where, "Only blend adjustments accept flag arguments");
+                        return;
+                    }
+                    argcount = args->evaluate(modArgs, 1, rti);
+                    break;
+                default:
+                    CfdgError::Error(where, "Adjustments require numeric arguments");
+                    return;
             }
         }
         
@@ -1628,6 +1641,15 @@ namespace AST {
             case ASTmodTerm::flip: {
                 agg::trans_affine_reflection ref(modArgs[0] * MY_PI / 180.0);
                 m.m_transform.premultiply(ref);
+                break;
+            }
+            case ASTmodTerm::blend: {
+                int f = static_cast<int>(modArgs[0]);
+                if ((f & (1 << 20)) == 0) {
+                    CfdgError::Error(where, "Blend adjustments require blend flag arguments");
+                    return;
+                }
+                m.m_BlendMode = f;
                 break;
             }
             case ASTmodTerm::alpha:
@@ -1927,6 +1949,7 @@ namespace AST {
             { ASTmodTerm::skew,         "\xFF\x2D\x84\x01\xA0\x0A" },
             { ASTmodTerm::flip,         "\x43\x5A\x17\xEA\x12\x05" },
             { ASTmodTerm::zsize,        "\x64\xEC\x5B\x4B\xEE\x2B" },
+            { ASTmodTerm::blend,        "\xBE\x9F\x5F\x7F\x4A\x7E" },
             { ASTmodTerm::hue,          "\x02\xDE\x2B\x2C\x25\xA1" },
             { ASTmodTerm::sat,          "\x18\x4F\xCF\x04\x3F\xE5" },
             { ASTmodTerm::bright,       "\x1F\x3F\xEB\xA2\xA2\x7E" },
@@ -2188,6 +2211,7 @@ namespace AST {
             { ASTmodTerm::skew,         ASTmodification::GeomClass },
             { ASTmodTerm::flip,         ASTmodification::GeomClass },
             { ASTmodTerm::zsize,        ASTmodification::ZClass },
+            { ASTmodTerm::blend,        0 },
             { ASTmodTerm::hue,          ASTmodification::HueClass },
             { ASTmodTerm::sat,          ASTmodification::SatClass },
             { ASTmodTerm::bright,       ASTmodification::BrightClass },
@@ -3119,6 +3143,15 @@ namespace AST {
                             CfdgError::Error(args->where, "Cannot accept a transform expression here", b);
                         else
                             modType = ASTmodTerm::modification;
+                        break;
+                    case FlagType:
+                        if (modType != ASTmodTerm::blend) {
+                            CfdgError::Error(args->where, "Cannot accept a flag expression here", b);
+                        } else {
+                            argCount = args->evaluate();
+                            if (argCount != 1)
+                                CfdgError::Error(args->where, "Error evaluating flag expression", b);
+                        }
                         break;
                     default:
                         CfdgError::Error(args->where, "Illegal expression in shape adjustment", b);

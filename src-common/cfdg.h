@@ -37,6 +37,7 @@
 #include "agg2/agg_trans_affine.h"
 #include "agg2/agg_color_rgba.h"
 #include "agg2/agg_path_storage.h"
+#include "agg2/agg_pixfmt_rgba.h"
 #include "location.hh"
 #include "stacktype.h"
 #include "Rand64.h"
@@ -176,7 +177,7 @@ class Canvas {
         virtual void end()
         { mTime = clock() - mTime; }
 
-        virtual void primitive(int, RGBA8 , agg::trans_affine ) = 0;
+        virtual void primitive(int, RGBA8 , agg::trans_affine , agg::comp_op_e ) = 0;
         virtual void path(RGBA8, agg::trans_affine, const AST::CommandInfo& ) = 0;
 
         Canvas(int width, int height) 
@@ -211,6 +212,7 @@ class CFDG {
         bool usesColor;
         bool usesAlpha;
         bool uses16bitColor;
+        bool usesBlendMode;
         bool usesTime;
         bool usesFrameTime;
         static const CfgArray<std::string>  ParamNames;

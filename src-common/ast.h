@@ -32,6 +32,7 @@
 #include <string>
 #include "agg2/agg_math_stroke.h"
 #include "agg2/agg_trans_affine.h"
+#include "agg2/agg_pixfmt_rgba.h"
 #include "location.hh"
 #include <cstdint>
 
@@ -182,7 +183,31 @@ namespace AST {
         CF_P3M1 = 19 << 15,
         CF_P31M = 20 << 15,
         CF_P6 = 21 << 15,
-        CF_P6M = 22 << 15
+        CF_P6M = 22 << 15,
+        CF_CLEAR = (1 << 20) | (agg::comp_op_e::comp_op_clear << 21),
+        CF_SRC = (1 << 20) | (agg::comp_op_e::comp_op_src << 21),
+        CF_DEST = (1 << 20) | (agg::comp_op_e::comp_op_dst << 21),
+        CF_SRC_OVER = (1 << 20) | (agg::comp_op_e::comp_op_src_over << 21),
+        CF_DEST_OVER = (1 << 20) | (agg::comp_op_e::comp_op_dst_over << 21),
+        CF_SRC_IN = (1 << 20) | (agg::comp_op_e::comp_op_src_in << 21),
+        CF_DEST_IN = (1 << 20) | (agg::comp_op_e::comp_op_dst_in << 21),
+        CF_SRC_OUT = (1 << 20) | (agg::comp_op_e::comp_op_src_out << 21),
+        CF_DEST_OUT = (1 << 20) | (agg::comp_op_e::comp_op_dst_out << 21),
+        CF_SRC_ATOP = (1 << 20) | (agg::comp_op_e::comp_op_src_atop << 21),
+        CF_DEST_ATOP = (1 << 20) | (agg::comp_op_e::comp_op_dst_atop << 21),
+        CF_XOR = (1 << 20) | (agg::comp_op_e::comp_op_xor << 21),
+        CF_PLUS = (1 << 20) | (agg::comp_op_e::comp_op_plus << 21),
+        CF_MULTIPLY = (1 << 20) | (agg::comp_op_e::comp_op_multiply << 21),
+        CF_SCREEN = (1 << 20) | (agg::comp_op_e::comp_op_screen << 21),
+        CF_OVERLAY = (1 << 20) | (agg::comp_op_e::comp_op_overlay << 21),
+        CF_DARKEN = (1 << 20) | (agg::comp_op_e::comp_op_darken << 21),
+        CF_LIGHTEN = (1 << 20) | (agg::comp_op_e::comp_op_lighten << 21),
+        CF_COLOR_DODGE = (1 << 20) | (agg::comp_op_e::comp_op_color_dodge << 21),
+        CF_COLOR_BURN = (1 << 20) | (agg::comp_op_e::comp_op_color_burn << 21),
+        CF_HARD_LIGHT = (1 << 20) | (agg::comp_op_e::comp_op_hard_light << 21),
+        CF_SOFT_LIGHT = (1 << 20) | (agg::comp_op_e::comp_op_soft_light << 21),
+        CF_DIFFERENCE = (1 << 20) | (agg::comp_op_e::comp_op_difference << 21),
+        CF_EXCLUSION = (1 << 20) | (agg::comp_op_e::comp_op_exclusion << 21),
     };
     
     double CFatof(const char* s);

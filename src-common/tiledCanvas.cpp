@@ -40,17 +40,17 @@ void tiledCanvas::end()
     mTile->end();
 }
 
-void tiledCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr)
+void tiledCanvas::primitive(int shape, RGBA8 c, agg::trans_affine tr, agg::comp_op_e blend)
 {
     if (shape == primShape::fillType) {
-        mTile->primitive(shape, c, tr);
+        mTile->primitive(shape, c, tr, blend);
         return;
     }
     for (auto&& tile: mTileList) {
         agg::trans_affine t(tr);
         t.tx += tile.x;
         t.ty += tile.y;
-        mTile->primitive(shape, c, t);
+        mTile->primitive(shape, c, t, blend);
     }
 }
 

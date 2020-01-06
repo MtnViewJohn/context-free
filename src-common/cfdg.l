@@ -161,6 +161,7 @@ EOL         \n|\r\n|\r
 "r"             {yylval->modToken = AST::ASTmodTerm::rot;           return token::MODTYPE;}
 "flip"          {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
 "f"             {yylval->modToken = AST::ASTmodTerm::flip;          return token::MODTYPE;}
+"blend"         {yylval->modToken = AST::ASTmodTerm::blend;         return token::MODTYPE;}
 "hue"           {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
 "h"             {yylval->modToken = AST::ASTmodTerm::hue;           return token::MODTYPE;}
 "saturation"    {yylval->modToken = AST::ASTmodTerm::sat;           return token::MODTYPE;}

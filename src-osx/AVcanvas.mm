@@ -244,10 +244,10 @@
 
 @end
 
-AVcanvas::AVcanvas(NSString* name, BitmapImageHolder* bits, int fps, VideoFormat format)
-: aggCanvas(AV_Blend), impl([[AVimpl alloc] initWithName: name data: bits
-                                               frameRate: static_cast<CMTimeScale>(fps)
-                                                  format: format])
+AVcanvas::AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt, int fps, VideoFormat format)
+: aggCanvas(pixfmt), impl([[AVimpl alloc] initWithName: name data: bits
+                                             frameRate: static_cast<CMTimeScale>(fps)
+                                                format: format])
 {
     if (bits)
         attach([bits bitmapData],

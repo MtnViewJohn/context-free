@@ -460,7 +460,7 @@ namespace AST {
     public:
         enum modTypeEnum : unsigned {  unknownType, x, y, z, xyz, transform,
             size, sizexyz, rot, skew, flip, 
-            zsize, hue, sat, bright, alpha, 
+            zsize, blend, hue, sat, bright, alpha, 
             hueTarg, satTarg, brightTarg, alphaTarg, 
             targHue, targSat, targBright, targAlpha,
             time, timescale, 

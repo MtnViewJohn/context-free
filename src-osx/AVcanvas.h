@@ -38,7 +38,7 @@ public:
     enum VideoFormat {
         H264, ProRes422, ProRes4444
     };
-    AVcanvas(NSString* name, BitmapImageHolder* bits, int fps, VideoFormat format);
+    AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt, int fps, VideoFormat format);
     ~AVcanvas() override;
     AVcanvas& operator=(const AVcanvas& c) = delete;
     

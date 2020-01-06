@@ -586,6 +586,7 @@ namespace AST {
                 r->mCurrentPath->mCommandInfo.emplace_back(r->mIndex, r->mCurrentPath.get(), width, this);
             }
             info = &(r->mCurrentPath->mCommandInfo.back());
+            info->mFlags |= child.mWorldState.m_BlendMode;
         }
 
         r->processPathCommand(child, info);

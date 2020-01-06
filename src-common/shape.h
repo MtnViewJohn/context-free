@@ -39,6 +39,7 @@
 #include "agg_trans_affine_1D.h"
 #include "agg_trans_affine_time.h"
 #include "agg2/agg_color_rgba.h"
+#include "agg2/agg_pixfmt_rgba.h"
 #include "HSBColor.h"
 #include "Rand64.h"
 #include "bounds.h"
@@ -54,10 +55,11 @@ class Modification {
         HSBColor m_Color;
         HSBColor m_ColorTarget;
         unsigned m_ColorAssignment;
+        int      m_BlendMode;
 
         Rand64 mRand64Seed;
 
-    Modification() : m_ColorAssignment(0)
+    Modification() : m_ColorAssignment(0), m_BlendMode(0)
         { }
     
         double area() const { return fabs(m_transform.determinant()); }
@@ -77,6 +79,8 @@ class Modification {
             HSBColor::Adjust(m_Color, m_ColorTarget, m.m_Color, m.m_ColorTarget,
                              m.m_ColorAssignment);
             mRand64Seed ^= m.mRand64Seed;
+            if (m.m_BlendMode)
+                m_BlendMode = m.m_BlendMode;
             return *this;
         }
     

@@ -161,6 +161,7 @@ public:
     void            CheckConfig(AST::ASTdefine* cfg);
     void            inColor();
     void            timeWise();
+    void            blended();
     bool            isMyBuilder() const noexcept;
     bool            impure() const noexcept;
 };

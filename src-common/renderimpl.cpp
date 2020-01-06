@@ -1020,8 +1020,11 @@ RendererImpl::drawShape(const FinishedShape& s)
         rule->traversePath(s, this);
     } else {
         RGBA8 color = m_cfdg->getColor(s.mWorldState.m_Color);
+        agg::comp_op_e blend = (s.mWorldState.m_BlendMode & (1 << 20)) ?
+            static_cast<agg::comp_op_e>((s.mWorldState.m_BlendMode >> 21) & 31) : agg::comp_op_e::comp_op_src_over;
+
         if (primShape::isPrimShape(s.mShapeType)) {
-            m_canvas->primitive(s.mShapeType, color, tr);
+            m_canvas->primitive(s.mShapeType, color, tr, blend);
         } else {
             system()->error();
             system()->message("Non drawable shape with no rules: %s",

@@ -205,6 +205,7 @@ CFDGImpl::addParameter(Parameter p)
     usesColor = m_Parameters & Color;
     usesTime = m_Parameters & Time;
     usesFrameTime = m_Parameters & FrameTime;
+    usesBlendMode = m_Parameters & Blend;
 }
 
 RGBA8
