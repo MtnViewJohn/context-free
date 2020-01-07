@@ -33,10 +33,6 @@ BEGIN
     "\0"
 END
 
-2 TEXTINCLUDE 
-BEGIN
-//    "#include ""afxres.h""\0"
-END
 
 3 TEXTINCLUDE 
 BEGIN
@@ -52,8 +48,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,44
- PRODUCTVERSION 3,2,0,44
+ FILEVERSION 3,3,0,45
+ PRODUCTVERSION 3,3,0,45
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +66,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "OzoneSoft"
             VALUE "FileDescription", "ContextFree Application"
-            VALUE "FileVersion", "3.2.0.44"
+            VALUE "FileVersion", "3.3.0.45"
             VALUE "InternalName", "ContextFree"
-            VALUE "LegalCopyright", "Copyright (C) 2005-2019 John Horigan and Mark Lentczner"
+            VALUE "LegalCopyright", "Copyright (C) 2005-2020 John Horigan and Mark Lentczner"
             VALUE "OriginalFilename", "ContextFree.exe"
             VALUE "ProductName", "ContextFree"
-            VALUE "ProductVersion", "3.2.0.44"
+            VALUE "ProductVersion", "3.3.0.45"
         END
     END
     BLOCK "VarFileInfo"
