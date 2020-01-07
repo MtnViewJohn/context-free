@@ -67,14 +67,15 @@ using custom64_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba16, agg::order_r
 using custom32_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_rgba>;
 using custom64_pixel_fmt = agg::pixfmt_custom_blend_rgba<custom64_blender, agg::rendering_buffer>;
 using custom32_pixel_fmt = agg::pixfmt_custom_blend_rgba<custom32_blender, agg::rendering_buffer>;
+
+using customav_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_bgra>;
+using customav_pixel_fmt = agg::pixfmt_custom_blend_rgba<customav_blender, agg::rendering_buffer>;
 #endif
 
 using ff_pixel_fmt = agg::pixfmt_argb32_pre;
 using ff24_pixel_fmt = agg::pixfmt_rgb24_pre;
 using av_pixel_fmt = agg::pixfmt_bgra32_pre;
 
-using customav_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_bgra>;
-using customav_pixel_fmt = agg::pixfmt_custom_blend_rgba<customav_blender, agg::rendering_buffer>;
 using customff_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_argb>;
 using customff_pixel_fmt = agg::pixfmt_custom_blend_rgba<customff_blender, agg::rendering_buffer>;
 
@@ -261,9 +262,11 @@ template<>
 void aggPixelPainter<custom64_pixel_fmt>::comp_op(agg::comp_op_e blend)
 { pixFmt.comp_op(static_cast<unsigned>(blend)); }
 
+#ifndef _WIN32
 template<>
 void aggPixelPainter<customav_pixel_fmt>::comp_op(agg::comp_op_e blend)
 { pixFmt.comp_op(static_cast<unsigned>(blend)); }
+#endif
 
 template<>
 void aggPixelPainter<customff_pixel_fmt>::comp_op(agg::comp_op_e blend)
@@ -383,7 +386,9 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case FF_Custom_Blend:
             m = std::make_unique<aggPixelPainter<customff_pixel_fmt>>(this); break;
         case AV_Custom_Blend:
+#ifndef _WIN32
             m = std::make_unique<aggPixelPainter<customav_pixel_fmt>>(this); break;
+#endif
         default: break;
     }
 }
