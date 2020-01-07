@@ -1844,6 +1844,7 @@ Bitmap^ Document::MakeBitmap(bool cropped, WinCanvas *canvas)
             bm = gcnew Bitmap(width, height, canvas->mStride, Imaging::PixelFormat::Format24bppRgb, pixelStore);
             break;
         case aggCanvas::RGBA8_Blend:
+        case aggCanvas::RGBA8_Custom_Blend:
             bm = gcnew Bitmap(width, height, canvas->mStride, Imaging::PixelFormat::Format32bppPArgb, pixelStore);
             break;
         default:
