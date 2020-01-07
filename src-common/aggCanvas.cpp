@@ -325,12 +325,14 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
             break;
         }
         
+        case aggCanvas::RGBA8_Custom_Blend:
         case aggCanvas::RGBA8_Blend: {
             color32_pixel_fmt srcPixFmt(srcBuffer);
             agg::copy_rect(srcPixFmt, pixFmt);
             break;
         }
         
+        case aggCanvas::RGBA16_Custom_Blend:
         case aggCanvas::RGBA16_Blend: {
             color64_pixel_fmt srcPixFmt(srcBuffer);
             agg::copy_rect(srcPixFmt, pixFmt);
@@ -352,6 +354,8 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
         case aggCanvas::FF_Blend:
         case aggCanvas::FF24_Blend:
         case aggCanvas::AV_Blend:
+        case aggCanvas::AV_Custom_Blend:
+        case aggCanvas::FF_Custom_Blend:
             assert(false);
             break;
             
