@@ -223,7 +223,7 @@ template <class pixel_fmt> class aggPixelPainter : public aggCanvas::impl {
         }
 
         void clear(const agg::rgba& bk) override;
-        void comp_op(agg::comp_op_e blend) {}
+        void comp_op(agg::comp_op_e) {}
         void fill(RGBA8 bk) override;
         void draw(RGBA8 c, agg::filling_rule_e fr = agg::fill_non_zero,
                   agg::comp_op_e blend = agg::comp_op_e::comp_op_src_over) override;
