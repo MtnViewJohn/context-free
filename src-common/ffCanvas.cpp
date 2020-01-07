@@ -347,6 +347,9 @@ mapPixFmt(aggCanvas::PixelFormat in)
         case aggCanvas::RGB8_Blend:
         case aggCanvas::RGB16_Blend:
             return aggCanvas::FF24_Blend;
+        case aggCanvas::RGBA8_Custom_Blend:
+        case aggCanvas::RGBA16_Custom_Blend:
+            return aggCanvas::FF_Custom_Blend;
         default:
             return aggCanvas::FF_Blend;
     }
