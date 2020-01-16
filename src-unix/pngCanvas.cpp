@@ -107,6 +107,8 @@ void pngCanvas::output(const char* outfilename, int frame)
         switch (mPixelFormat) {
             case aggCanvas::RGBA8_Blend:
             case aggCanvas::RGBA16_Blend:
+            case aggCanvas::RGBA8_Custom_Blend:
+            case aggCanvas::RGBA16_Custom_Blend:
                 pngFormat = PNG_COLOR_TYPE_RGB_ALPHA;
                 break;
             case aggCanvas::RGB8_Blend:
@@ -158,7 +160,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         png_bytep rowPtr = mData.get() + srcy * mStride + srcx * aggCanvas::BytesPerPixel.at(mPixelFormat);
         for (int r = 0; r < height; ++r) {
-            if (mPixelFormat == aggCanvas::RGBA8_Blend) {
+            if (mPixelFormat == aggCanvas::RGBA8_Blend || mPixelFormat == aggCanvas::RGBA8_Custom_Blend) {
                 // Convert each row to non-premultiplied alpha as per PNG spec
                 // This is done in a separate array instead of in-situ because
                 // for animations the main buffer might be drawn into again
@@ -171,7 +173,7 @@ void pngCanvas::output(const char* outfilename, int frame)
                     row[c + 3] = pix.a;
                 }
                 png_write_row(png_ptr, row.get());
-            } else if (mPixelFormat == aggCanvas::RGBA16_Blend) {
+            } else if (mPixelFormat == aggCanvas::RGBA16_Blend || mPixelFormat == aggCanvas::RGBA16_Custom_Blend) {
                 // Ditto for rgba16
                 png_uint_16p rowPtr16 = reinterpret_cast<png_uint_16p>(rowPtr);
                 for (int c = 0; c < width * 4; c += 4) {
