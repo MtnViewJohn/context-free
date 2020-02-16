@@ -491,109 +491,110 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Insert Variable" id="633">
                                     <items>
-                                        <menuItem title="CF::AllowOverlap" id="634">
+                                        <menuItem title="CF::AllowOverlap = 1" id="634">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="700"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Alpha" id="701">
+                                        <menuItem title="CF::Alpha = 1" id="701">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="702"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Background" id="703">
+                                        <menuItem title="CF::Background = [b 1]" id="703">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="704"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::BorderDynamic" id="705">
+                                        <menuItem title="CF::BorderDynamic = 0" id="705">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="706"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::BorderFixed" id="707">
+                                        <menuItem title="CF::BorderFixed = 0" id="707">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="708"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Color" id="709">
+                                        <menuItem title="CF::Color = 1" id="709">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="710"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::ColorDepth" id="711">
+                                        <menuItem title="CF::ColorDepth = 16" id="711">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="712"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Frame" id="713">
+                                        <menuItem title="CF::Frame = 60" id="713">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="714"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::FrameTime" id="715">
+                                        <menuItem title="CF::FrameTime = 0.2" id="715">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="716"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Impure" id="717">
+                                        <menuItem title="CF::Impure = 1" id="717">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="718"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::MaxNatural" id="760">
+                                        <menuItem title="CF::MaxNatural = 10000" id="760">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="761"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::MaxShapes" id="765">
+                                        <menuItem title="CF::MaxShapes = 1000000" id="765">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="766"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::MinimumSize" id="719">
+                                        <menuItem title="CF::MinimumSize = 0.1" id="719">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="720"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Size" id="721">
+                                        <menuItem title="CF::Size = [s 4 5]" id="721">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="722"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::StartShape" id="763">
+                                        <menuItem title="CF::StartShape = foo,[b 1]" id="763">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="764"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Symmetry" id="723">
+                                        <menuItem title="CF::Symmetry = CF::pmg, 1, 0.2, -0.5" id="723">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="724"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Tile" id="725">
+                                        <menuItem title="CF::Tile = [skew 15 15 r 15]" id="725">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="726"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="CF::Time" id="727">
+                                        <menuItem title="CF::Time = [time 0 1]" id="727">
+                                            <attributedString key="attributedTitle"/>
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="insertUnicode:" target="-1" id="728"/>
