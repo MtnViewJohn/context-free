@@ -184,6 +184,7 @@ namespace AST {
         CF_P31M = 20 << 15,
         CF_P6 = 21 << 15,
         CF_P6M = 22 << 15,
+        CF_CLEAR = (1 << 20) | (agg::comp_op_e::comp_op_clear << 21),
         CF_SRC_OVER = (1 << 20) | (agg::comp_op_e::comp_op_src_over << 21),
         CF_XOR = (1 << 20) | (agg::comp_op_e::comp_op_xor << 21),
         CF_PLUS = (1 << 20) | (agg::comp_op_e::comp_op_plus << 21),

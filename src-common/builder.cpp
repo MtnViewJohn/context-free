@@ -85,6 +85,7 @@ const std::map<std::string, int> Builder::FlagNames = {
     {"CF::p6",          AST::CF_P6},
     {"CF::p6m",         AST::CF_P6M},
     {"CF::Normal",      AST::CF_SRC_OVER},
+    {"CF::Clear",       AST::CF_CLEAR},
     {"CF::Xor",         AST::CF_XOR},
     {"CF::Plus",        AST::CF_PLUS},
     {"CF::Multiply",    AST::CF_MULTIPLY},
