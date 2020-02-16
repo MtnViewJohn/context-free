@@ -220,12 +220,6 @@ namespace {
     void*       ItemStatusContext = &ItemStatusContext;
     void*       LayerStatusContext = &LayerStatusContext;
     void*       ItemDurationContext = &ItemDurationContext;
-    NSImage*    PlayNormalImage = nil;
-    NSImage*    PlayPressImage = nil;
-    NSImage*    PauseNormalImage = nil;
-    NSImage*    PausePressImage = nil;
-    NSImage*    RewindNormalImage = nil;
-    NSImage*    RewindPressImage = nil;
     NSImage*    MagnifyingGlassLight = nil;
     NSImage*    MagnifyingGlassDark = nil;
     
@@ -299,12 +293,6 @@ namespace {
 
 + (void)initialize {
     if (self == [GView self]) {
-        PlayNormalImage =   [[NSImage imageNamed:@"RemotePlay_norm.tif.icns"] retain];
-        PlayPressImage =    [[NSImage imageNamed:@"RemotePlay_press.tif.icns"] retain];
-        PauseNormalImage =  [[NSImage imageNamed:@"RemotePause_norm.tif.icns"] retain];
-        PausePressImage =   [[NSImage imageNamed:@"RemotePause_press.tif.icns"] retain];
-        RewindNormalImage =  [[NSImage imageNamed:@"rewind.norm.icns"] retain];
-        RewindPressImage =   [[NSImage imageNamed:@"rewind.press.icns"] retain];
         MagnifyingGlassLight = [[NSImage imageNamed:@"magnifying-glass.icns"] retain];
         MagnifyingGlassDark = [[NSImage imageNamed:@"magnifying-glass-white.icns"] retain];
         std::sort(CFscintilla::AutoComplete.begin(), CFscintilla::AutoComplete.end(), CFscintilla::AutoCmp());
@@ -490,6 +478,8 @@ namespace {
         mWrapSearch = true;
         mSuspendNotifications = false;
         mLastCaretPos = -1;
+        
+        mLoop = NO;
     }
     return self;
 }
@@ -792,8 +782,9 @@ namespace {
 
 - (IBAction) movieRewind:(id)sender
 {
-    [mMoviePlayer seekToTime: kCMTimeZero];
-    mAtEndofMovie = false;
+    // Rewind button repurposed as looping button
+    mLoop = [mRewindButton state] != NSOffState;
+    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
 }
 
 - (IBAction) movieTimeChange:(id)sender
@@ -2468,26 +2459,8 @@ long MakeColor(id v)
 
 - (void) setMovieImagesPlay:(BOOL)play
 {
-    bool dark = false;
-#ifndef __MAC_10_14
-    NSString* NSAppearanceNameDarkAqua = @"foo";
-#endif
-    if (@available(macOS 10_14, *)) {
-        NSAppearance* next = [[NSApplication sharedApplication] effectiveAppearance];
-        dark = [[next bestMatchFromAppearancesWithNames:
-                 @[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]]
-                isEqualToString:NSAppearanceNameDarkAqua];
-    }
-
-    if (play) {
-        mStartStopButton.image = dark ? PausePressImage : PauseNormalImage;
-        mStartStopButton.alternateImage = dark ? PauseNormalImage : PausePressImage;
-    } else {
-        mStartStopButton.image = dark ? PlayPressImage : PlayNormalImage;
-        mStartStopButton.alternateImage = dark ? PlayPressImage : PlayNormalImage;
-    }
-    mRewindButton.image = dark ? RewindPressImage : RewindNormalImage;
-    mRewindButton.alternateImage = dark ? RewindNormalImage : RewindPressImage;
+    if ([mStartStopButton state] != (play ? NSOnState : NSOffState))
+        [mStartStopButton setState: (play ? NSOnState : NSOffState)];
 }
 
 - (void)drawCheckerboardRect:(NSRect)rect
@@ -2650,7 +2623,9 @@ long MakeColor(id v)
     rect.size.width = sz;
     [mCurrentTime setFrame: rect];
     mCurrentTime.doubleValue = 0.0;
-    
+    [mRewindButton setState: (mLoop ? NSOnState : NSOffState)];
+    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
+
     if (!mMoviePlayerLayer) {
         AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
         newPlayerLayer.frame = self.layer.bounds;
@@ -2771,9 +2746,13 @@ long MakeColor(id v)
                                                                            object:playerItem
                                                                             queue:[NSOperationQueue mainQueue]
                                                                        usingBlock:^(NSNotification *note) {
-                                                                           mAtEndofMovie = true;
-                                                                           [self setMovieImagesPlay: NO];
-                                                                       }
+                                                                            if (mLoop) {
+                                                                                [mMoviePlayer seekToTime: kCMTimeZero];
+                                                                            } else {
+                                                                                mAtEndofMovie = true;
+                                                                                [self setMovieImagesPlay: NO];
+                                                                            }
+                                                                        }
                           ];
     }
     [mMoviePlayer replaceCurrentItemWithPlayerItem:playerItem];

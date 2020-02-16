@@ -61,12 +61,6 @@
 		527631990D7B63A000F0F7C8 /* widget-style.css in Resources */ = {isa = PBXBuildFile; fileRef = 527631980D7B63A000F0F7C8 /* widget-style.css */; };
 		5276AA9913776AE1000FA1AB /* CmdInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5276AA9813776AE1000FA1AB /* CmdInfo.cpp */; };
 		5276ACE9137A513B000FA1AB /* stacktype.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5276ACE8137A513B000FA1AB /* stacktype.cpp */; };
-		527D30B21EB1C56D00F03EF6 /* RemotePause_norm.tif.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30AC1EB1C56D00F03EF6 /* RemotePause_norm.tif.icns */; };
-		527D30B31EB1C56D00F03EF6 /* RemotePause_press.tif.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30AD1EB1C56D00F03EF6 /* RemotePause_press.tif.icns */; };
-		527D30B41EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30AE1EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns */; };
-		527D30B51EB1C56D00F03EF6 /* RemotePlay_press.tif.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30AF1EB1C56D00F03EF6 /* RemotePlay_press.tif.icns */; };
-		527D30B81EB1CEFA00F03EF6 /* rewind.norm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30B61EB1CEFA00F03EF6 /* rewind.norm.icns */; };
-		527D30B91EB1CEFA00F03EF6 /* rewind.press.icns in Resources */ = {isa = PBXBuildFile; fileRef = 527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */; };
 		527FE238135ABF2400F9B15F /* pathIterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 527FE237135ABF2400F9B15F /* pathIterator.cpp */; };
 		528EC35116C5D28D004DAEC2 /* commandLineSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 528EC34F16C5D28D004DAEC2 /* commandLineSystem.cpp */; };
 		528EC35216C5DAA0004DAEC2 /* posixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22DF13BA0200002732C2 /* posixSystem.cpp */; };
@@ -359,12 +353,6 @@
 		5276AA9813776AE1000FA1AB /* CmdInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdInfo.cpp; sourceTree = "<group>"; };
 		5276ACE7137A513B000FA1AB /* stacktype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stacktype.h; sourceTree = "<group>"; };
 		5276ACE8137A513B000FA1AB /* stacktype.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stacktype.cpp; sourceTree = "<group>"; };
-		527D30AC1EB1C56D00F03EF6 /* RemotePause_norm.tif.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = RemotePause_norm.tif.icns; sourceTree = "<group>"; };
-		527D30AD1EB1C56D00F03EF6 /* RemotePause_press.tif.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = RemotePause_press.tif.icns; sourceTree = "<group>"; };
-		527D30AE1EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = RemotePlay_norm.tif.icns; sourceTree = "<group>"; };
-		527D30AF1EB1C56D00F03EF6 /* RemotePlay_press.tif.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = RemotePlay_press.tif.icns; sourceTree = "<group>"; };
-		527D30B61EB1CEFA00F03EF6 /* rewind.norm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rewind.norm.icns; sourceTree = "<group>"; };
-		527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rewind.press.icns; sourceTree = "<group>"; };
 		527FE236135ABF2400F9B15F /* pathIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pathIterator.h; sourceTree = "<group>"; };
 		527FE237135ABF2400F9B15F /* pathIterator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pathIterator.cpp; sourceTree = "<group>"; };
 		5282F21C2031546300A45AA4 /* json_fwd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_fwd.hpp; sourceTree = "<group>"; };
@@ -726,12 +714,6 @@
 				5260DC642144ED440099D906 /* CFDGDocument.xib */,
 				5260DC612144EC8B0099D906 /* MainMenu.xib */,
 				526271EE2140E4D200412E84 /* magnifying-glass.icns */,
-				527D30B61EB1CEFA00F03EF6 /* rewind.norm.icns */,
-				527D30B71EB1CEFA00F03EF6 /* rewind.press.icns */,
-				527D30AC1EB1C56D00F03EF6 /* RemotePause_norm.tif.icns */,
-				527D30AD1EB1C56D00F03EF6 /* RemotePause_press.tif.icns */,
-				527D30AE1EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns */,
-				527D30AF1EB1C56D00F03EF6 /* RemotePlay_press.tif.icns */,
 				527631980D7B63A000F0F7C8 /* widget-style.css */,
 				527631930D7B5D2D00F0F7C8 /* widgetform.html */,
 				FDB2FAF7081CD10A00901B0E /* app.icns */,
@@ -907,23 +889,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */,
-				527D30B21EB1C56D00F03EF6 /* RemotePause_norm.tif.icns in Resources */,
 				FD1EF0A50811AE1900FD38C6 /* InfoPlist.strings in Resources */,
-				527D30B41EB1C56D00F03EF6 /* RemotePlay_norm.tif.icns in Resources */,
 				FD1EF0AC0811AE1900FD38C6 /* version.plist in Resources */,
-				527D30B51EB1C56D00F03EF6 /* RemotePlay_press.tif.icns in Resources */,
 				FDB2FAF8081CD10A00901B0E /* app.icns in Resources */,
 				FDCD3F10081E145E00D4A589 /* doc.icns in Resources */,
 				5235D4CB21868E4800920D9E /* magnifying-glass-white.icns in Resources */,
 				FDC5D4AC082433AF00B5990D /* UserDefaults.plist in Resources */,
 				5260DC632144EC8B0099D906 /* MainMenu.xib in Resources */,
-				527D30B81EB1CEFA00F03EF6 /* rewind.norm.icns in Resources */,
 				5260DC662144ED440099D906 /* CFDGDocument.xib in Resources */,
 				5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */,
-				527D30B91EB1CEFA00F03EF6 /* rewind.press.icns in Resources */,
 				FD782A8A082869F100910D5E /* HelpMenu.plist in Resources */,
 				FD9BA8550832B56A00B9396F /* Credits.html in Resources */,
-				527D30B31EB1C56D00F03EF6 /* RemotePause_press.tif.icns in Resources */,
 				527631940D7B5D2D00F0F7C8 /* widgetform.html in Resources */,
 				527631990D7B63A000F0F7C8 /* widget-style.css in Resources */,
 			);

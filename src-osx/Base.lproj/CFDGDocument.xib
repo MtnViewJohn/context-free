@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -52,17 +52,17 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <box fixedFrame="YES" borderType="none" titlePosition="noTitle" id="XA2-UN-xFF" userLabel="Code Editor">
-                                        <rect key="frame" x="-3" y="-2" width="421" height="615"/>
+                                        <rect key="frame" x="-3" y="-2" width="421" height="616"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" id="XhV-Ue-7MU">
-                                            <rect key="frame" x="0.0" y="0.0" width="421" height="615"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="421" height="616"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R4D-nu-TpI">
-                                                    <rect key="frame" x="51" y="591" width="277" height="19"/>
+                                                    <rect key="frame" x="51" y="592" width="277" height="19"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Find" usesSingleLineMode="YES" bezelStyle="round" id="sTt-vi-VhG">
-                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <font key="font" metaFont="message" size="11"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
@@ -72,17 +72,17 @@
                                                     </connections>
                                                 </textField>
                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e7S-vb-lWZ">
-                                                    <rect key="frame" x="51" y="565" width="209" height="19"/>
+                                                    <rect key="frame" x="51" y="566" width="209" height="19"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Replace" usesSingleLineMode="YES" bezelStyle="round" id="kf7-6c-A1w">
-                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <font key="font" metaFont="message" size="11"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                     <accessibility description="Replace field"/>
                                                 </textField>
                                                 <button toolTip="Done" verticalHuggingPriority="750" fixedFrame="YES" tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="q7H-aN-sJZ" userLabel="Done">
-                                                    <rect key="frame" x="390" y="589" width="31" height="21"/>
+                                                    <rect key="frame" x="390" y="590" width="31" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" alternateImage="NSRemoveTemplate" imageScaling="proportionallyDown" inset="2" id="U7j-i1-s8m">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -93,11 +93,11 @@
                                                     </connections>
                                                 </button>
                                                 <button toolTip="Search options" verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8VC-wN-PVJ">
-                                                    <rect key="frame" x="8" y="591" width="40" height="17"/>
+                                                    <rect key="frame" x="8" y="592" width="40" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="square" title="▿" bezelStyle="shadowlessSquare" image="magnifying-glass" imagePosition="left" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="SVD-Jm-kpL">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="system" size="14"/>
+                                                        <font key="font" metaFont="menu" size="14"/>
                                                     </buttonCell>
                                                     <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <connections>
@@ -105,11 +105,11 @@
                                                     </connections>
                                                 </button>
                                                 <popUpButton hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S0t-up-AMx">
-                                                    <rect key="frame" x="4" y="565" width="76" height="26"/>
+                                                    <rect key="frame" x="4" y="566" width="76" height="26"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <popUpButtonCell key="cell" type="push" title="Case sensitive" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="4z1-NF-CMK" id="6sb-Ya-Beh">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="menu"/>
+                                                        <font key="font" metaFont="system"/>
                                                         <menu key="menu" id="pCO-6r-0bj">
                                                             <items>
                                                                 <menuItem title="Case sensitive" state="on" id="4z1-NF-CMK">
@@ -144,10 +144,10 @@
                                                     </popUpButtonCell>
                                                 </popUpButton>
                                                 <segmentedControl toolTip="Find" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hVl-9P-zsR">
-                                                    <rect key="frame" x="334" y="589" width="59" height="21"/>
+                                                    <rect key="frame" x="334" y="590" width="59" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="XrL-Wy-0Mq">
-                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <font key="font" metaFont="message" size="11"/>
                                                         <segments>
                                                             <segment toolTip="Find previous" image="NSGoLeftTemplate" width="26" tag="3"/>
                                                             <segment toolTip="Find next" image="NSGoRightTemplate" width="26" tag="2"/>
@@ -158,10 +158,10 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ob9-iI-Nhp">
-                                                    <rect key="frame" x="266" y="564" width="157" height="21"/>
+                                                    <rect key="frame" x="266" y="565" width="157" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Gba-B4-FFG">
-                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <font key="font" metaFont="message" size="11"/>
                                                         <segments>
                                                             <segment label="Replace" toolTip="Replace next" width="56" tag="6"/>
                                                             <segment label="All" toolTip="Replace all in document" width="22" tag="4"/>
@@ -181,18 +181,18 @@
                                         </view>
                                     </box>
                                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="447">
-                                        <rect key="frame" x="0.0" y="618" width="415" height="142"/>
+                                        <rect key="frame" x="0.0" y="619" width="415" height="141"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <clipView key="contentView" drawsBackground="NO" id="2Cy-K2-uMB">
-                                            <rect key="frame" x="1" y="1" width="398" height="140"/>
+                                            <rect key="frame" x="1" y="1" width="398" height="139"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="450">
-                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="140"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="139"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="minSize" width="398" height="140"/>
+                                                    <size key="minSize" width="398" height="139"/>
                                                     <size key="maxSize" width="463" height="10000000"/>
                                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <connections>
@@ -206,7 +206,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="448">
-                                            <rect key="frame" x="399" y="1" width="15" height="140"/>
+                                            <rect key="frame" x="399" y="1" width="15" height="139"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
@@ -296,7 +296,7 @@
                                             <rect key="frame" x="90" y="4" width="95" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="next variation:" id="402">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -310,7 +310,7 @@ The variation code automatically increments each time you render an image.
 
 The variation code is a one to six letter sequence.</string>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="WWWWWW" bezelStyle="round" id="403">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -324,7 +324,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="280" y="0.0" width="15" height="22"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <stepperCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="18278" doubleValue="18277" valueWraps="YES" id="404">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </stepperCell>
                                             <connections>
                                                 <action selector="adjustVariation:" target="19" id="74"/>
@@ -334,7 +334,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="292" y="4" width="45" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Frame:" id="OZt-Zx-NAN">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -343,7 +343,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="342" y="2" width="53" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" bezelStyle="round" id="BQf-fE-Xph">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -359,7 +359,7 @@ The variation code is a one to six letter sequence.</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
+                                                <font key="font" metaFont="system"/>
                                                 <menu key="menu" id="9w0-Pe-geL">
                                                     <items>
                                                         <menuItem title="Render" state="on" tag="1" id="RXa-rI-z9w"/>
@@ -386,7 +386,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="342" y="2" width="53" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" bezelStyle="round" id="Lv6-6g-Q2L">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -400,7 +400,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="409" y="2" width="53" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" bezelStyle="round" id="xpP-Wp-Yj0">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -414,7 +414,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="394" y="0.0" width="15" height="22"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <stepperCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="1" maxValue="18278" doubleValue="18277" id="BfY-zJ-S7m">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </stepperCell>
                                             <connections>
                                                 <action selector="adjustFrame:" target="19" id="FOm-1q-4lf"/>
@@ -431,7 +431,7 @@ The variation code is a one to six letter sequence.</string>
                                 <rect key="frame" x="815" y="12" width="280" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -443,23 +443,23 @@ The variation code is a one to six letter sequence.</string>
                                     <rect key="frame" x="0.0" y="0.0" width="232" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOb-PW-Ohi">
-                                            <rect key="frame" x="-6" y="-2" width="39" height="38"/>
+                                        <button toolTip="Play/Pause" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOb-PW-Ohi">
+                                            <rect key="frame" x="4" y="5" width="27" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="round" bezelStyle="circular" image="RemotePlay_norm.tif" imagePosition="overlaps" alignment="center" alternateImage="RemotePlay_press.tif" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3qn-hH-uZw">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                            <buttonCell key="cell" type="bevel" title="▶️" alternateTitle="⏸" bezelStyle="circular" alignment="center" imageScaling="proportionallyDown" inset="2" id="3qn-hH-uZw">
+                                                <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="controlContent"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="toggleMovieStartStop:" target="19" id="wMY-ql-oyl"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZZH-fi-HFl">
-                                            <rect key="frame" x="22" y="-2" width="39" height="38"/>
+                                        <button toolTip="Loop Video" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZZH-fi-HFl">
+                                            <rect key="frame" x="28" y="5" width="27" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="round" bezelStyle="circular" image="rewind.norm" imagePosition="overlaps" alignment="center" alternateImage="rewind.press" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pFT-b1-ADs">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                            <buttonCell key="cell" type="bevel" title="➡️" alternateTitle="🔁" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="pFT-b1-ADs">
+                                                <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="controlContent"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="movieRewind:" target="19" id="zlh-sz-VN8"/>
@@ -469,7 +469,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="128" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="center" title="0" bezelStyle="round" id="wrh-9d-w2T">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -489,7 +489,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="60" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0" id="9ep-fS-FTM">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -498,7 +498,7 @@ The variation code is a one to six letter sequence.</string>
                                             <rect key="frame" x="196" y="6" width="38" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="10" id="x7Y-SU-clC">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -575,7 +575,7 @@ The variation code is a one to six letter sequence.</string>
                         <rect key="frame" x="114" y="206" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Width" id="408">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -584,7 +584,7 @@ The variation code is a one to six letter sequence.</string>
                         <rect key="frame" x="234" y="206" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Height" id="409">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -593,7 +593,7 @@ The variation code is a one to six letter sequence.</string>
                         <rect key="frame" x="333" y="178" width="62" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="in pixels" id="410">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -644,7 +644,7 @@ Gw
                         <rect key="frame" x="99" y="228" width="311" height="98"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="415">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <string key="title">The image will be rendered to fit the dimensions entered here, using the current variation.  When complete, the image will be displayed scaled within the window.
 
 To speed up the process of larger renders, no updates will occur in the window while rendering.</string>
@@ -669,7 +669,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="213" y="142" width="167" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="size of smallest element" id="417">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -678,7 +678,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="115" y="79" width="190" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" alignment="left" minValue="-1" maxValue="2" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="418">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <binding destination="119" name="value" keyPath="values.BorderSize" id="242"/>
@@ -842,7 +842,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="462" id="427">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" title="OtherViews" id="223">
                                             <items>
                                                 <menuItem title="8" tag="800" id="225"/>
@@ -892,7 +892,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="476" id="474">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" title="OtherViews" id="475">
                                             <items>
                                                 <menuItem title="H.264" state="on" id="476"/>
@@ -1043,7 +1043,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="113" y="330" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Width" id="SyK-Bw-VgG">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1052,7 +1052,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="233" y="330" width="97" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Height" id="Wmr-2Z-J5r">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1061,7 +1061,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="332" y="302" width="62" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="in pixels" id="mCu-nH-OYe">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1112,7 +1112,7 @@ Gw
                         <rect key="frame" x="98" y="352" width="311" height="42"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="U04-rX-pI1">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <string key="title">The image will be animated to fit the dimensions entered here, using the current variation.  When complete, the movie or frame will be displayed scaled within the window.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1135,7 +1135,7 @@ Gw
                         <rect key="frame" x="212" y="266" width="167" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="size of smallest element" id="BHy-07-B0S">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1144,7 +1144,7 @@ Gw
                         <rect key="frame" x="114" y="203" width="190" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <sliderCell key="cell" alignment="left" minValue="-1" maxValue="2" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="n1o-gN-GPS">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <binding destination="119" name="value" keyPath="values.BorderSize" id="bo5-lN-mHR"/>
@@ -1231,7 +1231,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="hpR-EU-fGD" id="duC-Mg-zdl">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="rMz-Ei-B63">
                                 <items>
                                     <menuItem title="8" tag="800" id="mQR-xP-yMQ"/>
@@ -1301,7 +1301,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Gbf-tD-ief" id="Vip-dp-Dwn">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="del-9h-lpq">
                                 <items>
                                     <menuItem title="H.264" state="on" id="Gbf-tD-ief"/>
@@ -1322,7 +1322,7 @@ Gw
                                 <attributedString key="attributedStringForNotANumber">
                                     <fragment content="NaN">
                                         <attributes>
-                                            <font key="NSFont" size="12" name="Helvetica"/>
+                                            <font key="NSFont" metaFont="user"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
@@ -1330,7 +1330,7 @@ Gw
                                 <attributedString key="attributedStringForZero">
                                     <fragment content="0">
                                         <attributes>
-                                            <font key="NSFont" size="12" name="Helvetica"/>
+                                            <font key="NSFont" metaFont="user"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
@@ -1367,11 +1367,7 @@ Gw
         <image name="NSRefreshTemplate" width="11" height="15"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
-        <image name="RemotePlay_norm.tif" width="32" height="32"/>
-        <image name="RemotePlay_press.tif" width="32" height="32"/>
         <image name="doc" width="128" height="128"/>
         <image name="magnifying-glass" width="512" height="512"/>
-        <image name="rewind.norm" width="32" height="32"/>
-        <image name="rewind.press" width="32" height="32"/>
     </resources>
 </document>

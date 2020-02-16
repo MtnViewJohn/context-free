@@ -77,6 +77,7 @@ long MakeColor(id v);
     id              mTimeObserverToken;
     bool            mAtEndofMovie;
     id              mEndMovieToken;
+    BOOL            mLoop;
     
     bool mRendering;
     bool mRestartRenderer;
