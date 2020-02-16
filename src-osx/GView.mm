@@ -2109,6 +2109,7 @@ long MakeColor(id v)
     [mEditor setGeneralProperty: SCI_SETLEXER parameter: SCLEX_CONTAINER value: 0];
     [mEditor setGeneralProperty: SCI_SETMARGINTYPEN parameter: 0 value: SC_MARGIN_NUMBER];
     [mEditor setGeneralProperty: SCI_SETMARGINWIDTHN parameter: 1 value: 0];
+    [mEditor setGeneralProperty: SCI_SETMARGINLEFT parameter: 0 value: 8];
     [mEditor message:SCI_SETCARETPERIOD wParam:0];
 
     [self updateStyling];
