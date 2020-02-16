@@ -400,6 +400,12 @@
                                                 <action selector="insertUnicode:" target="-1" id="ITw-MA-eRT"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="CF::Clear" id="2Ft-YQ-5Dj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="insertUnicode:" target="-1" id="dJ8-bd-o3L"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="CF::Xor" id="Bqn-ff-ePN">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
