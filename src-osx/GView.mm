@@ -856,7 +856,7 @@ namespace {
         for (agg::point_i& pt: points) {
             NSPoint dPoint = NSMakePoint(pt.x, pt.y);
             
-            if (backgroundColor.opacity() < 1.0) {
+            if (backgroundColor.opacity() < 1.0 || mEngine->usesBlendMode) {
                 NSRect cRect = dRect;
                 cRect.origin = dPoint;
                 // redraw checkerboard to erase global fill
@@ -876,7 +876,7 @@ namespace {
         [[NSColor colorWithDeviceWhite: 1.0 alpha: 0.75 ] set];
         [NSBezierPath strokeRect: boxRect];
     } else {
-        if (backgroundColor.opacity() < 1.0) {
+        if (backgroundColor.opacity() < 1.0 || mEngine->usesBlendMode) {
             // redraw checkerboard to erase global fill
             [self drawCheckerboardRect: NSIntersectionRect(dRect, rect)];
         }
