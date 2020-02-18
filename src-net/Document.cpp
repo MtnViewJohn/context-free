@@ -1940,7 +1940,7 @@ void Document::updateRenderBox()
     if (mTiled && scale == 1.0) {
         drawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
     } else {
-        if (mCanvas->mBackground.a < 1.0)
+        if (mCanvas->mBackground.a < 1.0 || (*mEngine)->usesBlendMode)
             drawCheckerBoard(g, grayBrush, destRect);
         if (scale == 1.0) {
             g->DrawImageUnscaled(newBitmap, originX, originY);
