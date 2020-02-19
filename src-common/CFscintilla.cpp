@@ -30,12 +30,15 @@
 
 
 std::vector<const char*> CFscintilla::AutoComplete = {
-        "ARCREL", "ARCTO", "background", "bitand", "bitleft", "bitnot", "bitor", "bitright", "bitxor",
+        "ARCREL", "ARCTO", "background", "bitand", "bitleft", "bitnot", "bitor", "bitright", "bitxor", "blend",
         "CF::Align", "CF::AllowOverlap", "CF::Alpha", "CF::ArcCW", "CF::ArcLarge", "CF::Background",
         "CF::BevelJoin", "CF::BorderDynamic", "CF::BorderFixed", "CF::ButtCap", "CF::cm", "CF::cmm", "CF::Color",
         "CF::ColorDepth", "CF::Continuous", "CF::Cyclic", "CF::Dihedral", "CF::EvenOdd", "CF::Frame",
         "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::MaxNatural", "CF::MaxShapes",
         "CF::MinimumSize", "CF::MiterJoin",
+        "CF::Normal", "CF::Clear", "CF::Xor" "CF::Plus", "CF::Multiply", "CF::Screen", "CF::Overlay",
+        "CF::Darken", "CF::Lighten", "CF::ColorDodge", "CF::ColorBurn", "CF::HardLight", "CF::SoftLight",
+        "CF::Difference", "CF::Exclusion",
         "CF::p11g", "CF::p11m", "CF::p1m1", "CF::p2", "CF::p2mg", "CF::p2mm", "CF::p3", "CF::p3m1", "CF::p31m",
         "CF::p4", "CF::p4g", "CF::p4m", "CF::p6", "CF::p6m", "CF::pg", "CF::pgg", "CF::pm", "CF::pmg", "CF::pmm",
         "CF::RoundCap", "CF::RoundJoin", "CF::Size", "CF::SquareCap", "CF::StartShape", "CF::Symmetry", "CF::Tile", "CF::Time",
@@ -232,7 +235,7 @@ CFscintilla::StyleId(size_t length, const char* text, char* styles)
     using stringSet = std::set<std::string>;
     static const stringSet keywords = {
         "a", "alpha",
-        "b", "background", "brightness",
+        "b", "background", "blend", "brightness",
         "case", "clone",
         "else",
         "f", "finally", "flip",
@@ -257,6 +260,9 @@ CFscintilla::StyleId(size_t length, const char* text, char* styles)
         "randint::poisson", "randint::discrete", "randint::geometric",
         "CIRCLE", "SQUARE", "TRIANGLE", "FILL", "STROKE",
         "MOVETO", "LINETO", "ARCTO", "CURVETO", "MOVEREL", "LINEREL", "ARCREL", "CURVEREL", "CLOSEPOLY",
+        "CF::Normal", "CF::Clear", "CF::Xor" "CF::Plus", "CF::Multiply", "CF::Screen", "CF::Overlay",
+        "CF::Darken", "CF::Lighten", "CF::ColorDodge", "CF::ColorBurn", "CF::HardLight", "CF::SoftLight",
+        "CF::Difference", "CF::Exclusion",
         "CF::None", "CF::MiterJoin", "CF::RoundJoin", "CF::BevelJoin", "CF::ButtCap", "CF::RoundCap",
         "CF::SquareCap", "CF::ArcCW", "CF::ArcLarge", "CF::Continuous", "CF::Align", "CF::EvenOdd",
         "CF::IsoWidth", "CF::Cyclic", "CF::Dihedral", "CF::p11g", "CF::p11m", "CF::p1m1", "CF::p2",
