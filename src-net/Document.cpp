@@ -1791,7 +1791,12 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
             mMoviePlayer->StartInfo->UseShellExecute = false;
             mMoviePlayer->StartInfo->FileName = "ffplay.exe";
             mMoviePlayer->StartInfo->CreateNoWindow = true;
-            mMoviePlayer->StartInfo->Arguments = gcnew String(mMovieFile->name().c_str());
+            String^ file = gcnew String(mMovieFile->name().c_str());
+            if (renderParams->loop) {
+                mMoviePlayer->StartInfo->Arguments = file->Insert(0, "-loop 0 ");
+            } else {
+                mMoviePlayer->StartInfo->Arguments = file;
+            }
             mMoviePlayer->Start();
             mMoviePlayer->EnableRaisingEvents = true;
         } catch (Exception^ e) {

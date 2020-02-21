@@ -49,6 +49,7 @@ namespace ContextFreeNet {
         bool    animateFrame;
         int     codec;
         bool    preview;
+        bool    loop;
 
         void initFromPrefs()
         {
@@ -65,6 +66,7 @@ namespace ContextFreeNet {
             frameRate = Form1::prefs->AnimateFrameRate;
             codec = Form1::prefs->AnimateCodec;
             preview = Form1::prefs->AnimatePreview;
+            loop = Form1::prefs->AnimatePreviewLoop;
         }
 
         void saveToPrefs()
@@ -82,6 +84,7 @@ namespace ContextFreeNet {
             Form1::prefs->AnimateFrameRate = frameRate;
             Form1::prefs->AnimateCodec = codec;
             Form1::prefs->AnimatePreview = preview;
+            Form1::prefs->AnimatePreviewLoop = loop;
         }
     };
 

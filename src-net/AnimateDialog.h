@@ -71,6 +71,7 @@ namespace ContextFreeNet {
     private: System::Windows::Forms::Label^  codecLabel;
     private: System::Windows::Forms::ComboBox^  codec;
     private: System::Windows::Forms::CheckBox^  showPreview;
+    private: System::Windows::Forms::CheckBox^ loopPreview;
 
 
              RenderParameters* renderParameters;
@@ -153,46 +154,43 @@ namespace ContextFreeNet {
             this->codecLabel = (gcnew System::Windows::Forms::Label());
             this->codec = (gcnew System::Windows::Forms::ComboBox());
             this->showPreview = (gcnew System::Windows::Forms::CheckBox());
+            this->loopPreview = (gcnew System::Windows::Forms::CheckBox());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->borderTrackBar))->BeginInit();
             this->SuspendLayout();
             // 
             // label1
             // 
             this->label1->AutoSize = true;
-            this->label1->Location = System::Drawing::Point(70, 172);
-            this->label1->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label1->Location = System::Drawing::Point(35, 89);
             this->label1->Name = L"label1";
-            this->label1->Size = System::Drawing::Size(67, 25);
+            this->label1->Size = System::Drawing::Size(35, 13);
             this->label1->TabIndex = 3;
             this->label1->Text = L"Width";
             // 
             // label2
             // 
             this->label2->AutoSize = true;
-            this->label2->Location = System::Drawing::Point(224, 172);
-            this->label2->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label2->Location = System::Drawing::Point(112, 89);
             this->label2->Name = L"label2";
-            this->label2->Size = System::Drawing::Size(74, 25);
+            this->label2->Size = System::Drawing::Size(38, 13);
             this->label2->TabIndex = 4;
             this->label2->Text = L"Height";
             // 
             // label3
             // 
             this->label3->AutoSize = true;
-            this->label3->Location = System::Drawing::Point(149, 262);
-            this->label3->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label3->Location = System::Drawing::Point(74, 136);
             this->label3->Name = L"label3";
-            this->label3->Size = System::Drawing::Size(242, 25);
+            this->label3->Size = System::Drawing::Size(117, 13);
             this->label3->TabIndex = 10;
             this->label3->Text = L"size of smallest element";
             // 
             // label4
             // 
             this->label4->AutoSize = true;
-            this->label4->Location = System::Drawing::Point(312, 208);
-            this->label4->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label4->Location = System::Drawing::Point(156, 108);
             this->label4->Name = L"label4";
-            this->label4->Size = System::Drawing::Size(91, 25);
+            this->label4->Size = System::Drawing::Size(44, 13);
             this->label4->TabIndex = 8;
             this->label4->Text = L"in pixels";
             // 
@@ -201,30 +199,27 @@ namespace ContextFreeNet {
             this->label5->AutoSize = true;
             this->label5->Font = (gcnew System::Drawing::Font(L"Symbol", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(2)));
-            this->label5->Location = System::Drawing::Point(148, 204);
-            this->label5->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label5->Location = System::Drawing::Point(74, 106);
             this->label5->Name = L"label5";
-            this->label5->Size = System::Drawing::Size(30, 32);
+            this->label5->Size = System::Drawing::Size(17, 16);
             this->label5->TabIndex = 6;
             this->label5->Text = L"´";
             // 
             // label6
             // 
             this->label6->AutoSize = true;
-            this->label6->Location = System::Drawing::Point(24, 315);
-            this->label6->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label6->Location = System::Drawing::Point(12, 164);
             this->label6->Name = L"label6";
-            this->label6->Size = System::Drawing::Size(189, 25);
+            this->label6->Size = System::Drawing::Size(93, 13);
             this->label6->TabIndex = 11;
             this->label6->Text = L"Image border size:";
             // 
             // borderTrackBar
             // 
-            this->borderTrackBar->Location = System::Drawing::Point(30, 345);
-            this->borderTrackBar->Margin = System::Windows::Forms::Padding(6);
+            this->borderTrackBar->Location = System::Drawing::Point(15, 179);
             this->borderTrackBar->Maximum = 99;
             this->borderTrackBar->Name = L"borderTrackBar";
-            this->borderTrackBar->Size = System::Drawing::Size(370, 90);
+            this->borderTrackBar->Size = System::Drawing::Size(185, 45);
             this->borderTrackBar->TabIndex = 12;
             this->borderTrackBar->TickFrequency = 33;
             this->borderTrackBar->Value = 1;
@@ -234,10 +229,9 @@ namespace ContextFreeNet {
             this->label7->AutoSize = true;
             this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 6.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label7->Location = System::Drawing::Point(16, 407);
-            this->label7->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label7->Location = System::Drawing::Point(8, 212);
             this->label7->Name = L"label7";
-            this->label7->Size = System::Drawing::Size(78, 22);
+            this->label7->Size = System::Drawing::Size(41, 12);
             this->label7->TabIndex = 13;
             this->label7->Text = L"negative";
             // 
@@ -246,10 +240,9 @@ namespace ContextFreeNet {
             this->label8->AutoSize = true;
             this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 6.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label8->Location = System::Drawing::Point(140, 409);
-            this->label8->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label8->Location = System::Drawing::Point(70, 213);
             this->label8->Name = L"label8";
-            this->label8->Size = System::Drawing::Size(50, 22);
+            this->label8->Size = System::Drawing::Size(25, 12);
             this->label8->TabIndex = 14;
             this->label8->Text = L"none";
             // 
@@ -258,10 +251,9 @@ namespace ContextFreeNet {
             this->label9->AutoSize = true;
             this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 6.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label9->Location = System::Drawing::Point(246, 409);
-            this->label9->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label9->Location = System::Drawing::Point(123, 213);
             this->label9->Name = L"label9";
-            this->label9->Size = System::Drawing::Size(48, 22);
+            this->label9->Size = System::Drawing::Size(25, 12);
             this->label9->TabIndex = 15;
             this->label9->Text = L"fixed";
             // 
@@ -270,19 +262,17 @@ namespace ContextFreeNet {
             this->label10->AutoSize = true;
             this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 6.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->label10->Location = System::Drawing::Point(338, 407);
-            this->label10->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label10->Location = System::Drawing::Point(169, 212);
             this->label10->Name = L"label10";
-            this->label10->Size = System::Drawing::Size(73, 22);
+            this->label10->Size = System::Drawing::Size(38, 12);
             this->label10->TabIndex = 16;
             this->label10->Text = L"variable";
             // 
             // label11
             // 
-            this->label11->Location = System::Drawing::Point(24, 17);
-            this->label11->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label11->Location = System::Drawing::Point(12, 9);
             this->label11->Name = L"label11";
-            this->label11->Size = System::Drawing::Size(464, 76);
+            this->label11->Size = System::Drawing::Size(232, 40);
             this->label11->TabIndex = 1;
             this->label11->Text = L"The image will be animated to the dimensions entered here, using the current vari"
                 L"ation.";
@@ -290,20 +280,18 @@ namespace ContextFreeNet {
             // 
             // label12
             // 
-            this->label12->Location = System::Drawing::Point(24, 88);
-            this->label12->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label12->Location = System::Drawing::Point(12, 46);
             this->label12->Name = L"label12";
-            this->label12->Size = System::Drawing::Size(464, 79);
+            this->label12->Size = System::Drawing::Size(232, 41);
             this->label12->TabIndex = 2;
             this->label12->Text = L"When complete, the movie will be displayed scaled within the window";
             // 
             // OKbutton
             // 
             this->OKbutton->DialogResult = System::Windows::Forms::DialogResult::OK;
-            this->OKbutton->Location = System::Drawing::Point(180, 619);
-            this->OKbutton->Margin = System::Windows::Forms::Padding(6);
+            this->OKbutton->Location = System::Drawing::Point(90, 322);
             this->OKbutton->Name = L"OKbutton";
-            this->OKbutton->Size = System::Drawing::Size(150, 44);
+            this->OKbutton->Size = System::Drawing::Size(75, 23);
             this->OKbutton->TabIndex = 26;
             this->OKbutton->Text = L"OK";
             this->OKbutton->UseVisualStyleBackColor = true;
@@ -312,10 +300,9 @@ namespace ContextFreeNet {
             // cancelButton
             // 
             this->cancelButton->DialogResult = System::Windows::Forms::DialogResult::Cancel;
-            this->cancelButton->Location = System::Drawing::Point(342, 619);
-            this->cancelButton->Margin = System::Windows::Forms::Padding(6);
+            this->cancelButton->Location = System::Drawing::Point(171, 322);
             this->cancelButton->Name = L"cancelButton";
-            this->cancelButton->Size = System::Drawing::Size(150, 44);
+            this->cancelButton->Size = System::Drawing::Size(75, 23);
             this->cancelButton->TabIndex = 27;
             this->cancelButton->Text = L"Cancel";
             this->cancelButton->UseVisualStyleBackColor = true;
@@ -323,48 +310,47 @@ namespace ContextFreeNet {
             // 
             // minimumSizeBox
             // 
-            this->minimumSizeBox->Location = System::Drawing::Point(29, 256);
-            this->minimumSizeBox->Margin = System::Windows::Forms::Padding(6);
+            this->minimumSizeBox->Location = System::Drawing::Point(14, 133);
             this->minimumSizeBox->Name = L"minimumSizeBox";
-            this->minimumSizeBox->Size = System::Drawing::Size(106, 31);
+            this->minimumSizeBox->Size = System::Drawing::Size(55, 20);
             this->minimumSizeBox->TabIndex = 9;
             // 
             // widthBox
             // 
-            this->widthBox->Location = System::Drawing::Point(30, 202);
-            this->widthBox->Margin = System::Windows::Forms::Padding(6);
+            this->widthBox->Location = System::Drawing::Point(15, 105);
             this->widthBox->MaxLength = 5;
             this->widthBox->Name = L"widthBox";
-            this->widthBox->Size = System::Drawing::Size(106, 31);
+            this->widthBox->Size = System::Drawing::Size(55, 20);
             this->widthBox->TabIndex = 5;
             this->widthBox->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
             // 
             // heightBox
             // 
-            this->heightBox->Location = System::Drawing::Point(188, 202);
-            this->heightBox->Margin = System::Windows::Forms::Padding(6);
+            this->heightBox->Location = System::Drawing::Point(94, 105);
             this->heightBox->MaxLength = 5;
             this->heightBox->Name = L"heightBox";
-            this->heightBox->Size = System::Drawing::Size(106, 31);
+            this->heightBox->Size = System::Drawing::Size(55, 20);
             this->heightBox->TabIndex = 7;
             this->heightBox->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
             // 
             // zoom
             // 
             this->zoom->AutoSize = true;
-            this->zoom->Location = System::Drawing::Point(30, 460);
+            this->zoom->Location = System::Drawing::Point(15, 239);
+            this->zoom->Margin = System::Windows::Forms::Padding(2);
             this->zoom->Name = L"zoom";
-            this->zoom->Size = System::Drawing::Size(197, 29);
+            this->zoom->Size = System::Drawing::Size(101, 17);
             this->zoom->TabIndex = 19;
             this->zoom->Text = L"Zoom animation";
             this->zoom->UseVisualStyleBackColor = true;
             // 
             // lengthBox
             // 
-            this->lengthBox->Location = System::Drawing::Point(30, 554);
+            this->lengthBox->Location = System::Drawing::Point(15, 288);
+            this->lengthBox->Margin = System::Windows::Forms::Padding(2);
             this->lengthBox->MaxLength = 5;
             this->lengthBox->Name = L"lengthBox";
-            this->lengthBox->Size = System::Drawing::Size(100, 31);
+            this->lengthBox->Size = System::Drawing::Size(52, 20);
             this->lengthBox->TabIndex = 21;
             this->lengthBox->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
             // 
@@ -373,9 +359,10 @@ namespace ContextFreeNet {
             this->frameRate->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->frameRate->FormattingEnabled = true;
             this->frameRate->Items->AddRange(gcnew cli::array< System::Object^  >(7) { L"8", L"10", L"12", L"15", L"30", L"50", L"60" });
-            this->frameRate->Location = System::Drawing::Point(188, 554);
+            this->frameRate->Location = System::Drawing::Point(94, 288);
+            this->frameRate->Margin = System::Windows::Forms::Padding(2);
             this->frameRate->Name = L"frameRate";
-            this->frameRate->Size = System::Drawing::Size(121, 33);
+            this->frameRate->Size = System::Drawing::Size(62, 21);
             this->frameRate->TabIndex = 22;
             // 
             // label13
@@ -383,50 +370,45 @@ namespace ContextFreeNet {
             this->label13->AutoSize = true;
             this->label13->Font = (gcnew System::Drawing::Font(L"Symbol", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(2)));
-            this->label13->Location = System::Drawing::Point(145, 550);
-            this->label13->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label13->Location = System::Drawing::Point(72, 286);
             this->label13->Name = L"label13";
-            this->label13->Size = System::Drawing::Size(30, 32);
+            this->label13->Size = System::Drawing::Size(17, 16);
             this->label13->TabIndex = 25;
             this->label13->Text = L"´";
             // 
             // label14
             // 
             this->label14->AutoSize = true;
-            this->label14->Location = System::Drawing::Point(323, 554);
-            this->label14->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label14->Location = System::Drawing::Point(162, 288);
             this->label14->Name = L"label14";
-            this->label14->Size = System::Drawing::Size(146, 25);
+            this->label14->Size = System::Drawing::Size(73, 13);
             this->label14->TabIndex = 26;
             this->label14->Text = L"seconds × fps";
             // 
             // label15
             // 
             this->label15->AutoSize = true;
-            this->label15->Location = System::Drawing::Point(190, 518);
-            this->label15->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label15->Location = System::Drawing::Point(95, 269);
             this->label15->Name = L"label15";
-            this->label15->Size = System::Drawing::Size(124, 25);
+            this->label15->Size = System::Drawing::Size(62, 13);
             this->label15->TabIndex = 24;
             this->label15->Text = L"Frame Rate";
             // 
             // label16
             // 
             this->label16->AutoSize = true;
-            this->label16->Location = System::Drawing::Point(57, 518);
-            this->label16->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->label16->Location = System::Drawing::Point(28, 269);
             this->label16->Name = L"label16";
-            this->label16->Size = System::Drawing::Size(78, 25);
+            this->label16->Size = System::Drawing::Size(40, 13);
             this->label16->TabIndex = 23;
             this->label16->Text = L"Length";
             // 
             // frameNumber
             // 
-            this->frameNumber->Location = System::Drawing::Point(342, 487);
-            this->frameNumber->Margin = System::Windows::Forms::Padding(6);
+            this->frameNumber->Location = System::Drawing::Point(171, 253);
             this->frameNumber->MaxLength = 5;
             this->frameNumber->Name = L"frameNumber";
-            this->frameNumber->Size = System::Drawing::Size(106, 31);
+            this->frameNumber->Size = System::Drawing::Size(55, 20);
             this->frameNumber->TabIndex = 24;
             this->frameNumber->Text = L"1";
             this->frameNumber->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -434,20 +416,18 @@ namespace ContextFreeNet {
             // frameLabel
             // 
             this->frameLabel->AutoSize = true;
-            this->frameLabel->Location = System::Drawing::Point(382, 457);
-            this->frameLabel->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->frameLabel->Location = System::Drawing::Point(191, 238);
             this->frameLabel->Name = L"frameLabel";
-            this->frameLabel->Size = System::Drawing::Size(73, 25);
+            this->frameLabel->Size = System::Drawing::Size(36, 13);
             this->frameLabel->TabIndex = 27;
             this->frameLabel->Text = L"Frame";
             // 
             // codecLabel
             // 
             this->codecLabel->AutoSize = true;
-            this->codecLabel->Location = System::Drawing::Point(375, 456);
-            this->codecLabel->Margin = System::Windows::Forms::Padding(6, 0, 6, 0);
+            this->codecLabel->Location = System::Drawing::Point(188, 237);
             this->codecLabel->Name = L"codecLabel";
-            this->codecLabel->Size = System::Drawing::Size(74, 25);
+            this->codecLabel->Size = System::Drawing::Size(38, 13);
             this->codecLabel->TabIndex = 28;
             this->codecLabel->Text = L"Codec";
             // 
@@ -456,28 +436,42 @@ namespace ContextFreeNet {
             this->codec->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->codec->FormattingEnabled = true;
             this->codec->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"H.264", L"ProRes" });
-            this->codec->Location = System::Drawing::Point(342, 485);
+            this->codec->Location = System::Drawing::Point(171, 252);
+            this->codec->Margin = System::Windows::Forms::Padding(2);
             this->codec->Name = L"codec";
-            this->codec->Size = System::Drawing::Size(121, 33);
+            this->codec->Size = System::Drawing::Size(62, 21);
             this->codec->TabIndex = 23;
             // 
             // showPreview
             // 
             this->showPreview->AutoSize = true;
-            this->showPreview->Location = System::Drawing::Point(30, 619);
+            this->showPreview->Location = System::Drawing::Point(15, 316);
+            this->showPreview->Margin = System::Windows::Forms::Padding(2);
             this->showPreview->Name = L"showPreview";
-            this->showPreview->Size = System::Drawing::Size(120, 29);
+            this->showPreview->Size = System::Drawing::Size(64, 17);
             this->showPreview->TabIndex = 25;
             this->showPreview->Text = L"Preview";
             this->showPreview->UseVisualStyleBackColor = true;
+            this->showPreview->CheckedChanged += gcnew System::EventHandler(this, &AnimateDialog::showPreview_CheckedChanged);
+            // 
+            // loopPreview
+            // 
+            this->loopPreview->AutoSize = true;
+            this->loopPreview->Location = System::Drawing::Point(15, 337);
+            this->loopPreview->Name = L"loopPreview";
+            this->loopPreview->Size = System::Drawing::Size(50, 17);
+            this->loopPreview->TabIndex = 29;
+            this->loopPreview->Text = L"Loop";
+            this->loopPreview->UseVisualStyleBackColor = true;
             // 
             // AnimateDialog
             // 
             this->AcceptButton = this->OKbutton;
-            this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
+            this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->CancelButton = this->cancelButton;
-            this->ClientSize = System::Drawing::Size(516, 687);
+            this->ClientSize = System::Drawing::Size(258, 357);
+            this->Controls->Add(this->loopPreview);
             this->Controls->Add(this->showPreview);
             this->Controls->Add(this->codec);
             this->Controls->Add(this->codecLabel);
@@ -509,7 +503,6 @@ namespace ContextFreeNet {
             this->Controls->Add(this->label2);
             this->Controls->Add(this->label1);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
-            this->Margin = System::Windows::Forms::Padding(6);
             this->MaximizeBox = false;
             this->MinimizeBox = false;
             this->Name = L"AnimateDialog";
@@ -542,14 +535,18 @@ private:
             frameNumber->Visible = true;
             frameLabel->Visible = true;
             showPreview->Visible = false;
+            loopPreview->Visible = false;
             codecLabel->Visible = false;
             codec->Visible = false;
         } else {
             codec->SelectedIndex = renderParameters->codec;
             showPreview->Checked = renderParameters->preview;
+            loopPreview->Checked = renderParameters->loop;
+            loopPreview->Enabled = renderParameters->preview;
             frameNumber->Visible = false;
             frameLabel->Visible = false;
             showPreview->Visible = true;
+            loopPreview->Visible = true;
             codecLabel->Visible = true;
             codec->Visible = true;
         }
@@ -579,6 +576,7 @@ private:
             } else {
                 renderParameters->codec = codec->SelectedIndex;
                 renderParameters->preview = showPreview->Checked;
+                renderParameters->loop = loopPreview->Checked;
             }
             renderParameters->saveToPrefs();
         } catch (System::SystemException^) {
@@ -593,6 +591,9 @@ private:
         this->Close();
     }
 private: System::Void label11_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void showPreview_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+    loopPreview->Enabled = showPreview->Checked;
 }
 };
 }

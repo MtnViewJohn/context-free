@@ -108,6 +108,10 @@ namespace ContextFreeNet {
             void set(bool setTo) { SetPrefBool("AnimatePreview", setTo); }
             bool get() { return GetPrefBool("AnimatePreview", true); }
         }
+        property bool AnimatePreviewLoop {
+            void set(bool setTo) { SetPrefBool("AnimatePreviewLoop", setTo); }
+            bool get() { return GetPrefBool("AnimatePreviewLoop", false); }
+        }
         property int JPEGQuality {
             void set(int setTo) { SetPrefInt("JPEGQuality", setTo); }
             int get() { return GetPrefInt("JPEGQuality", 90); }
