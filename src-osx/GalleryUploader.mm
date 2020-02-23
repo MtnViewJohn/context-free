@@ -60,7 +60,7 @@ namespace {
     static NSString* galDomain = @"www.contextfreeart.org";
     static NSString* galPath = @"/gallery/";
 
-#ifdef NDEBUG
+#if 1
     static NSString* uploadUrl =
         @"https://www.contextfreeart.org/gallery/gallerydb/fpostdesign";
 
@@ -565,6 +565,7 @@ namespace {
                     if (design) {
                         newmsg =  @"Upload completed successfully.";
                         retry = YES;
+                        mSuccessId = design;
                     } else {
                         newmsg = @"The gallery indicates that the upload succeeded but did not return a design number.";
                     }
