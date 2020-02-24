@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <string.h>
+#include <cstddef>
 
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
@@ -49,9 +50,9 @@ public:
         StyleKeywords, StyleBuiltins, StyleString, StyleNumber
     };
     
-    static Style StyleLine(size_t length, const char* text, char* styles, Style initStyle);
+    static Style StyleLine(std::size_t length, const char* text, char* styles, Style initStyle);
 private:
-    static void StyleId(size_t length, const char* text, char* styles);
+    static void StyleId(std::size_t length, const char* text, char* styles);
 };
 
 #endif /* CFscintilla_h */

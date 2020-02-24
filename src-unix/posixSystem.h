@@ -30,6 +30,7 @@
 #define INCLUDE_POSIX_SYSTEM
 
 #include "cfdg.h"
+#include <cstddef>
 
 struct UConverter;
 struct UNormalizer2;
@@ -51,7 +52,7 @@ public:
     std::string relativeFilePath(
         const std::string& base, const std::string& rel) override;
     int deleteTempFile(const FileString& name) override;
-    size_t getPhysicalMemory() override;
+    std::size_t getPhysicalMemory() override;
     
     std::wstring normalize(const std::string&) override;
     

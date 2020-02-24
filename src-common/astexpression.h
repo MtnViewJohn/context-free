@@ -36,6 +36,7 @@
 #include "Rand64.h"
 #include <map>
 #include <initializer_list>
+#include <cstddef>
 
 class RendererAST;
 class Builder;
@@ -110,7 +111,7 @@ namespace AST {
         using iterator_category = std::random_access_iterator_tag;
 
         const ASTexpression*    e;
-        size_t                  i;
+        std::size_t             i;
         ~ASTexp_iter() = default;
         ASTexp_iter& operator=(const ASTexp_iter&) = default;
         ASTexp_iter& operator++() {++i; return *this;}
@@ -174,8 +175,8 @@ namespace AST {
         virtual void entropy(std::string&) const {};
         virtual ASTexpression* simplify(Builder*) { return nullptr; }
         
-        virtual const ASTexpression* getChild(size_t i) const;
-        virtual size_t size() const { return 1; }
+        virtual const ASTexpression* getChild(std::size_t i) const;
+        virtual std::size_t size() const { return 1; }
         virtual ASTexpression* append(ASTexpression* sib);
         virtual ASTexpression* compile(CompilePhase, Builder*) { return nullptr; }
         // Always returns nullptr except during type check in the following cases:
@@ -241,10 +242,10 @@ namespace AST {
         void to_json(json& j) const final;
     };
     class ASTselect final : public ASTexpression {
-        enum consts_t: size_t { NotCached = static_cast<size_t>(-1) };
+        enum consts_t: std::size_t { NotCached = static_cast<std::size_t>(-1) };
     public:
         int              tupleSize;
-        size_t           indexCache;
+        std::size_t      indexCache;
         std::string      ent;
         ASTexpArray      arguments;
         exp_ptr          selector;
@@ -262,7 +263,7 @@ namespace AST {
     private:
         //ASTselect(const yy::location& loc)
         //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
-        size_t getIndex(RendererAST* rti = nullptr) const;
+        std::size_t getIndex(RendererAST* rti = nullptr) const;
     };
     class ASTruleSpecifier : public ASTexpression {
     public:
@@ -338,8 +339,8 @@ namespace AST {
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
         
-        const ASTexpression* getChild(size_t i) const final;
-        size_t size() const final { return children.size(); }
+        const ASTexpression* getChild(std::size_t i) const final;
+        std::size_t size() const final { return children.size(); }
         ASTexpression* append(ASTexpression* sib) final;
         void to_json(json& j) const final;
     };
@@ -409,7 +410,7 @@ namespace AST {
             const ASTuserFunction*  mFunc;
             RendererAST*            mRTI;
             const StackType*        mOldTop;
-            size_t                  mOldSize;
+            std::size_t             mOldSize;
         };
     };
     class ASTlet final : public ASTuserFunction {

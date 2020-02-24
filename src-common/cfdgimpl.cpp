@@ -40,6 +40,7 @@
 #include <cmath>
 #include <iomanip>
 #include "agg_trans_affine_time.h"
+#include <cstddef>
 
 #include "json3.hpp"
 using json = nlohmann::json;
@@ -384,7 +385,7 @@ CFDGImpl::hasParameter(CFG name, AST::expType t, yy::location& where) const
 const ASTexpression*
 CFDGImpl::hasParameter(CFG name) const
 {
-    assert(static_cast<size_t>(name) < static_cast<size_t>(CFG::_NumberOf));
+    assert(static_cast<std::size_t>(name) < static_cast<std::size_t>(CFG::_NumberOf));
     
     if (ParamDepth[name] == NoParameter)
         return nullptr;

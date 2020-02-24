@@ -367,8 +367,8 @@ processCommandLine(int argc, char* argv[], options& opt)
             opt.output.append(c == '%' ? 2 : 1, c);
         }
         if (opt.animationFrames && opt.animateFrame == 0 && opt.format != options::MOVfile) {
-            size_t ext = opt.output.find_last_of('.');
-            size_t dir = opt.output.find_last_of(APP_DIRCHAR());
+            std::size_t ext = opt.output.find_last_of('.');
+            std::size_t dir = opt.output.find_last_of(APP_DIRCHAR());
             if (ext != string::npos && (dir == string::npos || ext > dir)) {
                 opt.output.insert(ext, "_%f");
             } else {

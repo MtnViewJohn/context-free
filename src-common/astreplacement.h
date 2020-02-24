@@ -36,6 +36,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <cstddef>
 #include "CmdInfo.h"
 #include "agg2/agg_path_storage.h"
 
@@ -95,7 +96,7 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r,
                       bool getParams = false) const
         {
-            size_t s = r->mStackSize;
+            std::size_t s = r->mStackSize;
             if (getParams && parent.mParameters)
                 r->initStack(parent.mParameters.get());
             for (const rep_ptr& rep: mBody)

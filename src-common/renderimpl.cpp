@@ -35,6 +35,7 @@
 #include <stack>
 #include <cassert>
 #include <functional>
+#include <cstddef>
 
 #include <cmath>
 using std::isfinite;
@@ -69,7 +70,7 @@ RendererImpl::RendererImpl( const cfdg_ptr& cfdg,
     assert(m_cfdg);
     if (MoveFinishedAt == 0) {
 #ifndef DEBUG_SIZES
-        size_t mem = m_cfdg->system()->getPhysicalMemory();
+        std::size_t mem = m_cfdg->system()->getPhysicalMemory();
         if (mem == 0) {
             MoveFinishedAt = MoveUnfinishedAt = 2000000;
         } else {
@@ -83,7 +84,7 @@ RendererImpl::RendererImpl( const cfdg_ptr& cfdg,
 #endif
     }
     
-    for (size_t i = 0; i < shapeMap.size(); ++i)
+    for (std::size_t i = 0; i < shapeMap.size(); ++i)
         shapeMap[i] = CommandInfo(&shapeCopies[i]);
 
     m_cfdg->hasParameter(CFG::FrameTime, mCurrentTime, nullptr);
@@ -454,7 +455,7 @@ OutputBounds::backwardFilter(double framesToHalf)
 void
 OutputBounds::smooth(int window)
 {
-    size_t frames = mFrameBounds.size();
+    std::size_t frames = mFrameBounds.size();
     if (frames == 0) return;
     
     mFrameBounds.resize(frames + window - 1, mFrameBounds.back());
@@ -758,7 +759,7 @@ RendererImpl::moveUnfinishedToTwoFiles()
     system()->message("Writing %s temp files %d & %d",
                       m_unfinishedFiles.back().type().c_str(), num1, num2);
 
-    size_t count = mUnfinishedShapes.size() / 3;
+    std::size_t count = mUnfinishedShapes.size() / 3;
 
     UnfinishedContainer::iterator usi = mUnfinishedShapes.begin(),
                                   use = mUnfinishedShapes.end();

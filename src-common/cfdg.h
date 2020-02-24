@@ -45,6 +45,7 @@
 #include <exception>
 #include <memory>
 #include <cstdint>
+#include <cstddef>
 
 #define _unused(x) ((void)(x))
 
@@ -121,7 +122,7 @@ class AbstractSystem {
             // caller must delete returned streams when done
         virtual std::vector<FileString> findTempFiles() = 0;
         virtual int deleteTempFile(const FileString& name) = 0;
-        virtual size_t getPhysicalMemory() = 0;
+        virtual std::size_t getPhysicalMemory() = 0;
     
         virtual std::string relativeFilePath(
             const std::string& base, const std::string& rel) = 0;

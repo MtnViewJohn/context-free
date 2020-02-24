@@ -28,6 +28,7 @@
 #include "cfdg.h"
 #include "CmdInfo.h"
 #include <array>
+#include <cstddef>
 
 class RendererAST : public Renderer {
 public:
@@ -35,9 +36,9 @@ public:
         ~RendererAST();
         std::array<StackType, 8192> mCFstack;
         const StackType*            mLogicalStackTop;
-        size_t                      mStackSize;
+        std::size_t                 mStackSize;
         void initStack(const StackRule* p);
-        void unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params);
+        void unwindStack(std::size_t oldsize, const std::vector<AST::ASTparameter>& params);
         const StackType* stackItem(int offset) const {
             return (offset < 0) ? (mLogicalStackTop + offset) : (mCFstack.data() + offset);
         }

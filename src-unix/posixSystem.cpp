@@ -241,7 +241,7 @@ PosixSystem::findTempFiles()
     return ret;
 }
 
-size_t
+std::size_t
 PosixSystem::getPhysicalMemory()
 {
 #ifdef NOSYSCTL

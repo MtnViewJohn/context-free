@@ -466,7 +466,7 @@ namespace AST {
       left(l), right(r)
     {
         static const std::string Ops("NP!+-*/^_<>LG=n&|X");
-        size_t pos = Ops.find(op);
+        std::size_t pos = Ops.find(op);
 
         assert(pos != std::string::npos);
         if (pos < 3) {
@@ -702,7 +702,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    ASTexpression::getChild(size_t i) const
+    ASTexpression::getChild(std::size_t i) const
     {
         if (i)
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -710,7 +710,7 @@ namespace AST {
     }
     
     const ASTexpression*
-    ASTcons::getChild(size_t i) const
+    ASTcons::getChild(std::size_t i) const
     {
         if (i >= children.size()) {
             CfdgError::Error(where, "Expression list bounds exceeded");
@@ -2343,7 +2343,7 @@ namespace AST {
                 isConstant = true;
                 mLocality = PureLocal;
                 int argcount = 0;
-                size_t argnum = 0;
+                std::size_t argnum = 0;
                 if (arguments) {
                     argnum = arguments->size();
                     argsLoc = arguments->where;
@@ -3317,7 +3317,7 @@ namespace AST {
                 ASTexpArray indices = Extract(std::move(mArgs));
                 mArgs = std::move(indices[0]);
                 
-                for (size_t i = indices.size() - 1; i; --i) {
+                for (std::size_t i = indices.size() - 1; i; --i) {
                     double data;
                     if ( indices[i]->mType != NumericType ||
                         !indices[i]->isConstant ||
@@ -3498,7 +3498,7 @@ namespace AST {
         if (mType == NumericType)
             j["length"] = definition->mTuplesize;
         json j2 = json::array();
-        size_t i = 0;
+        std::size_t i = 0;
         for (auto&& exp: *arguments)
             j2.push_back(json{{"variable", mNames[i++]}, {"expression", exp}});
         j["let variables"] = j2;
@@ -3591,7 +3591,7 @@ namespace AST {
         modData.mRand64Seed.xorString(s.c_str(), entropyIndex);
     }
     
-    size_t
+    std::size_t
     ASTselect::getIndex(RendererAST* rti) const
     {
         if (indexCache != NotCached)
@@ -3606,7 +3606,7 @@ namespace AST {
         if (select < 0.0)
             return 0;
 
-        size_t i = static_cast<size_t>(select);
+        std::size_t i = static_cast<std::size_t>(select);
 
         if (i >= arguments.size())
             return arguments.size() - 1;

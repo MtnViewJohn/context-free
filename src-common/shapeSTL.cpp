@@ -46,7 +46,7 @@ OutputMerge::addShapes(ShapeIter begin, ShapeIter end)
     mShapesNext = begin;
     mShapesEnd = end;
     
-    insertNext(std::numeric_limits<size_t>::max());
+    insertNext(std::numeric_limits<std::size_t>::max());
 }
 
 OutputMerge::~OutputMerge()
@@ -54,9 +54,9 @@ OutputMerge::~OutputMerge()
 }
 
 void
-OutputMerge::insertNext(size_t i)
+OutputMerge::insertNext(std::size_t i)
 {
-    if (i == std::numeric_limits<size_t>::max()) {
+    if (i == std::numeric_limits<std::size_t>::max()) {
         if (mShapesNext != mShapesEnd) {
             mSieve.insert(SievePair(*mShapesNext++, i));
         }

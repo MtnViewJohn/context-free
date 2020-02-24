@@ -27,6 +27,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "BitmapImageHolder.h"
+#include <cstddef>
 
 @interface AVimpl : NSObject
 {
@@ -153,10 +154,10 @@
         return;
     }
     
-    size_t width =  CGImageGetWidth(image);
-    size_t height = CGImageGetHeight(image);
-    size_t bytesPerRow = CGImageGetBytesPerRow(image);
-    size_t bitsPerComponent = CGImageGetBitsPerComponent(image);
+    std::size_t width =  CGImageGetWidth(image);
+    std::size_t height = CGImageGetHeight(image);
+    std::size_t bytesPerRow = CGImageGetBytesPerRow(image);
+    std::size_t bitsPerComponent = CGImageGetBitsPerComponent(image);
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(image);
     void *pxdata = NULL;
     

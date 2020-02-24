@@ -35,6 +35,7 @@
 #include "builder.h"
 #include <typeinfo>
 #include <cmath>
+#include <cstddef>
 
 using std::floor;
 
@@ -99,7 +100,7 @@ namespace AST {
     {
         // Delete all of the incomplete parameters inserted during parse
         if (ph == CompilePhase::TypeCheck) {
-            for (size_t i = 0; i < mParameters.size(); ++i)
+            for (std::size_t i = 0; i < mParameters.size(); ++i)
                 if (!mParameters[i].isParameter  && !mParameters[i].isLoopIndex) {
                     mParameters.resize(i);
                     break;
@@ -429,9 +430,9 @@ namespace AST {
         if (opsOnly && !tr)
             transChild.mWorldState.m_transform.reset();
         
-        size_t modsLength = mods.size();
-        size_t totalLength = modsLength + transforms.size();
-        for(size_t i = 0; i < totalLength; ++i) {
+        std::size_t modsLength = mods.size();
+        std::size_t totalLength = modsLength + transforms.size();
+        for(std::size_t i = 0; i < totalLength; ++i) {
             Shape child(transChild);
             if (i < modsLength) {
                 mods[i]->evaluate(child.mWorldState, true, r);
@@ -441,7 +442,7 @@ namespace AST {
             r->mCurrentSeed();
 
             // Specialized mBody.traverse() with cloning behavior
-            size_t s = r->mStackSize;
+            std::size_t s = r->mStackSize;
             for (const rep_ptr& rep: mBody.mBody) {
                 if (mClone)
                     r->mCurrentSeed = cloneSeed;
@@ -487,7 +488,7 @@ namespace AST {
             return;
         if (r->mStackSize + mTuplesize > r->mCFstack.size())
             CfdgError::Error(mLocation, "Maximum stack depth exceeded");
-        size_t s = r->mStackSize;
+        std::size_t s = r->mStackSize;
         r->mStackSize += mTuplesize;
         r->mCurrentSeed ^= mChildChange.modData.mRand64Seed;
         StackType* dest = r->mCFstack.data() + s;
@@ -705,7 +706,7 @@ namespace AST {
                 if (mLoopArgs->isConstant) {
                     bodyNatural = finallyNatural = mLoopArgs->isNatural;
                 } else {
-                    size_t count = 0;
+                    std::size_t count = 0;
                     for (auto&& loopArg: *mLoopArgs) {
                         int num = loopArg.evaluate();
                         switch (count) {

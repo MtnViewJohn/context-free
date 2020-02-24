@@ -217,10 +217,10 @@ EOL         \n|\r\n|\r
     // This greedy string regex gobbles up Unicode operators. Find the first one
     // and chop the string there.
     yylval->string = new std::string(yytext);
-    size_t pos = std::string::npos;
+    std::size_t pos = std::string::npos;
     token_type tok = token::USER_STRING;
     for (tokenMap::value_type& tokenEntry: utf8chars) {
-        size_t spos = yylval->string->find(tokenEntry.second);
+        std::size_t spos = yylval->string->find(tokenEntry.second);
         if (spos != std::string::npos && (spos < pos || pos == std::string::npos)) {
             pos = spos;
             tok = tokenEntry.first;
@@ -340,15 +340,15 @@ void Scanner::setupLoc(CfdgParser::location_type* yylloc)
 }
 
 // Compute the number of Unicode characters in a block of UTF-8 encoded bytes
-unsigned int Scanner::utf8length(const char* txt, size_t len)
+unsigned int Scanner::utf8length(const char* txt, std::size_t len)
 {
     unsigned int length = 0;
-    for (size_t i = 0; i < len; ++i, ++length) {
+    for (std::size_t i = 0; i < len; ++i, ++length) {
         unsigned char c = static_cast<unsigned char>(txt[i]);
         if (c == '\0')
             LexerError("Invalid UTF-8 encoding: ASCII null character");
         if ((c & 0x80) == 0) continue;
-        size_t j = 0;
+        std::size_t j = 0;
         for (; c & 0x80; ++j)
             c <<= 1;
         
@@ -367,7 +367,7 @@ unsigned int Scanner::utf8length(const char* txt, size_t len)
         
         // Compute the Unicode code point
         unsigned long code = (c & 0x7f) >> j;
-        size_t k = 1;
+        std::size_t k = 1;
         for (; k < j; ++k) {
             if ((txt[i + k] & 0xc0) != 0x80) {
                 LexerError("Invalid UTF-8 encoding: expecting a continuation byte");

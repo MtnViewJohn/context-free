@@ -28,6 +28,7 @@
 
 #include <array>
 #include <initializer_list>
+#include <cstddef>
 
 enum class CFG {
     AllowOverlap,
@@ -53,9 +54,9 @@ enum class CFG {
 };
 
 template <typename _T>
-struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
+struct CfgArray : public std::array<_T, static_cast<std::size_t>(CFG::_NumberOf)>
 {
-    using base_t = std::array<_T, static_cast<size_t>(CFG::_NumberOf)>;
+    using base_t = std::array<_T, static_cast<std::size_t>(CFG::_NumberOf)>;
     CfgArray() : base_t() {}
    
     CfgArray(std::initializer_list<_T> l) : base_t()
@@ -74,8 +75,8 @@ struct CfgArray : public std::array<_T, static_cast<size_t>(CFG::_NumberOf)>
     }
 
     using base_t::operator[];
-    _T& operator[](CFG c) { return operator[](static_cast<size_t>(c)); }
-    const _T& operator[](CFG c) const { return operator[](static_cast<size_t>(c)); }
+    _T& operator[](CFG c) { return operator[](static_cast<std::size_t>(c)); }
+    const _T& operator[](CFG c) const { return operator[](static_cast<std::size_t>(c)); }
 };
 
 #endif      // INCLUDE_CONFIG_H

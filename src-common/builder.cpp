@@ -42,6 +42,7 @@
 #include <limits>
 #include "scanner.h"
 #include <typeinfo>
+#include <cstddef>
 #include "backwards.h"
 
 using namespace AST;
@@ -867,7 +868,7 @@ void
 Builder::PopNameSpace()
 {
     mCurrentNameSpace.resize(mCurrentNameSpace.length() - 2);
-    size_t end = mCurrentNameSpace.find_last_of(':');
+    std::size_t end = mCurrentNameSpace.find_last_of(':');
     if (end == std::string::npos) {
         mCurrentNameSpace.clear();
     } else {
@@ -893,7 +894,7 @@ void
 Builder::CheckName(const std::string& name, const yy::location& loc,
                    bool colonsAllowed)
 {
-    size_t pos = name.find_first_of(':');
+    std::size_t pos = name.find_first_of(':');
     if (pos == std::string::npos) return;
     if (!colonsAllowed) {
         error(loc, "namespace specification not allowed in this context");
@@ -905,7 +906,7 @@ Builder::CheckName(const std::string& name, const yy::location& loc,
     }
     for(;;) {
         if (pos == name.length() - 1 || name[pos + 1] != ':') break;
-        size_t next = name.find_first_of(':', pos + 2);
+        std::size_t next = name.find_first_of(':', pos + 2);
         if (next == std::string::npos) return;
         if (next == pos + 2) break;
         pos = next;

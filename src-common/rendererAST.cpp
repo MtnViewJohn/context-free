@@ -76,7 +76,7 @@ RendererAST::initStack(const StackRule* p)
     if (p && p->mParamCount) {
         if (mStackSize + p->mParamCount > mCFstack.size())
             throw CfdgError("Maximum stack size exceeded");
-        size_t oldSize = mStackSize;
+        std::size_t oldSize = mStackSize;
         mStackSize += p->mParamCount;
         p->copyParams(mCFstack.data() + oldSize);
     }
@@ -84,13 +84,13 @@ RendererAST::initStack(const StackRule* p)
 }
 
 void
-RendererAST::unwindStack(size_t oldsize, const std::vector<AST::ASTparameter>& params)
+RendererAST::unwindStack(std::size_t oldsize, const std::vector<AST::ASTparameter>& params)
 {
     if (oldsize == mStackSize)
         return;
 
     assert(mStackSize > 0);
-    size_t pos = oldsize;
+    std::size_t pos = oldsize;
     for (const AST::ASTparameter& param: params) {
         if (pos >= mStackSize)
             break;                        // no guarantee entire frame was computed

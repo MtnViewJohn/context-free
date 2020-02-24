@@ -207,7 +207,7 @@ namespace AST {
         }
         bool justCount = args->mType == AST::NoType;
         
-        size_t size = 0;
+        std::size_t size = 0;
         ASTparameters::const_iterator param_it = types->begin(),
                                       param_end = types->end();
         
@@ -1039,7 +1039,7 @@ namespace AST {
                         if (sz < 1) {
                             CfdgError::Error(kid.where, "Could not evaluate this");
                         } else {
-                            size_t oldsize = symmSpec.size();
+                            std::size_t oldsize = symmSpec.size();
                             symmSpec.resize(oldsize + sz);
                             if (kid.evaluate(symmSpec.data() + oldsize, sz, r) != sz)
                                 CfdgError::Error(kid.where, "Could not evaluate this");

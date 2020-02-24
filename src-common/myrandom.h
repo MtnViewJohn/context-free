@@ -109,29 +109,29 @@
 #include <cassert>
 
 namespace CF {
-    template <unsigned long long _Xp, size_t _Rp>
+    template <unsigned long long _Xp, std::size_t _Rp>
     struct _mr_log2_imp
     {
-        static const size_t value = _Xp & ((unsigned long long)(1) << _Rp) ? _Rp
+        static const std::size_t value = _Xp & ((unsigned long long)(1) << _Rp) ? _Rp
         : _mr_log2_imp<_Xp, _Rp - 1>::value;
     };
     
     template <unsigned long long _Xp>
     struct _mr_log2_imp<_Xp, 0>
     {
-        static const size_t value = 0;
+        static const std::size_t value = 0;
     };
     
-    template <size_t _Rp>
+    template <std::size_t _Rp>
     struct _mr_log2_imp<0, _Rp>
     {
-        static const size_t value = _Rp + 1;
+        static const std::size_t value = _Rp + 1;
     };
     
     template <class _UI, _UI _Xp>
     struct _mr_log2
     {
-        static const size_t value = _mr_log2_imp<_Xp, sizeof(_UI) * 8 - 1>::value;
+        static const std::size_t value = _mr_log2_imp<_Xp, sizeof(_UI) * 8 - 1>::value;
     };
     
     
@@ -1721,7 +1721,7 @@ namespace CF {
             param_type(std::initializer_list<double> _mr_wl)
             : _mr_p_(_mr_wl.begin(), _mr_wl.end()) {_mr_init();}
             template<class _UnaryOperation>
-            param_type(size_t _mr_nw, double _mr_xmin, double _mr_xmax,
+            param_type(std::size_t _mr_nw, double _mr_xmin, double _mr_xmax,
                        _UnaryOperation _mr_fw);
             
             std::vector<double> probabilities() const;
@@ -1751,7 +1751,7 @@ namespace CF {
         discrete_distribution(std::initializer_list<double> _mr_wl)
         : _mr_p_(_mr_wl) {}
         template<class _UnaryOperation>
-        discrete_distribution(size_t _mr_nw, double _mr_xmin, double _mr_xmax,
+        discrete_distribution(std::size_t _mr_nw, double _mr_xmin, double _mr_xmax,
                               _UnaryOperation _mr_fw)
         : _mr_p_(_mr_nw, _mr_xmin, _mr_xmax, _mr_fw) {}
         explicit discrete_distribution(const param_type& _mr_p)
@@ -1785,7 +1785,7 @@ namespace CF {
     
     template<class _IntType>
     template<class _UnaryOperation>
-    discrete_distribution<_IntType>::param_type::param_type(size_t _mr_nw,
+    discrete_distribution<_IntType>::param_type::param_type(std::size_t _mr_nw,
                                                             double _mr_xmin,
                                                             double _mr_xmax,
                                                             _UnaryOperation _mr_fw)
@@ -1795,7 +1795,7 @@ namespace CF {
             _mr_p_.reserve(_mr_nw - 1);
             double _mr_d = (_mr_xmax - _mr_xmin) / _mr_nw;
             double _mr_d2 = _mr_d / 2;
-            for (size_t _mr_k = 0; _mr_k < _mr_nw; ++_mr_k)
+            for (std::size_t _mr_k = 0; _mr_k < _mr_nw; ++_mr_k)
                 _mr_p_.push_back(_mr_fw(_mr_xmin + _mr_k * _mr_d + _mr_d2));
             _mr_init();
         }

@@ -25,6 +25,7 @@
 
 #include "Rand64.h"
 #include "myrandom.h"
+#include <cstddef>
 
 Rand64 Rand64::Common;
 
@@ -165,10 +166,10 @@ void Rand64::xorString(const char* t, int& i)
 std::string Rand64::serialize() const
 {
     static const char* digits = "0123456789ABCDEF";
-    constexpr size_t hex_len = sizeof(mSeed.mSeed) << 1;
+    constexpr std::size_t hex_len = sizeof(mSeed.mSeed) << 1;
     std::string rc("0x");
     rc.resize(hex_len + 2, '0');
-    for (size_t i=0, j=(hex_len-1)*4 ; i<hex_len; ++i,j-=4)
+    for (std::size_t i=0, j=(hex_len-1)*4 ; i<hex_len; ++i,j-=4)
         rc[i + 2] = digits[((mSeed.mSeed)>>j) & 0x0f];
     return rc;
 }

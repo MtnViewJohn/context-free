@@ -41,6 +41,7 @@
 #include <vector>
 #include <set>
 #include <memory>
+#include <cstddef>
 #include "chunk_vector.h"
 
 #include "cfdg.h"
@@ -68,7 +69,7 @@ public:
             Sieve::iterator nextShape = mSieve.begin();
             
             op(nextShape->first);
-            size_t i = nextShape->second;
+            std::size_t i = nextShape->second;
         
             mSieve.erase(nextShape);
             insertNext(i);
@@ -90,12 +91,12 @@ private:
     ShapeIter   mShapesNext;
     ShapeIter   mShapesEnd;
 
-    using Sieve     = std::map<FinishedShape, size_t>;
+    using Sieve     = std::map<FinishedShape, std::size_t>;
     using SievePair = Sieve::value_type;
     
     Sieve       mSieve;
     
-    void insertNext(size_t i);
+    void insertNext(std::size_t i);
 };
 
 #endif // INCLUDE_SHAPESTL_H

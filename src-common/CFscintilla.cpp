@@ -51,7 +51,7 @@ std::vector<const char*> CFscintilla::AutoComplete = {
         "dot", "cross", "hsb2rgb", "rgb2hsb"
     };
 
-static size_t isUTF8op(const char* text)
+static std::size_t isUTF8op(const char* text)
 {
     static const char* utf8ops[6] = {
         "\xe2\x80\xa6", "\xc2\xb1", "\xe2\x89\xa4", "\xe2\x89\xa5", "\xe2\x89\xa0", "\xe2\x88\x9e"
@@ -65,15 +65,15 @@ static size_t isUTF8op(const char* text)
 }
 
 CFscintilla::Style
-CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style initStyle)
+CFscintilla::StyleLine(std::size_t length, const char* text, char* styles, Style initStyle)
 {
     const unsigned char* utext = reinterpret_cast<const unsigned char*>(text);
     Style state = initStyle;
-    size_t idStart = 0;
+    std::size_t idStart = 0;
     bool afterColon = false;
     bool decimalPointFound = false;
     int digits = 0;
-    for (size_t i = 0; i < length;) {
+    for (std::size_t i = 0; i < length;) {
         switch (state) {
             // break == style current character and move on to next
             // continue == restart current character with a new state
@@ -94,8 +94,8 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
                     state = StyleNumber;
                     continue;
                 }
-                if (size_t sz = isUTF8op(text + i)) {
-                    for (size_t j = 0; j < sz; ++j)
+                if (std::size_t sz = isUTF8op(text + i)) {
+                    for (std::size_t j = 0; j < sz; ++j)
                         styles[i+j] = StyleSymbol;
                     i += sz;
                     continue;   // don't break, i is already incremented
@@ -230,7 +230,7 @@ CFscintilla::StyleLine(size_t length, const char* text, char* styles, Style init
 }
 
 void
-CFscintilla::StyleId(size_t length, const char* text, char* styles)
+CFscintilla::StyleId(std::size_t length, const char* text, char* styles)
 {
     using stringSet = std::set<std::string>;
     static const stringSet keywords = {
@@ -284,7 +284,7 @@ CFscintilla::StyleId(size_t length, const char* text, char* styles)
         state = StyleBuiltins;
     
     if (state != StyleIdentifier)
-        for (size_t i = 0; i < length; ++i)
+        for (std::size_t i = 0; i < length; ++i)
             styles[i] = state;
 }
 

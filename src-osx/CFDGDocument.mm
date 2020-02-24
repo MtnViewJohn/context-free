@@ -41,6 +41,7 @@
 #include "variation.h"
 #include "CFscintilla.h"
 #include <cstdarg>
+#include <cstddef>
 
 @interface CfdgErrorWrapper : NSObject
 {
@@ -117,7 +118,7 @@ namespace {
         va_start(args1, fmt);
         std::va_list args2;
         va_copy(args2, args1);
-        size_t sz = 1 + std::vsnprintf(nullptr, 0, fmt, args1);
+        std::size_t sz = 1 + std::vsnprintf(nullptr, 0, fmt, args1);
         if (sz > buf.size())
             buf.resize(2 * sz);
         va_end(args1);

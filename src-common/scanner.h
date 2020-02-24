@@ -50,6 +50,7 @@
 #include "builder.h"
 #include <cassert>
 #include <map>
+#include <cstddef>
 
 namespace yy {
 
@@ -90,7 +91,7 @@ public:
     virtual void LexerError(const char* msg);
 private:
     void setupLoc(CfdgParser::location_type* yylloc);
-    unsigned int utf8length(const char* txt, size_t len);
+    unsigned int utf8length(const char* txt, std::size_t len);
     std::stack<CfdgParser::location_type> mLocationStack;
     bool        atStartup;
     CfdgParser::token_type v2token(CfdgParser::semantic_type* yylval,

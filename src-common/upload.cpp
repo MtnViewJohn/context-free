@@ -77,7 +77,7 @@ namespace {
     }
     
     void generateFileField(std::ostream& out, const char* field,
-                           const char* data, size_t length, const std::string& fileName)
+                           const char* data, std::size_t length, const std::string& fileName)
     {
         generateMimeBoundary(out);
         

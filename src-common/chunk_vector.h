@@ -287,7 +287,7 @@ private:
     std::size_t _end = 0;
     std::vector<_valType*> _chunks;
     _Alloc _valAlloc;
-    enum consts_e : size_t {
+    enum consts_e : std::size_t {
         _chunk_size = 1 << _power2,
         _chunk_mask = _chunk_size - 1
     };
@@ -431,7 +431,7 @@ public:
     
     void clear() noexcept
     {
-        for (size_t i = _start; i < _end; ++i)
+        for (std::size_t i = _start; i < _end; ++i)
             _alloc_traits::template destroy<_valType>(_valAlloc, _chunks[i >> _power2] + (i & _chunk_mask));
         _end = _start;
     }
