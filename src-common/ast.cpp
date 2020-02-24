@@ -33,6 +33,7 @@
 #include "attributes.h"
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 namespace AST {
     const std::map<expType, std::string> ASTparameter::typeNames =

@@ -42,6 +42,7 @@
 #include "tiledCanvas.h"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 
 yy::location CfdgError::Default;

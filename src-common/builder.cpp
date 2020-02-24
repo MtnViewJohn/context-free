@@ -44,6 +44,7 @@
 #include <typeinfo>
 #include <cstddef>
 #include "backwards.h"
+#include <algorithm>
 
 using namespace AST;
 

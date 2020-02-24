@@ -31,6 +31,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
 using std::floor;
 
