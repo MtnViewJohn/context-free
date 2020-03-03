@@ -19,7 +19,7 @@ public:
 	enum {tickSize = 100};
 	TickerID tickerID;
 
-	Timer();
+	Timer() noexcept;
 };
 
 /**
@@ -29,7 +29,7 @@ public:
 	bool state;
 	IdlerID idlerID;
 
-	Idler();
+	Idler() noexcept;
 };
 
 /**
@@ -47,12 +47,12 @@ public:
 	enum workItems items;
 	Sci::Position upTo;
 
-	WorkNeeded() : items(workNone), upTo(0) {}
-	void Reset() {
+	WorkNeeded() noexcept : items(workNone), upTo(0) {}
+	void Reset() noexcept {
 		items = workNone;
 		upTo = 0;
 	}
-	void Need(workItems items_, Sci::Position pos) {
+	void Need(workItems items_, Sci::Position pos) noexcept {
 		if ((items_ & workStyle) && (upTo < pos))
 			upTo = pos;
 		items = static_cast<workItems>(items | items_);
@@ -69,8 +69,8 @@ public:
 	bool lineCopy;
 	int codePage;
 	int characterSet;
-	SelectionText() : rectangular(false), lineCopy(false), codePage(0), characterSet(0) {}
-	void Clear() {
+	SelectionText() noexcept : rectangular(false), lineCopy(false), codePage(0), characterSet(0) {}
+	void Clear() noexcept {
 		s.clear();
 		rectangular = false;
 		lineCopy = false;
@@ -88,16 +88,16 @@ public:
 	void Copy(const SelectionText &other) {
 		Copy(other.s, other.codePage, other.characterSet, other.rectangular, other.lineCopy);
 	}
-	const char *Data() const {
+	const char *Data() const noexcept {
 		return s.c_str();
 	}
-	size_t Length() const {
+	size_t Length() const noexcept {
 		return s.length();
 	}
-	size_t LengthWithTerminator() const {
+	size_t LengthWithTerminator() const noexcept {
 		return s.length() + 1;
 	}
-	bool Empty() const {
+	bool Empty() const noexcept {
 		return s.empty();
 	}
 private:
@@ -113,22 +113,22 @@ struct WrapPending {
 	enum { lineLarge = 0x7ffffff };
 	Sci::Line start;	// When there are wraps pending, will be in document range
 	Sci::Line end;	// May be lineLarge to indicate all of document after start
-	WrapPending() {
+	WrapPending() noexcept {
 		start = lineLarge;
 		end = lineLarge;
 	}
-	void Reset() {
+	void Reset() noexcept {
 		start = lineLarge;
 		end = lineLarge;
 	}
-	void Wrapped(Sci::Line line) {
+	void Wrapped(Sci::Line line) noexcept {
 		if (start == line)
 			start++;
 	}
-	bool NeedsWrap() const {
+	bool NeedsWrap() const noexcept {
 		return start < end;
 	}
-	bool AddRange(Sci::Line lineStart, Sci::Line lineEnd) {
+	bool AddRange(Sci::Line lineStart, Sci::Line lineEnd) noexcept {
 		const bool neededWrap = NeedsWrap();
 		bool changed = false;
 		if (start > lineStart) {
@@ -141,6 +141,18 @@ struct WrapPending {
 		}
 		return changed;
 	}
+};
+
+struct CaretPolicy {
+	int policy;	// Combination from CARET_SLOP, CARET_STRICT, CARET_JUMPS, CARET_EVEN
+	int slop;	// Pixels for X, lines for Y
+	CaretPolicy(uptr_t policy_=0, sptr_t slop_=0) noexcept :
+		policy(static_cast<int>(policy_)), slop(static_cast<int>(slop_)) {}
+};
+
+struct CaretPolicies {
+	CaretPolicy x;
+	CaretPolicy y;
 };
 
 /**
@@ -210,8 +222,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position wordSelectAnchorStartPos;
 	Sci::Position wordSelectAnchorEndPos;
 	Sci::Position wordSelectInitialCaretPos;
-	Sci::Position targetStart;
-	Sci::Position targetEnd;
+	SelectionSegment targetRange;
 	int searchFlags;
 	Sci::Line topLine;
 	Sci::Position posTopLine;
@@ -233,14 +244,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	SelectionText drag;
 
-	int caretXPolicy;
-	int caretXSlop;	///< Ensure this many pixels visible on both sides of caret
+	CaretPolicies caretPolicies;
 
-	int caretYPolicy;
-	int caretYSlop;	///< Ensure this many lines visible on both sides of caret
-
-	int visiblePolicy;
-	int visibleSlop;
+	CaretPolicy visiblePolicy;
 
 	Sci::Position searchAnchor;
 
@@ -260,7 +266,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Editor(Editor &&) = delete;
 	Editor &operator=(const Editor &) = delete;
 	Editor &operator=(Editor &&) = delete;
-	~Editor() override;
+	// ~Editor() in public section
 	virtual void Initialise() = 0;
 	virtual void Finalise();
 
@@ -302,11 +308,11 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	PRectangle RectangleFromRange(Range r, int overlap);
 	void InvalidateRange(Sci::Position start, Sci::Position end);
 
-	bool UserVirtualSpace() const {
+	bool UserVirtualSpace() const noexcept {
 		return ((virtualSpaceOptions & SCVS_USERACCESSIBLE) != 0);
 	}
 	Sci::Position CurrentPosition() const;
-	bool SelectionEmpty() const;
+	bool SelectionEmpty() const noexcept;
 	SelectionPosition SelectionStart();
 	SelectionPosition SelectionEnd();
 	void SetRectangularRange();
@@ -322,11 +328,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void SetEmptySelection(Sci::Position currentPos_);
 	enum AddNumber { addOne, addEach };
 	void MultipleSelectAdd(AddNumber addNumber);
-	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const;
-	bool SelectionContainsProtected();
+	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const noexcept;
+	bool SelectionContainsProtected() const;
 	Sci::Position MovePositionOutsideChar(Sci::Position pos, Sci::Position moveDir, bool checkLineEnd=true) const;
 	SelectionPosition MovePositionOutsideChar(SelectionPosition pos, Sci::Position moveDir, bool checkLineEnd=true) const;
-	void MovedCaret(SelectionPosition newPos, SelectionPosition previousPos, bool ensureVisible);
+	void MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
+		bool ensureVisible, CaretPolicies policies);
 	void MovePositionTo(SelectionPosition newPos, Selection::selTypes selt=Selection::noSel, bool ensureVisible=true);
 	void MovePositionTo(Sci::Position newPos, Selection::selTypes selt=Selection::noSel, bool ensureVisible=true);
 	SelectionPosition MovePositionSoVisible(SelectionPosition pos, int moveDir);
@@ -347,8 +354,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	struct XYScrollPosition {
 		int xOffset;
 		Sci::Line topLine;
-		XYScrollPosition(int xOffset_, Sci::Line topLine_) : xOffset(xOffset_), topLine(topLine_) {}
-		bool operator==(const XYScrollPosition &other) const {
+		XYScrollPosition(int xOffset_, Sci::Line topLine_) noexcept : xOffset(xOffset_), topLine(topLine_) {}
+		bool operator==(const XYScrollPosition &other) const noexcept {
 			return (xOffset == other.xOffset) && (topLine == other.topLine);
 		}
 	};
@@ -357,7 +364,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 		xysVertical=0x2,
 		xysHorizontal=0x4,
 		xysDefault=xysUseMargin|xysVertical|xysHorizontal};
-	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options);
+	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range,
+		const XYScrollOptions options, CaretPolicies policies);
 	void SetXYScroll(XYScrollPosition newXY);
 	void EnsureCaretVisible(bool useMargin=true, bool vert=true, bool horiz=true);
 	void ScrollRange(SelectionRange range);
@@ -368,7 +376,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void NotifyCaretMove();
 	virtual void UpdateSystemCaret();
 
-	bool Wrapping() const;
+	bool Wrapping() const noexcept;
 	void NeedWrapping(Sci::Line docLineStart=0, Sci::Line docLineEnd=WrapPending::lineLarge);
 	bool WrapOneLine(Surface *surface, Sci::Line lineToWrap);
 	enum class WrapScope {wsAll, wsVisible, wsIdle};
@@ -393,7 +401,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position RealizeVirtualSpace(Sci::Position position, Sci::Position virtualSpace);
 	SelectionPosition RealizeVirtualSpace(const SelectionPosition &position);
 	void AddChar(char ch);
-	virtual void AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS=false);
+	virtual void InsertCharacter(std::string_view sv, CharacterSource charSource);
 	void ClearBeforeTentativeStart();
 	void InsertPaste(const char *text, Sci::Position len);
 	enum PasteShape { pasteStream=0, pasteRectangular = 1, pasteLine = 2 };
@@ -421,7 +429,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual int GetCtrlID() { return ctrlID; }
 	virtual void NotifyParent(SCNotification scn) = 0;
 	virtual void NotifyStyleToNeeded(Sci::Position endStyleNeeded);
-	void NotifyChar(int ch);
+	void NotifyChar(int ch, CharacterSource charSource);
 	void NotifySavePoint(bool isSavePoint);
 	void NotifyModifyAttempt();
 	virtual void NotifyDoubleClick(Point pt, int modifiers);
@@ -441,13 +449,13 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void NotifySavePoint(Document *document, void *userData, bool atSavePoint) override;
 	void CheckModificationForWrap(DocModification mh);
 	void NotifyModified(Document *document, DocModification mh, void *userData) override;
-	void NotifyDeleted(Document *document, void *userData) override;
+	void NotifyDeleted(Document *document, void *userData) noexcept override;
 	void NotifyStyleNeeded(Document *doc, void *userData, Sci::Position endStyleNeeded) override;
 	void NotifyLexerChanged(Document *doc, void *userData) override;
 	void NotifyErrorOccurred(Document *doc, void *userData, int status) override;
 	void NotifyMacroRecord(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 
-	void ContainerNeedsUpdate(int flags);
+	void ContainerNeedsUpdate(int flags) noexcept;
 	void PageMove(int direction, Selection::selTypes selt=Selection::noSel, bool stuttered = false);
 	enum { cmSame, cmUpper, cmLower };
 	virtual std::string CaseMapString(const std::string &s, int caseMapping);
@@ -495,7 +503,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool PositionInSelection(Sci::Position pos);
 	bool PointInSelection(Point pt);
 	bool PointInSelMargin(Point pt) const;
-	Window::Cursor GetMarginCursor(Point pt) const;
+	Window::Cursor GetMarginCursor(Point pt) const noexcept;
 	void TrimAndSetSelection(Sci::Position currentPos_, Sci::Position anchor_);
 	void LineSelection(Sci::Position lineCurrentPos_, Sci::Position lineAnchorPos_, bool wholeLine);
 	void WordSelection(Sci::Position pos);
@@ -522,6 +530,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position PositionAfterMaxStyling(Sci::Position posMax, bool scrolling) const;
 	void StartIdleStyling(bool truncatedLastStyling);
 	void StyleAreaBounded(PRectangle rcArea, bool scrolling);
+	constexpr bool SynchronousStylingToVisible() const noexcept {
+		return (idleStyling == SC_IDLESTYLING_NONE) || (idleStyling == SC_IDLESTYLING_AFTERVISIBLE);
+	}
 	void IdleStyling();
 	virtual void IdleWork();
 	virtual void QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo=0);
@@ -552,52 +563,67 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool PositionIsHotspot(Sci::Position position) const;
 	bool PointIsHotspot(Point pt);
 	void SetHotSpotRange(const Point *pt);
-	Range GetHotSpotRange() const override;
+	Range GetHotSpotRange() const noexcept override;
 	void SetHoverIndicatorPosition(Sci::Position position);
 	void SetHoverIndicatorPoint(Point pt);
 
-	int CodePage() const;
+	int CodePage() const noexcept;
 	virtual bool ValidCodePage(int /* codePage */) const { return true; }
 	Sci::Line WrapCount(Sci::Line line);
 	void AddStyledText(const char *buffer, Sci::Position appendLength);
 
 	virtual sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) = 0;
-	bool ValidMargin(uptr_t wParam) const;
+	bool ValidMargin(uptr_t wParam) const noexcept;
 	void StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	sptr_t StyleGetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	void SetSelectionNMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 
-	static const char *StringFromEOLMode(int eolMode);
+	static const char *StringFromEOLMode(int eolMode) noexcept;
 
 	// Coercion functions for transforming WndProc parameters into pointers
-	static void *PtrFromSPtr(sptr_t lParam) {
+	static void *PtrFromSPtr(sptr_t lParam) noexcept {
 		return reinterpret_cast<void *>(lParam);
 	}
-	static const char *ConstCharPtrFromSPtr(sptr_t lParam) {
+	static const char *ConstCharPtrFromSPtr(sptr_t lParam) noexcept {
 		return static_cast<const char *>(PtrFromSPtr(lParam));
 	}
-	static const unsigned char *ConstUCharPtrFromSPtr(sptr_t lParam) {
+	static const unsigned char *ConstUCharPtrFromSPtr(sptr_t lParam) noexcept {
 		return static_cast<const unsigned char *>(PtrFromSPtr(lParam));
 	}
-	static char *CharPtrFromSPtr(sptr_t lParam) {
+	static char *CharPtrFromSPtr(sptr_t lParam) noexcept {
 		return static_cast<char *>(PtrFromSPtr(lParam));
 	}
-	static unsigned char *UCharPtrFromSPtr(sptr_t lParam) {
+	static unsigned char *UCharPtrFromSPtr(sptr_t lParam) noexcept {
 		return static_cast<unsigned char *>(PtrFromSPtr(lParam));
 	}
-	static void *PtrFromUPtr(uptr_t wParam) {
+	static void *PtrFromUPtr(uptr_t wParam) noexcept {
 		return reinterpret_cast<void *>(wParam);
 	}
-	static const char *ConstCharPtrFromUPtr(uptr_t wParam) {
+	static const char *ConstCharPtrFromUPtr(uptr_t wParam) noexcept {
 		return static_cast<const char *>(PtrFromUPtr(wParam));
 	}
 
-	static sptr_t StringResult(sptr_t lParam, const char *val);
-	static sptr_t BytesResult(sptr_t lParam, const unsigned char *val, size_t len);
+	static sptr_t StringResult(sptr_t lParam, const char *val) noexcept;
+	static sptr_t BytesResult(sptr_t lParam, const unsigned char *val, size_t len) noexcept;
+
+	// Set a variable controlling appearance to a value and invalidates the display
+	// if a change was made. Avoids extra text and the possibility of mistyping.
+	template <typename T>
+	bool SetAppearance(T &variable, T value) {
+		// Using ! and == as more types have == defined than !=.
+		const bool changed = !(variable == value);
+		if (changed) {
+			variable = value;
+			InvalidateStyleRedraw();
+		}
+		return changed;
+	}
 
 public:
+	~Editor() override;
+
 	// Public so the COM thunks can access it.
-	bool IsUnicodeMode() const;
+	bool IsUnicodeMode() const noexcept;
 	// Public so scintilla_send_message can use it.
 	virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	// Public so scintilla_set_id can use it.
@@ -614,7 +640,7 @@ class AutoSurface {
 private:
 	std::unique_ptr<Surface> surf;
 public:
-	AutoSurface(Editor *ed, int technology = -1) {
+	AutoSurface(const Editor *ed, int technology = -1) {
 		if (ed->wMain.GetID()) {
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(ed->wMain.GetID());

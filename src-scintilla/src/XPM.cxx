@@ -194,7 +194,7 @@ std::vector<const char *> XPM::LinesFormFromTextForm(const char *textForm) {
 	for (; countQuotes < (2*strings) && textForm[j] != '\0'; j++) {
 		if (textForm[j] == '\"') {
 			if (countQuotes == 0) {
-				// First field: width, height, number of colors, chars per pixel
+				// First field: width, height, number of colours, chars per pixel
 				const char *line0 = textForm + j + 1;
 				// Skip width
 				line0 = NextField(line0);
@@ -205,7 +205,7 @@ std::vector<const char *> XPM::LinesFormFromTextForm(const char *textForm) {
 				strings += atoi(line0);
 			}
 			if (countQuotes / 2 >= strings) {
-				break;	// Bad height or number of colors!
+				break;	// Bad height or number of colours!
 			}
 			if ((countQuotes & 1) == 0) {
 				linesForm.push_back(textForm + j + 1);
@@ -214,7 +214,7 @@ std::vector<const char *> XPM::LinesFormFromTextForm(const char *textForm) {
 		}
 	}
 	if (textForm[j] == '\0' || countQuotes / 2 > strings) {
-		// Malformed XPM! Height + number of colors too high or too low
+		// Malformed XPM! Height + number of colours too high or too low
 		linesForm.clear();
 	}
 	return linesForm;
@@ -262,6 +262,21 @@ void RGBAImage::SetPixel(int x, int y, ColourDesired colour, int alpha) {
 	pixel[1] = colour.GetGreen();
 	pixel[2] = colour.GetBlue();
 	pixel[3] = static_cast<unsigned char>(alpha);
+}
+
+// Transform a block of pixels from RGBA to BGRA with premultiplied alpha.
+// Used for DrawRGBAImage on some platforms.
+void RGBAImage::BGRAFromRGBA(unsigned char *pixelsBGRA, const unsigned char *pixelsRGBA, size_t count) noexcept {
+	for (size_t i = 0; i < count; i++) {
+		const unsigned char alpha = pixelsRGBA[3];
+		// Input is RGBA, output is BGRA with premultiplied alpha
+		pixelsBGRA[2] = pixelsRGBA[0] * alpha / 255;
+		pixelsBGRA[1] = pixelsRGBA[1] * alpha / 255;
+		pixelsBGRA[0] = pixelsRGBA[2] * alpha / 255;
+		pixelsBGRA[3] = alpha;
+		pixelsRGBA += bytesPerPixel;
+		pixelsBGRA += bytesPerPixel;
+	}
 }
 
 RGBAImageSet::RGBAImageSet() : height(-1), width(-1) {

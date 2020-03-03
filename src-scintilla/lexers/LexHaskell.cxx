@@ -26,6 +26,7 @@
 #include <ctype.h>
 
 #include <string>
+#include <vector>
 #include <map>
 
 #include "ILexer.h"
@@ -389,7 +390,8 @@ class LexerHaskell : public DefaultLexer {
 
 public:
    LexerHaskell(bool literate_)
-      : literate(literate_)
+      : DefaultLexer(literate_ ? "literatehaskell" : "haskell", literate_ ? SCLEX_LITERATEHASKELL : SCLEX_HASKELL)
+	  , literate(literate_)
       , firstImportLine(-1)
       , firstImportIndent(0)
       {}
@@ -400,7 +402,7 @@ public:
    }
 
    int SCI_METHOD Version() const override {
-      return lvRelease4;
+      return lvRelease5;
    }
 
    const char * SCI_METHOD PropertyNames() override {
@@ -417,6 +419,10 @@ public:
 
    Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
 
+   const char * SCI_METHOD PropertyGet(const char *key) override {
+	   return osHaskell.PropertyGet(key);
+   }
+
    const char * SCI_METHOD DescribeWordListSets() override {
       return osHaskell.DescribeWordListSets();
    }
@@ -431,11 +437,11 @@ public:
       return 0;
    }
 
-   static ILexer4 *LexerFactoryHaskell() {
+   static ILexer5 *LexerFactoryHaskell() {
       return new LexerHaskell(false);
    }
 
-   static ILexer4 *LexerFactoryLiterateHaskell() {
+   static ILexer5 *LexerFactoryLiterateHaskell() {
       return new LexerHaskell(true);
    }
 };

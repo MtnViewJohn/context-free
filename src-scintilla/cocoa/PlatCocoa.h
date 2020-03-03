@@ -2,6 +2,7 @@
 /**
  * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
  * This file is dual licensed under LGPL v2.1 and the Scintilla license (http://www.scintilla.org/License.txt).
+ * @file PlatCocoa.h
  */
 
 #ifndef PLATCOCOA_H
@@ -80,7 +81,7 @@ public:
 	void PenColour(ColourDesired fore) override;
 
 	/** Returns a CGImageRef that represents the surface. Returns NULL if this is not possible. */
-	CGImageRef GetImage();
+	CGImageRef CreateImage();
 	void CopyImageRectangle(Surface &surfaceSource, PRectangle srcRect, PRectangle dstRect);
 
 	int LogPixelsY() override;

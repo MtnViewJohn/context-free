@@ -10,10 +10,7 @@
 
 namespace Scintilla {
 
-#ifdef SCI_LEXER
 class LexState;
-#endif
-
 /**
  */
 class ScintillaBase : public Editor, IListBoxDelegate {
@@ -32,8 +29,6 @@ protected:
 		idcmdSelectAll=16
 	};
 
-	enum { maxLenInputIME = 200 };
-
 	int displayPopupMenu;
 	Menu popup;
 	AutoComplete ac;
@@ -44,12 +39,10 @@ protected:
 	int maxListWidth;		/// Maximum width of list, in average character widths
 	int multiAutoCMode; /// Mode for autocompleting when multiple selections are present
 
-#ifdef SCI_LEXER
 	LexState *DocumentLexState();
 	void SetLexer(uptr_t wParam);
 	void SetLexerLanguage(const char *languageName);
 	void Colourise(int start, int end);
-#endif
 
 	ScintillaBase();
 	// Deleted so ScintillaBase objects can not be copied.
@@ -57,11 +50,15 @@ protected:
 	ScintillaBase(ScintillaBase &&) = delete;
 	ScintillaBase &operator=(const ScintillaBase &) = delete;
 	ScintillaBase &operator=(ScintillaBase &&) = delete;
-	~ScintillaBase() override;
+	// ~ScintillaBase() in public section
 	void Initialise() override {}
 	void Finalise() override;
 
-	void AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS=false) override;
+	[[deprecated]]
+	// This method is deprecated, use InsertCharacter instead. The treatAsDBCS parameter is no longer used.
+	virtual void AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS=false);
+
+	void InsertCharacter(std::string_view sv, CharacterSource charSource) override;
 	void Command(int cmdId);
 	void CancelModes() override;
 	int KeyCommand(unsigned int iMessage) override;
@@ -94,6 +91,8 @@ protected:
 	void NotifyLexerChanged(Document *doc, void *userData) override;
 
 public:
+	~ScintillaBase() override;
+
 	// Public so scintilla_send_message can use it
 	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
 };

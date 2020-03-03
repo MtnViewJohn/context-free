@@ -1,7 +1,7 @@
 
 /**
  * Scintilla source code edit control
- * InfoBar.mm - Implements special info bar with zoom info, caret position etc. to be used with
+ * @file InfoBar.mm - Implements special info bar with zoom info, caret position etc. to be used with
  *              ScintillaView.
  *
  * Mike Lischke <mlischke@sun.com>
@@ -9,6 +9,8 @@
  * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
  * This file is dual licensed under LGPL v2.1 and the Scintilla license (http://www.scintilla.org/License.txt).
  */
+
+#include <cmath>
 
 #import "InfoBar.h"
 
@@ -33,7 +35,7 @@
 		CGFloat heightDelta = newRect.size.height - textSize.height;
 		if (heightDelta > 0) {
 			newRect.size.height -= heightDelta;
-			newRect.origin.y += ceil(heightDelta / 2);
+			newRect.origin.y += std::ceil(heightDelta / 2);
 		}
 	}
 
@@ -349,7 +351,7 @@ static float BarFontSize = 10.0;
 
 			// We only work with some preset zoom values. If the given value does not correspond
 			// to one then show no selection.
-			while (count < numberOfDefaultItems && (fabs(newScaleFactor - DefaultScaleMenuFactors[count]) > 0.07))
+			while (count < numberOfDefaultItems && (std::abs(newScaleFactor - DefaultScaleMenuFactors[count]) > 0.07))
 				count++;
 			if (count == numberOfDefaultItems)
 				[mZoomPopup selectItemAtIndex: -1];

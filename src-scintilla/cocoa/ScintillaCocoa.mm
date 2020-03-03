@@ -1,7 +1,7 @@
 
 /**
  * Scintilla source code edit control
- * ScintillaCocoa.mm - Cocoa subclass of ScintillaBase
+ * @file ScintillaCocoa.mm - Cocoa subclass of ScintillaBase
  *
  * Written by Mike Lischke <mlischke@sun.com>
  *
@@ -13,6 +13,8 @@
  * Copyright (c) 2009, 2010 Sun Microsystems, Inc. All rights reserved.
  * This file is dual licensed under LGPL v2.1 and the Scintilla license (http://www.scintilla.org/License.txt).
  */
+
+#include <cmath>
 
 #include <string_view>
 #include <vector>
@@ -316,7 +318,7 @@ const CGFloat paddingHighlightY = 2;
 		// main thread). We need that later for idle event processing.
 		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 		notificationQueue = [[NSNotificationQueue alloc] initWithNotificationCenter: center];
-		[center addObserver: self selector: @selector(idleTriggered:) name: @"Idle" object: nil];
+		[center addObserver: self selector: @selector(idleTriggered:) name: @"Idle" object: self];
 	}
 	return self;
 }
@@ -421,7 +423,6 @@ ScintillaCocoa::~ScintillaCocoa() {
  * Core initialization of the control. Everything that needs to be set up happens here.
  */
 void ScintillaCocoa::Init() {
-	Scintilla_LinkLexers();
 
 	// Tell Scintilla not to buffer: Quartz buffers drawing for us.
 	WndProc(SCI_SETBUFFEREDDRAW, 0, 0);
@@ -818,7 +819,7 @@ namespace {
  */
 
 bool SupportAnimatedFind() {
-	return floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12;
+	return std::floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12;
 }
 
 }
@@ -1407,7 +1408,7 @@ void ScintillaCocoa::StartDrag() {
 	//           the full rectangle which may include non-selected text.
 
 	NSBitmapImageRep *bitmap = NULL;
-	CGImageRef imagePixmap = pixmap.GetImage();
+	CGImageRef imagePixmap = pixmap.CreateImage();
 	if (imagePixmap)
 		bitmap = [[NSBitmapImageRep alloc] initWithCGImage: imagePixmap];
 	CGImageRelease(imagePixmap);
@@ -1596,15 +1597,15 @@ bool ScintillaCocoa::GetPasteboardData(NSPasteboard *board, SelectionText *selec
 // Returns the target converted to UTF8.
 // Return the length in bytes.
 Sci::Position ScintillaCocoa::TargetAsUTF8(char *text) const {
-	const Sci::Position targetLength = targetEnd - targetStart;
+	const Sci::Position targetLength = targetRange.Length();
 	if (IsUnicodeMode()) {
 		if (text)
-			pdoc->GetCharRange(text, targetStart, targetLength);
+			pdoc->GetCharRange(text, targetRange.start.Position(), targetLength);
 	} else {
 		// Need to convert
 		const CFStringEncoding encoding = EncodingFromCharacterSet(IsUnicodeMode(),
 						  vs.styles[STYLE_DEFAULT].characterSet);
-		const std::string s = RangeText(targetStart, targetEnd);
+		const std::string s = RangeText(targetRange.start.Position(), targetRange.end.Position());
 		CFStringRef cfsVal = CFStringFromString(s.c_str(), s.length(), encoding);
 		if (!cfsVal) {
 			return 0;
@@ -2173,26 +2174,39 @@ bool ScintillaCocoa::KeyboardInput(NSEvent *event) {
 /**
  * Used to insert already processed text provided by the Cocoa text input system.
  */
-ptrdiff_t ScintillaCocoa::InsertText(NSString *input) {
-	CFStringEncoding encoding = EncodingFromCharacterSet(IsUnicodeMode(),
-				    vs.styles[STYLE_DEFAULT].characterSet);
-	std::string encoded = EncodedBytesString((__bridge CFStringRef)input, encoding);
-
-	if (encoded.length() > 0) {
-		if (encoding == kCFStringEncodingUTF8) {
-			// There may be multiple characters in input so loop over them
-			std::string_view sv = encoded;
-			while (sv.length()) {
-				const unsigned char leadByte = sv[0];
-				const unsigned int bytesInCharacter = UTF8BytesOfLead[leadByte];
-				AddCharUTF(sv.data(), bytesInCharacter, false);
-				sv.remove_prefix(bytesInCharacter);
-			}
-		} else {
-			AddCharUTF(encoded.c_str(), static_cast<unsigned int>(encoded.length()), false);
-		}
+ptrdiff_t ScintillaCocoa::InsertText(NSString *input, CharacterSource charSource) {
+	if ([input length] == 0) {
+		return 0;
 	}
-	return encoded.length();
+
+	// There may be multiple characters in input so loop over them
+	if (IsUnicodeMode()) {
+		// There may be non-BMP characters as 2 elements in NSString so
+		// convert to UTF-8 and use UTF8BytesOfLead.
+		std::string encoded = EncodedBytesString((__bridge CFStringRef)input,
+							 kCFStringEncodingUTF8);
+		std::string_view sv = encoded;
+		while (sv.length()) {
+			const unsigned char leadByte = sv[0];
+			const unsigned int bytesInCharacter = UTF8BytesOfLead[leadByte];
+			InsertCharacter(sv.substr(0, bytesInCharacter), charSource);
+			sv.remove_prefix(bytesInCharacter);
+		}
+		return encoded.length();
+	} else {
+		const CFStringEncoding encoding = EncodingFromCharacterSet(IsUnicodeMode(),
+									   vs.styles[STYLE_DEFAULT].characterSet);
+		ptrdiff_t lengthInserted = 0;
+		for (NSInteger i = 0; i < [input length]; i++) {
+			NSString *character = [input substringWithRange:NSMakeRange(i, 1)];
+			std::string encoded = EncodedBytesString((__bridge CFStringRef)character,
+								 encoding);
+			lengthInserted += encoded.length();
+			InsertCharacter(encoded, charSource);
+		}
+
+		return lengthInserted;
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2272,7 +2286,7 @@ void ScintillaCocoa::CompositionStart() {
  */
 void ScintillaCocoa::CompositionCommit() {
 	pdoc->TentativeCommit();
-	pdoc->DecorationSetCurrentIndicator(INDIC_IME);
+	pdoc->DecorationSetCurrentIndicator(INDICATOR_IME);
 	pdoc->DecorationFillRange(0, 0, pdoc->Length());
 }
 
@@ -2486,7 +2500,7 @@ void ScintillaCocoa::ShowFindIndicatorForRange(NSRange charRange, BOOL retaining
 		layerFindIndicator = [[FindHighlightLayer alloc] init];
 		[content setWantsLayer: YES];
 		layerFindIndicator.geometryFlipped = content.layer.geometryFlipped;
-		if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+		if (std::floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
 			// Content layer is unflipped on 10.9, but the indicator shows wrong unless flipped
 			layerFindIndicator.geometryFlipped = YES;
 		}

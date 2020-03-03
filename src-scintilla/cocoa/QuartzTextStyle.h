@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _QUARTZ_TEXT_STYLE_H
-#define _QUARTZ_TEXT_STYLE_H
+#ifndef QUARTZTEXTSTYLE_H
+#define QUARTZTEXTSTYLE_H
 
 #include "QuartzTextStyleAttribute.h"
 
@@ -47,8 +47,8 @@ public:
 		return styleDict;
 	}
 
-	void setCTStyleColor(CGColor *inColor) {
-		CFDictionarySetValue(styleDict, kCTForegroundColorAttributeName, inColor);
+	void setCTStyleColour(CGColor *inColour) {
+		CFDictionarySetValue(styleDict, kCTForegroundColorAttributeName, inColour);
 	}
 
 	float getAscent() const {
