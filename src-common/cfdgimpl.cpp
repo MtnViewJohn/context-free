@@ -166,9 +166,9 @@ CFDGImpl::findRule(int shapetype, double r)
     needle.mNameIndex = shapetype;
     needle.mWeight = r;
     
-    std::vector<ASTrule*>::iterator first = lower_bound(mRules.begin(), mRules.end(),
-                                                   &needle, ASTrule::compareLT);
-    if (first == mRules.end() || (*first)->mNameIndex != shapetype)
+    auto first = lower_bound(mRules.cbegin(), mRules.cend(),
+                             &needle, ASTrule::compareLT);
+    if (first == mRules.cend() || (*first)->mNameIndex != shapetype)
         throw CfdgError("Cannot find a rule for a shape (very helpful I know).");
     return *first;
 }
@@ -177,9 +177,9 @@ CFDGImpl::findRule(int shapetype, double r)
 const ASTrule*
 CFDGImpl::findRule(int shapetype)
 {
-    auto rule = std::find_if(mRules.begin(), mRules.end(),
+    auto rule = std::find_if(mRules.cbegin(), mRules.cend(),
                              [=](ASTrule* r){return r->mNameIndex == shapetype;});
-    return rule == mRules.end() ? nullptr : *rule;
+    return rule == mRules.cend() ? nullptr : *rule;
 }
 
 // Adds a new rule/path to the rule container. Updates information about the rule
