@@ -42,6 +42,8 @@
 #include "TempFileDeleter.h"
 #include "CFscintilla.h"
 
+#define UseProductionServer 1
+
 using namespace ContextFreeNet;
 using namespace System;
 using namespace System::Data;
@@ -341,7 +343,8 @@ System::Void Document::PictureDragDrop(System::Object^ sender, System::Windows::
     if (url->StartsWith("https://www.contextfreeart.org/gallery") ||
         url->StartsWith("http://www.contextfreeart.org/gallery") ||
         url->StartsWith("https://contextfreeart.org/gallery") ||
-        url->StartsWith("http://contextfreeart.org/gallery"))
+        url->StartsWith("http://contextfreeart.org/gallery") ||
+        url->StartsWith("http://localmac/~john/cfa2/gallery"))
     {
         int idx = url->IndexOf("id=");
         if (idx < 0) {
@@ -354,7 +357,11 @@ System::Void Document::PictureDragDrop(System::Object^ sender, System::Windows::
         if (idx >= 0) {
             Int32 design;
             if (Int32::TryParse(url->Substring(idx), design))
-                url = String::Format("https://www.contextfreeart.org/gallery/gallerydb/cfdg/{0}", design);
+#ifdef UseProductionServer
+                url = String::Format("https://www.contextfreeart.org/gallery/data.php/{0}/info/foo.json", design);
+#else
+                url = String::Format("http://localmac/~john/cfa2/gallery/data.php/{0}/info/foo.json", design);
+#endif
             else
                 url = nullptr;
         }

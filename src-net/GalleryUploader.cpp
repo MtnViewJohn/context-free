@@ -17,6 +17,8 @@ using namespace System::Windows::Forms;
 using namespace System::Runtime::InteropServices;
 using namespace System::Net;
 
+#define UseProductionServer 1
+
 namespace {
     struct iccomp {
         bool operator()(const std::string& a, const std::string& b)
@@ -85,10 +87,10 @@ namespace ContextFreeNet {
         WebClient^ req = gcnew WebClient();
         req->DownloadDataCompleted += gcnew DownloadDataCompletedEventHandler(this, &GalleryUploader::OnTags);
         req->DownloadDataAsync(gcnew Uri(
-#ifdef NDEBUG
-            "https://www.contextfreeart.org/gallery/gallerydb/tags"
+#ifdef UseProductionServer
+            "https://www.contextfreeart.org/gallery/tags.php?t=tags"
 #else
-            "http://192.168.86.72:5000/tags"
+            "http://localmac//~john/cfa2/gallery/tags.php?t=tags"
 #endif
         ));
 
@@ -208,10 +210,10 @@ namespace ContextFreeNet {
         if (design_id == 0) {
             this->DialogResult = ::DialogResult::Cancel;
         } else {
-#ifdef NDEBUG
-            String^ url = String::Format("https://www.contextfreeart.org/gallery2/index.html#design/{0}", design_id);
+#ifdef UseProductionServer
+            String^ url = String::Format("https://www.contextfreeart.org/gallery/view.php?id={0}", design_id);
 #else
-            String^ url = String::Format("https://192.168.86.72/~john/cfa2/gallery2/index.html#design/{0}", design_id);
+            String^ url = String::Format("http://localmac//~john/cfa2/gallery/view.php?id={0}", design_id);
 #endif
             System::Diagnostics::Process::Start(url);
             this->DialogResult = ::DialogResult::OK;
@@ -363,10 +365,10 @@ namespace ContextFreeNet {
         auto len = postbody->Length;
 
         HttpWebRequest^ req = dynamic_cast<HttpWebRequest^>(WebRequest::Create(
-#ifdef NDEBUG
-            "https://www.contextfreeart.org/gallery/gallerydb/fpostdesign"
+#ifdef UseProductionServer
+            "https://www.contextfreeart.org/gallery/upload.php"
 #else
-            "http://192.168.86.72:5000/fpostdesign"
+            "http://localmac//~john/cfa2/gallery/upload.php"
 #endif
         ));
         req->Method = "POST";
