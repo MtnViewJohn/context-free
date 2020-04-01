@@ -316,7 +316,8 @@
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -333,6 +334,7 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
@@ -346,7 +348,9 @@
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -363,6 +367,7 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -376,7 +381,8 @@
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -391,6 +397,7 @@
       </EntryPointSymbol>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
@@ -404,7 +411,9 @@
       <DisableSpecificWarnings>4146;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -419,6 +428,7 @@
       </EntryPointSymbol>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
