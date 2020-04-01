@@ -526,7 +526,7 @@ void Document::DownLoaded(Object^ , Net::DownloadStringCompletedEventArgs^ e)
         if (Name->EndsWith(".cfdg")) {
             cfdgText->Text = dynamic_cast<String^>(e->Result);
             Uri^ uri = gcnew Uri(Name);
-            TabText = Path::GetFileName(uri->AbsolutePath);
+            TabText = System::Net::WebUtility::UrlDecode(Path::GetFileName(uri->AbsolutePath));
             Name = TabText;
             Text = TabText;
             cfdgText->SetSavePoint();
