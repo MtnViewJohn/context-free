@@ -351,6 +351,8 @@ static NSInteger OSXversion = 0;
                                   @"http://contextfreeart.org/gallery",
                                   @"https://www.contextfreeart.org/gallery",
                                   @"https://contextfreeart.org/gallery",
+                                  @"https://localhost/~john/cfa2/gallery",
+                                  @"http://localhost/~john/cfa2/gallery",
                                   nil];
     
     if (NSAppKitVersionNumber < NSAppKitVersionNumber10_9)
@@ -378,8 +380,7 @@ static NSInteger OSXversion = 0;
                 doc = [[NSDocumentController sharedDocumentController]
                        openUntitledDocumentAndDisplay: NO error: nil];
                 [[GalleryDownloader alloc] initWithDesignID: designID document: doc];
-            }
-            if ([pboardString hasSuffix: @".cfdg"]) {
+            } else if ([pboardString hasSuffix: @".cfdg"]) {
                 NSURL* cfdgurl = [NSURL URLWithString: pboardString];
                 doc = [[NSDocumentController sharedDocumentController]
                        openUntitledDocumentAndDisplay: NO error: nil];
