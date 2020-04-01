@@ -600,6 +600,7 @@ namespace {
                             }
                         }];
                     retry = stopped;
+                    mSuccessId = 0;
                     break;
                 }
             }
@@ -615,6 +616,8 @@ namespace {
             [mRetryButton setEnabled: retry];
             if (retry && design)
                 [mRetryButton setTitle: @"See Design"];
+            else
+                [mRetryButton setTitle: @"Try Again"];
             [self setView: mDoneView];
         });
     }];
