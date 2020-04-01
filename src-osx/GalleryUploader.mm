@@ -62,23 +62,23 @@ namespace {
 
 #if 1
     static NSString* uploadUrl =
-        @"https://www.contextfreeart.org/gallery/gallerydb/fpostdesign";
+        @"https://www.contextfreeart.org/gallery/upload.php";
 
     static NSString* displayUrl =
-        @"https://www.contextfreeart.org/gallery2/index.html#design/%d";
+        @"https://www.contextfreeart.org/gallery/view.php?id=%d";
     
     static NSString* tagsUrl =
-        @"https://www.contextfreeart.org/gallery/gallerydb/tags";
+        @"https://www.contextfreeart.org/gallery/tags.php?t=tags";
 #else
     static NSString* uploadUrl =
-        @"http://localhost:5000/fpostdesign";
+        @"http://localhost/~john/cfa2/gallery/upload.php";
     
     static NSString* displayUrl =
         //@"http://localhost:8000/main.html#design/%d";
-        @"https://localhost/~john/cfa2/gallery2/index.html#design/%d";
+        @"http://localhost/~john/cfa2/gallery/view.php?id=%d";
     
     static NSString* tagsUrl =
-        @"http://localhost:5000/tags";
+        @"http://localhost/~john/cfa2/gallery/tags.php?t=tags";
 #endif
     
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)

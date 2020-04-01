@@ -42,7 +42,11 @@
         designID = design;
         variation = Variation::random();
         document = doc;
-        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/gallerydb/cfdg/%d", designID];
+#if 1
+        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", designID];
+#else
+        NSString* urlstring = [NSString stringWithFormat: @"http://localhost/~john/cfa2/gallery/data.php/%d/info/foo.json", designID];
+#endif
         NSURL* url = [NSURL URLWithString: urlstring];
         
         NSURLSessionDataTask* download = [[NSURLSession sharedSession]
