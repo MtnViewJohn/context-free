@@ -766,7 +766,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <attributedString key="attributedStringForZero">
                 <fragment content="0"/>
             </attributedString>
-            <decimal key="minimum" value="32"/>
+            <real key="minimum" value="16"/>
             <decimal key="maximum" value="NaN"/>
         </numberFormatter>
         <numberFormatter formatterBehavior="10_0" positiveFormat="0.00" negativeFormat="-0.00" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="167" userLabel="MinSizeFormatter">
