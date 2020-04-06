@@ -56,12 +56,14 @@ protected:
     std::unique_ptr<std::string> mInputBuffer;
     virtual const char* maybeLF();
 public:
-    CommandLineSystem(bool q = false);
+    CommandLineSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
+        mErrorMode(false) { };
     ~CommandLineSystem() override = default;
     void message(const char* fmt, ...) override;
     void syntaxError(const CfdgError& err) override;
     bool error(bool errorOccurred = true) override;
-    
+    bool isGuiProgram() override { return false; }
+
     istr_ptr openFileForRead(const std::string& path) override;
     
     void stats(const Stats&) override;

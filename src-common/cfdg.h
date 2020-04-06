@@ -114,6 +114,7 @@ class AbstractSystem {
         virtual void syntaxError(const CfdgError& err) = 0;
         virtual bool error(bool errorOccurred = true) { return errorOccurred; };
         virtual void catastrophicError(const char* what) = 0;
+        virtual bool isGuiProgram() { return true; }
     
         virtual istr_ptr openFileForRead(const std::string& path) = 0;
         virtual istr_ptr tempFileForRead(const FileString& path);

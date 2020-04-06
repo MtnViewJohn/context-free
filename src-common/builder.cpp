@@ -106,7 +106,6 @@ Builder* Builder::CurrentBuilder = nullptr;
 std::recursive_mutex Builder::BuilderMutex;
 double Builder::MaxNatural = 1000.0;
 int Builder::MaxNaturalDepth = std::numeric_limits<int>::max();
-Builder::BuilderModes Builder::BuilderMode = Builder::BuilderModes::GuiMode;
 
 Builder::Builder(const cfdgi_ptr& cfdg, int variation)
 : m_CFDG(cfdg), m_currentPath(nullptr), m_pathCount(1),
@@ -139,10 +138,10 @@ Builder::isMyBuilder() const noexcept
     return mBuilderThread == std::this_thread::get_id();
 }
 
-static const char*
-getUniqueFile(const std::string* base, const std::string* file)
+const char*
+Builder::getUniqueFile(const std::string* base, const std::string* file)
 {
-    if (Builder::BuilderMode == Builder::BuilderModes::CmdLineMode)
+    if (!m_CFDG->system()->isGuiProgram())
         return file->c_str();
 
     const char* b = base->c_str();

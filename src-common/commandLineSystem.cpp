@@ -60,12 +60,6 @@ using std::cin;
 using std::cerr;
 using std::endl;
 
-CommandLineSystem::CommandLineSystem(bool q) 
-: mQuiet(q), mNeedEndl(false), mErrorMode(false) 
-{
-    Builder::BuilderMode = Builder::BuilderModes::CmdLineMode;
-}
-
 const char*
 CommandLineSystem::maybeLF()
 {

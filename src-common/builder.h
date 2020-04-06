@@ -66,8 +66,6 @@ public:
     std::thread::id mBuilderThread;
     static double   MaxNatural;
     static int      MaxNaturalDepth;
-    enum class BuilderModes { GuiMode, CmdLineMode };
-    static BuilderModes BuilderMode;
 
     cfdgi_ptr                   m_CFDG;
     std::unique_ptr<std::string> m_basePath;
@@ -118,6 +116,7 @@ public:
     
     int             StringToShape(const std::string& name, const yy::location& loc,
                                   bool colonsAllowed);
+    const char*     getUniqueFile(const std::string* base, const std::string* file);
     std::string     ShapeToString(int shape);
     static const std::string&
                     FlagToString(int flag);
