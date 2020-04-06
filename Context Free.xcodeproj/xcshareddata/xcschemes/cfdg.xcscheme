@@ -67,7 +67,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s 1000 -DCF::StartShape=Either input/mtree.cfdg output/test.png"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/demo2_v2.cfdg output/test.png"
@@ -91,7 +91,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-P input/i_pix_v2.cfdg output/test.png"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 - output/square.png"
