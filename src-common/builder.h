@@ -35,6 +35,7 @@
 #endif
 
 #include <queue>
+#include <vector>
 #include <stack>
 #include <string>
 #include <cstdlib>
@@ -93,9 +94,9 @@ public:
     
     bool        mAllowOverlap;
     
-    using ContainerStack_t = std::deque<AST::ASTrepContainer*>;
+    using ContainerStack_t = std::vector<AST::ASTrepContainer*>;
     ContainerStack_t    mContainerStack;
-    std::deque<int>     mStackStack;
+    std::vector<int>     mStackStack;
     void                push_repContainer(AST::ASTrepContainer& c);
     void                pop_repContainer(AST::ASTreplacement* r);
     void                push_rep(AST::ASTreplacement* r, bool global = false);
