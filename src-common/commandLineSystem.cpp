@@ -41,6 +41,7 @@
 #include "prettyint.h"
 #include <streambuf>
 #include <istream>
+#include "builder.h"
 
 struct membuf: std::streambuf {
     membuf(char const* base, std::size_t size) {
@@ -58,6 +59,12 @@ struct imemstream: virtual membuf, std::istream {
 using std::cin;
 using std::cerr;
 using std::endl;
+
+CommandLineSystem::CommandLineSystem(bool q) 
+: mQuiet(q), mNeedEndl(false), mErrorMode(false) 
+{
+    Builder::BuilderMode = Builder::BuilderModes::CmdLineMode;
+}
 
 const char*
 CommandLineSystem::maybeLF()
@@ -91,10 +98,10 @@ CommandLineSystem::syntaxError(const CfdgError& err)
     // this version doesn't high-light the line in error
     // the parser will have already called message() with
     // the syntax error information
-    auto filename = err.where.end.filename ? err.where.end.filename->c_str() : "cfdg text";
-    message("Error in %s at line %d:%d-%d:%d - %s",
-            filename, err.where.begin.line, err.where.begin.column,
-            err.where.end.line, err.where.end.column, err.what());
+    auto filename = err.where.end.filename && !err.where.end.filename->empty()
+                    ? err.where.end.filename->c_str() : "cfdg text";
+    message("\n%s:%d:%d: error: %s\n", filename, err.where.begin.line, 
+            err.where.begin.column, err.what());
 }
 
 bool

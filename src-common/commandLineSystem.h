@@ -56,8 +56,7 @@ protected:
     std::unique_ptr<std::string> mInputBuffer;
     virtual const char* maybeLF();
 public:
-    CommandLineSystem(bool q = false) : mQuiet(q), mNeedEndl(false),
-        mErrorMode(false) { };
+    CommandLineSystem(bool q = false);
     ~CommandLineSystem() override = default;
     void message(const char* fmt, ...) override;
     void syntaxError(const CfdgError& err) override;

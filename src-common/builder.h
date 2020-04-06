@@ -65,6 +65,8 @@ public:
     std::thread::id mBuilderThread;
     static double   MaxNatural;
     static int      MaxNaturalDepth;
+    enum class BuilderModes { GuiMode, CmdLineMode };
+    static BuilderModes BuilderMode;
 
     cfdgi_ptr                   m_CFDG;
     std::unique_ptr<std::string> m_basePath;
