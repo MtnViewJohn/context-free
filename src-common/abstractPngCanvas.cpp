@@ -42,6 +42,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
   mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
   mFullHeight(height), mOriginX(0), mOriginY(0)
 {
+    if (outfilename)
+        mFileName = outfilename;
     if (wallpaper) {
         mWidth = r->m_width;
         mHeight = r->m_height;

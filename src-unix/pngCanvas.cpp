@@ -34,7 +34,6 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include "prettyint.h"
-#include <sys/stat.h>
 
 using std::cerr;
 using std::endl;
@@ -66,6 +65,7 @@ namespace {
 
 void pngCanvas::output(const char* outfilename, int frame)
 {
+    std::unique_ptr<std::FILE, FileCloser> out;
     png_structp png_ptr = nullptr;
     png_infop info_ptr = nullptr;
 
@@ -77,7 +77,6 @@ void pngCanvas::output(const char* outfilename, int frame)
         row = std::make_unique<png_byte[]>(mStride);
     
     try {
-        std::unique_ptr<std::FILE, FileCloser> out;
         png_ptr = png_create_write_struct(
             PNG_LIBPNG_VER_STRING,
             0, pngWriteError, pngWriteWarning);
@@ -86,17 +85,12 @@ void pngCanvas::output(const char* outfilename, int frame)
         info_ptr = png_create_info_struct(png_ptr);
         if (!info_ptr) throw "couldn't create png info struct";
 
-        if (*outfilename) {
-            struct stat sb;
-            if (stat(outfilename, &sb) == 0 && S_ISREG(sb.st_mode) && 
-                (sb.st_mode & S_IXOTH))
-            {
-                execfile = outfilename;
-                int fd = mkstemps(tmpfilename, 4);
-                if (fd != -1) {
+        if (*outfilename || usetmpfile) {
+            if (usetmpfile) {
+                mFileName = "/tmp/cfdg_temp_image_XXXXXX.png";
+                int fd = mkstemps(&mFileName[0], 4);
+                if (fd != -1)
                     out.reset(fdopen(fd, "w"));
-                    usetmpfile = (bool)out;
-                }
             } else {
                 out.reset(std::fopen(outfilename, "wb"));
             }
@@ -218,13 +212,6 @@ void pngCanvas::output(const char* outfilename, int frame)
     catch (bool) { }
     
     if (png_ptr)    png_destroy_write_struct(&png_ptr, &info_ptr);
-
-    if (usetmpfile) {
-        execfile += ' ';
-        execfile += tmpfilename;
-        if (std::system(execfile.c_str()) != 0)
-            cerr << "\n\nError viewing the PNG file.\n" << endl;
-    }
 }
 
 

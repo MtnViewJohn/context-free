@@ -125,10 +125,12 @@ struct options {
     std::string input;
     std::string output;
     OutputFormat format;
+    std::string displayExec;
     
     bool quiet;
     bool outputTime;
     bool outputStdout;
+    bool outputTemp;
     bool outputWallpaper;
     bool paramTest;
     bool deleteTemps;
@@ -138,7 +140,7 @@ struct options {
       minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
       animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
       animateFrame(0), animationCodec(ffCanvas::H264), format(PNGfile), quiet(false),
-      outputTime(false), outputStdout(false), outputWallpaper(false),
+      outputTime(false), outputStdout(false), outputTemp(false), outputWallpaper(false),
       paramTest(false), deleteTemps(false)
     { }
 };
@@ -231,6 +233,7 @@ processCommandLine(int argc, char* argv[], options& opt)
 #else
     const bool wallpaper = false;
 #endif
+    args::ValueFlag<string> display(parser, "display executable", "Display output with specified program", {"display"}, "");
     args::Flag crop(parser, "crop", "Crop output", {'c', "crop"});
     args::Flag quiet(parser, "quiet", "Quiet mode, suppress non-error output", {'q', "quiet"});
     args::Flag check(parser, "check", "Check syntax of cfdg file and exit", {'C', "check"});
@@ -297,6 +300,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         }
     }
     if (outputFileTemplate) opt.output = args::get(outputFileTemplate);
+    if (display) opt.displayExec = args::get(display);
     if (animation) {
         if (makeSVG) bailout("Animation cannot output to SVG files.");
         if (crop) bailout("Animation cannot output cropped files.");
@@ -317,6 +321,8 @@ processCommandLine(int argc, char* argv[], options& opt)
             default:
                 bailout(nullptr);
         }
+        if (display && !makeQT)
+            bailout("Only QuickTime animations can be displayed.");
         if (makeQT && !ffCanvas::Available())
             bailout("FFmpeg DLLs not found, QuickTime output is unavailable.");
         if (makeProRes && !makeQT)
@@ -378,7 +384,9 @@ processCommandLine(int argc, char* argv[], options& opt)
     }
     if (!inputFile && !cleanup)
         bailout("Missing input file.");
-    if ((!outputFile || opt.output == "-") && !outputFileTemplate && !check) {
+    if (!outputFile && !outputFileTemplate && display) 
+        opt.outputTemp = true;
+    if ((!outputFile || opt.output == "-") && !outputFileTemplate && !check && !opt.outputTemp) {
         opt.outputStdout = true;
         opt.output = "-";
         opt.quiet = true;
@@ -492,14 +500,18 @@ int main (int argc, char* argv[]) {
     bool useRGBA = myDesign->usesColor;
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign.get());
     bool use16bit = (pixfmt & aggCanvas::Has_16bit_Color) != 0;
+    bool usecustom = (pixfmt & aggCanvas::Has_Custom_Blend) != 0;
     const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
     
     *myCout << "Generating " << (use16bit ? "16bit " : "8bit ") 
         << (useRGBA ? "color" : "gray-scale")
+        << (usecustom ? ", custom blend" : "")
         << ' ' << fmtnames[opts.format]
         << ", variation " 
         << code << "..." << endl;
-    
+
+    std::string actualFileName;
+
     { // Scope for canvas & renderer
     std::unique_ptr<pngCanvas> png;
     std::unique_ptr<SVGCanvas> svg;
@@ -535,7 +547,7 @@ int main (int argc, char* argv[]) {
                                     opts.output.c_str(), opts.quiet, opts.width, opts.height,
                                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
                                     opts.format == options::BMPfile, TheRenderer.get(),
-                                    opts.widthMult, opts.heightMult);
+                                    opts.widthMult, opts.heightMult, opts.outputTemp);
             myCanvas = static_cast<Canvas*>(png.get());
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
                 TheRenderer->resetSize(png->mWidth, png->mHeight);
@@ -546,7 +558,8 @@ int main (int argc, char* argv[]) {
         }
         case options::SVGfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
-            svg = std::make_unique<SVGCanvas>(name.c_str(), opts.width, opts.height, opts.crop);
+            svg = std::make_unique<SVGCanvas>(name.c_str(), opts.width, opts.height, opts.crop, 
+                                              nullptr, -1, opts.outputTemp);
             myCanvas = static_cast<Canvas*>(svg.get());
             if (svg->mError)
                 cerr << "Failed to open SVG file." << endl;
@@ -555,7 +568,8 @@ int main (int argc, char* argv[]) {
         case options::MOVfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
-                                             opts.animationFPS, opts.animationCodec);
+                                             opts.animationFPS, opts.animationCodec, 
+                                             opts.outputTemp);
             if (mov->mErrorMsg) {
                 cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
                 exit(8);
@@ -600,9 +614,17 @@ int main (int argc, char* argv[]) {
         runTime = (toTime - startTime) / clocksPerMsec;
         *myCout << "The cfdg file took a total of " << prettyInt(runTime) << " msec to process." << endl;
     }
-    
+
         Renderer::AbortEverything = !(opts.paramTest);
+        actualFileName = myCanvas->mFileName;
     }   // delete canvas & renderer
+    
+    if (!opts.displayExec.empty()) {
+        opts.displayExec += ' ';
+        opts.displayExec += actualFileName;
+        if (std::system(opts.displayExec.c_str()) != 0)
+            cerr << "\n\nError viewing the output file.\n" << endl;
+    }
     
     if (opts.paramTest) {
         myDesign.reset();   // Delete the AST and its parameters before checking

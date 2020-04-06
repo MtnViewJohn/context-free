@@ -36,6 +36,9 @@
 #include "CmdInfo.h"
 #ifdef _WIN32
 #include <Windows.h>
+#include <cstdio>
+#else
+#include "fdostream.h"
 #endif
 
 
@@ -251,17 +254,32 @@ void SVGCanvas::indent(int change)
 }
 
 
-SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc, int length)
+SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, 
+                     const char* desc, int length, bool temp)
 :   Canvas(width, height),
     mPadding(0),
     mNextPathID(1),
     mCropped(crop),
     mOutputFile(),
+#ifdef _WIN32
     mOutput(*opath ? mOutputFile : std::cout),
+#else
+    mOutput(temp ? mOutputTempFile : (*opath ? mOutputFile : std::cout)),
+#endif
     mDescription(desc),
     mLength(length)
 {
+    if (temp) {
+#ifdef _WIN32
+#else
+        mFileName = "/tmp/cfdg_temp_image_XXXXXX.svg";
+        int fd = mkstemps(&mFileName[0], 4);
+        if (fd != -1)
+            mOutputTempFile.setfd(fd);
+#endif
+    }
     if (*opath) {
+        mFileName = opath;
 #ifdef _WIN32
         wchar_t wpath[32768];
         if (::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
@@ -270,7 +288,7 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, const 
         mOutputFile.open(opath, std::ios::binary | std::ios::trunc | std::ios::out);
 #endif
     }
-    mError = !(mOutputFile.is_open() && mOutputFile.good());
+    mError = !((temp || mOutputFile.is_open()) && mOutput.good());
     mEndline[0] = '\n';
     mEndline[1] = '\0';
     if (mLength == -1 && mDescription)

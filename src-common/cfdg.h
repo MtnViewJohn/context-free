@@ -189,6 +189,7 @@ class Canvas {
         int mHeight;
         clock_t mTime;
         bool mError;
+        std::string mFileName;
 };
 
 class Renderer;

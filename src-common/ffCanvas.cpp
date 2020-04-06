@@ -204,6 +204,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
             mLineSize = mWidth * 3;
             break;
         case aggCanvas::FF_Blend:
+        case aggCanvas::FF_Custom_Blend:
             srcFormat = AV_PIX_FMT_ARGB;
             mLineSize = mWidth * 4;
             if (_codec) {   // switch from ProRes422 to ProRes4444
@@ -355,13 +356,33 @@ mapPixFmt(aggCanvas::PixelFormat in)
     }
 }
 
-ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps, QTcodec codec)
+ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, 
+                   int fps, QTcodec codec, bool temp)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
+            std::cerr << "format: " << fmt << std::endl;
     if (width & 7 || height & 7) {
         mErrorMsg = "Dimensions must be multiples of 8 pixels";
         mError = true;
         return;
+    }
+
+    if (temp) {
+#ifdef _WIN32
+        char buf[L_tmpnam_s];
+        if (tmpnam_s(buf) == 0)
+            mFileName = buf;
+#else
+        char buf[L_tmpnam];
+        char* tempname = tmpnam(buf);
+        if (tempname)
+            mFileName = tempname;
+#endif
+        if (!mFileName.empty())
+            mFileName += ".mov";
+        name = mFileName.c_str();
+    } else {
+        mFileName = name;
     }
     
     int stride = width * aggCanvas::BytesPerPixel.at(mapPixFmt(fmt));

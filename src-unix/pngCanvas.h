@@ -35,18 +35,14 @@ class pngCanvas : public abstractPngCanvas
 public:
     pngCanvas(const char* outfilename, bool quiet, int width, int height, 
               PixelFormat pixfmt, bool crop, int frameCount, int variation,
-              bool wallpaper, Renderer *r, int mx, int my)
+              bool wallpaper, Renderer *r, int mx, int my, bool tmp)
     : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop,
                         frameCount, variation, wallpaper, r, mx, my),
-      usetmpfile(false)
-    {
-    	std::strcpy(tmpfilename, "/tmp/cfdg_temp_image_XXXXXX.png");
-    }
+      usetmpfile(tmp)
+    { }
 protected:
     void output(const char * outfilename, int frame = -1) override;
 private:
-	char tmpfilename[256];
 	bool usetmpfile;
-	std::string execfile;
 };
 

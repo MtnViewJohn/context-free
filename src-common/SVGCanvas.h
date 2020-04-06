@@ -31,6 +31,9 @@
 #include "cfdg.h"
 #include "ast.h"
 #include <map>
+#ifndef _WIN32
+#include "fdostream.h"
+#endif
 
 class SVGCanvas : public Canvas {
 public:
@@ -43,7 +46,8 @@ public:
     void primitive(int shape, RGBA8 c, agg::trans_affine tr, agg::comp_op_e blend) override;
     void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
 
-    SVGCanvas(const char* opath, int width, int height, bool crop, const char* desc = nullptr, int length = -1);
+    SVGCanvas(const char* opath, int width, int height, bool crop, 
+              const char* desc = nullptr, int length = -1, bool temp = false);
     ~SVGCanvas() override = default;
 
 private:
@@ -56,6 +60,9 @@ private:
     agg::trans_affine mOffset;
     bool mCropped;
     std::ofstream mOutputFile;
+#ifndef _WIN32
+    boost::fdostream mOutputTempFile;
+#endif
     std::ostream& mOutput;
     const char* mDescription;
     int mLength;

@@ -31,7 +31,8 @@
 class ffCanvas : public aggCanvas {
 public:
     enum QTcodec { H264 = 0, ProRes = 1};
-    ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps, QTcodec codec);
+    ffCanvas(const char* name, PixelFormat fmt, int width, int height, int fps, 
+    		 QTcodec codec, bool temp);
     ~ffCanvas() override;
     ffCanvas& operator=(const ffCanvas& c) = delete;
     

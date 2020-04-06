@@ -92,6 +92,7 @@ endif
 #
 
 COMMON_SRCS += ffCanvasDummy.cpp
+
 SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
 
 #
