@@ -34,6 +34,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include "prettyint.h"
+#include <unistd.h>
 
 using std::cerr;
 using std::endl;
