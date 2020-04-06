@@ -233,7 +233,7 @@ class CFDG {
     protected:
         CFDG()
         : usesColor(false), usesAlpha(false), uses16bitColor(false), 
-          usesTime(false), usesFrameTime(false)
+          usesBlendMode(false), usesTime(false), usesFrameTime(false)
         { }
 };
 
