@@ -1,0 +1,36 @@
+From maintainer, John Horigan <john@glyphic.com>
+Context Free has an optional ability to generate QuickTime
+files using FFmpeg. This is disabled by default. This patch enables
+FFmpeg in Context Free.
+
+--- a/Makefile
++++ b/Makefile
+@@ -84,14 +84,14 @@
+ # Uncomment these lines to enable FFmpeg support
+ #
+ 
+-# COMMON_SRCS += ffCanvas.cpp
+-# LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
++COMMON_SRCS += ffCanvas.cpp
++LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
+ 
+ #
+ # Comment out this line to enable FFmpeg support
+ #
+ 
+-COMMON_SRCS += ffCanvasDummy.cpp
++# COMMON_SRCS += ffCanvasDummy.cpp
+ 
+ SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
+ 
+--- a/src-common/ffCanvas.cpp
++++ b/src-common/ffCanvas.cpp
+@@ -188,7 +188,7 @@
+     codecCtx->time_base.num = 1;
+     codecCtx->time_base.den = fps;
+     codecCtx->gop_size = 10; /* emit one intra frame every ten frames */
+-    codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
++    codecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+     codecCtx->profile = _codec ? 2 : FF_PROFILE_H264_MAIN;  // ProRes422 main profile is 2
+     
+     AVPixelFormat srcFormat;

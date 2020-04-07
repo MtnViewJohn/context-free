@@ -3,21 +3,25 @@ Section: graphics
 Priority: optional
 Maintainer: John Horigan <john@glyphic.com>
 Uploaders: Paul van Tilburg <paulvt@debian.org>
-Build-Depends: debhelper (>= 12),
+Build-Depends: debhelper-compat (= 12),
                flex (>= 2.6),
 	       bison (>=2:3),
 	       libpng-dev,
-	       libagg2-dev (>= 1:2.6),
+	       libagg2-dev (>= 1:2.6.1),
 	       libfl-dev (>= 2.6),
-	       libicu-dev (>= 57.1)
-Standards-Version: 4.4.0.1
+	       libicu-dev (>= 57.1),
+	       libavformat-dev (>= 7:4.0),
+	       libswscale-dev (>= 7:4.0),
+	       libx264-dev (>= 2:0.155),
+Standards-Version: 4.5.0
 Homepage: https://www.contextfreeart.org/index.html
 Vcs-Browser: https://github.com/MtnViewJohn/context-free
 Vcs-git: https://github.com/MtnViewJohn/context-free.git
+Rules-Requires-Root: binary-targets
 
 Package: contextfree
 Architecture: any
-Depends: libagg2 (>= 1:2.6), ${shlibs:Depends}, ${misc:Depends}
+Depends: libagg2 (>= 1:2.6.1), ${shlibs:Depends}, ${misc:Depends}
 Description: image generator based on context-free grammars
  Context Free is a program that produces images based on context-free grammars.
  These grammars are sets of non-deterministic rules that determine what an

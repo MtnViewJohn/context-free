@@ -1,3 +1,13 @@
+contextfree (3.3+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Adds missing includes (Closes: #951939)
+  * Uploaded package is source-only (Closes: #950882) (Closes: #953694)
+  * Updated Standards-Version to 4.5.0 (no changes)
+  * Enable optional QuickTime/FFmpeg support.
+
+ -- John Horigan <john@glyphic.com>  Thu, 12 Mar 2020 12:44:17 -0700
+
 contextfree (3.2+dfsg1-1) unstable; urgency=medium
 
   * New upstream release.
