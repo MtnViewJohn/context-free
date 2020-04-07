@@ -1,5 +1,5 @@
 *** Context Free
-*** version 3.1
+*** version 3.3
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
@@ -67,9 +67,9 @@ The Xcode project file is in the top directory:
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS GUI BUILD NOTES
 
-Requires Visual Studio 2017 or later.
+Requires Visual Studio 2019 or later.
 
-The VS2017 solution file is at ./src-net/ContextFreeNetVS11.sln
+The VS2019 solution file is at ./src-net/ContextFreeNetVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin or a similar Posix environment 
@@ -79,9 +79,9 @@ src-win/derived and type 'make' (you will need bison and flex too).
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS CLI (command line) BUILD NOTES
 
-Requires Visual Studio 2017 or later.
+Requires Visual Studio 2019 or later.
 
-The VS2017 CLI solution file is at ./ContextFreeCLIVS11.sln
+The VS2019 CLI solution file is at ./ContextFreeCLIVS11.sln
 
 If you modify cfdg.l or cfdg.ypp then you must rebuild the parser files 
 in src-win/derived. If you have Cygwin or a similar Posix environment 
@@ -91,7 +91,7 @@ src-win/derived and type 'make' (you will need bison and flex too).
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
 
-You'll need a c++ compiler (gcc 6 or clang 3.9), flex (not lex), bison 2.5 and 
+You'll need a c++ compiler (gcc 7 or clang 4), flex (not lex), bison 2.5 and 
 the libpng Library. Most of this should be installed or easily available on any 
 modern operating system distribution.  If you need it, libpng can be found here:
     http://libpng.org/pub/png/libpng.html    
