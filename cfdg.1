@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH CONTEXTFREE 1 "2019-07-24" "3.2" "Context Free"
+.TH CONTEXTFREE 1 "2020-04-04" "3.3" "Context Free"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -19,7 +19,7 @@
 cfdg \- image generator based on context-free grammars
 .SH SYNOPSIS
 .B cfdg
-.RI [ options "] " input.cfdg " [" output.png/svg ]
+.RI [ options "] " input.cfdg " [" output.png/svg/mov ]
 .SH DESCRIPTION
 Context Free is a system that produces images based on context-free
 grammars.
@@ -27,14 +27,22 @@ grammars.
 is the command-line program to generate the actual images (in PNG or SVG
 format) from the
 .I input.cfdg
-file containing these grammars.  If
+file containing these grammars.  Cfdg files can also be animated. The output can
+either be PNG files of individual frames or as a QuickTime .mov file. If
 .I -
 is specified instead of an input file, the grammar is read from standard input.
 The output filename can be left out if the
-.B -o
-option is used.  Note that the output mode (PNG or SVG) is not detected
+.B -o/--outputtemplate
+option or
+.B -C/--check
+option is used.  If the 
+.B --display
+option is specified and there is no output file then the output is saved in a
+temporary file. Note that the output mode (PNG, SVG, or MOV) is not detected
 depending on the specified extension, but must be explicitly set using the
 .B -V/--svg
+or 
+.B -Q/--quicktime
 option.
 .SH OPTIONS
 All command-line options consist of a single letter, and an optional argument. Longer
@@ -98,19 +106,19 @@ is replaced by a literal %.
 .BI \-a\  NUM ,\ \-\-animate= NUM
 Generate
 .I NUM
-animation frames at 15 fps (only possible using PNG output).
+animation frames at 15 fps.
 .TP
 .BI \-a\  TIME x FPS ,\ \-\-animate= TIME x FPS
 Generate
 .I TIME
 x
 .I FPS
-animation frames at the specified fps (only possible using PNG output).
+animation frames at the specified fps.
 .TP
 .BI \-f\  FRAME ,\ \-\-frame= FRAME
 Generate animation 
 .I FRAME
-only (only possible using PNG output).
+only.
 .TP
 .B \-z, \-\-zoom
 Zoom out during animation, when producing an animation using
@@ -120,11 +128,15 @@ Zoom out during animation, when producing an animation using
 Generate SVG (vector) output.
 .TP
 .B \-Q, \-\-quicktime
-Generate Quicktime movie output (not available in this Debian package).
+Generate Quicktime movie output.
 .
 .TP
 .B \-\-prores
-Generate Quicktime movie output using the ProRes codec instead of the H.264 codec (not available in this Debian package).
+Generate Quicktime movie output using the ProRes codec instead of the H.264 codec.
+.
+.TP
+.BI \-\-display= DISPLAY\ EXECUTABLE
+Display output with specified program.
 .
 .TP
 .B \-c, \-\-crop
@@ -140,7 +152,7 @@ Check the syntax of the cfdg file, then exit.
 Time output; output the time taken to render the cfdg file.
 .TP
 .B \-d, \-\-cleanup
-Delete old temporary file.
+Delete old temporary files.
 .TP
 .B \-P, \-\-paramdebug
 Enable debug mode to test if all parameter blocks are deallocated.
@@ -149,7 +161,7 @@ Enable debug mode to test if all parameter blocks are deallocated.
 Show summary of options.
 .SH SEE ALSO
 More information can be found on the Context Free website, at
-http://contextfreeart.org/.
+https://www.contextfreeart.org/index.html
 .SH AUTHOR
 Context Free was written by Chris Coyne, John Horigan and Mark Lentczner.
 .PP
