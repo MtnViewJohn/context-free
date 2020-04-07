@@ -18,7 +18,7 @@ SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
 vpath %.cfdg input
 
-INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras $(FFMPEG_DIR)/include
+INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras
 INC_DIRS += /usr/local/include
 
 #
@@ -34,7 +34,7 @@ MAN_DIR = $(DESTDIR)$(prefix)/share/man
 # Library directories for FFmpeg and libpng
 #
 
-LIB_DIRS = $(FFMPEG_DIR)/lib /usr/local/lib
+LIB_DIRS = /usr/local/lib
 
 #
 # Sources and Objects

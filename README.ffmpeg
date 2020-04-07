@@ -1,9 +1,9 @@
 *** Context Free
-*** version 3.0
+*** version 3.3
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
-    Context Free Copyright 2012 John Horigan
+    Context Free Copyright 2020 John Horigan
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 DISTRIBUTION & LICENSE
@@ -26,19 +26,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-The Windows and Linux builds of Context Free/cfdg use FFmpeg 3.3.1 to generate 
-Quicktime animation output. Earlier or later versions of ffmpeg may not work
+The Windows and Linux builds of Context Free/cfdg use FFmpeg 4.0+ to generate 
+Quicktime animation output. Earlier versions of ffmpeg may not work
 as the FFmpeg API is a moving target. Libav does not work, only FFmpeg.
 
 The source distribution does not contain FFmpeg libraries. The Windows build
 dynamically detects the presence of FFmpeg DLLs and enables QuickTime support
 if they are found. An installer for the DLLs and ffplay.exe is at
-https://www.contextfreeart.org/download/CF_FFmpegInstall3.3.1.exe
+https://www.contextfreeart.org/download/CF_FFmpegInstall4.2.2.exe
 
 Linux variants:
-1) FFmpeg is required, not the libav replacement the Debian has switched to.
-   Ubuntu is not up to FFmpeg 3.3.1 yet, but the 3.0.7+ versions in Ubuntu
-   16.10 and later should work. You may need to build and install FFmpeg.
+1) FFmpeg 4.0+ is required, not libav. The most straight-forward way to get
+   FFmpeg on GNU/Linux is to install the packages: libavformat-dev (>= 7:4.0),
+   libswscale-dev (>= 7:4.0), and libx264-dev (>= 2:0.155). These are 
+   available on Debian 9.4 and Ubuntu 19.04.
 
 2) FFmpeg must have libx264 and prores_ks support. If you are building
    FFmpeg then you will need libx264-dev. When building FFmpeg you must
