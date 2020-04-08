@@ -671,6 +671,7 @@ System::Void Document::menuRAnimate_Click(System::Object^ sender, System::EventA
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
+    mReuseVariation = true;
     if (renderThread->IsBusy) {
         postAction = PostRenderAction::Animate;
         return;
@@ -699,6 +700,7 @@ System::Void Document::menuRAnimateFrame_Click(System::Object^ sender, System::E
     if (oldAction != mRenderButtonAction)
         updateRenderButton();
 
+    mReuseVariation = true;
     if (renderThread->IsBusy) {
         postAction = PostRenderAction::AnimateFrame;
         return;
