@@ -1094,6 +1094,7 @@ System::Void Document::RenderButton_Click(System::Object^ sender, System::EventA
 
 System::Void Document::actionToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
+    mReuseVariation = true;
     ToolStripMenuItem^ menu = cli::safe_cast<ToolStripMenuItem^>(sender);
     String^ tag = menu->Tag->ToString();
     int tagnum = Int32::Parse(tag);
