@@ -138,7 +138,7 @@ void Document::DestroyStuff()
     delete mAnimationCanvas;
     delete renderParams;
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
@@ -426,7 +426,7 @@ System::Void Document::FormIsClosing(Object^ sender, FormClosingEventArgs^ e)
     }
 
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
@@ -748,16 +748,12 @@ System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::Eve
     }
 
     if (mMovieFile) {
-        if (!mMovieFile->written()) {
-            setMessageText("Movie file already saved.");
-            System::Console::Beep();
-            return;
-        }
-
         SaveFileDialog^ saveMovieDlg = gcnew SaveFileDialog();
         saveMovieDlg->Filter = "MOV files (*.mov)|*.mov|All files (*.*)|*.*";
+        saveMovieDlg->FileName = Path::GetFileNameWithoutExtension(Text) + ".mov";
+        saveMovieDlg->InitialDirectory = ((Form1^)MdiParent)->saveDirectory;
+        saveMovieDlg->OverwritePrompt = true;
         if (saveMovieDlg->ShowDialog() == ::DialogResult::OK) {
-            String^ oldPath = gcnew String(mMovieFile->name().c_str());
             if (File::Exists(saveMovieDlg->FileName)) {
                 try {
                     File::Delete(saveMovieDlg->FileName);
@@ -768,8 +764,8 @@ System::Void Document::menuRSaveOutput_Click(System::Object^ sender, System::Eve
                 }
             }
             try {
-                File::Move(oldPath, saveMovieDlg->FileName);
-                mMovieFile->release();
+                File::Move(mMovieFile, saveMovieDlg->FileName);
+                mMovieFile = nullptr;
                 setMessageText("Movie saved.");
             } catch (Exception^) {
                 setMessageText("Movie save failed.");
@@ -1581,7 +1577,7 @@ void Document::DoRender()
     setMessageText(nullptr);
 
     if (mMovieFile || mMoviePlayer) {
-        TempFileDeleter^ killit = gcnew TempFileDeleter(tempfile_ptr(mMovieFile), mMoviePlayer);
+        TempFileDeleter^ killit = gcnew TempFileDeleter(mMovieFile, mMoviePlayer);
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
@@ -1647,19 +1643,9 @@ void Document::DoRender()
     if (renderParams->action == RenderParameters::RenderActions::Animate &&
         !renderParams->animateFrame)
     {
-        mMovieFile = new TempFile(mSystem, AbstractSystem::MovieTemp, 0);
-        auto stream = mMovieFile->forWrite();
-        stream.reset();
-
-        String^ tname = gcnew String(mMovieFile->name().c_str());
-        array<Byte>^ bytes = System::Text::Encoding::UTF8->GetBytes(tname);
-        std::string str;
-        str.resize(bytes->Length);
-        Marshal::Copy(bytes, 0, IntPtr(&str[0]), bytes->Length);
-
-        mAnimationCanvas = new ffCanvas(str.c_str(), WinCanvas::SuggestPixelFormat(mEngine->get()),
+        mAnimationCanvas = new ffCanvas("", WinCanvas::SuggestPixelFormat(mEngine->get()),
             renderParams->animateWidth, renderParams->animateHeight,
-            renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec);
+            renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec, true);
 
         if (mAnimationCanvas->mError) {
             String^ message = gcnew String(mAnimationCanvas->mErrorMsg);
@@ -1669,6 +1655,8 @@ void Document::DoRender()
             delete mAnimationCanvas;
             mAnimationCanvas = nullptr;
             return;
+        } else {
+            mMovieFile = gcnew String(mAnimationCanvas->mFileName.c_str());
         }
     }
 
@@ -1798,11 +1786,10 @@ void Document::RenderCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e)
             mMoviePlayer->StartInfo->UseShellExecute = false;
             mMoviePlayer->StartInfo->FileName = "ffplay.exe";
             mMoviePlayer->StartInfo->CreateNoWindow = true;
-            String^ file = gcnew String(mMovieFile->name().c_str());
             if (renderParams->loop) {
-                mMoviePlayer->StartInfo->Arguments = file->Insert(0, "-loop 0 ");
+                mMoviePlayer->StartInfo->Arguments = mMovieFile->Insert(0, "-loop 0 ");
             } else {
-                mMoviePlayer->StartInfo->Arguments = file;
+                mMoviePlayer->StartInfo->Arguments = mMovieFile;
             }
             mMoviePlayer->Start();
             mMoviePlayer->EnableRaisingEvents = true;

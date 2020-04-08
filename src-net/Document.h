@@ -1814,7 +1814,7 @@ protected:
     WinCanvas* mTempCanvas;
     SVGCanvas* mSVGCanvas;
     ffCanvas* mAnimationCanvas;
-    TempFile* mMovieFile;
+    System::String^ mMovieFile;
     System::Diagnostics::Process^ mMoviePlayer;
     bool mTiled;
     array<double>^ mOutputMultiplier;
