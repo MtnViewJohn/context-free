@@ -52,12 +52,25 @@ int pngCanvas::CanvasCount = 0;
 
 pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
                      PixelFormat pixfmt, bool crop, int frameCount,
-                     int variation, bool wallpaper, Renderer *r, int mx, int my)
+                     int variation, bool wallpaper, Renderer *r, int mx, int my,
+                     bool temp)
     : abstractPngCanvas(outfilename, quiet, 
                         wallpaper ? ::GetSystemMetrics(SM_CXFULLSCREEN) : width, 
                         wallpaper ? ::GetSystemMetrics(SM_CYFULLSCREEN) : height, 
                         pixfmt, crop, frameCount, variation, wallpaper, r, mx, my)
 {
+    if (temp) {
+        char buf[L_tmpnam_s];
+        if (tmpnam_s(buf) == 0)
+            mFileName = buf;
+
+        if (!mFileName.empty())
+            mFileName += ".mov";
+        outfilename = mFileName.c_str();
+    } else {
+        mFileName = outfilename;
+    }
+
     if (CanvasCount++ == 0)
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
 }
