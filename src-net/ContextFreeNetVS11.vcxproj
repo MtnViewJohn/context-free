@@ -317,7 +317,6 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\input;C:\Documents and Settings\Owner\My Documents\Projects\CFNet\src-win\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -412,7 +411,6 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions) /Ob3</AdditionalOptions>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
@@ -499,6 +497,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\CFscintilla.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -527,6 +527,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\ffCanvas.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -581,6 +583,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-win\Win32System.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">false</CompileAsManaged>
@@ -828,6 +832,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\astreplacement.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -854,6 +860,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\bounds.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -880,6 +888,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\builder.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -906,6 +916,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\cfdg.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -932,6 +944,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-win\derived\cfdg.tab.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -958,6 +972,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\cfdgimpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -984,6 +1000,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="ColorCalculator.cpp" />
     <ClCompile Include="ContextFreeNet.cpp" />
@@ -1049,6 +1067,8 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">4290;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4290;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">4290;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="GalleryUploader.cpp" />
     <ClCompile Include="MessageCtrl.cpp" />
@@ -1078,6 +1098,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="PreferenceManager.cpp" />
     <ClCompile Include="..\src-common\primShape.cpp">
@@ -1157,6 +1179,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="RenderSizeDialog.cpp" />
     <ClCompile Include="SaveImage.cpp" />
@@ -1185,6 +1209,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\shapeSTL.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -1211,6 +1237,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -1247,6 +1275,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="..\src-common\tempfile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -1299,6 +1329,8 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">false</CompileAsManaged>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</EnableParallelCodeGeneration>
     </ClCompile>
     <ClCompile Include="TempFileDeleter.cpp" />
     <ClCompile Include="TrackPoint.cpp">
