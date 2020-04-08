@@ -41,10 +41,10 @@ bool ffCanvas::Available()
 }
 void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl);
 void my_av_log_set_callback(void(*callback)(void*, int, const char*, va_list));
-void my_avcodec_register_all(void);
-void my_av_register_all(void);
 int my_avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat,
     const char *format_name, const char *filename);
+AVCodecContext* my_avcodec_alloc_context3(const AVCodec* codec);
+void my_avcodec_free_context(AVCodecContext** avctx);
 AVCodec *my_avcodec_find_encoder_by_name(const char*);
 AVStream *my_avformat_new_stream(AVFormatContext *s, const AVCodec *c);
 AVPacket *my_av_packet_alloc(void);
@@ -74,6 +74,7 @@ int my_sws_scale(struct SwsContext *c, const uint8_t *const srcSlice[],
     const int srcStride[], int srcSliceY, int srcSliceH,
     uint8_t *const dst[], const int dstStride[]);
 int my_av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+int my_avcodec_parameters_from_context(AVCodecParameters* par, const AVCodecContext* codec);
 #else
 void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl)
 { av_log_default_callback(ptr, level, fmt, vl); }

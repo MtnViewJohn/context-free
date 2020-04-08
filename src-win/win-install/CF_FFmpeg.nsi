@@ -20,8 +20,8 @@
 ; John Horigan, 1209 Villa St., Mountain View, CA 94041-1123, USA
 ;
 
-!define VER_MAJOR 3
-!define VER_MINOR 24
+!define VER_MAJOR 4
+!define VER_MINOR 22
 
 SetCompressor bzip2
 RequestExecutionLevel user
@@ -85,25 +85,25 @@ SectionIn RO
   File 'COPYING.GPLv2.txt'
 
   ${If} ${RunningX64}
-    File "..\\..\\src-net\\Release64\\avcodec-57.dll" 
-    File "..\\..\\src-net\\Release64\\avdevice-57.dll" 
-    File "..\\..\\src-net\\Release64\\avfilter-6.dll" 
-    File "..\\..\\src-net\\Release64\\avformat-57.dll"
-    File "..\\..\\src-net\\Release64\\avutil-55.dll"
+    File "..\\..\\src-net\\Release64\\avcodec-58.dll" 
+    File "..\\..\\src-net\\Release64\\avdevice-58.dll" 
+    File "..\\..\\src-net\\Release64\\avfilter-7.dll" 
+    File "..\\..\\src-net\\Release64\\avformat-58.dll"
+    File "..\\..\\src-net\\Release64\\avutil-56.dll"
     File "..\\..\\src-net\\Release64\\ffplay.exe" 
-    File "..\\..\\src-net\\Release64\\postproc-54.dll" 
-    File "..\\..\\src-net\\Release64\\swresample-2.dll" 
-    File "..\\..\\src-net\\Release64\\swscale-4.dll" 
+    File "..\\..\\src-net\\Release64\\postproc-55.dll" 
+    File "..\\..\\src-net\\Release64\\swresample-3.dll" 
+    File "..\\..\\src-net\\Release64\\swscale-5.dll" 
   ${Else}
-    File "..\\..\\src-net\\Release\\avcodec-57.dll" 
-    File "..\\..\\src-net\\Release\\avdevice-57.dll" 
-    File "..\\..\\src-net\\Release\\avfilter-6.dll" 
-    File "..\\..\\src-net\\Release\\avformat-57.dll"
-    File "..\\..\\src-net\\Release\\avutil-55.dll"
+    File "..\\..\\src-net\\Release\\avcodec-58.dll" 
+    File "..\\..\\src-net\\Release\\avdevice-58.dll" 
+    File "..\\..\\src-net\\Release\\avfilter-7.dll" 
+    File "..\\..\\src-net\\Release\\avformat-58.dll"
+    File "..\\..\\src-net\\Release\\avutil-56.dll"
     File "..\\..\\src-net\\Release\\ffplay.exe" 
-    File "..\\..\\src-net\\Release\\postproc-54.dll" 
-    File "..\\..\\src-net\\Release\\swresample-2.dll" 
-    File "..\\..\\src-net\\Release\\swscale-4.dll" 
+    File "..\\..\\src-net\\Release\\postproc-55.dll" 
+    File "..\\..\\src-net\\Release\\swresample-3.dll" 
+    File "..\\..\\src-net\\Release\\swscale-5.dll" 
   ${EndIf}
 
 SectionEnd

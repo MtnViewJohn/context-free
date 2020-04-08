@@ -72,21 +72,21 @@ bool av_load_dlls(void)
 
     if (firstTime) {
         firstTime = false;
-        avcodecMod = LoadLibraryW(L"avcodec-57.dll");
-        avformatMod = LoadLibraryW(L"avformat-57.dll");
-        avutilMod = LoadLibraryW(L"avutil-55.dll");
-        swresampleMod = LoadLibraryW(L"swresample-2.dll");
-        swscaleMod = LoadLibraryW(L"swscale-4.dll");
+        avcodecMod = LoadLibraryW(L"avcodec-58.dll");
+        avformatMod = LoadLibraryW(L"avformat-58.dll");
+        avutilMod = LoadLibraryW(L"avutil-56.dll");
+        swresampleMod = LoadLibraryW(L"swresample-3.dll");
+        swscaleMod = LoadLibraryW(L"swscale-5.dll");
     }
 
     return avcodecMod && avformatMod && avutilMod && swresampleMod && swscaleMod;
 }
 
 using av_log_set_callback_ptr = void (__cdecl *)(void(*callback)(void*, int, const char*, va_list));
-using avcodec_register_all_ptr = void (__cdecl *)(void);
-using av_register_all_ptr = void (__cdecl *)(void);
 using avformat_alloc_output_context2_ptr = int (__cdecl *)(AVFormatContext **ctx, AVOutputFormat *oformat,
     const char *format_name, const char *filename);
+using avcodec_alloc_context3_ptr = AVCodecContext * (__cdecl *)(const AVCodec* codec);
+using avcodec_free_context_ptr = void (__cdecl *)(AVCodecContext** avctx);
 using avcodec_find_encoder_by_name_ptr = AVCodec* (__cdecl *)(const char* name);
 using avformat_new_stream_ptr = AVStream* (__cdecl *)(AVFormatContext *s, const AVCodec *c);
 using av_packet_alloc_ptr = AVPacket* (__cdecl *)(void);
@@ -115,6 +115,7 @@ using sws_scale_ptr = int (__cdecl *)(struct SwsContext *c, const uint8_t *const
     const int srcStride[], int srcSliceY, int srcSliceH,
     uint8_t *const dst[], const int dstStride[]);
 using av_dict_set_ptr = int (__cdecl *)(AVDictionary **pm, const char *key, const char *value, int flags);
+using avcodec_parameters_from_context_ptr = int(__cdecl *)(AVCodecParameters* par, const AVCodecContext* codec);
 
 
 void my_av_log_set_callback(void(*callback)(void*, int, const char*, va_list))
@@ -128,26 +129,6 @@ void my_av_log_set_callback(void(*callback)(void*, int, const char*, va_list))
         (av_log_set_callback)(callback);
 }
 
-void my_avcodec_register_all(void)
-{
-    static avcodec_register_all_ptr avcodec_register_all = nullptr;
-
-    if (avcodecMod && !avcodec_register_all)
-        avcodec_register_all = (avcodec_register_all_ptr)GetProcAddress(avcodecMod, "avcodec_register_all");
-
-    if (avcodec_register_all) (avcodec_register_all)();
-}
-
-void my_av_register_all(void)
-{
-    static av_register_all_ptr av_register_all = nullptr;
-
-    if (avformatMod && !av_register_all)
-        av_register_all = (av_register_all_ptr)GetProcAddress(avformatMod, "av_register_all");
-
-    if (av_register_all) (av_register_all)();
-}
-
 int my_avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat,
     const char *format_name, const char *filename)
 {
@@ -157,6 +138,27 @@ int my_avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *ofo
         avformat_alloc_output_context2 = (avformat_alloc_output_context2_ptr)GetProcAddress(avformatMod, "avformat_alloc_output_context2");
 
     return avformat_alloc_output_context2 ? (avformat_alloc_output_context2)(ctx, oformat, format_name, filename) : -EACCES;
+}
+
+AVCodecContext* my_avcodec_alloc_context3(const AVCodec* codec)
+{
+    static avcodec_alloc_context3_ptr avcodec_alloc_context3 = nullptr;
+
+    if (avcodecMod && !avcodec_alloc_context3)
+        avcodec_alloc_context3 = (avcodec_alloc_context3_ptr)GetProcAddress(avcodecMod, "avcodec_alloc_context3");
+
+    return avcodec_alloc_context3 ? (avcodec_alloc_context3)(codec) : nullptr;
+}
+
+void my_avcodec_free_context(AVCodecContext** avctx)
+{
+    static avcodec_free_context_ptr avcodec_free_context = nullptr;
+
+    if (avcodecMod && !avcodec_free_context)
+        avcodec_free_context = (avcodec_free_context_ptr)GetProcAddress(avcodecMod, "avcodec_free_context");
+
+    if (avcodec_free_context)
+        (avcodec_free_context)(avctx);
 }
 
 AVCodec* my_avcodec_find_encoder_by_name(const char* name)
@@ -401,3 +403,14 @@ int my_av_dict_set(AVDictionary **pm, const char *key, const char *value, int fl
 
     return av_dict_set ? (av_dict_set)(pm, key, value, flags) : -EACCES;
 }
+
+int my_avcodec_parameters_from_context(AVCodecParameters* par, const AVCodecContext* codec)
+{
+    static avcodec_parameters_from_context_ptr avcodec_parameters_from_context = nullptr;
+
+    if (avcodecMod && !avcodec_parameters_from_context)
+        avcodec_parameters_from_context = (avcodec_parameters_from_context_ptr)GetProcAddress(avcodecMod, "avcodec_parameters_from_context");
+
+    return avcodec_parameters_from_context ? (avcodec_parameters_from_context)(par, codec) : -EACCES;
+}
+
