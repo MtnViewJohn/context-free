@@ -21,9 +21,9 @@
 ;
 
 !define VER_MAJOR 3
-!define VER_MINOR 2
+!define VER_MINOR 3
 
-SetCompressor bzip2
+;SetCompressor bzip2
 RequestExecutionLevel user
 
 !define PRODUCT "ContextFree"
@@ -105,11 +105,11 @@ SectionIn RO
     File "..\\..\\src-net\\Release64\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.dll" 
     File "..\\..\\src-net\\Release64\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x64\\Microsoft.VC142.CRT\\vcruntime140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x64\\Microsoft.VC142.CRT\\concrt140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x64\\Microsoft.VC142.CRT\\msvcp140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x64\\Microsoft.VC142.CRT\\msvcp140_1.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x64\\Microsoft.VC142.CRT\\msvcp140_2.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x64\\Microsoft.VC142.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x64\\Microsoft.VC142.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x64\\Microsoft.VC142.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x64\\Microsoft.VC142.CRT\\msvcp140_1.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x64\\Microsoft.VC142.CRT\\msvcp140_2.dll"
     File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x64\\*.dll"
   ${Else}
     File "..\\..\\src-net\\release\\ContextFree.exe" 
@@ -118,11 +118,11 @@ SectionIn RO
     File "..\\..\\src-net\\Release\\FileDlgExtenders.dll" 
     File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.dll" 
     File "..\\..\\src-net\\Release\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x86\\Microsoft.VC142.CRT\\vcruntime140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x86\\Microsoft.VC142.CRT\\concrt140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x86\\Microsoft.VC142.CRT\\msvcp140.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x86\\Microsoft.VC142.CRT\\msvcp140_1.dll"
-    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.22.27821\\x86\\Microsoft.VC142.CRT\\msvcp140_2.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x86\\Microsoft.VC142.CRT\\vcruntime140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x86\\Microsoft.VC142.CRT\\concrt140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x86\\Microsoft.VC142.CRT\\msvcp140.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x86\\Microsoft.VC142.CRT\\msvcp140_1.dll"
+    File "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist\\MSVC\\14.24.28127\\x86\\Microsoft.VC142.CRT\\msvcp140_2.dll"
     File "C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x86\\*.dll"
   ${EndIf}
   File "..\\..\\src-net\\packages\\jacobslusser.ScintillaNET.3.6.3\\lib\\net40\\ScintillaNET.dll"
