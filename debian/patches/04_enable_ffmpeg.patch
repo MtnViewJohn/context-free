@@ -23,14 +23,3 @@ FFmpeg in Context Free.
  
  SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
  
---- a/src-common/ffCanvas.cpp
-+++ b/src-common/ffCanvas.cpp
-@@ -188,7 +188,7 @@
-     codecCtx->time_base.num = 1;
-     codecCtx->time_base.den = fps;
-     codecCtx->gop_size = 10; /* emit one intra frame every ten frames */
--    codecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
-+    codecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-     codecCtx->profile = _codec ? 2 : FF_PROFILE_H264_MAIN;  // ProRes422 main profile is 2
-     
-     AVPixelFormat srcFormat;
