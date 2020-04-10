@@ -36,7 +36,7 @@ std::vector<const char*> CFscintilla::AutoComplete = {
         "CF::ColorDepth", "CF::Continuous", "CF::Cyclic", "CF::Dihedral", "CF::EvenOdd", "CF::Frame",
         "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::MaxNatural", "CF::MaxShapes",
         "CF::MinimumSize", "CF::MiterJoin",
-        "CF::Normal", "CF::Clear", "CF::Xor" "CF::Plus", "CF::Multiply", "CF::Screen", "CF::Overlay",
+        "CF::Normal", "CF::Clear", "CF::Xor", "CF::Plus", "CF::Multiply", "CF::Screen", "CF::Overlay",
         "CF::Darken", "CF::Lighten", "CF::ColorDodge", "CF::ColorBurn", "CF::HardLight", "CF::SoftLight",
         "CF::Difference", "CF::Exclusion",
         "CF::p11g", "CF::p11m", "CF::p1m1", "CF::p2", "CF::p2mg", "CF::p2mm", "CF::p3", "CF::p3m1", "CF::p31m",
