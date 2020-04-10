@@ -284,7 +284,7 @@
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
                                                     <segment label="Render" width="68"/>
-                                                    <segment label="▼" width="22" tag="1"/>
+                                                    <segment label="▽" width="22" tag="1"/>
                                                 </segments>
                                             </segmentedCell>
                                             <connections>
