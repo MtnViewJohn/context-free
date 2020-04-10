@@ -48,7 +48,9 @@
 #if defined(__GNU__) || (defined(__ILP32__) && defined(__x86_64__))
   #define NOSYSCTL
 #else
-  #include <sys/sysctl.h>
+  #ifndef __linux__
+    #include <sys/sysctl.h>
+  #endif
 #endif
 #include <sys/types.h>
 #include <unistd.h>
