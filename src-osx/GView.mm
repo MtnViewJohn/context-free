@@ -914,9 +914,8 @@ namespace {
         [self finishRender: sender];
     } else {
         float frame = 0.0;
-        NSResponder* first = [[sender window] firstResponder];
-        if ([first isKindOfClass: [NSTextView class]])
-            [[sender window] makeFirstResponder: sender];   // end editing of all NSTextFields
+        // end editing of all NSTextFields
+        [[sender window] makeFirstResponder: [mEditor content]];
         switch (mCurrentAction) {
             case RenderAction:
                 [self startRender: sender];
