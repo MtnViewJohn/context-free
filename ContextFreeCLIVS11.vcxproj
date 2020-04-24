@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\VisualCppTools.14.0.24104-Pre\build\native\VisualCppTools.props" Condition="Exists('packages\VisualCppTools.14.0.24104-Pre\build\native\VisualCppTools.props')" />
   <ItemGroup Label="ProjectConfigurations">
@@ -157,7 +157,6 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>src-ffmpeg\include;..\include;src-common;src-win;src-win/derived;src-agg;src-agg\agg2;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -168,6 +167,8 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SupportJustMyCode>true</SupportJustMyCode>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -183,7 +184,6 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>src-ffmpeg\include;..\include;src-common;src-win;src-win/derived;src-agg;src-agg\agg2;src-common\agg-extras;src-unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;UNICODE;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -194,6 +194,7 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -219,6 +220,7 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -243,6 +245,8 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SupportJustMyCode>true</SupportJustMyCode>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -269,6 +273,7 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -295,6 +300,7 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -320,6 +326,7 @@
       <DisableSpecificWarnings>4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -349,6 +356,7 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -473,7 +481,16 @@
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
     <ClCompile Include="src-common\HSBColor.cpp" />
-    <ClCompile Include="src-win\derived\lex.yy.cpp" />
+    <ClCompile Include="src-win\derived\lex.yy.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4005;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="src-unix\main.cpp" />
     <ClCompile Include="src-common\makeCFfilename.cpp" />
     <ClCompile Include="src-common\primShape.cpp" />
@@ -498,6 +515,14 @@
     </ClCompile>
     <ClCompile Include="src-win\WinPngCanvas.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">false</PreprocessToFile>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="src-win\winTimer.cpp" />
     <ClCompile Include="src-win\winVersion.cpp" />
