@@ -166,7 +166,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         png_write_info(png_ptr, info_ptr);
 
-        png_bytep rowPtr = mData.get() + srcy * mStride + srcx * aggCanvas::BytesPerPixel.at(mPixelFormat);
+        png_bytep rowPtr = mData.data() + srcy * mStride + srcx * aggCanvas::BytesPerPixel.at(mPixelFormat);
         for (int r = 0; r < height; ++r) {
             if (mPixelFormat == aggCanvas::RGBA8_Blend || mPixelFormat == aggCanvas::RGBA8_Custom_Blend) {
                 // Convert each row to non-premultiplied alpha as per PNG spec
