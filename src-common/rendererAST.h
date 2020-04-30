@@ -33,10 +33,10 @@
 class RendererAST : public Renderer {
 public:
     // AST interface
-        ~RendererAST();
+        ~RendererAST() override;
         std::array<StackType, 8192> mCFstack;
-        const StackType*            mLogicalStackTop;
-        std::size_t                 mStackSize;
+        const StackType*            mLogicalStackTop = nullptr;
+        std::size_t                 mStackSize = 0;
         void initStack(const StackRule* p);
         void unwindStack(std::size_t oldsize, const std::vector<AST::ASTparameter>& params);
         const StackType* stackItem(int offset) const {
@@ -44,22 +44,22 @@ public:
         }
         
         Rand64      mCurrentSeed;
-        bool        mRandUsed;
+        bool        mRandUsed = false;
     
-        double      mMaxNatural;
-        bool        mImpure;
+        double      mMaxNatural = 1000.0;
+        bool        mImpure = false;
 
-        double      mCurrentTime;
-        double      mCurrentFrame;
+        double      mCurrentTime = 0.0;
+        double      mCurrentFrame = 0.0;
         
         agg::point_d mLastPoint;
-        bool         mStop;
-        bool         mClosed;
-        bool         mWantMoveTo;
-        bool         mWantCommand;
-        bool         mOpsOnly;
-        unsigned     mIndex;
-        unsigned     mNextIndex;
+        bool         mStop = false;
+        bool         mClosed = false;
+        bool         mWantMoveTo = false;
+        bool         mWantCommand = false;
+        bool         mOpsOnly = false;
+        unsigned     mIndex = 0;
+        unsigned     mNextIndex = 0;
         AST::cpath_ptr mCurrentPath;
         AST::InfoCache::iterator mCurrentCommand;
     

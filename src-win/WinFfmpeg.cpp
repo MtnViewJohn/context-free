@@ -24,6 +24,7 @@
 
 #include <Windows.h>
 #include <cerrno>
+#include <array>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -32,11 +33,11 @@ extern "C" {
 }
 
 
-static HMODULE avcodecMod = NULL;
-static HMODULE avformatMod = NULL;
-static HMODULE avutilMod = NULL;
-static HMODULE swresampleMod = NULL;
-static HMODULE swscaleMod = NULL;
+static HMODULE avcodecMod = nullptr;
+static HMODULE avformatMod = nullptr;
+static HMODULE avutilMod = nullptr;
+static HMODULE swresampleMod = nullptr;
+static HMODULE swscaleMod = nullptr;
 
 void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl)
 {
@@ -52,21 +53,21 @@ void log_callback_debug(void *ptr, int level, const char *fmt, va_list vl)
         av_log_format_line = (av_log_format_line_ptr)GetProcAddress(avutilMod, "av_log_format_line");
 
     va_list vl2;
-    char line[1024];
+    std::array<char, 1024> line;
     static int print_prefix = 1;
 
     va_copy(vl2, vl);
     if (av_log_default_callback)
         (av_log_default_callback)(ptr, level, fmt, vl);
     if (av_log_format_line)
-        (av_log_format_line)(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
+        (av_log_format_line)(ptr, level, fmt, vl2, line.data(), (int)line.size(), &print_prefix);
     va_end(vl2);
     if (av_log_format_line && AV_LOG_DEBUG >= level) {
-        OutputDebugStringA(line);
+        OutputDebugStringA(line.data());
     }
 }
 
-bool av_load_dlls(void)
+bool av_load_dlls()
 {
     static bool firstTime = true;
 
@@ -101,7 +102,7 @@ using avformat_free_context_ptr = void (__cdecl *)(AVFormatContext *s);
 using av_free_ptr = void (__cdecl *)(void *ptr);
 using av_packet_free_ptr = void (__cdecl *)(AVPacket **pkt);
 using av_frame_make_writable_ptr = int (__cdecl *)(AVFrame *frame);
-using av_rescale_q_ptr = int64_t (__cdecl *)(int64_t a, AVRational bq, AVRational cq) av_const;
+using av_rescale_q_ptr = int64_t (__cdecl *)(int64_t a, AVRational bq, AVRational cq);
 using avcodec_send_frame_ptr = int (__cdecl *)(AVCodecContext *avctx, const AVFrame *frame);
 using avcodec_receive_packet_ptr = int (__cdecl *)(AVCodecContext *avctx, AVPacket *avpkt);
 using av_write_frame_ptr = int (__cdecl *)(AVFormatContext *s, AVPacket *pkt);
@@ -181,7 +182,7 @@ AVStream *my_avformat_new_stream(AVFormatContext *s, const AVCodec *c)
     return avformat_new_stream ? (avformat_new_stream)(s, c) : nullptr;
 }
 
-AVPacket *my_av_packet_alloc(void)
+AVPacket *my_av_packet_alloc()
 {
     static av_packet_alloc_ptr av_packet_alloc = nullptr;
 
@@ -201,7 +202,7 @@ int my_avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary *
     return avcodec_open2 ? (avcodec_open2)(avctx, codec, options) : -EACCES;
 }
 
-AVFrame* my_av_frame_alloc(void)
+AVFrame* my_av_frame_alloc()
 {
     static av_frame_alloc_ptr av_frame_alloc = nullptr;
 
@@ -304,7 +305,7 @@ int my_av_frame_make_writable(AVFrame *frame)
     return av_frame_make_writable ? (av_frame_make_writable)(frame) : -EACCES;
 }
 
-int64_t my_av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const
+int64_t my_av_rescale_q(int64_t a, AVRational bq, AVRational cq)
 {
     static av_rescale_q_ptr av_rescale_q = nullptr;
 

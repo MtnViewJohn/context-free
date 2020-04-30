@@ -202,7 +202,11 @@ namespace AST {
     };
     
     double CFatof(const char* s);
-    
+
+    static constexpr double MaxNatural = 9007199254740992.;
+    static constexpr double DefaultMiterLimit = 4.0;
+    static constexpr double DefaultStrokeWidth = 0.1;
+
     Locality_t CombineLocality(Locality_t first, Locality_t second);
 
     enum pathOpEnum { 

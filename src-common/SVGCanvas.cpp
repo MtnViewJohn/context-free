@@ -245,20 +245,13 @@ void SVGCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr
 
 void SVGCanvas::indent(int change)
 {
-    if (change > 0) {
-        for (int i = 0; i < change; ++i)
-            mEndline[mPadding + i + 1] = ' ';
-    }
-    mPadding += change;
-    mEndline[mPadding + 1] = '\0';
+    mEndline.resize(mEndline.size() + change, ' ');
 }
 
 
 SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop, 
                      const char* desc, int length, bool temp)
 :   Canvas(width, height),
-    mPadding(0),
-    mNextPathID(1),
     mCropped(crop),
     mOutputFile(),
 #ifdef _WIN32
@@ -289,8 +282,6 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop,
 #endif
     }
     mError = !((temp || mOutputFile.is_open()) && mOutput.good());
-    mEndline[0] = '\n';
-    mEndline[1] = '\0';
     if (mLength == -1 && mDescription)
         mLength = static_cast<int>(std::strlen(mDescription));
 }

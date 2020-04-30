@@ -168,7 +168,7 @@ class CFDGImpl : public CFDG {
         const yy::location& decodeShapeLocation(int shapetype);
         int     encodeShapeName(const std::string& s, const yy::location& where);
         int     tryEncodeShapeName(const std::string& s) const;
-        int     tryEncodeShapeName(const std::wstring& c) const;
+        int     tryEncodeShapeName(const std::wstring& s) const;
         int     getShapeType(int shapetype);
         bool    shapeHasRules(int shapetype);
         const char* setShapeParams(int shapetype, AST::ASTrepContainer& p, int size, bool isPath);

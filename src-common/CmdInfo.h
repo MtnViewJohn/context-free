@@ -43,26 +43,23 @@ namespace AST {
     struct CommandInfo {
         using UIDtype = std::atomic<UIDdatatype>;
         
-        int                 mFlags;
-        double              mMiterLimit;
-        double              mStrokeWidth;
-        unsigned            mIndex;
-        agg::path_storage*  mPath;
+        int                 mFlags = 0;
+        double              mMiterLimit = DefaultMiterLimit;
+        double              mStrokeWidth = DefaultStrokeWidth;
+        unsigned            mIndex = 0;
+        agg::path_storage*  mPath = nullptr;
         UIDtype             mPathUID;
         static UIDdatatype  PathUIDDefault;
         
         static const CommandInfo
                             Default;
         
-        CommandInfo() 
-        : mFlags(0), mMiterLimit(4.0), mStrokeWidth(0.1), mIndex(0), mPath(nullptr), 
-          mPathUID(PathUIDDefault) {};
+        CommandInfo() : mPathUID(PathUIDDefault) {};
         CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);
         CommandInfo(CommandInfo&&) noexcept;
         CommandInfo(const CommandInfo&);
         CommandInfo(agg::path_storage* p)
-        : mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), mMiterLimit(4.0),
-          mStrokeWidth(0.1), mIndex(0), mPath(p), mPathUID(0) {}
+        : mPath(p), mPathUID(0) {}
         CommandInfo& operator=(const CommandInfo&);
         CommandInfo& operator=(CommandInfo&&) noexcept;
         void tryInit(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c = nullptr);

@@ -59,7 +59,7 @@ struct HSBColor
         HSBATarget = HueTarget | SaturationTarget | BrightnessTarget | AlphaTarget
     };
                              
-    HSBColor() : h(0), s(0), b(0), a(0) {};
+    HSBColor() = default;
     HSBColor(double hue, double sat, double bri, double alpha) 
         : h(hue), s(sat), b(bri), a(alpha) {};
     HSBColor(const agg::rgba&);
@@ -73,7 +73,7 @@ struct HSBColor
         return h != hsb.h || s != hsb.s || b != hsb.b || a != hsb.s;
     }
 
-    double h, s, b, a;
+    double h = 0, s = 0, b = 0, a = 0;
     
     static inline double adjust(const double& base, const double& adjustment, 
                                 unsigned useTarget = 0, const double& target = 0.0);
@@ -98,16 +98,12 @@ HSBColor::adjust(const double& base, const double& adjustment,
         
             // Otherwise move away from or toward the target
         double edge = base < target ? 0 : 1;
-        if (adjustment < 0)
-            return base + (  base - edge) * adjustment;
-        else 
-            return base + (target - base) * adjustment;
+        return (adjustment < 0) ? base + (  base - edge) * adjustment
+                                : base + (target - base) * adjustment;
     } else {
             // Move toward 0 or toward 1
-        if (adjustment < 0)
-            return base + base * adjustment;
-        else 
-            return base + (1 - base) * adjustment;
+        return (adjustment < 0) ? base + base * adjustment
+                                : base + (1 - base) * adjustment;
     }
 }
 

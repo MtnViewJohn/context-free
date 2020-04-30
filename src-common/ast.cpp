@@ -209,8 +209,8 @@ namespace AST {
         bool justCount = args->mType == AST::NoType;
         
         std::size_t size = 0;
-        ASTparameters::const_iterator param_it = types->begin(),
-                                      param_end = types->end();
+        auto param_it = types->cbegin();
+        auto param_end = types->cend();
         
         for (auto&& arg: *args) {
             if (param_it == param_end) {
@@ -275,7 +275,7 @@ namespace AST {
                 // Create a new cons-list based on the evaluated variable's expression
                 ASTexpression* list = nullptr;
                 for (auto value: data) {
-                    ASTreal* r = new ASTreal(value, where);
+                    auto r = new ASTreal(value, where);
                     if (!list) r->text = entropy;
                     list = list ? list->append(r) : r;
                 }
@@ -285,7 +285,7 @@ namespace AST {
             }
             case AST::ModType: {
                 ASTmodification* ret = nullptr;
-                if (const ASTmodification* mod = dynamic_cast<const ASTmodification*>(mDefinition->mExpression.get()))
+                if (auto mod = dynamic_cast<const ASTmodification*>(mDefinition->mExpression.get()))
                     ret = new ASTmodification(*mod, where);
                 else
                     ret = new ASTmodification(mDefinition->mChildChange, where);
@@ -294,8 +294,8 @@ namespace AST {
             }
             case AST::RuleType: {
                 // This must be bound to an ASTruleSpecifier, otherwise it would not be constant
-                if (const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*> (mDefinition->mExpression.get())) {
-                    ASTruleSpecifier* ret = new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
+                if (auto r = dynamic_cast<const ASTruleSpecifier*> (mDefinition->mExpression.get())) {
+                    auto ret = new ASTruleSpecifier(r->shapeType, entropy, nullptr, where, nullptr);
                     ret->grab(r);
                     ret->mLocality = mLocality;
                     return ret;
@@ -362,7 +362,7 @@ namespace AST {
                     std::vector<double>& data, const yy::location& where)
     {
         if (data.empty()) return;
-        AST::FlagTypes t = static_cast<AST::FlagTypes>(static_cast<int>(data[0]));
+        auto t = static_cast<AST::FlagTypes>(static_cast<int>(data[0]));
         bool frieze = (tile.sx != 0.0 || tile.sy != 0.0) && (tile.sx * tile.sy == 0.0);
         bool rhombic = tiled && ((fabs(tile.shy) <= 0.0000001 && fabs(tile.shx/tile.sx - 0.5) < 0.0000001) ||
                                  (fabs(tile.shx) <= 0.0000001 && fabs(tile.shy/tile.sy - 0.5) < 0.0000001));
@@ -1054,7 +1054,7 @@ namespace AST {
                     if (snarfFlagOpts)
                         processSymmSpec(syms, tile, tiled, symmSpec, where);
                     snarfFlagOpts = false;
-                    if (const ASTmodification* m = dynamic_cast<const ASTmodification*>(&kid)) {
+                    if (auto m = dynamic_cast<const ASTmodification*>(&kid)) {
                         if ((m->modClass &
                              (ASTmodification::GeomClass | ASTmodification::PathOpClass)) ==
                             m->modClass && (r || m->isConstant))

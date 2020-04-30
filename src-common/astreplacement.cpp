@@ -157,7 +157,7 @@ namespace AST {
                      exp_ptr args, const yy::location& argsLoc,  
                      mod_ptr mods)
     : ASTreplacement(std::move(mods), nameLoc + argsLoc, empty), mLoopArgs(std::move(args)),
-      mLoopModHolder(nullptr), mLoopIndexName(nameIndex), mLoopName(name)
+        mLoopModHolder(nullptr), mLoopData{0.0}, mLoopIndexName(nameIndex), mLoopName(name)
     {
         mLoopBody.addLoopParameter(mLoopIndexName, mLocation);
         mFinallyBody.addLoopParameter(mLoopIndexName, mLocation);
@@ -282,7 +282,6 @@ namespace AST {
     }
     
     ASTcompiledPath::ASTcompiledPath()
-    : mCached(false), mUseTerminal(false), mParameters(nullptr)
     {
         mPathUID = NextPathUID();
     }
@@ -302,8 +301,8 @@ namespace AST {
     ASTpathCommand::ASTpathCommand(const std::string& s, mod_ptr mods, 
                                    exp_ptr params, const yy::location& loc)
     :   ASTreplacement(std::move(mods), loc, command),
-        mMiterLimit(4.0), mStrokeWidth(0.1), mParameters(std::move(params)),
-        mFlags(CF_MITER_JOIN + CF_BUTT_CAP)
+        mMiterLimit(DefaultMiterLimit), mStrokeWidth(DefaultStrokeWidth), 
+        mParameters(std::move(params)), mFlags(CF_MITER_JOIN + CF_BUTT_CAP)
     {
         if (s == "FILL")
             mFlags |= CF_FILL;
@@ -758,11 +757,11 @@ namespace AST {
                                 mLoopData[1] == floor(mLoopData[1]) &&
                                 mLoopData[2] == floor(mLoopData[2]) &&
                                 mLoopData[0] >= 0.0 && mLoopData[1] >= 0.0 &&
-                                mLoopData[0] < 9007199254740992. &&
-                                mLoopData[1] < 9007199254740992.;
+                                mLoopData[0] < MaxNatural &&
+                                mLoopData[1] < MaxNatural;
                     finallyNatural = finallyNatural && bodyNatural &&
                                 mLoopData[1] + mLoopData[2] >= -1.0 &&
-                                mLoopData[1] + mLoopData[2] < 9007199254740992.;
+                                mLoopData[1] + mLoopData[2] < MaxNatural;
                     mLoopArgs.reset();
                     mLoopBody.mParameters.front().isNatural = bodyNatural;
                     mFinallyBody.mParameters.front().isNatural = finallyNatural;
@@ -1240,6 +1239,7 @@ namespace AST {
     {
         ASTtermArray temp(std::move(terms));
         exp_ptr ret;
+        terms.clear();
         
         for (term_ptr& term: temp) {
             switch (term->modType) {

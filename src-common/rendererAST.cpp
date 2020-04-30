@@ -27,10 +27,7 @@
 #include <cassert>
 
 RendererAST::RendererAST(int w, int h)
-: Renderer(w, h),
-  mMaxNatural(1000.0), mImpure(false),
-  mCurrentTime(0.0), mCurrentFrame(0.0),
-  mCurrentPath(nullptr)
+: Renderer(w, h)
 { }
 
 RendererAST::~RendererAST() = default;

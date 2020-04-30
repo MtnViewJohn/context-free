@@ -34,14 +34,14 @@ namespace AST {
     UIDdatatype CommandInfo::PathUIDDefault = std::numeric_limits<UIDdatatype>::max();
 
     CommandInfo::CommandInfo(unsigned i, ASTcompiledPath* path, double w, const ASTpathCommand* c)
-    : mIndex(0), mPathUID(PathUIDDefault)
+    : mPathUID(PathUIDDefault)
     {
         init(i, path, w, c);
     }
     
     CommandInfo::CommandInfo(unsigned i, agg::path_storage* path)
-    : mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), mMiterLimit(4.0), 
-      mStrokeWidth(0.1), mIndex(i), mPath(path), mPathUID(0)
+    : mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL), mMiterLimit(DefaultMiterLimit), 
+      mStrokeWidth(DefaultStrokeWidth), mIndex(i), mPath(path), mPathUID(0)
     {
     }
     
@@ -63,7 +63,7 @@ namespace AST {
                 mMiterLimit = c->mMiterLimit;
             } else {
                 mFlags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
-                mMiterLimit = 4.0;
+                mMiterLimit = DefaultMiterLimit;
             }
 
             mIndex = i;

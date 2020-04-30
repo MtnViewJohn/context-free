@@ -51,8 +51,8 @@
 class OutputMerge
 {
 public:
-    OutputMerge() { }
-    ~OutputMerge();
+    OutputMerge() = default;
+    ~OutputMerge() = default;
     OutputMerge& operator=(const OutputMerge&) = delete;
     
     using ShapeSource = chunk_vector<FinishedShape, 10>;
@@ -66,7 +66,7 @@ public:
     void merge(ShapeFunction op)
     {
         while (!mSieve.empty()) {
-            Sieve::iterator nextShape = mSieve.begin();
+            auto nextShape = mSieve.begin();
             
             op(nextShape->first);
             std::size_t i = nextShape->second;

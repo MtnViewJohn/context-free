@@ -54,13 +54,12 @@ class Modification {
         
         HSBColor m_Color;
         HSBColor m_ColorTarget;
-        unsigned m_ColorAssignment;
-        int      m_BlendMode;
+        unsigned m_ColorAssignment = 0;
+        int      m_BlendMode = 0;
 
         Rand64 mRand64Seed;
 
-    Modification() : m_ColorAssignment(0), m_BlendMode(0)
-        { }
+        Modification() = default;
     
         double area() const { return fabs(m_transform.determinant()); }
         bool isFinite() const;
@@ -89,13 +88,13 @@ class Modification {
 
 class ShapeBase {
 public: 
-    int mShapeType;
+    int mShapeType = -1;
     Modification mWorldState;
     
     double mAreaCache;
     double area() const { return mAreaCache; }
 protected:
-    ShapeBase() : mShapeType(-1) 
+    ShapeBase() 
     { mAreaCache = mWorldState.area(); }
     
     void write(std::ostream& os) const;
@@ -106,7 +105,7 @@ protected:
 // and executing a cfdg file
 class Shape : public ShapeBase {
 public:
-    Shape() : ShapeBase() { }
+    Shape() = default;
     Shape(const Shape&) = default;
     Shape(Shape&& s) noexcept
     : ShapeBase(s), mParameters(std::move(s.mParameters))

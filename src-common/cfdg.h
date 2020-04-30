@@ -32,7 +32,7 @@
 
 #include <iosfwd>
 #include <string>
-#include <time.h>
+#include <ctime>
 #include <vector>
 #include "agg2/agg_trans_affine.h"
 #include "agg2/agg_color_rgba.h"
@@ -46,6 +46,7 @@
 #include <memory>
 #include <cstdint>
 #include <cstddef>
+#include <array>
 
 #define _unused(x) ((void)(x))
 
@@ -62,11 +63,11 @@ class Builder;
 
 class DeferUntilRuntime : public std::exception {
 public:
-    virtual const char* what() const noexcept;
+    const char* what() const noexcept override;
 };
 class CfdgError : public std::exception {
 public:
-    virtual const char* what() const noexcept;
+    const char* what() const noexcept override;
     CfdgError& operator=(const CfdgError& e) noexcept;
     yy::location    where;
     static yy::location Default;
@@ -131,25 +132,21 @@ class AbstractSystem {
         virtual std::wstring normalize(const std::string&) = 0;
         
         struct Stats {
-            int     shapeCount;     // finished shapes in image
-            int     toDoCount;      // unfinished shapes still to expand
+            int     shapeCount = 0;     // finished shapes in image
+            int     toDoCount = 0;      // unfinished shapes still to expand
             
-            bool    inOutput;       // true if we are in the output loop
-            bool    fullOutput;     // not an incremental output
-            bool    finalOutput;    // the last output
-            bool    showProgress;
-            int     outputCount;    // number to be output
-            int     outputDone;     // number output so far
-            clock_t outputTime;
+            bool    inOutput = false;       // true if we are in the output loop
+            bool    fullOutput = false;     // not an incremental output
+            bool    finalOutput = false;    // the last output
+            bool    showProgress = false;
+            int     outputCount = 0;    // number to be output
+            int     outputDone = 0;     // number output so far
+            std::clock_t outputTime = 0;
 
-            bool    animating;      // inside the animation loop
-            AbstractSystem* mSystem;
+            bool    animating = false;      // inside the animation loop
+            AbstractSystem* mSystem = nullptr;
 
-            Stats()
-                : shapeCount(0), toDoCount(0), inOutput(false),
-                  fullOutput(false), finalOutput(false), showProgress(false),
-                  outputCount(0), outputDone(0), outputTime(0), animating(false),
-                  mSystem(nullptr) {}
+            Stats() = default;
             ~Stats()
             {
                 // Cancel system progress bar if it is being displayed
@@ -166,8 +163,8 @@ class AbstractSystem {
         
         virtual ~AbstractSystem();
     protected:
-        static const FileChar* TempPrefixes[NumberofTempTypes];
-        static const FileChar* TempSuffixes[NumberofTempTypes];
+        static const std::array<const FileChar*, NumberofTempTypes> TempPrefixes;
+        static const std::array<const FileChar*, NumberofTempTypes> TempSuffixes;
         static const FileChar* TempPrefixAll;
         virtual void clearAndCR() {};
 };
@@ -188,7 +185,7 @@ class Canvas {
         
         int mWidth;
         int mHeight;
-        clock_t mTime;
+        std::clock_t mTime = (std::clock_t)(-1);
         bool mError;
         std::string mFileName;
 };
@@ -212,12 +209,12 @@ class CFDG {
             ) = 0;
             // caller must delete returned object
 
-        bool usesColor;
-        bool usesAlpha;
-        bool uses16bitColor;
-        bool usesBlendMode;
-        bool usesTime;
-        bool usesFrameTime;
+        bool usesColor = false;
+        bool usesAlpha = false;
+        bool uses16bitColor = false;
+        bool usesBlendMode = false;
+        bool usesTime = false;
+        bool usesFrameTime = false;
         static const CfgArray<std::string>  ParamNames;
         static CFG lookupCfg(const std::string& name);
         static const std::string& getCfgName(int c);
@@ -231,10 +228,7 @@ class CFDG {
         virtual void serialize(std::ostream&) = 0;
 
     protected:
-        CFDG()
-        : usesColor(false), usesAlpha(false), uses16bitColor(false), 
-          usesBlendMode(false), usesTime(false), usesFrameTime(false)
-        { }
+        CFDG() = default;
 };
 
 

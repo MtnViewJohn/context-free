@@ -52,8 +52,8 @@ private:
         _chunk_mask = _chunk_size - 1
     };
     
-    pointer const * _chunksPtr;
-    size_type       _index;
+    pointer const * _chunksPtr = nullptr;
+    size_type       _index = 0;
     
     chunk_vector_iterator(pointer const * vals, std::size_t index)
         : _chunksPtr(vals), _index(index)
@@ -88,12 +88,8 @@ private:
                            const chunk_vector_iterator<_valType2, _p2>& _y) noexcept;
     
 public:
-    chunk_vector_iterator(const chunk_vector_iterator& cvi)
-        : _chunksPtr(cvi._chunksPtr), _index(cvi._index)
-    { }
-    chunk_vector_iterator()
-        : _chunksPtr(nullptr), _index(0)
-    { }
+    chunk_vector_iterator(const chunk_vector_iterator& cvi) = default;
+    chunk_vector_iterator() = default;
     
     chunk_vector_iterator& operator=(const chunk_vector_iterator& rhs)
     {
@@ -448,13 +444,13 @@ public:
     {
         reserve(_newSize);
         if (_newSize >= 0) {
-            size_type newSize = static_cast<size_type>(_newSize);
+            auto newSize = static_cast<size_type>(_newSize);
             while (newSize > size())
                 push_back(x);
             while (newSize < size())
                 pop_back();
         } else {
-            size_type newSize = static_cast<size_type>(-_newSize);
+            auto newSize = static_cast<size_type>(-_newSize);
             while (newSize > size())
                 push_front(x);
             while (newSize < size())
@@ -498,7 +494,7 @@ public:
     // and to the front if negative. 
     {
         if (_newSize >= 0) {
-            size_type newSize = static_cast<size_type>(_newSize);
+            auto newSize = static_cast<size_type>(_newSize);
             if (capacity() - _start >= newSize) return;
             size_type chunksNeeded = ((newSize - (capacity() - _start)) + _chunk_mask) >> _power2;
             // Borrow from front before allocating
@@ -514,7 +510,7 @@ public:
             for (size_type i = 0; i < chunksNeeded; ++i)
                 _chunks.push_back(_alloc_traits::allocate(_valAlloc, _chunk_size));
         } else {
-            size_type newSize = static_cast<size_type>(-_newSize);
+            auto newSize = static_cast<size_type>(-_newSize);
             if (_end >= newSize) return;
             size_type chunksNeeded = (newSize - _end + _chunk_mask) >> _power2;
             while (chunksNeeded && capacity() - _end >= _chunk_size) {

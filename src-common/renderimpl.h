@@ -64,7 +64,7 @@ class RendererImpl final : public RendererAST {
         RendererImpl(const cfdg_ptr& cfdg,
                      int width, int height, double minSize,
                      int variation, double border);
-        ~RendererImpl();
+        ~RendererImpl() override;
     
         void setMaxShapes(int n) final;
         void resetBounds() final;
@@ -76,14 +76,14 @@ class RendererImpl final : public RendererAST {
         void animate(Canvas* canvas, int frames, int frame, bool zoom) final;
         void processPathCommand(const Shape& s, const AST::CommandInfo* attr) final;
         void processShape(Shape& s) final;
-        void processPrimShape(Shape& s, const AST::ASTrule* attr = nullptr) final;
+        void processPrimShape(Shape& s, const AST::ASTrule* path = nullptr) final;
         void processSubpath(const Shape& s, bool tr, int) final;
         
     private:
         void outputPrep(Canvas*);
         void rescaleOutput(int& curr_width, int& curr_height, bool final);
         void forEachShape(bool final, ShapeFunction op);
-        void processPrimShapeSiblings(Shape&& s, const AST::ASTrule* attr);
+        void processPrimShapeSiblings(Shape&& s, const AST::ASTrule* path);
         void drawShape(const FinishedShape& s);
 
         void output(bool final);
@@ -108,19 +108,19 @@ class RendererImpl final : public RendererAST {
 
     private:
         cfdgi_ptr   m_cfdg;
-        Canvas*     m_canvas;
+        Canvas*     m_canvas = nullptr;
         pathIterator m_pathIter;
     
-        bool        mColorConflict;
+        bool        mColorConflict = false;
 
         int m_maxShapes;
-        bool m_tiled;
-        bool m_sized;
-        bool m_timed;
-        CFDG::frieze_t m_frieze;
-        double m_frieze_size;
-        bool m_drawingMode;
-        bool mFinal;
+        bool m_tiled = false;
+        bool m_sized = false;
+        bool m_timed = false;
+        CFDG::frieze_t m_frieze = CFDG::frieze_t::no_frieze;
+        double m_frieze_size = 0;
+        bool m_drawingMode = false;
+        bool mFinal = false;
 
         using FinishedContainer = chunk_vector<FinishedShape, 10>;
         FinishedContainer mFinishedShapes;
@@ -129,36 +129,36 @@ class RendererImpl final : public RendererAST {
 
         std::deque<TempFile> m_finishedFiles;
         std::deque<TempFile> m_unfinishedFiles;
-        int mFinishedFileCount;
-        int mUnfinishedFileCount;
+        int mFinishedFileCount = 0;
+        int mUnfinishedFileCount = 0;
 
-        int mVariation;
+        int mVariation = 0;
         double m_border;
         
-        double mScaleArea;
-        double mScale;
-        double mFixedBorderX;
-        double mFixedBorderY;
-        double mShapeBorder;
-        double mTotalArea;
+        double mScaleArea = 0;
+        double mScale = 0;
+        double mFixedBorderX = 0;
+        double mFixedBorderY = 0;
+        double mShapeBorder = 0;
+        double mTotalArea = 0;
     
-        double mCurrentArea;
+        double mCurrentArea = 0;
         Bounds mPathBounds;
 
-        double m_currScale;
-        double m_currArea;
-        double m_minArea;
-        double m_minSize;
+        double m_currScale = 0;
+        double m_currArea = 0;
+        double m_minArea = 0;
+        double m_minSize = 0.3;
         Bounds mBounds;
         agg::trans_affine_time mTimeBounds;
         agg::trans_affine_time mFrameTimeBounds;
         agg::trans_affine m_currTrans;
-        unsigned int m_outputSoFar;
+        unsigned int m_outputSoFar = 0;
     
         std::vector<agg::trans_affine> mSymmetryOps;
 
         AbstractSystem::Stats m_stats;
-        int m_unfinishedInFilesCount;
+        int m_unfinishedInFilesCount = 0;
     
         primShape::primShapes_t shapeCopies;
         std::array<AST::CommandInfo, primShape::numTypes> shapeMap;

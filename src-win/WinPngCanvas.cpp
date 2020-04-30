@@ -25,8 +25,10 @@
 #define NOMINMAX
 #include <windows.h>
 #include "WinPngCanvas.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include "makeCFfilename.h"
+#include <array>
+#include <vector>
 
 #ifndef ULONG_PTR
 #define ULONG_PTR ULONG
@@ -60,13 +62,12 @@ pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height,
                         pixfmt, crop, frameCount, variation, wallpaper, r, mx, my)
 {
     if (temp) {
-        char buf[L_tmpnam_s];
-        if (tmpnam_s(buf) == 0)
-            mFileName = buf;
+        std::array<char, L_tmpnam_s> buf;
+        if (tmpnam_s(buf.data(), buf.size()) == 0)
+            mFileName = buf.data();
 
         if (!mFileName.empty())
             mFileName += ".mov";
-        outfilename = mFileName.c_str();
     } else {
         mFileName = outfilename;
     }
@@ -148,26 +149,24 @@ void pngCanvas::output(const char* outfilename, int frame)
     int height = mFullHeight;
     // If the canvas is 16-bit then copy it to an 8-bit version
     // and output that. GDI+ doesn't really support 16-bit modes.
-    unsigned char* data = mData.get();
+    unsigned char* data = mData.data();
     int stride = mStride;
-    int bpp = BytesPerPixel.at(mPixelFormat);
-    std::unique_ptr<unsigned char[]> data8;
+    std::vector<unsigned char> data8;
     PixelFormat pf = mPixelFormat;
     if (pf & Has_16bit_Color) {
         stride = stride >> 1;
         stride += ((-stride) & 3);
-        data8.reset(new unsigned char[stride * height]);
-        bpp = bpp >> 1;
-        unsigned char* row8 = data8.get();
-        unsigned char* srcrow = mData.get();
+        data8.resize(stride * height, '\0');
+        unsigned char* row8 = data8.data();
+        unsigned char* srcrow = mData.data();
         for (int y = 0; y < height; ++y) {
-            unsigned __int16* row16 = (unsigned __int16*)srcrow;
+            auto row16 = (unsigned __int16*)srcrow;
             for (int x = 0; x < width; ++x)
                 row8[x] = row16[x] >> 8;
             row8 += stride;
             srcrow += mStride;
         }
-        data = data8.get();
+        data = data8.data();
         pf = (PixelFormat)(pf & (~Has_16bit_Color));
     }
 
@@ -177,11 +176,11 @@ void pngCanvas::output(const char* outfilename, int frame)
         data += cropY() * stride + cropX() * BytesPerPixel.at(pf);
     }
 
-    WCHAR wpath[MAX_PATH];
-    TCHAR fullpath[MAX_PATH];
+    std::array<WCHAR, MAX_PATH> wpath;
+    std::array<TCHAR, MAX_PATH> fullpath;
     size_t cvt;
-    ::mbstowcs_s(&cvt, wpath, MAX_PATH, outfilename, MAX_PATH);
-    ::GetFullPathName(wpath, MAX_PATH, fullpath, nullptr);
+    ::mbstowcs_s(&cvt, wpath.data(), wpath.size(), outfilename, wpath.size() - 1);
+    ::GetFullPathNameW(wpath.data(), (DWORD)fullpath.size(), fullpath.data(), nullptr);
     const WCHAR* mimetype = mWallpaper ? L"image/bmp" : L"image/png";
 
     if (encClsid == CLSID_NULL && GetEncoderClsid(mimetype, &encClsid) == -1) {
@@ -201,14 +200,14 @@ void pngCanvas::output(const char* outfilename, int frame)
 
     switch (pf) {
         case aggCanvas::Gray8_Blend:
-            saveBM.reset(new Bitmap(width, height, stride, PixelFormat8bppIndexed, data));
+            saveBM = std::make_unique<Bitmap>(width, height, stride, PixelFormat8bppIndexed, data);
             saveBM->SetPalette(GrayPalette);
             break;
         case aggCanvas::RGB8_Blend:
-            saveBM.reset(new Bitmap(width, height, stride, PixelFormat24bppRGB, data));
+            saveBM = std::make_unique<Bitmap>(width, height, stride, PixelFormat24bppRGB, data);
             break;
         case aggCanvas::RGBA8_Blend:
-            saveBM.reset(new Bitmap(width, height, stride, PixelFormat32bppPARGB, data));
+            saveBM = std::make_unique<Bitmap>(width, height, stride, PixelFormat32bppPARGB, data);
             break;
         default:
             break;
@@ -226,7 +225,7 @@ void pngCanvas::output(const char* outfilename, int frame)
     pi.value = (VOID*)"Context Free generated image";
     if (saveBM) saveBM->SetPropertyItem(&pi);
 
-    Status s = saveBM ? saveBM->Save(wpath, &encClsid, NULL) : Gdiplus::UnknownImageFormat;
+    Status s = saveBM ? saveBM->Save(wpath.data(), &encClsid, nullptr) : Gdiplus::UnknownImageFormat;
 
     if (s != Ok){
         cerr << endl << "A GDI+ error occured during PNG write: " << 
@@ -250,11 +249,9 @@ void pngCanvas::output(const char* outfilename, int frame)
         }
         cerr << endl;
     } else if (mWallpaper && frame == -1) {
-        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, (LPVOID)fullpath, 
+        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, (LPVOID)fullpath.data(), 
                              SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
     }
-
-    return;
 }
 
 

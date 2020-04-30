@@ -110,10 +110,10 @@ public:
 private:
     XORshift64star  mSeed;
     static Rand64   Common;
-    double prob(double p) { return p < 0.0 ? 0.0 : (p > 1.0 ? 1.0 : p); };
-    double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
-    double degree(double n) { return n >= 1.0 ? std::floor(n) : 1.0; }
-    std::int64_t nat(std::int64_t i) { return i < 1 ? 1 : i; }
+    static double prob(double p) { return p < 0.0 ? 0.0 : (p > 1.0 ? 1.0 : p); };
+    static double pos(double p) { return p > 0.0 ? p : std::numeric_limits<double>::epsilon(); }
+    static double degree(double n) { return n >= 1.0 ? std::floor(n) : 1.0; }
+    static std::int64_t nat(std::int64_t i) { return i < 1 ? 1 : i; }
 };
 
 #endif  // INCLUDE_RAND64_H

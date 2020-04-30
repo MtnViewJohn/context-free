@@ -169,13 +169,13 @@ CfdgError::Warning(const yy::location& errLoc, const char* msg)
         Builder::CurrentBuilder->warning(errLoc, msg);
 }
 
-const AbstractSystem::FileChar* AbstractSystem::TempPrefixes[AbstractSystem::NumberofTempTypes] = {
+const std::array<const AbstractSystem::FileChar*, AbstractSystem::NumberofTempTypes> AbstractSystem::TempPrefixes = {
     FileStr("cfdg-temp-fin-"),
     FileStr("cfdg-temp-unfin-"),
     FileStr("cfdg-temp-mrg-"),
     FileStr("cfdg-temp-movie-")
 };
-const AbstractSystem::FileChar* AbstractSystem::TempSuffixes[AbstractSystem::NumberofTempTypes] = {
+const std::array<const AbstractSystem::FileChar*, AbstractSystem::NumberofTempTypes> AbstractSystem::TempSuffixes = {
     FileStr(""), FileStr(""), FileStr(""), FileStr(".mov")
 };
 const AbstractSystem::FileChar* AbstractSystem::TempPrefixAll = FileStr("cfdg-temp-");

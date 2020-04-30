@@ -204,8 +204,8 @@ union StackType {
 	using iterator = StackTypeIterator<StackType>;
 	using const_iterator = StackTypeIterator<const StackType>;
 
-    StackType() { }
-    ~StackType() { }
+    StackType() {};
+    ~StackType() {};
     
     double      number;
     param_ptr   rule;
@@ -235,7 +235,7 @@ inline StackRule::iterator
 StackRule::begin()
 {
     if (mParamCount) {
-        StackType* st = reinterpret_cast<StackType*>(this);
+        auto st = reinterpret_cast<StackType*>(this);
         return iterator(st + HeaderSize, st[1].typeInfo);
     }
     return iterator();
@@ -245,7 +245,7 @@ inline StackRule::const_iterator
 StackRule::begin() const
 {
     if (mParamCount) {
-        const StackType* st = reinterpret_cast<const StackType*>(this);
+        auto st = reinterpret_cast<const StackType*>(this);
         return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();
@@ -255,7 +255,7 @@ inline StackRule::const_iterator
 StackRule::cbegin()
 {
     if (mParamCount) {
-        const StackType* st = reinterpret_cast<const StackType*>(this);
+        auto st = reinterpret_cast<const StackType*>(this);
         return const_iterator(st + HeaderSize, st[1].typeInfo);
     }
     return const_iterator();

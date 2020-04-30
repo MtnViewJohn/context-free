@@ -80,15 +80,13 @@ namespace AST {
     
     class ASTrepContainer {
     public:
-        pathOpEnum mPathOp;
-        int mRepType;
+        pathOpEnum mPathOp = unknownPathop;
+        int mRepType = ASTreplacement::empty;
         ASTbody mBody;
         ASTparameters mParameters;
-        bool isGlobal;
+        bool isGlobal = false;
         
-        ASTrepContainer() 
-        : mPathOp(unknownPathop), mRepType(ASTreplacement::empty),
-          isGlobal(false) {};
+        ASTrepContainer() = default;
         ASTrepContainer(const ASTrepContainer&) = delete;
         ASTrepContainer& operator=(const ASTrepContainer&) = delete;
         ASTrepContainer(ASTrepContainer&&) = delete;
@@ -117,7 +115,7 @@ namespace AST {
     public:
         exp_ptr mLoopArgs;
         mod_ptr mLoopModHolder;
-        std::array<double,3>  mLoopData;
+        std::array<double,3> mLoopData;
         ASTrepContainer mLoopBody;
         ASTrepContainer mFinallyBody;
         int mLoopIndexName;
@@ -244,7 +242,7 @@ namespace AST {
         ASTpathOp(const std::string& s, mod_ptr a, const yy::location& loc);
         ASTpathOp(const std::string& s, exp_ptr a, const yy::location& loc);
         ~ASTpathOp() final;
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void traverse(const Shape& s, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
     private:
         void pathData(double* data, RendererAST* rti) const;
@@ -256,23 +254,21 @@ namespace AST {
     };
     class ASTpathCommand final : public ASTreplacement {
     public:
-        double  mMiterLimit;
-        double  mStrokeWidth;
+        double  mMiterLimit = DefaultMiterLimit;
+        double  mStrokeWidth = DefaultStrokeWidth;
         exp_ptr mParameters;
-        int     mFlags;
+        int     mFlags = CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL;
         
         // Empty constructor
         ASTpathCommand() :
-        ASTreplacement(nullptr),
-        mMiterLimit(4.0), mStrokeWidth(0.1), mParameters(nullptr),
-        mFlags(CF_MITER_JOIN + CF_BUTT_CAP + CF_FILL)
+        ASTreplacement(nullptr)
         {
         }
         
         ASTpathCommand(const std::string& s, mod_ptr mods, exp_ptr params,
                        const yy::location& loc);
         
-        void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
+        void traverse(const Shape& s, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
         ~ASTpathCommand() final = default;
         void to_json(json& j) const final;
@@ -281,11 +277,11 @@ namespace AST {
     };
     class ASTcompiledPath {
     public:
-        bool mCached;
+        bool mCached = false;
         agg::path_storage mPath;
         InfoCache mCommandInfo;
         ASTpathCommand mTerminalCommand;
-        bool mUseTerminal;
+        bool mUseTerminal = false;
         param_ptr mParameters;
         CommandInfo::UIDtype mPathUID;
         

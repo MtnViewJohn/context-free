@@ -85,7 +85,7 @@ static bool processInterrupt()
 #ifdef _WIN32
 #include <Windows.h>
 
-BOOL CtrlHandler(DWORD ctrlType) 
+BOOL __stdcall CtrlHandler(DWORD ctrlType) 
 {
     if (ctrlType != CTRL_C_EVENT && ctrlType != CTRL_BREAK_EVENT)
         return FALSE;

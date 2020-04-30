@@ -96,11 +96,11 @@ StackRule::alloc(const StackRule* from, int newName)
 {
     if (from == nullptr)
         return nullptr;
-    const StackType* src = reinterpret_cast<const StackType*>(from);
+    auto src = reinterpret_cast<const StackType*>(from);
     const AST::ASTparameters* ti = from->mParamCount ? src[1].typeInfo : nullptr;
     StackRule* ret = alloc(newName >= 0 ? newName : from->mRuleName, from->mParamCount, ti);
     if (ret->mParamCount) {
-        StackType* data = reinterpret_cast<StackType*>(ret);
+        auto data = reinterpret_cast<StackType*>(ret);
         from->copyParams(data + HeaderSize);
     }
     return ret;
@@ -149,7 +149,7 @@ StackRule::release() const noexcept
         (*f).second = ParamOfInterest;
 #endif
     if (mRefCount == 0) {
-        const StackType* data = reinterpret_cast<const StackType*>(this);
+        auto data = reinterpret_cast<const StackType*>(this);
         if (mParamCount)
             data[HeaderSize].destroy(data[1].typeInfo);
 #ifdef EXTREME_PARAM_DEBUG
@@ -211,7 +211,7 @@ StackRule::read(std::istream& is)
 {
     if (mParamCount == 0)
         return;
-    StackType* st = reinterpret_cast<StackType*>(this);
+    auto st = reinterpret_cast<StackType*>(this);
     is.read(reinterpret_cast<char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
@@ -238,7 +238,7 @@ StackRule::write(std::ostream& os) const
     os.write(reinterpret_cast<char*>(&head), sizeof(uint64_t));
     if (mParamCount == 0)
         return;
-    const StackType* st = reinterpret_cast<const StackType*>(this);
+    auto st = reinterpret_cast<const StackType*>(this);
     os.write(reinterpret_cast<const char*>(&(st[1].typeInfo)), sizeof(AST::ASTparameters*));
     for (const_iterator it = begin(), e = end(); it != e; ++it) {
         switch (it.type().mType) {
@@ -275,7 +275,7 @@ void
 StackRule::Write(std::ostream& os, const StackRule* s)
 {
     if (s == nullptr || s->mRefCount == MaxRefCount) {
-        uint64_t p = static_cast<uint64_t>(reinterpret_cast<intptr_t>(s));
+        auto p = static_cast<uint64_t>(reinterpret_cast<intptr_t>(s));
         os.write(reinterpret_cast<const char*>(&p), sizeof(uint64_t));
     } else {
         s->write(os);
@@ -303,7 +303,7 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
             }
             case AST::ModType: {
                 static const Modification zeroMod;
-                Modification& m = reinterpret_cast<Modification&> (dest->number);
+                auto m = reinterpret_cast<Modification&> (dest->number);
                 m = zeroMod;
                 arg.evaluate(m, false, rti);
                 break;

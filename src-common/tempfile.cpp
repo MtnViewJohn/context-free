@@ -35,7 +35,7 @@
 
 #include <iostream>
 #include <cassert>
-
+#include <array>
 
 
 AbstractSystem::ostr_ptr
@@ -63,7 +63,7 @@ TempFile::forRead()
 const std::string&
 TempFile::type() const
 {
-    static const std::string typeStrings[AbstractSystem::NumberofTempTypes] = {
+    static std::array<std::string, AbstractSystem::NumberofTempTypes> typeStrings = {
         "shapes", "expansion", "merge", "movie"
     };
     

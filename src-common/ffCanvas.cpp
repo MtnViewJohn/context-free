@@ -26,6 +26,8 @@
 
 #include "ffCanvas.h"
 #include <cassert>
+#include <vector>
+#include <array>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -34,7 +36,7 @@ extern "C" {
 }
 
 #ifdef _WIN32
-bool av_load_dlls(void);
+bool av_load_dlls();
 bool ffCanvas::Available()
 {
     return av_load_dlls(); 
@@ -47,9 +49,9 @@ AVCodecContext* my_avcodec_alloc_context3(const AVCodec* codec);
 void my_avcodec_free_context(AVCodecContext** avctx);
 AVCodec *my_avcodec_find_encoder_by_name(const char*);
 AVStream *my_avformat_new_stream(AVFormatContext *s, const AVCodec *c);
-AVPacket *my_av_packet_alloc(void);
+AVPacket *my_av_packet_alloc();
 int my_avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
-AVFrame *my_av_frame_alloc(void);
+AVFrame *my_av_frame_alloc();
 int my_av_frame_get_buffer(AVFrame *frame, int align);
 int my_avio_open(AVIOContext **s, const char *url, int flags);
 av_warn_unused_result
@@ -60,7 +62,7 @@ void my_avformat_free_context(AVFormatContext *s);
 void my_av_free(void *ptr);
 void my_av_packet_free(AVPacket **pkt);
 int my_av_frame_make_writable(AVFrame *frame);
-int64_t my_av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const;
+int64_t my_av_rescale_q(int64_t a, AVRational bq, AVRational cq);
 int my_avcodec_send_frame(AVCodecContext *avctx, const AVFrame *frame);
 int my_avcodec_receive_packet(AVCodecContext *avctx, AVPacket *avpkt);
 int my_av_write_frame(AVFormatContext *s, AVPacket *pkt);
@@ -116,7 +118,7 @@ class ffCanvas::Impl
 {
 public:
     Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-        std::unique_ptr<char[]> bits, int fps, QTcodec codec);
+        int fps, QTcodec codec);
     ~Impl();
     
     void addFrame(bool end);
@@ -124,38 +126,31 @@ public:
     int             mWidth;
     int             mHeight;
     int             mStride;
-    std::unique_ptr<char[]> mBuffer;
+    std::vector<char> mBuffer;
     int             mFrameRate;
-    int				mLineSize;
-    const char*     mError;
+    int				mLineSize = 0;
+    const char*     mError = nullptr;
     
-    AVStream        *mStream;
-    AVCodecContext  *mEncCtx;
+    AVStream        *mStream = nullptr;
+    AVCodecContext  *mEncCtx = nullptr;
 
-    AVFormatContext *mOutputCtx;
-    AVFrame         *mFrame;
-    AVPacket		*mPacket;
-    SwsContext      *mSwsCtx;
-    
-    static const uint32_t
-                    dummyPalette[256];
+    AVFormatContext *mOutputCtx = nullptr;
+    AVFrame         *mFrame = nullptr;
+    AVPacket		*mPacket = nullptr;
+    SwsContext      *mSwsCtx = nullptr;
     
     friend class ffCanvas;
 };
 
-const uint32_t ffCanvas::Impl::dummyPalette[256] = { 0 };
-
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-                     std::unique_ptr<char[]> bits, int fps, QTcodec _codec)
-: mWidth(width), mHeight(height), mStride(stride), mBuffer(std::move(bits)), mFrameRate(fps),
-  mError(nullptr), mStream(nullptr), mEncCtx(nullptr), mOutputCtx(nullptr), 
-  mFrame(nullptr), mPacket(nullptr), mSwsCtx(nullptr)
+                     int fps, QTcodec _codec)
+: mWidth(width), mHeight(height), mStride(stride), mBuffer(stride * height), mFrameRate(fps)
 {
 #ifdef DEBUG
     my_av_log_set_callback(log_callback_debug);
 #endif
 
-    int res = my_avformat_alloc_output_context2(&mOutputCtx, NULL, "mov", name);
+    int res = my_avformat_alloc_output_context2(&mOutputCtx, nullptr, "mov", name);
     if (res < 0) {
         mError = "out of memory";
         return;
@@ -264,7 +259,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
 
-    res = my_avformat_write_header(mOutputCtx, NULL);
+    res = my_avformat_write_header(mOutputCtx, nullptr);
     if (res < 0) {
         my_avio_close(mOutputCtx->pb);
         mError = "failed to write video file header";
@@ -313,7 +308,7 @@ ffCanvas::Impl::addFrame(bool end)
             return;
         }
 
-        const uint8_t* src = (uint8_t*)(mBuffer.get());
+        const uint8_t* src = (uint8_t*)(mBuffer.data());
         if (my_sws_scale(mSwsCtx, &src, &mLineSize, 0, mHeight, frame->data, frame->linesize) < mHeight)
             mError = "Error recoding frame";
         frame->pts = my_av_rescale_q(mEncCtx->frame_number, mEncCtx->time_base, mStream->time_base);
@@ -376,12 +371,12 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
 
     if (temp) {
 #ifdef _WIN32
-        char buf[L_tmpnam_s];
-        if (tmpnam_s(buf) == 0)
-            mFileName = buf;
+        std::array<char, L_tmpnam_s> buf;
+        if (tmpnam_s(buf.data(), buf.size()) == 0)
+            mFileName = buf.data();
 #else
-        char buf[L_tmpnam];
-        char* tempname = tmpnam(buf);
+        std::array<char, L_tmpnam> buf;
+        char* tempname = tmpnam(buf.data());
         if (tempname)
             mFileName = tempname;
 #endif
@@ -394,14 +389,13 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
     
     int stride = width * aggCanvas::BytesPerPixel.at(mapPixFmt(fmt));
     
-    std::unique_ptr<char[]> bits = std::make_unique<char[]>(stride * height);
-    aggCanvas::attach((void*)bits.get(), width, height, stride);
-    
-    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, std::move(bits), fps, codec);
+    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, fps, codec);
     if (impl->mError) {
         mErrorMsg = impl->mError;
         impl.reset();
         mError = true;
+    } else {
+        aggCanvas::attach((void*)impl->mBuffer.data(), width, height, stride);
     }
 }
 

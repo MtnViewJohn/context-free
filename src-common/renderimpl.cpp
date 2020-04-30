@@ -36,6 +36,7 @@
 #include <cassert>
 #include <functional>
 #include <cstddef>
+#include <array>
 
 #include <cmath>
 using std::isfinite;
@@ -61,9 +62,7 @@ RendererImpl::RendererImpl( const cfdg_ptr& cfdg,
                             int width, int height, double minSize,
                             int variation, double border)
     : RendererAST(width, height), m_cfdg(std::dynamic_pointer_cast<CFDGImpl>(cfdg)),
-      m_canvas(nullptr), mColorConflict(false),
       m_maxShapes(500000000), mVariation(variation), m_border(border), 
-      mScaleArea(0.0), mScale(0.0), m_currScale(0.0), m_currArea(0.0), 
       m_minSize(minSize), mFrameTimeBounds(1.0, -Renderer::Infinity, Renderer::Infinity),
       shapeCopies(primShape::shapeMap), shapeMap{}
 {
@@ -361,6 +360,7 @@ class OutputBounds
 public:
     OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
                  int width, int height, RendererImpl& renderer);
+    OutputBounds& operator=(const OutputBounds&) = delete;
     void apply(const FinishedShape&);
 
     const Bounds& frameBounds(int frame) { return mFrameBounds[frame]; }
@@ -382,8 +382,6 @@ private:
     int                 mHeight;
     int                 mFrames;
     RendererImpl&       mRenderer;
-
-    OutputBounds& operator=(const OutputBounds&);   // not defined
 };
 
 OutputBounds::OutputBounds(int frames, const agg::trans_affine_time& timeBounds, 
@@ -714,7 +712,7 @@ RendererImpl::processSubpath(const Shape& s, bool tr, int expectedType)
     if (m_cfdg->getShapeType(s.mShapeType) != CFDGImpl::pathType && 
         primShape::isPrimShape(s.mShapeType) && expectedType == ASTreplacement::op)
     {
-        static const ASTrule PrimitivePaths[primShape::numTypes] = { { 0 }, { 1 }, { 2 }, { 3 } };
+        static const std::array<ASTrule, primShape::numTypes> PrimitivePaths = { 0, 1, 2, 3 };
         rule = &PrimitivePaths[s.mShapeType];
     } else {
         rule = m_cfdg->findRule(s.mShapeType, 0.0);

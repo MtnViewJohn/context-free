@@ -30,10 +30,10 @@ public:
   pngCanvas(const char* outfilename, bool quiet, int width, int height, 
             PixelFormat pixfmt, bool crop, int frameCount, int variation,
             bool wallpaper, Renderer *r, int mx, int my, bool temp);
-  ~pngCanvas();
+  ~pngCanvas() override;
 
 protected:
-  virtual void output(const char * outfilename, int frame = -1);
+  void output(const char * outfilename, int frame = -1) override;
 
 private:
   static int CanvasCount;

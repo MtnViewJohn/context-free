@@ -30,10 +30,11 @@
 
 #include <Windows.h>
 #include <iostream>
-#include <stdio.h>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <shlwapi.h>
+#include <array>
 
 using std::cerr;
 using std::endl;
@@ -60,10 +61,10 @@ Win32System::catastrophicError(const char* what)
 const AbstractSystem::FileChar*
 Win32System::tempFileDirectory()
 {
-    static wchar_t tempPathBufferW[32768];
+    static std::array<wchar_t, 32768> tempPathBufferW;
 
-    GetTempPathW(32768, tempPathBufferW);
-    return tempPathBufferW;
+    GetTempPathW((DWORD)tempPathBufferW.size(), tempPathBufferW.data());
+    return tempPathBufferW.data();
 }
 
 AbstractSystem::istr_ptr
@@ -100,21 +101,24 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    wchar_t wbase[32768], wrel[32768];
-    char buf[32768];
-    if (!::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase, 32768) ||
-        !::MultiByteToWideChar(CP_UTF8, 0, rel.c_str(), -1, wrel, 32768))
+    std::array<wchar_t, 32768> wbase, wrel;
+    std::array<char, 32768> buf;
+
+    if (!::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase.data(), (int)wbase.size()) ||
+        !::MultiByteToWideChar(CP_UTF8, 0, rel.c_str(), -1, wrel.data(), (int)wrel.size()))
     {
         message("Cannot find %s relative to %s", rel.c_str(), base.c_str());
         return std::string();
     }
-    PathRemoveFileSpecW(wbase);
+    PathRemoveFileSpecW(wbase.data());
     // Perform PathCombineW w/o the weird canonicalization behavior
-    if (wbase[wcslen(wbase) - 1] != L'\\')
-        wcscat_s(wbase, 32768, L"\\");
-    wcscat_s(wbase, 32768, wrel);
-    if (PathFileExistsW(wbase) && ::WideCharToMultiByte(CP_UTF8, 0, wbase, -1, buf, 32768, NULL, NULL)) {
-        return std::string(buf);
+    if (wbase[wcslen(wbase.data()) - 1] != L'\\')
+        wcscat_s(wbase.data(), wbase.size(), L"\\");
+    wcscat_s(wbase.data(), wbase.size(), wrel.data());
+    if (PathFileExistsW(wbase.data()) && 
+        ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, buf.data(), (int)buf.size(), nullptr, nullptr))
+    {
+        return std::string(buf.data());
     } else {
         return rel;
     }
@@ -134,14 +138,14 @@ Win32System::findTempFiles()
     std::vector<FileString> ret;
     const FileChar* tempdir = tempFileDirectory();
 
-    wchar_t wtempdir[32768];
-    if (wcscpy_s(wtempdir, 32768, tempFileDirectory()) ||
-        !::PathAppendW(wtempdir, TempPrefixAll) || 
-        wcsncat_s(wtempdir, 32768, L"*", 1))
+    std::array<wchar_t, 32768> wtempdir;
+    if (wcscpy_s(wtempdir.data(), wtempdir.size(), tempFileDirectory()) ||
+        !::PathAppendW(wtempdir.data(), TempPrefixAll) || 
+        wcsncat_s(wtempdir.data(), wtempdir.size(), L"*", 1))
         return ret;
 
     ::WIN32_FIND_DATAW ffd;
-    std::unique_ptr<void, FindCloser> fff(::FindFirstFileW(wtempdir, &ffd));
+    std::unique_ptr<void, FindCloser> fff(::FindFirstFileW(wtempdir.data(), &ffd));
     if (fff.get() == INVALID_HANDLE_VALUE) {
         fff.release();  // Don't call FindClose() if invalid
         return ret;     // Return empty

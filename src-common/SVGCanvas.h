@@ -53,10 +53,9 @@ public:
 private:
     using uniquePath = std::pair<AST::UIDdatatype, unsigned>;
     
-    int mPadding;
-    char mEndline[82];
+    std::string mEndline = "\n";
     std::map<uniquePath, unsigned> mPathIDMap;
-    unsigned mNextPathID;
+    unsigned mNextPathID = 1;
     agg::trans_affine mOffset;
     bool mCropped;
     std::ofstream mOutputFile;

@@ -43,7 +43,7 @@ class pathIterator;
 
 class Bounds {
     public:
-        Bounds() : mMin_X(std::numeric_limits<double>::infinity()) {}
+        Bounds() = default;
 
         Bounds(const agg::trans_affine& trans, pathIterator& helper, 
                double scale, const AST::CommandInfo& attr);
@@ -126,7 +126,10 @@ class Bounds {
 
         }
     
-        double  mMin_X, mMin_Y, mMax_X, mMax_Y;
+        double mMin_X = std::numeric_limits<double>::infinity();
+        double mMin_Y = std::numeric_limits<double>::infinity();
+        double mMax_X = std::numeric_limits<double>::infinity();
+        double mMax_Y = std::numeric_limits<double>::infinity();
 };
 
 #endif // INCLUDE_BOUNDS_H

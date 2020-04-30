@@ -34,22 +34,22 @@
 class Win32System : public AbstractSystem
 {
 protected:
-    virtual void clearAndCR();
+    void clearAndCR() override;
 public:
-    Win32System() {};
-    ~Win32System() {};
+    Win32System() = default;
+    ~Win32System() = default;
 
-    virtual void catastrophicError(const char* what);
+    void catastrophicError(const char* what) override;
 
-    virtual istr_ptr tempFileForRead(const FileString& path) override;
-    virtual ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) override;
-    virtual const FileChar* tempFileDirectory() override;
-    virtual std::vector<FileString> findTempFiles() override;
-    virtual int deleteTempFile(const FileString& name) override;
-    virtual size_t getPhysicalMemory() override;
+    istr_ptr tempFileForRead(const FileString& path) override;
+    ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) override;
+    const FileChar* tempFileDirectory() override;
+    std::vector<FileString> findTempFiles() override;
+    int deleteTempFile(const FileString& name) override;
+    size_t getPhysicalMemory() override;
 
-    virtual std::string relativeFilePath(
-        const std::string& base, const std::string& rel);
+    std::string relativeFilePath(
+        const std::string& base, const std::string& rel) override;
 
     std::wstring normalize(const std::string&) override;
 };

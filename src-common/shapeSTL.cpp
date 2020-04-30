@@ -49,10 +49,6 @@ OutputMerge::addShapes(ShapeIter begin, ShapeIter end)
     insertNext(std::numeric_limits<std::size_t>::max());
 }
 
-OutputMerge::~OutputMerge()
-{
-}
-
 void
 OutputMerge::insertNext(std::size_t i)
 {

@@ -58,13 +58,13 @@ public:
 class primIter
 {
 public:
-    primIter() : mData(nullptr), mIndex(0) {}
-    primIter(const primShape* data) : mData(data), mIndex(0) {}
+    primIter() = default;
+    primIter(const primShape* data) : mData(data) {}
     unsigned vertex(double* x, double* y);
     void rewind(unsigned i);
     void init(const primShape* shape);
 private:
-    const primShape*    mData;
-    unsigned            mIndex;
+    const primShape*    mData = nullptr;
+    unsigned            mIndex = 0;
 };
 #endif // INCLUDE_PRIMSHAPE_H

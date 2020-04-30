@@ -22,7 +22,6 @@
 //
 //
 
-
 #include "astexpression.h"
 #include "builder.h"
 #include "rendererAST.h"
@@ -32,6 +31,7 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
+#include <array>
 
 using std::floor;
 
@@ -141,7 +141,7 @@ void to_json(json& j, const StackRule& r)
     for (auto it = r.begin(), e = r.end(); it != e; ++it) {
         switch (it.type().mType) {
             case AST::NumericType: {
-                const StackType* vec = reinterpret_cast<const StackType*>(&*it);
+                auto vec = reinterpret_cast<const StackType*>(&*it);
                 if (it.type().isNatural) {
                     j.push_back(static_cast<int>(vec->number));
                 } else {
@@ -153,7 +153,7 @@ void to_json(json& j, const StackRule& r)
                 break;
             }
             case AST::ModType: {
-                const Modification* m = reinterpret_cast<const Modification*>(&*it);
+                auto m = reinterpret_cast<const Modification*>(&*it);
                 j.push_back(*m);
                 break;
             }
@@ -177,7 +177,7 @@ namespace AST {
     void args_to_json(json& j, const ASTexpression& e)
     {
         j = json::array();
-        if (const ASTcons* c = dynamic_cast<const ASTcons*>(&e)) {
+        if (auto c = dynamic_cast<const ASTcons*>(&e)) {
             for (auto&& kid: c->children)
                 j.push_back(*kid);
         } else {
@@ -201,7 +201,7 @@ namespace AST {
                              const yy::location& nameLoc, const yy::location& argsLoc,
                              Builder* b)
     : ASTexpression(nameLoc + argsLoc, true, false, NumericType),
-      functype(NotAFunction), arguments(std::move(args))
+      functype(NotAFunction), arguments(std::move(args)), random(0)
     {
         if (func.empty()) {
             CfdgError::Error(nameLoc, "bad function call", b);
@@ -306,22 +306,19 @@ namespace AST {
         return naf;
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, exp_ptr args, 
+    ASTruleSpecifier::ASTruleSpecifier(int t, std::string name, exp_ptr args, 
                                        const yy::location& loc, const ASTparameters* parent)
     : ASTexpression(loc, !args || args->isConstant, false, RuleType),
-      shapeType(t), entropyVal(name), argSource(DynamicArgs),
-      arguments(args.release()), simpleRule(nullptr), mStackIndex(0),
-      typeSignature(nullptr), parentSignature(parent)
+      shapeType(t), entropyVal(std::move(name)), argSource(DynamicArgs),
+      arguments(args.release()), parentSignature(parent)
     {
         if (parentSignature && parentSignature->empty())
             parentSignature = nullptr;
     }
     
-    ASTruleSpecifier::ASTruleSpecifier(int t, const std::string& name, const yy::location& loc)
-    : ASTexpression(loc, false, false, RuleType), shapeType(t), argSize(0),
-      entropyVal(name), argSource(StackArgs),
-      arguments(nullptr), simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
-      parentSignature(nullptr)
+    ASTruleSpecifier::ASTruleSpecifier(int t, std::string name, const yy::location& loc)
+    : ASTexpression(loc, false, false, RuleType), shapeType(t), 
+      entropyVal(std::move(name)), argSource(StackArgs)
     {
     }
     
@@ -335,10 +332,8 @@ namespace AST {
     }
     
     ASTruleSpecifier::ASTruleSpecifier(exp_ptr args, const yy::location& loc)
-    : ASTexpression(loc, false, false, RuleType), shapeType(-1),
-      argSize(0), argSource(ShapeArgs), arguments(std::move(args)),
-      simpleRule(nullptr), mStackIndex(0), typeSignature(nullptr),
-      parentSignature(nullptr)
+    : ASTexpression(loc, false, false, RuleType), argSource(ShapeArgs), 
+      arguments(std::move(args))
     {
         assert(arguments);
     }
@@ -542,8 +537,8 @@ namespace AST {
         }
     }
     
-    ASTvariable::ASTvariable(int stringNum, const std::string& str, const yy::location& loc)
-    : ASTexpression(loc), stringIndex(stringNum), text(str), stackIndex(0),
+    ASTvariable::ASTvariable(int stringNum, std::string str, const yy::location& loc)
+    : ASTexpression(loc), stringIndex(stringNum), text(std::move(str)), stackIndex(0),
       isParameter(false) { };
     
     ASTuserFunction::ASTuserFunction(int name, ASTexpression* args, ASTdefine* func,
@@ -563,10 +558,10 @@ namespace AST {
     }
     
     ASTarray::ASTarray(int nameIndex, exp_ptr args,
-                       const yy::location& loc, const std::string& name)
+                       const yy::location& loc, std::string name)
     : ASTexpression(loc, false, false, NumericType), mName(nameIndex),
       mArgs(std::move(args)), mLength(1), mStride(1),
-      mStackIndex(-1), mCount(0), isParameter(false), entString(name)
+      mStackIndex(-1), mCount(0), isParameter(false), entString(std::move(name))
     {
     }
 
@@ -692,7 +687,7 @@ namespace AST {
         // Cannot insert an ASTcons into children, it will be flattened away.
         // You must wrap the ASTcons in an ASTparen in order to insert it whole.
         
-        if (ASTcons* c = dynamic_cast<ASTcons*>(sib)) {
+        if (auto c = dynamic_cast<ASTcons*>(sib)) {
             children.reserve(children.size() + c->children.size());
             std::move(c->children.begin(), c->children.end(), std::back_inserter(children));
             delete sib;
@@ -806,20 +801,20 @@ namespace AST {
     int
     ASToperator::evaluate(double* res, int length, RendererAST* rti) const
     {
-        double l[AST::MaxVectorSize];
-        double r[AST::MaxVectorSize];
+        std::array<double, AST::MaxVectorSize> l, r;
         
         if (res && length < 1)
             return -1;
         
         if (mType == FlagType && op == '+') {
-            if (left->evaluate(res ? l : nullptr, 1, rti) != 1)
+            if (left->evaluate(res ? l.data() : nullptr, 1, rti) != 1)
                 return -1;
-            if (!right || right->evaluate(res ? r : nullptr, 1, rti) != 1)
+            if (!right || right->evaluate(res ? r.data() : nullptr, 1, rti) != 1)
                 return -1;
-            int f = static_cast<int>(l[0]) | static_cast<int>(r[0]);
-            if (res)
+            if (res) {
+                int f = static_cast<int>(l[0]) | static_cast<int>(r[0]);
                 *res = static_cast<double>(f);
+            }
             return 1;
         }
         
@@ -828,7 +823,7 @@ namespace AST {
             return -1;
         }
         
-        int leftnum = left->evaluate(res ? l : nullptr, AST::MaxVectorSize, rti);
+        int leftnum = left->evaluate(res ? l.data() : nullptr, (int)l.size(), rti);
         if (leftnum == -1) {
             CfdgError::Error(left->where, "illegal operand");
             return -1;
@@ -846,7 +841,7 @@ namespace AST {
             }
         }
         
-        int rightnum = right ? right->evaluate(res ? r : nullptr, AST::MaxVectorSize, rti) : 0;
+        int rightnum = right ? right->evaluate(res ? r.data() : nullptr, (int)r.size(), rti) : 0;
         if (right && rightnum == -1) {
             CfdgError::Error(right->where, "illegal operand");
             return -1;
@@ -938,10 +933,10 @@ namespace AST {
                     break;
                 case '^':
                     *res = pow(l[0], r[0]);
-                    if (isNatural && *res < 9007199254740992.) {
+                    if (isNatural && *res < MaxNatural) {
                         uint64_t pow = 1;
-                        uint64_t il = static_cast<uint64_t>(l[0]);
-                        uint64_t ir = static_cast<uint64_t>(r[0]);
+                        auto il = static_cast<uint64_t>(l[0]);
+                        auto ir = static_cast<uint64_t>(r[0]);
                         while (ir) {
                             if (ir & 1) pow *= il;
                             il *= il;
@@ -1005,10 +1000,9 @@ namespace AST {
                     *res = MinMax(arguments.get(), rti, functype == Min);
                 return 1;
             case Dot: {
-                double l[AST::MaxVectorSize];
-                double r[AST::MaxVectorSize];
-                int lc = arguments->getChild(0)->evaluate(res ? l : nullptr, AST::MaxVectorSize, rti);
-                int rc = arguments->getChild(1)->evaluate(res ? r : nullptr, AST::MaxVectorSize, rti);
+                std::array<double, AST::MaxVectorSize> l, r;
+                int lc = arguments->getChild(0)->evaluate(res ? l.data() : nullptr, AST::MaxVectorSize, rti);
+                int rc = arguments->getChild(1)->evaluate(res ? r.data() : nullptr, AST::MaxVectorSize, rti);
                 if (lc == rc && lc > 1) {
                     *res = 0.0;
                     for (int i = 0; i < lc; ++i)
@@ -1017,10 +1011,9 @@ namespace AST {
                 return 1;
             }
             case Cross: {
-                double l[3];
-                double r[3];
-                if (arguments->getChild(0)->evaluate(res ? l : nullptr, 3, rti) == 3 &&
-                    arguments->getChild(1)->evaluate(res ? r : nullptr, 3, rti) == 3)
+                std::array<double, 3> l, r;
+                if (arguments->getChild(0)->evaluate(res ? l.data() : nullptr, 3, rti) == 3 &&
+                    arguments->getChild(1)->evaluate(res ? r.data() : nullptr, 3, rti) == 3)
                 {
                     res[0] = l[1]*r[2] - l[2]*r[1];
                     res[1] = l[2]*r[0] - l[0]*r[2];
@@ -1029,16 +1022,16 @@ namespace AST {
                 return 3;
             }
             case Vec: {
-                double l[AST::MaxVectorSize + 1];
-                int lc = arguments->evaluate(res ? l : nullptr, AST::MaxVectorSize + 1, rti);
+                std::array<double, AST::MaxVectorSize + 1> l;
+                int lc = arguments->evaluate(res ? l.data() : nullptr, (int)l.size(), rti);
                 if (lc > 1)
                     for (int i = 0; i < destLength; ++i)
                         res[i] = l[i % (lc - 1) + 1];
                 return destLength;
             }
             case Hsb2Rgb: {
-                double c[3];
-                if (arguments->evaluate(res ? c : nullptr, 3, rti) == 3) {
+                std::array<double, 3> c;
+                if (arguments->evaluate(res ? c.data() : nullptr, 3, rti) == 3) {
                     agg::rgba rgb;
                     HSBColor hsb(c[0], c[1], c[2], 1.0);
                     hsb.getRGBA(rgb);
@@ -1047,8 +1040,8 @@ namespace AST {
                 return 3;
             }
             case Rgb2Hsb: {
-                double c[3];
-                if (arguments->evaluate(res ? c : nullptr, 3, rti) == 3) {
+                std::array<double, 3> c;
+                if (arguments->evaluate(res ? c.data() : nullptr, 3, rti) == 3) {
                     agg::rgba rgb(c[0], c[1], c[2], 1.0);
                     HSBColor hsb(rgb);
                     res[0] = hsb.h; res[1] = hsb.s; res[2] = hsb.b;
@@ -1056,18 +1049,18 @@ namespace AST {
                 return 3;
             }
             case RandDiscrete: {
-                double w[AST::MaxVectorSize];
-                int wc = arguments->evaluate(res ? w : nullptr, AST::MaxVectorSize, rti);
+                std::array<double, AST::MaxVectorSize> w;
+                int wc = arguments->evaluate(res ? w.data() : nullptr, (int)w.size(), rti);
                 if (wc >= 1)
-                    *res = static_cast<double>(rti->mCurrentSeed.getDiscrete(wc, w));
+                    *res = static_cast<double>(rti->mCurrentSeed.getDiscrete(wc, w.data()));
                 return 1;
             }
             default:
                 break;
         }
         
-        double a[2];
-        int count = arguments->evaluate(res ? a : nullptr, 2, rti);
+        std::array<double, 2> a;
+        int count = arguments->evaluate(res ? a.data() : nullptr, 2, rti);
         // no need to check the argument count, the constructor already checked it
         
         // But check it anyway to make valgrind happy
@@ -1353,7 +1346,8 @@ namespace AST {
             return -1;
         
         if (res) {
-            if (rti == nullptr && (!mData || !mArgs->isConstant)) throw DeferUntilRuntime();
+            if (!rti && (mData.empty() || !mArgs->isConstant)) throw DeferUntilRuntime();
+            // invariant here: rti || (!mData.empty() && mArgs->isConstant)
             
             double index_d;
             if (mArgs->evaluate(&index_d, 1, rti) != 1) {
@@ -1366,9 +1360,7 @@ namespace AST {
                 return -1;
             }
             
-            const double* source = mData.get();
-            if (!source)
-                source = &(rti->stackItem(mStackIndex)->number);
+            const double* source = mData.empty() ? &(rti->stackItem(mStackIndex)->number) : mData.data();
             
             for (int i = 0; i < mLength; ++i)
                 res[i] = source[i * mStride + index];
@@ -1400,7 +1392,7 @@ namespace AST {
             CfdgError::Error(where, "Non-stack variable accessed through stack.");
         
         const StackType* stackItem = rti->stackItem(stackIndex);
-        const Modification* smod = reinterpret_cast<const Modification*> (stackItem);
+        auto smod = reinterpret_cast<const Modification*> (stackItem);
         if (shapeDest) {
             m *= *smod;
         } else {
@@ -1486,7 +1478,7 @@ namespace AST {
                 return;
             }
             if (rti == nullptr) {
-                const ASTmodification* mod = dynamic_cast<const ASTmodification*>(args.get());
+                auto mod = dynamic_cast<const ASTmodification*>(args.get());
                 // Color adjustments are not associative like geometry adjustments,
                 // so they must be done in order at run-time
                 if (!mod || (mod->modClass & (ASTmodification::HueClass |
@@ -1505,7 +1497,7 @@ namespace AST {
             return;
         }
         
-        double modArgs[6] = {0.0};
+        std::array<double, 6> modArgs = { 0.0 };
         int argcount = 0;
 
         if (args) {
@@ -1515,14 +1507,14 @@ namespace AST {
                         CfdgError::Error(where, "Blend adjustments require flag arguments");
                         return;
                     }
-                    argcount = args->evaluate(modArgs, 6, rti);
+                    argcount = args->evaluate(modArgs.data(), 6, rti);
                     break;
                 case FlagType:
                     if (modType != ASTmodTerm::blend) {
                         CfdgError::Error(where, "Only blend adjustments accept flag arguments");
                         return;
                     }
-                    argcount = args->evaluate(modArgs, 1, rti);
+                    argcount = args->evaluate(modArgs.data(), 1, rti);
                     break;
                 default:
                     CfdgError::Error(where, "Adjustments require numeric arguments");
@@ -1535,11 +1527,12 @@ namespace AST {
             return;
         }
         
-        double arg[6] = {0.0};
+        std::array<double, 6> arg = {0.0};
         for (int i = 0; i < argcount; ++i)
             arg[i] = fmax(-1.0, fmin(1.0, modArgs[i]));
         
-        double *color = &m.m_Color.h, *target = &m.m_ColorTarget.h;
+        double* color = &m.m_Color.h;
+        double* target = &m.m_ColorTarget.h;
         bool hue = true;
         unsigned mask = HSBColor::HueMask;
         
@@ -1600,7 +1593,7 @@ namespace AST {
                     }
                     case 6: {
                         agg::trans_affine par;
-                        par.rect_to_parl(0.0, 0.0, 1.0, 1.0, modArgs);
+                        par.rect_to_parl(0.0, 0.0, 1.0, 1.0, modArgs.data());
                         m.m_transform.premultiply(par);
                         break;
                     }
@@ -1992,7 +1985,7 @@ namespace AST {
         ASTexpression* ret = nullptr;
         // Can't use range for with decayed array pointers :(
         for (auto val = result; val < result + length; ++val) {
-            ASTreal* r = new ASTreal(*val, from->where);
+            auto r = new ASTreal(*val, from->where);
             r->mType = from->mType;
             r->isNatural = from->isNatural;
             
@@ -2008,13 +2001,13 @@ namespace AST {
         Simplify(arguments, b);
         
         if (isConstant) {
-            double result[AST::MaxVectorSize];
-            int len = evaluate(result, AST::MaxVectorSize);
+            std::array<double, AST::MaxVectorSize> result;
+            int len = evaluate(result.data(), (int)result.size());
             if (len < 0) {
                 return nullptr;
             }
             
-            return MakeResult(result, len, this);
+            return MakeResult(result.data(), len, this);
         }
         
         return nullptr;
@@ -2038,7 +2031,7 @@ namespace AST {
     ASTruleSpecifier::simplify(Builder* b)
     {
         if (arguments) {
-            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
+            if (auto carg = dynamic_cast<ASTcons*>(arguments.get())) {
                 for (auto& child: carg->children)
                     Simplify(child, b);
             } else {
@@ -2053,7 +2046,7 @@ namespace AST {
                     CfdgError::Error(where, "Error processing shape variable.", b);
                     return nullptr;
                 }
-                if (ASTruleSpecifier* r = dynamic_cast<ASTruleSpecifier*>(bound.mDefinition->mExpression.get())) {
+                if (auto r = dynamic_cast<ASTruleSpecifier*>(bound.mDefinition->mExpression.get())) {
                     // The source ASTruleSpec must already be type-checked
                     // because it is lexically earlier
                     shapeType = r->shapeType;
@@ -2107,7 +2100,7 @@ namespace AST {
     ASTuserFunction::simplify(Builder* b)
     {
         if (arguments) {
-            if (ASTcons* carg = dynamic_cast<ASTcons*>(arguments.get())) {
+            if (auto carg = dynamic_cast<ASTcons*>(arguments.get())) {
                 // Can't use ASTcons::simplify() because it will collapse the
                 // ASTcons if it only has one child and that will break the
                 // function arguments.
@@ -2153,12 +2146,12 @@ namespace AST {
         Simplify(right, b);
         
         if (isConstant && (mType == NumericType || mType == FlagType)) {
-            double result[AST::MaxVectorSize];
-            if (evaluate(result, tupleSize) != tupleSize) {
+            std::array<double, AST::MaxVectorSize> result;
+            if (evaluate(result.data(), tupleSize) != tupleSize) {
                 return nullptr;
             }
             
-            return MakeResult(result, tupleSize, this);
+            return MakeResult(result.data(), tupleSize, this);
         }
         
         return nullptr;
@@ -2253,13 +2246,13 @@ namespace AST {
             // Put in code for separating color changes and target color changes
             
             // Drop identity transforms here, not in type-check
-            double d[2];
+            std::array<double, 2> d;
             if (mod->isConstant && mod->modType == ASTmodTerm::size &&
-                mod->args->evaluate(d, 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
+                mod->args->evaluate(d.data(), 2) == 2 && d[0] == 1.0 && d[1] == 1.0)
                 continue;
             
             int mc = ClassMap.at(mod->modType);
-            const ASTmodification* modmod = dynamic_cast<const ASTmodification*>(mod->args.get());
+            auto modmod = dynamic_cast<const ASTmodification*>(mod->args.get());
             if (mod->modType == ASTmodTerm::modification && modmod)
                 mc = modmod->modClass;
             modClass |= mc;
@@ -2299,12 +2292,12 @@ namespace AST {
     ASTarray::simplify(Builder* b)
     {
         if (bound.mType == NumericType && bound.mStackIndex == -1) {
-            mData = std::make_unique<double[]>(mCount);
+            mData.resize(mCount);
             if (!bound.mDefinition || !bound.mDefinition->mExpression) {
                 CfdgError::Error(where, "Error in array element", b);
                 return nullptr;
             }
-            if (bound.mDefinition->mExpression->evaluate(mData.get(), mCount) != mCount) {
+            if (bound.mDefinition->mExpression->evaluate(mData.data(), mCount) != mCount) {
                 CfdgError::Error(where, "Error computing vector data", b);
                 isConstant = false;
                 return nullptr;
@@ -2313,7 +2306,7 @@ namespace AST {
         
         Simplify(mArgs, b);
 
-        if (!mData || !isConstant || mLength > 1)
+        if (mData.empty() || !isConstant || mLength > 1)
             return nullptr;
         
         double i;
@@ -2327,7 +2320,7 @@ namespace AST {
             return nullptr;
         }
         
-        ASTreal* top = new ASTreal(mData[index], where);
+        auto top = new ASTreal(mData[index], where);
         top->text = entString;                // use variable name for entropy
         top->isNatural = isNatural;
         return top;
@@ -2520,7 +2513,7 @@ namespace AST {
                         break;
                 }
                 
-                static FuncType mightBeNatural[] =
+                static std::array<FuncType, 11> mightBeNatural =
                 {
                     Mod, Abs, Min, Max, BitNot, BitOr, BitAnd, BitXOR, BitLeft,
                     BitRight, RandInt
@@ -2530,7 +2523,7 @@ namespace AST {
                     isNatural = !arguments || arguments->isNatural;
                 }
                 
-                static FuncType mustBeNatural[] = {Factorial, Sg, IsNatural, Div, Divides};
+                static std::array<FuncType, 5> mustBeNatural = {Factorial, Sg, IsNatural, Div, Divides};
                 
                 if (std::find(std::begin(mustBeNatural), std::end(mustBeNatural), functype) != std::end(mustBeNatural)) {
                     if (arguments && !arguments->isNatural && !b->impure())
@@ -2712,8 +2705,8 @@ namespace AST {
                             if (!typeSignature || !parentSignature) {
                                 CfdgError::Error(where, "Parameter reuse only allowed when shape has parameters to reuse.", b);
                             } else if (typeSignature != parentSignature) {
-                                ASTparameters::const_iterator param_it = typeSignature->begin();
-                                ASTparameters::const_iterator parent_it = parentSignature->begin();
+                                auto param_it = typeSignature->begin();
+                                auto parent_it = parentSignature->begin();
                                 while (param_it != typeSignature->end() && parent_it != parentSignature->end()) {
                                     if (*param_it != *parent_it) {
                                         CfdgError::Error(where, "Parameter reuse only allowed when type signature is identical.", b);
@@ -2771,7 +2764,7 @@ namespace AST {
                             CfdgError::Error(where, "Error processing shape variable.", b);
                             return nullptr;
                         }
-                        const ASTruleSpecifier* r = dynamic_cast<const ASTruleSpecifier*>(bound.mDefinition->mExpression.get());
+                        auto r = dynamic_cast<const ASTruleSpecifier*>(bound.mDefinition->mExpression.get());
                         if (r == nullptr) {
                             CfdgError::Error(where, "Error processing shape variable.", b);
                             return nullptr;
@@ -2847,7 +2840,7 @@ namespace AST {
                     stackIndex = IllegalStackIndex;
                 } else {
                     if (bound.mType == AST::RuleType) {
-                        ASTruleSpecifier* ret = new ASTruleSpecifier(stringIndex, name, where);
+                        auto ret = new ASTruleSpecifier(stringIndex, name, where);
                         ret->compile(ph, b);    // always return nullptr
                         return ret;
                     }
@@ -2901,9 +2894,8 @@ namespace AST {
                 }
                 
                 // if (!def && p)
-                ASTruleSpecifier* r = new ASTruleSpecifier(nameIndex, name,
-                                                           std::move(arguments),
-                                                           where, nullptr);
+                auto r = new ASTruleSpecifier(nameIndex, name, std::move(arguments),
+                                              where, nullptr);
                 r->compile(CompilePhase::TypeCheck, b); // always returns nullptr
                 return r;
                 break;
@@ -2929,7 +2921,7 @@ namespace AST {
                 // transfer non-const definitions to arguments
                 ASTexpression* args = nullptr;
                 for (auto& rep: mDefinitions->mBody) {
-                    if (ASTdefine* def = dynamic_cast<ASTdefine*>(rep.get())) {
+                    if (auto def = dynamic_cast<ASTdefine*>(rep.get())) {
                         if (!def) {
                             CfdgError::Error(where, "Missing let() definition", b);
                         } else if (def->mDefineType == ASTdefine::StackDefine) {
@@ -3578,18 +3570,18 @@ namespace AST {
         j["array index"] = *mArgs;
         j["array length"] = mLength;
         j["array stride"] = mStride;
-        if (mData) {
+        if (!mData.empty()) {
             auto jd = json::array();
-            for (int i = 0; i < mCount; ++i)
-                jd.push_back(json_float(mData[i]));
+            for (auto d: mData)
+                jd.push_back(json_float(d));
             j["array constant data"] = jd;
         }
     }
     
     void
-    ASTmodification::addEntropy(const std::string& s)
+    ASTmodification::addEntropy(const std::string& name)
     {
-        modData.mRand64Seed.xorString(s.c_str(), entropyIndex);
+        modData.mRand64Seed.xorString(name.c_str(), entropyIndex);
     }
     
     std::size_t
@@ -3607,7 +3599,7 @@ namespace AST {
         if (select < 0.0)
             return 0;
 
-        std::size_t i = static_cast<std::size_t>(select);
+        auto i = static_cast<std::size_t>(select);
 
         if (i >= arguments.size())
             return arguments.size() - 1;

@@ -70,8 +70,8 @@ abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int wi
 #ifdef _WIN32
     mStride += ((-mStride) & 3);
 #endif
-    mData = std::make_unique<unsigned char[]>(mStride * mFullHeight);
-    attach(mData.get() + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
+    mData.resize(mStride * mFullHeight, '\0');
+    attach(mData.data() + mOriginY * mStride + mOriginX * bpp, mWidth, mHeight, mStride);
 
     if (quiet) return;
     cout << prettyInt(static_cast<unsigned long>(mFullWidth)) << "w x " <<

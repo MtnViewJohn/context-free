@@ -26,6 +26,7 @@
 #define INCLUDE_ABSTRACTPNGCANVAS_H
 
 #include "aggCanvas.h"
+#include <vector>
 
 class abstractPngCanvas : public aggCanvas {
 public:
@@ -42,7 +43,7 @@ protected:
     int mCurrentFrame;
     int  mVariation;
 
-    std::unique_ptr<unsigned char[]> mData;
+    std::vector<unsigned char> mData;
     int mStride;
     PixelFormat mPixelFormat;
     bool mCrop;
