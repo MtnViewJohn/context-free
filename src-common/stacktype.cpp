@@ -303,7 +303,7 @@ EvalArgs(RendererAST* rti, const StackRule* parent, StackType::iterator& dest,
             }
             case AST::ModType: {
                 static const Modification zeroMod;
-                auto m = reinterpret_cast<Modification&> (dest->number);
+                auto& m = reinterpret_cast<Modification&> (dest->number);
                 m = zeroMod;
                 arg.evaluate(m, false, rti);
                 break;
