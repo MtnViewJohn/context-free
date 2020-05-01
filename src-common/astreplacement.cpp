@@ -536,7 +536,7 @@ namespace AST {
     {
         if (r->mCurrentPath->mCached)
             return;
-        double opData[7];
+        pathOpData opData;
         pathData(opData, r);
         r->mCurrentPath->addPathOp(this, opData, s, tr, r);
     }
@@ -1352,7 +1352,7 @@ namespace AST {
     }
     
     void
-    ASTcompiledPath::addPathOp(const ASTpathOp* pop, double data[6], const Shape& s, 
+    ASTcompiledPath::addPathOp(const ASTpathOp* pop, ASTpathOp::pathOpData& data, const Shape& s,
                                bool tr, RendererAST* r)
     {
         // Process the parameters for ARCTO/ARCREL
@@ -1376,9 +1376,9 @@ namespace AST {
                 sweep = !sweep;
             }
         } else if (tr) {
-            s.mWorldState.m_transform.transform(data + 0, data + 1);
-            s.mWorldState.m_transform.transform(data + 2, data + 3);
-            s.mWorldState.m_transform.transform(data + 4, data + 5);
+            s.mWorldState.m_transform.transform(&data[0], &data[1]);
+            s.mWorldState.m_transform.transform(&data[2], &data[3]);
+            s.mWorldState.m_transform.transform(&data[4], &data[5]);
         }
         
         // If this is the first path operation following a path command then set the 
@@ -1440,23 +1440,23 @@ namespace AST {
         
         switch (pop->mPathOp) {
             case MOVEREL:
-                mPath.rel_to_abs(data + 0, data + 1);
+                mPath.rel_to_abs(&data[0], &data[1]);
 		FALLTHROUGH;
             case MOVETO:
                 mPath.move_to(data[0], data[1]);
                 r->mWantMoveTo = false;
                 break;
             case LINEREL:
-                mPath.rel_to_abs(data + 0, data + 1);
+                mPath.rel_to_abs(&data[0], &data[1]);
 		FALLTHROUGH;
             case LINETO:
                 mPath.line_to(data[0], data[1]);
                 break;
             case ARCREL:
-                mPath.rel_to_abs(data + 0, data + 1);
+                mPath.rel_to_abs(&data[0], &data[1]);
 		FALLTHROUGH;
             case ARCTO: {
-                if (!agg::is_vertex(mPath.last_vertex(data + 2, data + 3)) ||
+                if (!agg::is_vertex(mPath.last_vertex(&data[2], &data[3])) ||
                     (tr && s.mWorldState.m_transform.determinant() < 1e-10))
                 {
                     break;
@@ -1480,13 +1480,13 @@ namespace AST {
                 break;
             }
             case CURVEREL:
-                mPath.rel_to_abs(data + 0, data + 1);
-                mPath.rel_to_abs(data + 2, data + 3);
-                mPath.rel_to_abs(data + 4, data + 5);
+                mPath.rel_to_abs(&data[0], &data[1]);
+                mPath.rel_to_abs(&data[2], &data[3]);
+                mPath.rel_to_abs(&data[4], &data[5]);
 		FALLTHROUGH;
             case CURVETO:
                 if ((pop->mFlags & CF_CONTINUOUS) &&
-                    !agg::is_curve(mPath.last_vertex(data + 4, data + 5)))
+                    !agg::is_curve(mPath.last_vertex(&data[4], &data[5])))
                 {
                     CfdgError::Error(pop->mLocation, "Smooth curve operations must be preceded by another curve operation.");
                     break;
@@ -1554,13 +1554,13 @@ namespace AST {
     }
     
     void
-    ASTpathOp::pathData(double* data, RendererAST* rti) const
+    ASTpathOp::pathData(pathOpData& data, RendererAST* rti) const
     {
         if (mArguments) {
-            if (mArguments->evaluate(data, 7, rti) < 0)
+            if (mArguments->evaluate(data.data(), 6, rti) < 0)
                 CfdgError::Error(mArguments->where, "Cannot evaluate arguments");
         } else {
-            mChildChange.modData.m_transform.store_to(data);
+            mChildChange.modData.m_transform.store_to(data.data());
         }
     }
     
@@ -1568,11 +1568,11 @@ namespace AST {
     ASTpathOp::pathDataConst(Builder* b)
     {
         if (mArguments && mArguments->isConstant) {
-            double data[7];
-            if (mArguments->evaluate(data, 7) < 0)
+            pathOpData data;
+            if (mArguments->evaluate(data.data(), 6) < 0)
                 CfdgError::Error(mArguments->where, "Cannot evaluate arguments", b);
             mArguments.reset();
-            mChildChange.modData.m_transform.load_from(data);
+            mChildChange.modData.m_transform.load_from(data.data());
         }
     }
 
@@ -1614,17 +1614,23 @@ namespace AST {
             case LINEREL:
             case MOVETO:
             case MOVEREL:
+                if (mFlags)
+                    CfdgError::Error(mLocation, "No flags can be used with this operation", b);
                 if (mArgCount != 2)
                     CfdgError::Error(mLocation, "Move/line path operation requires two arguments", b);
                 break;
             case ARCTO:
             case ARCREL:
+                if (mFlags & ~(CF_ARC_CW | CF_ARC_LARGE))
+                    CfdgError::Error(mLocation, "Only CF::ArcCW and CF::ArcLarge flags can be used with this operation", b);
                 if (mArgCount != 3 && mArgCount != 5)
                     CfdgError::Error(mLocation, "Arc path operations require three or five arguments", b);
                 break;
             case CURVETO:
             case CURVEREL:
-                if (mFlags & CF_CONTINUOUS) {
+                if (mFlags & ~CF_CONTINUOUS) {
+                    CfdgError::Error(mLocation, "Only CF::Continuous flag can be used with this operation", b);
+                } else if (mFlags & CF_CONTINUOUS) {
                     if (mArgCount != 2 && mArgCount != 4)
                         CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments", b);
                 } else {
@@ -1633,6 +1639,8 @@ namespace AST {
                 }
                 break;
             case CLOSEPOLY:
+                if (mFlags & ~CF_ALIGN)
+                    CfdgError::Error(mLocation, "Only CF::Align flag can be used with this operation", b);
                 if (mArgCount)
                     CfdgError::Error(mLocation, "CLOSEPOLY takes no arguments, only flags", b);
                 break;

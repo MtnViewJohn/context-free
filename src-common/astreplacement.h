@@ -234,6 +234,7 @@ namespace AST {
     };
     class ASTpathOp final : public ASTreplacement {
     public:
+        using pathOpData = std::array<double, 6>;
         exp_ptr mArguments;
         mod_ptr mOldStyleArguments;
         int mArgCount;
@@ -245,7 +246,7 @@ namespace AST {
         void traverse(const Shape& s, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
     private:
-        void pathData(double* data, RendererAST* rti) const;
+        void pathData(pathOpData& data, RendererAST* rti) const;
         void pathDataConst(Builder* b);
         void makePositional(Builder* b);
         void checkArguments(Builder* b);
@@ -286,7 +287,7 @@ namespace AST {
         CommandInfo::UIDtype mPathUID;
         
         void finish(bool setAttr, RendererAST* r);
-        void addPathOp(const ASTpathOp* pop, double data[6], const Shape& s, 
+        void addPathOp(const ASTpathOp* pop, ASTpathOp::pathOpData& data, const Shape& s, 
                        bool tr, RendererAST* r);
         
         ASTcompiledPath();
