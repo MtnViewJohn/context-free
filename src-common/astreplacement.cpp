@@ -1237,9 +1237,9 @@ namespace AST {
     
     static exp_ptr GetFlagsAndStroke(ASTtermArray& terms, int& flags, Builder* b)
     {
-        ASTtermArray temp(std::move(terms));
         exp_ptr ret;
-        terms.clear();
+        ASTtermArray temp;
+        temp.swap(terms);
         
         for (term_ptr& term: temp) {
             switch (term->modType) {
