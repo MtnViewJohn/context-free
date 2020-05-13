@@ -774,9 +774,11 @@ namespace {
         [mMoviePlayer play];
         mAtEndofMovie = false;
         [self setMovieImagesPlay: YES];
+        [[self window] makeFirstResponder: [mEditor content]];
     } else {
         [mMoviePlayer pause];
         [self setMovieImagesPlay: NO];
+        [[self window] makeFirstResponder: mTimeSlider];
     }
 }
 
@@ -785,14 +787,16 @@ namespace {
     // Rewind button repurposed as looping button
     mLoop = [mRewindButton state] != NSOffState;
     [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
+    [[self window] makeFirstResponder: mTimeSlider];
 }
 
 - (IBAction) movieTimeChange:(id)sender
 {
     auto scale = mMoviePlayer.currentItem.duration.timescale;
-    double time = [mTimeSlider doubleValue];
+    double time = [mTimeSlider doubleValue] / mFrameRate;
     CMTime t = CMTimeMakeWithSeconds(time, scale);
     [mMoviePlayer seekToTime:t toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    [[self window] makeFirstResponder: mTimeSlider];
 }
 
 - (void)drawRect:(NSRect)rect
@@ -2607,7 +2611,7 @@ long MakeColor(id v)
                                                                    usingBlock: ^(CMTime time) {
                                                                        if ([[mMoviePlayer currentItem] status] == AVPlayerItemStatusReadyToPlay) {
                                                                            double now = CMTimeGetSeconds([mMoviePlayer currentTime]);
-                                                                           mTimeSlider.doubleValue = now;
+                                                                           mTimeSlider.doubleValue = now * mFrameRate;
                                                                            mCurrentTime.doubleValue = now;
                                                                            [mTimeSlider setEnabled: YES];
                                                                        } else {
@@ -2752,6 +2756,7 @@ long MakeColor(id v)
                                                                                 [mMoviePlayer seekToTime: kCMTimeZero];
                                                                             } else {
                                                                                 mAtEndofMovie = true;
+                                                                                [[self window] makeFirstResponder: mTimeSlider];
                                                                                 [self setMovieImagesPlay: NO];
                                                                             }
                                                                         }
@@ -2768,7 +2773,12 @@ long MakeColor(id v)
     CMTime lengthTime = [playerItem duration];
     double length = CMTimeGetSeconds(lengthTime);
     if (isfinite(length)) {
-        mTimeSlider.maxValue = length;
+        for (AVPlayerItemTrack* track in [playerItem tracks]) {
+            AVAssetTrack* asset = [track assetTrack];
+            mFrameRate = [asset nominalFrameRate];
+        }
+        mTimeSlider.altIncrementValue = 1.0;
+        mTimeSlider.maxValue = length * mFrameRate;
         mTimeLabel.doubleValue = length;
         mTimeSlider.doubleValue = 0.0;
         [self setMovieImagesPlay: NO];
