@@ -50,7 +50,7 @@ RATIONAL2   [0-9]+%?\.\.
 FLOAT       ([0-9]+\.[0-9]*[eE][+-]?[0-9]+%?)|(\.[0-9]+[eE][+-]?[0-9]+%?)|[0-9]+[eE][+-]?[0-9]+%?
 PATHOP      MOVETO|LINETO|ARCTO|CURVETO|MOVEREL|LINEREL|ARCREL|CURVEREL|CLOSEPOLY
 FILENAME   [a-zA-Z\200-\377][a-zA-Z\200-\377_\-0-9\.]*\.cfdg
-STRINGLET  [a-zA-Z\200-\377_]([a-zA-Z_0-9\200-\377])*
+STRINGLET  [a-zA-Z\200-\377]([a-zA-Z_0-9\200-\377])*
 STRING     {STRINGLET}(::{STRINGLET})*
 EOL         \n|\r\n|\r
 
