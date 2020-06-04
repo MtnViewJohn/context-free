@@ -54,6 +54,10 @@
 
 namespace yy {
 
+/* import the parser's token type into a local typedef */
+using token = CfdgParser::token;
+using token_type = CfdgParser::token_type;
+
 /** Scanner is a derived class to add some extra function to the scanner
  * class. Flex itself creates a class named yyFlexLexer. However we change 
  * the context of the generated yylex() function to be contained within the
@@ -63,7 +67,7 @@ class Scanner : public CfdgFlexLexer
 {
 public:
     enum LocAction_t { normalAction, pushLoc, popLoc };
-    using tokenMap = std::map<CfdgParser::token_type, const char*>;
+    using tokenMap = std::map<token_type, const char*>;
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */
@@ -80,11 +84,11 @@ public:
         CfdgParser::location_type* yylloc
     );
 
-    Builder*    driver;
-    LocAction_t nextLocAction;
-    int         startToken;
-    int         maybeVersion;
-    tokenMap    utf8chars;
+    Builder*    driver = nullptr;
+    LocAction_t nextLocAction = normalAction;
+    int         startToken = token::CFDG2;
+    int         maybeVersion = 0;
+    static const tokenMap utf8chars;
     
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
@@ -93,9 +97,9 @@ private:
     void setupLoc(CfdgParser::location_type* yylloc);
     unsigned int utf8length(const char* txt, std::size_t len);
     std::stack<CfdgParser::location_type> mLocationStack;
-    bool        atStartup;
-    CfdgParser::token_type v2token(CfdgParser::semantic_type* yylval,
-                                   AST::ASTmodTerm::modTypeEnum mod);
+    bool        atStartup = true;
+    token_type  v2token(CfdgParser::semantic_type* yylval,
+                        AST::ASTmodTerm::modTypeEnum mod);
 };
 
 } // namespace yy

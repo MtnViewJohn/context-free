@@ -36,11 +36,7 @@
     #include "astexpression.h"
     #include "cfdg.tab.hpp"
     #include <cstring>
-
-    /* import the parser's token type into a local typedef */
-    typedef yy::CfdgParser::token token;
-    typedef yy::CfdgParser::token_type token_type;    
-    
+    #include <memory>
 %}
 
 
@@ -78,9 +74,8 @@ EOL         \n|\r\n|\r
     setupLoc(yylloc);
     
     if (atStartup) {
-        int t = startToken;
         atStartup = false;
-        return t;
+        return startToken;
     }
 %}
                                                                 
@@ -214,14 +209,15 @@ EOL         \n|\r\n|\r
 
 {PATHOP}    {yylval->string = new std::string(yytext); return token::USER_PATHOP;}
 {STRING}    {
-    // This greedy string regex gobbles up Unicode operators. Find the first one
-    // and chop the string there.
-    yylval->string = new std::string(yytext);
-    std::size_t pos = std::string::npos;
-    token_type tok = token::USER_STRING;
-    for (tokenMap::value_type& tokenEntry: utf8chars) {
-        std::size_t spos = yylval->string->find(tokenEntry.second);
-        if (spos != std::string::npos && (spos < pos || pos == std::string::npos)) {
+    // This greedy string regex gobbles up all Unicode characters, including the
+    // Unicode operators. Look for Unicode operators in the string and chop
+    // it at the first one found.
+    auto greedy = std::make_unique<std::string>(yytext);
+    auto pos = std::string::npos;
+    auto tok = token::USER_STRING;
+    for (auto&& tokenEntry: utf8chars) {
+        auto spos = greedy->find(tokenEntry.second);
+        if (spos != std::string::npos && (pos == std::string::npos || spos < pos)) {
             pos = spos;
             tok = tokenEntry.first;
         }
@@ -229,10 +225,8 @@ EOL         \n|\r\n|\r
     
     if (pos == 0) {
         // Unicode operator found at 1st char, Unread all but the operator and
-        // return the token for the operator.
-        delete yylval->string;
-        yylval->string = nullptr;
-        int len = static_cast<int>(std::strlen(utf8chars[tok]));
+        // return the token for the operator (and delete greedy).
+        int len = static_cast<int>(std::strlen(utf8chars.at(tok))); // never throws
         (yylloc->end) = (yylloc->begin);
 #ifdef RAW_UTF8_LENGTH
         yylloc->columns(len);
@@ -242,18 +236,20 @@ EOL         \n|\r\n|\r
         yyless(len);
         return tok;
     }
+
+    int c = YY_NULL;
     
-    if (pos != std::string::npos) {
-        // Unicode operator found after 1st char. Unread everything from operator to
-        // end of string and truncate string before operator.
-        yylval->string->resize(pos);
-        (yylloc->end) = (yylloc->begin);
+    if (pos != std::string::npos) {         // An operator was gobbled up
+        greedy->resize(pos);                // Chop string at operator
+        (yylloc->end) = (yylloc->begin);    // Fix location end
         yylloc->columns(utf8length(yytext, pos));
-        yyless(static_cast<int>(pos));
-        return token::USER_STRING;
+        yyless(static_cast<int>(pos));      // Return chopped text to lex buffer
+    } else {
+        c = yyinput();                      // Oherwise, peek at next character
     }
-    int c = yyinput();
-    if (c != YY_NULL) unput(c);
+    
+    if (c != YY_NULL) unput(c);             // Undo the peek
+    yylval->string = greedy.release();
     return c == '[' ? token::USER_ARRAYNAME : token::USER_STRING;
 }
 {RATIONAL}  {yylval->string = new std::string(yytext); return token::USER_RATIONAL;}
@@ -297,17 +293,18 @@ EOL         \n|\r\n|\r
 
 namespace yy {
 
+const Scanner::tokenMap Scanner::utf8chars = {
+    {token::RANGEOP,        "\xe2\x80\xa6"},
+    {token::PLUSMINUSOP,    "\xc2\xb1"},
+    {token::LE,             "\xe2\x89\xa4"},
+    {token::GE,             "\xe2\x89\xa5"},
+    {token::NEQ,            "\xe2\x89\xa0"},
+    {token::CF_INFINITY,    "\xe2\x88\x9e"}
+};
+
 Scanner::Scanner(std::istream* in, std::ostream* out)
-    : yyFlexLexer(in, out), nextLocAction(normalAction), 
-      startToken(token::CFDG2), maybeVersion(0), atStartup(true)
-{
-    utf8chars[token::RANGEOP] = "\xe2\x80\xa6";
-    utf8chars[token::PLUSMINUSOP] = "\xc2\xb1";
-    utf8chars[token::LE] = "\xe2\x89\xa4";
-    utf8chars[token::GE] = "\xe2\x89\xa5";
-    utf8chars[token::NEQ] = "\xe2\x89\xa0";
-    utf8chars[token::CF_INFINITY] = "\xe2\x88\x9e";
-}
+    : yyFlexLexer(in, out)
+{}
 
 Scanner::~Scanner()
 {
@@ -417,8 +414,8 @@ unsigned int Scanner::utf8length(const char* txt, std::size_t len)
 #endif
 }
 
-CfdgParser::token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
-                                        AST::ASTmodTerm::modTypeEnum mod)
+token_type Scanner::v2token(CfdgParser::semantic_type* yylval,
+                            AST::ASTmodTerm::modTypeEnum mod)
 {
     if (startToken == token::CFDG2) {
         yylval->modToken = mod;
