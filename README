@@ -91,14 +91,21 @@ src-win/derived and type 'make' (you will need bison and flex too).
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 BSD/LINUX/UNIX/POSIX BUILD NOTES
 
-You'll need a c++ compiler (gcc 7 or clang 4), flex (not lex), bison 2.5 and 
-the libpng Library. Most of this should be installed or easily available on any 
-modern operating system distribution.  If you need it, libpng can be found here:
-    http://libpng.org/pub/png/libpng.html    
+You will need a c++ compiler (gcc 7 or clang 4), flex 2.6 (not lex), bison 3.0, the
+libpng library, and libicu library (International Components for Unicode). Most of
+this should be installed or easily available on any modern operating system 
+distribution. For libpng and libicu you will need the full installation of header
+files. The Debian packages libpng-dev and libicu-dev provide these. 
+
+If you need it, libpng can be found here:
+    http://libpng.org/pub/png/libpng.html  
+The home for libicu is at:
+    http://site.icu-project.org/  
     
-The Makefile assumes that libpng is installed at /usr/local/lib. If libpng is
-installed in a different location then you must update the LIB_DIRS variable
-in the Makefile with this location.
+The Makefile assumes that libpng and libicu are installed either with the system
+libraries or at /usr/local/lib. If either library is installed in a different 
+location then you must update the LIB_DIRS variable in the Makefile with this 
+location.
 
 From the top level, you should just run:
     $ make
