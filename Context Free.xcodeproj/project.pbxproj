@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -189,6 +189,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
 			);
+			runOncePerArchitecture = 0;
 			script = "cd \"${DERIVED_FILES_DIR}\"\n/usr/local/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"\n";
 		};
 		529049BA0F3E9E0000484FED /* PBXBuildRule */ = {
@@ -205,6 +206,7 @@
 				"$(DERIVED_FILES_DIR)/cfdg.tab.cpp",
 				"$(DERIVED_FILES_DIR)/cfdg.tab.hpp",
 			);
+			runOncePerArchitecture = 0;
 			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"\n";
 		};
 /* End PBXBuildRule section */
@@ -839,7 +841,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1230;
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
 						DevelopmentTeam = 23E5SF7D5S;
@@ -1213,6 +1215,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
@@ -1324,6 +1327,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
