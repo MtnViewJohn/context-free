@@ -5,7 +5,7 @@ programming, mark-up, and data languages for the Scintilla source code editing
 component.
 
 Lexilla is made available as both a shared library and static library.
-The shared library is called lexilla.so / lexilla.dylib / lexilla.dll on Linux / macOS /
+The shared library is called liblexilla.so / liblexilla.dylib / lexilla.dll on Linux / macOS /
 Windows.
 The static library is called liblexilla.a when built with GCC or Clang and liblexilla.lib
 when built with MSVC.
@@ -39,4 +39,7 @@ The built libraries are copied into scintilla/bin.
 Lexilla relies on a list of lexers from the scintilla/lexers directory. If any changes are
 made to the set of lexers then source and build files can be regenerated with the
 lexilla/scripts/LexillaGen.py script which requires Python 3 and is tested with 3.7+.
-	python LexillaGen.py
+Unix:
+	python3 LexillaGen.py
+Windows:
+	pyw LexillaGen.py

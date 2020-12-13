@@ -19,10 +19,12 @@ DIR_BIN=../../bin
 WARNINGS = -Wpedantic -Wall -Wextra
 
 ifdef windir
+    SHARED_NAME = lexilla
     SHAREDEXTENSION = dll
     WINDRES ?= windres
     VERSION_RESOURCE = LexillaVersion.o
 else
+    SHARED_NAME = liblexilla
     ifeq ($(shell uname),Darwin)
         CLANG := 1
         LDFLAGS += -dynamiclib
@@ -33,7 +35,7 @@ else
     BASE_FLAGS += -fvisibility=hidden
 endif
 
-LEXILLA=$(DIR_BIN)/lexilla.$(SHAREDEXTENSION)
+LEXILLA=$(DIR_BIN)/$(SHARED_NAME).$(SHAREDEXTENSION)
 LIBLEXILLA=$(DIR_BIN)/liblexilla.a
 
 BASE_FLAGS += --std=c++17
@@ -54,6 +56,8 @@ endif
 
 # Take care of changing Unix style '/' directory separator to '\' on Windows
 normalize = $(if $(windir),$(subst /,\,$1),$1)
+
+PYTHON = $(if $(windir),pyw,python3)
 
 ifdef windir
     DEL = $(if $(wildcard $(dir $(SHELL))rm.exe), $(dir $(SHELL))rm.exe -f, del /q)
@@ -89,7 +93,7 @@ analyze:
 	$(CXX) --analyze $(DEFINES) $(INCLUDES) $(BASE_FLAGS) $(CXXFLAGS) *.cxx ../../lexlib/*.cxx ../../lexers/*.cxx
 
 depend deps.mak:
-	python DepGen.py
+	$(PYTHON) DepGen.py
 
 LEXERS:=$(sort $(notdir $(wildcard ../../lexers/Lex*.cxx)))
 

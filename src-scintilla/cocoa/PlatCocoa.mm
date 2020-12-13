@@ -34,7 +34,6 @@
 
 #import "Platform.h"
 
-#include "StringCopy.h"
 #include "XPM.h"
 #include "UniConversion.h"
 
