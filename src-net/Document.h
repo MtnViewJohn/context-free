@@ -1886,5 +1886,8 @@ private: System::Void Indent_Click(System::Object^  sender, System::EventArgs^  
          System::Void PictureDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
          System::Void PictureDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
          System::Void DownLoaded(System::Object^ sender, System::Net::DownloadStringCompletedEventArgs^ e);
+         System::EventHandler^ revertHandler;
+         System::EventHandler^ fontHandler;
+         System::EventHandler^ styleHandler;
 };
 }

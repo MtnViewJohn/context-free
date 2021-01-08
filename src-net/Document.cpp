@@ -142,6 +142,11 @@ void Document::DestroyStuff()
     }
     mMoviePlayer = nullptr;
     mMovieFile = nullptr;
+
+    Form1^ appForm = (Form1^)MdiParent;
+    appForm->TextFontChanged -= fontHandler;
+    appForm->StyleChanged -= styleHandler;
+    appForm->menuFile->DropDownOpened -= revertHandler;
 }
 
 System::Void Document::moreInitialization(System::Object^ sender, System::EventArgs^ e)
@@ -165,8 +170,10 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     cfdgText->AutoCCharDeleted += gcnew EventHandler<EventArgs^>(this, &Document::AutoCCharDeleted);
 
     Form1^ appForm = (Form1^)MdiParent;
-    appForm->TextFontChanged += gcnew EventHandler(this, &Document::textFontHandler);
-    appForm->StyleChanged += gcnew EventHandler(this, &Document::StyleChanged);
+    fontHandler = gcnew EventHandler(this, &Document::textFontHandler);
+    styleHandler = gcnew EventHandler(this, &Document::StyleChanged);
+    appForm->TextFontChanged += fontHandler;
+    appForm->StyleChanged += styleHandler;
     System::Drawing::Font^ f = appForm->TextFont;
     cfdgMessage->Font = f;
 
@@ -218,8 +225,8 @@ System::Void Document::moreInitialization(System::Object^ sender, System::EventA
     cfdgText->Invalidate();
 
     // enable/disable File->Revert menu command
-    appForm->menuFile->DropDownOpened +=
-        gcnew EventHandler(this, &Document::menuFile_Popup);
+    revertHandler = gcnew EventHandler(this, &Document::menuFile_Popup);
+    appForm->menuFile->DropDownOpened += revertHandler;
 
     // load the bitmaps used in the render button
     ImageList^ iList = toolStrip1->ImageList;
