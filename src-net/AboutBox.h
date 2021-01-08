@@ -45,9 +45,9 @@ namespace ContextFreeNet {
 			//TODO: Add the constructor code here
 			//
 #ifdef _WIN64
-            this->label2->Text = L"version 3.3 (v45) - 64-bit";
+            this->label2->Text = L"version 3.3.1 (v46) - 64-bit";
 #else
-            this->label2->Text = L"version 3.3 (v45) - 32-bit";
+            this->label2->Text = L"version 3.3.1 (v46) - 32-bit";
 #endif
         }
 
@@ -127,7 +127,7 @@ namespace ContextFreeNet {
             this->label2->Name = L"label2";
             this->label2->Size = System::Drawing::Size(179, 16);
             this->label2->TabIndex = 2;
-            this->label2->Text = L"version 3.1 (v43) - 64-bit";
+            this->label2->Text = L"version 3.3.1 (v46) - 64-bit";
             // 
             // label3
             // 
@@ -137,7 +137,7 @@ namespace ContextFreeNet {
             this->label3->Name = L"label3";
             this->label3->Size = System::Drawing::Size(305, 41);
             this->label3->TabIndex = 3;
-            this->label3->Text = L"Context Free Copyright © 2005 to 2020 Mark Lentczner and John Horigan";
+            this->label3->Text = L"Context Free Copyright © 2005 to 2021 Mark Lentczner and John Horigan";
             // 
             // label4
             // 

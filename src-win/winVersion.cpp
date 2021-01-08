@@ -39,11 +39,11 @@ const char* APP_NAME(const char* argv0)
 
 const char* APP_VERSION()
 { 
-    return "3.3"; 
+    return "3.3.1"; 
 }
 int APP_BUILD()
 { 
-    return 45;
+    return 46;
 }
 const char* APP_OPTCHAR()
 { 

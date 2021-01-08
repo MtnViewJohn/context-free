@@ -48,8 +48,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,0,45
- PRODUCTVERSION 3,3,0,45
+ FILEVERSION 3,3,1,46
+ PRODUCTVERSION 3,3,1,46
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -66,12 +66,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "OzoneSoft"
             VALUE "FileDescription", "ContextFree Application"
-            VALUE "FileVersion", "3.3.0.45"
+            VALUE "FileVersion", "3.3.1.46"
             VALUE "InternalName", "ContextFree"
-            VALUE "LegalCopyright", "Copyright (C) 2005-2020 John Horigan and Mark Lentczner"
+            VALUE "LegalCopyright", "Copyright (C) 2005-2021 John Horigan and Mark Lentczner"
             VALUE "OriginalFilename", "ContextFree.exe"
             VALUE "ProductName", "ContextFree"
-            VALUE "ProductVersion", "3.3.0.45"
+            VALUE "ProductVersion", "3.3.1.46"
         END
     END
     BLOCK "VarFileInfo"
