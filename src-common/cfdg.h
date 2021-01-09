@@ -47,6 +47,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <array>
+#include <atomic>
 
 #define _unused(x) ((void)(x))
 
@@ -245,9 +246,9 @@ class Renderer {
         virtual void draw(Canvas* canvas) = 0;
         virtual void animate(Canvas* canvas, int frames, int frame, bool zoom) = 0;
 
-        volatile bool requestStop;     // stop ASAP
-        volatile bool requestFinishUp; // stop expanding, and do final output
-        volatile bool requestUpdate;   // call stats() soon
+        std::atomic_bool requestStop;     // stop ASAP
+        std::atomic_bool requestFinishUp; // stop expanding, and do final output
+        std::atomic_bool requestUpdate;   // call stats() soon
         
         int m_width;
         int m_height;
