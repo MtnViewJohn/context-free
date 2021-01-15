@@ -771,6 +771,8 @@ namespace {
     if ([mMoviePlayer rate] == 0.0f) {
         if (mAtEndofMovie)
             [mMoviePlayer seekToTime: kCMTimeZero];
+        mLoop = [mRewindButton state] != NSOffState;
+        [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
         [mMoviePlayer play];
         mAtEndofMovie = false;
         [self setMovieImagesPlay: YES];
@@ -2763,8 +2765,8 @@ long MakeColor(id v)
                           ];
     }
     [mMoviePlayer replaceCurrentItemWithPlayerItem:playerItem];
-    mMoviePlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-    
+    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
+
     mAtEndofMovie = false;
 }
 
