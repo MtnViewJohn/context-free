@@ -32,10 +32,25 @@
 #include <random>
 #include <limits>
 #include <cstdint>
+#include <cctype>
+#include <cerrno>
 
 int
 Variation::fromString(const char* str)
 {
+    while (std::isspace(static_cast<unsigned char>(*str))) ++str;
+    errno = 0;
+    if (!std::isalnum(static_cast<unsigned char>(*str))) return -1;
+    char* end = nullptr;
+    std::uint64_t v = std::strtoull(str, &end, 0);
+    if (errno == ERANGE)
+        return -1;
+    if (end != str)
+        if (v > 0 && v <= std::numeric_limits<int>::max())
+            return static_cast<int>(v);
+        else
+            return -1;
+
     std::uint64_t value = 0;
     std::uint64_t offset = 0;
     std::uint64_t range = 1;
@@ -62,6 +77,8 @@ Variation::fromString(const char* str)
 std::string
 Variation::toString(int ivar, bool lowerCase)
 {
+    if (ivar < 1)
+        return "bad variation";
     int length = 0;
     std::uint64_t range = 1;
     std::uint64_t var = ivar < 1 ? 1 : static_cast<std::uint64_t>(ivar);
