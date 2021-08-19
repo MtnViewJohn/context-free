@@ -73,6 +73,11 @@ struct CfgArray : public std::array<_T, static_cast<std::size_t>(CFG::_NumberOf)
     {
         std::copy(l, l + base_t::size(), base_t::begin());
     }
+    
+    CfgArray(_T init) : base_t()
+    {
+        this->fill(init);
+    }
 
     using base_t::operator[];
     _T& operator[](CFG c) { return operator[](static_cast<std::size_t>(c)); }
