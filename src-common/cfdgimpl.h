@@ -64,9 +64,10 @@ class CFDGImpl : public CFDG {
         };
     
         PostDtorCleanup mPostDtorCleanup;
-        agg::rgba m_backgroundColor;
+        agg::rgba m_backgroundColor = {1, 1, 1, 1};
     
-        int mStackSize;
+        int mStackSize = 0;
+        int mDefaultShape = -1;
 
         struct ShapeType {
             std::string  name;
@@ -111,13 +112,13 @@ class CFDGImpl : public CFDG {
         std::vector<AST::ASTrule*> mRules;
         std::map<int, AST::ASTdefine*> mFunctions;
     
-        AbstractSystem* m_system;
-        Builder*        m_builder;
-        bool            m_impure;
+        AbstractSystem* m_system = nullptr;
+        Builder*        m_builder = nullptr;
+        bool            m_impure = false;
     
-        int m_Parameters;
+        int m_Parameters = 0;
     
-        CfgArray<int>                       ParamDepth;
+        CfgArray<int>                       ParamDepth = NoParameter;
         CfgArray<AST::exp_ptr>              ParamExp;
     
     
@@ -125,9 +126,9 @@ class CFDGImpl : public CFDG {
         Modification mTileMod;
         Modification mSizeMod;
         Modification mTimeMod;
-        agg::point_d mTileOffset;
+        agg::point_d mTileOffset = {0, 0};
     
-        AST::ASTrule needle;
+        AST::ASTrule needle = {0, CfdgError::Default};
         
     public:
         CFDGImpl(AbstractSystem*);

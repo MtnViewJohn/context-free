@@ -55,10 +55,7 @@ using namespace AST;
 
 
 CFDGImpl::CFDGImpl(AbstractSystem* m)
-: mPostDtorCleanup(m), m_backgroundColor(1, 1, 1, 1), mStackSize(0),
-  mInitShape(nullptr), m_system(m), m_builder(nullptr), m_impure(false),
-  m_Parameters(0), ParamDepth({NoParameter}),
-  mTileOffset(0, 0), needle(0, CfdgError::Default)
+: mPostDtorCleanup(m), m_system(m)
 {
     // Initialize the shape table with the primitive shapes so that they get the
     // shape number that matches their primitive shape number.
@@ -591,6 +588,9 @@ CFDGImpl::setShapeParams(int shapetype, AST::ASTrepContainer& p, int argSize, bo
     if (shape.shapeType != newShape)
         return "Shape name already in use by another rule or path";
     
+    if (mDefaultShape == -1 && p.mParameters.empty())
+        mDefaultShape = shapetype;
+    
     shape.parameters = std::make_unique<AST::ASTparameters>(p.mParameters);
     shape.isShape = true;
     shape.argSize = argSize;
@@ -657,9 +657,23 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
     ASTexpression* startExp = ParamExp[CFG::StartShape].get();
     
     if (!startExp) {
-        m_system->message("No startshape found");
-        m_system->error();
-        return nullptr;
+        if (mDefaultShape != -1) {
+            // Synthesize a valid, type-checked startshape based on the
+            // default shape
+            ASTstartSpecifier* start = new ASTstartSpecifier(mDefaultShape, m_shapeTypes[mDefaultShape].name,
+                                                             m_shapeTypes[mDefaultShape].firstUse,
+                                                             {});
+            start->argSource = ASTstartSpecifier::NoArgs;
+            start->simpleRule = StackRule::alloc(mDefaultShape, 0, nullptr);
+            start->isConstant = true;
+            start->mLocality = PureLocal;
+            startExp = start;
+            m_system->message("Using %s as the startshape", m_shapeTypes[mDefaultShape].name.c_str());
+        } else {
+            m_system->message("No startshape found");
+            m_system->error();
+            return nullptr;
+        }
     }
 
     if (ASTstartSpecifier* startSpec = dynamic_cast<ASTstartSpecifier*>(startExp)) {
