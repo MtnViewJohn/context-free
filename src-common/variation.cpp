@@ -45,11 +45,12 @@ Variation::fromString(const char* str)
     std::uint64_t v = std::strtoull(str, &end, 0);
     if (errno == ERANGE)
         return -1;
-    if (end != str)
+    if (end != str) {
         if (v > 0 && v <= std::numeric_limits<int>::max())
             return static_cast<int>(v);
         else
             return -1;
+    }
 
     std::uint64_t value = 0;
     std::uint64_t offset = 0;
