@@ -73,14 +73,14 @@ public:
             mSeed ^= mSeed >> 12;
             mSeed ^= mSeed << 25;
             mSeed ^= mSeed >> 27;
-            mSeed *= RAND64_MULT;
         }
     }
     
     result_type operator()()
     {
+        result_type result = mSeed * RAND64_MULT;
         discard(1);
-        return mSeed;
+        return result;
     }
     
     static myConstExpr result_type min() { return 1; }
