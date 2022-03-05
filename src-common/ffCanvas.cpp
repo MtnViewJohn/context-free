@@ -156,7 +156,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
     
-    AVCodec *codec = my_avcodec_find_encoder_by_name(_codec ? "prores_ks" : "libx264");
+    const AVCodec *codec = my_avcodec_find_encoder_by_name(_codec ? "prores_ks" : "libx264");
     if (!codec) {
         mError = "codec not found";
         return;
