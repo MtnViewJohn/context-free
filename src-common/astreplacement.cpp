@@ -1589,10 +1589,10 @@ namespace AST {
                         if (flag)
                             CfdgError::Error(flag->where, "There can only be one flag argument", b);
                         flag = &arg;
-                        if (const ASTreal* rf = dynamic_cast<const ASTreal*> (&arg))
-                            mFlags |= rf ? static_cast<int>(rf->value) : 0;
-                        else
+                        double rFlag = 0;
+                        if (!arg.isConstant || arg.evaluate(&rFlag, 1) != 1)
                             CfdgError::Error(arg.where, "Flag expressions must be constant", b);
+                        mFlags |= static_cast<int>(rFlag);
                         --mArgCount;    // don't count flags
                         break;
                     }
