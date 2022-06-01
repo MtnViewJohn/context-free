@@ -54,6 +54,11 @@
 		5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC672144ED8C0099D906 /* GalleryUploader.xib */; };
 		526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */ = {isa = PBXBuildFile; fileRef = 526271EE2140E4D200412E84 /* magnifying-glass.icns */; };
 		526271F4214312C700412E84 /* CFscintilla.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526271F3214312C700412E84 /* CFscintilla.cpp */; };
+		526500742847F15B00BA44F6 /* ffCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526500732847F15B00BA44F6 /* ffCanvas.cpp */; };
+		526500762847F36B00BA44F6 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 526500752847F36B00BA44F6 /* CoreFoundation.framework */; };
+		526500772847F37500BA44F6 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9671D8C96F400F60731 /* CoreMedia.framework */; };
+		526500782847F37F00BA44F6 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9691D8C972C00F60731 /* CoreVideo.framework */; };
+		5265007A2847F39A00BA44F6 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 526500792847F39A00BA44F6 /* VideoToolbox.framework */; };
 		526BCBBD10F5C12D003357E9 /* astexpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBBC10F5C12D003357E9 /* astexpression.cpp */; };
 		526BCBD910F5C425003357E9 /* astreplacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526BCBD810F5C425003357E9 /* astreplacement.cpp */; };
 		527631520D7B490B00F0F7C8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527631510D7B490B00F0F7C8 /* WebKit.framework */; };
@@ -69,7 +74,6 @@
 		529049A30F3E4CC900484FED /* cfdg.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 529049A10F3E4CC900484FED /* cfdg.ypp */; };
 		529262BB1FFCAAC800D00B7D /* prettyint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529262B91FFCAAC800D00B7D /* prettyint.cpp */; };
 		52954E62175EFCC800AE6516 /* GalleryDownloader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52954E61175EFCC700AE6516 /* GalleryDownloader.mm */; };
-		529CC95715A393820079C2B5 /* ffCanvasDummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */; };
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
@@ -345,6 +349,11 @@
 		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
 		526271F221430D3200412E84 /* CFscintilla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFscintilla.h; sourceTree = "<group>"; };
 		526271F3214312C700412E84 /* CFscintilla.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CFscintilla.cpp; sourceTree = "<group>"; };
+		526500732847F15B00BA44F6 /* ffCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffCanvas.cpp; sourceTree = "<group>"; };
+		526500752847F36B00BA44F6 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		526500792847F39A00BA44F6 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		5265007B2847F3E700BA44F6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		5265007D2848114D00BA44F6 /* cfdg.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = cfdg.entitlements; sourceTree = "<group>"; };
 		526BCBBC10F5C12D003357E9 /* astexpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = astexpression.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		526BCBD810F5C425003357E9 /* astreplacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = astreplacement.cpp; sourceTree = "<group>"; };
 		5270D471101ABBEA001A46A9 /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
@@ -492,6 +501,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5265007A2847F39A00BA44F6 /* VideoToolbox.framework in Frameworks */,
+				526500772847F37500BA44F6 /* CoreMedia.framework in Frameworks */,
+				526500762847F36B00BA44F6 /* CoreFoundation.framework in Frameworks */,
+				526500782847F37F00BA44F6 /* CoreVideo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,6 +557,7 @@
 		29B97314FDCFA39411CA2CEA /* CFDA */ = {
 			isa = PBXGroup;
 			children = (
+				5265007D2848114D00BA44F6 /* cfdg.entitlements */,
 				5226A6EB22F1510F0012ED20 /* Context Free.entitlements */,
 				525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */,
 				524D22DB13BA01D8002732C2 /* src-unix */,
@@ -560,6 +574,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5265007B2847F3E700BA44F6 /* libz.tbd */,
+				526500792847F39A00BA44F6 /* VideoToolbox.framework */,
+				526500752847F36B00BA44F6 /* CoreFoundation.framework */,
 				524D1AEF1EF4764A000D855A /* libagg.a */,
 				52154E801DD038690031905B /* Security.framework */,
 				5200D9691D8C972C00F60731 /* CoreVideo.framework */,
@@ -607,6 +624,7 @@
 				528EC35016C5D28D004DAEC2 /* commandLineSystem.h */,
 				529CC95515A393820079C2B5 /* ffCanvas.h */,
 				529CC95615A393820079C2B5 /* ffCanvasDummy.cpp */,
+				526500732847F15B00BA44F6 /* ffCanvas.cpp */,
 				524D22FC13BA0661002732C2 /* makeCFfilename.cpp */,
 				524D22FD13BA0661002732C2 /* makeCFfilename.h */,
 				526BCBD810F5C425003357E9 /* astreplacement.cpp */,
@@ -935,6 +953,7 @@
 				524D22C713BA0123002732C2 /* stacktype.cpp in Sources */,
 				524D22C813BA0123002732C2 /* SVGCanvas.cpp in Sources */,
 				524D22C913BA0123002732C2 /* tempfile.cpp in Sources */,
+				526500742847F15B00BA44F6 /* ffCanvas.cpp in Sources */,
 				524D22CA13BA0123002732C2 /* tiledCanvas.cpp in Sources */,
 				524D22CB13BA0123002732C2 /* upload.cpp in Sources */,
 				524D22CC13BA0123002732C2 /* variation.cpp in Sources */,
@@ -946,7 +965,6 @@
 				524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */,
 				52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */,
 				52BA888C155F30490026AF04 /* ast.cpp in Sources */,
-				529CC95715A393820079C2B5 /* ffCanvasDummy.cpp in Sources */,
 				528EC35116C5D28D004DAEC2 /* commandLineSystem.cpp in Sources */,
 				528EC35616D53B3D004DAEC2 /* rendererAST.cpp in Sources */,
 			);
@@ -1053,6 +1071,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = cfdg.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 23E5SF7D5S;
@@ -1072,6 +1091,13 @@
 					"-lpng",
 					"-lagg",
 					"-licucore",
+					"-lavformat",
+					"-lavcodec",
+					"-lswscale",
+					"-lswresample",
+					"-lavutil",
+					"-lx264",
+					"-lz",
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
@@ -1097,6 +1123,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = cfdg.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				DEVELOPMENT_TEAM = 23E5SF7D5S;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1114,6 +1141,13 @@
 					"-lpng",
 					"-lagg",
 					"-licucore",
+					"-lavformat",
+					"-lavcodec",
+					"-lswscale",
+					"-lswresample",
+					"-lavutil",
+					"-lx264",
+					"-lz",
 				);
 				PRODUCT_NAME = cfdg;
 				SDKROOT = macosx;
