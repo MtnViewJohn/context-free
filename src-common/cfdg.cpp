@@ -137,15 +137,6 @@ DeferUntilRuntime::what() const noexcept
     return "Compile time action should be deferred to run time.";
 }
 
-CfdgError&
-CfdgError::operator=(const CfdgError& e) noexcept
-{
-    if (this == &e) return *this;
-    mMsg = e.mMsg;
-    where = e.where;
-    return *this;
-}
-
 void
 CfdgError::Error(const yy::location& errLoc, const char* msg, Builder* b)
 {

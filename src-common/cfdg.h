@@ -70,7 +70,6 @@ public:
 class CfdgError : public std::exception {
 public:
     const char* what() const noexcept override;
-    CfdgError& operator=(const CfdgError& e) noexcept;
     yy::location    where;
     static yy::location Default;
     
