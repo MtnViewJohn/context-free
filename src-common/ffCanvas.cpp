@@ -106,8 +106,9 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     av_log_set_callback(log_callback_debug);
 #endif
 
-    int res = avformat_alloc_output_context2(&mOutputCtx, nullptr, "mov", name);
-    if (res < 0) {
+    if (int alloc_outctx_stat = avformat_alloc_output_context2(&mOutputCtx, nullptr, "mov", name);
+        alloc_outctx_stat < 0)
+    {
         mError = "out of memory";
         return;
     }
@@ -185,7 +186,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     av_dict_set(&opt, "preset", "slow", 0);
     av_dict_set(&opt, "crf", "20.0", 0);
     
-    if (avcodec_open2(mEncCtx, codec, &opt) < 0) {
+    if (int open_codec_stat = avcodec_open2(mEncCtx, codec, &opt)) {
         mError = "could not open codec";
         return;
     }
@@ -209,18 +210,19 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     mFrame->width = width;
     mFrame->height = height;
 
-    if (av_frame_get_buffer(mFrame, 32) < 0) {
+    if (int fb_alloc_stat = av_frame_get_buffer(mFrame, 32)) {
         mError = "Out of memory";
         return;
     }
     
-    if (avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE) < 0) {
+    if (int open_stat = avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE)) {
         mError = "failed to open movie file";
         return;
     }
 
-    res = avformat_write_header(mOutputCtx, nullptr);
-    if (res < 0) {
+    if (int write_stat = avformat_write_header(mOutputCtx, nullptr);
+        write_stat < 0)
+    {
         avio_close(mOutputCtx->pb);
         mError = "failed to write video file header";
         return;
