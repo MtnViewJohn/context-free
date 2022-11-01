@@ -18,6 +18,11 @@ src-net/CFControls/Release64/
 src-net/Debug64/
 src-net/Release/
 src-net/Release64/
+src-net/DPS_3.06/bin
+src-net/DPS_3.06/obj
+src-net/FileDlgExtenders/bin
+src-net/FileDlgExtenders/obj
+src-net/app.aps
 Debug/
 Debug64/
 Release/
