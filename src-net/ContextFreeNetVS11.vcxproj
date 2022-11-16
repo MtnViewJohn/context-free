@@ -383,12 +383,6 @@
     <ProjectReference Include="CFControls\CFControlsVS11.vcxproj">
       <Project>{7751677e-7cf7-475a-aa91-339625977a4f}</Project>
     </ProjectReference>
-    <ProjectReference Include="DPS_3.06\ThemeVS2015.csproj">
-      <Project>{007d4ac8-948f-4816-86ad-b9d1343672c1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="DPS_3.06\WinFormsUI.csproj">
-      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
-    </ProjectReference>
     <ProjectReference Include="FileDlgExtenders\FileDlgExtenders.csproj">
       <Project>{9b4da48c-6d11-46c9-a63d-d369e9c5fe42}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>

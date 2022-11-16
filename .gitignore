@@ -6,6 +6,8 @@ objs
 output
 *.opensdf
 *.sdf
+**/obj
+**/bin
 src-net/CFControls/Debug/
 src-net/Controls/obj/
 src-net/Debug/

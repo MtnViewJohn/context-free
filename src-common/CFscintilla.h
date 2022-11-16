@@ -28,6 +28,7 @@
 #include <vector>
 #include <string.h>
 #include <cstddef>
+#include "Scintilla.h"
 
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
@@ -51,6 +52,7 @@ public:
     };
     
     static Style StyleLine(std::size_t length, const char* text, char* styles, Style initStyle);
+    static void StyleLines(SciFnDirect directFunction, sptr_t sciptr, int startLine, int endLine);
 private:
     static void StyleId(std::size_t length, const char* text, char* styles);
 };

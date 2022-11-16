@@ -27,6 +27,7 @@
 #include <string>
 #include <cstring>
 #include <set>
+#include <vector>
 
 
 std::vector<const char*> CFscintilla::AutoComplete = {
@@ -288,3 +289,29 @@ CFscintilla::StyleId(std::size_t length, const char* text, char* styles)
             styles[i] = state;
 }
 
+void
+CFscintilla::StyleLines(SciFnDirect directFunction, sptr_t sciptr, int startLine, int endLine)
+{
+    int startPos = (int)directFunction(sciptr, SCI_POSITIONFROMLINE, startLine, 0);
+
+    CFscintilla::Style state = Style::StyleDefault;
+    if (startLine > 0 && 
+        static_cast<Style>(directFunction(sciptr, SCI_GETSTYLEAT, startPos - 1, 0) == Style::StyleComment))
+    {
+        state = Style::StyleComment;
+    }
+
+    std::vector<char> text, styles;
+
+    directFunction(sciptr, SCI_STARTSTYLING, startPos, 0);
+    for (int i = startLine; i <= endLine; ++i) {
+        int length = (int)directFunction(sciptr, SCI_LINELENGTH, i, 0);
+        if (text.size() < (size_t)(length + 1))
+            text.resize(length + 1);
+        if (styles.size() < (size_t)length)
+            styles.resize(length);
+        directFunction(sciptr, SCI_GETLINE, i, (sptr_t)text.data());
+        state = StyleLine(length, text.data(), styles.data(), state);
+        directFunction(sciptr, SCI_SETSTYLINGEX, length, (sptr_t)styles.data());
+    }
+}
