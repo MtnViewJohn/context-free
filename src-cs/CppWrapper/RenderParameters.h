@@ -2,7 +2,7 @@
 
 namespace CppWrapper {
     public value class RenderParameters
-	{
+    {
     public:
         enum class RenderActions { Render, Animate, SaveSVG };
         RenderActions action;
