@@ -2,12 +2,13 @@
 #include <cstdlib>
 #include "Scintilla.h"
 #include "RenderParameters.h"
+#include "WinSystem.h"
 
 namespace CppWrapper {
     public ref class RenderHelper
     {
     public:
-        RenderHelper(intptr_t hwnd);
+        RenderHelper(intptr_t editHwnd, intptr_t docHwnd);
 
         sptr_t DirectMessage(int msg)
         {
@@ -28,6 +29,10 @@ namespace CppWrapper {
 
         static cli::array<System::String^>^ GetAutoC();
 
+        static const int WM_USER_MESSAGE_UPDATE = WinSystem::WM_USER_MESSAGE_UPDATE;
+        static const int WM_USER_STATUS_UPDATE  = WinSystem::WM_USER_STATUS_UPDATE;
+        static const int WM_USER_SYNTAX_ERROR   = WinSystem::WM_USER_SYNTAX_ERROR;
+
         static int VariationFromString(System::String^ s);
         static System::String^ VariationToString(int v);
         static int RandomVariation(int length);
@@ -36,9 +41,13 @@ namespace CppWrapper {
 
         void runRenderThread(RenderParameters^ rp);
 
+        System::String^ getExample(System::String^ name);
+        static bool IsExample(System::String^ name);
+
     private:
         sptr_t SciPtr = 0;
         SciFnDirect directFunction = nullptr;
+        WinSystem* mSystem = nullptr;
     };
 }
 

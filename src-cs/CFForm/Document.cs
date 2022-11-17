@@ -96,7 +96,7 @@ namespace CFForm
 
             setMessage(null);
 
-            renderHelper = new RenderHelper(cfdgText.Handle.ToInt64());
+            renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             initRenderFromSettings();
             renderParameters.frame = 1;
             renderParameters.animateFrameCount = renderParameters.length * renderParameters.frameRate;
@@ -105,6 +105,12 @@ namespace CFForm
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
 
             if (reloadWhenReady) {
+                String exampleText = renderHelper.getExample(Name);
+                if (exampleText != null) {
+                    cfdgText.Text = exampleText;
+                    cfdgText.SetSavePoint();
+                    return;
+                }
                 try {
                     using (StreamReader sr = new StreamReader(Name)) {
                         cfdgText.Text = sr.ReadToEnd();

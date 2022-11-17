@@ -1,3 +1,4 @@
+using CppWrapper;
 using System.Diagnostics;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -26,7 +27,8 @@ namespace CFForm
             document.TabText = Path.GetFileName(name);
             document.Name = name;
             document.isNamed = Path.IsPathRooted(name);
-            document.reloadWhenReady = document.isNamed && File.Exists(name);
+            document.reloadWhenReady = document.isNamed ? File.Exists(name)
+                                                        : RenderHelper.IsExample(name);
 
             document.Text = document.TabText;
             document.Dock = DockStyle.Fill;
@@ -101,6 +103,14 @@ namespace CFForm
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK) {
                 openDoc(openFileDialog.FileName);
+            }
+        }
+
+        private void openExampleClick(object sender, EventArgs e)
+        {
+            ToolStripMenuItem? example = sender as ToolStripMenuItem;
+            if (example != null) {
+                openDoc(example.Text + ".cfdg");
             }
         }
     }

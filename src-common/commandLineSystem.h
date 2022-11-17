@@ -33,7 +33,6 @@
 #include <iosfwd>
 #include <string>
 #include <memory>
-#include <map>
 #include <utility>
 #include <vector>
 
@@ -68,7 +67,6 @@ public:
     void stats(const Stats&) override;
     void orphan() override {};
 private:
-    static const std::map<std::string, std::pair<const char*, const char*>> ExamplesMap;
     std::vector<char> buf;
 };
 

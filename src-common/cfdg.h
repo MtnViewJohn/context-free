@@ -47,6 +47,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <array>
+#include <map>
 #include <atomic>
 
 #define _unused(x) ((void)(x))
@@ -109,7 +110,7 @@ class AbstractSystem {
         using istr_ptr = std::unique_ptr<std::istream>;
         using ostr_ptr = std::unique_ptr<std::ostream>;
     
-        int cfdgVersion = 2;
+        int cfdgVersion = 3;
         bool mFirstCfdgRead = true;
 
         virtual void message(const char* fmt, ...) = 0;
@@ -118,7 +119,7 @@ class AbstractSystem {
         virtual void catastrophicError(const char* what) = 0;
         virtual bool isGuiProgram() { return true; }
     
-        virtual istr_ptr openFileForRead(const std::string& path) = 0;
+        virtual istr_ptr openFileForRead(const std::string& path);
         virtual istr_ptr tempFileForRead(const FileString& path);
         virtual ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) = 0;
         virtual const FileChar* tempFileDirectory() = 0;
@@ -163,7 +164,8 @@ class AbstractSystem {
         virtual void stats(const Stats&);
         
         virtual ~AbstractSystem();
-    protected:
+        static const std::map<std::string, std::pair<const char*, const char*>> ExamplesMap;
+protected:
         static const std::array<const FileChar*, NumberofTempTypes> TempPrefixes;
         static const std::array<const FileChar*, NumberofTempTypes> TempSuffixes;
         static const FileChar* TempPrefixAll;

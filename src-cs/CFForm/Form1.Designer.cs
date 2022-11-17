@@ -49,6 +49,27 @@
             this.sendFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutContextFreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.ciliasunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.demo1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.demo2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.funkyflowerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.icurvesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ipixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ipolygonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lessonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lesson2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mtreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.octopiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quadcityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.roseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sierpinkyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.snowflakeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tangleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.triplesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undergroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.weighteddemoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.welcomeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ziggyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +104,7 @@
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(351, 44);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.openNewClick);
             // 
@@ -91,38 +112,60 @@
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(351, 44);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.menuFOpenClick);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(351, 44);
             this.recentToolStripMenuItem.Text = "Recent";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(356, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(348, 6);
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(351, 44);
             this.preferencesToolStripMenuItem.Text = "&Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(351, 44);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // examplesToolStripMenuItem
             // 
+            this.examplesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ciliasunToolStripMenuItem,
+            this.demo1ToolStripMenuItem,
+            this.demo2ToolStripMenuItem,
+            this.funkyflowerToolStripMenuItem,
+            this.icurvesToolStripMenuItem,
+            this.ipixToolStripMenuItem,
+            this.ipolygonsToolStripMenuItem,
+            this.lessonToolStripMenuItem,
+            this.lesson2ToolStripMenuItem,
+            this.mtreeToolStripMenuItem,
+            this.octopiToolStripMenuItem,
+            this.quadcityToolStripMenuItem,
+            this.roseToolStripMenuItem,
+            this.sierpinkyToolStripMenuItem,
+            this.snowflakeToolStripMenuItem,
+            this.tangleToolStripMenuItem,
+            this.triplesToolStripMenuItem,
+            this.undergroundToolStripMenuItem,
+            this.weighteddemoToolStripMenuItem,
+            this.welcomeToolStripMenuItem,
+            this.ziggyToolStripMenuItem});
             this.examplesToolStripMenuItem.Name = "examplesToolStripMenuItem";
             this.examplesToolStripMenuItem.Size = new System.Drawing.Size(133, 38);
             this.examplesToolStripMenuItem.Text = "E&xamples";
@@ -138,7 +181,7 @@
             // colorCalculatorToolStripMenuItem
             // 
             this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
-            this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(317, 44);
+            this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
             // 
             // helpToolStripMenuItem
@@ -158,7 +201,7 @@
             // contextFreeSiteToolStripMenuItem
             // 
             this.contextFreeSiteToolStripMenuItem.Name = "contextFreeSiteToolStripMenuItem";
-            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.contextFreeSiteToolStripMenuItem.Tag = "https://www.contextfreeart.org/index.html";
             this.contextFreeSiteToolStripMenuItem.Text = "&Context Free Site...";
             this.contextFreeSiteToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -166,7 +209,7 @@
             // galleryToolStripMenuItem
             // 
             this.galleryToolStripMenuItem.Name = "galleryToolStripMenuItem";
-            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.galleryToolStripMenuItem.Tag = "https://www.contextfreeart.org/gallery/";
             this.galleryToolStripMenuItem.Text = "&Gallery...";
             this.galleryToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -174,7 +217,7 @@
             // forumsToolStripMenuItem
             // 
             this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.forumsToolStripMenuItem.Tag = "https://www.contextfreeart.org/phpbb/index.php";
             this.forumsToolStripMenuItem.Text = "&Forums...";
             this.forumsToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -182,7 +225,7 @@
             // writingCFDGFilesToolStripMenuItem
             // 
             this.writingCFDGFilesToolStripMenuItem.Name = "writingCFDGFilesToolStripMenuItem";
-            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.writingCFDGFilesToolStripMenuItem.Tag = "https://github.com/MtnViewJohn/context-free/wiki";
             this.writingCFDGFilesToolStripMenuItem.Text = "&Writing CFDG files...";
             this.writingCFDGFilesToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -190,12 +233,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(354, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(356, 6);
             // 
             // sendFeedbackToolStripMenuItem
             // 
             this.sendFeedbackToolStripMenuItem.Name = "sendFeedbackToolStripMenuItem";
-            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.sendFeedbackToolStripMenuItem.Tag = "mailto:info@contextfreeart.org";
             this.sendFeedbackToolStripMenuItem.Text = "&Send feedback...";
             this.sendFeedbackToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -203,7 +246,7 @@
             // aboutContextFreeToolStripMenuItem
             // 
             this.aboutContextFreeToolStripMenuItem.Name = "aboutContextFreeToolStripMenuItem";
-            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.aboutContextFreeToolStripMenuItem.Text = "&About Context Free";
             this.aboutContextFreeToolStripMenuItem.Click += new System.EventHandler(this.aboutContextFreeToolStripMenuItem_Click);
             // 
@@ -212,6 +255,153 @@
             this.openFileDialog.FileName = "openFileDialog1";
             this.openFileDialog.Filter = "CFDG Files|*.cfdg";
             this.openFileDialog.Title = "Select a CFDG File";
+            // 
+            // ciliasunToolStripMenuItem
+            // 
+            this.ciliasunToolStripMenuItem.Name = "ciliasunToolStripMenuItem";
+            this.ciliasunToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.ciliasunToolStripMenuItem.Text = "ciliasun";
+            this.ciliasunToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // demo1ToolStripMenuItem
+            // 
+            this.demo1ToolStripMenuItem.Name = "demo1ToolStripMenuItem";
+            this.demo1ToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.demo1ToolStripMenuItem.Text = "demo1";
+            this.demo1ToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // demo2ToolStripMenuItem
+            // 
+            this.demo2ToolStripMenuItem.Name = "demo2ToolStripMenuItem";
+            this.demo2ToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.demo2ToolStripMenuItem.Text = "demo2";
+            this.demo2ToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // funkyflowerToolStripMenuItem
+            // 
+            this.funkyflowerToolStripMenuItem.Name = "funkyflowerToolStripMenuItem";
+            this.funkyflowerToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.funkyflowerToolStripMenuItem.Text = "funky_flower";
+            this.funkyflowerToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // icurvesToolStripMenuItem
+            // 
+            this.icurvesToolStripMenuItem.Name = "icurvesToolStripMenuItem";
+            this.icurvesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.icurvesToolStripMenuItem.Text = "i_curves";
+            this.icurvesToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // ipixToolStripMenuItem
+            // 
+            this.ipixToolStripMenuItem.Name = "ipixToolStripMenuItem";
+            this.ipixToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.ipixToolStripMenuItem.Text = "i_pix";
+            this.ipixToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // ipolygonsToolStripMenuItem
+            // 
+            this.ipolygonsToolStripMenuItem.Name = "ipolygonsToolStripMenuItem";
+            this.ipolygonsToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.ipolygonsToolStripMenuItem.Text = "i_polygons";
+            this.ipolygonsToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // lessonToolStripMenuItem
+            // 
+            this.lessonToolStripMenuItem.Name = "lessonToolStripMenuItem";
+            this.lessonToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.lessonToolStripMenuItem.Text = "lesson";
+            this.lessonToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // lesson2ToolStripMenuItem
+            // 
+            this.lesson2ToolStripMenuItem.Name = "lesson2ToolStripMenuItem";
+            this.lesson2ToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.lesson2ToolStripMenuItem.Text = "lesson2";
+            this.lesson2ToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // mtreeToolStripMenuItem
+            // 
+            this.mtreeToolStripMenuItem.Name = "mtreeToolStripMenuItem";
+            this.mtreeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.mtreeToolStripMenuItem.Text = "mtree";
+            this.mtreeToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // octopiToolStripMenuItem
+            // 
+            this.octopiToolStripMenuItem.Name = "octopiToolStripMenuItem";
+            this.octopiToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.octopiToolStripMenuItem.Text = "octopi";
+            this.octopiToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // quadcityToolStripMenuItem
+            // 
+            this.quadcityToolStripMenuItem.Name = "quadcityToolStripMenuItem";
+            this.quadcityToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.quadcityToolStripMenuItem.Text = "quadcity";
+            this.quadcityToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // roseToolStripMenuItem
+            // 
+            this.roseToolStripMenuItem.Name = "roseToolStripMenuItem";
+            this.roseToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.roseToolStripMenuItem.Text = "rose";
+            this.roseToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // sierpinkyToolStripMenuItem
+            // 
+            this.sierpinkyToolStripMenuItem.Name = "sierpinkyToolStripMenuItem";
+            this.sierpinkyToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.sierpinkyToolStripMenuItem.Text = "sierpinski";
+            this.sierpinkyToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // snowflakeToolStripMenuItem
+            // 
+            this.snowflakeToolStripMenuItem.Name = "snowflakeToolStripMenuItem";
+            this.snowflakeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.snowflakeToolStripMenuItem.Text = "snowflake";
+            this.snowflakeToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // tangleToolStripMenuItem
+            // 
+            this.tangleToolStripMenuItem.Name = "tangleToolStripMenuItem";
+            this.tangleToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.tangleToolStripMenuItem.Text = "tangle";
+            this.tangleToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // triplesToolStripMenuItem
+            // 
+            this.triplesToolStripMenuItem.Name = "triplesToolStripMenuItem";
+            this.triplesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.triplesToolStripMenuItem.Text = "triples";
+            this.triplesToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // undergroundToolStripMenuItem
+            // 
+            this.undergroundToolStripMenuItem.Name = "undergroundToolStripMenuItem";
+            this.undergroundToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.undergroundToolStripMenuItem.Text = "underground";
+            this.undergroundToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // weighteddemoToolStripMenuItem
+            // 
+            this.weighteddemoToolStripMenuItem.Name = "weighteddemoToolStripMenuItem";
+            this.weighteddemoToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.weighteddemoToolStripMenuItem.Text = "weighted_demo";
+            this.weighteddemoToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // welcomeToolStripMenuItem
+            // 
+            this.welcomeToolStripMenuItem.Name = "welcomeToolStripMenuItem";
+            this.welcomeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.welcomeToolStripMenuItem.Text = "welcome";
+            this.welcomeToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
+            // 
+            // ziggyToolStripMenuItem
+            // 
+            this.ziggyToolStripMenuItem.Name = "ziggyToolStripMenuItem";
+            this.ziggyToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.ziggyToolStripMenuItem.Text = "ziggy";
+            this.ziggyToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
             // 
             // Form1
             // 
@@ -256,5 +446,26 @@
         private ToolStripMenuItem sendFeedbackToolStripMenuItem;
         private ToolStripMenuItem aboutContextFreeToolStripMenuItem;
         private OpenFileDialog openFileDialog;
+        private ToolStripMenuItem ciliasunToolStripMenuItem;
+        private ToolStripMenuItem demo1ToolStripMenuItem;
+        private ToolStripMenuItem demo2ToolStripMenuItem;
+        private ToolStripMenuItem funkyflowerToolStripMenuItem;
+        private ToolStripMenuItem icurvesToolStripMenuItem;
+        private ToolStripMenuItem ipixToolStripMenuItem;
+        private ToolStripMenuItem ipolygonsToolStripMenuItem;
+        private ToolStripMenuItem lessonToolStripMenuItem;
+        private ToolStripMenuItem lesson2ToolStripMenuItem;
+        private ToolStripMenuItem mtreeToolStripMenuItem;
+        private ToolStripMenuItem octopiToolStripMenuItem;
+        private ToolStripMenuItem quadcityToolStripMenuItem;
+        private ToolStripMenuItem roseToolStripMenuItem;
+        private ToolStripMenuItem sierpinkyToolStripMenuItem;
+        private ToolStripMenuItem snowflakeToolStripMenuItem;
+        private ToolStripMenuItem tangleToolStripMenuItem;
+        private ToolStripMenuItem triplesToolStripMenuItem;
+        private ToolStripMenuItem undergroundToolStripMenuItem;
+        private ToolStripMenuItem weighteddemoToolStripMenuItem;
+        private ToolStripMenuItem welcomeToolStripMenuItem;
+        private ToolStripMenuItem ziggyToolStripMenuItem;
     }
 }

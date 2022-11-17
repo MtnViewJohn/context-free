@@ -9,11 +9,12 @@ using namespace System;
 using namespace System::ComponentModel;
 
 namespace CppWrapper {
-    RenderHelper::RenderHelper(intptr_t hwndp)
+    RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd)
     {
-        HWND hwnd = (HWND)hwndp;
+        HWND hwnd = (HWND)editHwnd;
         SciPtr = (sptr_t)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
         directFunction = (SciFnDirect)SendMessage(hwnd, SCI_GETDIRECTFUNCTION, 0, 0);
+        mSystem = new WinSystem((void*)docHwnd);
     }
 
     cli::array<System::String^>^
@@ -71,4 +72,30 @@ namespace CppWrapper {
     RenderHelper::runRenderThread(RenderParameters^ rp)
     {}
 
+    String^
+    RenderHelper::getExample(String^ name)
+    {
+        array<Byte>^ encodedName = Text::Encoding::UTF8->GetBytes(name);
+        pin_ptr<Byte> pinnedName = &encodedName[0];
+        std::string nameStr{ reinterpret_cast<const char*>(pinnedName) };
+
+        auto example = AbstractSystem::ExamplesMap.find(nameStr);
+        if (example != AbstractSystem::ExamplesMap.end()) {
+            auto cfdg = mSystem->cfdgVersion == 2 ? example->second.second : example->second.first;
+            return gcnew String(cfdg);
+        } else {
+            return nullptr;
+        }
+
+    }
+
+    bool
+    RenderHelper::IsExample(String^ name)
+    {
+        array<Byte>^ encodedName = Text::Encoding::UTF8->GetBytes(name);
+        pin_ptr<Byte> pinnedName = &encodedName[0];
+        std::string nameStr{ reinterpret_cast<const char*>(pinnedName) };
+
+        return AbstractSystem::ExamplesMap.find(nameStr) != AbstractSystem::ExamplesMap.end();
+    }
 }

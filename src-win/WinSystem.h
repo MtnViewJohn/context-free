@@ -36,14 +36,7 @@ class WinSystem : public Win32System
 public:
     enum {  WM_USER_MESSAGE_UPDATE  = myWM_USER + 100, 
             WM_USER_STATUS_UPDATE   = myWM_USER + 101,
-            WM_USER_SYNTAX_ERROR    = myWM_USER + 102,
-            WM_ACTIVATE = 0x0006, 
-            WA_ACTIVE = 1,
-            WM_DDE_INITIATE = 0x03E0,
-            WM_DDE_EXECUTE = 0x03E8,
-            WM_DDE_ACK = 0x3E4,
-            SW_SHOWNORMAL = 1,
-            EM_SETTABSTOPS          = 0x00CB};
+            WM_USER_SYNTAX_ERROR    = myWM_USER + 102};
     WinSystem(void*);
     ~WinSystem();
     virtual void message(const char* fmt, ...);

@@ -22,7 +22,6 @@
 //
 //
 
-#define NOMINMAX
 #include <windows.h>
 #include "WinPngCanvas.h"
 #include <cstdlib>

@@ -43,6 +43,8 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <streambuf>
+#include <istream>
 
 
 yy::location CfdgError::Default;
@@ -191,6 +193,48 @@ AbstractSystem::tempFileForRead(const FileString& path)
     return std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
 }
 
+struct membuf : std::streambuf {
+    membuf(char const* base, std::size_t size) {
+        char* p(const_cast<char*>(base));
+        this->setg(p, p, p + size);
+    }
+};
+struct imemstream : virtual membuf, std::istream {
+    imemstream(char const* base, std::size_t size)
+        : membuf(base, size)
+        , std::istream(static_cast<std::streambuf*>(this)) {
+    }
+};
+
+AbstractSystem::istr_ptr
+AbstractSystem::openFileForRead(const std::string& path)
+{
+    if (!mFirstCfdgRead) {
+        char dirchar =
+#ifdef _WIN32
+            '\\';
+#else
+            '/';
+#endif
+        auto dirloc = path.rfind(dirchar);
+        auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
+
+        auto example = ExamplesMap.find(exfile);
+        if (example != ExamplesMap.end()) {
+            auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
+            return std::make_unique<imemstream>(cfdg, std::strlen(cfdg));
+        }
+    } else {
+        mFirstCfdgRead = false;
+    }
+
+    istr_ptr f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
+    if (f && !f->good())
+        f.reset();
+
+    return f;
+}
+
 Canvas::~Canvas() = default;
 
 Renderer::Renderer(int w, int h)
@@ -309,3 +353,7 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
     
     return cfdg_ptr(pCfdg);
 }
+
+// Sketchy as fuck, I know
+#define CommandLineSystem AbstractSystem
+#include "examples.h"

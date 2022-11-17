@@ -39,22 +39,8 @@
 
 #include "bounds.h"
 #include "prettyint.h"
-#include <streambuf>
 #include <istream>
 #include "builder.h"
-
-struct membuf: std::streambuf {
-    membuf(char const* base, std::size_t size) {
-        char* p(const_cast<char*>(base));
-        this->setg(p, p, p + size);
-    }
-};
-struct imemstream: virtual membuf, std::istream {
-    imemstream(char const* base, std::size_t size)
-    : membuf(base, size)
-    , std::istream(static_cast<std::streambuf*>(this)) {
-    }
-};
 
 using std::cin;
 using std::cerr;
@@ -117,31 +103,8 @@ CommandLineSystem::openFileForRead(const std::string& path)
         mFirstCfdgRead = false;
         return std::make_unique<imemstream>(mInputBuffer->data(), mInputBuffer->length());
     }
-    
-    if (!mFirstCfdgRead) {
-        char dirchar =
-#ifdef _WIN32
-            '\\';
-#else
-            '/';
-#endif
-        auto dirloc = path.rfind(dirchar);
-        auto exfile = path.substr(dirloc == std::string::npos ? 0 : dirloc + 1);
-    
-        auto example = ExamplesMap.find(exfile);
-        if (example != ExamplesMap.end()) {
-            auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
-            return std::make_unique<imemstream>(cfdg, std::strlen(cfdg));
-        }
-    } else {
-        mFirstCfdgRead = false;
-    }
-    
-    istr_ptr f = std::make_unique<std::ifstream>(path.c_str(), std::ios::binary);
-    if (f && !f->good())
-        f.reset();
 
-    return f;
+    return AbstractSystem::openFileForRead(path);
 }
 
 void
@@ -172,4 +135,3 @@ CommandLineSystem::stats(const Stats& s)
     cerr.flush();
 }
 
-#include "examples.h"
