@@ -61,7 +61,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.manuFSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuFSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFClose = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFRevert = new System.Windows.Forms.ToolStripMenuItem();
@@ -210,7 +210,7 @@
             this.sizeHeightBox,
             this.toolStripSeparator3,
             this.statusLabel});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 35);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 77);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1688, 42);
             this.toolStrip1.TabIndex = 0;
@@ -409,7 +409,7 @@
             // 
             this.documentSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.documentSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentSplitter.Location = new System.Drawing.Point(0, 77);
+            this.documentSplitter.Location = new System.Drawing.Point(0, 119);
             this.documentSplitter.Name = "documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -419,7 +419,7 @@
             // documentSplitter.Panel2
             // 
             this.documentSplitter.Panel2.Controls.Add(this.pictureBox1);
-            this.documentSplitter.Size = new System.Drawing.Size(1688, 1005);
+            this.documentSplitter.Size = new System.Drawing.Size(1688, 963);
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
@@ -441,8 +441,8 @@
             // editorSplitter.Panel2
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
-            this.editorSplitter.Size = new System.Drawing.Size(562, 1005);
-            this.editorSplitter.SplitterDistance = 675;
+            this.editorSplitter.Size = new System.Drawing.Size(562, 963);
+            this.editorSplitter.SplitterDistance = 646;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -455,7 +455,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 671);
+            this.cfdgText.Size = new System.Drawing.Size(558, 642);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -476,7 +476,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 318);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 305);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -486,7 +486,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1114, 1001);
+            this.pictureBox1.Size = new System.Drawing.Size(1114, 959);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureDragDrop);
@@ -509,7 +509,7 @@
             // menuFile
             // 
             this.menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manuFSave,
+            this.menuFSave,
             this.menuFSaveAs,
             this.menuFClose,
             this.menuFRevert});
@@ -518,23 +518,23 @@
             this.menuFile.Size = new System.Drawing.Size(71, 38);
             this.menuFile.Text = "&File";
             // 
-            // manuFSave
+            // menuFSave
             // 
-            this.manuFSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.manuFSave.MergeIndex = 2;
-            this.manuFSave.Name = "manuFSave";
-            this.manuFSave.ShortcutKeyDisplayString = "Ctrl-S";
-            this.manuFSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.manuFSave.Size = new System.Drawing.Size(271, 44);
-            this.manuFSave.Text = "&Save";
-            this.manuFSave.Click += new System.EventHandler(this.menuFSaveClick);
+            this.menuFSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.menuFSave.MergeIndex = 2;
+            this.menuFSave.Name = "menuFSave";
+            this.menuFSave.ShortcutKeyDisplayString = "Ctrl-S";
+            this.menuFSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.menuFSave.Size = new System.Drawing.Size(359, 44);
+            this.menuFSave.Text = "&Save";
+            this.menuFSave.Click += new System.EventHandler(this.menuFSaveClick);
             // 
             // menuFSaveAs
             // 
             this.menuFSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFSaveAs.MergeIndex = 3;
             this.menuFSaveAs.Name = "menuFSaveAs";
-            this.menuFSaveAs.Size = new System.Drawing.Size(271, 44);
+            this.menuFSaveAs.Size = new System.Drawing.Size(359, 44);
             this.menuFSaveAs.Text = "Save &As";
             this.menuFSaveAs.Click += new System.EventHandler(this.menuFSaveAsClick);
             // 
@@ -543,7 +543,7 @@
             this.menuFClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFClose.MergeIndex = 4;
             this.menuFClose.Name = "menuFClose";
-            this.menuFClose.Size = new System.Drawing.Size(271, 44);
+            this.menuFClose.Size = new System.Drawing.Size(359, 44);
             this.menuFClose.Text = "&Close";
             this.menuFClose.Click += new System.EventHandler(this.menuFCloseClick);
             // 
@@ -552,7 +552,7 @@
             this.menuFRevert.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFRevert.MergeIndex = 5;
             this.menuFRevert.Name = "menuFRevert";
-            this.menuFRevert.Size = new System.Drawing.Size(271, 44);
+            this.menuFRevert.Size = new System.Drawing.Size(359, 44);
             this.menuFRevert.Text = "Re&vert";
             this.menuFRevert.Click += new System.EventHandler(this.menuFRevertClick);
             // 
@@ -1536,7 +1536,7 @@
         public SplitContainer editorSplitter;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem menuFile;
-        private ToolStripMenuItem manuFSave;
+        private ToolStripMenuItem menuFSave;
         private ToolStripMenuItem menuFSaveAs;
         private ToolStripMenuItem menuFClose;
         private ToolStripMenuItem menuFRevert;

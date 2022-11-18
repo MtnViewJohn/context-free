@@ -105,25 +105,30 @@ namespace CFForm
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
 
             if (reloadWhenReady) {
-                String exampleText = renderHelper.getExample(Name);
-                if (exampleText != null) {
-                    cfdgText.Text = exampleText;
-                    cfdgText.SetSavePoint();
-                    return;
-                }
-                try {
-                    using (StreamReader sr = new StreamReader(Name)) {
-                        cfdgText.Text = sr.ReadToEnd();
-                        cfdgText.SetSavePoint();
-                    }
-                } catch {
-                    cfdgText.Text = String.Empty;
-                    cfdgText.SetSavePoint();
-                    setMessage("The file could not be read.");
-                }
+                reload();
             } else {
                 cfdgText.Text = String.Empty;
                 cfdgText.SetSavePoint();
+            }
+        }
+
+        private void reload()
+        {
+            String exampleText = renderHelper.getExample(Name);
+            if (exampleText != null) {
+                cfdgText.Text = exampleText;
+                cfdgText.SetSavePoint();
+                return;
+            }
+            try {
+                using (StreamReader sr = new StreamReader(Name)) {
+                    cfdgText.Text = sr.ReadToEnd();
+                    cfdgText.SetSavePoint();
+                }
+            } catch {
+                cfdgText.Text = String.Empty;
+                cfdgText.SetSavePoint();
+                setMessage("The file could not be read.");
             }
         }
 
@@ -501,22 +506,50 @@ namespace CFForm
 
         private void menuFSaveClick(object sender, EventArgs e)
         {
-
+            if (isNamed) {
+                try {
+                    using (var sw = new StreamWriter(Name)) {
+                        sw.Write(cfdgText.Text);
+                        cfdgText.SetSavePoint();
+                    }
+                } catch {
+                    setMessage("The file could not be written.");
+                }
+            } else {
+                menuFSaveAsClick(sender, e);
+            }
         }
 
         private void menuFSaveAsClick(object sender, EventArgs e)
         {
-
+            Form1? form1 = MdiParent as Form1;
+            if (form1 != null) {
+                form1.saveFileDialog1.FileName = Text;
+                if (form1.saveFileDialog1.ShowDialog() == DialogResult.OK) {
+                    Name = form1.saveFileDialog1.FileName;
+                    TabText = Path.GetFileName(Name);
+                    Text = TabText;
+                    isNamed = true;
+                    menuFSaveClick(sender, e);
+                }
+            }
         }
 
         private void menuFCloseClick(object sender, EventArgs e)
         {
-
+            Close();
         }
 
         private void menuFRevertClick(object sender, EventArgs e)
         {
+            if (!isNamed || !cfdgText.Modified)
+                return;
 
+            var res = MessageBox.Show(this, "Do you wish to revert and lose your changes?",
+                "Context Free", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (res == DialogResult.Yes)
+                reload();
         }
 
         private void menuEUndoClick(object sender, EventArgs e)

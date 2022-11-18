@@ -38,17 +38,6 @@
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.examplesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.colorCalculatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextFreeSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.galleryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.writingCFDGFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.sendFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutContextFreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ciliasunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.demo1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.demo2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,6 +59,18 @@
             this.weighteddemoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.welcomeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ziggyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorCalculatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextFreeSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.galleryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.writingCFDGFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.sendFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutContextFreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +84,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1594, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1594, 40);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -97,7 +98,7 @@
             this.preferencesToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 38);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 36);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // newToolStripMenuItem
@@ -167,94 +168,8 @@
             this.welcomeToolStripMenuItem,
             this.ziggyToolStripMenuItem});
             this.examplesToolStripMenuItem.Name = "examplesToolStripMenuItem";
-            this.examplesToolStripMenuItem.Size = new System.Drawing.Size(133, 38);
+            this.examplesToolStripMenuItem.Size = new System.Drawing.Size(133, 36);
             this.examplesToolStripMenuItem.Text = "E&xamples";
-            // 
-            // windowToolStripMenuItem
-            // 
-            this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.colorCalculatorToolStripMenuItem});
-            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.Size = new System.Drawing.Size(121, 38);
-            this.windowToolStripMenuItem.Text = "&Window";
-            // 
-            // colorCalculatorToolStripMenuItem
-            // 
-            this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
-            this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contextFreeSiteToolStripMenuItem,
-            this.galleryToolStripMenuItem,
-            this.forumsToolStripMenuItem,
-            this.writingCFDGFilesToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.sendFeedbackToolStripMenuItem,
-            this.aboutContextFreeToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(84, 38);
-            this.helpToolStripMenuItem.Text = "&Help";
-            // 
-            // contextFreeSiteToolStripMenuItem
-            // 
-            this.contextFreeSiteToolStripMenuItem.Name = "contextFreeSiteToolStripMenuItem";
-            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.contextFreeSiteToolStripMenuItem.Tag = "https://www.contextfreeart.org/index.html";
-            this.contextFreeSiteToolStripMenuItem.Text = "&Context Free Site...";
-            this.contextFreeSiteToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
-            // 
-            // galleryToolStripMenuItem
-            // 
-            this.galleryToolStripMenuItem.Name = "galleryToolStripMenuItem";
-            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.galleryToolStripMenuItem.Tag = "https://www.contextfreeart.org/gallery/";
-            this.galleryToolStripMenuItem.Text = "&Gallery...";
-            this.galleryToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
-            // 
-            // forumsToolStripMenuItem
-            // 
-            this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.forumsToolStripMenuItem.Tag = "https://www.contextfreeart.org/phpbb/index.php";
-            this.forumsToolStripMenuItem.Text = "&Forums...";
-            this.forumsToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
-            // 
-            // writingCFDGFilesToolStripMenuItem
-            // 
-            this.writingCFDGFilesToolStripMenuItem.Name = "writingCFDGFilesToolStripMenuItem";
-            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.writingCFDGFilesToolStripMenuItem.Tag = "https://github.com/MtnViewJohn/context-free/wiki";
-            this.writingCFDGFilesToolStripMenuItem.Text = "&Writing CFDG files...";
-            this.writingCFDGFilesToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(356, 6);
-            // 
-            // sendFeedbackToolStripMenuItem
-            // 
-            this.sendFeedbackToolStripMenuItem.Name = "sendFeedbackToolStripMenuItem";
-            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.sendFeedbackToolStripMenuItem.Tag = "mailto:info@contextfreeart.org";
-            this.sendFeedbackToolStripMenuItem.Text = "&Send feedback...";
-            this.sendFeedbackToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
-            // 
-            // aboutContextFreeToolStripMenuItem
-            // 
-            this.aboutContextFreeToolStripMenuItem.Name = "aboutContextFreeToolStripMenuItem";
-            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.aboutContextFreeToolStripMenuItem.Text = "&About Context Free";
-            this.aboutContextFreeToolStripMenuItem.Click += new System.EventHandler(this.aboutContextFreeToolStripMenuItem_Click);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "openFileDialog1";
-            this.openFileDialog.Filter = "CFDG Files|*.cfdg";
-            this.openFileDialog.Title = "Select a CFDG File";
             // 
             // ciliasunToolStripMenuItem
             // 
@@ -403,6 +318,97 @@
             this.ziggyToolStripMenuItem.Text = "ziggy";
             this.ziggyToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
             // 
+            // windowToolStripMenuItem
+            // 
+            this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.colorCalculatorToolStripMenuItem});
+            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(121, 36);
+            this.windowToolStripMenuItem.Text = "&Window";
+            // 
+            // colorCalculatorToolStripMenuItem
+            // 
+            this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
+            this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(317, 44);
+            this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextFreeSiteToolStripMenuItem,
+            this.galleryToolStripMenuItem,
+            this.forumsToolStripMenuItem,
+            this.writingCFDGFilesToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.sendFeedbackToolStripMenuItem,
+            this.aboutContextFreeToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(84, 36);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // contextFreeSiteToolStripMenuItem
+            // 
+            this.contextFreeSiteToolStripMenuItem.Name = "contextFreeSiteToolStripMenuItem";
+            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.contextFreeSiteToolStripMenuItem.Tag = "https://www.contextfreeart.org/index.html";
+            this.contextFreeSiteToolStripMenuItem.Text = "&Context Free Site...";
+            this.contextFreeSiteToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
+            // 
+            // galleryToolStripMenuItem
+            // 
+            this.galleryToolStripMenuItem.Name = "galleryToolStripMenuItem";
+            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.galleryToolStripMenuItem.Tag = "https://www.contextfreeart.org/gallery/";
+            this.galleryToolStripMenuItem.Text = "&Gallery...";
+            this.galleryToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
+            // 
+            // forumsToolStripMenuItem
+            // 
+            this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
+            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.forumsToolStripMenuItem.Tag = "https://www.contextfreeart.org/phpbb/index.php";
+            this.forumsToolStripMenuItem.Text = "&Forums...";
+            this.forumsToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
+            // 
+            // writingCFDGFilesToolStripMenuItem
+            // 
+            this.writingCFDGFilesToolStripMenuItem.Name = "writingCFDGFilesToolStripMenuItem";
+            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.writingCFDGFilesToolStripMenuItem.Tag = "https://github.com/MtnViewJohn/context-free/wiki";
+            this.writingCFDGFilesToolStripMenuItem.Text = "&Writing CFDG files...";
+            this.writingCFDGFilesToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(354, 6);
+            // 
+            // sendFeedbackToolStripMenuItem
+            // 
+            this.sendFeedbackToolStripMenuItem.Name = "sendFeedbackToolStripMenuItem";
+            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.sendFeedbackToolStripMenuItem.Tag = "mailto:info@contextfreeart.org";
+            this.sendFeedbackToolStripMenuItem.Text = "&Send feedback...";
+            this.sendFeedbackToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
+            // 
+            // aboutContextFreeToolStripMenuItem
+            // 
+            this.aboutContextFreeToolStripMenuItem.Name = "aboutContextFreeToolStripMenuItem";
+            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.aboutContextFreeToolStripMenuItem.Text = "&About Context Free";
+            this.aboutContextFreeToolStripMenuItem.Click += new System.EventHandler(this.aboutContextFreeToolStripMenuItem_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog1";
+            this.openFileDialog.Filter = "CFDG Files|*.cfdg";
+            this.openFileDialog.Title = "Select a CFDG File";
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "CFDG Files|*.cfdg";
+            this.saveFileDialog1.Title = "Select a CFDG File";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
@@ -467,5 +473,6 @@
         private ToolStripMenuItem weighteddemoToolStripMenuItem;
         private ToolStripMenuItem welcomeToolStripMenuItem;
         private ToolStripMenuItem ziggyToolStripMenuItem;
+        public SaveFileDialog saveFileDialog1;
     }
 }
