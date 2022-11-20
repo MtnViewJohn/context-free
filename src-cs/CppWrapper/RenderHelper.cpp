@@ -149,6 +149,11 @@ namespace CppWrapper {
                                    reinterpret_cast<const char*>(pinnedCfdg));
     }
 
+    void RenderHelper::AbortEverything()
+    {
+        Renderer::AbortEverything = true;
+    }
+
     String^
     RenderHelper::getExample(String^ name)
     {

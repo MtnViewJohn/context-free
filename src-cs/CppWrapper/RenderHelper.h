@@ -50,6 +50,7 @@ namespace CppWrapper {
         void runRenderThread(RenderParameters^ rp);
         bool syncToSystem(System::String^ name, System::String^ cfdg);
 
+        static void AbortEverything();
         property bool requestFinishUp {
             void set(bool value) {
                 if (mRenderer)

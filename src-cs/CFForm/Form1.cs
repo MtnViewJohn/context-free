@@ -137,6 +137,11 @@ namespace CFForm
             }
         }
 
+        private void appIsExiting(object sender, EventArgs e)
+        {
+            RenderHelper.AbortEverything();
+        }
+
         private void loadInitialization(object sender, EventArgs e)
         {
             switch ((StartAction)Properties.Settings.Default.StartAction) {
