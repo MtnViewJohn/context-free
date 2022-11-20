@@ -355,5 +355,4 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
 }
 
 // Sketchy as fuck, I know
-#define CommandLineSystem AbstractSystem
 #include "examples.h"

@@ -54,8 +54,6 @@ public:
 
     bool updateInfo(const char* name, const char* text);
 
-    static std::map<const std::string, std::pair<std::string, std::string>> ExampleMap;
-    static void AddExample(const char* name, const char* text);
     std::string mName;
     std::string mText;
     static void* MainWindow;

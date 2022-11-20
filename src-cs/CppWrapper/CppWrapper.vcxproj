@@ -110,6 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -122,6 +123,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -134,6 +136,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -146,6 +149,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -158,6 +162,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -170,6 +175,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -226,6 +232,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderHelper.h" />
     <ClInclude Include="RenderParameters.h" />
+    <ClInclude Include="RenderStats.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -460,6 +467,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src-common\cfdgimpl.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">false</CompileAsManaged>
@@ -886,6 +899,7 @@
     </ClCompile>
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderParameters.cpp" />
+    <ClCompile Include="RenderStats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
@@ -897,6 +911,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

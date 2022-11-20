@@ -7,25 +7,17 @@ def print_cfdg(cfdg_name):
         sys.stderr.write('Cannot find file: %s\n' % cfdg_file)
         sys.exit(2)
 
-    sys.stdout.write('R"&&&(')
-    length = 0
-
+    transtable = str.maketrans({'"': r'\"', "…": r'\u2026'})
     with open(cfdg_file, 'r') as fp:
         for line in fp:
-            sys.stdout.write(line)
-            length += len(line)
-            if line == '\n' and length > 16000:
-                sys.stdout.write(')&&&" R"&&&(')
-                length = 0
-            if length > 16384:
-                sys.stderr.write('String exceeds 16384 characters: %s\n' % cfdg_file)
-                sys.exit(3)
+            sys.stdout.write('u8"')
+            sys.stdout.write(line.rstrip().translate(transtable))
+            print('\\n"')
 
-    sys.stdout.write(')&&&"')
 
 def print_examples(cfdg_files):
     print('const std::map<std::string, std::pair<const char*, const char*>>')
-    print('CommandLineSystem::ExamplesMap{')
+    print('AbstractSystem::ExamplesMap{')
 
     for cfdg in cfdg_files:
         if cfdg.endswith('_v2.cfdg'):

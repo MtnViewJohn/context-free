@@ -136,14 +136,15 @@ class CFDGImpl : public CFDG {
         
         renderer_ptr renderer(const cfdg_ptr& ptr,
                 int width, int height, double minSize,
-                int variation, double border = 2.0) override;
+                int variation, double border = 2.0) override final;
         
-        bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override;
-        frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override;
-        bool isSized(double* x = nullptr, double* y = nullptr) const override;
-        bool isTimed(agg::trans_affine_time* t = nullptr) const override;
-        const agg::rgba& getBackgroundColor() override;
-        void serialize(std::ostream&) override;
+        bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override final;
+        frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const override final;
+        virtual bool isTiledOrFrieze() const override final;
+        bool isSized(double* x = nullptr, double* y = nullptr) const override final;
+        bool isTimed(agg::trans_affine_time* t = nullptr) const override final;
+        const agg::rgba& getBackgroundColor() override final;
+        void serialize(std::ostream&) override final;
         void setBackgroundColor(RendererAST* r);
         void getSymmetry(AST::SymmList& syms, RendererAST* r);
     

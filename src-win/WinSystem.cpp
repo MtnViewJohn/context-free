@@ -36,9 +36,6 @@
 #include <windows.h>
 
 
-//map<const string, WinSystem*> WinSystem::PathMap;
-std::map<const std::string, std::pair<std::string, std::string>> WinSystem::ExampleMap;
-
 void* WinSystem::MainWindow = nullptr;
 
 WinSystem::WinSystem(void* h)
@@ -50,20 +47,6 @@ WinSystem::~WinSystem()
 {
 }
 
-void WinSystem::AddExample(const char* newName, const char* newText)
-{
-    std::string name(newName);
-    bool v3 = true;
-	auto pos = name.find("_v2");
-    if (pos != std::string::npos) {
-        name.erase(pos, 3);
-        v3 = false;
-    }
-    if (v3)
-        ExampleMap[name].first = newText;
-    else
-        ExampleMap[name].second = newText;
-}
 
 bool WinSystem::updateInfo(const char* newName, const char* newText)
 {
@@ -132,11 +115,11 @@ AbstractSystem::istr_ptr WinSystem::openFileForRead(const std::string& path)
     auto filepos = path.rfind('\\');
     filepos = filepos == std::string::npos ? 0 : filepos + 1;
     std::string exname{ path, filepos };
-    auto exText = ExampleMap.find(exname);
+    auto exText = ExamplesMap.find(exname);
 
     if (path == mName) {
         return std::make_unique<std::stringstream>(mText);
-    } else if (exText != ExampleMap.end()) {
+    } else if (exText != ExamplesMap.end()) {
         auto cfdg = cfdgVersion == 2 ? exText->second.second : exText->second.first;
         return std::make_unique<std::stringstream>(cfdg, std::ios_base::in);
     } else {

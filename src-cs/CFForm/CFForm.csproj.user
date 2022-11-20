@@ -13,5 +13,8 @@
     <Compile Update="PreferenceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="RenderSizeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

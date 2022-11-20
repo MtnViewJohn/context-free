@@ -113,5 +113,10 @@ namespace CFForm
                 openDoc(example.Text + ".cfdg");
             }
         }
+
+        private void formIsClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
     }
 }

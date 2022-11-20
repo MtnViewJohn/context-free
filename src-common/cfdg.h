@@ -225,6 +225,7 @@ class CFDG {
         static const AST::ASTparameters* ShapeToParams(int shape);
         virtual bool isTiled(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
         virtual frieze_t isFrieze(agg::trans_affine* tr = nullptr, double* x = nullptr, double* y = nullptr) const = 0;
+        virtual bool isTiledOrFrieze() const = 0;
         virtual bool isSized(double* x = nullptr, double* y = nullptr) const = 0;
         virtual bool isTimed(agg::trans_affine_time* t = nullptr) const = 0;
         virtual const agg::rgba& getBackgroundColor() = 0;

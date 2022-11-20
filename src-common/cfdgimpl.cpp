@@ -287,6 +287,13 @@ CFDGImpl::isFrieze(agg::trans_affine* tr, double* x, double* y) const
 }
 
 bool
+CFDGImpl::isTiledOrFrieze() const
+{
+    yy::location loc;
+    return hasParameter(CFG::Tile, AST::ModType, loc);
+}
+
+bool
 CFDGImpl::isSized(double* x, double* y) const
 {
     yy::location loc;

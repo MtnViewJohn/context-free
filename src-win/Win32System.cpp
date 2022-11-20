@@ -112,7 +112,7 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
     }
     PathRemoveFileSpecW(wbase.data());
     // Perform PathCombineW w/o the weird canonicalization behavior
-    if (wbase[wcslen(wbase.data()) - 1] != L'\\')
+    if (wbase[0] && wbase[wcslen(wbase.data()) - 1] != L'\\')
         wcscat_s(wbase.data(), wbase.size(), L"\\");
     wcscat_s(wbase.data(), wbase.size(), wrel.data());
     if (PathFileExistsW(wbase.data()) && 

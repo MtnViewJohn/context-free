@@ -301,7 +301,7 @@
             // 
             this.weighteddemoToolStripMenuItem.Name = "weighteddemoToolStripMenuItem";
             this.weighteddemoToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.weighteddemoToolStripMenuItem.Text = "weighted_demo";
+            this.weighteddemoToolStripMenuItem.Text = "weighting_demo";
             this.weighteddemoToolStripMenuItem.Click += new System.EventHandler(this.openExampleClick);
             // 
             // welcomeToolStripMenuItem
@@ -420,6 +420,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Context Free";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formIsClosing);
             this.ResizeBegin += new System.EventHandler(this.resizeBegin);
             this.ResizeEnd += new System.EventHandler(this.resizeEnd);
             this.Resize += new System.EventHandler(this.resized);

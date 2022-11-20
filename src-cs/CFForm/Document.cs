@@ -14,16 +14,27 @@ using System.Windows.Forms;
 using static ScintillaNET.Style;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using CppWrapper;
+using System.Media;
 
 namespace CFForm
 {
     public partial class Document : WeifenLuo.WinFormsUI.Docking.DockContent
     {
         public bool isNamed = false;
+        public bool isExample = false;
         public bool reloadWhenReady = false;
-        private bool reuseVariation = false;
+        private bool mReuseVariation = false;
         private bool nonAlphaInVariation;
         private int currentVariation;
+        internal bool reuseVariation
+        {
+            get { return mReuseVariation; }
+            set
+            {
+                mReuseVariation = value;
+                variationTextBox.ForeColor = value ? Color.Blue : Color.Black;
+            }
+        }
 
         private bool messageWindowUnready = false;
         private System.Text.StringBuilder deferredHtml = new StringBuilder();
@@ -48,14 +59,41 @@ namespace CFForm
         {
             Render = 0, RenderSized = 1, Animate = 2, AnimateFrame = 3
         }
+        public enum PostRenderAction
+        {
+            DoNothing = 0, Render = 1, RenderSize = 2, RenderRepeat = 3, 
+            Animate = 4, AnimateFrame = 5, SaveOutput = 8, Close = 16, Exit = 32
+        };
+        private int mPostRenderAction;
+        internal PostRenderAction postAction
+        {
+            get { return (PostRenderAction)mPostRenderAction; }
+            set {
+                if (value == PostRenderAction.DoNothing) {      // reset action
+                    mPostRenderAction = 0;
+                } else if ((int)value < 8) {                    // render actions are mutually exclusive
+                    mPostRenderAction = (mPostRenderAction & ~7) | (int)value;
+                } else {                                        // otherwise, accumulate actions
+                    mPostRenderAction |= (int)value;
+                }
+                if (!renderThread.IsBusy && mPostRenderAction != 0) {
+                    renderCompleted(null, new RunWorkerCompletedEventArgs(null, null, false));
+                }
+            }
+        }
         private RenderAction renderAction = RenderAction.Render;
 
-        private CppWrapper.RenderHelper? renderHelper = null;
+        private CppWrapper.RenderHelper renderHelper = new RenderHelper();
+
+        private Bitmap? displayImage = null;
+        private bool isTiled = false;
 
         public Document()
         {
             InitializeComponent();
             AutoComplete = RenderHelper.GetAutoC();
+            currentVariation = RenderHelper.RandomVariation(3);
+            variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
         }
 
         private void loadInitialization(object sender, EventArgs e)
@@ -112,10 +150,43 @@ namespace CFForm
             }
         }
 
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            switch ((RenderHelper.WM_USER)m.Msg) {
+                case RenderHelper.WM_USER.MESSAGE_UPDATE: {
+                        setMessage(RenderHelper.getMessage(m.WParam));
+                        break;
+                    }
+                case RenderHelper.WM_USER.STATUS_UPDATE: 
+                    {
+                        CppWrapper.RenderStats stat = RenderHelper.getStats(m.WParam);
+                        if (stat.updateRender) {
+                            renderHelper.updateRenderBox(renderBox, displayImage, 
+                                renderParameters.suppressDisplay);
+                        } else {
+                            if ((stat.toDoCount > 0 && !stat.finalOutput) ||
+                                !renderHelper.canvas) 
+                            {
+                                statusLabel.Text = String.Format("{0:N0} shapes and {1:N0} expansions to do",
+                                    stat.shapeCount, stat.toDoCount);
+                            } else {
+                                String endText = renderHelper.tiled ? ", tiled" : "";
+                                statusLabel.Text =
+                                    String.Format("{0:N0} shapes, {1:N0} x {2:N0} pixels{3}",
+                                    stat.shapeCount, renderHelper.width, renderHelper.height, endText);
+                            }
+                            // Progressbar code
+                        }
+                        break;
+                    }
+            }
+            base.WndProc(ref m);
+        }
         private void reload()
         {
             String exampleText = renderHelper.getExample(Name);
             if (exampleText != null) {
+                isExample = true;
                 cfdgText.Text = exampleText;
                 cfdgText.SetSavePoint();
                 return;
@@ -170,7 +241,42 @@ namespace CFForm
 
         private void renderCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
+            int nextAction = (int)postAction;
+            postAction = PostRenderAction.DoNothing;
 
+            if ((nextAction & (int)PostRenderAction.Exit) != 0) {
+                MdiParent.Close();
+                return;
+            }
+            if ((nextAction & (int)PostRenderAction.Close) != 0) {
+                Close();
+                return;
+            }
+
+            updateRenderButton();
+
+            if ((nextAction & (int)PostRenderAction.SaveOutput) != 0)
+                menuROutput.PerformClick();
+
+            switch ((PostRenderAction)(nextAction & 7)) {
+                case PostRenderAction.Render:
+                    menuRRender.PerformClick();
+                    break;
+                case PostRenderAction.RenderRepeat:
+                    menuRAgain.PerformClick();
+                    break;
+                case PostRenderAction.RenderSize:
+                    menuRRenderSize.PerformClick();
+                    break;
+                case PostRenderAction.Animate:
+                    menuRAnimate.PerformClick();
+                    break;
+                case PostRenderAction.AnimateFrame:
+                    menuRFrame.PerformClick();
+                    break;
+            }
+
+            // TBD code to launch movie player
         }
 
         private void runRenderThread(object? sender, DoWorkEventArgs e)
@@ -229,7 +335,30 @@ namespace CFForm
 
         private void renderButtonClick(object sender, EventArgs e)
         {
-            return;
+            if (renderHelper.renderer != 0 &&  renderThread.IsBusy) {
+                if (renderHelper.requestFinishUp) {
+                    renderHelper.requestStop = true;
+                } else {
+                    renderHelper.requestFinishUp = true;
+                    updateRenderButton();
+                }
+            } else {
+                switch (renderAction) {
+                    case RenderAction.Render:
+                        menuRRenderClick(sender, e); break;
+                    case RenderAction.RenderSized:
+                        menuRSizeClick(sender, e); break;
+                    case RenderAction.Animate: 
+                        menuRAnimateClick(sender, e); break;
+                    case RenderAction.AnimateFrame: 
+                        menuRFrameClick(sender, e); break;
+                }
+            }
+        }
+
+        private bool syncToSystem()
+        {
+            return renderHelper.syncToSystem(Name, cfdgText.Text);
         }
 
         private void splitterMoved(object sender, SplitterEventArgs e)
@@ -292,6 +421,23 @@ namespace CFForm
             cfdgMessage.Document.Write(html);
             deferredHtml.Clear();
             messageWindowUnready = false;
+        }
+
+        private void renderSizeChanged()
+        {
+            Size newSize = renderBox.Size;
+            if (newSize.Width <= 0 || newSize.Height <= 0) return;
+            try {
+                using (Bitmap? oldImage = displayImage) {
+                    displayImage = new Bitmap(newSize.Width, newSize.Height,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    Graphics g = Graphics.FromImage(displayImage);
+                    g.Clear(Color.White);
+                    renderBox.Image = displayImage;
+                }
+            } catch {
+                setMessage("Error creating new screen bitmap.");
+            }
         }
 
         private void setMessage(String? txt)
@@ -449,13 +595,12 @@ namespace CFForm
         private void variationChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
-            variationTextBox.ForeColor = Color.Blue;
             if (variationTextBox.Text.Length == 0 ) {
                 variationTextBox.Text = "A";
                 System.Media.SystemSounds.Beep.Play();
             }
 
-            // currentVariation = RenderHelper.Variation(variationTextBox.Text);
+            currentVariation = RenderHelper.VariationFromString(variationTextBox.Text);
         }
 
         private void frameKeyPressed(object sender, KeyPressEventArgs e)
@@ -467,40 +612,39 @@ namespace CFForm
         private void frameChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
-            variationTextBox.ForeColor = Color.Blue;
             if (frameTextBox.Text.Length == 0 ) {
                 frameTextBox.Text = "1";
-                //renderParams.frame = 1;
+                renderParameters.frame = 1;
                 return;
             }
             try {
-                //renderParams->frame = System::Int32::Parse(frameEdit->Text);
-                //if (renderParams->frame >= 1 && renderParams->frame <= renderParams->animateFrameCount)
-                //    return;
+                renderParameters.frame = Int32.Parse(frameTextBox.Text);
+                if (renderParameters.frame >= 1 && renderParameters.frame <= renderParameters.animateFrameCount)
+                    return;
             } catch {
             }
             frameTextBox.Text = "1";
-            //renderParams.frame = 1;
+            renderParameters.frame = 1;
             System.Media.SystemSounds.Asterisk.Play();
         }
 
         private void sizeChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
-            variationTextBox.ForeColor = Color.Blue;
             ToolStripTextBox? sizebox = sender as ToolStripTextBox;
             if (sizebox != null) {
                 if (!int.TryParse(sizebox.Text, out int s) || s < 1) {
                     sizebox.Text = "1000";
                     s = 1000;
                     System.Media.SystemSounds.Beep.Play();
-                }
-                if (sizebox == sizeWidthBox) {
-                    // renderParams.width = s;
                 } else {
-                    // renderParams.height = s;
+                    if (sizebox == sizeWidthBox) {
+                        renderParameters.width = s;
+                    } else {
+                        renderParameters.height = s;
+                    }
                 }
-                //     renderParams->saveToPrefs();
+                saveRenderToSettings();
             }
         }
 
@@ -542,7 +686,7 @@ namespace CFForm
 
         private void menuFRevertClick(object sender, EventArgs e)
         {
-            if (!isNamed || !cfdgText.Modified)
+            if (!(isNamed || isExample) || !cfdgText.Modified)
                 return;
 
             var res = MessageBox.Show(this, "Do you wish to revert and lose your changes?",
@@ -602,12 +746,45 @@ namespace CFForm
 
         private void menuRRenderClick(object sender, EventArgs e)
         {
+            if (renderAction != RenderAction.Render) {
+                renderAction = RenderAction.Render;
+                updateRenderButton();
+            }
 
+            if (renderThread.IsBusy) {
+                postAction = PostRenderAction.Render;
+                return;
+            }
+
+            initRenderFromSettings();
+            renderParameters.width = renderBox.Width;
+            renderParameters.height = renderBox.Height;
+            renderParameters.action = RenderParameters.RenderActions.Render;
+            doRender(true);
         }
 
         private void menuRSizeClick(object sender, EventArgs e)
         {
+            if (renderAction != RenderAction.RenderSized) {
+                renderAction = RenderAction.RenderSized;
+                updateRenderButton();
+            }
 
+            if (renderThread.IsBusy) {
+                postAction = PostRenderAction.RenderSize;
+                return;
+            }
+
+            if (sender == menuRRenderSize) {
+                using (var rsd = new RenderSizeDialog()) {
+                    if (rsd.ShowDialog() != DialogResult.OK)
+                        return;
+                }
+            }
+
+            initRenderFromSettings();
+            renderParameters.action = RenderParameters.RenderActions.Render;
+            doRender(false);
         }
 
         private void menuRAgainClick(object sender, EventArgs e)
@@ -625,6 +802,61 @@ namespace CFForm
 
         }
 
+        private void doRender(bool shrinkTiled)
+        {
+            setMessage(null);
+            bool modifiedSinceRender = syncToSystem();
+            if (!modifiedSinceRender && !reuseVariation)
+                nextVariationClick(this, EventArgs.Empty);
+            reuseVariation = false;
+
+            int width = renderParameters.action == RenderParameters.RenderActions.Animate ?
+                renderParameters.animateWidth : renderParameters.width;
+            int height = renderParameters.action == RenderParameters.RenderActions.Animate ?
+                renderParameters.animateHeight : renderParameters.height;
+
+            renderHelper.prepareForRender(width, height, renderParameters.minimumSize,
+                renderParameters.borderSize, currentVariation, shrinkTiled);
+            if (renderHelper.renderer == 0) {
+                SystemSounds.Beep.Play();
+                return;
+            }
+
+            isTiled = renderHelper.tiled;
+
+            if (renderParameters.action  == RenderParameters.RenderActions.Render) {
+                renderParameters.width = renderHelper.width;
+                renderParameters.height = renderHelper.height;
+            }
+
+            if (renderParameters.action == RenderParameters.RenderActions.Animate ?
+                renderParameters.animateFrame : renderParameters.periodicUpdate) 
+            {
+                setupCanvas(width, height);
+            }
+
+            if (renderParameters.action != RenderParameters.RenderActions.Animate &&
+                !renderParameters.animateFrame)
+            {
+                // animation code here
+            }
+
+            if (renderParameters.action == RenderParameters.RenderActions.Render && displayImage == null)
+                renderSizeChanged();
+
+            postAction = PostRenderAction.DoNothing;
+            if (renderHelper.performRender(renderThread)) {
+                updateRenderButton();
+            }
+        }
+
+        private void setupCanvas(int width, int height)
+        {
+            if (displayImage == null)
+                renderSizeChanged();
+            renderHelper.makeCanvas(width, height);
+        }
+
         private void menuRStopClick(object sender, EventArgs e)
         {
 
@@ -638,6 +870,24 @@ namespace CFForm
         private void menuRGalleryClick(object sender, EventArgs e)
         {
 
+        }
+
+        private void nextVariationClick(object sender, EventArgs e)
+        {
+            reuseVariation = true;
+            ++currentVariation;
+            if (currentVariation > RenderHelper.MaxVariation || currentVariation < RenderHelper.MinVariation)
+                currentVariation = RenderHelper.MaxVariation;
+            variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
+        }
+
+        private void prevVariationClick(object sender, EventArgs e)
+        {
+            reuseVariation = true;
+            --currentVariation;
+            if (currentVariation > RenderHelper.MaxVariation || currentVariation < RenderHelper.MinVariation)
+                currentVariation = RenderHelper.MinVariation;
+            variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
         }
     }
 }
