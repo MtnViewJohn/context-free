@@ -210,7 +210,7 @@
             this.sizeHeightBox,
             this.toolStripSeparator3,
             this.statusLabel});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 42);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1688, 42);
             this.toolStrip1.TabIndex = 0;
@@ -411,7 +411,7 @@
             // 
             this.documentSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.documentSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentSplitter.Location = new System.Drawing.Point(0, 42);
+            this.documentSplitter.Location = new System.Drawing.Point(0, 84);
             this.documentSplitter.Name = "documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -421,7 +421,7 @@
             // documentSplitter.Panel2
             // 
             this.documentSplitter.Panel2.Controls.Add(this.renderBox);
-            this.documentSplitter.Size = new System.Drawing.Size(1688, 1040);
+            this.documentSplitter.Size = new System.Drawing.Size(1688, 998);
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
@@ -443,8 +443,8 @@
             // editorSplitter.Panel2
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
-            this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 696;
+            this.editorSplitter.Size = new System.Drawing.Size(562, 998);
+            this.editorSplitter.SplitterDistance = 667;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -457,7 +457,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 692);
+            this.cfdgText.Size = new System.Drawing.Size(558, 663);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -478,7 +478,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 332);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 319);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -488,7 +488,7 @@
             this.renderBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderBox.Location = new System.Drawing.Point(0, 0);
             this.renderBox.Name = "renderBox";
-            this.renderBox.Size = new System.Drawing.Size(1114, 1036);
+            this.renderBox.Size = new System.Drawing.Size(1114, 994);
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
             this.renderBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureDragDrop);
@@ -522,6 +522,7 @@
             // 
             // menuFSave
             // 
+            this.menuFSave.Image = ((System.Drawing.Image)(resources.GetObject("menuFSave.Image")));
             this.menuFSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFSave.MergeIndex = 2;
             this.menuFSave.Name = "menuFSave";
@@ -533,6 +534,7 @@
             // 
             // menuFSaveAs
             // 
+            this.menuFSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("menuFSaveAs.Image")));
             this.menuFSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFSaveAs.MergeIndex = 3;
             this.menuFSaveAs.Name = "menuFSaveAs";
@@ -542,6 +544,7 @@
             // 
             // menuFClose
             // 
+            this.menuFClose.Image = ((System.Drawing.Image)(resources.GetObject("menuFClose.Image")));
             this.menuFClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFClose.MergeIndex = 4;
             this.menuFClose.Name = "menuFClose";
@@ -551,6 +554,7 @@
             // 
             // menuFRevert
             // 
+            this.menuFRevert.Image = ((System.Drawing.Image)(resources.GetObject("menuFRevert.Image")));
             this.menuFRevert.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFRevert.MergeIndex = 5;
             this.menuFRevert.Name = "menuFRevert";
@@ -588,6 +592,7 @@
             // 
             // menuEUndo
             // 
+            this.menuEUndo.Image = ((System.Drawing.Image)(resources.GetObject("menuEUndo.Image")));
             this.menuEUndo.Name = "menuEUndo";
             this.menuEUndo.ShortcutKeyDisplayString = "Ctrl-Z";
             this.menuEUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
@@ -597,6 +602,7 @@
             // 
             // menuERedo
             // 
+            this.menuERedo.Image = ((System.Drawing.Image)(resources.GetObject("menuERedo.Image")));
             this.menuERedo.Name = "menuERedo";
             this.menuERedo.ShortcutKeyDisplayString = "Ctrl-Y";
             this.menuERedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
@@ -611,6 +617,7 @@
             // 
             // menuECut
             // 
+            this.menuECut.Image = ((System.Drawing.Image)(resources.GetObject("menuECut.Image")));
             this.menuECut.Name = "menuECut";
             this.menuECut.ShortcutKeyDisplayString = "Ctrl-X";
             this.menuECut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
@@ -620,6 +627,7 @@
             // 
             // menuECopy
             // 
+            this.menuECopy.Image = ((System.Drawing.Image)(resources.GetObject("menuECopy.Image")));
             this.menuECopy.Name = "menuECopy";
             this.menuECopy.ShortcutKeyDisplayString = "Ctrl-C";
             this.menuECopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
@@ -629,6 +637,7 @@
             // 
             // menuEPaste
             // 
+            this.menuEPaste.Image = ((System.Drawing.Image)(resources.GetObject("menuEPaste.Image")));
             this.menuEPaste.Name = "menuEPaste";
             this.menuEPaste.ShortcutKeyDisplayString = "Ctrl-V";
             this.menuEPaste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
@@ -638,6 +647,7 @@
             // 
             // menuEDelete
             // 
+            this.menuEDelete.Image = ((System.Drawing.Image)(resources.GetObject("menuEDelete.Image")));
             this.menuEDelete.Name = "menuEDelete";
             this.menuEDelete.ShortcutKeyDisplayString = "DEL";
             this.menuEDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
@@ -1330,6 +1340,7 @@
             // 
             // menuEFind
             // 
+            this.menuEFind.Image = ((System.Drawing.Image)(resources.GetObject("menuEFind.Image")));
             this.menuEFind.Name = "menuEFind";
             this.menuEFind.ShortcutKeyDisplayString = "Ctrl-F";
             this.menuEFind.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
@@ -1339,6 +1350,7 @@
             // 
             // menuEFindPrev
             // 
+            this.menuEFindPrev.Image = ((System.Drawing.Image)(resources.GetObject("menuEFindPrev.Image")));
             this.menuEFindPrev.Name = "menuEFindPrev";
             this.menuEFindPrev.ShortcutKeyDisplayString = "Shift-Ctrl-F";
             this.menuEFindPrev.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
@@ -1355,6 +1367,7 @@
             // 
             // menuEUndent
             // 
+            this.menuEUndent.Image = ((System.Drawing.Image)(resources.GetObject("menuEUndent.Image")));
             this.menuEUndent.Name = "menuEUndent";
             this.menuEUndent.ShortcutKeyDisplayString = "Ctrl-[";
             this.menuEUndent.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemOpenBrackets)));
@@ -1365,6 +1378,7 @@
             // 
             // menuEIndent
             // 
+            this.menuEIndent.Image = ((System.Drawing.Image)(resources.GetObject("menuEIndent.Image")));
             this.menuEIndent.Name = "menuEIndent";
             this.menuEIndent.ShortcutKeyDisplayString = "Ctrl-]";
             this.menuEIndent.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oem6)));
@@ -1393,6 +1407,7 @@
             // 
             // menuRRender
             // 
+            this.menuRRender.Image = ((System.Drawing.Image)(resources.GetObject("menuRRender.Image")));
             this.menuRRender.Name = "menuRRender";
             this.menuRRender.ShortcutKeyDisplayString = "Ctrl-R";
             this.menuRRender.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
@@ -1402,6 +1417,7 @@
             // 
             // menuRRenderSize
             // 
+            this.menuRRenderSize.Image = ((System.Drawing.Image)(resources.GetObject("menuRRenderSize.Image")));
             this.menuRRenderSize.Name = "menuRRenderSize";
             this.menuRRenderSize.ShortcutKeyDisplayString = "Shift-Ctrl-R";
             this.menuRRenderSize.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
@@ -1412,6 +1428,7 @@
             // 
             // menuRAgain
             // 
+            this.menuRAgain.Image = ((System.Drawing.Image)(resources.GetObject("menuRAgain.Image")));
             this.menuRAgain.Name = "menuRAgain";
             this.menuRAgain.ShortcutKeyDisplayString = "Alt-Ctrl-R";
             this.menuRAgain.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
@@ -1422,6 +1439,7 @@
             // 
             // menuRAnimate
             // 
+            this.menuRAnimate.Image = ((System.Drawing.Image)(resources.GetObject("menuRAnimate.Image")));
             this.menuRAnimate.Name = "menuRAnimate";
             this.menuRAnimate.ShortcutKeyDisplayString = "Alt-Ctrl-A";
             this.menuRAnimate.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
@@ -1432,6 +1450,7 @@
             // 
             // menuRFrame
             // 
+            this.menuRFrame.Image = ((System.Drawing.Image)(resources.GetObject("menuRFrame.Image")));
             this.menuRFrame.Name = "menuRFrame";
             this.menuRFrame.ShortcutKeyDisplayString = "Alt-Ctrl-F";
             this.menuRFrame.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
@@ -1442,6 +1461,7 @@
             // 
             // menuRStop
             // 
+            this.menuRStop.Image = ((System.Drawing.Image)(resources.GetObject("menuRStop.Image")));
             this.menuRStop.Name = "menuRStop";
             this.menuRStop.ShortcutKeyDisplayString = "Ctrl-END";
             this.menuRStop.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.End)));
@@ -1456,6 +1476,7 @@
             // 
             // menuROutput
             // 
+            this.menuROutput.Image = ((System.Drawing.Image)(resources.GetObject("menuROutput.Image")));
             this.menuROutput.Name = "menuROutput";
             this.menuROutput.ShortcutKeyDisplayString = "Ctrl-O";
             this.menuROutput.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -1465,6 +1486,7 @@
             // 
             // menuRGallery
             // 
+            this.menuRGallery.Image = ((System.Drawing.Image)(resources.GetObject("menuRGallery.Image")));
             this.menuRGallery.Name = "menuRGallery";
             this.menuRGallery.ShortcutKeyDisplayString = "Ctrl-U";
             this.menuRGallery.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));

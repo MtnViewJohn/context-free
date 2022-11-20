@@ -103,6 +103,7 @@
             // 
             // menuFNew
             // 
+            this.menuFNew.Image = ((System.Drawing.Image)(resources.GetObject("menuFNew.Image")));
             this.menuFNew.Name = "menuFNew";
             this.menuFNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.menuFNew.Size = new System.Drawing.Size(359, 44);
@@ -111,6 +112,7 @@
             // 
             // openToolStripMenuItem
             // 
+            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
@@ -119,6 +121,7 @@
             // 
             // recentToolStripMenuItem
             // 
+            this.recentToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("recentToolStripMenuItem.Image")));
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.recentToolStripMenuItem.Text = "Recent";
@@ -130,6 +133,7 @@
             // 
             // preferencesToolStripMenuItem
             // 
+            this.preferencesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("preferencesToolStripMenuItem.Image")));
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
@@ -328,6 +332,7 @@
             // 
             // colorCalculatorToolStripMenuItem
             // 
+            this.colorCalculatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("colorCalculatorToolStripMenuItem.Image")));
             this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
             this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(317, 44);
             this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
@@ -349,7 +354,7 @@
             // contextFreeSiteToolStripMenuItem
             // 
             this.contextFreeSiteToolStripMenuItem.Name = "contextFreeSiteToolStripMenuItem";
-            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.contextFreeSiteToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.contextFreeSiteToolStripMenuItem.Tag = "https://www.contextfreeart.org/index.html";
             this.contextFreeSiteToolStripMenuItem.Text = "&Context Free Site...";
             this.contextFreeSiteToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -357,7 +362,7 @@
             // galleryToolStripMenuItem
             // 
             this.galleryToolStripMenuItem.Name = "galleryToolStripMenuItem";
-            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.galleryToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.galleryToolStripMenuItem.Tag = "https://www.contextfreeart.org/gallery/";
             this.galleryToolStripMenuItem.Text = "&Gallery...";
             this.galleryToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -365,15 +370,16 @@
             // forumsToolStripMenuItem
             // 
             this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.forumsToolStripMenuItem.Tag = "https://www.contextfreeart.org/phpbb/index.php";
             this.forumsToolStripMenuItem.Text = "&Forums...";
             this.forumsToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
             // 
             // writingCFDGFilesToolStripMenuItem
             // 
+            this.writingCFDGFilesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("writingCFDGFilesToolStripMenuItem.Image")));
             this.writingCFDGFilesToolStripMenuItem.Name = "writingCFDGFilesToolStripMenuItem";
-            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.writingCFDGFilesToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.writingCFDGFilesToolStripMenuItem.Tag = "https://github.com/MtnViewJohn/context-free/wiki";
             this.writingCFDGFilesToolStripMenuItem.Text = "&Writing CFDG files...";
             this.writingCFDGFilesToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
@@ -381,20 +387,22 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(354, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(356, 6);
             // 
             // sendFeedbackToolStripMenuItem
             // 
+            this.sendFeedbackToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("sendFeedbackToolStripMenuItem.Image")));
             this.sendFeedbackToolStripMenuItem.Name = "sendFeedbackToolStripMenuItem";
-            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.sendFeedbackToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.sendFeedbackToolStripMenuItem.Tag = "mailto:info@contextfreeart.org";
             this.sendFeedbackToolStripMenuItem.Text = "&Send feedback...";
             this.sendFeedbackToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
             // 
             // aboutContextFreeToolStripMenuItem
             // 
+            this.aboutContextFreeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aboutContextFreeToolStripMenuItem.Image")));
             this.aboutContextFreeToolStripMenuItem.Name = "aboutContextFreeToolStripMenuItem";
-            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(357, 44);
+            this.aboutContextFreeToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.aboutContextFreeToolStripMenuItem.Text = "&About Context Free";
             this.aboutContextFreeToolStripMenuItem.Click += new System.EventHandler(this.aboutContextFreeToolStripMenuItem_Click);
             // 
