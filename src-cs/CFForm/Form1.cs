@@ -120,7 +120,21 @@ namespace CFForm
 
         private void formIsClosing(object sender, FormClosingEventArgs e)
         {
-
+            if (e.Cancel) {
+                bool userAction = false;
+                foreach (var kid in MdiChildren) {
+                    Document? doc = kid as Document;
+                    if (doc != null)
+                        userAction = userAction || doc.canceledByUser;
+                }
+                if (userAction)
+                    return;
+                foreach (var kid in MdiChildren) {
+                    Document? doc = kid as Document;
+                    if (doc != null)
+                        doc.postAction = Document.PostRenderAction.Exit;
+                }
+            }
         }
 
         private void loadInitialization(object sender, EventArgs e)

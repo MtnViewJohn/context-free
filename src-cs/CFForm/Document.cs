@@ -23,6 +23,7 @@ namespace CFForm
         public bool isNamed = false;
         public bool isExample = false;
         public bool reloadWhenReady = false;
+        public bool canceledByUser = false;
         private bool mReuseVariation = false;
         private bool nonAlphaInVariation;
         private int currentVariation;
@@ -460,7 +461,7 @@ namespace CFForm
 
         private void modifiedCFDG(object sender, EventArgs e)
         {
-            TabText = cfdgText.Modified ? (Text + "*") : Text;
+            TabText = cfdgText.Modified ? ("*" + Text) : Text;
             if (cfdgText.Modified)
                 variationTextBox.ForeColor = Color.Blue;
         }
@@ -890,6 +891,45 @@ namespace CFForm
             if (currentVariation > RenderHelper.MaxVariation || currentVariation < RenderHelper.MinVariation)
                 currentVariation = RenderHelper.MinVariation;
             variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
+        }
+
+        private void formIsClosing(object sender, FormClosingEventArgs e)
+        {
+            canceledByUser = false;
+
+            // we can't close the window while the worker thread is running, so stop it
+            if (renderThread.IsBusy) {
+                // remember to close the window when the thread ends
+                postAction = PostRenderAction.Close;
+                renderHelper.requestStop = true;
+                e.Cancel = true;
+                return;
+            }
+
+            // cleanup movie player
+
+            // If the thread is stopped and the cfdg file is up-to-date then close
+            if (!cfdgText.Modified) return;
+
+            // See if the user wants to close (lose changes), save changes and close,
+            // or cancel the close.
+            String msg = "Save changes in " + Text + "?";
+            DialogResult r = MessageBox.Show(this, msg, "Context Free", 
+                MessageBoxButtons.YesNoCancel);
+
+            switch (r) {
+                case DialogResult.Yes:
+                    menuFSaveClick(this, e);
+                    break;
+                case DialogResult.Cancel:
+                    e.Cancel = true;
+                    // if the close was from an application exit and the user cancels it
+                    // then set this flag to cancel the exit
+                    canceledByUser = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

@@ -1484,6 +1484,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Document";
             this.Text = "Document";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formIsClosing);
             this.Load += new System.EventHandler(this.loadInitialization);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

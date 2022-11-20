@@ -51,12 +51,18 @@ namespace CppWrapper {
         bool syncToSystem(System::String^ name, System::String^ cfdg);
 
         property bool requestFinishUp {
-            void set(bool value) { mRenderer->requestFinishUp = value; }
-            bool get() { return mRenderer->requestFinishUp; }
+            void set(bool value) {
+                if (mRenderer)
+                    mRenderer->requestFinishUp = value;
+            }
+            bool get() { return mRenderer ? mRenderer->requestFinishUp.load() : false; }
         }
         property bool requestStop {
-            void set(bool value) { mRenderer->requestStop = value; }
-            bool get() { return mRenderer->requestStop; }
+            void set(bool value) {
+                if (mRenderer)
+                    mRenderer->requestStop = value;
+            }
+            bool get() { return mRenderer ? mRenderer->requestStop.load() : false; }
         }
         property intptr_t renderer {
             void set(intptr_t v) { mRenderer = (Renderer*)v; }
