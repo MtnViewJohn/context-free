@@ -21,16 +21,17 @@ namespace CFForm
         {
             InitializeComponent();
 
-            switch (Properties.Settings.Default.StartAction)
+            switch ((Form1.StartAction)Properties.Settings.Default.StartAction)
             {
-                case 1:
+                default:
+                case Form1.StartAction.Welcome:
+                    radioOpenWelcome.Checked = true;
+                    break;
+                case Form1.StartAction.New:
                     radioOpenNew.Checked = true;
                     break;
-                case 2:
+                case Form1.StartAction.Nothing:
                     radioOpenNothing.Checked = true; 
-                    break;
-                default:
-                    radioOpenWelcome.Checked = true;
                     break;
             }
             checkOpenRender.Checked = Properties.Settings.Default.OpenRender;

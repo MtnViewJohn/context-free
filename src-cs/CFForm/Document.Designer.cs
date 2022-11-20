@@ -444,7 +444,7 @@
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
             this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 697;
+            this.editorSplitter.SplitterDistance = 696;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -457,7 +457,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 693);
+            this.cfdgText.Size = new System.Drawing.Size(558, 692);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -478,7 +478,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 331);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 332);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -501,7 +501,7 @@
             this.menuFile,
             this.menuEdit,
             this.renderToolStripMenuItem1});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 35);
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1688, 42);
             this.menuStrip1.TabIndex = 2;
@@ -1390,7 +1390,6 @@
             this.renderToolStripMenuItem1.Name = "renderToolStripMenuItem1";
             this.renderToolStripMenuItem1.Size = new System.Drawing.Size(109, 38);
             this.renderToolStripMenuItem1.Text = "&Render";
-            this.renderToolStripMenuItem1.Click += new System.EventHandler(this.menuRRenderClick);
             // 
             // menuRRender
             // 
@@ -1399,6 +1398,7 @@
             this.menuRRender.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.menuRRender.Size = new System.Drawing.Size(464, 44);
             this.menuRRender.Text = "&Render";
+            this.menuRRender.Click += new System.EventHandler(this.menuRRenderClick);
             // 
             // menuRRenderSize
             // 

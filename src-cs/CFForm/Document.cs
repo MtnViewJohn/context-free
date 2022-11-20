@@ -144,6 +144,8 @@ namespace CFForm
 
             if (reloadWhenReady) {
                 reload();
+                if (Properties.Settings.Default.OpenRender)
+                    menuRRender.PerformClick();
             } else {
                 cfdgText.Text = String.Empty;
                 cfdgText.SetSavePoint();

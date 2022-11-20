@@ -6,6 +6,10 @@ namespace CFForm
 {
     public partial class Form1 : Form
     {
+        public enum StartAction
+        {
+            Welcome = 0, New = 1, Nothing = 2
+        }
         private DockPanel dockPanel;
         public bool isResizing = false;
         public bool isResized = false;
@@ -117,6 +121,20 @@ namespace CFForm
         private void formIsClosing(object sender, FormClosingEventArgs e)
         {
 
+        }
+
+        private void loadInitialization(object sender, EventArgs e)
+        {
+            switch ((StartAction)Properties.Settings.Default.StartAction) {
+                case StartAction.Welcome:
+                    welcomeToolStripMenuItem.PerformClick();
+                    break;
+                case StartAction.New:
+                    menuFNew.PerformClick();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
