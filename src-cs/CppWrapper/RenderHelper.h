@@ -36,8 +36,7 @@ namespace CppWrapper {
         enum class WM_USER 
         {
             MESSAGE_UPDATE = WinSystem::WM_USER_MESSAGE_UPDATE,
-            STATUS_UPDATE = WinSystem::WM_USER_STATUS_UPDATE,
-            SYNTAX_ERROR = WinSystem::WM_USER_SYNTAX_ERROR
+            STATUS_UPDATE = WinSystem::WM_USER_STATUS_UPDATE
         };
         static System::String^ getMessage(System::IntPtr wParam);
         static RenderStats getStats(System::IntPtr wParam);
