@@ -101,6 +101,13 @@ namespace CFForm
         {
             updateRenderButton();
 
+            Form1? form1 = MdiParent as Form1;
+            if (form1 != null) {
+                var findHandler = new EventHandler(form1.menuEFindClick);
+                menuEFind.Click += findHandler;
+                menuEFindPrev.Click += findHandler;
+            }
+
             cfdgText.StyleClearAll();
             cfdgText.Margins[0].Type = ScintillaNET.MarginType.Number;
             fontChanged(Properties.Settings.Default.EditorFont);
@@ -725,11 +732,6 @@ namespace CFForm
         }
 
         private void menuEDeleteClick(object sender, EventArgs e)
-        {
-
-        }
-
-        private void menuEFindClick(object sender, EventArgs e)
         {
 
         }

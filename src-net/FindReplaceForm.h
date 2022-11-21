@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 
 
-namespace ContextFreeNet {
+namespace CppWrapper {
 
 	/// <summary>
 	/// Summary for FindReplaceForm
@@ -128,11 +128,11 @@ namespace ContextFreeNet {
             this->nextButton->Enabled = false;
             this->nextButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->nextButton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"nextButton.Image")));
             this->nextButton->Location = System::Drawing::Point(366, 4);
             this->nextButton->Name = L"nextButton";
             this->nextButton->Size = System::Drawing::Size(48, 40);
             this->nextButton->TabIndex = 3;
+            this->nextButton->Text = L"▶";
             this->nextButton->UseVisualStyleBackColor = true;
             this->nextButton->Click += gcnew System::EventHandler(this, &FindReplaceForm::find_Click);
             // 
@@ -224,12 +224,12 @@ namespace ContextFreeNet {
             this->prevButton->Enabled = false;
             this->prevButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
                 static_cast<System::Byte>(0)));
-            this->prevButton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"prevButton.Image")));
             this->prevButton->Location = System::Drawing::Point(312, 4);
             this->prevButton->Name = L"prevButton";
             this->prevButton->Size = System::Drawing::Size(48, 40);
             this->prevButton->TabIndex = 2;
             this->prevButton->Tag = L"prev";
+            this->prevButton->Text = L"◀";
             this->prevButton->UseVisualStyleBackColor = true;
             this->prevButton->Click += gcnew System::EventHandler(this, &FindReplaceForm::prev_Click);
             // 
@@ -311,14 +311,21 @@ namespace ContextFreeNet {
 
         }
 #pragma endregion
+private: enum class ReplaceType
+{
+    Once, All, Selection
+};
 private: System::Void findText_Changed(System::Object^  sender, System::EventArgs^  e);
 private: System::Void find_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void replace_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void replaceAll_Click(System::Object^  sender, System::EventArgs^  e);
-private: bool doFind(ScintillaNET::Scintilla^ rtb, bool forward);
-private: void doReplace(ScintillaNET::Scintilla^ rtb, bool all, bool selection);
-private: ScintillaNET::Scintilla^ getRTB();
+private: bool doFind(bool forward);
+private: int foundStart = 0;
+private: int foundEnd = 0;
+private: void doReplace(ReplaceType rt);
+public:  ScintillaNET::Scintilla^ currentScintilla = nullptr;
 private: System::Void prev_Click(System::Object^  sender, System::EventArgs^  e);
 private: System::Void replaceAllSelection_Click(System::Object^  sender, System::EventArgs^  e);
+
 };
 }

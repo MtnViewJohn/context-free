@@ -220,6 +220,7 @@
     <ClInclude Include="..\..\src-common\variation.h" />
     <ClInclude Include="..\..\src-common\version.h" />
     <ClInclude Include="..\..\src-common\xorshift64star.h" />
+    <ClInclude Include="..\..\src-net\FindReplaceForm.h" />
     <ClInclude Include="..\..\src-win\derived\cfdg.tab.hpp" />
     <ClInclude Include="..\..\src-win\derived\FlexLexer.h" />
     <ClInclude Include="..\..\src-win\derived\location.hh" />
@@ -740,6 +741,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\src-net\FindReplaceForm.cpp" />
     <ClCompile Include="..\..\src-win\derived\cfdg.tab.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">false</CompileAsManaged>
@@ -908,15 +910,24 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ScintillaNET">
+      <HintPath>..\..\src-net\packages\fernandreu.ScintillaNET.4.2.0\lib\net471\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\..\.nuget\packages\dockpanelsuite\3.1.0\lib\netcoreapp3.1\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CFForm\Properties\Settings.settings" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\src-net\FindReplaceForm.resx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

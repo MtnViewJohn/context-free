@@ -1,12 +1,11 @@
-#include "StdAfx.h"
+#include "pch.h"
 #include "FindReplaceForm.h"
-#include "Document.h"
+#include <utility>
 
 using namespace System;
 using namespace System::Windows::Forms;
-using namespace WeifenLuo::WinFormsUI::Docking;
 
-namespace ContextFreeNet {
+namespace CppWrapper {
     System::Void FindReplaceForm::findText_Changed(System::Object^  sender, System::EventArgs^  e)
     {
         bool canFind = findText->Text->Length > 0;
@@ -19,68 +18,64 @@ namespace ContextFreeNet {
 
     System::Void FindReplaceForm::find_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        ScintillaNET::Scintilla^ haystack = getRTB();
-        if (findText->Text->Length == 0 || haystack == nullptr) {
+        if (findText->Text->Length == 0 || currentScintilla == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
-        doFind(haystack, true);
-        haystack->Focus();
+        doFind(true);
+        currentScintilla->Focus();
     }
 
-    System::Void ContextFreeNet::FindReplaceForm::prev_Click(System::Object ^ sender, System::EventArgs ^ e)
+    System::Void FindReplaceForm::prev_Click(System::Object ^ sender, System::EventArgs ^ e)
     {
-        ScintillaNET::Scintilla^ haystack = getRTB();
-        if (findText->Text->Length == 0 || haystack == nullptr) {
+        if (findText->Text->Length == 0 || currentScintilla == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
-        doFind(haystack, false);
-        haystack->Focus();
+        doFind(false);
+        currentScintilla->Focus();
     }
 
     System::Void FindReplaceForm::replace_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        ScintillaNET::Scintilla^ haystack = getRTB();
-        if (findText->Text->Length == 0 || haystack == nullptr) {
+        if (findText->Text->Length == 0 || currentScintilla == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
-        doReplace(haystack, false, false);
-        haystack->Focus();
+        doReplace(ReplaceType::Once);
+        currentScintilla->Focus();
     }
 
     System::Void FindReplaceForm::replaceAll_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        ScintillaNET::Scintilla^ haystack = getRTB();
-        if (findText->Text->Length == 0 || haystack == nullptr) {
+        if (findText->Text->Length == 0 || currentScintilla == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
-        doReplace(haystack, true, false);
-        haystack->Focus();
+        doReplace(ReplaceType::All);
+        currentScintilla->Focus();
     }
 
     System::Void FindReplaceForm::replaceAllSelection_Click(System::Object^  sender, System::EventArgs^  e)
     {
-        ScintillaNET::Scintilla^ haystack = getRTB();
-        if (findText->Text->Length == 0 || haystack == nullptr) {
+        if (findText->Text->Length == 0 || currentScintilla == nullptr) {
             System::Media::SystemSounds::Beep->Play();
             return;
         }
 
-        doReplace(haystack, true, true);
-        haystack->Focus();
+        doReplace(ReplaceType::Selection);
+        currentScintilla->Focus();
     }
 
-    bool FindReplaceForm::doFind(ScintillaNET::Scintilla^ haystack, bool forward)
+    bool FindReplaceForm::doFind(bool forward)
     {
         bool found = false;
-        if (haystack == nullptr) return false;
+        foundStart = foundEnd = 0;
+        if (currentScintilla == nullptr) return false;
 
         bool up = !forward;
         bool whole = findWhole->Checked;
@@ -93,32 +88,34 @@ namespace ContextFreeNet {
             (ic ? ScintillaNET::SearchFlags::None : ScintillaNET::SearchFlags::MatchCase);
 
         if (up) {
-            haystack->TargetStart = haystack->AnchorPosition;
-            haystack->TargetEnd = 0;
+            currentScintilla->TargetStart = currentScintilla->AnchorPosition;
+            currentScintilla->TargetEnd = 0;
         } else {
-            haystack->TargetStart = haystack->CurrentPosition;
-            haystack->TargetEnd = haystack->TextLength;
+            currentScintilla->TargetStart = currentScintilla->CurrentPosition;
+            currentScintilla->TargetEnd = currentScintilla->TextLength;
         }
-        haystack->SearchFlags = finds;
+        currentScintilla->SearchFlags = finds;
 
-        auto needle = haystack->SearchInTarget(findText->Text);
+        auto needle = currentScintilla->SearchInTarget(findText->Text);
         found = needle >= 0;
 
         if (!found && wrap) {
             if (up) {
-                haystack->TargetStart = haystack->TextLength;
-                haystack->TargetEnd = 0;
+                currentScintilla->TargetStart = currentScintilla->TextLength;
+                currentScintilla->TargetEnd = 0;
             } else {
-                haystack->TargetStart = 0;
-                haystack->TargetEnd = haystack->TextLength;
+                currentScintilla->TargetStart = 0;
+                currentScintilla->TargetEnd = currentScintilla->TextLength;
             }
-            needle = haystack->SearchInTarget(findText->Text);
+            needle = currentScintilla->SearchInTarget(findText->Text);
             found = needle >= 0;
         }
 
         if (found) {
-            haystack->SetSelection(haystack->TargetEnd, haystack->TargetStart);
-            haystack->ScrollCaret();
+            currentScintilla->SetSelection(currentScintilla->TargetEnd, currentScintilla->TargetStart);
+            currentScintilla->ScrollCaret();
+            foundStart = currentScintilla->TargetStart;
+            foundEnd = currentScintilla->TargetEnd;
         } else {
             notFoundSound->Play();
         }
@@ -128,9 +125,9 @@ namespace ContextFreeNet {
         return found;
     }
 
-    void FindReplaceForm::doReplace(ScintillaNET::Scintilla^ rtb, bool all, bool selection)
+    void FindReplaceForm::doReplace(ReplaceType rt)
     {
-        ScintillaNET::Scintilla^ haystack = rtb;
+        if (currentScintilla == nullptr) return;
 
         bool whole = findWhole->Checked;
         bool start = findStarts->Checked;
@@ -141,64 +138,71 @@ namespace ContextFreeNet {
             (start ? ScintillaNET::SearchFlags::WordStart : ScintillaNET::SearchFlags::None) |
             (ic ? ScintillaNET::SearchFlags::None : ScintillaNET::SearchFlags::MatchCase);
 
-        int startPosition = (all && !selection) ? 0 : haystack->CurrentPosition;
-        int endPosition = (all && selection) ? haystack->AnchorPosition : haystack->TextLength;
+        int startPosition = 0;
+        int endPosition = currentScintilla->TextLength;
+        switch (rt) {
+        case ReplaceType::Once:
+            startPosition = currentScintilla->CurrentPosition;
+            if (startPosition == foundEnd)
+                startPosition = foundStart;
+            break;
+        case ReplaceType::All:
+            break;
+        case ReplaceType::Selection:
+            endPosition = currentScintilla->AnchorPosition;
+            if (endPosition < startPosition)
+                std::swap(startPosition, endPosition);
+            break;
+        }
 
-        if (all && endPosition < startPosition)
-            std::swap(startPosition, endPosition);
-        if (all && endPosition == startPosition)
+        if (startPosition == endPosition)
             return;
 
-        haystack->SearchFlags = finds;
-        haystack->TargetStart = startPosition;
-        haystack->TargetEnd = endPosition;
+        currentScintilla->SearchFlags = finds;
+        currentScintilla->TargetStart = startPosition;
+        currentScintilla->TargetEnd = endPosition;
 
-        if (all) {
+        if (rt != ReplaceType::Once) {
             bool replaced = false;
             auto delta = replaceText->Text->Length - findText->Text->Length;
             for (;;) {
-                auto needle = haystack->SearchInTarget(findText->Text);
+                auto needle = currentScintilla->SearchInTarget(findText->Text);
                 if (needle < 0) break;
 
                 if (!replaced)
-                    haystack->BeginUndoAction();
+                    currentScintilla->BeginUndoAction();
                 replaced = true;
 
-                haystack->ReplaceTarget(replaceText->Text);
+                currentScintilla->ReplaceTarget(replaceText->Text);
 
-                if (selection)
+                if (rt == ReplaceType::Selection)
                     endPosition += delta;
                 else
-                    endPosition = haystack->TextLength;
-                haystack->TargetStart = haystack->TargetEnd;
-                haystack->TargetEnd = endPosition;
+                    endPosition = currentScintilla->TextLength;
+                currentScintilla->TargetStart = currentScintilla->TargetEnd;
+                currentScintilla->TargetEnd = endPosition;
             }
             notFound->Visible = !replaced;
             if (replaced)
-                haystack->EndUndoAction();
+                currentScintilla->EndUndoAction();
             else
                 notFoundSound->Play();
         } else {
-            auto needle = haystack->SearchInTarget(findText->Text);
+            auto needle = currentScintilla->SearchInTarget(findText->Text);
             if (needle < 0 && wrap) {
-                haystack->TargetStart = 0;
-                haystack->TargetEnd = haystack->TextLength;
-                needle = haystack->SearchInTarget(findText->Text);
+                currentScintilla->TargetStart = 0;
+                currentScintilla->TargetEnd = currentScintilla->TextLength;
+                needle = currentScintilla->SearchInTarget(findText->Text);
             }
             notFound->Visible = needle < 0;
             if (needle >= 0) {
-                haystack->ReplaceTarget(replaceText->Text);
-                haystack->SetSelection(haystack->TargetEnd, haystack->TargetStart);
-                haystack->ScrollCaret();
+                currentScintilla->ReplaceTarget(replaceText->Text);
+                currentScintilla->SetSelection(currentScintilla->TargetEnd, currentScintilla->TargetStart);
+                currentScintilla->ScrollCaret();
             } else {
                 notFoundSound->Play();
             }
         }
-    }
-
-    ScintillaNET::Scintilla^ FindReplaceForm::getRTB()
-    {
-        Document^ cfdg = dynamic_cast<Document^>(DockPanel->ActiveDocument);
-        return (cfdg != nullptr) ? cfdg->cfdgText : nullptr;
+        foundStart = foundEnd = 0;
     }
 }

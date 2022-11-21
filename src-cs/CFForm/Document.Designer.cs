@@ -1346,7 +1346,6 @@
             this.menuEFind.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.menuEFind.Size = new System.Drawing.Size(437, 44);
             this.menuEFind.Text = "Find/Replace...";
-            this.menuEFind.Click += new System.EventHandler(this.menuEFindClick);
             // 
             // menuEFindPrev
             // 
@@ -1358,7 +1357,6 @@
             this.menuEFindPrev.Size = new System.Drawing.Size(437, 44);
             this.menuEFindPrev.Tag = "prev";
             this.menuEFindPrev.Text = "Find Previous...";
-            this.menuEFindPrev.Click += new System.EventHandler(this.menuEFindClick);
             // 
             // toolStripMenuItem4
             // 
@@ -1555,7 +1553,6 @@
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripLabel statusLabel;
         private PictureBox renderBox;
-        private ScintillaNET.Scintilla cfdgText;
         public SplitContainer documentSplitter;
         public SplitContainer editorSplitter;
         private MenuStrip menuStrip1;
@@ -1672,5 +1669,6 @@
         private ToolStripSeparator toolStripMenuItem6;
         private ToolStripMenuItem menuROutput;
         private ToolStripMenuItem menuRGallery;
+        public ScintillaNET.Scintilla cfdgText;
     }
 }

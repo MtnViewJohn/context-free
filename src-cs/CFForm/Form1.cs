@@ -1,6 +1,8 @@
 using CppWrapper;
 using System.Diagnostics;
+using System.Media;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CFForm
 {
@@ -13,6 +15,7 @@ namespace CFForm
         private DockPanel dockPanel;
         public bool isResizing = false;
         public bool isResized = false;
+        private FindReplaceForm findForm = new FindReplaceForm();
         public Form1()
         {
             dockPanel = new DockPanel();
@@ -153,6 +156,31 @@ namespace CFForm
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void childActivate(object sender, EventArgs e)
+        {
+            Document? doc = ActiveMdiChild as Document;
+            if (doc != null) {
+                findForm.currentScintilla = doc.cfdgText;
+            }
+        }
+
+        public void menuEFindClick(object? sender, EventArgs e)
+        {
+            if (findForm.DockState != DockState.DockBottom) {
+                dockPanel.DockBottomPortion = 130;
+                findForm.Show(dockPanel, DockState.DockBottom);
+            } else {
+                ToolStripMenuItem? menu = sender as ToolStripMenuItem;
+                if (menu != null) {
+                    var button = (menu.Tag != null) ? findForm.prevButton : findForm.nextButton;
+                    if (button.Enabled)
+                        button.PerformClick();
+                    else
+                        SystemSounds.Beep.Play();
+                }
             }
         }
     }
