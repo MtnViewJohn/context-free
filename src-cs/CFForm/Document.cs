@@ -15,6 +15,7 @@ using static ScintillaNET.Style;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using CppWrapper;
 using System.Media;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CFForm
 {
@@ -738,10 +739,33 @@ namespace CFForm
 
         private void menuEIndentClick(object sender, EventArgs e)
         {
-
+            bool didIndent = false;
+            ToolStripMenuItem? ctrl = sender as ToolStripMenuItem;
+            String? tag = ctrl?.Tag as String;
+            if (int.TryParse(tag, out int tagint)) {
+                int delta = tagint * Properties.Settings.Default.TabWidth;
+                var start = cfdgText.LineFromPosition(cfdgText.AnchorPosition);
+                var end = cfdgText.LineFromPosition(cfdgText.CurrentPosition);
+                if (end < start) {
+                    var t = start; start = end; end = t;
+                }
+                for (; start <= end; ++start) {
+                    var indent = cfdgText.Lines[start].Indentation;
+                    var newIndent = indent + delta;
+                    if (newIndent < 0) newIndent = 0;
+                    if (indent != newIndent) {
+                        if (!didIndent)
+                            cfdgText.BeginUndoAction();
+                        didIndent = true;
+                        cfdgText.Lines[start].Indentation = newIndent;
+                    }
+                }
+            }
+            if (didIndent)
+                cfdgText.EndUndoAction();
         }
 
-        private void menuEUnicode(object sender, EventArgs e)
+            private void menuEUnicode(object sender, EventArgs e)
         {
             ToolStripMenuItem? menu = sender as ToolStripMenuItem;
             if (menu != null) {
