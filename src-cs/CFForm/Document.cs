@@ -709,32 +709,38 @@ namespace CFForm
 
         private void menuEUndoClick(object sender, EventArgs e)
         {
-
+            if (cfdgText.CanUndo)
+                cfdgText.Undo();
         }
 
         private void menuERedoClick(object sender, EventArgs e)
         {
-
+            if (cfdgText.CanRedo)
+                cfdgText.Redo();
         }
 
         private void menuECutClick(object sender, EventArgs e)
         {
-
+            if (cfdgText.SelectionStart != cfdgText.SelectionEnd)
+                cfdgText.Cut();
         }
 
         private void menuECopyClick(object sender, EventArgs e)
         {
-
+            if (cfdgText.SelectionStart != cfdgText.SelectionEnd)
+                cfdgText.Copy();
         }
 
         private void menuEPasteClick(object sender, EventArgs e)
         {
-
+            if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text))
+                cfdgText.Paste();
         }
 
         private void menuEDeleteClick(object sender, EventArgs e)
         {
-
+            if (cfdgText.SelectionStart != cfdgText.SelectionEnd)
+                cfdgText.ReplaceSelection(String.Empty);
         }
 
         private void menuEIndentClick(object sender, EventArgs e)

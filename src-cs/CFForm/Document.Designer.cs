@@ -210,7 +210,7 @@
             this.sizeHeightBox,
             this.toolStripSeparator3,
             this.statusLabel});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 42);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1688, 42);
             this.toolStrip1.TabIndex = 0;
@@ -411,7 +411,7 @@
             // 
             this.documentSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.documentSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentSplitter.Location = new System.Drawing.Point(0, 84);
+            this.documentSplitter.Location = new System.Drawing.Point(0, 42);
             this.documentSplitter.Name = "documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -421,7 +421,7 @@
             // documentSplitter.Panel2
             // 
             this.documentSplitter.Panel2.Controls.Add(this.renderBox);
-            this.documentSplitter.Size = new System.Drawing.Size(1688, 998);
+            this.documentSplitter.Size = new System.Drawing.Size(1688, 1040);
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
@@ -443,8 +443,8 @@
             // editorSplitter.Panel2
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
-            this.editorSplitter.Size = new System.Drawing.Size(562, 998);
-            this.editorSplitter.SplitterDistance = 667;
+            this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
+            this.editorSplitter.SplitterDistance = 695;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -457,7 +457,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 663);
+            this.cfdgText.Size = new System.Drawing.Size(558, 691);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -478,7 +478,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 319);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 333);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -488,7 +488,7 @@
             this.renderBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderBox.Location = new System.Drawing.Point(0, 0);
             this.renderBox.Name = "renderBox";
-            this.renderBox.Size = new System.Drawing.Size(1114, 994);
+            this.renderBox.Size = new System.Drawing.Size(1114, 1036);
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
             this.renderBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureDragDrop);
