@@ -16,6 +16,7 @@ namespace CFForm
         public bool isResizing = false;
         public bool isResized = false;
         private FindReplaceForm findForm = new FindReplaceForm();
+        private ColorCalculator colorCalc = new CppWrapper.ColorCalculator();
         public Form1()
         {
             dockPanel = new DockPanel();
@@ -181,6 +182,16 @@ namespace CFForm
                     else
                         SystemSounds.Beep.Play();
                 }
+            }
+        }
+
+        private void menuWColorCalc(object sender, EventArgs e)
+        {
+            if (colorCalc.Visible) {
+                colorCalc.WindowState = FormWindowState.Normal;
+                colorCalc.Activate();
+            } else {
+                colorCalc.Show();
             }
         }
     }

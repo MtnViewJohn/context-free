@@ -114,6 +114,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
@@ -127,6 +128,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -140,6 +142,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -153,6 +156,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
@@ -166,6 +170,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,6 +184,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
+      <EmbedManagedResourceFile>../../src-win/res/dropper.cur;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -230,11 +236,32 @@
     <ClInclude Include="..\..\src-win\WinCanvas.h" />
     <ClInclude Include="..\..\src-win\WinPngCanvas.h" />
     <ClInclude Include="..\..\src-win\WinSystem.h" />
+    <ClInclude Include="ColorCalculator.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="ColorChangeEventArgs.h" />
+    <ClInclude Include="ColorComponentChoose.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="HSBChoose.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="hsbColorClr.h" />
+    <ClInclude Include="HSBEdit.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="HueSatChoose.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderHelper.h" />
     <ClInclude Include="RenderParameters.h" />
     <ClInclude Include="RenderStats.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RGBChoose.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="TrackPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src-agg\src\agg_bezier_arc.cpp">
@@ -891,6 +918,12 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ColorCalculator.cpp" />
+    <ClCompile Include="ColorComponentChoose.cpp" />
+    <ClCompile Include="HSBChoose.cpp" />
+    <ClCompile Include="hsbColorClr.cpp" />
+    <ClCompile Include="HSBEdit.cpp" />
+    <ClCompile Include="HueSatChoose.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">Create</PrecompiledHeader>
@@ -902,6 +935,21 @@
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderParameters.cpp" />
     <ClCompile Include="RenderStats.cpp" />
+    <ClCompile Include="RGBChoose.cpp" />
+    <ClCompile Include="TrackPoint.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
@@ -924,10 +972,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\src-win\res\dropper.cur" />
     <None Include="..\CFForm\Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\src-net\FindReplaceForm.resx" />
+    <EmbeddedResource Include="ColorCalculator.resx">
+      <DependentUpon>ColorCalculator.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
