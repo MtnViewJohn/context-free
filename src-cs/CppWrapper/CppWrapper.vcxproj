@@ -243,6 +243,9 @@
     <ClInclude Include="ColorComponentChoose.h">
       <FileType>CppControl</FileType>
     </ClInclude>
+    <ClInclude Include="GalleryUploader.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="HSBChoose.h">
       <FileType>CppControl</FileType>
     </ClInclude>
@@ -262,6 +265,7 @@
       <FileType>CppControl</FileType>
     </ClInclude>
     <ClInclude Include="TrackPoint.h" />
+    <ClInclude Include="UploadPrefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src-agg\src\agg_bezier_arc.cpp">
@@ -920,6 +924,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ColorCalculator.cpp" />
     <ClCompile Include="ColorComponentChoose.cpp" />
+    <ClCompile Include="GalleryUploader.cpp" />
     <ClCompile Include="HSBChoose.cpp" />
     <ClCompile Include="hsbColorClr.cpp" />
     <ClCompile Include="HSBEdit.cpp" />
@@ -950,6 +955,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UploadPrefs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
@@ -979,6 +985,9 @@
     <EmbeddedResource Include="..\..\src-net\FindReplaceForm.resx" />
     <EmbeddedResource Include="ColorCalculator.resx">
       <DependentUpon>ColorCalculator.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GalleryUploader.resx">
+      <DependentUpon>GalleryUploader.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

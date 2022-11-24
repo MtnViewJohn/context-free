@@ -6,6 +6,7 @@
 #include "WinSystem.h"
 #include "WinCanvas.h"
 #include "variation.h"
+#include "UploadPrefs.h"
 
 namespace CppWrapper {
     public ref class RenderHelper
@@ -104,6 +105,8 @@ namespace CppWrapper {
             System::Drawing::Rectangle destRect);
         void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
             System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, int x, int y);
+        void uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
+        bool saveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, System::IO::Stream^ str, bool JPEG);
 
     private:
         sptr_t SciPtr = 0;

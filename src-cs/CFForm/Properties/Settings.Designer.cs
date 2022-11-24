@@ -598,5 +598,89 @@ namespace CFForm.Properties {
                 this["AnimatePreviewLoop"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GalleryUsername {
+            get {
+                return ((string)(this["GalleryUsername"]));
+            }
+            set {
+                this["GalleryUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GalleryPassword {
+            get {
+                return ((string)(this["GalleryPassword"]));
+            }
+            set {
+                this["GalleryPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int MultiplyWidth {
+            get {
+                return ((int)(this["MultiplyWidth"]));
+            }
+            set {
+                this["MultiplyWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int MultiplyHeight {
+            get {
+                return ((int)(this["MultiplyHeight"]));
+            }
+            set {
+                this["MultiplyHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ccLicense {
+            get {
+                return ((string)(this["ccLicense"]));
+            }
+            set {
+                this["ccLicense"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ccImage {
+            get {
+                return ((string)(this["ccImage"]));
+            }
+            set {
+                this["ccImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ccName {
+            get {
+                return ((string)(this["ccName"]));
+            }
+            set {
+                this["ccName"] = value;
+            }
+        }
     }
 }

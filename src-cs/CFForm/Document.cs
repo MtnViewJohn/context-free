@@ -16,6 +16,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using CppWrapper;
 using System.Media;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Xml.Linq;
 
 namespace CFForm
 {
@@ -904,7 +907,35 @@ namespace CFForm
 
         private void menuRGalleryClick(object sender, EventArgs e)
         {
+            CppWrapper.UploadPrefs prefs = new CppWrapper.UploadPrefs
+            {
+                CfdgName = Path.GetFileNameWithoutExtension(Text),
+                CfdgText = cfdgText.Text,
+                Variation = currentVariation,
+                OutputMultiplier = new double[]
+                {
+                    (double)Properties.Settings.Default.MultiplyWidth,
+                    (double)Properties.Settings.Default.MultiplyHeight
+                },
+                Username = Properties.Settings.Default.GalleryUsername,
+                Password = Properties.Settings.Default.GalleryPassword,
+                ImageCrop = Properties.Settings.Default.ImageCrop,
+                ccLicense = Properties.Settings.Default.ccLicense,
+                ccImage = Properties.Settings.Default.ccImage,
+                ccName = Properties.Settings.Default.ccName
+            };
 
+            renderHelper.uploadDesign(this, prefs);
+
+            if (prefs.Updated) {
+                Properties.Settings.Default.GalleryUsername = prefs.Username;
+                Properties.Settings.Default.GalleryPassword = prefs.Password;
+                Properties.Settings.Default.ImageCrop = prefs.ImageCrop;
+                Properties.Settings.Default.ccLicense = prefs.ccLicense;
+                Properties.Settings.Default.ccImage = prefs.ccImage;
+                Properties.Settings.Default.ccName = prefs.ccName;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void nextVariationClick(object sender, EventArgs e)

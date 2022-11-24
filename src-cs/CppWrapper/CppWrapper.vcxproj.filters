@@ -201,6 +201,12 @@
     <ClInclude Include="HSBEdit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GalleryUploader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadPrefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -366,6 +372,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HSBEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GalleryUploader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UploadPrefs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

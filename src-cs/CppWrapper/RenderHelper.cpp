@@ -5,8 +5,11 @@
 #include <algorithm>
 #include "variation.h"
 #include "tiledCanvas.h"
+#include "GalleryUploader.h"
+#include "upload.h"
 
 using namespace System;
+using namespace System::IO;
 using namespace System::ComponentModel;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
@@ -401,4 +404,110 @@ namespace CppWrapper {
             g->DrawImageUnscaled(src, pt->x, pt->y);
         }
     }
+
+    bool RenderHelper::saveToPNGorJPEG(UploadPrefs^ prefs, String^ path, System::IO::Stream^ str, bool JPEG)
+    {
+        bool success = true;
+
+        mSystem->message("Saving image...");
+
+        array<Imaging::ImageCodecInfo^>^ codecs = Imaging::ImageCodecInfo::GetImageEncoders();
+        Imaging::ImageCodecInfo^ jpegCodec = nullptr;
+        for each (Imaging::ImageCodecInfo ^ codec in codecs) {
+            if (codec->MimeType->Equals("image/jpeg"))
+                jpegCodec = codec;
+        }
+
+        if (jpegCodec == nullptr) {
+            mSystem->message("Can't seem to find an image encoder.");
+            return false;
+        }
+
+        Imaging::EncoderParameters^ iParams = gcnew Imaging::EncoderParameters(1);
+        long long qual = (long long)(prefs->JPEGQuality);
+        iParams->Param[0] = gcnew Imaging::EncoderParameter(Imaging::Encoder::Quality, qual);
+        bool isTiled = (*mEngine)->isTiled();
+
+        try {
+            Bitmap^ bm = MakeBitmap(isTiled || prefs->ImageCrop, mCanvas);
+            if (bm == nullptr)
+                throw gcnew ArgumentNullException();
+
+            if (isTiled && (prefs->OutputMultiplier[0] != 1.0 || prefs->OutputMultiplier[1] != 1.0)) {
+                Imaging::PixelFormat fmt = bm->PixelFormat;
+                if (fmt == Imaging::PixelFormat::Format8bppIndexed)
+                    fmt = Imaging::PixelFormat::Format24bppRgb;
+
+                int w = (int)(bm->Width * prefs->OutputMultiplier[0] + 0.5);
+                int h = (int)(bm->Height * prefs->OutputMultiplier[1] + 0.5);
+
+                Bitmap^ newBM = gcnew Bitmap(w, h, fmt);
+                Graphics^ g = Graphics::FromImage(newBM);
+                g->Clear(Color::White);
+                drawTiled(bm, newBM, g, nullptr, 0, 0);
+
+                delete g;
+                delete bm;
+                bm = newBM;
+            }
+
+            if (path != nullptr) {
+                String^ fileName = path;
+                if (prefs->ImageAppendVariation) {
+                    fileName = Path::GetDirectoryName(path) + "\\" +
+                        Path::GetFileNameWithoutExtension(path) +
+                        "-" + prefs->VariationText +
+                        Path::GetExtension(path);
+                }
+
+                if (JPEG)
+                    bm->Save(fileName, jpegCodec, iParams);
+                else
+                    bm->Save(fileName, Imaging::ImageFormat::Png);
+            }
+            else if (str != nullptr) {
+                if (JPEG)
+                    bm->Save(str, jpegCodec, iParams);
+                else
+                    bm->Save(str, Imaging::ImageFormat::Png);
+            }
+            else {
+                mSystem->message("Nowhere to save the image.");
+                System::Console::Beep();
+            }
+            delete bm;
+            mSystem->message("Image save complete.");
+        }
+        catch (Exception^) {
+            mSystem->message("Image save failed.");
+            System::Console::Beep();
+            success = false;
+        }
+        delete tempCanvas;
+        tempCanvas = nullptr;
+        return success;
+    }
+
+    void RenderHelper::uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs)
+    {
+        if (!mCanvas) {
+            mSystem->message("Nothing to upload, try rendering first.");
+            return;
+        }
+        MemoryStream^ bitmapStream = gcnew MemoryStream();
+        if (!saveToPNGorJPEG(prefs, nullptr, bitmapStream, false) || bitmapStream->Length == 0) {
+            mSystem->message("Upload failed because of image problems.");
+            return;
+        }
+
+        bool compression = mCanvas->colorCount256() ? Upload::CompressPNG8 : Upload::CompressJPEG;
+
+        array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(prefs->CfdgText);
+        pin_ptr<Byte> pinnedCfdg = &encodedCfdg[0];
+
+        GalleryUploader toGal(prefs, bitmapStream, (*mEngine)->isFrieze(), (*mEngine)->isTiled(), compression);
+
+        toGal.ShowDialog(owner);
+    }
+
 }
