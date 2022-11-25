@@ -63,6 +63,8 @@ namespace CppWrapper {
     private: System::Windows::Forms::Label^ label7;
     private: System::Windows::Forms::NumericUpDown^ stepCount;
     private: System::Windows::Forms::Button^ swapColors;
+    private: System::Windows::Forms::ToolTip^ toolTip1;
+    private: System::ComponentModel::IContainer^ components;
 
 
 
@@ -72,7 +74,7 @@ namespace CppWrapper {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        System::ComponentModel::Container^ components;
+
 
 #pragma region Windows Form Designer generated code
         /// <summary>
@@ -81,6 +83,7 @@ namespace CppWrapper {
         /// </summary>
         void InitializeComponent(void)
         {
+            this->components = (gcnew System::ComponentModel::Container());
             System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(ColorCalculator::typeid));
             this->dropperButton = (gcnew System::Windows::Forms::Button());
             this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
@@ -95,12 +98,13 @@ namespace CppWrapper {
             this->label6 = (gcnew System::Windows::Forms::Label());
             this->label7 = (gcnew System::Windows::Forms::Label());
             this->stepCount = (gcnew System::Windows::Forms::NumericUpDown());
+            this->swapColors = (gcnew System::Windows::Forms::Button());
+            this->toolTip1 = (gcnew System::Windows::Forms::ToolTip(this->components));
             this->endEditor = (gcnew CppWrapper::HSBEdit());
             this->deltaEditor = (gcnew CppWrapper::HSBEdit());
             this->startEditor = (gcnew CppWrapper::HSBEdit());
             this->rgbChooser = (gcnew CppWrapper::RGBChoose());
             this->hsbChooser = (gcnew CppWrapper::HSBChoose());
-            this->swapColors = (gcnew System::Windows::Forms::Button());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->stepCount))->BeginInit();
             this->SuspendLayout();
             // 
@@ -113,6 +117,7 @@ namespace CppWrapper {
             this->dropperButton->Size = System::Drawing::Size(50, 48);
             this->dropperButton->TabIndex = 4;
             this->dropperButton->TabStop = false;
+            this->toolTip1->SetToolTip(this->dropperButton, L"Grab a Screen Color with the Dropper");
             this->dropperButton->UseVisualStyleBackColor = true;
             this->dropperButton->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &ColorCalculator::dropperMove);
             // 
@@ -188,6 +193,7 @@ namespace CppWrapper {
             this->startButton->Size = System::Drawing::Size(74, 98);
             this->startButton->TabIndex = 11;
             this->startButton->Text = L"☚";
+            this->toolTip1->SetToolTip(this->startButton, L"Activate Start Color");
             this->startButton->UseVisualStyleBackColor = true;
             this->startButton->Click += gcnew System::EventHandler(this, &ColorCalculator::buttonHandler);
             // 
@@ -211,6 +217,7 @@ namespace CppWrapper {
             this->endButton->Size = System::Drawing::Size(74, 98);
             this->endButton->TabIndex = 16;
             this->endButton->Text = L"☚";
+            this->toolTip1->SetToolTip(this->endButton, L"Activate Finish Color");
             this->endButton->UseVisualStyleBackColor = true;
             this->endButton->Click += gcnew System::EventHandler(this, &ColorCalculator::buttonHandler);
             // 
@@ -244,6 +251,19 @@ namespace CppWrapper {
             this->stepCount->TabIndex = 13;
             this->stepCount->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->stepCount->ValueChanged += gcnew System::EventHandler(this, &ColorCalculator::stepCount_ValueChanged);
+            // 
+            // swapColors
+            // 
+            this->swapColors->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+                static_cast<System::Byte>(0)));
+            this->swapColors->Location = System::Drawing::Point(648, 631);
+            this->swapColors->Name = L"swapColors";
+            this->swapColors->Size = System::Drawing::Size(43, 88);
+            this->swapColors->TabIndex = 14;
+            this->swapColors->Text = L"⇵";
+            this->toolTip1->SetToolTip(this->swapColors, L"Swap Start and Finish Colors");
+            this->swapColors->UseVisualStyleBackColor = true;
+            this->swapColors->Click += gcnew System::EventHandler(this, &ColorCalculator::swapColorsClick);
             // 
             // endEditor
             // 
@@ -305,18 +325,6 @@ namespace CppWrapper {
             this->hsbChooser->Sat = 0;
             this->hsbChooser->Size = System::Drawing::Size(444, 347);
             this->hsbChooser->TabIndex = 2;
-            // 
-            // swapColors
-            // 
-            this->swapColors->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->swapColors->Location = System::Drawing::Point(648, 631);
-            this->swapColors->Name = L"swapColors";
-            this->swapColors->Size = System::Drawing::Size(43, 88);
-            this->swapColors->TabIndex = 14;
-            this->swapColors->Text = L"⇵";
-            this->swapColors->UseVisualStyleBackColor = true;
-            this->swapColors->Click += gcnew System::EventHandler(this, &ColorCalculator::swapColorsClick);
             // 
             // ColorCalculator
             // 

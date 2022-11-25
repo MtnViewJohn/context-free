@@ -994,5 +994,16 @@ namespace CFForm
                     break;
             }
         }
+
+        private void menuRColorClick(object sender, EventArgs e)
+        {
+            ColorCalculator colorCalc = ((Form1)MdiParent).colorCalc;
+            if (colorCalc.Visible) {
+                colorCalc.WindowState = FormWindowState.Normal;
+                colorCalc.Activate();
+            } else {
+                colorCalc.Show();
+            }
+        }
     }
 }

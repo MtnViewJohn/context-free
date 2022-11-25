@@ -136,12 +136,12 @@ namespace CppWrapper {
         hsbChooser->Focus();
 
         if (Object::ReferenceEquals(sender, startButton)) {
-            startEditor->BackColor = SystemColors::Control;
+            startEditor->BackColor = SystemColors::ActiveCaption;
             endEditor->BackColor = SystemColors::ControlLightLight;
             newColor = startEditor->CurrentColor;
             startSelected = true;
         } else {
-            endEditor->BackColor = SystemColors::Control;
+            endEditor->BackColor = SystemColors::ActiveCaption;
             startEditor->BackColor = SystemColors::ControlLightLight;
             newColor = endEditor->CurrentColor;
             startSelected = false;

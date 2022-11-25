@@ -173,6 +173,7 @@
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuROutput = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRGallery = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorCalculatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.documentSplitter)).BeginInit();
             this.documentSplitter.Panel1.SuspendLayout();
@@ -444,7 +445,7 @@
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
             this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 695;
+            this.editorSplitter.SplitterDistance = 694;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -457,7 +458,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 691);
+            this.cfdgText.Size = new System.Drawing.Size(558, 690);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -478,7 +479,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 333);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 334);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -1396,7 +1397,8 @@
             this.menuRStop,
             this.toolStripMenuItem6,
             this.menuROutput,
-            this.menuRGallery});
+            this.menuRGallery,
+            this.colorCalculatorToolStripMenuItem});
             this.renderToolStripMenuItem1.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.renderToolStripMenuItem1.MergeIndex = 2;
             this.renderToolStripMenuItem1.Name = "renderToolStripMenuItem1";
@@ -1491,6 +1493,14 @@
             this.menuRGallery.Size = new System.Drawing.Size(464, 44);
             this.menuRGallery.Text = "&Upload to Gallery...";
             this.menuRGallery.Click += new System.EventHandler(this.menuRGalleryClick);
+            // 
+            // colorCalculatorToolStripMenuItem
+            // 
+            this.colorCalculatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("colorCalculatorToolStripMenuItem.Image")));
+            this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
+            this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(464, 44);
+            this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
+            this.colorCalculatorToolStripMenuItem.Click += new System.EventHandler(this.menuRColorClick);
             // 
             // Document
             // 
@@ -1670,5 +1680,6 @@
         private ToolStripMenuItem menuROutput;
         private ToolStripMenuItem menuRGallery;
         public ScintillaNET.Scintilla cfdgText;
+        private ToolStripMenuItem colorCalculatorToolStripMenuItem;
     }
 }
