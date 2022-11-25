@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Document));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.renderButton = new System.Windows.Forms.ToolStripSplitButton();
@@ -174,6 +175,8 @@
             this.menuROutput = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRGallery = new System.Windows.Forms.ToolStripMenuItem();
             this.colorCalculatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.statusTimer = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.documentSplitter)).BeginInit();
             this.documentSplitter.Panel1.SuspendLayout();
@@ -226,10 +229,12 @@
             this.animateToolStripMenuItem,
             this.frameToolStripMenuItem});
             this.renderButton.Image = ((System.Drawing.Image)(resources.GetObject("renderButton.Image")));
+            this.renderButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.renderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.renderButton.Name = "renderButton";
-            this.renderButton.Size = new System.Drawing.Size(162, 36);
+            this.renderButton.Size = new System.Drawing.Size(177, 36);
             this.renderButton.Text = "Render";
+            this.renderButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.renderButton.ButtonClick += new System.EventHandler(this.renderButtonClick);
             // 
             // renderToolStripMenuItem
@@ -1502,6 +1507,25 @@
             this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
             this.colorCalculatorToolStripMenuItem.Click += new System.EventHandler(this.menuRColorClick);
             // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "busy_f01.ico");
+            this.imageList1.Images.SetKeyName(1, "busy_f02.ico");
+            this.imageList1.Images.SetKeyName(2, "busy_f03.ico");
+            this.imageList1.Images.SetKeyName(3, "busy_f04.ico");
+            this.imageList1.Images.SetKeyName(4, "busy_f05.ico");
+            this.imageList1.Images.SetKeyName(5, "busy_f06.ico");
+            this.imageList1.Images.SetKeyName(6, "busy_f07.ico");
+            this.imageList1.Images.SetKeyName(7, "busy_f08.ico");
+            this.imageList1.Images.SetKeyName(8, "busy_f09.ico");
+            // 
+            // statusTimer
+            // 
+            this.statusTimer.Tick += new System.EventHandler(this.statusTick);
+            // 
             // Document
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
@@ -1681,5 +1705,7 @@
         private ToolStripMenuItem menuRGallery;
         public ScintillaNET.Scintilla cfdgText;
         private ToolStripMenuItem colorCalculatorToolStripMenuItem;
+        private ImageList imageList1;
+        private System.Windows.Forms.Timer statusTimer;
     }
 }

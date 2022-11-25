@@ -135,6 +135,12 @@ namespace CppWrapper {
         }
     }
 
+    void RenderHelper::requestUpdate()
+    {
+        if (mRenderer != nullptr)
+            mRenderer->requestUpdate = true;
+    }
+
     bool
     RenderHelper::syncToSystem(String^ name, String^ cfdg)
     {

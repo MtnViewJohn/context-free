@@ -64,6 +64,8 @@ namespace CFForm
         {
             Render = 0, RenderSized = 1, Animate = 2, AnimateFrame = 3
         }
+        private int renderButtonIndex = 0;
+        private int progressDelay = 0;
         public enum PostRenderAction
         {
             DoNothing = 0, Render = 1, RenderSize = 2, RenderRepeat = 3, 
@@ -99,6 +101,7 @@ namespace CFForm
             AutoComplete = RenderHelper.GetAutoC();
             currentVariation = RenderHelper.RandomVariation(3);
             variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
+            toolStrip1.ImageList = imageList1;
         }
 
         private void loadInitialization(object sender, EventArgs e)
@@ -189,7 +192,21 @@ namespace CFForm
                                     String.Format("{0:N0} shapes, {1:N0} x {2:N0} pixels{3}",
                                     stat.shapeCount, renderHelper.width, renderHelper.height, endText);
                             }
-                            // Progressbar code
+                            if ((stat.inOutput && stat.fullOutput) || stat.showProgress) {
+                                if (progressDelay > 2) {
+                                    int bar = 0;
+                                    if(stat.outputCount > 0)
+                                        bar = (int)((100.0 * (double)stat.outputDone) / stat.outputCount);
+                                    if (bar >= 0 && bar <= 100)
+                                        progressBar.Value = bar;
+                                } else {
+                                    progressDelay++;
+                                    progressBar.Value = 0;
+                                }
+                            } else {
+                                progressDelay = 0;
+                                progressBar.Value = 0;
+                            }
                         }
                         break;
                     }
@@ -255,6 +272,8 @@ namespace CFForm
 
         private void renderCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
+            statusTimer.Stop();
+
             int nextAction = (int)postAction;
             postAction = PostRenderAction.DoNothing;
 
@@ -295,6 +314,7 @@ namespace CFForm
 
         private void runRenderThread(object? sender, DoWorkEventArgs e)
         {
+            progressDelay = 0;
             renderHelper?.runRenderThread(renderParameters);
         }
         private void renderButtonChange(object sender, EventArgs e)
@@ -309,42 +329,55 @@ namespace CFForm
 
         private void updateRenderButton()
         {
-            switch(renderAction)
-            {
-                case RenderAction.Render:
-                    renderButton.Text = "Render";
-                    break;
-                case RenderAction.RenderSized:
-                    renderButton.Text = "Sized";
-                    break;
-                case RenderAction.Animate:
-                    renderButton.Text = "Animate";
-                    break;
-                case RenderAction.AnimateFrame:
-                    renderButton.Text = "Frame";
-                    break;
+            int lastIndex = renderButtonIndex;
+
+            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
+                ++renderButtonIndex;
+                if (renderButtonIndex > 8) renderButtonIndex = 1;
+                if (renderHelper.requestFinishUp)
+                    renderButton.Text = "Stop Now";
+                else
+                    renderButton.Text = "Stop";
+            } else {
+                switch (renderAction) {
+                    case RenderAction.Render:
+                        renderButton.Text = "Render";
+                        break;
+                    case RenderAction.RenderSized:
+                        renderButton.Text = "Sized";
+                        break;
+                    case RenderAction.Animate:
+                        renderButton.Text = "Animate";
+                        break;
+                    case RenderAction.AnimateFrame:
+                        renderButton.Text = "Frame";
+                        break;
+                }
+                renderButtonIndex = 0;
+
+                bool visSize = renderAction == RenderAction.RenderSized;
+                bool visFrame = renderAction == RenderAction.AnimateFrame;
+                if (frameSeparator.Visible != visFrame || sizeSeparator.Visible != visSize) {
+                    toolStrip1.SuspendLayout();
+
+                    frameSeparator.Visible = visFrame;
+                    frameLabel.Visible = visFrame;
+                    frameTextBox.Visible = visFrame;
+                    framePrev.Visible = visFrame;
+                    frameNext.Visible = visFrame;
+
+                    sizeSeparator.Visible = visSize;
+                    sizeLabel1.Visible = visSize;
+                    sizeLabel2.Visible = visSize;
+                    sizeWidthBox.Visible = visSize;
+                    sizeHeightBox.Visible = visSize;
+
+                    toolStrip1.ResumeLayout();
+                }
             }
 
-            bool visSize = renderAction == RenderAction.RenderSized;
-            bool visFrame = renderAction == RenderAction.AnimateFrame;
-            if (frameSeparator.Visible != visFrame || sizeSeparator.Visible != visSize)
-            {
-                toolStrip1.SuspendLayout();
-
-                frameSeparator.Visible = visFrame;
-                frameLabel.Visible = visFrame;
-                frameTextBox.Visible = visFrame;
-                framePrev.Visible = visFrame;
-                frameNext.Visible = visFrame;
-
-                sizeSeparator.Visible = visSize;
-                sizeLabel1.Visible = visSize;
-                sizeLabel2.Visible = visSize;
-                sizeWidthBox.Visible = visSize;
-                sizeHeightBox.Visible = visSize;
-
-                toolStrip1.ResumeLayout();
-            }
+            if (lastIndex != renderButtonIndex)
+                renderButton.ImageIndex = renderButtonIndex;
         }
 
         private void renderButtonClick(object sender, EventArgs e)
@@ -884,6 +917,7 @@ namespace CFForm
 
             postAction = PostRenderAction.DoNothing;
             if (renderHelper.performRender(renderThread)) {
+                statusTimer.Start();
                 updateRenderButton();
             }
         }
@@ -1003,6 +1037,14 @@ namespace CFForm
                 colorCalc.Activate();
             } else {
                 colorCalc.Show();
+            }
+        }
+
+        private void statusTick(object sender, EventArgs e)
+        {
+            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
+                updateRenderButton();
+                renderHelper.requestUpdate();
             }
         }
     }

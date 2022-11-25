@@ -101,6 +101,7 @@ namespace CppWrapper {
             System::Drawing::Bitmap^ displayImage, bool noDisplay);
         bool performRender(System::ComponentModel::BackgroundWorker^ renderThread);
         System::Drawing::Bitmap^ MakeBitmap(bool cropped, WinCanvas* canvas);
+        void requestUpdate();
         void drawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, 
             System::Drawing::Rectangle destRect);
         void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
