@@ -117,9 +117,9 @@ namespace CppWrapper {
             }
             break;
         case RenderParameters::RenderActions::SaveSVG:
-            //mRenderer->draw(mSVGCanvas);
-            //delete mSVGCanvas;
-            //mSVGCanvas = nullptr;
+            mRenderer->draw(SVGcanvas);
+            delete SVGcanvas;
+            SVGcanvas = nullptr;
             break;
         case RenderParameters::RenderActions::Render:
             mRenderer->run(mCanvas, rp->periodicUpdate);
@@ -220,6 +220,20 @@ namespace CppWrapper {
         if (mCanvas) return;
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()),
             width, height, (*mEngine)->getBackgroundColor());
+    }
+
+    bool
+    RenderHelper::makeSVGCanvas(String^ path, int w, int h, UploadPrefs^ prefs)
+    {
+        if (SVGcanvas) return !SVGcanvas->mError;
+        if (mRenderer == nullptr) return false;
+
+        array<Byte>^ pathutf8 = System::Text::Encoding::UTF8->GetBytes(path);
+        pin_ptr<Byte> pathutf8pin = &pathutf8[0];
+        const char* cpath = reinterpret_cast<const char*>(pathutf8pin);
+
+        SVGcanvas = new SVGCanvas(cpath, w, h, prefs->ImageCrop);
+        return !SVGcanvas->mError;
     }
 
     void

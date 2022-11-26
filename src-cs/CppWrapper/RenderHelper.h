@@ -7,6 +7,7 @@
 #include "WinCanvas.h"
 #include "variation.h"
 #include "UploadPrefs.h"
+#include "SVGCanvas.h"
 
 namespace CppWrapper {
     public ref class RenderHelper
@@ -105,6 +106,7 @@ namespace CppWrapper {
         void prepareForRender(int width, int height, double minSize, double border, 
             int variation, bool shrinkTiled);
         void makeCanvas(int width, int height);
+        bool makeSVGCanvas(System::String^ path, int width, int height, UploadPrefs^ prefs);
         void updateRenderBox(System::Windows::Forms::PictureBox^ renderBox, 
             System::Drawing::Bitmap^ displayImage, bool noDisplay);
         bool performRender(System::ComponentModel::BackgroundWorker^ renderThread);
@@ -126,6 +128,7 @@ namespace CppWrapper {
         WinCanvas* mCanvas = nullptr;
         WinCanvas* tempCanvas = nullptr;
         Canvas* animationCanvas = nullptr;
+        SVGCanvas* SVGcanvas = nullptr;
     };
 }
 

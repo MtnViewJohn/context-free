@@ -318,6 +318,9 @@ namespace CFForm
         {
             statusTimer.Stop();
 
+            if (renderParameters.action == RenderParameters.RenderActions.SaveSVG)
+                setMessage("Done");
+
             int nextAction = (int)postAction;
             postAction = PostRenderAction.DoNothing;
 
@@ -1003,6 +1006,36 @@ namespace CFForm
             }
         }
 
+        private void doSVGSave(String path, UploadPrefs prefs)
+        {
+            setMessage(null);
+            if (renderHelper.renderer == 0) {
+                SystemSounds.Beep.Play();
+                setMessage("There is no SVG data to save.");
+                return;
+            }
+            if (path.Length == 0) {
+                SystemSounds.Beep.Play();
+                setMessage("Bad file name.");
+                return;
+            }
+
+            if (!renderHelper.makeSVGCanvas(path, renderParameters.width, renderParameters.height, prefs)) 
+            {
+                SystemSounds.Beep.Play();
+                setMessage("An error occurred while saving the SVG file.");
+                return;
+            }
+
+            setMessage("Saving SVG file...");
+            renderParameters.action = RenderParameters.RenderActions.SaveSVG;
+            postAction = PostRenderAction.DoNothing;
+            if (renderHelper.performRender(renderThread)) {
+                statusTimer.Start();
+                updateRenderButton();
+            }
+        }
+
         private void setupCanvas(int width, int height)
         {
             if (displayImage == null)
@@ -1050,7 +1083,7 @@ namespace CFForm
                             renderHelper.saveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, null, true);
                             break;
                         case 3: // SVG
-                            // TODO SVG code
+                            doSVGSave(saveImageDlg.FileDlgFileName, prefs);
                             break;
                         default:
                             break;
