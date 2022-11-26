@@ -270,6 +270,48 @@ namespace CFForm
             Properties.Settings.Default.RenderHeight = renderParameters.height;
             Properties.Settings.Default.BorderWidth = renderParameters.borderSize;
             Properties.Settings.Default.MinimumSize = renderParameters.minimumSize;
+            Properties.Settings.Default.Save();
+        }
+
+        private CppWrapper.UploadPrefs UploadPrefs {
+            get
+            {
+                return new CppWrapper.UploadPrefs
+                {
+                    CfdgName = Path.GetFileNameWithoutExtension(Text),
+                    CfdgText = cfdgText.Text,
+                    Variation = currentVariation,
+                    VariationText = variationTextBox.Text,
+                    ImageAppendVariation = Properties.Settings.Default.ImageAppendVariation,
+                    JPEGQuality = Properties.Settings.Default.JPEGQuality,
+                    OutputMultiplier = new double[]
+                    {
+                        (double)Properties.Settings.Default.MultiplyWidth,
+                        (double)Properties.Settings.Default.MultiplyHeight
+                    },
+                    Username = Properties.Settings.Default.GalleryUsername,
+                    Password = Properties.Settings.Default.GalleryPassword,
+                    ImageCrop = Properties.Settings.Default.ImageCrop,
+                    ccLicense = Properties.Settings.Default.ccLicense,
+                    ccImage = Properties.Settings.Default.ccImage,
+                    ccName = Properties.Settings.Default.ccName,
+                    Updated = false
+                };
+            }
+            set
+            {
+                Properties.Settings.Default.ImageAppendVariation = value.ImageAppendVariation;
+                Properties.Settings.Default.JPEGQuality = (int)(value.JPEGQuality);
+                Properties.Settings.Default.MultiplyWidth = (int)(value.OutputMultiplier[0]);
+                Properties.Settings.Default.MultiplyHeight = (int)(value.OutputMultiplier[1]);
+                Properties.Settings.Default.GalleryUsername = value.Username;
+                Properties.Settings.Default.GalleryPassword = value.Password;
+                Properties.Settings.Default.ImageCrop = value.ImageCrop;
+                Properties.Settings.Default.ccLicense = value.ccLicense;
+                Properties.Settings.Default.ccImage = value.ccImage;
+                Properties.Settings.Default.ccName = value.ccName;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void renderCompleted(object? sender, RunWorkerCompletedEventArgs e)
@@ -982,40 +1024,49 @@ namespace CFForm
 
         private void menuROutputClick(object sender, EventArgs e)
         {
+            // TODO: movie save code
+            if (!renderHelper.canvas) {
+                setMessage("There is nothing to save.");
+                SystemSounds.Asterisk.Play();
+                return;
+            }
 
+            if (renderThread.IsBusy) {
+                PostRenderAction postAction = PostRenderAction.SaveOutput;
+                return;
+            }
+
+            using (var saveImageDlg = new CppWrapper.SaveImage(renderHelper.frieze, renderHelper.tiled,
+                Path.GetFileNameWithoutExtension(Text) + ".png", Path.GetDirectoryName(Text))) 
+            {
+                var prefs = UploadPrefs;
+                if (saveImageDlg.ShowTheDialog(this, prefs) == DialogResult.OK) {
+                    UploadPrefs = prefs;
+                    switch (saveImageDlg.FileDlgFilterIndex) {
+                        case 1: // PNG
+                            renderHelper.saveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, null, false);
+                            break;
+                        case 2: // JPEG
+                            renderHelper.saveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, null, true);
+                            break;
+                        case 3: // SVG
+                            // TODO SVG code
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         private void menuRGalleryClick(object sender, EventArgs e)
         {
-            CppWrapper.UploadPrefs prefs = new CppWrapper.UploadPrefs
-            {
-                CfdgName = Path.GetFileNameWithoutExtension(Text),
-                CfdgText = cfdgText.Text,
-                Variation = currentVariation,
-                OutputMultiplier = new double[]
-                {
-                    (double)Properties.Settings.Default.MultiplyWidth,
-                    (double)Properties.Settings.Default.MultiplyHeight
-                },
-                Username = Properties.Settings.Default.GalleryUsername,
-                Password = Properties.Settings.Default.GalleryPassword,
-                ImageCrop = Properties.Settings.Default.ImageCrop,
-                ccLicense = Properties.Settings.Default.ccLicense,
-                ccImage = Properties.Settings.Default.ccImage,
-                ccName = Properties.Settings.Default.ccName
-            };
+            CppWrapper.UploadPrefs prefs = UploadPrefs;
 
             renderHelper.uploadDesign(this, prefs);
 
-            if (prefs.Updated) {
-                Properties.Settings.Default.GalleryUsername = prefs.Username;
-                Properties.Settings.Default.GalleryPassword = prefs.Password;
-                Properties.Settings.Default.ImageCrop = prefs.ImageCrop;
-                Properties.Settings.Default.ccLicense = prefs.ccLicense;
-                Properties.Settings.Default.ccImage = prefs.ccImage;
-                Properties.Settings.Default.ccName = prefs.ccName;
-                Properties.Settings.Default.Save();
-            }
+            if (prefs.Updated)
+                UploadPrefs = prefs;
         }
 
         private void nextVariationClick(object sender, EventArgs e)

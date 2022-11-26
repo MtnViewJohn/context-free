@@ -264,6 +264,9 @@
     <ClInclude Include="RGBChoose.h">
       <FileType>CppControl</FileType>
     </ClInclude>
+    <ClInclude Include="SaveImage.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="TrackPoint.h" />
     <ClInclude Include="UploadPrefs.h" />
   </ItemGroup>
@@ -941,6 +944,7 @@
     <ClCompile Include="RenderParameters.cpp" />
     <ClCompile Include="RenderStats.cpp" />
     <ClCompile Include="RGBChoose.cpp" />
+    <ClCompile Include="SaveImage.cpp" />
     <ClCompile Include="TrackPoint.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">false</CompileAsManaged>
@@ -989,6 +993,11 @@
     <EmbeddedResource Include="GalleryUploader.resx">
       <DependentUpon>GalleryUploader.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src-net\FileDlgExtenders\FileDlgExtenders.csproj">
+      <Project>{9b4da48c-6d11-46c9-a63d-d369e9c5fe42}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -81,6 +81,14 @@ namespace CppWrapper {
                     return false;
             }
         }
+        property int frieze {
+            int get() {
+                if (mEngine->get() != nullptr)
+                    return (int)((*mEngine)->isFrieze());
+                else
+                    return 0;
+            }
+        }
         property bool canvas {
             bool get() { return mCanvas != nullptr; }
         }
