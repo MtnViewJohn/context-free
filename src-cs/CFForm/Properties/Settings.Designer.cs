@@ -554,9 +554,9 @@ namespace CFForm.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public int AnimateFrameRate {
+        public double AnimateFrameRate {
             get {
-                return ((int)(this["AnimateFrameRate"]));
+                return ((double)(this["AnimateFrameRate"]));
             }
             set {
                 this["AnimateFrameRate"] = value;
@@ -680,6 +680,18 @@ namespace CFForm.Properties {
             }
             set {
                 this["ccName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int AnimateFrame {
+            get {
+                return ((int)(this["AnimateFrame"]));
+            }
+            set {
+                this["AnimateFrame"] = value;
             }
         }
     }

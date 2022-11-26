@@ -4,6 +4,9 @@
     <Compile Update="AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="AnimateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Document.cs">
       <SubType>Form</SubType>
     </Compile>

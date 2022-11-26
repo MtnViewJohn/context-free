@@ -151,8 +151,6 @@ namespace CFForm
 
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             initRenderFromSettings();
-            renderParameters.frame = 1;
-            renderParameters.animateFrameCount = renderParameters.length * renderParameters.frameRate;
 
             renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
@@ -240,6 +238,7 @@ namespace CFForm
             renderParameters.suppressDisplay = Properties.Settings.Default.SuppressDisplay;
             renderParameters.animateZoom = Properties.Settings.Default.AnimateZoom;
             renderParameters.frameRate = Properties.Settings.Default.AnimateFrameRate;
+            renderParameters.frame = Properties.Settings.Default.AnimateFrame;
             renderParameters.animateWidth = Properties.Settings.Default.AnimateWidth;
             renderParameters.animateHeight = Properties.Settings.Default.AnimateHeight;
             renderParameters.length = Properties.Settings.Default.AnimateLength;
@@ -250,6 +249,7 @@ namespace CFForm
             renderParameters.height = Properties.Settings.Default.RenderHeight;
             renderParameters.borderSize = Properties.Settings.Default.BorderWidth;
             renderParameters.minimumSize = Properties.Settings.Default.MinimumSize;
+            renderParameters.animateFrameCount = (int)(renderParameters.length * renderParameters.frameRate);
         }
 
         private void saveRenderToSettings()
@@ -258,6 +258,7 @@ namespace CFForm
             Properties.Settings.Default.SuppressDisplay = renderParameters.suppressDisplay;
             Properties.Settings.Default.AnimateZoom = renderParameters.animateZoom;
             Properties.Settings.Default.AnimateFrameRate = renderParameters.frameRate;
+            Properties.Settings.Default.AnimateFrame = renderParameters.frame;
             Properties.Settings.Default.AnimateWidth = renderParameters.animateWidth;
             Properties.Settings.Default.AnimateHeight = renderParameters.animateHeight;
             Properties.Settings.Default.AnimateLength = renderParameters.length;
@@ -665,9 +666,11 @@ namespace CFForm
                 return;
             }
             try {
-                renderParameters.frame = Int32.Parse(frameTextBox.Text);
-                if (renderParameters.frame >= 1 && renderParameters.frame <= renderParameters.animateFrameCount)
+                renderParameters.frame = int.Parse(frameTextBox.Text);
+                if (renderParameters.frame >= 1 && renderParameters.frame <= renderParameters.animateFrameCount) {
+                    saveRenderToSettings();
                     return;
+                }
             } catch {
             }
             frameTextBox.Text = "1";
@@ -858,19 +861,55 @@ namespace CFForm
             doRender(false);
         }
 
-        private void menuRAgainClick(object sender, EventArgs e)
-        {
-
-        }
-
         private void menuRAnimateClick(object sender, EventArgs e)
         {
+            if (renderAction != RenderAction.Animate) {
+                renderAction = RenderAction.Animate;
+                updateRenderButton();
+            }
 
+            if (renderThread.IsBusy) {
+                postAction = PostRenderAction.Animate;
+                return;
+            }
+
+            if (sender == menuRAnimate) {
+                using (var ad = new AnimateDialog(false)) {
+                    if (ad.ShowDialog() != DialogResult.OK)
+                        return;
+                }
+            }
+
+            initRenderFromSettings();
+            renderParameters.animateFrame = false;
+            renderParameters.action = RenderParameters.RenderActions.Animate;
+            doRender(false);
         }
 
         private void menuRFrameClick(object sender, EventArgs e)
         {
+            if (renderAction != RenderAction.AnimateFrame) {
+                renderAction = RenderAction.AnimateFrame;
+                updateRenderButton();
+            }
 
+            if (renderThread.IsBusy) {
+                postAction = PostRenderAction.AnimateFrame;
+                return;
+            }
+
+            if (sender == menuRFrame) {
+                using (var afd = new AnimateDialog(true)) {
+                    if (afd.ShowDialog() != DialogResult.OK)
+                        return;
+                    frameTextBox.Text = afd.frameTextBox.Text;
+                }
+            }
+
+            initRenderFromSettings();
+            renderParameters.animateFrame = true;
+            renderParameters.action = RenderParameters.RenderActions.Animate;
+            doRender(false);
         }
 
         private void doRender(bool shrinkTiled)
@@ -881,10 +920,9 @@ namespace CFForm
                 nextVariationClick(this, EventArgs.Empty);
             reuseVariation = false;
 
-            int width = renderParameters.action == RenderParameters.RenderActions.Animate ?
-                renderParameters.animateWidth : renderParameters.width;
-            int height = renderParameters.action == RenderParameters.RenderActions.Animate ?
-                renderParameters.animateHeight : renderParameters.height;
+            bool useAnimateSize = renderParameters.action == RenderParameters.RenderActions.Animate;
+            int width = useAnimateSize ? renderParameters.animateWidth : renderParameters.width;
+            int height = useAnimateSize ? renderParameters.animateHeight : renderParameters.height;
 
             renderHelper.prepareForRender(width, height, renderParameters.minimumSize,
                 renderParameters.borderSize, currentVariation, shrinkTiled);

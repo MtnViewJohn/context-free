@@ -341,6 +341,7 @@
             // 
             this.frameTextBox.Name = "frameTextBox";
             this.frameTextBox.Size = new System.Drawing.Size(100, 42);
+            this.frameTextBox.Text = "1";
             this.frameTextBox.Visible = false;
             this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
             this.frameTextBox.TextChanged += new System.EventHandler(this.frameChanged);
@@ -382,6 +383,7 @@
             // 
             this.sizeWidthBox.Name = "sizeWidthBox";
             this.sizeWidthBox.Size = new System.Drawing.Size(100, 42);
+            this.sizeWidthBox.Text = "1000";
             this.sizeWidthBox.Visible = false;
             this.sizeWidthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
             this.sizeWidthBox.TextChanged += new System.EventHandler(this.sizeChanged);
@@ -397,6 +399,7 @@
             // 
             this.sizeHeightBox.Name = "sizeHeightBox";
             this.sizeHeightBox.Size = new System.Drawing.Size(100, 42);
+            this.sizeHeightBox.Text = "1000";
             this.sizeHeightBox.Visible = false;
             this.sizeHeightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
             this.sizeHeightBox.TextChanged += new System.EventHandler(this.sizeChanged);
@@ -450,7 +453,7 @@
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
             this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 694;
+            this.editorSplitter.SplitterDistance = 692;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -463,7 +466,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 690);
+            this.cfdgText.Size = new System.Drawing.Size(558, 688);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -484,7 +487,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 334);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 336);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -1440,7 +1443,7 @@
             | System.Windows.Forms.Keys.R)));
             this.menuRAgain.Size = new System.Drawing.Size(464, 44);
             this.menuRAgain.Text = "Repea&t Last Render";
-            this.menuRAgain.Click += new System.EventHandler(this.menuRAgainClick);
+            this.menuRAgain.Click += new System.EventHandler(this.renderButtonClick);
             // 
             // menuRAnimate
             // 
@@ -1455,7 +1458,6 @@
             // 
             // menuRFrame
             // 
-            this.menuRFrame.Image = ((System.Drawing.Image)(resources.GetObject("menuRFrame.Image")));
             this.menuRFrame.Name = "menuRFrame";
             this.menuRFrame.ShortcutKeyDisplayString = "Alt-Ctrl-F";
             this.menuRFrame.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
@@ -1466,7 +1468,6 @@
             // 
             // menuRStop
             // 
-            this.menuRStop.Image = ((System.Drawing.Image)(resources.GetObject("menuRStop.Image")));
             this.menuRStop.Name = "menuRStop";
             this.menuRStop.ShortcutKeyDisplayString = "Ctrl-END";
             this.menuRStop.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.End)));
@@ -1481,7 +1482,6 @@
             // 
             // menuROutput
             // 
-            this.menuROutput.Image = ((System.Drawing.Image)(resources.GetObject("menuROutput.Image")));
             this.menuROutput.Name = "menuROutput";
             this.menuROutput.ShortcutKeyDisplayString = "Ctrl-O";
             this.menuROutput.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -1491,7 +1491,6 @@
             // 
             // menuRGallery
             // 
-            this.menuRGallery.Image = ((System.Drawing.Image)(resources.GetObject("menuRGallery.Image")));
             this.menuRGallery.Name = "menuRGallery";
             this.menuRGallery.ShortcutKeyDisplayString = "Ctrl-U";
             this.menuRGallery.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
@@ -1501,7 +1500,6 @@
             // 
             // colorCalculatorToolStripMenuItem
             // 
-            this.colorCalculatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("colorCalculatorToolStripMenuItem.Image")));
             this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
             this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(464, 44);
             this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
@@ -1534,7 +1532,6 @@
             this.Controls.Add(this.documentSplitter);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Document";
             this.Text = "Document";

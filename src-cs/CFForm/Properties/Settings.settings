@@ -134,7 +134,7 @@
     <Setting Name="AnimateLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="AnimateFrameRate" Type="System.Int32" Scope="User">
+    <Setting Name="AnimateFrameRate" Type="System.Double" Scope="User">
       <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="AnimateCodec" Type="System.Int32" Scope="User">
@@ -166,6 +166,9 @@
     </Setting>
     <Setting Name="ccName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AnimateFrame" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

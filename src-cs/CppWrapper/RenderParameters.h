@@ -17,7 +17,7 @@ namespace CppWrapper {
         int     animateWidth;
         int     animateHeight;
         int     length;
-        int     frameRate;
+        double  frameRate;
         int     frame;
         bool    animateFrame;
         int     codec;
