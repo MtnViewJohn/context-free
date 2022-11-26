@@ -141,6 +141,7 @@ namespace CFForm
             cfdgText.ClearCmdKey(Keys.Control | Keys.Alt | Keys.F);
             cfdgText.ClearCmdKey(Keys.Control | Keys.O);
             cfdgText.ClearCmdKey(Keys.Control | Keys.U);
+            cfdgText.ClearCmdKey(Keys.Control | Keys.End);
             // indent/unindent shortcuts
             cfdgText.ClearCmdKey(Keys.Control | Keys.OemOpenBrackets);
             cfdgText.ClearCmdKey(Keys.Control | Keys.OemCloseBrackets);
@@ -969,7 +970,14 @@ namespace CFForm
 
         private void menuRStopClick(object sender, EventArgs e)
         {
-
+            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
+                if (renderHelper.requestFinishUp) {
+                    renderHelper.requestStop = true;
+                } else {
+                    renderHelper.requestFinishUp = true;
+                    updateRenderButton();
+                }
+            }
         }
 
         private void menuROutputClick(object sender, EventArgs e)
