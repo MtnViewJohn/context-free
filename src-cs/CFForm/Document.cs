@@ -58,7 +58,7 @@ namespace CFForm
         private const int StyleBuiltins = 5;
         private const int StyleString = 6;
         private const int StyleNumber = 7;
-        private RenderParameters renderParameters = new RenderParameters();
+        private RenderParameters renderParameters;
         private BackgroundWorker renderThread = new BackgroundWorker();
         private enum RenderAction
         {
@@ -102,6 +102,10 @@ namespace CFForm
             currentVariation = RenderHelper.RandomVariation(3);
             variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
             toolStrip1.ImageList = imageList1;
+            renderParameters = RenderParameters;
+            sizeWidthBox.Text = renderParameters.width.ToString();
+            sizeHeightBox.Text = renderParameters.height.ToString();
+            frameTextBox.Text = renderParameters.frame.ToString();
         }
 
         private void loadInitialization(object sender, EventArgs e)
@@ -151,7 +155,7 @@ namespace CFForm
             setMessage(null);
 
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
-            initRenderFromSettings();
+            renderParameters = RenderParameters;
 
             renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
@@ -233,46 +237,50 @@ namespace CFForm
             }
         }
 
-        private void initRenderFromSettings()
-        {
-            renderParameters.periodicUpdate = Properties.Settings.Default.ProgressiveRender;
-            renderParameters.suppressDisplay = Properties.Settings.Default.SuppressDisplay;
-            renderParameters.animateZoom = Properties.Settings.Default.AnimateZoom;
-            renderParameters.frameRate = Properties.Settings.Default.AnimateFrameRate;
-            renderParameters.frame = Properties.Settings.Default.AnimateFrame;
-            renderParameters.animateWidth = Properties.Settings.Default.AnimateWidth;
-            renderParameters.animateHeight = Properties.Settings.Default.AnimateHeight;
-            renderParameters.length = Properties.Settings.Default.AnimateLength;
-            renderParameters.codec = Properties.Settings.Default.AnimateCodec;
-            renderParameters.preview = Properties.Settings.Default.AnimatePreview;
-            renderParameters.loop = Properties.Settings.Default.AnimatePreviewLoop;
-            renderParameters.width = Properties.Settings.Default.RenderWidth;
-            renderParameters.height = Properties.Settings.Default.RenderHeight;
-            renderParameters.borderSize = Properties.Settings.Default.BorderWidth;
-            renderParameters.minimumSize = Properties.Settings.Default.MinimumSize;
-            renderParameters.animateFrameCount = (int)(renderParameters.length * renderParameters.frameRate);
+        private CppWrapper.RenderParameters RenderParameters { 
+            get
+            {
+                return new CppWrapper.RenderParameters
+                {
+                    periodicUpdate = Properties.Settings.Default.ProgressiveRender,
+                    suppressDisplay = Properties.Settings.Default.SuppressDisplay,
+                    animateZoom = Properties.Settings.Default.AnimateZoom,
+                    frameRate = Properties.Settings.Default.AnimateFrameRate,
+                    frame = Properties.Settings.Default.AnimateFrame,
+                    animateWidth = Properties.Settings.Default.AnimateWidth,
+                    animateHeight = Properties.Settings.Default.AnimateHeight,
+                    length = Properties.Settings.Default.AnimateLength,
+                    codec = Properties.Settings.Default.AnimateCodec,
+                    preview = Properties.Settings.Default.AnimatePreview,
+                    loop = Properties.Settings.Default.AnimatePreviewLoop,
+                    width = Properties.Settings.Default.RenderWidth,
+                    height = Properties.Settings.Default.RenderHeight,
+                    borderSize = Properties.Settings.Default.BorderWidth,
+                    minimumSize = Properties.Settings.Default.MinimumSize,
+                    animateFrameCount = (int)(Properties.Settings.Default.AnimateLength *
+                                              Properties.Settings.Default.AnimateFrameRate)
+                };
+            } 
+            set
+            {
+                Properties.Settings.Default.ProgressiveRender = value.periodicUpdate;
+                Properties.Settings.Default.SuppressDisplay = value.suppressDisplay;
+                Properties.Settings.Default.AnimateZoom = value.animateZoom;
+                Properties.Settings.Default.AnimateFrameRate = value.frameRate;
+                Properties.Settings.Default.AnimateFrame = value.frame;
+                Properties.Settings.Default.AnimateWidth = value.animateWidth;
+                Properties.Settings.Default.AnimateHeight = value.animateHeight;
+                Properties.Settings.Default.AnimateLength = value.length;
+                Properties.Settings.Default.AnimateCodec = value.codec;
+                Properties.Settings.Default.AnimatePreview = value.preview;
+                Properties.Settings.Default.AnimatePreviewLoop = value.loop;
+                Properties.Settings.Default.RenderWidth = value.width;
+                Properties.Settings.Default.RenderHeight = value.height;
+                Properties.Settings.Default.BorderWidth = value.borderSize;
+                Properties.Settings.Default.MinimumSize = value.minimumSize;
+                Properties.Settings.Default.Save();
+            }
         }
-
-        private void saveRenderToSettings()
-        {
-            Properties.Settings.Default.ProgressiveRender = renderParameters.periodicUpdate;
-            Properties.Settings.Default.SuppressDisplay = renderParameters.suppressDisplay;
-            Properties.Settings.Default.AnimateZoom = renderParameters.animateZoom;
-            Properties.Settings.Default.AnimateFrameRate = renderParameters.frameRate;
-            Properties.Settings.Default.AnimateFrame = renderParameters.frame;
-            Properties.Settings.Default.AnimateWidth = renderParameters.animateWidth;
-            Properties.Settings.Default.AnimateHeight = renderParameters.animateHeight;
-            Properties.Settings.Default.AnimateLength = renderParameters.length;
-            Properties.Settings.Default.AnimateCodec = renderParameters.codec;
-            Properties.Settings.Default.AnimatePreview = renderParameters.preview;
-            Properties.Settings.Default.AnimatePreviewLoop = renderParameters.loop;
-            Properties.Settings.Default.RenderWidth = renderParameters.width;
-            Properties.Settings.Default.RenderHeight = renderParameters.height;
-            Properties.Settings.Default.BorderWidth = renderParameters.borderSize;
-            Properties.Settings.Default.MinimumSize = renderParameters.minimumSize;
-            Properties.Settings.Default.Save();
-        }
-
         private CppWrapper.UploadPrefs UploadPrefs {
             get
             {
@@ -714,7 +722,7 @@ namespace CFForm
             try {
                 renderParameters.frame = int.Parse(frameTextBox.Text);
                 if (renderParameters.frame >= 1 && renderParameters.frame <= renderParameters.animateFrameCount) {
-                    saveRenderToSettings();
+                    RenderParameters = renderParameters;
                     return;
                 }
             } catch {
@@ -740,7 +748,7 @@ namespace CFForm
                         renderParameters.height = s;
                     }
                 }
-                saveRenderToSettings();
+                RenderParameters = renderParameters;
             }
         }
 
@@ -876,10 +884,11 @@ namespace CFForm
                 return;
             }
 
-            initRenderFromSettings();
+            renderParameters = RenderParameters;
             renderParameters.width = renderBox.Width;
             renderParameters.height = renderBox.Height;
             renderParameters.action = RenderParameters.RenderActions.Render;
+
             doRender(true);
         }
 
@@ -895,15 +904,16 @@ namespace CFForm
                 return;
             }
 
+            renderParameters = RenderParameters;
+            renderParameters.action = RenderParameters.RenderActions.Render;
             if (sender == menuRRenderSize) {
-                using (var rsd = new RenderSizeDialog()) {
+                using (var rsd = new RenderSizeDialog(renderParameters)) {
                     if (rsd.ShowDialog() != DialogResult.OK)
                         return;
+                    RenderParameters = renderParameters;
                 }
             }
 
-            initRenderFromSettings();
-            renderParameters.action = RenderParameters.RenderActions.Render;
             doRender(false);
         }
 
@@ -919,16 +929,17 @@ namespace CFForm
                 return;
             }
 
+            renderParameters = RenderParameters;
+            renderParameters.animateFrame = false;
+            renderParameters.action = RenderParameters.RenderActions.Animate;
             if (sender == menuRAnimate) {
-                using (var ad = new AnimateDialog(false)) {
+                using (var ad = new AnimateDialog(renderParameters)) {
                     if (ad.ShowDialog() != DialogResult.OK)
                         return;
+                    RenderParameters = renderParameters;
                 }
             }
 
-            initRenderFromSettings();
-            renderParameters.animateFrame = false;
-            renderParameters.action = RenderParameters.RenderActions.Animate;
             doRender(false);
         }
 
@@ -944,17 +955,18 @@ namespace CFForm
                 return;
             }
 
+            renderParameters = RenderParameters;
+            renderParameters.animateFrame = true;
+            renderParameters.action = RenderParameters.RenderActions.Animate;
             if (sender == menuRFrame) {
-                using (var afd = new AnimateDialog(true)) {
+                using (var afd = new AnimateDialog(renderParameters)) {
                     if (afd.ShowDialog() != DialogResult.OK)
                         return;
                     frameTextBox.Text = afd.frameTextBox.Text;
+                    RenderParameters = renderParameters;
                 }
             }
 
-            initRenderFromSettings();
-            renderParameters.animateFrame = true;
-            renderParameters.action = RenderParameters.RenderActions.Animate;
             doRender(false);
         }
 

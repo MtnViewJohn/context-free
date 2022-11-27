@@ -8,23 +8,24 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CppWrapper;
 
 namespace CFForm
 {
     public partial class AnimateDialog : Form
     {
         private double minSize = 0.3;
-        private bool animateFrame;
-        public AnimateDialog(bool animateFrame)
+        private CppWrapper.RenderParameters prefs;
+        public AnimateDialog(CppWrapper.RenderParameters rp)
         {
             InitializeComponent();
             errorMessage.ForeColor = Color.Red;
-            this.animateFrame = animateFrame;
-            if (animateFrame) {
+            this.prefs = rp;
+            if (prefs.animateFrame) {
                 Text = "Animate a Frame";
                 formatComboBox.Visible = false;
                 formatLabel.Visible = false;
-                int frame = Properties.Settings.Default.AnimateFrame;
+                int frame = prefs.frame;
                 if (frame > 0)
                     frameTextBox.Text = frame.ToString();
                 else
@@ -32,27 +33,27 @@ namespace CFForm
             } else {
                 frameLabel.Visible = false;
                 frameTextBox.Visible = false;
-                int codec = Properties.Settings.Default.AnimateCodec;
+                int codec = prefs.codec;
                 if (codec >= 0 && codec < formatComboBox.Items.Count) {
                     formatComboBox.SelectedIndex = codec;
                 } else {
                     formatComboBox.SelectedIndex = 0;
                 }
             }
-            widthTextBox.Text = Properties.Settings.Default.AnimateWidth.ToString();
-            heightTextBox.Text = Properties.Settings.Default.AnimateHeight.ToString();
-            minSize = Properties.Settings.Default.MinimumSize;
+            widthTextBox.Text = prefs.animateWidth.ToString();
+            heightTextBox.Text = prefs.animateHeight.ToString();
+            minSize = prefs.minimumSize;
             if (minSize <= 0.0) minSize = 0.3;
             minSizeTextBox.Text = minSize.ToString();
-            double border = Properties.Settings.Default.BorderWidth;
+            double border = prefs.borderSize;
             if (border < -1.0 || border > 2.0)
                 border = 2.0;
             trackBarBorder.Value = (int)((border + 1.0) * 33.0);
-            zoomCheckBox.Checked = Properties.Settings.Default.AnimateZoom;
-            int length = Properties.Settings.Default.AnimateLength;
+            zoomCheckBox.Checked = prefs.animateZoom;
+            int length = prefs.length;
             if (length < 1) length = 1;
             lengthTextBox.Text = length.ToString();
-            double frameRate = Properties.Settings.Default.AnimateFrameRate;
+            double frameRate = prefs.frameRate;
             if (frameRate < 8.0) frameRate = 15.0;
             for (int i = 0; i < frameRateBox.Items.Count; i++) {
                 if (double.Parse(frameRateBox.Items[i].ToString()) == frameRate) {
@@ -86,38 +87,40 @@ namespace CFForm
             try {
                 int width = int.Parse(widthTextBox.Text);
                 if (width < 8) throw new ArgumentException("Width is too small.");
-                Properties.Settings.Default.AnimateWidth = width;
+                prefs.animateWidth = width;
 
                 int height = int.Parse(heightTextBox.Text);
                 if (height < 8) throw new ArgumentException("Height is too small.");
-                Properties.Settings.Default.AnimateHeight = height;
+                prefs.animateHeight = height;
 
                 if ((width & 7) != 0 || (height & 7) != 0)
                     throw new ArgumentException("Dimensions must be multiple of 8.");
 
                 minSize = double.Parse(minSizeTextBox.Text);
                 if (minSize <= 0.0) minSize = 0.3;
-                Properties.Settings.Default.MinimumSize = minSize;
+                prefs.minimumSize = minSize;
 
-                Properties.Settings.Default.BorderWidth = (double)(trackBarBorder.Value) / 33.0 - 1.0;
+                prefs.borderSize = (double)(trackBarBorder.Value) / 33.0 - 1.0;
 
                 int length = int.Parse(lengthTextBox.Text);
                 if (length < 1) throw new ArgumentException("Length must be positive number.");
-                Properties.Settings.Default.AnimateLength = length;
+                prefs.length = length;
 
                 double frameRate = double.Parse(frameRateBox.Items[frameRateBox.SelectedIndex].ToString());
-                Properties.Settings.Default.AnimateFrameRate = frameRate;
+                prefs.frameRate = frameRate;
 
-                if (animateFrame) {
+                int count = (int)(length * frameRate);
+                if (prefs.animateFrame) {
                     int frame = int.Parse(frameTextBox.Text);
-                    int count = (int)(length * frameRate);
                     if (frame < 1 || frame > count) throw new ArgumentException("Frame number out of range.");
-                    Properties.Settings.Default.AnimateFrame = frame;
+                    prefs.frame = frame;
+                    prefs.animateFrameCount = count;
                 } else {
-                    Properties.Settings.Default.AnimateCodec = frameRateBox.SelectedIndex;
+                    prefs.codec = frameRateBox.SelectedIndex;
+                    if (prefs.frame < 1 || prefs.frame > count)
+                        prefs.frame = 1;
                 }
 
-                Properties.Settings.Default.Save();
                 DialogResult = DialogResult.OK;
             } catch (ArgumentException ae) {
                 errorMessage.Text = ae.Message;
