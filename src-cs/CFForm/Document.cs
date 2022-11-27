@@ -231,6 +231,7 @@ namespace CFForm
                     cfdgText.SetSavePoint();
                 }
             } catch {
+                ((Form1)MdiParent).manager.RemoveFile(Name);
                 cfdgText.Text = String.Empty;
                 cfdgText.SetSavePoint();
                 setMessage("The file could not be read.");
@@ -779,6 +780,7 @@ namespace CFForm
                     Text = TabText;
                     isNamed = true;
                     menuFSaveClick(sender, e);
+                    form1.manager.AddFile(Name);
                 }
             }
         }

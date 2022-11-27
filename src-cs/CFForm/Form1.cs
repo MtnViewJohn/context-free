@@ -1,3 +1,6 @@
+using OpenMRU.Core.Common.Implementations;
+using OpenMRU.Core.View.Localization;
+using OpenMRU.WinForm.Menu;
 using CppWrapper;
 using System.Diagnostics;
 using System.Media;
@@ -17,6 +20,7 @@ namespace CFForm
         public bool isResized = false;
         private FindReplaceForm findForm = new FindReplaceForm();
         public ColorCalculator colorCalc = new CppWrapper.ColorCalculator();
+        public readonly MRUManager manager;
         public Form1()
         {
             dockPanel = new DockPanel();
@@ -26,6 +30,15 @@ namespace CFForm
             Controls.Add(dockPanel);
 
             InitializeComponent();
+
+            String path = System.Windows.Forms.Application.UserAppDataPath;
+            MRUItemFileStorage storage = new MRUItemFileStorage(path + "\\context_free_mru_storage.xml");
+            manager = new MRUManager();
+            manager.Initialize(storage);
+            manager.MRUItemSelected += openDoc;
+            MRUItemsMenu itemsMenu = new MRUItemsMenu();
+            itemsMenu.Initialize(manager, new MRUGuiLocalization());
+            itemsMenu.AttachToMenu(recentToolStripMenuItem);
         }
 
         private void openDoc(String name)
@@ -37,6 +50,8 @@ namespace CFForm
             document.isNamed = Path.IsPathRooted(name);
             document.reloadWhenReady = document.isNamed ? File.Exists(name)
                                                         : RenderHelper.IsExample(name);
+            if (File.Exists(name))
+                manager.AddFile(name);
 
             document.Text = document.TabText;
             document.Dock = DockStyle.Fill;
