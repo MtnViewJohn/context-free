@@ -498,8 +498,10 @@
             this.renderBox.Location = new System.Drawing.Point(0, 0);
             this.renderBox.Name = "renderBox";
             this.renderBox.Size = new System.Drawing.Size(1114, 1036);
+            this.renderBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
+            this.renderBox.SizeChanged += new System.EventHandler(this.renderBoxSizeChanged);
             this.renderBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureDragDrop);
             this.renderBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.pictureDragEnter);
             // 
@@ -1537,6 +1539,7 @@
             this.Text = "Document";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formIsClosing);
             this.Load += new System.EventHandler(this.loadInitialization);
+            this.Shown += new System.EventHandler(this.shownInitialization);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.documentSplitter.Panel1.ResumeLayout(false);

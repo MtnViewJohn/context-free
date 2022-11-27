@@ -159,7 +159,10 @@ namespace CFForm
 
             renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
+        }
 
+        private void shownInitialization(object sender, EventArgs e)
+        {
             if (reloadWhenReady) {
                 reload();
                 if (Properties.Settings.Default.OpenRender)
@@ -530,6 +533,8 @@ namespace CFForm
         {
             Size newSize = renderBox.Size;
             if (newSize.Width <= 0 || newSize.Height <= 0) return;
+            if (displayImage != null && newSize.Width == displayImage.Width && 
+                                        newSize.Height == displayImage.Height) return;
             try {
                 using (Bitmap? oldImage = displayImage) {
                     displayImage = new Bitmap(newSize.Width, newSize.Height,
@@ -887,8 +892,8 @@ namespace CFForm
             }
 
             renderParameters = RenderParameters;
-            renderParameters.width = renderBox.Width;
-            renderParameters.height = renderBox.Height;
+            renderParameters.width = renderBox.Size.Width;
+            renderParameters.height = renderBox.Size.Height;
             renderParameters.action = RenderParameters.RenderActions.Render;
 
             doRender(true);
@@ -1190,6 +1195,14 @@ namespace CFForm
                 updateRenderButton();
                 renderHelper.requestUpdate();
             }
+        }
+
+        private void renderBoxSizeChanged(object sender, EventArgs e)
+        {
+            Size newSize = renderBox.Size;
+            if (newSize.Width <= 0 || newSize.Height <= 0) return;
+            if (displayImage != null && (newSize.Width  != displayImage.Width ||
+                                         newSize.Height != displayImage.Height)) displayImage = null;
         }
     }
 }
