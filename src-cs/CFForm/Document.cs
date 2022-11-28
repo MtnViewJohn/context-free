@@ -44,7 +44,7 @@ namespace CFForm
         private bool messageWindowUnready = false;
         private System.Text.StringBuilder deferredHtml = new StringBuilder();
 
-        private String[]? AutoComplete = null;
+        private String[] AutoComplete;
         private int lastCaretPosition = -1;
         private enum CFstyles {
             StyleDefault, StyleComment, StyleSymbol, StyleIdentifier,
@@ -583,12 +583,69 @@ namespace CFForm
 
         private void insertionCheck(object sender, ScintillaNET.InsertCheckEventArgs e)
         {
-
+            // auto indent
+            if (e.Text.Equals("\r\n") || e.Text.Equals("\r") || e.Text.Equals("\n")) {
+                var lineno = cfdgText.LineFromPosition(e.Position);
+                String line = cfdgText.Lines[lineno].Text;
+                var indent = cfdgText.Lines[lineno].Indentation;
+                int tabWidth = Properties.Settings.Default.TabWidth;
+                bool white = true;
+                foreach (Char c in line) {
+                    if (c == '{')
+                        indent += tabWidth;
+                    if (c == '}' && !white)
+                        indent -= tabWidth;
+                    if (c <= 0 || c >= 0x80 || !Char.IsWhiteSpace(c))
+                        white = false;
+                }
+                if (indent > 0) {
+                    String nextline = e.Text.PadRight(e.Text.Length + indent);
+                    e.Text = nextline;
+                }
+            }
         }
 
         private void charAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
+            // auto unindent
+            if (e.Char == '}') {
+                var pos = cfdgText.CurrentPosition;
+                var lineno = cfdgText.LineFromPosition(pos);
+                int indentPos = cfdgText.DirectMessage(2128, (IntPtr)lineno, IntPtr.Zero).ToInt32(); // SCI_GETLINEINDENTPOSITION = 2128
+                if (indentPos + 1 == pos) {
+                    var indent = cfdgText.Lines[lineno].Indentation;
+                    indent -= Properties.Settings.Default.TabWidth;
+                    if (indent < 0)
+                        indent = 0;
+                    cfdgText.Lines[lineno].Indentation = indent;
+                }
+            }
 
+            // autocomplete
+            checkAutoC();
+        }
+
+        void checkAutoC()
+        {
+            var pos = cfdgText.CurrentPosition;
+            var wordPos = cfdgText.WordStartPosition(pos, true);
+            var len = pos - wordPos;
+            if (len > 1) {
+                String frag = cfdgText.GetTextRange(wordPos, len);
+                System.Text.StringBuilder list = new System.Text.StringBuilder(1500);
+                foreach (String word in AutoComplete)
+                    if (word.StartsWith(frag, System.StringComparison.OrdinalIgnoreCase)) {
+                        if (list.Length > 0)
+                            list.Append(" ");
+                        list.Append(word);
+                    }
+                if (list.Length > 0) {
+                    cfdgText.AutoCShow(len, list.ToString());
+                    return;
+                }
+            }
+            if (cfdgText.AutoCActive)
+                cfdgText.AutoCCancel();
         }
 
         private static Char SafeChar(Scintilla editor, int pos)
@@ -624,12 +681,13 @@ namespace CFForm
 
         private void textChanged(object sender, ScintillaNET.ModificationEventArgs e)
         {
-
+            if (cfdgText.AutoCActive && ((int)(e.Source) & 0x60) != 0)
+                checkAutoC();
         }
 
         private void autoCCharDeleted(object sender, EventArgs e)
         {
-
+            checkAutoC();
         }
 
         public void styleChanged()
