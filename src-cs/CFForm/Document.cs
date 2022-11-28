@@ -975,6 +975,8 @@ namespace CFForm
                 using (var rsd = new RenderSizeDialog(renderParameters)) {
                     if (rsd.ShowDialog() != DialogResult.OK)
                         return;
+                    sizeWidthBox.Text = renderParameters.width.ToString();
+                    sizeHeightBox.Text = renderParameters.height.ToString();
                     RenderParameters = renderParameters;
                 }
             }

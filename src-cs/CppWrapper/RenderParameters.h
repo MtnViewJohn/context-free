@@ -1,7 +1,7 @@
 #pragma once
 
 namespace CppWrapper {
-    public value class RenderParameters
+    public ref class RenderParameters
     {
     public:
         enum class RenderActions { Render, Animate, SaveSVG };
