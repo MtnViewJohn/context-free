@@ -209,5 +209,12 @@ namespace CFForm
                 colorCalc.Show();
             }
         }
+
+        private void menuFilePopup(object sender, EventArgs e)
+        {
+            Document? document = ActiveMdiChild as Document;
+            if (document != null)
+                document.menuFilePopup(this, e);
+        }
     }
 }

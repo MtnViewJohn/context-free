@@ -816,6 +816,11 @@ namespace CFForm
             }
         }
 
+        public void menuFilePopup(object sender, EventArgs e)
+        {
+            menuFRevert.Enabled = cfdgText.Modified;
+        }
+
         private void menuFSaveClick(object sender, EventArgs e)
         {
             if (isNamed) {
@@ -863,6 +868,17 @@ namespace CFForm
 
             if (res == DialogResult.Yes)
                 reload();
+        }
+
+        private void menuEditPopup(object sender, EventArgs e)
+        {
+            bool selectionExists = cfdgText.SelectionStart != cfdgText.SelectionEnd;
+            menuECopy.Enabled = selectionExists;
+            menuECut.Enabled = selectionExists;
+            menuEPaste.Enabled = Clipboard.GetDataObject().GetDataPresent(DataFormats.Text);
+            menuEDelete.Enabled = selectionExists;
+            menuEUndo.Enabled = cfdgText.CanUndo;
+            menuERedo.Enabled = cfdgText.CanRedo;
         }
 
         private void menuEUndoClick(object sender, EventArgs e)
