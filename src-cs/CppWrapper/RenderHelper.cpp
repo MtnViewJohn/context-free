@@ -530,4 +530,26 @@ namespace CppWrapper {
         toGal.ShowDialog(owner);
     }
 
+    UploadPrefs^ RenderHelper::downloadDesign(System::String^ responseBody)
+    {
+        System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
+        array<Byte>^ utf8array = encodeutf8->GetBytes(dynamic_cast<String^>(responseBody));
+        pin_ptr<Byte> utf8arraypin = &utf8array[0];
+
+        Upload upload(reinterpret_cast<const char*> (utf8arraypin), utf8array->Length);
+        if (upload.mId) {
+            auto ret = gcnew UploadPrefs();
+            String^ path = gcnew System::String(upload.mFileName.c_str(), 0,
+                static_cast<int>(upload.mFileName.length()),
+                System::Text::Encoding::UTF8);
+            ret->CfdgName = Path::GetFileName(path);
+            ret->CfdgText = gcnew System::String(upload.mPassword.c_str(), 0,
+                static_cast<int>(upload.mPassword.length()),
+                System::Text::Encoding::UTF8);
+            ret->Variation = upload.mVariation;
+            return ret;
+        } else {
+            return nullptr;
+        }
+    }
 }

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Media;
 using WeifenLuo.WinFormsUI.Docking;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Security.Policy;
 
 namespace CFForm
 {
@@ -39,6 +40,8 @@ namespace CFForm
             MRUItemsMenu itemsMenu = new MRUItemsMenu();
             itemsMenu.Initialize(manager, new MRUGuiLocalization());
             itemsMenu.AttachToMenu(recentToolStripMenuItem);
+
+            AllowDrop = true;
         }
 
         private void openDoc(String name)
@@ -52,6 +55,34 @@ namespace CFForm
                                                         : RenderHelper.IsExample(name);
             if (File.Exists(name))
                 manager.AddFile(name);
+
+            document.Text = document.TabText;
+            document.Dock = DockStyle.Fill;
+            document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+        }
+
+        public void openUrl(String url)
+        {
+            Document document = new Document();
+
+            document.Name = url;
+            document.TabText = "Download.cfdg";
+            document.isNamed = false;
+            document.reloadWhenReady = true;
+
+            document.Text = document.TabText;
+            document.Dock = DockStyle.Fill;
+            document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+        }
+
+        public void openText(String cfdg)
+        {
+            Document document = new Document();
+
+            document.Name = cfdg.Insert(0, "data:text/plain;charset=UTF-8,");
+            document.TabText = "Document.cfdg";
+            document.isNamed = false;
+            document.reloadWhenReady = true;
 
             document.Text = document.TabText;
             document.Dock = DockStyle.Fill;
@@ -218,6 +249,66 @@ namespace CFForm
             Document? document = ActiveMdiChild as Document;
             if (document != null)
                 document.menuFilePopup(this, e);
+        }
+
+        public void formDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null) return;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (string file in files)
+                    openDoc(file);
+                return;
+            }
+            String? url = e.Data.GetData(DataFormats.Text)?.ToString();
+            if (url == null) return;
+
+            if (url.StartsWith("file://")) {
+                openUrl(url);
+                return;
+            }
+
+            if (url.StartsWith("https://www.contextfreeart.org/gallery") ||
+                url.StartsWith("http://www.contextfreeart.org/gallery") ||
+                url.StartsWith("https://contextfreeart.org/gallery") ||
+                url.StartsWith("http://contextfreeart.org/gallery") ||
+                url.StartsWith("http://localmac/~john/cfa2/gallery")) {
+                int idx = url.IndexOf("id=");
+                if (idx < 0) {
+                    idx = url.IndexOf("#design/");
+                    if (idx >= 0) idx += 8;
+                } else {
+                    idx += 3;
+                }
+                if (idx >= 0) {
+                    if (int.TryParse(url.Substring(idx), out int design))
+                        url = String.Format("https://www.contextfreeart.org/gallery/data.php/{0}/info/foo.json", design);
+                    else
+                        url = null;
+                } else if (!url.EndsWith(".cfdg")) {
+                    url = null;
+                }
+
+                if (url != null)
+                    openUrl(url);
+                else
+                    SystemSounds.Beep.Play();
+                return;
+            }
+
+            openText(url);
+        }
+
+        private void formDragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data ==  null) {
+                e.Effect = DragDropEffects.None;
+            } else {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
         }
     }
 }

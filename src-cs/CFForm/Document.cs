@@ -1,4 +1,4 @@
-using ScintillaNET;
+﻿using ScintillaNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +19,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Xml.Linq;
+using System.IO;
+using System.Net;
 
 namespace CFForm
 {
@@ -106,6 +108,7 @@ namespace CFForm
             sizeWidthBox.Text = renderParameters.width.ToString();
             sizeHeightBox.Text = renderParameters.height.ToString();
             frameTextBox.Text = renderParameters.frame.ToString();
+            renderBox.AllowDrop = true;
         }
 
         private void loadInitialization(object sender, EventArgs e)
@@ -152,8 +155,6 @@ namespace CFForm
 
             cfdgText.Invalidate();
 
-            setMessage(null);
-
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             renderParameters = RenderParameters;
 
@@ -164,8 +165,7 @@ namespace CFForm
         private void shownInitialization(object sender, EventArgs e)
         {
             if (reloadWhenReady) {
-                reload();
-                if (Properties.Settings.Default.OpenRender)
+                if (reload() && Properties.Settings.Default.OpenRender)
                     menuRRender.PerformClick();
             } else {
                 cfdgText.Text = String.Empty;
@@ -219,15 +219,39 @@ namespace CFForm
             }
             base.WndProc(ref m);
         }
-        private void reload()
+        private bool reload()
         {
             String exampleText = renderHelper.getExample(Name);
             if (exampleText != null) {
                 isExample = true;
                 cfdgText.Text = exampleText;
                 cfdgText.SetSavePoint();
-                return;
+                return true;
             }
+
+            if (Name.StartsWith("http://") || Name.StartsWith("https://") || Name.StartsWith("file://")) {
+                try {
+                    setMessage("Downloading the design&hellip;");
+                    Uri url = new Uri(Name);
+                    WebClient req = new WebClient();
+                    req.DownloadStringCompleted += new DownloadStringCompletedEventHandler(downLoaded);
+                    req.DownloadStringAsync(url);
+                } catch {
+                    setMessage("The design could not be downloaded.");
+                }
+                return false;
+            }
+
+            if (Name.StartsWith("data:text/plain;charset=UTF-8,") ||
+                Name.StartsWith("data:text/plain;charset=US-ASCII,") ||
+                Name.StartsWith("data:,"))
+            {
+                cfdgText.Text = Name.Substring(Name.IndexOf(",") + 1);
+                cfdgText.SetSavePoint();
+                Name = TabText;
+                return true;
+            }
+
             try {
                 using (StreamReader sr = new StreamReader(Name)) {
                     cfdgText.Text = sr.ReadToEnd();
@@ -238,6 +262,42 @@ namespace CFForm
                 cfdgText.Text = String.Empty;
                 cfdgText.SetSavePoint();
                 setMessage("The file could not be read.");
+                return false;
+            }
+            return true;
+        }
+
+        private void downLoaded(Object sender, DownloadStringCompletedEventArgs e)
+        {
+            if (e.Cancelled || e.Error != null) {
+                setMessage("The design could not be downloaded.");
+            } else {
+                setMessage("Download complete.");
+                if (Name.EndsWith(".cfdg")) {
+                    cfdgText.Text = e.Result;
+                    Uri uri = new Uri(Name);
+                    TabText = WebUtility.UrlDecode(Path.GetFileName(uri.AbsolutePath));
+                    Name = TabText;
+                    Text = TabText;
+                    cfdgText.SetSavePoint();
+                    if (Properties.Settings.Default.OpenRender)
+                        menuRRender.PerformClick();
+                } else {
+                    var download = RenderHelper.downloadDesign(e.Result);
+                    if (download != null) {
+                        cfdgText.Text = download.CfdgText;
+                        currentVariation = download.Variation - 1;
+                        nextVariationClick(sender, e);
+                        Name = download.CfdgName;
+                        TabText = Name;
+                        Text = TabText;
+                        cfdgText.SetSavePoint();
+                        if (Properties.Settings.Default.OpenRender)
+                            menuRRender.PerformClick();
+                    } else {
+                        setMessage("Failed to extract cfdg data!");
+                    }
+                }
             }
         }
 
@@ -480,12 +540,20 @@ namespace CFForm
 
         private void pictureDragEnter(object sender, DragEventArgs e)
         {
-
+            if (e.Data == null) {
+                e.Effect = DragDropEffects.None;
+            } else {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
         }
 
         private void pictureDragDrop(object sender, DragEventArgs e)
         {
-
+            Form1? form1 = MdiParent as Form1;
+            form1?.formDragDrop(sender, e);
         }
 
         private void errorNavigation(object sender, WebBrowserNavigatingEventArgs e)

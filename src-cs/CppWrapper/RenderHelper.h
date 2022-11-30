@@ -117,6 +117,7 @@ namespace CppWrapper {
         void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
             System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, int x, int y);
         void uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
+        static UploadPrefs^ downloadDesign(System::String^ responseBody);
         bool saveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, System::IO::Stream^ str, bool JPEG);
 
     private:
