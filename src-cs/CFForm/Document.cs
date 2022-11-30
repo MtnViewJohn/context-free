@@ -492,6 +492,7 @@ namespace CFForm
         {
             String frag = e.Url.Fragment;
             if (!String.IsNullOrEmpty(frag)) {
+                e.Cancel = true;
                 try {
                     String[] split = frag.Split(':');
                     int b_line = Convert.ToInt32(split[1]) - 1;
