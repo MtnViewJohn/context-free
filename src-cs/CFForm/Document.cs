@@ -1,4 +1,4 @@
-﻿using ScintillaNET;
+using ScintillaNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,7 +59,7 @@ namespace CFForm
         private const int StyleString = 6;
         private const int StyleNumber = 7;
         private RenderParameters renderParameters;
-        private BackgroundWorker renderThread = new BackgroundWorker();
+        public BackgroundWorker renderThread = new BackgroundWorker();
         private enum RenderAction
         {
             Render = 0, RenderSized = 1, Animate = 2, AnimateFrame = 3

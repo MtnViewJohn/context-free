@@ -150,9 +150,12 @@ namespace CFForm
                     return;
                 foreach (var kid in MdiChildren) {
                     Document? doc = kid as Document;
-                    if (doc != null)
+                    if (doc != null && doc.renderThread.IsBusy) {
                         doc.postAction = Document.PostRenderAction.Exit;
+                        return;     // Have busy child retry the Close()
+                    }
                 }
+                Close();            //  otherwise retry it here.
             }
         }
 
