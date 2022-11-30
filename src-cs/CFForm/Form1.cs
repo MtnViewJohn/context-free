@@ -32,8 +32,8 @@ namespace CFForm
 
             InitializeComponent();
 
-            String path = System.Windows.Forms.Application.UserAppDataPath;
-            MRUItemFileStorage storage = new MRUItemFileStorage(path + "\\context_free_mru_storage.xml");
+            String path = System.Windows.Forms.Application.LocalUserAppDataPath;
+            MRUItemFileStorage storage = new MRUItemFileStorage(path + "\\..\\context_free_mru_storage.xml");
             manager = new MRUManager();
             manager.Initialize(storage);
             manager.MRUItemSelected += openDoc;
