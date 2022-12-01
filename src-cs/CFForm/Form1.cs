@@ -7,6 +7,8 @@ using System.Media;
 using WeifenLuo.WinFormsUI.Docking;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Policy;
+using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace CFForm
 {
@@ -42,6 +44,44 @@ namespace CFForm
             itemsMenu.AttachToMenu(recentToolStripMenuItem);
 
             AllowDrop = true;
+
+            Version osver = Environment.OSVersion.Version;
+            if (osver.Major < 10) {
+                String appPath = Application.ExecutablePath;
+                // Check if the required registry keys exist and are correct
+                try {
+                    using (RegistryKey? classKey = Registry.CurrentUser.OpenSubKey("Software\\Classes\\.cfdg"),
+                                            key2 = classKey.OpenSubKey("ShellNew"))
+                    {
+                        String? newCmd = key2.GetValue("Command") as String;
+                        if (newCmd.IndexOf(appPath) == -1)
+                            throw new Exception();
+                    }
+                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey("Software\\Classes\\ContextFree.Document")) 
+                    {
+                        String? name = key.GetValue(String.Empty) as String;
+                    }
+                } catch {
+                    // If not then make/fix them
+                    try {
+                        using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\.cfdg"),
+                                               key2 = classKey.CreateSubKey("ShellNew")) {
+                            classKey.SetValue(String.Empty, "ContextFree.Document");
+                            key2.SetValue("Command", String.Format("\"{0}\" /new \"%1\"", appPath));
+                        }
+                        using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\ContextFree.Document"),
+                                            iconkey = classKey.CreateSubKey("DefaultIcon"),
+                                               key1 = classKey.CreateSubKey("shell"),
+                                               key2 = key1.CreateSubKey("open"),
+                                               key3 = key2.CreateSubKey("command"))
+                        {
+                            classKey.SetValue(String.Empty, "Context Free file");
+                            iconkey.SetValue(String.Empty, String.Format("\"{0}\",1", appPath));
+                            key3.SetValue(String.Empty, String.Format("\"{0}\" \"%1\"", appPath));
+                        }
+                    } catch { }
+                }
+            }
         }
 
         private void openDoc(String name)
