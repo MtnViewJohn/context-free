@@ -9,6 +9,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Policy;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace CFForm
 {
@@ -24,6 +25,7 @@ namespace CFForm
         private FindReplaceForm findForm = new FindReplaceForm();
         public ColorCalculator colorCalc = new CppWrapper.ColorCalculator();
         public readonly MRUManager manager;
+        private StartAction startAction = StartAction.Nothing;
         public Form1()
         {
             dockPanel = new DockPanel();
@@ -82,50 +84,108 @@ namespace CFForm
                     } catch { }
                 }
             }
+
+            String[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+                processArgs(args);
+            else
+                startAction = (StartAction)Properties.Settings.Default.StartAction;
+        }
+
+        public void processArgs(String[] args)
+        {
+            if (InvokeRequired) return;
+            if (args == null || args.Length <= 1) return;
+
+            if (args.Length == 2) {
+                openDoc(args[1]);
+            } else if (args[1] == "/new" && args.Length == 3) {
+                String? dir = Path.GetDirectoryName(args[2]);
+                if (dir == null) dir = String.Empty;
+                openNew(dir);
+            }
+            Activate();
+            BringToFront();
+        }
+
+        private Document? findOpenDocument(String name)
+        {
+            foreach (var kid in MdiChildren) {
+                Document? doc = kid as Document;
+                if (doc != null && doc.Name == name)
+                    return doc;
+            }
+            return null;
+        }
+
+        private String uniqueNewFile(String basename, String dir)
+        {
+            for (int i = 0; ; ++i) {
+                String name = i == 0 ? Path.Join(dir, basename + ".cfdg")
+                                     : Path.Join(dir, basename + i.ToString() + ".cfdg");
+                if (!File.Exists(name) && findOpenDocument(name) == null)
+                    return name;
+            }
+        }
+
+        private void openNew(String dir)
+        {
+            openDoc(uniqueNewFile("Document", dir));
         }
 
         private void openDoc(String name)
         {
-            Document document = new Document();
+            Document? document = findOpenDocument(name);
+            if (document != null) {
+                document.Activate();
+                return;
+            }
 
-            document.TabText = Path.GetFileName(name);
-            document.Name = name;
-            document.isNamed = Path.IsPathRooted(name);
-            document.reloadWhenReady = document.isNamed ? File.Exists(name)
-                                                        : RenderHelper.IsExample(name);
+            bool fullPath = Path.IsPathRooted(name);
+
+            document = new Document {
+                TabText = Path.GetFileName(name),
+                Name = name,
+                isNamed = fullPath,
+                Text = Path.GetFileName(name),
+                Dock = DockStyle.Fill,
+                reloadWhenReady = fullPath ? File.Exists(name)
+                                           : RenderHelper.IsExample(name)
+            };
+
             if (File.Exists(name))
                 manager.AddFile(name);
 
-            document.Text = document.TabText;
-            document.Dock = DockStyle.Fill;
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
         public void openUrl(String url)
         {
-            Document document = new Document();
+            String filename = uniqueNewFile("Download", String.Empty);
+            var document = new Document {
+                Name = url,
+                TabText = filename,
+                isNamed = false,
+                reloadWhenReady = true,
+                Text = filename,
+                Dock = DockStyle.Fill
+            };
 
-            document.Name = url;
-            document.TabText = "Download.cfdg";
-            document.isNamed = false;
-            document.reloadWhenReady = true;
-
-            document.Text = document.TabText;
-            document.Dock = DockStyle.Fill;
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
         public void openText(String cfdg)
         {
-            Document document = new Document();
+            String filename = uniqueNewFile("Document", String.Empty);
+            var document = new Document {
+                Name = cfdg.Insert(0, "data:text/plain;charset=UTF-8,"),
+                TabText = filename,
+                isNamed = false,
+                reloadWhenReady = true,
+                Text = filename,
+                Dock = DockStyle.Fill
+            };
 
-            document.Name = cfdg.Insert(0, "data:text/plain;charset=UTF-8,");
-            document.TabText = "Document.cfdg";
-            document.isNamed = false;
-            document.reloadWhenReady = true;
-
-            document.Text = document.TabText;
-            document.Dock = DockStyle.Fill;
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
@@ -165,7 +225,7 @@ namespace CFForm
 
         private void openNewClick(object sender, EventArgs e)
         {
-            openDoc("Document.cfdg");
+            openNew(String.Empty);
         }
 
         private void resizeBegin(object sender, EventArgs e)
@@ -237,7 +297,7 @@ namespace CFForm
 
         private void loadInitialization(object sender, EventArgs e)
         {
-            switch ((StartAction)Properties.Settings.Default.StartAction) {
+            switch (startAction) {
                 case StartAction.Welcome:
                     welcomeToolStripMenuItem.PerformClick();
                     break;
