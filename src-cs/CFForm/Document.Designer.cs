@@ -539,7 +539,7 @@
             this.menuFSave.Name = "menuFSave";
             this.menuFSave.ShortcutKeyDisplayString = "Ctrl-S";
             this.menuFSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.menuFSave.Size = new System.Drawing.Size(359, 44);
+            this.menuFSave.Size = new System.Drawing.Size(271, 44);
             this.menuFSave.Text = "&Save";
             this.menuFSave.Click += new System.EventHandler(this.menuFSaveClick);
             // 
@@ -549,7 +549,7 @@
             this.menuFSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFSaveAs.MergeIndex = 3;
             this.menuFSaveAs.Name = "menuFSaveAs";
-            this.menuFSaveAs.Size = new System.Drawing.Size(359, 44);
+            this.menuFSaveAs.Size = new System.Drawing.Size(271, 44);
             this.menuFSaveAs.Text = "Save &As";
             this.menuFSaveAs.Click += new System.EventHandler(this.menuFSaveAsClick);
             // 
@@ -559,7 +559,7 @@
             this.menuFClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFClose.MergeIndex = 4;
             this.menuFClose.Name = "menuFClose";
-            this.menuFClose.Size = new System.Drawing.Size(359, 44);
+            this.menuFClose.Size = new System.Drawing.Size(271, 44);
             this.menuFClose.Text = "&Close";
             this.menuFClose.Click += new System.EventHandler(this.menuFCloseClick);
             // 
@@ -569,7 +569,7 @@
             this.menuFRevert.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFRevert.MergeIndex = 5;
             this.menuFRevert.Name = "menuFRevert";
-            this.menuFRevert.Size = new System.Drawing.Size(359, 44);
+            this.menuFRevert.Size = new System.Drawing.Size(271, 44);
             this.menuFRevert.Text = "Re&vert";
             this.menuFRevert.Click += new System.EventHandler(this.menuFRevertClick);
             // 
@@ -1539,6 +1539,7 @@
             this.Name = "Document";
             this.Text = "Document";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formIsClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.formHasClosed);
             this.Load += new System.EventHandler(this.loadInitialization);
             this.Shown += new System.EventHandler(this.shownInitialization);
             this.toolStrip1.ResumeLayout(false);

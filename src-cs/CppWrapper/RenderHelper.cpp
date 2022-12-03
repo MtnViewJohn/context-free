@@ -15,6 +15,15 @@ using namespace System::Windows::Forms;
 using namespace System::Drawing;
 
 namespace CppWrapper {
+    public ref class RendererHolder
+    {
+    public:
+        RendererHolder(Renderer* r)
+            : renderer(r)
+        {}
+        Renderer* renderer;
+    };
+
     RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd)
     : mEngine(new cfdg_ptr())
     {
@@ -22,10 +31,40 @@ namespace CppWrapper {
         SciPtr = (sptr_t)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
         directFunction = (SciFnDirect)SendMessage(hwnd, SCI_GETDIRECTFUNCTION, 0, 0);
         mSystem = new WinSystem((void*)docHwnd);
+        renderDeleter = gcnew BackgroundWorker();
+        renderDeleter->DoWork += gcnew DoWorkEventHandler(this, &RenderHelper::deleteRenderer);
     }
 
     RenderHelper::RenderHelper()
     {}
+
+    RenderHelper::~RenderHelper()
+    {
+        this->!RenderHelper();
+    }
+
+    RenderHelper::!RenderHelper()
+    {
+        delete SVGcanvas;           SVGcanvas = nullptr;
+        delete animationCanvas;     animationCanvas = nullptr;
+        delete tempCanvas;          tempCanvas = nullptr;
+        delete mCanvas;             mCanvas = nullptr;
+        if (mRenderer) {
+            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer));
+            mRenderer = nullptr;
+        }
+        delete mSystem;             mSystem = nullptr;
+        delete mEngine;             mEngine = nullptr;
+    }
+
+    void RenderHelper::deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+    {
+        RendererHolder^ holder = dynamic_cast<RendererHolder^>(e->Argument);
+        if (holder && holder->renderer) {
+            delete holder->renderer;
+            holder->renderer = nullptr;
+        }
+    }
 
     cli::array<System::String^>^
     RenderHelper::GetAutoC()
@@ -194,7 +233,10 @@ namespace CppWrapper {
     RenderHelper::prepareForRender(int width, int height, double minSize, double border, 
         int variation, bool shrinkTiled)
     {
-        delete mRenderer; mRenderer = nullptr;
+        if (mRenderer) {
+            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer));
+            mRenderer = nullptr;
+        }
         mEngine->reset();
         delete mCanvas; mCanvas = nullptr;
 

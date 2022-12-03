@@ -1349,5 +1349,10 @@ namespace CFForm
             if (displayImage != null && (newSize.Width  != displayImage.Width ||
                                          newSize.Height != displayImage.Height)) displayImage = null;
         }
+
+        private void formHasClosed(object sender, FormClosedEventArgs e)
+        {
+            renderHelper.Dispose();
+        }
     }
 }

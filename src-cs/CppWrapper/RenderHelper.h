@@ -10,11 +10,14 @@
 #include "SVGCanvas.h"
 
 namespace CppWrapper {
-    public ref class RenderHelper
+    public ref class RenderHelper : public System::IDisposable
     {
     public:
         RenderHelper(intptr_t editHwnd, intptr_t docHwnd);
         RenderHelper();
+
+        ~RenderHelper();
+        !RenderHelper();
 
         sptr_t DirectMessage(int msg)
         {
@@ -121,6 +124,8 @@ namespace CppWrapper {
         bool saveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, System::IO::Stream^ str, bool JPEG);
 
     private:
+        System::ComponentModel::BackgroundWorker^ renderDeleter = nullptr;
+        void deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
         sptr_t SciPtr = 0;
         SciFnDirect directFunction = nullptr;
         WinSystem* mSystem = nullptr;
