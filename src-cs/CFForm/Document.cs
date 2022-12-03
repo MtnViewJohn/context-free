@@ -1229,7 +1229,7 @@ namespace CFForm
             }
 
             if (renderThread.IsBusy) {
-                PostRenderAction postAction = PostRenderAction.SaveOutput;
+                postAction = PostRenderAction.SaveOutput;
                 return;
             }
 
