@@ -110,6 +110,8 @@ namespace CFForm
             }
         }
 
+        public delegate void ProcessParametersDelegate(String[] args);
+
         public void ProcessArgs(String[] args)
         {
             if (InvokeRequired) return;
