@@ -122,6 +122,7 @@ namespace CppWrapper {
         void uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
         static UploadPrefs^ downloadDesign(System::String^ responseBody);
         bool saveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, System::IO::Stream^ str, bool JPEG);
+        cli::array<System::String^>^ findTempFiles();
 
     private:
         System::ComponentModel::BackgroundWorker^ renderDeleter = nullptr;

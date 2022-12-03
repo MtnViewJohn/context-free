@@ -18,10 +18,11 @@ namespace CppWrapper {
     public ref class RendererHolder
     {
     public:
-        RendererHolder(Renderer* r)
-            : renderer(r)
+        RendererHolder(Renderer* r, WinSystem* sys)
+            : renderer(r), winsystem(sys)
         {}
         Renderer* renderer;
+        WinSystem* winsystem;
     };
 
     RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd)
@@ -36,7 +37,9 @@ namespace CppWrapper {
     }
 
     RenderHelper::RenderHelper()
-    {}
+    {
+        mSystem = new WinSystem(nullptr);
+    }
 
     RenderHelper::~RenderHelper()
     {
@@ -50,19 +53,38 @@ namespace CppWrapper {
         delete tempCanvas;          tempCanvas = nullptr;
         delete mCanvas;             mCanvas = nullptr;
         if (mRenderer) {
-            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer));
+            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer, mSystem));
             mRenderer = nullptr;
+            mSystem = nullptr;
+        } else {
+            delete mSystem;             mSystem = nullptr;
         }
-        delete mSystem;             mSystem = nullptr;
         delete mEngine;             mEngine = nullptr;
     }
 
     void RenderHelper::deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
     {
         RendererHolder^ holder = dynamic_cast<RendererHolder^>(e->Argument);
-        if (holder && holder->renderer) {
+        if (holder) {
             delete holder->renderer;
+            delete holder->winsystem;
             holder->renderer = nullptr;
+            holder->winsystem = nullptr;
+        }
+    }
+
+    cli::array<System::String^>^
+    RenderHelper::findTempFiles()
+    {
+        auto temps = mSystem->findTempFiles();
+        if (!temps.empty()) {
+            cli::array<String^>^ names = gcnew  cli::array<String^>(static_cast<int>(temps.size()));
+            int i = 0;
+            for (auto&& temp: temps)
+                names[i++] = gcnew String(temp.c_str());
+            return names;
+        } else {
+            return nullptr;
         }
     }
 
@@ -234,7 +256,7 @@ namespace CppWrapper {
         int variation, bool shrinkTiled)
     {
         if (mRenderer) {
-            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer));
+            renderDeleter->RunWorkerAsync(gcnew RendererHolder(mRenderer, nullptr));
             mRenderer = nullptr;
         }
         mEngine->reset();
