@@ -87,7 +87,7 @@ namespace CFForm
 
             String[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
-                processArgs(args);
+                ProcessArgs(args);
             else
                 startAction = (StartAction)Properties.Settings.Default.StartAction;
 
@@ -110,7 +110,7 @@ namespace CFForm
             }
         }
 
-        public void processArgs(String[] args)
+        public void ProcessArgs(String[] args)
         {
             if (InvokeRequired) return;
             if (args == null || args.Length <= 1) return;
