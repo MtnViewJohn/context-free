@@ -326,8 +326,8 @@ namespace CFForm
                     height = Properties.Settings.Default.RenderHeight,
                     borderSize = Properties.Settings.Default.BorderWidth,
                     minimumSize = Properties.Settings.Default.MinimumSize,
-                    animateFrameCount = (int)(Properties.Settings.Default.AnimateLength *
-                                              Properties.Settings.Default.AnimateFrameRate)
+                    animateFrameCount = Properties.Settings.Default.AnimateLength *
+                                        Properties.Settings.Default.AnimateFrameRate
                 };
             } 
             set

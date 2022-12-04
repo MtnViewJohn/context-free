@@ -554,9 +554,9 @@ namespace CFForm.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public double AnimateFrameRate {
+        public int AnimateFrameRate {
             get {
-                return ((double)(this["AnimateFrameRate"]));
+                return ((int)(this["AnimateFrameRate"]));
             }
             set {
                 this["AnimateFrameRate"] = value;

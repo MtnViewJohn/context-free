@@ -236,15 +236,11 @@
             "8",
             "10",
             "12",
-            "12.5",
             "15",
-            "23.98",
             "24",
             "25",
-            "29.97",
             "30",
             "50",
-            "59.94",
             "60"});
             this.frameRateBox.Location = new System.Drawing.Point(243, 589);
             this.frameRateBox.Name = "frameRateBox";

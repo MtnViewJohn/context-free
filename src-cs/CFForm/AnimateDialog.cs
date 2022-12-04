@@ -57,16 +57,16 @@ namespace CFForm
             int length = prefs.length;
             if (length < 1) length = 1;
             lengthTextBox.Text = length.ToString();
-            double frameRate = prefs.frameRate;
-            if (frameRate < 8.0) frameRate = 15.0;
+            int frameRate = prefs.frameRate;
+            if (frameRate < 8) frameRate = 15;
             for (int i = 0; i < frameRateBox.Items.Count; i++) {
-                if (double.Parse(frameRateBox.Items[i].ToString()) == frameRate) {
+                if (int.Parse(frameRateBox.Items[i].ToString()) == frameRate) {
                     frameRateBox.SelectedIndex = i;
                     break;
                 }
             }
             if (frameRateBox.SelectedIndex == -1)
-                frameRateBox.SelectedIndex = 4;         // default to 15fps
+                frameRateBox.SelectedIndex = 3;         // default to 15fps
         }
 
         private void validFloat(object sender, CancelEventArgs e)
@@ -114,7 +114,7 @@ namespace CFForm
                 if (length < 1) throw new ArgumentException("Length must be positive number.");
                 prefs.length = length;
 
-                double frameRate = double.Parse(frameRateBox.Items[frameRateBox.SelectedIndex].ToString());
+                int frameRate = int.Parse(frameRateBox.Items[frameRateBox.SelectedIndex].ToString());
                 prefs.frameRate = frameRate;
 
                 int count = (int)(length * frameRate);
