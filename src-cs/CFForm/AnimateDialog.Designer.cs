@@ -54,6 +54,8 @@
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.errorMessage = new System.Windows.Forms.Label();
+            this.previewCheckBox = new System.Windows.Forms.CheckBox();
+            this.loopCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBorder)).BeginInit();
             this.SuspendLayout();
             // 
@@ -204,7 +206,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(19, 501);
+            this.label11.Location = new System.Drawing.Point(19, 547);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(216, 32);
             this.label11.TabIndex = 28;
@@ -212,7 +214,7 @@
             // 
             // lengthTextBox
             // 
-            this.lengthTextBox.Location = new System.Drawing.Point(243, 498);
+            this.lengthTextBox.Location = new System.Drawing.Point(243, 544);
             this.lengthTextBox.Mask = "#####";
             this.lengthTextBox.Name = "lengthTextBox";
             this.lengthTextBox.Size = new System.Drawing.Size(182, 39);
@@ -221,7 +223,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(12, 546);
+            this.label12.Location = new System.Drawing.Point(12, 592);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(223, 32);
             this.label12.TabIndex = 30;
@@ -244,7 +246,7 @@
             "50",
             "59.94",
             "60"});
-            this.frameRateBox.Location = new System.Drawing.Point(243, 543);
+            this.frameRateBox.Location = new System.Drawing.Point(243, 589);
             this.frameRateBox.Name = "frameRateBox";
             this.frameRateBox.Size = new System.Drawing.Size(182, 40);
             this.frameRateBox.TabIndex = 31;
@@ -252,7 +254,7 @@
             // frameLabel
             // 
             this.frameLabel.AutoSize = true;
-            this.frameLabel.Location = new System.Drawing.Point(25, 592);
+            this.frameLabel.Location = new System.Drawing.Point(25, 638);
             this.frameLabel.Name = "frameLabel";
             this.frameLabel.Size = new System.Drawing.Size(210, 32);
             this.frameLabel.TabIndex = 32;
@@ -260,7 +262,7 @@
             // 
             // frameTextBox
             // 
-            this.frameTextBox.Location = new System.Drawing.Point(243, 589);
+            this.frameTextBox.Location = new System.Drawing.Point(243, 635);
             this.frameTextBox.Mask = "#####";
             this.frameTextBox.Name = "frameTextBox";
             this.frameTextBox.Size = new System.Drawing.Size(182, 39);
@@ -269,7 +271,7 @@
             // formatLabel
             // 
             this.formatLabel.AutoSize = true;
-            this.formatLabel.Location = new System.Drawing.Point(141, 592);
+            this.formatLabel.Location = new System.Drawing.Point(141, 638);
             this.formatLabel.Name = "formatLabel";
             this.formatLabel.Size = new System.Drawing.Size(94, 32);
             this.formatLabel.TabIndex = 34;
@@ -282,14 +284,14 @@
             "H.264",
             "ProRes 422",
             "ProRes 4444"});
-            this.formatComboBox.Location = new System.Drawing.Point(243, 589);
+            this.formatComboBox.Location = new System.Drawing.Point(243, 635);
             this.formatComboBox.Name = "formatComboBox";
             this.formatComboBox.Size = new System.Drawing.Size(182, 40);
             this.formatComboBox.TabIndex = 35;
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(243, 648);
+            this.okButton.Location = new System.Drawing.Point(243, 694);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(150, 46);
             this.okButton.TabIndex = 36;
@@ -299,7 +301,7 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(400, 648);
+            this.cancelButton.Location = new System.Drawing.Point(400, 694);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(150, 46);
             this.cancelButton.TabIndex = 37;
@@ -309,10 +311,30 @@
             // 
             // errorMessage
             // 
-            this.errorMessage.Location = new System.Drawing.Point(12, 633);
+            this.errorMessage.Location = new System.Drawing.Point(12, 679);
             this.errorMessage.Name = "errorMessage";
             this.errorMessage.Size = new System.Drawing.Size(217, 64);
             this.errorMessage.TabIndex = 38;
+            // 
+            // previewCheckBox
+            // 
+            this.previewCheckBox.AutoSize = true;
+            this.previewCheckBox.Location = new System.Drawing.Point(12, 485);
+            this.previewCheckBox.Name = "previewCheckBox";
+            this.previewCheckBox.Size = new System.Drawing.Size(194, 36);
+            this.previewCheckBox.TabIndex = 39;
+            this.previewCheckBox.Text = "Show preview";
+            this.previewCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // loopCheckBox
+            // 
+            this.loopCheckBox.AutoSize = true;
+            this.loopCheckBox.Location = new System.Drawing.Point(212, 485);
+            this.loopCheckBox.Name = "loopCheckBox";
+            this.loopCheckBox.Size = new System.Drawing.Size(180, 36);
+            this.loopCheckBox.TabIndex = 40;
+            this.loopCheckBox.Text = "with looping";
+            this.loopCheckBox.UseVisualStyleBackColor = true;
             // 
             // AnimateDialog
             // 
@@ -320,7 +342,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(562, 712);
+            this.ClientSize = new System.Drawing.Size(562, 752);
+            this.Controls.Add(this.loopCheckBox);
+            this.Controls.Add(this.previewCheckBox);
             this.Controls.Add(this.errorMessage);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
@@ -386,5 +410,7 @@
         private Button cancelButton;
         public MaskedTextBox frameTextBox;
         private Label errorMessage;
+        private CheckBox previewCheckBox;
+        private CheckBox loopCheckBox;
     }
 }

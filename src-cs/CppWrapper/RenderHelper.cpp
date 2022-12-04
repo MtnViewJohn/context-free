@@ -7,6 +7,9 @@
 #include "tiledCanvas.h"
 #include "GalleryUploader.h"
 #include "upload.h"
+#include "WinCanvas.h"
+#include "ffCanvas.h"
+#include "SVGCanvas.h"
 
 using namespace System;
 using namespace System::IO;
@@ -284,6 +287,29 @@ namespace CppWrapper {
         if (mCanvas) return;
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()),
             width, height, (*mEngine)->getBackgroundColor());
+    }
+
+    System::String^
+    RenderHelper::makeAnimationCanvas(RenderParameters^ renderParams)
+    {
+        animationCanvas = new ffCanvas("", WinCanvas::SuggestPixelFormat(mEngine->get()),
+            renderParams->animateWidth, renderParams->animateHeight,
+            renderParams->frameRate, (ffCanvas::QTcodec)renderParams->codec, true);
+
+        if (animationCanvas->mError) {
+            String^ msg = gcnew String(animationCanvas->mErrorMsg);
+            delete animationCanvas;
+            animationCanvas = nullptr;
+            return msg;
+        } else {
+            return gcnew String(animationCanvas->mFileName.c_str());
+        }
+    }
+
+    bool
+    RenderHelper::canAnimate()
+    {
+        return ffCanvas::Available();
     }
 
     bool

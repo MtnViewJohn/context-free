@@ -18,6 +18,9 @@
                 components.Dispose();
             }
             base.Dispose(disposing);
+
+            MovieCleaner.Clean(moviePlayer, movieFile);
+            moviePlayer = null; movieFile = null;
         }
 
         #region Windows Form Designer generated code

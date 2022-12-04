@@ -73,11 +73,11 @@ bool av_load_dlls()
 
     if (firstTime) {
         firstTime = false;
-        avcodecMod = LoadLibraryW(L"avcodec-58.dll");
-        avformatMod = LoadLibraryW(L"avformat-58.dll");
-        avutilMod = LoadLibraryW(L"avutil-56.dll");
-        swresampleMod = LoadLibraryW(L"swresample-3.dll");
-        swscaleMod = LoadLibraryW(L"swscale-5.dll");
+        avcodecMod = LoadLibraryW(L"avcodec-59.dll");
+        avformatMod = LoadLibraryW(L"avformat-59.dll");
+        avutilMod = LoadLibraryW(L"avutil-57.dll");
+        swresampleMod = LoadLibraryW(L"swresample-4.dll");
+        swscaleMod = LoadLibraryW(L"swscale-6.dll");
     }
 
     return avcodecMod && avformatMod && avutilMod && swresampleMod && swscaleMod;

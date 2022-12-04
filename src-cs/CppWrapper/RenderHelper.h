@@ -3,11 +3,13 @@
 #include "Scintilla.h"
 #include "RenderParameters.h"
 #include "RenderStats.h"
-#include "WinSystem.h"
-#include "WinCanvas.h"
 #include "variation.h"
 #include "UploadPrefs.h"
-#include "SVGCanvas.h"
+#include "WinSystem.h"
+
+class ffCanvas;
+class SVGCanvas;
+class WinCanvas;
 
 namespace CppWrapper {
     public ref class RenderHelper : public System::IDisposable
@@ -109,6 +111,8 @@ namespace CppWrapper {
         void prepareForRender(int width, int height, double minSize, double border, 
             int variation, bool shrinkTiled);
         void makeCanvas(int width, int height);
+        System::String^ makeAnimationCanvas(RenderParameters^ params);
+        bool canAnimate();
         bool makeSVGCanvas(System::String^ path, int width, int height, UploadPrefs^ prefs);
         void updateRenderBox(System::Windows::Forms::PictureBox^ renderBox, 
             System::Drawing::Bitmap^ displayImage, bool noDisplay);
@@ -134,7 +138,7 @@ namespace CppWrapper {
         cfdg_ptr* mEngine;
         WinCanvas* mCanvas = nullptr;
         WinCanvas* tempCanvas = nullptr;
-        Canvas* animationCanvas = nullptr;
+        ffCanvas* animationCanvas = nullptr;
         SVGCanvas* SVGcanvas = nullptr;
     };
 }

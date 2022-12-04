@@ -97,6 +97,9 @@ namespace CFForm
         private Bitmap? displayImage = null;
         private bool isTiled = false;
 
+        private String? movieFile = null;
+        private System.Diagnostics.Process? moviePlayer = null;
+
         public Document()
         {
             InitializeComponent();
@@ -157,6 +160,8 @@ namespace CFForm
 
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             renderParameters = RenderParameters;
+
+            menuRAnimate.Enabled = renderHelper.canAnimate();
 
             renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
@@ -428,7 +433,27 @@ namespace CFForm
                     break;
             }
 
-            // TBD code to launch movie player
+            if (nextAction == (int)PostRenderAction.DoNothing &&
+                renderParameters.action == RenderParameters.RenderActions.Animate &&
+                !renderParameters.animateFrame &&
+                renderParameters.preview)
+            {
+                moviePlayer = new System.Diagnostics.Process();
+
+                try {
+                    moviePlayer.StartInfo = new System.Diagnostics.ProcessStartInfo
+                    {
+                        UseShellExecute = false,
+                        FileName = "ffplay.exe",
+                        CreateNoWindow = true,
+                        Arguments = renderParameters.loop ? "-loop 0 " + movieFile : movieFile
+                    };
+                    moviePlayer.Start();
+                    moviePlayer.EnableRaisingEvents = true;
+                } catch (Exception ex) {
+                    setMessage(ex.Message);
+                }
+            }
         }
 
         private void runRenderThread(object? sender, DoWorkEventArgs e)
@@ -1126,9 +1151,12 @@ namespace CFForm
         {
             setMessage(null);
             bool modifiedSinceRender = syncToSystem();
-            if (!modifiedSinceRender && !reuseVariation)
+            if (!modifiedSinceRender && !reuseVariation && renderParameters.action != RenderParameters.RenderActions.Animate)
                 nextVariationClick(this, EventArgs.Empty);
             reuseVariation = false;
+
+            MovieCleaner.Clean(moviePlayer, movieFile);
+            moviePlayer = null; movieFile = null;
 
             bool useAnimateSize = renderParameters.action == RenderParameters.RenderActions.Animate;
             int width = useAnimateSize ? renderParameters.animateWidth : renderParameters.width;
@@ -1154,10 +1182,18 @@ namespace CFForm
                 setupCanvas(width, height);
             }
 
-            if (renderParameters.action != RenderParameters.RenderActions.Animate &&
+            if (renderParameters.action == RenderParameters.RenderActions.Animate &&
                 !renderParameters.animateFrame)
             {
-                // animation code here
+                String ffReturn = renderHelper.makeAnimationCanvas(renderParameters);
+                if (Path.IsPathRooted(ffReturn)) {
+                    movieFile = ffReturn;
+                } else {
+                    SystemSounds.Beep.Play();
+                    MessageBox.Show(MdiParent, ffReturn);
+                    setMessage(ffReturn);
+                    return;
+                }
             }
 
             if (renderParameters.action == RenderParameters.RenderActions.Render && displayImage == null)
@@ -1221,8 +1257,13 @@ namespace CFForm
 
         private void menuROutputClick(object sender, EventArgs e)
         {
-            // TODO: movie save code
-            if (!renderHelper.canvas) {
+            if (moviePlayer != null && !moviePlayer.HasExited) {
+                // Should close and release temp file before save dialog shows
+                moviePlayer.CloseMainWindow();
+            }
+            moviePlayer = null;
+
+            if (!renderHelper.canvas && movieFile == null) {
                 setMessage("There is nothing to save.");
                 SystemSounds.Asterisk.Play();
                 return;
@@ -1230,6 +1271,35 @@ namespace CFForm
 
             if (renderThread.IsBusy) {
                 postAction = PostRenderAction.SaveOutput;
+                return;
+            }
+
+            if (movieFile != null) {
+                SaveFileDialog saveMovieDlg = new SaveFileDialog {
+                    Filter = "MOV files (*.mov)|*.mov|All files (*.*)|*.*",
+                    FileName = Path.GetFileNameWithoutExtension(Text) + ".mov",
+                    OverwritePrompt = true
+                };
+                if (saveMovieDlg.ShowDialog() == DialogResult.OK) {
+                    if (File.Exists(saveMovieDlg.FileName)) {
+                        try {
+                            File.Delete(saveMovieDlg.FileName);
+                        } catch {
+                            setMessage("Cannot overwrite destination.");
+                            System.Console.Beep();
+                            return;
+                        }
+                    }
+                    try {
+                        File.Move(movieFile, saveMovieDlg.FileName);
+                        movieFile = null;
+                        setMessage("Movie saved.");
+                    } catch {
+                        setMessage("Movie save failed.");
+                        System.Console.Beep();
+                        return;
+                    }
+                }
                 return;
             }
 
@@ -1352,6 +1422,9 @@ namespace CFForm
 
         private void formHasClosed(object sender, FormClosedEventArgs e)
         {
+            MovieCleaner.Clean(moviePlayer, movieFile);
+            moviePlayer = null; movieFile = null;
+
             renderHelper.Dispose();
         }
     }

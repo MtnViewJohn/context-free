@@ -25,6 +25,8 @@ namespace CFForm
                 Text = "Animate a Frame";
                 formatComboBox.Visible = false;
                 formatLabel.Visible = false;
+                previewCheckBox.Visible = false;
+                loopCheckBox.Visible = false;
                 int frame = prefs.frame;
                 if (frame > 0)
                     frameTextBox.Text = frame.ToString();
@@ -50,6 +52,8 @@ namespace CFForm
                 border = 2.0;
             trackBarBorder.Value = (int)((border + 1.0) * 33.0);
             zoomCheckBox.Checked = prefs.animateZoom;
+            previewCheckBox.Checked = prefs.preview;
+            loopCheckBox.Checked = prefs.loop;
             int length = prefs.length;
             if (length < 1) length = 1;
             lengthTextBox.Text = length.ToString();
@@ -101,6 +105,10 @@ namespace CFForm
                 prefs.minimumSize = minSize;
 
                 prefs.borderSize = (double)(trackBarBorder.Value) / 33.0 - 1.0;
+
+                prefs.animateZoom = zoomCheckBox.Checked;
+                prefs.preview = previewCheckBox.Checked;
+                prefs.loop = loopCheckBox.Checked;
 
                 int length = int.Parse(lengthTextBox.Text);
                 if (length < 1) throw new ArgumentException("Length must be positive number.");
