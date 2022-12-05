@@ -217,7 +217,7 @@
             this.sizeHeightBox,
             this.toolStripSeparator3,
             this.statusLabel});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 42);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1688, 42);
             this.toolStrip1.TabIndex = 0;
@@ -243,7 +243,7 @@
             // renderToolStripMenuItem
             // 
             this.renderToolStripMenuItem.Name = "renderToolStripMenuItem";
-            this.renderToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
+            this.renderToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.renderToolStripMenuItem.Tag = "0";
             this.renderToolStripMenuItem.Text = "Render";
             this.renderToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -251,7 +251,7 @@
             // sizedToolStripMenuItem
             // 
             this.sizedToolStripMenuItem.Name = "sizedToolStripMenuItem";
-            this.sizedToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
+            this.sizedToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.sizedToolStripMenuItem.Tag = "1";
             this.sizedToolStripMenuItem.Text = "Render to Size";
             this.sizedToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -259,7 +259,7 @@
             // animateToolStripMenuItem
             // 
             this.animateToolStripMenuItem.Name = "animateToolStripMenuItem";
-            this.animateToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
+            this.animateToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.animateToolStripMenuItem.Tag = "2";
             this.animateToolStripMenuItem.Text = "Animate";
             this.animateToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -267,7 +267,7 @@
             // frameToolStripMenuItem
             // 
             this.frameToolStripMenuItem.Name = "frameToolStripMenuItem";
-            this.frameToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
+            this.frameToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.frameToolStripMenuItem.Tag = "3";
             this.frameToolStripMenuItem.Text = "Animate a Frame";
             this.frameToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -423,7 +423,7 @@
             // 
             this.documentSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.documentSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentSplitter.Location = new System.Drawing.Point(0, 84);
+            this.documentSplitter.Location = new System.Drawing.Point(0, 42);
             this.documentSplitter.Name = "documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -433,7 +433,7 @@
             // documentSplitter.Panel2
             // 
             this.documentSplitter.Panel2.Controls.Add(this.renderBox);
-            this.documentSplitter.Size = new System.Drawing.Size(1688, 998);
+            this.documentSplitter.Size = new System.Drawing.Size(1688, 1040);
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
@@ -455,8 +455,8 @@
             // editorSplitter.Panel2
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
-            this.editorSplitter.Size = new System.Drawing.Size(562, 998);
-            this.editorSplitter.SplitterDistance = 662;
+            this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
+            this.editorSplitter.SplitterDistance = 689;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -469,7 +469,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 658);
+            this.cfdgText.Size = new System.Drawing.Size(558, 685);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = "scintilla1";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -490,7 +490,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 324);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 339);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -500,7 +500,7 @@
             this.renderBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderBox.Location = new System.Drawing.Point(0, 0);
             this.renderBox.Name = "renderBox";
-            this.renderBox.Size = new System.Drawing.Size(1114, 994);
+            this.renderBox.Size = new System.Drawing.Size(1114, 1036);
             this.renderBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
@@ -542,7 +542,7 @@
             this.menuFSave.Name = "menuFSave";
             this.menuFSave.ShortcutKeyDisplayString = "Ctrl-S";
             this.menuFSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.menuFSave.Size = new System.Drawing.Size(359, 44);
+            this.menuFSave.Size = new System.Drawing.Size(271, 44);
             this.menuFSave.Text = "&Save";
             this.menuFSave.Click += new System.EventHandler(this.menuFSaveClick);
             // 
@@ -552,7 +552,7 @@
             this.menuFSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFSaveAs.MergeIndex = 3;
             this.menuFSaveAs.Name = "menuFSaveAs";
-            this.menuFSaveAs.Size = new System.Drawing.Size(359, 44);
+            this.menuFSaveAs.Size = new System.Drawing.Size(271, 44);
             this.menuFSaveAs.Text = "Save &As";
             this.menuFSaveAs.Click += new System.EventHandler(this.menuFSaveAsClick);
             // 
@@ -562,7 +562,7 @@
             this.menuFClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFClose.MergeIndex = 4;
             this.menuFClose.Name = "menuFClose";
-            this.menuFClose.Size = new System.Drawing.Size(359, 44);
+            this.menuFClose.Size = new System.Drawing.Size(271, 44);
             this.menuFClose.Text = "&Close";
             this.menuFClose.Click += new System.EventHandler(this.menuFCloseClick);
             // 
@@ -572,7 +572,7 @@
             this.menuFRevert.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.menuFRevert.MergeIndex = 5;
             this.menuFRevert.Name = "menuFRevert";
-            this.menuFRevert.Size = new System.Drawing.Size(359, 44);
+            this.menuFRevert.Size = new System.Drawing.Size(271, 44);
             this.menuFRevert.Text = "Re&vert";
             this.menuFRevert.Click += new System.EventHandler(this.menuFRevertClick);
             // 

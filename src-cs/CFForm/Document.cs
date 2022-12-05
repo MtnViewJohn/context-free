@@ -161,7 +161,9 @@ namespace CFForm
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             renderParameters = RenderParameters;
 
-            menuRAnimate.Enabled = renderHelper.canAnimate();
+            bool canAnimate = renderHelper.canAnimate();
+            menuRAnimate.Enabled = canAnimate;
+            animateToolStripMenuItem.Enabled = canAnimate;
 
             renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
             renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
