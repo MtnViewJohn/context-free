@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src-net\FileDlgExtenders\FileDlgExtenders.csproj" />
     <ProjectReference Include="..\CppWrapper\CppWrapper.vcxproj" />
   </ItemGroup>
 
