@@ -146,7 +146,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
                      int fps, QTcodec _codec)
 : mWidth(width), mHeight(height), mStride(stride), mBuffer(stride * height), mFrameRate(fps)
 {
-#ifdef DEBUG
+#ifdef _DEBUG
     my_av_log_set_callback(log_callback_debug);
 #endif
 
@@ -190,8 +190,12 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     mEncCtx->time_base.num = 1;
     mEncCtx->time_base.den = fps;
     mEncCtx->gop_size = 10; /* emit one intra frame every ten frames */
-    mEncCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-    mEncCtx->profile = _codec ? 2 : FF_PROFILE_H264_MAIN;  // ProRes422 main profile is 2
+    if (mOutputCtx->flags & AVFMT_GLOBALHEADER)
+        mEncCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    if (mEncCtx->codec_id == AV_CODEC_ID_H264)
+        mEncCtx->mb_decision = 2;
+    if (_codec)
+        mEncCtx->profile = 2;  // ProRes422 main profile is 2
     
     AVPixelFormat srcFormat;
     AVPixelFormat dstFormat = _codec ? AV_PIX_FMT_YUV422P10LE : AV_PIX_FMT_YUV420P;

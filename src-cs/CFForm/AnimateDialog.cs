@@ -67,6 +67,8 @@ namespace CFForm
             }
             if (frameRateBox.SelectedIndex == -1)
                 frameRateBox.SelectedIndex = 3;         // default to 15fps
+            if (prefs.codec < 0 || prefs.codec >= 3) prefs.codec = 0;
+            formatComboBox.SelectedIndex = prefs.codec;
         }
 
         private void validFloat(object sender, CancelEventArgs e)
@@ -124,7 +126,7 @@ namespace CFForm
                     prefs.frame = frame;
                     prefs.animateFrameCount = count;
                 } else {
-                    prefs.codec = frameRateBox.SelectedIndex;
+                    prefs.codec = formatComboBox.SelectedIndex;
                     if (prefs.frame < 1 || prefs.frame > count)
                         prefs.frame = 1;
                 }
