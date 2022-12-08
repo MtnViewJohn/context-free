@@ -176,7 +176,7 @@ namespace CFForm
                     menuRRender.PerformClick();
             } else {
                 cfdgText.Text = String.Empty;
-                cfdgText.SetSavePoint();
+                cfdgText.EmptyUndoBuffer();
             }
         }
 
@@ -232,7 +232,7 @@ namespace CFForm
             if (exampleText != null) {
                 isExample = true;
                 cfdgText.Text = exampleText;
-                cfdgText.SetSavePoint();
+                cfdgText.EmptyUndoBuffer();
                 return true;
             }
 
@@ -254,7 +254,7 @@ namespace CFForm
                 Name.StartsWith("data:,"))
             {
                 cfdgText.Text = Name.Substring(Name.IndexOf(",") + 1);
-                cfdgText.SetSavePoint();
+                cfdgText.EmptyUndoBuffer();
                 Name = TabText;
                 return true;
             }
@@ -262,12 +262,12 @@ namespace CFForm
             try {
                 using (StreamReader sr = new StreamReader(Name)) {
                     cfdgText.Text = sr.ReadToEnd();
-                    cfdgText.SetSavePoint();
+                    cfdgText.EmptyUndoBuffer();
                 }
             } catch {
                 ((Form1)MdiParent).manager.RemoveFile(Name);
                 cfdgText.Text = String.Empty;
-                cfdgText.SetSavePoint();
+                cfdgText.EmptyUndoBuffer();
                 setMessage("The file could not be read.");
                 return false;
             }
@@ -286,7 +286,7 @@ namespace CFForm
                     TabText = WebUtility.UrlDecode(Path.GetFileName(uri.AbsolutePath));
                     Name = TabText;
                     Text = TabText;
-                    cfdgText.SetSavePoint();
+                    cfdgText.EmptyUndoBuffer();
                     if (Properties.Settings.Default.OpenRender)
                         menuRRender.PerformClick();
                 } else {
@@ -298,7 +298,7 @@ namespace CFForm
                         Name = download.CfdgName;
                         TabText = Name;
                         Text = TabText;
-                        cfdgText.SetSavePoint();
+                        cfdgText.EmptyUndoBuffer();
                         if (Properties.Settings.Default.OpenRender)
                             menuRRender.PerformClick();
                     } else {
