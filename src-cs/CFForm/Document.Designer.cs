@@ -280,6 +280,7 @@
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(68, 36);
             this.saveButton.Text = "Save";
+            this.saveButton.Click += new System.EventHandler(this.menuROutputClick);
             // 
             // progressBar
             // 
