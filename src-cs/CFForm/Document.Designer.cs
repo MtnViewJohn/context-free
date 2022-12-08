@@ -217,7 +217,7 @@
             this.sizeHeightBox,
             this.toolStripSeparator3,
             this.statusLabel});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 42);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1688, 42);
             this.toolStrip1.TabIndex = 0;
@@ -424,7 +424,7 @@
             // 
             this.documentSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.documentSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.documentSplitter.Location = new System.Drawing.Point(0, 42);
+            this.documentSplitter.Location = new System.Drawing.Point(0, 84);
             this.documentSplitter.Name = "documentSplitter";
             // 
             // documentSplitter.Panel1
@@ -434,7 +434,7 @@
             // documentSplitter.Panel2
             // 
             this.documentSplitter.Panel2.Controls.Add(this.renderBox);
-            this.documentSplitter.Size = new System.Drawing.Size(1688, 1040);
+            this.documentSplitter.Size = new System.Drawing.Size(1688, 998);
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
@@ -456,8 +456,8 @@
             // editorSplitter.Panel2
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
-            this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 689;
+            this.editorSplitter.Size = new System.Drawing.Size(562, 998);
+            this.editorSplitter.SplitterDistance = 661;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -470,7 +470,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 685);
+            this.cfdgText.Size = new System.Drawing.Size(558, 657);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = " ";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -491,7 +491,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 339);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 325);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -501,7 +501,7 @@
             this.renderBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderBox.Location = new System.Drawing.Point(0, 0);
             this.renderBox.Name = "renderBox";
-            this.renderBox.Size = new System.Drawing.Size(1114, 1036);
+            this.renderBox.Size = new System.Drawing.Size(1114, 994);
             this.renderBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
@@ -1475,6 +1475,7 @@
             // 
             // menuRStop
             // 
+            this.menuRStop.Image = ((System.Drawing.Image)(resources.GetObject("menuRStop.Image")));
             this.menuRStop.Name = "menuRStop";
             this.menuRStop.ShortcutKeyDisplayString = "Ctrl-END";
             this.menuRStop.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.End)));
@@ -1489,6 +1490,7 @@
             // 
             // menuROutput
             // 
+            this.menuROutput.Image = ((System.Drawing.Image)(resources.GetObject("menuROutput.Image")));
             this.menuROutput.Name = "menuROutput";
             this.menuROutput.ShortcutKeyDisplayString = "Ctrl-O";
             this.menuROutput.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -1498,6 +1500,7 @@
             // 
             // menuRGallery
             // 
+            this.menuRGallery.Image = ((System.Drawing.Image)(resources.GetObject("menuRGallery.Image")));
             this.menuRGallery.Name = "menuRGallery";
             this.menuRGallery.ShortcutKeyDisplayString = "Ctrl-U";
             this.menuRGallery.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
@@ -1507,6 +1510,7 @@
             // 
             // colorCalculatorToolStripMenuItem
             // 
+            this.colorCalculatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("colorCalculatorToolStripMenuItem.Image")));
             this.colorCalculatorToolStripMenuItem.Name = "colorCalculatorToolStripMenuItem";
             this.colorCalculatorToolStripMenuItem.Size = new System.Drawing.Size(464, 44);
             this.colorCalculatorToolStripMenuItem.Text = "&Color Calculator";
