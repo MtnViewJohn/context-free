@@ -472,7 +472,7 @@
             this.cfdgText.Name = "cfdgText";
             this.cfdgText.Size = new System.Drawing.Size(558, 685);
             this.cfdgText.TabIndex = 0;
-            this.cfdgText.Text = "scintilla1";
+            this.cfdgText.Text = " ";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
             this.cfdgText.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.charAdded);
             this.cfdgText.Delete += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.textChanged);
