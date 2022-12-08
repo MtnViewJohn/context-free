@@ -227,6 +227,7 @@ namespace CFForm
             base.WndProc(ref m);
         }
         private bool reload()
+
         {
             String exampleText = renderHelper.getExample(Name);
             if (exampleText != null) {
@@ -1309,7 +1310,7 @@ namespace CFForm
                 Path.GetFileNameWithoutExtension(Text) + ".png", Path.GetDirectoryName(Text))) 
             {
                 var prefs = UploadPrefs;
-                if (saveImageDlg.ShowTheDialog(this, prefs) == DialogResult.OK) {
+                if (saveImageDlg.ShowTheDialog(MdiParent, prefs) == DialogResult.OK) {
                     UploadPrefs = prefs;
                     switch (saveImageDlg.FileDlgFilterIndex) {
                         case 1: // PNG

@@ -39,3 +39,9 @@ void SaveImage::OnPrepareMSDialog()
     FileDlgInitialDirectory = fileDir;
     FileDialogExtenders::FileDialogControlBase::OnPrepareMSDialog();
 }
+
+System::Void SaveImage::fileTypeChanged(System::Windows::Forms::IWin32Window^ sender, System::Int32 index)
+{
+    JPEGQuality->Enabled = index == 2;
+    JPEGlabel->ForeColor = (index == 2) ? SystemColors::ControlText : SystemColors::GrayText;
+}
