@@ -261,6 +261,7 @@ namespace CppWrapper {
             // findContains
             // 
             this->findContains->AutoSize = true;
+            this->findContains->Checked = true;
             this->findContains->Location = System::Drawing::Point(694, 56);
             this->findContains->Name = L"findContains";
             this->findContains->Size = System::Drawing::Size(129, 30);
