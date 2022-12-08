@@ -31,8 +31,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.widthTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.heightTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.widthTextBox = new System.Windows.Forms.TextBox();
+            this.heightTextBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.minSizeTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,11 +44,11 @@
             this.label10 = new System.Windows.Forms.Label();
             this.zoomCheckBox = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.lengthTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.lengthTextBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.frameRateBox = new System.Windows.Forms.ComboBox();
             this.frameLabel = new System.Windows.Forms.Label();
-            this.frameTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.frameTextBox = new System.Windows.Forms.TextBox();
             this.formatLabel = new System.Windows.Forms.Label();
             this.formatComboBox = new System.Windows.Forms.ComboBox();
             this.okButton = new System.Windows.Forms.Button();
@@ -90,18 +90,18 @@
             // widthTextBox
             // 
             this.widthTextBox.Location = new System.Drawing.Point(12, 182);
-            this.widthTextBox.Mask = "#####";
             this.widthTextBox.Name = "widthTextBox";
             this.widthTextBox.Size = new System.Drawing.Size(110, 39);
             this.widthTextBox.TabIndex = 3;
+            this.widthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // heightTextBox
             // 
             this.heightTextBox.Location = new System.Drawing.Point(164, 182);
-            this.heightTextBox.Mask = "#####";
             this.heightTextBox.Name = "heightTextBox";
             this.heightTextBox.Size = new System.Drawing.Size(110, 39);
             this.heightTextBox.TabIndex = 4;
+            this.heightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // label4
             // 
@@ -215,10 +215,10 @@
             // lengthTextBox
             // 
             this.lengthTextBox.Location = new System.Drawing.Point(243, 544);
-            this.lengthTextBox.Mask = "#####";
             this.lengthTextBox.Name = "lengthTextBox";
             this.lengthTextBox.Size = new System.Drawing.Size(182, 39);
             this.lengthTextBox.TabIndex = 29;
+            this.lengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // label12
             // 
@@ -259,10 +259,10 @@
             // frameTextBox
             // 
             this.frameTextBox.Location = new System.Drawing.Point(243, 635);
-            this.frameTextBox.Mask = "#####";
             this.frameTextBox.Name = "frameTextBox";
             this.frameTextBox.Size = new System.Drawing.Size(182, 39);
             this.frameTextBox.TabIndex = 33;
+            this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // formatLabel
             // 
@@ -383,8 +383,8 @@
         private Label label1;
         private Label label2;
         private Label label3;
-        private MaskedTextBox widthTextBox;
-        private MaskedTextBox heightTextBox;
+        private TextBox widthTextBox;
+        private TextBox heightTextBox;
         private Label label4;
         private TextBox minSizeTextBox;
         private Label label5;
@@ -396,7 +396,7 @@
         private Label label10;
         private CheckBox zoomCheckBox;
         private Label label11;
-        private MaskedTextBox lengthTextBox;
+        private TextBox lengthTextBox;
         private Label label12;
         private ComboBox frameRateBox;
         private Label frameLabel;
@@ -404,7 +404,7 @@
         private ComboBox formatComboBox;
         private Button okButton;
         private Button cancelButton;
-        public MaskedTextBox frameTextBox;
+        public TextBox frameTextBox;
         private Label errorMessage;
         private CheckBox previewCheckBox;
         private CheckBox loopCheckBox;

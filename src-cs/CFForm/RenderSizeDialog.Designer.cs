@@ -40,8 +40,8 @@
             this.trackBarBorder = new System.Windows.Forms.TrackBar();
             this.label9 = new System.Windows.Forms.Label();
             this.noDisplayCheckBox = new System.Windows.Forms.CheckBox();
-            this.widthBox = new System.Windows.Forms.MaskedTextBox();
-            this.heightBox = new System.Windows.Forms.MaskedTextBox();
+            this.widthBox = new System.Windows.Forms.TextBox();
+            this.heightBox = new System.Windows.Forms.TextBox();
             this.OKbutton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBorder)).BeginInit();
@@ -168,18 +168,18 @@
             // widthBox
             // 
             this.widthBox.Location = new System.Drawing.Point(85, 12);
-            this.widthBox.Mask = "#####";
             this.widthBox.Name = "widthBox";
             this.widthBox.Size = new System.Drawing.Size(144, 39);
             this.widthBox.TabIndex = 1;
+            this.widthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // heightBox
             // 
             this.heightBox.Location = new System.Drawing.Point(271, 12);
-            this.heightBox.Mask = "#####";
             this.heightBox.Name = "heightBox";
             this.heightBox.Size = new System.Drawing.Size(144, 39);
             this.heightBox.TabIndex = 3;
+            this.heightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // OKbutton
             // 
@@ -245,8 +245,8 @@
         private TrackBar trackBarBorder;
         private Label label9;
         private CheckBox noDisplayCheckBox;
-        private MaskedTextBox widthBox;
-        private MaskedTextBox heightBox;
+        private TextBox widthBox;
+        private TextBox heightBox;
         private Button OKbutton;
         private Button cancelButton;
     }

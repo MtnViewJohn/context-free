@@ -243,7 +243,7 @@
             // renderToolStripMenuItem
             // 
             this.renderToolStripMenuItem.Name = "renderToolStripMenuItem";
-            this.renderToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.renderToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.renderToolStripMenuItem.Tag = "0";
             this.renderToolStripMenuItem.Text = "Render";
             this.renderToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -251,7 +251,7 @@
             // sizedToolStripMenuItem
             // 
             this.sizedToolStripMenuItem.Name = "sizedToolStripMenuItem";
-            this.sizedToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.sizedToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.sizedToolStripMenuItem.Tag = "1";
             this.sizedToolStripMenuItem.Text = "Render to Size";
             this.sizedToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -259,7 +259,7 @@
             // animateToolStripMenuItem
             // 
             this.animateToolStripMenuItem.Name = "animateToolStripMenuItem";
-            this.animateToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.animateToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.animateToolStripMenuItem.Tag = "2";
             this.animateToolStripMenuItem.Text = "Animate";
             this.animateToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
@@ -267,7 +267,7 @@
             // frameToolStripMenuItem
             // 
             this.frameToolStripMenuItem.Name = "frameToolStripMenuItem";
-            this.frameToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.frameToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.frameToolStripMenuItem.Tag = "3";
             this.frameToolStripMenuItem.Text = "Animate a Frame";
             this.frameToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);

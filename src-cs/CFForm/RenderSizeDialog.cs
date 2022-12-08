@@ -71,5 +71,11 @@ namespace CFForm
         {
             DialogResult = DialogResult.Cancel;
         }
+
+        private void numberKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsControl(e.KeyChar) && !Char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        }
     }
 }

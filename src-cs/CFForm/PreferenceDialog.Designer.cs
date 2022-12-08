@@ -46,7 +46,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.editJPEGquality = new System.Windows.Forms.MaskedTextBox();
+            this.editJPEGquality = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -284,11 +284,11 @@
             // editJPEGquality
             // 
             this.editJPEGquality.Location = new System.Drawing.Point(341, 390);
-            this.editJPEGquality.Mask = "###";
             this.editJPEGquality.Name = "editJPEGquality";
             this.editJPEGquality.Size = new System.Drawing.Size(100, 39);
             this.editJPEGquality.TabIndex = 9;
             this.editJPEGquality.Text = "90";
+            this.editJPEGquality.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
             // 
             // label9
             // 
@@ -872,7 +872,7 @@
         private Label label7;
         private Label label8;
         private RadioButton radioOpenWelcome;
-        private MaskedTextBox editJPEGquality;
+        private TextBox editJPEGquality;
         private Label label9;
         private TabControl tabControl1;
         private TabPage tabPage1;
