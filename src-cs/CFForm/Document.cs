@@ -1316,29 +1316,31 @@ namespace CFForm
             }
 
             if (movieFile != null) {
-                SaveFileDialog saveMovieDlg = new SaveFileDialog {
+                using (var saveMovieDlg = new SaveFileDialog {
                     Filter = "MOV files (*.mov)|*.mov|All files (*.*)|*.*",
                     FileName = Path.GetFileNameWithoutExtension(Text) + ".mov",
                     OverwritePrompt = true
-                };
-                if (saveMovieDlg.ShowDialog() == DialogResult.OK) {
-                    if (File.Exists(saveMovieDlg.FileName)) {
+                }) 
+                {
+                    if (saveMovieDlg.ShowDialog() == DialogResult.OK) {
+                        if (File.Exists(saveMovieDlg.FileName)) {
+                            try {
+                                File.Delete(saveMovieDlg.FileName);
+                            } catch {
+                                setMessage("Cannot overwrite destination.");
+                                SystemSounds.Asterisk.Play();
+                                return;
+                            }
+                        }
                         try {
-                            File.Delete(saveMovieDlg.FileName);
+                            File.Move(movieFile, saveMovieDlg.FileName);
+                            movieFile = null;
+                            setMessage("Movie saved.");
                         } catch {
-                            setMessage("Cannot overwrite destination.");
-                            System.Console.Beep();
+                            setMessage("Movie save failed.");
+                            SystemSounds.Asterisk.Play();
                             return;
                         }
-                    }
-                    try {
-                        File.Move(movieFile, saveMovieDlg.FileName);
-                        movieFile = null;
-                        setMessage("Movie saved.");
-                    } catch {
-                        setMessage("Movie save failed.");
-                        System.Console.Beep();
-                        return;
                     }
                 }
                 return;
