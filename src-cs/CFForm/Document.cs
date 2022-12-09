@@ -1048,8 +1048,16 @@ namespace CFForm
                 int delta = tagint * Properties.Settings.Default.TabWidth;
                 var start = cfdgText.LineFromPosition(cfdgText.AnchorPosition);
                 var end = cfdgText.LineFromPosition(cfdgText.CurrentPosition);
-                if (end < start) {
-                    var t = start; start = end; end = t;
+                if (start < end) {
+                    // When a whole line is selected the position is at the start
+                    // of the next line. We don't want to include that line.
+                    if (cfdgText.GetColumn(cfdgText.CurrentPosition) == 0)
+                        end--;
+                } else if (end < start) {
+                    // Same
+                    if (cfdgText.GetColumn(cfdgText.AnchorPosition) == 0)
+                        start--;
+                    var t = start; start = end; end = t;    // also swap
                 }
                 for (; start <= end; ++start) {
                     var indent = cfdgText.Lines[start].Indentation;
