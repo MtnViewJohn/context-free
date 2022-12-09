@@ -1039,6 +1039,11 @@ namespace CFForm
                 cfdgText.ReplaceSelection(String.Empty);
         }
 
+        private void menuESelectAllClick(object sender, EventArgs e)
+        {
+            cfdgText.SelectAll();
+        }
+
         private void menuEIndentClick(object sender, EventArgs e)
         {
             bool didIndent = false;

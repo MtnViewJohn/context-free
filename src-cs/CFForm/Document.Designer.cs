@@ -77,6 +77,7 @@
             this.menuECopy = new System.Windows.Forms.ToolStripMenuItem();
             this.menuEPaste = new System.Windows.Forms.ToolStripMenuItem();
             this.menuEDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuESelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuEInsertChar = new System.Windows.Forms.ToolStripMenuItem();
             this.menuEInsLE = new System.Windows.Forms.ToolStripMenuItem();
@@ -457,7 +458,7 @@
             // 
             this.editorSplitter.Panel2.Controls.Add(this.cfdgMessage);
             this.editorSplitter.Size = new System.Drawing.Size(562, 1040);
-            this.editorSplitter.SplitterDistance = 687;
+            this.editorSplitter.SplitterDistance = 686;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
             this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
@@ -470,7 +471,7 @@
             this.cfdgText.IndentationGuides = ScintillaNET.IndentView.LookBoth;
             this.cfdgText.Location = new System.Drawing.Point(0, 0);
             this.cfdgText.Name = "cfdgText";
-            this.cfdgText.Size = new System.Drawing.Size(558, 683);
+            this.cfdgText.Size = new System.Drawing.Size(558, 682);
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = " ";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
@@ -491,7 +492,7 @@
             this.cfdgMessage.Location = new System.Drawing.Point(0, 0);
             this.cfdgMessage.MinimumSize = new System.Drawing.Size(20, 20);
             this.cfdgMessage.Name = "cfdgMessage";
-            this.cfdgMessage.Size = new System.Drawing.Size(558, 341);
+            this.cfdgMessage.Size = new System.Drawing.Size(558, 342);
             this.cfdgMessage.TabIndex = 0;
             this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
             this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
@@ -587,6 +588,7 @@
             this.menuECopy,
             this.menuEPaste,
             this.menuEDelete,
+            this.menuESelectAll,
             this.toolStripMenuItem2,
             this.menuEInsertChar,
             this.menuEInsertSymm,
@@ -671,6 +673,16 @@
             this.menuEDelete.Text = "&Delete";
             this.menuEDelete.Click += new System.EventHandler(this.menuEDeleteClick);
             // 
+            // menuESelectAll
+            // 
+            this.menuESelectAll.Image = ((System.Drawing.Image)(resources.GetObject("menuESelectAll.Image")));
+            this.menuESelectAll.Name = "menuESelectAll";
+            this.menuESelectAll.ShortcutKeyDisplayString = "Ctrl-A";
+            this.menuESelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.menuESelectAll.Size = new System.Drawing.Size(437, 44);
+            this.menuESelectAll.Text = "Select &All";
+            this.menuESelectAll.Click += new System.EventHandler(this.menuESelectAllClick);
+            // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
@@ -693,49 +705,49 @@
             // menuEInsLE
             // 
             this.menuEInsLE.Name = "menuEInsLE";
-            this.menuEInsLE.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsLE.Size = new System.Drawing.Size(359, 44);
             this.menuEInsLE.Text = "≤";
             this.menuEInsLE.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsGE
             // 
             this.menuEInsGE.Name = "menuEInsGE";
-            this.menuEInsGE.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsGE.Size = new System.Drawing.Size(359, 44);
             this.menuEInsGE.Text = "≥";
             this.menuEInsGE.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsNE
             // 
             this.menuEInsNE.Name = "menuEInsNE";
-            this.menuEInsNE.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsNE.Size = new System.Drawing.Size(359, 44);
             this.menuEInsNE.Text = "≠";
             this.menuEInsNE.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsEllipsis
             // 
             this.menuEInsEllipsis.Name = "menuEInsEllipsis";
-            this.menuEInsEllipsis.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsEllipsis.Size = new System.Drawing.Size(359, 44);
             this.menuEInsEllipsis.Text = "…";
             this.menuEInsEllipsis.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsPlusMinus
             // 
             this.menuEInsPlusMinus.Name = "menuEInsPlusMinus";
-            this.menuEInsPlusMinus.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsPlusMinus.Size = new System.Drawing.Size(359, 44);
             this.menuEInsPlusMinus.Text = "±";
             this.menuEInsPlusMinus.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsInf
             // 
             this.menuEInsInf.Name = "menuEInsInf";
-            this.menuEInsInf.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsInf.Size = new System.Drawing.Size(359, 44);
             this.menuEInsInf.Text = "∞";
             this.menuEInsInf.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // menuEInsPi
             // 
             this.menuEInsPi.Name = "menuEInsPi";
-            this.menuEInsPi.Size = new System.Drawing.Size(167, 44);
+            this.menuEInsPi.Size = new System.Drawing.Size(359, 44);
             this.menuEInsPi.Text = "π";
             this.menuEInsPi.Click += new System.EventHandler(this.menuEUnicode);
             // 
@@ -1269,84 +1281,84 @@
             // meniEInsmiterjoin
             // 
             this.meniEInsmiterjoin.Name = "meniEInsmiterjoin";
-            this.meniEInsmiterjoin.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsmiterjoin.Size = new System.Drawing.Size(359, 44);
             this.meniEInsmiterjoin.Text = "CF::MiterJoin";
             this.meniEInsmiterjoin.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsroundjoin
             // 
             this.meniEInsroundjoin.Name = "meniEInsroundjoin";
-            this.meniEInsroundjoin.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsroundjoin.Size = new System.Drawing.Size(359, 44);
             this.meniEInsroundjoin.Text = "CF::RoundJoin";
             this.meniEInsroundjoin.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsbeveljoin
             // 
             this.meniEInsbeveljoin.Name = "meniEInsbeveljoin";
-            this.meniEInsbeveljoin.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsbeveljoin.Size = new System.Drawing.Size(359, 44);
             this.meniEInsbeveljoin.Text = "CF::BevelJoin";
             this.meniEInsbeveljoin.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsbuttcap
             // 
             this.meniEInsbuttcap.Name = "meniEInsbuttcap";
-            this.meniEInsbuttcap.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsbuttcap.Size = new System.Drawing.Size(359, 44);
             this.meniEInsbuttcap.Text = "CF::ButtCap";
             this.meniEInsbuttcap.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsroundcap
             // 
             this.meniEInsroundcap.Name = "meniEInsroundcap";
-            this.meniEInsroundcap.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsroundcap.Size = new System.Drawing.Size(359, 44);
             this.meniEInsroundcap.Text = "CF::RoundCap";
             this.meniEInsroundcap.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInssquarecap
             // 
             this.meniEInssquarecap.Name = "meniEInssquarecap";
-            this.meniEInssquarecap.Size = new System.Drawing.Size(307, 44);
+            this.meniEInssquarecap.Size = new System.Drawing.Size(359, 44);
             this.meniEInssquarecap.Text = "CF::SquareCap";
             this.meniEInssquarecap.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsarccw
             // 
             this.meniEInsarccw.Name = "meniEInsarccw";
-            this.meniEInsarccw.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsarccw.Size = new System.Drawing.Size(359, 44);
             this.meniEInsarccw.Text = "CF::ArcCW";
             this.meniEInsarccw.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsarclarge
             // 
             this.meniEInsarclarge.Name = "meniEInsarclarge";
-            this.meniEInsarclarge.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsarclarge.Size = new System.Drawing.Size(359, 44);
             this.meniEInsarclarge.Text = "CF::ArcLarge";
             this.meniEInsarclarge.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInscont
             // 
             this.meniEInscont.Name = "meniEInscont";
-            this.meniEInscont.Size = new System.Drawing.Size(307, 44);
+            this.meniEInscont.Size = new System.Drawing.Size(359, 44);
             this.meniEInscont.Text = "CF::Continuous";
             this.meniEInscont.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsalign
             // 
             this.meniEInsalign.Name = "meniEInsalign";
-            this.meniEInsalign.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsalign.Size = new System.Drawing.Size(359, 44);
             this.meniEInsalign.Text = "CF::Align";
             this.meniEInsalign.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsevenodd
             // 
             this.meniEInsevenodd.Name = "meniEInsevenodd";
-            this.meniEInsevenodd.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsevenodd.Size = new System.Drawing.Size(359, 44);
             this.meniEInsevenodd.Text = "CF::EvenOdd";
             this.meniEInsevenodd.Click += new System.EventHandler(this.menuEUnicode);
             // 
             // meniEInsiso
             // 
             this.meniEInsiso.Name = "meniEInsiso";
-            this.meniEInsiso.Size = new System.Drawing.Size(307, 44);
+            this.meniEInsiso.Size = new System.Drawing.Size(359, 44);
             this.meniEInsiso.Text = "CF::IsoWidth";
             this.meniEInsiso.Click += new System.EventHandler(this.menuEUnicode);
             // 
@@ -1720,5 +1732,6 @@
         private ToolStripMenuItem colorCalculatorToolStripMenuItem;
         private ImageList imageList1;
         private System.Windows.Forms.Timer statusTimer;
+        private ToolStripMenuItem menuESelectAll;
     }
 }
