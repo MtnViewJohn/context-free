@@ -365,7 +365,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAEZTeXN0ZW0uV2luZG93cy5Gb3JtcywgQ3VsdHVyZT1uZXV0cmFs
         LCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5BQEAAAAmU3lzdGVtLldpbmRvd3MuRm9ybXMu
         SW1hZ2VMaXN0U3RyZWFtZXIBAAAABERhdGEHAgIAAAAJAwAAAA8DAAAAUg0AAAJNU0Z0AUkBTAIBAQkB
-        AAF4AQQBeAEEARABAAEQAQAE/wEJAQAI/wFCAU0BNgEEBgABNgEEAgABKAMAAUADAAEwAwABAQEAAQgG
+        AAGAAQQBgAEEARABAAEQAQAE/wEJAQAI/wFCAU0BNgEEBgABNgEEAgABKAMAAUADAAEwAwABAQEAAQgG
         AAEMGAABgAIAAYADAAKAAQABgAMAAYABAAGAAQACgAIAA8ABAAHAAdwBwAEAAfABygGmAQABMwUAATMB
         AAEzAQABMwEAAjMCAAMWAQADHAEAAyIBAAMpAQADVQEAA00BAANCAQADOQEAAYABfAH/AQACUAH/AQAB
         kwEAAdYBAAH/AewBzAEAAcYB1gHvAQAB1gLnAQABkAGpAa0CAAH/ATMDAAFmAwABmQMAAcwCAAEzAwAC
@@ -427,4 +427,28 @@
   <metadata name="statusTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>583, 17</value>
   </metadata>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAA
+        AAAAAAD/AAAA/wAAAP8AAAD/AAAA/////wD///8A////AP///wD///8A////AP///wCZmZn/mZmZ////
+        /wD///8AAAAA/wAAAP8AAAD/AAAA/wAAAP////8A////AP///wD///8A////AP///wD///8AmZmZ/5mZ
+        mf////8A////AAAAAP8AAAD/AAAA/wAAAP8AAAD/////AP///wD///8A////AGZmZv9mZmb/ZmZm////
+        /wD///8A////AP///wAAAAD/AAAA/wAAAP8AAAD/AAAA/////wD///8A////AP///wBmZmb/ZmZm/2Zm
+        Zv////8A////AP///wD///8AAAAA/wAAAP8AAAD/AAAA/wAAAP////8A////AP///wD///8AZmZm/2Zm
+        Zv9mZmb/////AP///wD///8A////AP///wD///8A////AP///wD///8AMzMz/zMzM/8zMzP/MzMz////
+        /wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////ADMzM/8zMzP/MzMz/zMz
+        M/////8A////AP///wD///8A////AJmZmf////8A////AP///wD///8A////AP///wAzMzP/MzMz/zMz
+        M/8zMzP/////AP///wD///8AmZmZ/5mZmf////8A////AP///wD///8A////AP///wD///8AMzMz/zMz
+        M/8zMzP/MzMz/////wD///8A////AJmZmf+ZmZn/////AP///wD///8A////AGZmZv9mZmb/ZmZm////
+        /wD///8A////AP///wBmZmb/ZmZm/2ZmZv////8A////AP///wD///8A////AP///wBmZmb/ZmZm/2Zm
+        Zv////8A////AP///wD///8AZmZm/2ZmZv9mZmb/////AP///wD///8A////AP///wD///8AZmZm/2Zm
+        Zv9mZmb/////AP///wD///8A////AGZmZv9mZmb/ZmZm/////wD///8A////AP///wCZmZn/mZmZ////
+        /wD///8A////AP///wD///8AmZmZ/5mZmf////8A////AP///wCZmZn/mZmZ/////wD///8AmZmZ/5mZ
+        mf////8A////AP///wD///8A////AJmZmf+ZmZn/////AP///wD///8AmZmZ/5mZmf////8A////AP//
+        /wD///8A////AP///wD///8A////AJmZmf////8A////AP///wD///8A////AP///wD///8AmZmZ////
+        /wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP//
+        /wD///8AB/MAAAfzAAAHjwAAB48AAAePAAD4fwAA+H0AAPhzAAD4cwAAx48AAMePAADHjwAAPnMAAD5z
+        AAD9/QAA//8AAA==
+</value>
+  </data>
 </root>
