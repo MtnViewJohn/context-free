@@ -150,7 +150,8 @@ namespace CppWrapper {
             System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, int x, int y);
         void uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
         static UploadPrefs^ downloadDesign(System::String^ responseBody);
-        bool saveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, System::IO::Stream^ str, bool JPEG);
+        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, bool JPEG);
+        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG);
         cli::array<System::String^>^ findTempFiles();
 
     private:

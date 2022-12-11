@@ -35,7 +35,7 @@ namespace CppWrapper
         int Variation;
         System::String^ VariationText;
         bool ImageAppendVariation;
-        double JPEGQuality;
+        int JPEGQuality;
         array<double>^ OutputMultiplier;
         System::String^ Username;
         System::String^ Password;

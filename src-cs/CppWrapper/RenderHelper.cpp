@@ -41,6 +41,7 @@ using namespace System::IO;
 using namespace System::ComponentModel;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
+using namespace System::Windows::Media::Imaging;
 
 namespace CppWrapper {
     public ref class RendererHolder
@@ -540,87 +541,126 @@ namespace CppWrapper {
         }
     }
 
-    bool RenderHelper::saveToPNGorJPEG(UploadPrefs^ prefs, String^ path, System::IO::Stream^ str, bool JPEG)
+    bool RenderHelper::SaveToPNGorJPEG(UploadPrefs^ prefs, String^ path, bool JPEG)
     {
-        bool success = true;
-
-        mSystem->message("Saving image...");
-
-        array<Imaging::ImageCodecInfo^>^ codecs = Imaging::ImageCodecInfo::GetImageEncoders();
-        Imaging::ImageCodecInfo^ jpegCodec = nullptr;
-        for each (Imaging::ImageCodecInfo ^ codec in codecs) {
-            if (codec->MimeType->Equals("image/jpeg"))
-                jpegCodec = codec;
+        String^ fileName = path;
+        if (prefs->ImageAppendVariation) {
+            fileName = Path::GetDirectoryName(path) + "\\" +
+                Path::GetFileNameWithoutExtension(path) +
+                "-" + prefs->VariationText +
+                Path::GetExtension(path);
         }
+        try {
+            FileStream^ str = gcnew FileStream(fileName, FileMode::Create);
+            bool ret = SaveToPNGorJPEG(prefs, str, JPEG);
+            str->Close();
+            return ret;
+        } catch (...) {
+            mSystem->message("Cannot write to file.");
+            System::Console::Beep();
+            return false;
+        }
+    }
 
-        if (jpegCodec == nullptr) {
-            mSystem->message("Can't seem to find an image encoder.");
+    bool RenderHelper::SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG)
+    {
+        System::Windows::Media::PixelFormat pixfmt = System::Windows::Media::PixelFormats::Pbgra32;
+        switch (mCanvas->mPixelFormat) {
+        case aggCanvas::Gray8_Blend:
+            pixfmt = System::Windows::Media::PixelFormats::Gray8;
+            break;
+        case aggCanvas::Gray16_Blend:
+            pixfmt = System::Windows::Media::PixelFormats::Gray16;
+            break;
+        case aggCanvas::RGB8_Blend:
+            pixfmt = System::Windows::Media::PixelFormats::Bgr24;
+            break;
+        case aggCanvas::RGB16_Blend:
+            pixfmt = System::Windows::Media::PixelFormats::Rgb48;
+            break;
+        case aggCanvas::RGBA8_Blend:
+        case aggCanvas::RGBA8_Custom_Blend:
+            break;
+        case aggCanvas::RGBA16_Blend:
+        case aggCanvas::RGBA16_Custom_Blend:
+            pixfmt = System::Windows::Media::PixelFormats::Prgba64;
+            break;
+        default:
+            mSystem->message("Unsupported pixel format.");
+            System::Console::Beep();
             return false;
         }
 
-        Imaging::EncoderParameters^ iParams = gcnew Imaging::EncoderParameters(1);
-        long long qual = (long long)(prefs->JPEGQuality);
-        iParams->Param[0] = gcnew Imaging::EncoderParameter(Imaging::Encoder::Quality, qual);
+        mSystem->message("Saving image...");
+
+        BitmapEncoder^ encoder = nullptr;
+        if (JPEG) {
+            JpegBitmapEncoder^ jbe = gcnew JpegBitmapEncoder();
+            jbe->QualityLevel = prefs->JPEGQuality;
+            encoder = jbe;
+        } else {
+            encoder = gcnew PngBitmapEncoder();
+        }
+
         bool isTiled = (*mEngine)->isTiled();
+        char* data = (char*)(mCanvas->bitmap());
+        int srcWidth = mCanvas->mWidth;
+        int srcHeight = mCanvas->mHeight;
+        if (isTiled || prefs->ImageCrop) {
+            srcWidth = mCanvas->cropWidth();
+            srcHeight = mCanvas->cropHeight();
+            data += mCanvas->mStride * mCanvas->cropY() +
+                aggCanvas::BytesPerPixel.at(mCanvas->mPixelFormat) * mCanvas->cropX();
+        }
+        int destWidth = srcWidth;
+        int destHeight = srcHeight;
+        if (isTiled && (prefs->OutputMultiplier[0] != 1.0 || prefs->OutputMultiplier[1] != 1.0)) {
+            destWidth = (int)(prefs->OutputMultiplier[0] * srcWidth);
+            destHeight = (int)(prefs->OutputMultiplier[1] * srcHeight);
+        }
+
+        IntPtr pixelStore = IntPtr((void*)data);
+
+        tileList points = { {0, 0} };
+        if (mRenderer && mRenderer->m_tiledCanvas)
+            points = mRenderer->m_tiledCanvas->getTessellation(destWidth, destHeight,
+                (destWidth - srcWidth) / 2, (destHeight - srcHeight) / 2, true);
 
         try {
-            Bitmap^ bm = MakeBitmap(isTiled || prefs->ImageCrop, mCanvas);
-            if (bm == nullptr)
-                throw gcnew ArgumentNullException();
+            WriteableBitmap^ image = gcnew WriteableBitmap(destWidth, destHeight, 96.0, 96.0, pixfmt, nullptr);
 
-            if (isTiled && (prefs->OutputMultiplier[0] != 1.0 || prefs->OutputMultiplier[1] != 1.0)) {
-                Imaging::PixelFormat fmt = bm->PixelFormat;
-                if (fmt == Imaging::PixelFormat::Format8bppIndexed)
-                    fmt = Imaging::PixelFormat::Format24bppRgb;
-
-                int w = (int)(bm->Width * prefs->OutputMultiplier[0] + 0.5);
-                int h = (int)(bm->Height * prefs->OutputMultiplier[1] + 0.5);
-
-                Bitmap^ newBM = gcnew Bitmap(w, h, fmt);
-                Graphics^ g = Graphics::FromImage(newBM);
-                g->Clear(Color::White);
-                drawTiled(bm, newBM, g, nullptr, 0, 0);
-
-                delete g;
-                delete bm;
-                bm = newBM;
-            }
-
-            if (path != nullptr) {
-                String^ fileName = path;
-                if (prefs->ImageAppendVariation) {
-                    fileName = Path::GetDirectoryName(path) + "\\" +
-                        Path::GetFileNameWithoutExtension(path) +
-                        "-" + prefs->VariationText +
-                        Path::GetExtension(path);
+            for (auto point: points) {
+                auto rect = System::Windows::Int32Rect(0, 0, srcWidth, srcHeight);
+                // Clip sides of source rect that are outside of dest rect
+                if (point.x < 0) {
+                    rect.X = -point.x;
+                    rect.Width += point.x;
+                    point.x = 0;
                 }
+                if (point.x + srcWidth > destWidth)
+                    rect.Width -= point.x + srcWidth - destWidth;
+                if (point.y < 0) {
+                    rect.Y = -point.y;
+                    rect.Height += point.y;
+                    point.y = 0;
+                }
+                if (point.y + srcHeight > destHeight)
+                    rect.Height -= point.y + srcHeight - destHeight;
 
-                if (JPEG)
-                    bm->Save(fileName, jpegCodec, iParams);
-                else
-                    bm->Save(fileName, Imaging::ImageFormat::Png);
+                if (rect.Width > 0 && rect.Height > 0)
+                    image->WritePixels(rect, pixelStore, srcHeight * mCanvas->mStride,
+                        mCanvas->mStride, point.x, point.y);
             }
-            else if (str != nullptr) {
-                if (JPEG)
-                    bm->Save(str, jpegCodec, iParams);
-                else
-                    bm->Save(str, Imaging::ImageFormat::Png);
-            }
-            else {
-                mSystem->message("Nowhere to save the image.");
-                System::Console::Beep();
-            }
-            delete bm;
-            mSystem->message("Image save complete.");
-        }
-        catch (Exception^) {
+
+            encoder->Frames->Add(BitmapFrame::Create(image));
+
+            encoder->Save(str);
+            return true;
+        } catch (...) {
             mSystem->message("Image save failed.");
             System::Console::Beep();
-            success = false;
+            return false;
         }
-        delete tempCanvas;
-        tempCanvas = nullptr;
-        return success;
     }
 
     void RenderHelper::uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs)
@@ -630,7 +670,7 @@ namespace CppWrapper {
             return;
         }
         MemoryStream^ bitmapStream = gcnew MemoryStream();
-        if (!saveToPNGorJPEG(prefs, nullptr, bitmapStream, false) || bitmapStream->Length == 0) {
+        if (!SaveToPNGorJPEG(prefs, bitmapStream, false) || bitmapStream->Length == 0) {
             mSystem->message("Upload failed because of image problems.");
             return;
         }

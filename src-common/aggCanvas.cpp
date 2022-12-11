@@ -48,8 +48,8 @@
 #include <cassert>
 
 #ifdef _WIN32
-using color64_pixel_fmt = agg::pixfmt_bgra64_pre;
-using color48_pixel_fmt = agg::pixfmt_bgr48_pre;
+using color64_pixel_fmt = agg::pixfmt_rgba64_pre;
+using color48_pixel_fmt = agg::pixfmt_rgb48_pre;
 using color32_pixel_fmt = agg::pixfmt_bgra32_pre;
 using color24_pixel_fmt = agg::pixfmt_bgr24_pre;
 

@@ -998,6 +998,8 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="ScintillaNET">
       <HintPath>..\..\src-net\packages\fernandreu.ScintillaNET.4.2.0\lib\net471\ScintillaNET.dll</HintPath>
     </Reference>
@@ -1010,6 +1012,7 @@
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
       <HintPath>..\..\..\..\.nuget\packages\dockpanelsuite\3.1.0\lib\netcoreapp3.1\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src-win\res\dropper.cur" />

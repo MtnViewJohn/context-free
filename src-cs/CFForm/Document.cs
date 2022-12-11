@@ -406,7 +406,7 @@ namespace CFForm
             set
             {
                 Properties.Settings.Default.ImageAppendVariation = value.ImageAppendVariation;
-                Properties.Settings.Default.JPEGQuality = (int)(value.JPEGQuality);
+                Properties.Settings.Default.JPEGQuality = value.JPEGQuality;
                 Properties.Settings.Default.MultiplyWidth = (int)(value.OutputMultiplier[0]);
                 Properties.Settings.Default.MultiplyHeight = (int)(value.OutputMultiplier[1]);
                 Properties.Settings.Default.GalleryUsername = value.Username;
@@ -1354,10 +1354,10 @@ namespace CFForm
                     UploadPrefs = prefs;
                     switch (saveImageDlg.FileDlgFilterIndex) {
                         case 1: // PNG
-                            renderHelper.saveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, null, false);
+                            renderHelper.SaveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, false);
                             break;
                         case 2: // JPEG
-                            renderHelper.saveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, null, true);
+                            renderHelper.SaveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, true);
                             break;
                         case 3: // SVG
                             doSVGSave(saveImageDlg.FileDlgFileName, prefs);
