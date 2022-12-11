@@ -221,13 +221,21 @@ namespace CppWrapper {
         }
     }
 
+    void GalleryUploader::LaunchUrl(String^ url)
+    {
+        auto psi = gcnew ProcessStartInfo("cmd", "/c start " + url);
+        psi->CreateNoWindow = true;
+
+        Process::Start(psi);
+    }
+
     System::Void GalleryUploader::needaccount_Click(System::Object^ sender, System::EventArgs^ e) {
-        System::Diagnostics::Process::Start("https://www.contextfreeart.org/phpbb/ucp.php?mode=register");
+        LaunchUrl("https://www.contextfreeart.org/phpbb/ucp.php?mode=register");
     }
 
     System::Void GalleryUploader::navLicense(System::Object^ sender, System::EventArgs^ e) {
         if (ccurl->Length > 0)
-            System::Diagnostics::Process::Start(ccurl);
+            LaunchUrl(ccurl);
     }
 
     System::Void GalleryUploader::cancel_click(System::Object^ sender, System::EventArgs^ e) {
@@ -240,13 +248,11 @@ namespace CppWrapper {
         }
         else {
 #ifdef UseProductionServer
-            String^ url = String::Format("/c start https://www.contextfreeart.org/gallery/view.php?id={0}", design_id);
+            String^ url = String::Format("https://www.contextfreeart.org/gallery/view.php?id={0}", design_id);
 #else
-            String^ url = String::Format("/c start http://localmac//~john/cfa2/gallery/view.php?id={0}", design_id);
+            String^ url = String::Format("http://localmac//~john/cfa2/gallery/view.php?id={0}", design_id);
 #endif
-            auto psi = gcnew ProcessStartInfo("cmd", url);
-            psi->CreateNoWindow = true;
-            System::Diagnostics::Process::Start(psi);
+            LaunchUrl(url);
             this->DialogResult = ::DialogResult::OK;
         }
     }

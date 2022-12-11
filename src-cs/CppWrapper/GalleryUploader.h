@@ -655,6 +655,7 @@ namespace CppWrapper {
         void MoreInitialzation(CFDG::frieze_t fr, int tiled, bool png);
         void RunUploadThread(Object^ sender, DoWorkEventArgs^ e);
         void UploadCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e);
+        static void LaunchUrl(String^ url);
     private: System::Void needaccount_Click(System::Object^ sender, System::EventArgs^ e);
     private: System::Void cancel_click(System::Object^ sender, System::EventArgs^ e);
     private: System::Void upload_click(System::Object^ sender, System::EventArgs^ e);
