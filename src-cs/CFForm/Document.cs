@@ -378,10 +378,23 @@ namespace CFForm
                 Properties.Settings.Default.Save();
             }
         }
+
+        private static Byte[] CFentropy = {
+            210, 61, 229, 177, 254, 52, 150, 62, 81, 246, 248, 185, 59, 89, 93, 117,
+            142, 120, 64, 79, 229, 71, 195, 27, 181, 140, 195, 78, 123, 167, 45,
+            224, 108, 172, 164, 130, 68, 64, 103, 98, 136, 132, 14, 3, 240, 232,
+            152, 220, 29, 154, 78, 181, 92, 109, 92, 176, 46, 128, 13, 79, 108, 144,
+            83, 219, 42, 161, 158, 81, 213, 120, 13, 198, 163, 40, 14, 135, 30, 13,
+            117, 128, 172, 184, 61, 69, 50, 233, 116, 202, 161, 204, 223, 52, 126,
+            151, 223, 14, 123, 12, 29, 100, 71, 22, 247, 41, 231, 97, 116, 58, 168,
+            125, 92, 26, 4, 3, 228, 182, 204, 43, 185, 79, 118, 137, 173, 163, 215,
+            111, 60, 253
+        };
+
         private CppWrapper.UploadPrefs UploadPrefs {
             get
             {
-                return new CppWrapper.UploadPrefs
+                var prefs = new CppWrapper.UploadPrefs
                 {
                     CfdgName = Path.GetFileNameWithoutExtension(Text),
                     CfdgText = cfdgText.Text,
@@ -402,6 +415,15 @@ namespace CFForm
                     ccName = Properties.Settings.Default.ccName,
                     Updated = false
                 };
+                try {
+                    Byte[] protectedBlob = Convert.FromBase64String(prefs.Password);
+                    Byte[] unprotectedBlob = ProtectedData.Unprotect(protectedBlob,
+                        CFentropy, DataProtectionScope.CurrentUser);
+                    prefs.Password = Encoding.UTF8.GetString(unprotectedBlob);
+                } catch {
+                    prefs.Password = "";
+                }
+                return prefs;
             }
             set
             {
@@ -410,7 +432,12 @@ namespace CFForm
                 Properties.Settings.Default.MultiplyWidth = (int)(value.OutputMultiplier[0]);
                 Properties.Settings.Default.MultiplyHeight = (int)(value.OutputMultiplier[1]);
                 Properties.Settings.Default.GalleryUsername = value.Username;
-                Properties.Settings.Default.GalleryPassword = value.Password;
+                if (value.Password.Length > 0) {
+                    Byte[] unprotectedBlob = Encoding.UTF8.GetBytes(value.Password);
+                    Byte[] protectedBlob = ProtectedData.Protect(unprotectedBlob,
+                        CFentropy, DataProtectionScope.CurrentUser);
+                    Properties.Settings.Default.GalleryPassword = Convert.ToBase64String(protectedBlob);
+                }
                 Properties.Settings.Default.ImageCrop = value.ImageCrop;
                 Properties.Settings.Default.ccLicense = value.ccLicense;
                 Properties.Settings.Default.ccImage = value.ccImage;
