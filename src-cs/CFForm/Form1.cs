@@ -42,7 +42,7 @@ namespace CFForm
     {
         public enum StartAction
         {
-            Welcome = 0, New = 1, Nothing = 2
+            Welcome = 0, New = 1, Nothing = 2, Arguments = 3
         }
         private DockPanel dockPanel;
         public bool isResizing = false;
@@ -112,7 +112,7 @@ namespace CFForm
 
             String[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
-                ProcessArgs(args);
+                startAction = StartAction.Arguments;
             else
                 startAction = (StartAction)Properties.Settings.Default.StartAction;
 
@@ -348,6 +348,9 @@ namespace CFForm
                     break;
                 case StartAction.New:
                     menuFNew.PerformClick();
+                    break;
+                case StartAction.Arguments:
+                    ProcessArgs(Environment.GetCommandLineArgs());
                     break;
                 default:
                     break;
