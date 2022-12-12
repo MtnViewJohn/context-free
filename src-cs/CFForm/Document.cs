@@ -1,4 +1,4 @@
-// Document.cs
+﻿// Document.cs
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2022 John Horigan - john@glyphic.com
@@ -150,9 +150,6 @@ namespace CFForm
                 menuEFindPrev.Click += findHandler;
             }
 
-            documentSplitter.SplitterDistance = Properties.Settings.Default.DocumentSplitter;
-            editorSplitter.SplitterDistance = Properties.Settings.Default.EditorSplitter;
-
             cfdgText.StyleClearAll();
             cfdgText.Margins[0].Type = ScintillaNET.MarginType.Number;
             fontChanged(Properties.Settings.Default.EditorFont);
@@ -200,6 +197,9 @@ namespace CFForm
 
         private void shownInitialization(object sender, EventArgs e)
         {
+            documentSplitter.SplitterDistance = Properties.Settings.Default.DocumentSplitter;
+            editorSplitter.SplitterDistance = Properties.Settings.Default.EditorSplitter;
+
             if (reloadWhenReady) {
                 if (reload() && Properties.Settings.Default.OpenRender)
                     menuRRender.PerformClick();
