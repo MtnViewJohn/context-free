@@ -54,7 +54,7 @@ namespace CppWrapper {
         WinSystem* winsystem;
     };
 
-    RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd)
+    RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd, intptr_t formHwnd)
     : mEngine(new cfdg_ptr())
     {
         HWND hwnd = (HWND)editHwnd;
@@ -63,6 +63,7 @@ namespace CppWrapper {
         mSystem = new WinSystem((void*)docHwnd);
         renderDeleter = gcnew BackgroundWorker();
         renderDeleter->DoWork += gcnew DoWorkEventHandler(this, &RenderHelper::deleteRenderer);
+        WinSystem::MainWindow = (void*)formHwnd;
     }
 
     RenderHelper::RenderHelper()

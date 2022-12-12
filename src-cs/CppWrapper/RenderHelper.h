@@ -40,7 +40,7 @@ namespace CppWrapper {
     public ref class RenderHelper : public System::IDisposable
     {
     public:
-        RenderHelper(intptr_t editHwnd, intptr_t docHwnd);
+        RenderHelper(intptr_t editHwnd, intptr_t docHwnd, intptr_t formHwnd);
         RenderHelper();
 
         ~RenderHelper();

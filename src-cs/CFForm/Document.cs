@@ -186,7 +186,8 @@ namespace CFForm
 
             cfdgText.Invalidate();
 
-            renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
+            renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64(),
+                MdiParent.Handle.ToInt64());
             renderParameters = RenderParameters;
 
             bool canAnimate = renderHelper.CanAnimate();
