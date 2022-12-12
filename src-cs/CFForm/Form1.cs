@@ -49,7 +49,7 @@ namespace CFForm
         public bool isResized = false;
         private FindReplaceForm findForm = new FindReplaceForm();
         public ColorCalculator colorCalc = new CppWrapper.ColorCalculator();
-        public readonly MRUManager manager;
+        public readonly MRUManager mruManager;
         private StartAction startAction = StartAction.Nothing;
         public Form1()
         {
@@ -63,11 +63,11 @@ namespace CFForm
 
             String path = System.Windows.Forms.Application.LocalUserAppDataPath;
             MRUItemFileStorage storage = new MRUItemFileStorage(path + "\\..\\context_free_mru_storage.xml");
-            manager = new MRUManager();
-            manager.Initialize(storage);
-            manager.MRUItemSelected += openDoc;
+            mruManager = new MRUManager();
+            mruManager.Initialize(storage);
+            mruManager.MRUItemSelected += openDoc;
             MRUItemsMenu itemsMenu = new MRUItemsMenu();
-            itemsMenu.Initialize(manager, new MRUGuiLocalization());
+            itemsMenu.Initialize(mruManager, new MRUGuiLocalization());
             itemsMenu.AttachToMenu(recentToolStripMenuItem);
 
             AllowDrop = true;
@@ -199,7 +199,7 @@ namespace CFForm
             };
 
             if (File.Exists(name))
-                manager.AddFile(name);
+                mruManager.AddFile(name);
 
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }

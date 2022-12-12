@@ -291,7 +291,7 @@ namespace CFForm
                     cfdgText.EmptyUndoBuffer();
                 }
             } catch {
-                ((Form1)MdiParent).manager.RemoveFile(Name);
+                ((Form1)MdiParent).mruManager.RemoveFile(Name);
                 cfdgText.Text = String.Empty;
                 cfdgText.EmptyUndoBuffer();
                 setMessage("The file could not be read.");
@@ -997,7 +997,7 @@ namespace CFForm
                     Text = TabText;
                     isNamed = true;
                     menuFSaveClick(sender, e);
-                    form1.manager.AddFile(Name);
+                    form1.mruManager.AddFile(Name);
                 }
             }
         }
