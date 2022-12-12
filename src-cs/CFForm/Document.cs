@@ -150,6 +150,9 @@ namespace CFForm
                 menuEFindPrev.Click += findHandler;
             }
 
+            documentSplitter.SplitterDistance = Properties.Settings.Default.DocumentSplitter;
+            editorSplitter.SplitterDistance = Properties.Settings.Default.EditorSplitter;
+
             cfdgText.StyleClearAll();
             cfdgText.Margins[0].Type = ScintillaNET.MarginType.Number;
             fontChanged(Properties.Settings.Default.EditorFont);
@@ -616,6 +619,7 @@ namespace CFForm
             }
             Properties.Settings.Default.EditorSplitter = editorSplitter.SplitterDistance;
             Properties.Settings.Default.DocumentSplitter = documentSplitter.SplitterDistance;
+            Properties.Settings.Default.Save();
         }
 
         private void pictureDragEnter(object sender, DragEventArgs e)
