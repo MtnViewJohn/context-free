@@ -103,7 +103,7 @@ namespace CppWrapper {
     }
 
     cli::array<System::String^>^
-    RenderHelper::findTempFiles()
+    RenderHelper::FindTempFiles()
     {
         auto temps = mSystem->findTempFiles();
         if (!temps.empty()) {
@@ -135,7 +135,7 @@ namespace CppWrapper {
     }
 
     System::String^
-    RenderHelper::getMessage(IntPtr wParam)
+    RenderHelper::GetMessage(IntPtr wParam)
     {
         char* msg = (char*)wParam.ToPointer();
         String^ msgText = gcnew String(msg, 0, static_cast<int>(strlen(msg)), System::Text::Encoding::UTF8);
@@ -144,7 +144,7 @@ namespace CppWrapper {
     }
 
     RenderStats
-    RenderHelper::getStats(IntPtr wParam)
+    RenderHelper::GetStats(IntPtr wParam)
     {
         WinSystem::Stats* stat = (WinSystem::Stats*)wParam.ToPointer();
         if (stat == nullptr) {
@@ -191,16 +191,16 @@ namespace CppWrapper {
     }
 
     void 
-    RenderHelper::runRenderThread(RenderParameters^ rp)
+    RenderHelper::RunRenderThread(RenderParameters^ rp)
     {
         switch (rp->action) {
         case RenderParameters::RenderActions::Animate:
             if (rp->animateFrame) {
                 mRenderer->animate(mCanvas, rp->animateFrameCount,
-                    rp->frame, rp->animateZoom && !tiled);
+                    rp->frame, rp->animateZoom && !Tiled);
             } else {
                 mRenderer->animate(animationCanvas, rp->animateFrameCount, 0,
-                    rp->animateZoom && !tiled);
+                    rp->animateZoom && !Tiled);
 
                 delete animationCanvas;
                 animationCanvas = nullptr;
@@ -218,21 +218,21 @@ namespace CppWrapper {
                     rp->width : rp->animateWidth;
                 int height = rp->action == RenderParameters::RenderActions::Render ?
                     rp->height : rp->animateHeight;
-                makeCanvas(width, height);
+                MakeCanvas(width, height);
                 mRenderer->draw(mCanvas);
             }
             break;
         }
     }
 
-    void RenderHelper::requestUpdate()
+    void RenderHelper::RequestUpdate()
     {
         if (mRenderer != nullptr)
             mRenderer->requestUpdate = true;
     }
 
     bool
-    RenderHelper::syncToSystem(String^ name, String^ cfdg)
+    RenderHelper::SyncToSystem(String^ name, String^ cfdg)
     {
         array<Byte>^ encodedCfdg = System::Text::Encoding::UTF8->GetBytes(cfdg);
         array<Byte>^ encodedName = System::Text::Encoding::UTF8->GetBytes(name);
@@ -250,11 +250,11 @@ namespace CppWrapper {
 
     void RenderHelper::AbortEverything()
     {
-        Renderer::AbortEverything = true;
+        ::Renderer::AbortEverything = true;
     }
 
     String^
-    RenderHelper::getExample(String^ name)
+    RenderHelper::GetExample(String^ name)
     {
         array<Byte>^ encodedName = System::Text::Encoding::UTF8->GetBytes(name);
         pin_ptr<Byte> pinnedName = &encodedName[0];
@@ -281,7 +281,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::prepareForRender(int width, int height, double minSize, double border, 
+    RenderHelper::PrepareForRender(int width, int height, double minSize, double border, 
         int variation, bool shrinkTiled)
     {
         if (mRenderer) {
@@ -308,7 +308,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::makeCanvas(int width, int height)
+    RenderHelper::MakeCanvas(int width, int height)
     {
         if (mCanvas) return;
         mCanvas = new WinCanvas(mSystem, WinCanvas::SuggestPixelFormat(mEngine->get()),
@@ -316,7 +316,7 @@ namespace CppWrapper {
     }
 
     System::String^
-    RenderHelper::makeAnimationCanvas(RenderParameters^ renderParams)
+    RenderHelper::MakeAnimationCanvas(RenderParameters^ renderParams)
     {
         animationCanvas = new ffCanvas("", WinCanvas::SuggestPixelFormat(mEngine->get()),
             renderParams->animateWidth, renderParams->animateHeight,
@@ -333,13 +333,13 @@ namespace CppWrapper {
     }
 
     bool
-    RenderHelper::canAnimate()
+    RenderHelper::CanAnimate()
     {
         return ffCanvas::Available();
     }
 
     bool
-    RenderHelper::makeSVGCanvas(String^ path, int w, int h, UploadPrefs^ prefs)
+    RenderHelper::MakeSVGCanvas(String^ path, int w, int h, UploadPrefs^ prefs)
     {
         if (SVGcanvas) return !SVGcanvas->mError;
         if (mRenderer == nullptr) return false;
@@ -353,7 +353,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::updateRenderBox(PictureBox^ renderBox, Bitmap^ displayImage, bool noDisplay)
+    RenderHelper::UpdateRenderBox(PictureBox^ renderBox, Bitmap^ displayImage, bool noDisplay)
     {
         Graphics^ g = Graphics::FromImage(displayImage);
 
@@ -365,7 +365,7 @@ namespace CppWrapper {
         }
 
         System::Drawing::Size destSize = renderBox->Image->Size;
-        System::Drawing::Size srcSize = tiled ? System::Drawing::Size(mCanvas->cropWidth(), mCanvas->cropHeight())
+        System::Drawing::Size srcSize = Tiled ? System::Drawing::Size(mCanvas->cropWidth(), mCanvas->cropHeight())
             : System::Drawing::Size(mCanvas->mWidth, mCanvas->mHeight);
 
         double scale = 1.0;
@@ -407,7 +407,7 @@ namespace CppWrapper {
             return;
         }
 
-        Bitmap^ newBitmap = MakeBitmap(tiled, mCanvas);
+        Bitmap^ newBitmap = MakeBitmap(Tiled, mCanvas);
         if (newBitmap == nullptr) {
             delete g;
             delete tempCanvas;
@@ -417,7 +417,7 @@ namespace CppWrapper {
 
         g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
-        if (tiled && scale == 1.0) {
+        if (Tiled && scale == 1.0) {
             drawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
         } else {
             if (mCanvas->mBackground.a < 1.0 || (*mEngine)->usesBlendMode)
@@ -444,7 +444,7 @@ namespace CppWrapper {
     }
 
     bool
-    RenderHelper::performRender(System::ComponentModel::BackgroundWorker^ renderThread)
+    RenderHelper::PerformRender(System::ComponentModel::BackgroundWorker^ renderThread)
     {
         if (!mCanvas || mCanvas->mWidth > 0) {
             renderThread->RunWorkerAsync();
@@ -663,7 +663,7 @@ namespace CppWrapper {
         }
     }
 
-    void RenderHelper::uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs)
+    void RenderHelper::UploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs)
     {
         if (!mCanvas) {
             mSystem->message("Nothing to upload, try rendering first.");
@@ -685,7 +685,7 @@ namespace CppWrapper {
         toGal.ShowDialog(owner);
     }
 
-    UploadPrefs^ RenderHelper::downloadDesign(System::String^ responseBody)
+    UploadPrefs^ RenderHelper::DownloadDesign(System::String^ responseBody)
     {
         System::Text::Encoding^ encodeutf8 = System::Text::Encoding::UTF8;
         array<Byte>^ utf8array = encodeutf8->GetBytes(dynamic_cast<String^>(responseBody));

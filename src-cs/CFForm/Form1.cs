@@ -117,7 +117,7 @@ namespace CFForm
                 startAction = (StartAction)Properties.Settings.Default.StartAction;
 
             using (var help = new CppWrapper.RenderHelper()) {
-                String[] temps = help.findTempFiles();
+                String[] temps = help.FindTempFiles();
                 if (temps != null && temps.Length > 0) {
                     if (MessageBox.Show(this, "Should they be deleted?",
                                         "Old temporary files found",

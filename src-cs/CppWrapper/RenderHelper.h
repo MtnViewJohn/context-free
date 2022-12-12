@@ -70,8 +70,8 @@ namespace CppWrapper {
             MESSAGE_UPDATE = WinSystem::WM_USER_MESSAGE_UPDATE,
             STATUS_UPDATE = WinSystem::WM_USER_STATUS_UPDATE
         };
-        static System::String^ getMessage(System::IntPtr wParam);
-        static RenderStats getStats(System::IntPtr wParam);
+        static System::String^ GetMessage(System::IntPtr wParam);
+        static RenderStats GetStats(System::IntPtr wParam);
 
         static int VariationFromString(System::String^ s);
         static System::String^ VariationToString(int v);
@@ -79,32 +79,32 @@ namespace CppWrapper {
         static const int MinVariation = Variation::recommendedMin();
         static const int MaxVariation = Variation::recommendedMax(6);
 
-        void runRenderThread(RenderParameters^ rp);
-        bool syncToSystem(System::String^ name, System::String^ cfdg);
+        void RunRenderThread(RenderParameters^ rp);
+        bool SyncToSystem(System::String^ name, System::String^ cfdg);
 
         static void AbortEverything();
-        property bool requestFinishUp {
+        property bool RequestFinishUp {
             void set(bool value) {
                 if (mRenderer)
                     mRenderer->requestFinishUp = value;
             }
             bool get() { return mRenderer ? mRenderer->requestFinishUp.load() : false; }
         }
-        property bool requestStop {
+        property bool RequestStop {
             void set(bool value) {
                 if (mRenderer)
                     mRenderer->requestStop = value;
             }
             bool get() { return mRenderer ? mRenderer->requestStop.load() : false; }
         }
-        property intptr_t renderer {
-            void set(intptr_t v) { mRenderer = (Renderer*)v; }
+        property intptr_t Renderer {
+            void set(intptr_t v) { mRenderer = (::Renderer*)v; }
             intptr_t get() { return (intptr_t)mRenderer; }
         }
-        property bool engine {
+        property bool Engine {
             bool get() { return mEngine->get() != nullptr; }
         }
-        property bool tiled {
+        property bool Tiled {
             bool get() {
                 if (mEngine->get() != nullptr)
                     return (*mEngine)->isTiledOrFrieze();
@@ -112,7 +112,7 @@ namespace CppWrapper {
                     return false;
             }
         }
-        property int frieze {
+        property int Frieze {
             int get() {
                 if (mEngine->get() != nullptr)
                     return (int)((*mEngine)->isFrieze());
@@ -120,47 +120,47 @@ namespace CppWrapper {
                     return 0;
             }
         }
-        property bool canvas {
+        property bool Canvas {
             bool get() { return mCanvas != nullptr; }
         }
-        property int width {
+        property int Width {
             int get() { return mRenderer->m_width; }
         }
-        property int height {
+        property int Height {
             int get() { return mRenderer->m_height; }
         }
 
-        System::String^ getExample(System::String^ name);
+        System::String^ GetExample(System::String^ name);
         static bool IsExample(System::String^ name);
 
-        void prepareForRender(int width, int height, double minSize, double border, 
+        void PrepareForRender(int width, int height, double minSize, double border, 
             int variation, bool shrinkTiled);
-        void makeCanvas(int width, int height);
-        System::String^ makeAnimationCanvas(RenderParameters^ params);
-        bool canAnimate();
-        bool makeSVGCanvas(System::String^ path, int width, int height, UploadPrefs^ prefs);
-        void updateRenderBox(System::Windows::Forms::PictureBox^ renderBox, 
+        void MakeCanvas(int width, int height);
+        System::String^ MakeAnimationCanvas(RenderParameters^ params);
+        bool CanAnimate();
+        bool MakeSVGCanvas(System::String^ path, int width, int height, UploadPrefs^ prefs);
+        void UpdateRenderBox(System::Windows::Forms::PictureBox^ renderBox, 
             System::Drawing::Bitmap^ displayImage, bool noDisplay);
-        bool performRender(System::ComponentModel::BackgroundWorker^ renderThread);
+        bool PerformRender(System::ComponentModel::BackgroundWorker^ renderThread);
         System::Drawing::Bitmap^ MakeBitmap(bool cropped, WinCanvas* canvas);
-        void requestUpdate();
-        void drawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, 
+        void RequestUpdate();
+        void UploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
+        static UploadPrefs^ DownloadDesign(System::String^ responseBody);
+        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, bool JPEG);
+        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG);
+        cli::array<System::String^>^ FindTempFiles();
+
+    private:
+        void drawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush,
             System::Drawing::Rectangle destRect);
         void drawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
             System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, int x, int y);
-        void uploadDesign(System::Windows::Forms::Form^ owner, UploadPrefs^ prefs);
-        static UploadPrefs^ downloadDesign(System::String^ responseBody);
-        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, bool JPEG);
-        bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG);
-        cli::array<System::String^>^ findTempFiles();
-
-    private:
         System::ComponentModel::BackgroundWorker^ renderDeleter = nullptr;
         void deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
         sptr_t SciPtr = 0;
         SciFnDirect directFunction = nullptr;
         WinSystem* mSystem = nullptr;
-        Renderer* mRenderer = nullptr;
+        ::Renderer* mRenderer = nullptr;
         cfdg_ptr* mEngine;
         WinCanvas* mCanvas = nullptr;
         WinCanvas* tempCanvas = nullptr;

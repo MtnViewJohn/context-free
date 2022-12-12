@@ -189,7 +189,7 @@ namespace CFForm
             renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64());
             renderParameters = RenderParameters;
 
-            bool canAnimate = renderHelper.canAnimate();
+            bool canAnimate = renderHelper.CanAnimate();
             menuRAnimate.Enabled = canAnimate;
             animateToolStripMenuItem.Enabled = canAnimate;
 
@@ -212,26 +212,26 @@ namespace CFForm
         {
             switch ((RenderHelper.WM_USER)m.Msg) {
                 case RenderHelper.WM_USER.MESSAGE_UPDATE: {
-                        setMessage(RenderHelper.getMessage(m.WParam));
+                        setMessage(RenderHelper.GetMessage(m.WParam));
                         break;
                     }
                 case RenderHelper.WM_USER.STATUS_UPDATE: 
                     {
-                        CppWrapper.RenderStats stat = RenderHelper.getStats(m.WParam);
+                        CppWrapper.RenderStats stat = RenderHelper.GetStats(m.WParam);
                         if (stat.updateRender) {
-                            renderHelper.updateRenderBox(renderBox, displayImage, 
+                            renderHelper.UpdateRenderBox(renderBox, displayImage, 
                                 renderParameters.suppressDisplay);
                         } else {
                             if ((stat.toDoCount > 0 && !stat.finalOutput) ||
-                                !renderHelper.canvas) 
+                                !renderHelper.Canvas) 
                             {
                                 statusLabel.Text = String.Format("{0:N0} shapes and {1:N0} expansions to do",
                                     stat.shapeCount, stat.toDoCount);
                             } else {
-                                String endText = renderHelper.tiled ? ", tiled" : "";
+                                String endText = renderHelper.Tiled ? ", tiled" : "";
                                 statusLabel.Text =
                                     String.Format("{0:N0} shapes, {1:N0} x {2:N0} pixels{3}",
-                                    stat.shapeCount, renderHelper.width, renderHelper.height, endText);
+                                    stat.shapeCount, renderHelper.Width, renderHelper.Height, endText);
                             }
                             if ((stat.inOutput && stat.fullOutput) || stat.showProgress) {
                                 if (progressDelay > 2) {
@@ -257,7 +257,7 @@ namespace CFForm
         private bool reload()
 
         {
-            String exampleText = renderHelper.getExample(Name);
+            String exampleText = renderHelper.GetExample(Name);
             if (exampleText != null) {
                 isExample = true;
                 cfdgText.Text = exampleText;
@@ -319,7 +319,7 @@ namespace CFForm
                     if (Properties.Settings.Default.OpenRender)
                         menuRRender.PerformClick();
                 } else {
-                    var download = RenderHelper.downloadDesign(e.Result);
+                    var download = RenderHelper.DownloadDesign(e.Result);
                     if (download != null) {
                         cfdgText.Text = download.CfdgText;
                         currentVariation = download.Variation - 1;
@@ -517,7 +517,7 @@ namespace CFForm
         private void runRenderThread(object? sender, DoWorkEventArgs e)
         {
             progressDelay = 0;
-            renderHelper?.runRenderThread(renderParameters);
+            renderHelper?.RunRenderThread(renderParameters);
         }
         private void renderButtonChange(object sender, EventArgs e)
         {
@@ -533,10 +533,10 @@ namespace CFForm
         {
             int lastIndex = renderButtonIndex;
 
-            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
+            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
                 ++renderButtonIndex;
                 if (renderButtonIndex > 8) renderButtonIndex = 1;
-                if (renderHelper.requestFinishUp)
+                if (renderHelper.RequestFinishUp)
                     renderButton.Text = "Stop Now";
                 else
                     renderButton.Text = "Stop";
@@ -584,11 +584,11 @@ namespace CFForm
 
         private void renderButtonClick(object sender, EventArgs e)
         {
-            if (renderHelper.renderer != 0 &&  renderThread.IsBusy) {
-                if (renderHelper.requestFinishUp) {
-                    renderHelper.requestStop = true;
+            if (renderHelper.Renderer != 0 &&  renderThread.IsBusy) {
+                if (renderHelper.RequestFinishUp) {
+                    renderHelper.RequestStop = true;
                 } else {
-                    renderHelper.requestFinishUp = true;
+                    renderHelper.RequestFinishUp = true;
                     updateRenderButton();
                 }
             } else {
@@ -607,7 +607,7 @@ namespace CFForm
 
         private bool syncToSystem()
         {
-            return renderHelper.syncToSystem(Name, cfdgText.Text);
+            return renderHelper.SyncToSystem(Name, cfdgText.Text);
         }
 
         private void splitterMoved(object sender, SplitterEventArgs e)
@@ -1234,18 +1234,18 @@ namespace CFForm
             int width = useAnimateSize ? renderParameters.animateWidth : renderParameters.width;
             int height = useAnimateSize ? renderParameters.animateHeight : renderParameters.height;
 
-            renderHelper.prepareForRender(width, height, renderParameters.minimumSize,
+            renderHelper.PrepareForRender(width, height, renderParameters.minimumSize,
                 renderParameters.borderSize, currentVariation, shrinkTiled);
-            if (renderHelper.renderer == 0) {
+            if (renderHelper.Renderer == 0) {
                 SystemSounds.Beep.Play();
                 return;
             }
 
-            isTiled = renderHelper.tiled;
+            isTiled = renderHelper.Tiled;
 
             if (renderParameters.action  == RenderParameters.RenderActions.Render) {
-                renderParameters.width = renderHelper.width;
-                renderParameters.height = renderHelper.height;
+                renderParameters.width = renderHelper.Width;
+                renderParameters.height = renderHelper.Height;
             }
 
             if (renderParameters.action == RenderParameters.RenderActions.Animate ?
@@ -1257,7 +1257,7 @@ namespace CFForm
             if (renderParameters.action == RenderParameters.RenderActions.Animate &&
                 !renderParameters.animateFrame)
             {
-                String ffReturn = renderHelper.makeAnimationCanvas(renderParameters);
+                String ffReturn = renderHelper.MakeAnimationCanvas(renderParameters);
                 if (Path.IsPathRooted(ffReturn)) {
                     movieFile = ffReturn;
                 } else {
@@ -1272,7 +1272,7 @@ namespace CFForm
                 renderSizeChanged();
 
             postAction = PostRenderAction.DoNothing;
-            if (renderHelper.performRender(renderThread)) {
+            if (renderHelper.PerformRender(renderThread)) {
                 statusTimer.Start();
                 updateRenderButton();
             }
@@ -1281,7 +1281,7 @@ namespace CFForm
         private void doSVGSave(String path, UploadPrefs prefs)
         {
             setMessage(null);
-            if (renderHelper.renderer == 0) {
+            if (renderHelper.Renderer == 0) {
                 SystemSounds.Beep.Play();
                 setMessage("There is no SVG data to save.");
                 return;
@@ -1292,7 +1292,7 @@ namespace CFForm
                 return;
             }
 
-            if (!renderHelper.makeSVGCanvas(path, renderParameters.width, renderParameters.height, prefs)) 
+            if (!renderHelper.MakeSVGCanvas(path, renderParameters.width, renderParameters.height, prefs)) 
             {
                 SystemSounds.Beep.Play();
                 setMessage("An error occurred while saving the SVG file.");
@@ -1302,7 +1302,7 @@ namespace CFForm
             setMessage("Saving SVG file...");
             renderParameters.action = RenderParameters.RenderActions.SaveSVG;
             postAction = PostRenderAction.DoNothing;
-            if (renderHelper.performRender(renderThread)) {
+            if (renderHelper.PerformRender(renderThread)) {
                 statusTimer.Start();
                 updateRenderButton();
             }
@@ -1312,16 +1312,16 @@ namespace CFForm
         {
             if (displayImage == null)
                 renderSizeChanged();
-            renderHelper.makeCanvas(width, height);
+            renderHelper.MakeCanvas(width, height);
         }
 
         private void menuRStopClick(object sender, EventArgs e)
         {
-            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
-                if (renderHelper.requestFinishUp) {
-                    renderHelper.requestStop = true;
+            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
+                if (renderHelper.RequestFinishUp) {
+                    renderHelper.RequestStop = true;
                 } else {
-                    renderHelper.requestFinishUp = true;
+                    renderHelper.RequestFinishUp = true;
                     updateRenderButton();
                 }
             }
@@ -1335,7 +1335,7 @@ namespace CFForm
             }
             moviePlayer = null;
 
-            if (!renderHelper.canvas && movieFile == null) {
+            if (!renderHelper.Canvas && movieFile == null) {
                 setMessage("There is nothing to save.");
                 SystemSounds.Asterisk.Play();
                 return;
@@ -1377,7 +1377,7 @@ namespace CFForm
                 return;
             }
 
-            using (var saveImageDlg = new CppWrapper.SaveImage(renderHelper.frieze, renderHelper.tiled,
+            using (var saveImageDlg = new CppWrapper.SaveImage(renderHelper.Frieze, renderHelper.Tiled,
                 Path.GetFileNameWithoutExtension(Text) + ".png", Path.GetDirectoryName(Text))) 
             {
                 var prefs = UploadPrefs;
@@ -1404,7 +1404,7 @@ namespace CFForm
         {
             CppWrapper.UploadPrefs prefs = UploadPrefs;
 
-            renderHelper.uploadDesign(this, prefs);
+            renderHelper.UploadDesign(this, prefs);
 
             if (prefs.Updated)
                 UploadPrefs = prefs;
@@ -1436,7 +1436,7 @@ namespace CFForm
             if (renderThread.IsBusy) {
                 // remember to close the window when the thread ends
                 postAction = PostRenderAction.Close;
-                renderHelper.requestStop = true;
+                renderHelper.RequestStop = true;
                 e.Cancel = true;
                 return;
             }
@@ -1480,9 +1480,9 @@ namespace CFForm
 
         private void statusTick(object sender, EventArgs e)
         {
-            if (renderHelper.renderer != 0 && renderThread.IsBusy) {
+            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
                 updateRenderButton();
-                renderHelper.requestUpdate();
+                renderHelper.RequestUpdate();
             }
         }
 
