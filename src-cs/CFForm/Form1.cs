@@ -65,7 +65,7 @@ namespace CFForm
             MRUItemFileStorage storage = new MRUItemFileStorage(path + "\\..\\context_free_mru_storage.xml");
             mruManager = new MRUManager();
             mruManager.Initialize(storage);
-            mruManager.MRUItemSelected += openDoc;
+            mruManager.MRUItemSelected += OpenDoc;
             MRUItemsMenu itemsMenu = new MRUItemsMenu();
             itemsMenu.Initialize(mruManager, new MRUGuiLocalization());
             itemsMenu.AttachToMenu(recentToolStripMenuItem);
@@ -143,17 +143,17 @@ namespace CFForm
             if (args == null || args.Length <= 1) return;
 
             if (args.Length == 2) {
-                openDoc(args[1]);
+                OpenDoc(args[1]);
             } else if (args[1] == "/new" && args.Length == 3) {
                 String? dir = Path.GetDirectoryName(args[2]);
                 if (dir == null) dir = String.Empty;
-                openNew(dir);
+                OpenNew(dir);
             }
             Activate();
             BringToFront();
         }
 
-        private Document? findOpenDocument(String name)
+        private Document? FindOpenDocument(String name)
         {
             foreach (var kid in MdiChildren) {
                 Document? doc = kid as Document;
@@ -163,24 +163,24 @@ namespace CFForm
             return null;
         }
 
-        private String uniqueNewFile(String basename, String dir)
+        private String UniqueNewFile(String basename, String dir)
         {
             for (int i = 0; ; ++i) {
                 String name = i == 0 ? Path.Join(dir, basename + ".cfdg")
                                      : Path.Join(dir, basename + i.ToString() + ".cfdg");
-                if (!File.Exists(name) && findOpenDocument(name) == null)
+                if (!File.Exists(name) && FindOpenDocument(name) == null)
                     return name;
             }
         }
 
-        private void openNew(String dir)
+        private void OpenNew(String dir)
         {
-            openDoc(uniqueNewFile("Document", dir));
+            OpenDoc(UniqueNewFile("Document", dir));
         }
 
-        private void openDoc(String name)
+        private void OpenDoc(String name)
         {
-            Document? document = findOpenDocument(name);
+            Document? document = FindOpenDocument(name);
             if (document != null) {
                 document.Activate();
                 return;
@@ -204,9 +204,9 @@ namespace CFForm
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
-        public void openUrl(String url)
+        private void OpenUrl(String url)
         {
-            String filename = uniqueNewFile("Download", String.Empty);
+            String filename = UniqueNewFile("Download", String.Empty);
             var document = new Document {
                 Name = url,
                 TabText = filename,
@@ -219,9 +219,9 @@ namespace CFForm
             document.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
-        public void openText(String cfdg)
+        private void OpenText(String cfdg)
         {
-            String filename = uniqueNewFile("Document", String.Empty);
+            String filename = UniqueNewFile("Document", String.Empty);
             var document = new Document {
                 Name = cfdg.Insert(0, "data:text/plain;charset=UTF-8,"),
                 TabText = filename,
@@ -260,17 +260,17 @@ namespace CFForm
                     Document? doc = content as Document;
                     if (doc != null) {
                         if (preference.styleChanged)
-                            doc.styleChanged();
+                            doc.StyleChanged();
                         if (preference.currentFont != null)
-                            doc.fontChanged(preference.currentFont);
+                            doc.FontChanged(preference.currentFont);
                     }
                 }
             }
         }
 
-        private void openNewClick(object sender, EventArgs e)
+        private void OpenNewClick(object sender, EventArgs e)
         {
-            openNew(String.Empty);
+            OpenNew(String.Empty);
         }
 
         private void resizeBegin(object sender, EventArgs e)
@@ -301,19 +301,19 @@ namespace CFForm
         private void menuFOpenClick(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK) {
-                openDoc(openFileDialog.FileName);
+                OpenDoc(openFileDialog.FileName);
             }
         }
 
-        private void openExampleClick(object sender, EventArgs e)
+        private void OpenExampleClick(object sender, EventArgs e)
         {
             ToolStripMenuItem? example = sender as ToolStripMenuItem;
             if (example != null) {
-                openDoc(example.Text + ".cfdg");
+                OpenDoc(example.Text + ".cfdg");
             }
         }
 
-        private void formIsClosing(object sender, FormClosingEventArgs e)
+        private void FormIsClosing(object sender, FormClosingEventArgs e)
         {
             if (e.Cancel) {
                 bool userAction = false;
@@ -335,12 +335,12 @@ namespace CFForm
             }
         }
 
-        private void appIsExiting(object sender, EventArgs e)
+        private void AppIsExiting(object sender, EventArgs e)
         {
             RenderHelper.AbortEverything();
         }
 
-        private void loadInitialization(object sender, EventArgs e)
+        private void LoadInitialization(object sender, EventArgs e)
         {
             switch (startAction) {
                 case StartAction.Welcome:
@@ -399,20 +399,20 @@ namespace CFForm
                 document.menuFilePopup(this, e);
         }
 
-        public void formDragDrop(object sender, DragEventArgs e)
+        public void FormDragDrop(object sender, DragEventArgs e)
         {
             if (e.Data == null) return;
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string file in files)
-                    openDoc(file);
+                    OpenDoc(file);
                 return;
             }
             String? url = e.Data.GetData(DataFormats.Text)?.ToString();
             if (url == null) return;
 
             if (url.StartsWith("file://")) {
-                openUrl(url);
+                OpenUrl(url);
                 return;
             }
 
@@ -438,16 +438,16 @@ namespace CFForm
                 }
 
                 if (url != null)
-                    openUrl(url);
+                    OpenUrl(url);
                 else
                     SystemSounds.Beep.Play();
                 return;
             }
 
-            openText(url);
+            OpenText(url);
         }
 
-        private void formDragEnter(object sender, DragEventArgs e)
+        private void FormDragEnter(object sender, DragEventArgs e)
         {
             if (e.Data ==  null) {
                 e.Effect = DragDropEffects.None;

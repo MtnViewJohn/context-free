@@ -239,7 +239,7 @@
             this.renderButton.Size = new System.Drawing.Size(177, 36);
             this.renderButton.Text = "Render";
             this.renderButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.renderButton.ButtonClick += new System.EventHandler(this.renderButtonClick);
+            this.renderButton.ButtonClick += new System.EventHandler(this.RenderButtonClick);
             // 
             // renderToolStripMenuItem
             // 
@@ -247,7 +247,7 @@
             this.renderToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.renderToolStripMenuItem.Tag = "0";
             this.renderToolStripMenuItem.Text = "Render";
-            this.renderToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
+            this.renderToolStripMenuItem.Click += new System.EventHandler(this.RenderButtonChange);
             // 
             // sizedToolStripMenuItem
             // 
@@ -255,7 +255,7 @@
             this.sizedToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.sizedToolStripMenuItem.Tag = "1";
             this.sizedToolStripMenuItem.Text = "Render to Size";
-            this.sizedToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
+            this.sizedToolStripMenuItem.Click += new System.EventHandler(this.RenderButtonChange);
             // 
             // animateToolStripMenuItem
             // 
@@ -263,7 +263,7 @@
             this.animateToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.animateToolStripMenuItem.Tag = "2";
             this.animateToolStripMenuItem.Text = "Animate";
-            this.animateToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
+            this.animateToolStripMenuItem.Click += new System.EventHandler(this.RenderButtonChange);
             // 
             // frameToolStripMenuItem
             // 
@@ -271,7 +271,7 @@
             this.frameToolStripMenuItem.Size = new System.Drawing.Size(328, 44);
             this.frameToolStripMenuItem.Tag = "3";
             this.frameToolStripMenuItem.Text = "Animate a Frame";
-            this.frameToolStripMenuItem.Click += new System.EventHandler(this.renderButtonChange);
+            this.frameToolStripMenuItem.Click += new System.EventHandler(this.RenderButtonChange);
             // 
             // saveButton
             // 
@@ -305,9 +305,9 @@
             this.variationTextBox.Name = "variationTextBox";
             this.variationTextBox.Size = new System.Drawing.Size(140, 42);
             this.variationTextBox.Text = "WWWWWW";
-            this.variationTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.variationKeyDown);
-            this.variationTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.variationKeyPress);
-            this.variationTextBox.TextChanged += new System.EventHandler(this.variationChanged);
+            this.variationTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VariationKeyDown);
+            this.variationTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.VariationKeyPress);
+            this.variationTextBox.TextChanged += new System.EventHandler(this.VariationChanged);
             // 
             // prevVariation
             // 
@@ -317,7 +317,7 @@
             this.prevVariation.Name = "prevVariation";
             this.prevVariation.Size = new System.Drawing.Size(46, 36);
             this.prevVariation.Text = "◀";
-            this.prevVariation.Click += new System.EventHandler(this.prevVariationClick);
+            this.prevVariation.Click += new System.EventHandler(this.PrevVariationClick);
             // 
             // nextVariation
             // 
@@ -327,7 +327,7 @@
             this.nextVariation.Name = "nextVariation";
             this.nextVariation.Size = new System.Drawing.Size(46, 36);
             this.nextVariation.Text = "▶";
-            this.nextVariation.Click += new System.EventHandler(this.nextVariationClick);
+            this.nextVariation.Click += new System.EventHandler(this.NextVariationClick);
             // 
             // frameSeparator
             // 
@@ -348,8 +348,8 @@
             this.frameTextBox.Size = new System.Drawing.Size(100, 42);
             this.frameTextBox.Text = "1";
             this.frameTextBox.Visible = false;
-            this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
-            this.frameTextBox.TextChanged += new System.EventHandler(this.frameChanged);
+            this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrameKeyPressed);
+            this.frameTextBox.TextChanged += new System.EventHandler(this.FrameChanged);
             // 
             // framePrev
             // 
@@ -390,8 +390,8 @@
             this.sizeWidthBox.Size = new System.Drawing.Size(100, 42);
             this.sizeWidthBox.Text = "1000";
             this.sizeWidthBox.Visible = false;
-            this.sizeWidthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
-            this.sizeWidthBox.TextChanged += new System.EventHandler(this.sizeChanged);
+            this.sizeWidthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrameKeyPressed);
+            this.sizeWidthBox.TextChanged += new System.EventHandler(this.SizeChanged);
             // 
             // sizeLabel2
             // 
@@ -406,8 +406,8 @@
             this.sizeHeightBox.Size = new System.Drawing.Size(100, 42);
             this.sizeHeightBox.Text = "1000";
             this.sizeHeightBox.Visible = false;
-            this.sizeHeightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frameKeyPressed);
-            this.sizeHeightBox.TextChanged += new System.EventHandler(this.sizeChanged);
+            this.sizeHeightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrameKeyPressed);
+            this.sizeHeightBox.TextChanged += new System.EventHandler(this.SizeChanged);
             // 
             // toolStripSeparator3
             // 
@@ -439,7 +439,7 @@
             this.documentSplitter.SplitterDistance = 562;
             this.documentSplitter.SplitterWidth = 8;
             this.documentSplitter.TabIndex = 1;
-            this.documentSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
+            this.documentSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterMoved);
             // 
             // editorSplitter
             // 
@@ -461,7 +461,7 @@
             this.editorSplitter.SplitterDistance = 686;
             this.editorSplitter.SplitterWidth = 8;
             this.editorSplitter.TabIndex = 0;
-            this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMoved);
+            this.editorSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterMoved);
             // 
             // cfdgText
             // 
@@ -475,14 +475,14 @@
             this.cfdgText.TabIndex = 0;
             this.cfdgText.Text = " ";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
-            this.cfdgText.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.charAdded);
-            this.cfdgText.Delete += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.textChanged);
-            this.cfdgText.Insert += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.textChanged);
-            this.cfdgText.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.insertionCheck);
-            this.cfdgText.SavePointLeft += new System.EventHandler<System.EventArgs>(this.modifiedCFDG);
-            this.cfdgText.SavePointReached += new System.EventHandler<System.EventArgs>(this.modifiedCFDG);
-            this.cfdgText.StyleNeeded += new System.EventHandler<ScintillaNET.StyleNeededEventArgs>(this.styleCfdg);
-            this.cfdgText.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.updateUI);
+            this.cfdgText.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.CharAdded);
+            this.cfdgText.Delete += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.TextChanged);
+            this.cfdgText.Insert += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.TextChanged);
+            this.cfdgText.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.InsertionCheck);
+            this.cfdgText.SavePointLeft += new System.EventHandler<System.EventArgs>(this.ModifiedCFDG);
+            this.cfdgText.SavePointReached += new System.EventHandler<System.EventArgs>(this.ModifiedCFDG);
+            this.cfdgText.StyleNeeded += new System.EventHandler<ScintillaNET.StyleNeededEventArgs>(this.StyleCfdg);
+            this.cfdgText.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.UpdateUI);
             // 
             // cfdgMessage
             // 
@@ -494,8 +494,8 @@
             this.cfdgMessage.Name = "cfdgMessage";
             this.cfdgMessage.Size = new System.Drawing.Size(558, 342);
             this.cfdgMessage.TabIndex = 0;
-            this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.messageWindowReady);
-            this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.errorNavigation);
+            this.cfdgMessage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.MessageWindowReady);
+            this.cfdgMessage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.ErrorNavigation);
             // 
             // renderBox
             // 
@@ -506,9 +506,9 @@
             this.renderBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.renderBox.TabIndex = 0;
             this.renderBox.TabStop = false;
-            this.renderBox.SizeChanged += new System.EventHandler(this.renderBoxSizeChanged);
-            this.renderBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureDragDrop);
-            this.renderBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.pictureDragEnter);
+            this.renderBox.SizeChanged += new System.EventHandler(this.RenderBoxSizeChanged);
+            this.renderBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureDragDrop);
+            this.renderBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureDragEnter);
             // 
             // menuStrip1
             // 
@@ -1463,7 +1463,7 @@
             | System.Windows.Forms.Keys.R)));
             this.menuRAgain.Size = new System.Drawing.Size(464, 44);
             this.menuRAgain.Text = "Repea&t Last Render";
-            this.menuRAgain.Click += new System.EventHandler(this.renderButtonClick);
+            this.menuRAgain.Click += new System.EventHandler(this.RenderButtonClick);
             // 
             // menuRAnimate
             // 
@@ -1547,7 +1547,7 @@
             // 
             // statusTimer
             // 
-            this.statusTimer.Tick += new System.EventHandler(this.statusTick);
+            this.statusTimer.Tick += new System.EventHandler(this.StatusTick);
             // 
             // Document
             // 
@@ -1561,10 +1561,10 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Document";
             this.Text = "Document";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formIsClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.formHasClosed);
-            this.Load += new System.EventHandler(this.loadInitialization);
-            this.Shown += new System.EventHandler(this.shownInitialization);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormIsClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormHasClosed);
+            this.Load += new System.EventHandler(this.LoadInitialization);
+            this.Shown += new System.EventHandler(this.ShownInitialization);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.documentSplitter.Panel1.ResumeLayout(false);

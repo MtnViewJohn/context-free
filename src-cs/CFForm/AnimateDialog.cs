@@ -96,7 +96,7 @@ namespace CFForm
             formatComboBox.SelectedIndex = prefs.codec;
         }
 
-        private void validFloat(object sender, CancelEventArgs e)
+        private void ValidFloat(object sender, CancelEventArgs e)
         {
             TextBox? box = sender as TextBox;
             if (box != null) {
@@ -113,7 +113,7 @@ namespace CFForm
             }
         }
 
-        private void okCLick(object sender, EventArgs e)
+        private void OkCLick(object sender, EventArgs e)
         {
             try {
                 int width = int.Parse(widthTextBox.Text);
@@ -169,12 +169,12 @@ namespace CFForm
             }
         }
 
-        private void cancelClick(object sender, EventArgs e)
+        private void CancelClick(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private void numberKeyPress(object sender, KeyPressEventArgs e)
+        private void NumberKeyPress(object sender, KeyPressEventArgs e)
         {
             if (!Char.IsControl(e.KeyChar) && !Char.IsDigit(e.KeyChar))
                 e.Handled = true;

@@ -111,7 +111,7 @@ namespace CFForm
                     mPostRenderAction |= (int)value;
                 }
                 if (!renderThread.IsBusy && mPostRenderAction != 0) {
-                    renderCompleted(null, new RunWorkerCompletedEventArgs(null, null, false));
+                    RenderCompleted(null, new RunWorkerCompletedEventArgs(null, null, false));
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace CFForm
                 } catch {
                     mDisplayImage = new Bitmap(10, 10,
                         System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    setMessage("Error creating new screen bitmap.");
+                    SetMessage("Error creating new screen bitmap.");
                 }
                 return mDisplayImage;
             }
@@ -180,9 +180,9 @@ namespace CFForm
             renderBox.AllowDrop = true;
         }
 
-        private void loadInitialization(object sender, EventArgs e)
+        private void LoadInitialization(object sender, EventArgs e)
         {
-            updateRenderButton();
+            UpdateRenderButton();
 
             Form1? form1 = MdiParent as Form1;
             if (form1 != null) {
@@ -193,8 +193,8 @@ namespace CFForm
 
             cfdgText.StyleClearAll();
             cfdgText.Margins[0].Type = ScintillaNET.MarginType.Number;
-            fontChanged(Properties.Settings.Default.EditorFont);
-            styleChanged();     // grab tab width and styles
+            FontChanged(Properties.Settings.Default.EditorFont);
+            StyleChanged();     // grab tab width and styles
             cfdgText.SetSelectionBackColor(true, ColorTranslator.FromHtml("#114D9C"));
             cfdgText.SetSelectionForeColor(true, ColorTranslator.FromHtml("#FFFFFF"));
 
@@ -232,17 +232,17 @@ namespace CFForm
             menuRAnimate.Enabled = canAnimate;
             animateToolStripMenuItem.Enabled = canAnimate;
 
-            renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderCompleted);
-            renderThread.DoWork += new DoWorkEventHandler(runRenderThread);
+            renderThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderCompleted);
+            renderThread.DoWork += new DoWorkEventHandler(RunRenderThread);
         }
 
-        private void shownInitialization(object sender, EventArgs e)
+        private void ShownInitialization(object sender, EventArgs e)
         {
             documentSplitter.SplitterDistance = Properties.Settings.Default.DocumentSplitter;
             editorSplitter.SplitterDistance = Properties.Settings.Default.EditorSplitter;
 
             if (reloadWhenReady) {
-                if (reload() && Properties.Settings.Default.OpenRender)
+                if (Reload() && Properties.Settings.Default.OpenRender)
                     menuRRender.PerformClick();
             } else {
                 cfdgText.Text = String.Empty;
@@ -254,7 +254,7 @@ namespace CFForm
         {
             switch ((RenderHelper.WM_USER)m.Msg) {
                 case RenderHelper.WM_USER.MESSAGE_UPDATE: {
-                        setMessage(RenderHelper.GetMessage(m.WParam));
+                        SetMessage(RenderHelper.GetMessage(m.WParam));
                         break;
                     }
                 case RenderHelper.WM_USER.STATUS_UPDATE: 
@@ -296,7 +296,7 @@ namespace CFForm
             }
             base.WndProc(ref m);
         }
-        private bool reload()
+        private bool Reload()
 
         {
             String exampleText = renderHelper.GetExample(Name);
@@ -309,13 +309,13 @@ namespace CFForm
 
             if (Name.StartsWith("http://") || Name.StartsWith("https://") || Name.StartsWith("file://")) {
                 try {
-                    setMessage("Downloading the design&hellip;");
+                    SetMessage("Downloading the design&hellip;");
                     Uri url = new Uri(Name);
                     WebClient req = new WebClient();
-                    req.DownloadStringCompleted += new DownloadStringCompletedEventHandler(downLoaded);
+                    req.DownloadStringCompleted += new DownloadStringCompletedEventHandler(DownLoaded);
                     req.DownloadStringAsync(url);
                 } catch {
-                    setMessage("The design could not be downloaded.");
+                    SetMessage("The design could not be downloaded.");
                 }
                 return false;
             }
@@ -339,18 +339,18 @@ namespace CFForm
                 ((Form1)MdiParent).mruManager.RemoveFile(Name);
                 cfdgText.Text = String.Empty;
                 cfdgText.EmptyUndoBuffer();
-                setMessage("The file could not be read.");
+                SetMessage("The file could not be read.");
                 return false;
             }
             return true;
         }
 
-        private void downLoaded(Object sender, DownloadStringCompletedEventArgs e)
+        private void DownLoaded(Object sender, DownloadStringCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null) {
-                setMessage("The design could not be downloaded.");
+                SetMessage("The design could not be downloaded.");
             } else {
-                setMessage("Download complete.");
+                SetMessage("Download complete.");
                 if (Name.EndsWith(".cfdg")) {
                     cfdgText.Text = e.Result;
                     Uri uri = new Uri(Name);
@@ -365,7 +365,7 @@ namespace CFForm
                     if (download != null) {
                         cfdgText.Text = download.CfdgText;
                         currentVariation = download.Variation - 1;
-                        nextVariationClick(sender, e);
+                        NextVariationClick(sender, e);
                         Name = download.CfdgName;
                         TabText = Name;
                         Text = TabText;
@@ -373,7 +373,7 @@ namespace CFForm
                         if (Properties.Settings.Default.OpenRender)
                             menuRRender.PerformClick();
                     } else {
-                        setMessage("Failed to extract cfdg data!");
+                        SetMessage("Failed to extract cfdg data!");
                     }
                 }
             }
@@ -491,12 +491,12 @@ namespace CFForm
             }
         }
 
-        private void renderCompleted(object? sender, RunWorkerCompletedEventArgs e)
+        private void RenderCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             statusTimer.Stop();
 
             if (renderParameters.action == RenderParameters.RenderActions.SaveSVG)
-                setMessage("Done");
+                SetMessage("Done");
 
             int nextAction = (int)postAction;
             postAction = PostRenderAction.DoNothing;
@@ -510,7 +510,7 @@ namespace CFForm
                 return;
             }
 
-            updateRenderButton();
+            UpdateRenderButton();
 
             if ((nextAction & (int)PostRenderAction.SaveOutput) != 0)
                 menuROutput.PerformClick();
@@ -551,27 +551,27 @@ namespace CFForm
                     moviePlayer.Start();
                     moviePlayer.EnableRaisingEvents = true;
                 } catch (Exception ex) {
-                    setMessage(ex.Message);
+                    SetMessage(ex.Message);
                 }
             }
         }
 
-        private void runRenderThread(object? sender, DoWorkEventArgs e)
+        private void RunRenderThread(object? sender, DoWorkEventArgs e)
         {
             progressDelay = 0;
             renderHelper?.RunRenderThread(renderParameters);
         }
-        private void renderButtonChange(object sender, EventArgs e)
+        private void RenderButtonChange(object sender, EventArgs e)
         {
             reuseVariation = true;
             ToolStripMenuItem menu = (ToolStripMenuItem)sender;
             if (int.TryParse(menu.Tag.ToString(), out int tagnum)) {
                 renderAction = (RenderAction)tagnum;
-                updateRenderButton();
+                UpdateRenderButton();
             }
         }
 
-        private void updateRenderButton()
+        private void UpdateRenderButton()
         {
             int lastIndex = renderButtonIndex;
 
@@ -624,14 +624,14 @@ namespace CFForm
                 renderButton.ImageIndex = renderButtonIndex;
         }
 
-        private void renderButtonClick(object sender, EventArgs e)
+        private void RenderButtonClick(object sender, EventArgs e)
         {
             if (renderHelper.Renderer != 0 &&  renderThread.IsBusy) {
                 if (renderHelper.RequestFinishUp) {
                     renderHelper.RequestStop = true;
                 } else {
                     renderHelper.RequestFinishUp = true;
-                    updateRenderButton();
+                    UpdateRenderButton();
                 }
             } else {
                 switch (renderAction) {
@@ -647,12 +647,12 @@ namespace CFForm
             }
         }
 
-        private bool syncToSystem()
+        private bool SyncToSystem()
         {
             return renderHelper.SyncToSystem(Name, cfdgText.Text);
         }
 
-        private void splitterMoved(object sender, SplitterEventArgs e)
+        private void SplitterMoved(object sender, SplitterEventArgs e)
         {
             Form1? parent = MdiParent as Form1;
             if (parent != null) {
@@ -664,7 +664,7 @@ namespace CFForm
             Properties.Settings.Default.Save();
         }
 
-        private void pictureDragEnter(object sender, DragEventArgs e)
+        private void PictureDragEnter(object sender, DragEventArgs e)
         {
             if (e.Data == null) {
                 e.Effect = DragDropEffects.None;
@@ -676,13 +676,13 @@ namespace CFForm
             }
         }
 
-        private void pictureDragDrop(object sender, DragEventArgs e)
+        private void PictureDragDrop(object sender, DragEventArgs e)
         {
             Form1? form1 = MdiParent as Form1;
-            form1?.formDragDrop(sender, e);
+            form1?.FormDragDrop(sender, e);
         }
 
-        private void errorNavigation(object sender, WebBrowserNavigatingEventArgs e)
+        private void ErrorNavigation(object sender, WebBrowserNavigatingEventArgs e)
         {
             String frag = e.Url.Fragment;
             if (!String.IsNullOrEmpty(frag)) {
@@ -703,7 +703,7 @@ namespace CFForm
             }
         }
 
-        private void messageWindowReady(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void MessageWindowReady(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             Font f = Properties.Settings.Default.EditorFont;
             String html = String.Format(
@@ -724,7 +724,7 @@ namespace CFForm
             messageWindowUnready = false;
         }
 
-        private void setMessage(String? txt)
+        private void SetMessage(String? txt)
         {
             if (txt == null) {
                 cfdgMessage.Navigate("about:blank");
@@ -740,14 +740,14 @@ namespace CFForm
             }
         }
 
-        private void modifiedCFDG(object sender, EventArgs e)
+        private void ModifiedCFDG(object sender, EventArgs e)
         {
             TabText = cfdgText.Modified ? ("*" + Text) : Text;
             if (cfdgText.Modified)
                 variationTextBox.ForeColor = Color.Blue;
         }
 
-        private void styleCfdg(object sender, ScintillaNET.StyleNeededEventArgs e)
+        private void StyleCfdg(object sender, ScintillaNET.StyleNeededEventArgs e)
         {
             int startPos = cfdgText.GetEndStyled();
             int startLine = cfdgText.LineFromPosition(startPos);
@@ -757,7 +757,7 @@ namespace CFForm
             renderHelper?.StyleLines(startLine, endLine);
         }
 
-        private void insertionCheck(object sender, ScintillaNET.InsertCheckEventArgs e)
+        private void InsertionCheck(object sender, ScintillaNET.InsertCheckEventArgs e)
         {
             // auto indent
             if (e.Text.Equals("\r\n") || e.Text.Equals("\r") || e.Text.Equals("\n")) {
@@ -781,7 +781,7 @@ namespace CFForm
             }
         }
 
-        private void charAdded(object sender, ScintillaNET.CharAddedEventArgs e)
+        private void CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
             // auto unindent
             if (e.Char == '}') {
@@ -798,10 +798,10 @@ namespace CFForm
             }
 
             // autocomplete
-            checkAutoC();
+            CheckAutoC();
         }
 
-        void checkAutoC()
+        void CheckAutoC()
         {
             var pos = cfdgText.CurrentPosition;
             var wordPos = cfdgText.WordStartPosition(pos, true);
@@ -833,16 +833,16 @@ namespace CFForm
                 return 'B';
             return Char.ConvertFromUtf32(c)[0];
         }
-        private void updateUI(object sender, ScintillaNET.UpdateUIEventArgs e)
+        private void UpdateUI(object sender, ScintillaNET.UpdateUIEventArgs e)
         {
             int caretPos = cfdgText.CurrentPosition;
             if (caretPos == lastCaretPosition) return;
             lastCaretPosition = caretPos;
             int bracepos1 = -1;
             int bracepos2 = -1;
-            if ("()[]{}".IndexOf(SafeChar(cfdgText, caretPos - 1)) >= 0)
+            if ("()[]{}".Contains(SafeChar(cfdgText, caretPos - 1)))
                 bracepos1 = caretPos - 1;
-            else if ("()[]{}".IndexOf(SafeChar(cfdgText, caretPos)) >= 0)
+            else if ("()[]{}".Contains(SafeChar(cfdgText, caretPos)))
                 bracepos1 = caretPos;
             if (bracepos1 >= 0) {
                 bracepos2 = cfdgText.BraceMatch(bracepos1);
@@ -855,18 +855,18 @@ namespace CFForm
             }
         }
 
-        private void textChanged(object sender, ScintillaNET.ModificationEventArgs e)
+        private void TextChanged(object sender, ScintillaNET.ModificationEventArgs e)
         {
             if (cfdgText.AutoCActive && ((int)(e.Source) & 0x60) != 0)
-                checkAutoC();
+                CheckAutoC();
         }
 
         private void autoCCharDeleted(object sender, EventArgs e)
         {
-            checkAutoC();
+            CheckAutoC();
         }
 
-        public void styleChanged()
+        public void StyleChanged()
         {
             cfdgText.TabWidth = Properties.Settings.Default.TabWidth;
 
@@ -898,7 +898,7 @@ namespace CFForm
             cfdgText.Styles[StyleNumber].ForeColor = ColorTranslator.FromHtml(Properties.Settings.Default.StyleNumbersColor);
         }
 
-        public void fontChanged(Font f)
+        public void FontChanged(Font f)
         {
             cfdgText.Styles[ScintillaNET.Style.Default].Font = f.Name;
             cfdgText.Styles[ScintillaNET.Style.Default].SizeF = f.SizeInPoints;
@@ -911,10 +911,10 @@ namespace CFForm
             var w = cfdgText.CreateGraphics().MeasureString("8888", f);
             cfdgText.Margins[0].Width = (int)(w.Width + 0.9);
             cfdgMessage.Font = f;
-            setMessage(null);
+            SetMessage(null);
         }
 
-        private void variationKeyDown(object sender, KeyEventArgs e)
+        private void VariationKeyDown(object sender, KeyEventArgs e)
         {
             nonAlphaInVariation = false;
             if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z) return;
@@ -923,18 +923,18 @@ namespace CFForm
             nonAlphaInVariation = true;
         }
 
-        private void variationKeyPress(object sender, KeyPressEventArgs e)
+        private void VariationKeyPress(object sender, KeyPressEventArgs e)
         {
             if (nonAlphaInVariation) {
                 e.Handled= true;
                 System.Media.SystemSounds.Beep.Play();
             } else if (e.KeyChar == '\r') {
                 e.Handled = true;
-                renderButtonClick(sender, e);
+                RenderButtonClick(sender, e);
             }
         }
 
-        private void variationChanged(object sender, EventArgs e)
+        private void VariationChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
             if (variationTextBox.Text.Length == 0 ) {
@@ -945,13 +945,13 @@ namespace CFForm
             currentVariation = RenderHelper.VariationFromString(variationTextBox.Text);
         }
 
-        private void frameKeyPressed(object sender, KeyPressEventArgs e)
+        private void FrameKeyPressed(object sender, KeyPressEventArgs e)
         {
             if (!Char.IsControl(e.KeyChar) && !Char.IsDigit(e.KeyChar))
                 e.Handled = true;
         }
 
-        private void frameChanged(object sender, EventArgs e)
+        private void FrameChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
             if (frameTextBox.Text.Length == 0 ) {
@@ -972,7 +972,7 @@ namespace CFForm
             System.Media.SystemSounds.Asterisk.Play();
         }
 
-        private void sizeChanged(object sender, EventArgs e)
+        private void SizeChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
             ToolStripTextBox? sizebox = sender as ToolStripTextBox;
@@ -1006,7 +1006,7 @@ namespace CFForm
                         cfdgText.SetSavePoint();
                     }
                 } catch {
-                    setMessage("The file could not be written.");
+                    SetMessage("The file could not be written.");
                 }
             } else {
                 menuFSaveAsClick(sender, e);
@@ -1043,7 +1043,7 @@ namespace CFForm
                 "Context Free", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (res == DialogResult.Yes)
-                reload();
+                Reload();
         }
 
         private void menuEditPopup(object sender, EventArgs e)
@@ -1146,7 +1146,7 @@ namespace CFForm
         {
             if (renderAction != RenderAction.Render) {
                 renderAction = RenderAction.Render;
-                updateRenderButton();
+                UpdateRenderButton();
             }
 
             if (renderThread.IsBusy) {
@@ -1159,14 +1159,14 @@ namespace CFForm
             renderParameters.height = renderBox.Size.Height;
             renderParameters.action = RenderParameters.RenderActions.Render;
 
-            doRender(true);
+            DoRender(true);
         }
 
         private void menuRSizeClick(object sender, EventArgs e)
         {
             if (renderAction != RenderAction.RenderSized) {
                 renderAction = RenderAction.RenderSized;
-                updateRenderButton();
+                UpdateRenderButton();
             }
 
             if (renderThread.IsBusy) {
@@ -1186,14 +1186,14 @@ namespace CFForm
                 }
             }
 
-            doRender(false);
+            DoRender(false);
         }
 
         private void menuRAnimateClick(object sender, EventArgs e)
         {
             if (renderAction != RenderAction.Animate) {
                 renderAction = RenderAction.Animate;
-                updateRenderButton();
+                UpdateRenderButton();
             }
 
             if (renderThread.IsBusy) {
@@ -1212,14 +1212,14 @@ namespace CFForm
                 }
             }
 
-            doRender(false);
+            DoRender(false);
         }
 
         private void menuRFrameClick(object sender, EventArgs e)
         {
             if (renderAction != RenderAction.AnimateFrame) {
                 renderAction = RenderAction.AnimateFrame;
-                updateRenderButton();
+                UpdateRenderButton();
             }
 
             if (renderThread.IsBusy) {
@@ -1239,15 +1239,15 @@ namespace CFForm
                 }
             }
 
-            doRender(false);
+            DoRender(false);
         }
 
-        private void doRender(bool shrinkTiled)
+        private void DoRender(bool shrinkTiled)
         {
-            setMessage(null);
-            bool modifiedSinceRender = syncToSystem();
+            SetMessage(null);
+            bool modifiedSinceRender = SyncToSystem();
             if (!modifiedSinceRender && !reuseVariation && renderParameters.action != RenderParameters.RenderActions.Animate)
-                nextVariationClick(this, EventArgs.Empty);
+                NextVariationClick(this, EventArgs.Empty);
             reuseVariation = false;
 
             MovieCleaner.Clean(moviePlayer, movieFile);
@@ -1274,7 +1274,7 @@ namespace CFForm
             if (renderParameters.action == RenderParameters.RenderActions.Animate ?
                 renderParameters.animateFrame : renderParameters.periodicUpdate) 
             {
-                setupCanvas(width, height);
+                SetupCanvas(width, height);
             }
 
             if (renderParameters.action == RenderParameters.RenderActions.Animate &&
@@ -1286,7 +1286,7 @@ namespace CFForm
                 } else {
                     SystemSounds.Beep.Play();
                     MessageBox.Show(MdiParent, ffReturn);
-                    setMessage(ffReturn);
+                    SetMessage(ffReturn);
                     return;
                 }
             }
@@ -1294,41 +1294,41 @@ namespace CFForm
             postAction = PostRenderAction.DoNothing;
             if (renderHelper.PerformRender(renderThread)) {
                 statusTimer.Start();
-                updateRenderButton();
+                UpdateRenderButton();
             }
         }
 
-        private void doSVGSave(String path, UploadPrefs prefs)
+        private void DoSVGSave(String path, UploadPrefs prefs)
         {
-            setMessage(null);
+            SetMessage(null);
             if (renderHelper.Renderer == 0) {
                 SystemSounds.Beep.Play();
-                setMessage("There is no SVG data to save.");
+                SetMessage("There is no SVG data to save.");
                 return;
             }
             if (path.Length == 0) {
                 SystemSounds.Beep.Play();
-                setMessage("Bad file name.");
+                SetMessage("Bad file name.");
                 return;
             }
 
             if (!renderHelper.MakeSVGCanvas(path, renderParameters.width, renderParameters.height, prefs)) 
             {
                 SystemSounds.Beep.Play();
-                setMessage("An error occurred while saving the SVG file.");
+                SetMessage("An error occurred while saving the SVG file.");
                 return;
             }
 
-            setMessage("Saving SVG file...");
+            SetMessage("Saving SVG file...");
             renderParameters.action = RenderParameters.RenderActions.SaveSVG;
             postAction = PostRenderAction.DoNothing;
             if (renderHelper.PerformRender(renderThread)) {
                 statusTimer.Start();
-                updateRenderButton();
+                UpdateRenderButton();
             }
         }
 
-        private void setupCanvas(int width, int height)
+        private void SetupCanvas(int width, int height)
         {
             renderHelper.MakeCanvas(width, height);
         }
@@ -1340,7 +1340,7 @@ namespace CFForm
                     renderHelper.RequestStop = true;
                 } else {
                     renderHelper.RequestFinishUp = true;
-                    updateRenderButton();
+                    UpdateRenderButton();
                 }
             }
         }
@@ -1354,7 +1354,7 @@ namespace CFForm
             moviePlayer = null;
 
             if (!renderHelper.Canvas && movieFile == null) {
-                setMessage("There is nothing to save.");
+                SetMessage("There is nothing to save.");
                 SystemSounds.Asterisk.Play();
                 return;
             }
@@ -1376,7 +1376,7 @@ namespace CFForm
                             try {
                                 File.Delete(saveMovieDlg.FileName);
                             } catch {
-                                setMessage("Cannot overwrite destination.");
+                                SetMessage("Cannot overwrite destination.");
                                 SystemSounds.Asterisk.Play();
                                 return;
                             }
@@ -1384,9 +1384,9 @@ namespace CFForm
                         try {
                             File.Move(movieFile, saveMovieDlg.FileName);
                             movieFile = null;
-                            setMessage("Movie saved.");
+                            SetMessage("Movie saved.");
                         } catch {
-                            setMessage("Movie save failed.");
+                            SetMessage("Movie save failed.");
                             SystemSounds.Asterisk.Play();
                             return;
                         }
@@ -1409,7 +1409,7 @@ namespace CFForm
                             renderHelper.SaveToPNGorJPEG(prefs, saveImageDlg.FileDlgFileName, true);
                             break;
                         case 3: // SVG
-                            doSVGSave(saveImageDlg.FileDlgFileName, prefs);
+                            DoSVGSave(saveImageDlg.FileDlgFileName, prefs);
                             break;
                         default:
                             break;
@@ -1428,7 +1428,7 @@ namespace CFForm
                 UploadPrefs = prefs;
         }
 
-        private void nextVariationClick(object sender, EventArgs e)
+        private void NextVariationClick(object sender, EventArgs e)
         {
             reuseVariation = true;
             ++currentVariation;
@@ -1437,7 +1437,7 @@ namespace CFForm
             variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
         }
 
-        private void prevVariationClick(object sender, EventArgs e)
+        private void PrevVariationClick(object sender, EventArgs e)
         {
             reuseVariation = true;
             --currentVariation;
@@ -1446,7 +1446,7 @@ namespace CFForm
             variationTextBox.Text = RenderHelper.VariationToString(currentVariation);
         }
 
-        private void formIsClosing(object sender, FormClosingEventArgs e)
+        private void FormIsClosing(object sender, FormClosingEventArgs e)
         {
             canceledByUser = false;
 
@@ -1496,21 +1496,21 @@ namespace CFForm
             }
         }
 
-        private void statusTick(object sender, EventArgs e)
+        private void StatusTick(object sender, EventArgs e)
         {
             if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
-                updateRenderButton();
+                UpdateRenderButton();
                 renderHelper.RequestUpdate();
             }
         }
 
-        private void renderBoxSizeChanged(object sender, EventArgs e)
+        private void RenderBoxSizeChanged(object sender, EventArgs e)
         {
             if (renderBox.Size != displayImageSize)
                 displayImage = null;
         }
 
-        private void formHasClosed(object sender, FormClosedEventArgs e)
+        private void FormHasClosed(object sender, FormClosedEventArgs e)
         {
             MovieCleaner.Clean(moviePlayer, movieFile);
             moviePlayer = null; movieFile = null;

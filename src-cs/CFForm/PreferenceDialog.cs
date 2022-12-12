@@ -72,7 +72,7 @@ namespace CFForm
                 border = 2.0;
             trackBarBorder.Value = (int)((border + 1.0) * 33.0);
             originalFont = Properties.Settings.Default.EditorFont;
-            updateFontName(originalFont);
+            UpdateFontName(originalFont);
             fontdFontDialog = new FontDialog();
             fontdFontDialog.Font = originalFont;
             int tabwidth = Properties.Settings.Default.TabWidth;
@@ -113,12 +113,12 @@ namespace CFForm
             numberColor.Text = Properties.Settings.Default.StyleNumbersColor;
         }
 
-        private void updateFontName(Font font)
+        private void UpdateFontName(Font font)
         {
             fontDisplay.Font = font;
             fontDisplay.Text = String.Format("{0} {1}", font.Name, font.SizeInPoints);
         }
-        private void colorChanged(object sender, EventArgs e)
+        private void ColorChanged(object sender, EventArgs e)
         {
             TextBox? colorBox = sender as TextBox;
             if (colorBox == null)
@@ -168,12 +168,12 @@ namespace CFForm
             buttonOK.Enabled = colorErrorBitfield == 0;
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
             if (radioOpenWelcome.Checked) Properties.Settings.Default.StartAction = 0;
             if (radioOpenNew.Checked) Properties.Settings.Default.StartAction = 1;
@@ -233,21 +233,21 @@ namespace CFForm
             this.Close();
         }
 
-        private void fontChange_Click(object sender, EventArgs e)
+        private void FontChange_Click(object sender, EventArgs e)
         {
             if (fontdFontDialog.ShowDialog(this) != DialogResult.Cancel)
             {
                 currentFont = fontdFontDialog.Font;
-                updateFontName(currentFont);
+                UpdateFontName(currentFont);
             }
         }
 
-        private void editorStyleChanged(object sender, EventArgs e)
+        private void EditorStyleChanged(object sender, EventArgs e)
         {
             styleChanged = true;
         }
 
-        private void numberKeyPress(object sender, KeyPressEventArgs e)
+        private void NumberKeyPress(object sender, KeyPressEventArgs e)
         {
             if (!Char.IsControl(e.KeyChar) && !Char.IsDigit(e.KeyChar))
                 e.Handled = true;

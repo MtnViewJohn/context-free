@@ -89,7 +89,7 @@
             this.minimumSizeBox.Name = "minimumSizeBox";
             this.minimumSizeBox.Size = new System.Drawing.Size(148, 39);
             this.minimumSizeBox.TabIndex = 6;
-            this.minimumSizeBox.Validating += new System.ComponentModel.CancelEventHandler(this.validFloat);
+            this.minimumSizeBox.Validating += new System.ComponentModel.CancelEventHandler(this.ValidFloat);
             // 
             // label8
             // 
@@ -171,7 +171,7 @@
             this.widthBox.Name = "widthBox";
             this.widthBox.Size = new System.Drawing.Size(144, 39);
             this.widthBox.TabIndex = 1;
-            this.widthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.widthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // heightBox
             // 
@@ -179,7 +179,7 @@
             this.heightBox.Name = "heightBox";
             this.heightBox.Size = new System.Drawing.Size(144, 39);
             this.heightBox.TabIndex = 3;
-            this.heightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.heightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // OKbutton
             // 
@@ -199,7 +199,7 @@
             this.cancelButton.TabIndex = 23;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButtonClick);
+            this.cancelButton.Click += new System.EventHandler(this.CancelButtonClick);
             // 
             // RenderSizeDialog
             // 

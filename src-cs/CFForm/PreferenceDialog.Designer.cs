@@ -288,7 +288,7 @@
             this.editJPEGquality.Size = new System.Drawing.Size(100, 39);
             this.editJPEGquality.TabIndex = 9;
             this.editJPEGquality.Text = "90";
-            this.editJPEGquality.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.editJPEGquality.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // label9
             // 
@@ -394,7 +394,7 @@
             this.numberColor.TabIndex = 40;
             this.numberColor.Tag = "128";
             this.numberColor.Text = "#000";
-            this.numberColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.numberColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // numberItalic
             // 
@@ -404,7 +404,7 @@
             this.numberItalic.Size = new System.Drawing.Size(28, 27);
             this.numberItalic.TabIndex = 39;
             this.numberItalic.UseVisualStyleBackColor = true;
-            this.numberItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.numberItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // numberBold
             // 
@@ -414,7 +414,7 @@
             this.numberBold.Size = new System.Drawing.Size(28, 27);
             this.numberBold.TabIndex = 38;
             this.numberBold.UseVisualStyleBackColor = true;
-            this.numberBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.numberBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // numberStyle
             // 
@@ -434,7 +434,7 @@
             this.filenameColor.TabIndex = 36;
             this.filenameColor.Tag = "64";
             this.filenameColor.Text = "#000";
-            this.filenameColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.filenameColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // filenameItalic
             // 
@@ -444,7 +444,7 @@
             this.filenameItalic.Size = new System.Drawing.Size(28, 27);
             this.filenameItalic.TabIndex = 35;
             this.filenameItalic.UseVisualStyleBackColor = true;
-            this.filenameItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.filenameItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // filenameBold
             // 
@@ -454,7 +454,7 @@
             this.filenameBold.Size = new System.Drawing.Size(28, 27);
             this.filenameBold.TabIndex = 34;
             this.filenameBold.UseVisualStyleBackColor = true;
-            this.filenameBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.filenameBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // filenameStyle
             // 
@@ -474,7 +474,7 @@
             this.builtinColor.TabIndex = 32;
             this.builtinColor.Tag = "32";
             this.builtinColor.Text = "#000";
-            this.builtinColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.builtinColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // builtinItalic
             // 
@@ -484,7 +484,7 @@
             this.builtinItalic.Size = new System.Drawing.Size(28, 27);
             this.builtinItalic.TabIndex = 31;
             this.builtinItalic.UseVisualStyleBackColor = true;
-            this.builtinItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.builtinItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // builtinBold
             // 
@@ -494,7 +494,7 @@
             this.builtinBold.Size = new System.Drawing.Size(28, 27);
             this.builtinBold.TabIndex = 30;
             this.builtinBold.UseVisualStyleBackColor = true;
-            this.builtinBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.builtinBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // builtinStyle
             // 
@@ -514,7 +514,7 @@
             this.keywordColor.TabIndex = 28;
             this.keywordColor.Tag = "16";
             this.keywordColor.Text = "#000";
-            this.keywordColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.keywordColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // keywordItalic
             // 
@@ -524,7 +524,7 @@
             this.keywordItalic.Size = new System.Drawing.Size(28, 27);
             this.keywordItalic.TabIndex = 27;
             this.keywordItalic.UseVisualStyleBackColor = true;
-            this.keywordItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.keywordItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // keywordBold
             // 
@@ -534,7 +534,7 @@
             this.keywordBold.Size = new System.Drawing.Size(28, 27);
             this.keywordBold.TabIndex = 26;
             this.keywordBold.UseVisualStyleBackColor = true;
-            this.keywordBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.keywordBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // keywordStyle
             // 
@@ -554,7 +554,7 @@
             this.identifierColor.TabIndex = 24;
             this.identifierColor.Tag = "8";
             this.identifierColor.Text = "#000";
-            this.identifierColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.identifierColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // identifierItalic
             // 
@@ -564,7 +564,7 @@
             this.identifierItalic.Size = new System.Drawing.Size(28, 27);
             this.identifierItalic.TabIndex = 23;
             this.identifierItalic.UseVisualStyleBackColor = true;
-            this.identifierItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.identifierItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // identifierBold
             // 
@@ -574,7 +574,7 @@
             this.identifierBold.Size = new System.Drawing.Size(28, 27);
             this.identifierBold.TabIndex = 22;
             this.identifierBold.UseVisualStyleBackColor = true;
-            this.identifierBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.identifierBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // identifierStyle
             // 
@@ -594,7 +594,7 @@
             this.symbolColor.TabIndex = 20;
             this.symbolColor.Tag = "4";
             this.symbolColor.Text = "#000";
-            this.symbolColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.symbolColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // symbolItalic
             // 
@@ -604,7 +604,7 @@
             this.symbolItalic.Size = new System.Drawing.Size(28, 27);
             this.symbolItalic.TabIndex = 19;
             this.symbolItalic.UseVisualStyleBackColor = true;
-            this.symbolItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.symbolItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // symbolBold
             // 
@@ -614,7 +614,7 @@
             this.symbolBold.Size = new System.Drawing.Size(28, 27);
             this.symbolBold.TabIndex = 18;
             this.symbolBold.UseVisualStyleBackColor = true;
-            this.symbolBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.symbolBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // symbolStyle
             // 
@@ -634,7 +634,7 @@
             this.commentColor.TabIndex = 16;
             this.commentColor.Tag = "2";
             this.commentColor.Text = "#000";
-            this.commentColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.commentColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // commentItalic
             // 
@@ -644,7 +644,7 @@
             this.commentItalic.Size = new System.Drawing.Size(28, 27);
             this.commentItalic.TabIndex = 15;
             this.commentItalic.UseVisualStyleBackColor = true;
-            this.commentItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.commentItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // commentBold
             // 
@@ -654,7 +654,7 @@
             this.commentBold.Size = new System.Drawing.Size(28, 27);
             this.commentBold.TabIndex = 14;
             this.commentBold.UseVisualStyleBackColor = true;
-            this.commentBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.commentBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // commentStyle
             // 
@@ -714,7 +714,7 @@
             this.defaultColor.TabIndex = 8;
             this.defaultColor.Tag = "1";
             this.defaultColor.Text = "#000";
-            this.defaultColor.TextChanged += new System.EventHandler(this.colorChanged);
+            this.defaultColor.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // defaultItalic
             // 
@@ -724,7 +724,7 @@
             this.defaultItalic.Size = new System.Drawing.Size(28, 27);
             this.defaultItalic.TabIndex = 7;
             this.defaultItalic.UseVisualStyleBackColor = true;
-            this.defaultItalic.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.defaultItalic.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // defaultBold
             // 
@@ -734,7 +734,7 @@
             this.defaultBold.Size = new System.Drawing.Size(28, 27);
             this.defaultBold.TabIndex = 6;
             this.defaultBold.UseVisualStyleBackColor = true;
-            this.defaultBold.CheckedChanged += new System.EventHandler(this.editorStyleChanged);
+            this.defaultBold.CheckedChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // defaultStyle
             // 
@@ -768,7 +768,7 @@
             0,
             0,
             0});
-            this.numericTabWidth.ValueChanged += new System.EventHandler(this.editorStyleChanged);
+            this.numericTabWidth.ValueChanged += new System.EventHandler(this.EditorStyleChanged);
             // 
             // label11
             // 
@@ -788,7 +788,7 @@
             this.fontChange.TabIndex = 2;
             this.fontChange.Text = "Change";
             this.fontChange.UseVisualStyleBackColor = true;
-            this.fontChange.Click += new System.EventHandler(this.fontChange_Click);
+            this.fontChange.Click += new System.EventHandler(this.FontChange_Click);
             // 
             // fontDisplay
             // 
@@ -817,7 +817,7 @@
             this.buttonOK.TabIndex = 51;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -827,7 +827,7 @@
             this.buttonCancel.TabIndex = 50;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // PreferenceDialog
             // 

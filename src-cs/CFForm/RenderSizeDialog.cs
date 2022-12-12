@@ -58,7 +58,7 @@ namespace CFForm
         private double minSize = 0.0;
         private CppWrapper.RenderParameters prefs;
 
-        private void validFloat(object sender, CancelEventArgs e)
+        private void ValidFloat(object sender, CancelEventArgs e)
         {
             TextBox? box = sender as TextBox;
             if (box != null) {
@@ -92,12 +92,12 @@ namespace CFForm
             }
         }
 
-        private void cancelButtonClick(object sender, EventArgs e)
+        private void CancelButtonClick(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private void numberKeyPress(object sender, KeyPressEventArgs e)
+        private void NumberKeyPress(object sender, KeyPressEventArgs e)
         {
             if (!Char.IsControl(e.KeyChar) && !Char.IsDigit(e.KeyChar))
                 e.Handled = true;

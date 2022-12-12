@@ -93,7 +93,7 @@
             this.widthTextBox.Name = "widthTextBox";
             this.widthTextBox.Size = new System.Drawing.Size(110, 39);
             this.widthTextBox.TabIndex = 3;
-            this.widthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.widthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // heightTextBox
             // 
@@ -101,7 +101,7 @@
             this.heightTextBox.Name = "heightTextBox";
             this.heightTextBox.Size = new System.Drawing.Size(110, 39);
             this.heightTextBox.TabIndex = 4;
-            this.heightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.heightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // label4
             // 
@@ -118,7 +118,7 @@
             this.minSizeTextBox.Name = "minSizeTextBox";
             this.minSizeTextBox.Size = new System.Drawing.Size(110, 39);
             this.minSizeTextBox.TabIndex = 6;
-            this.minSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.validFloat);
+            this.minSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.ValidFloat);
             // 
             // label5
             // 
@@ -218,7 +218,7 @@
             this.lengthTextBox.Name = "lengthTextBox";
             this.lengthTextBox.Size = new System.Drawing.Size(182, 39);
             this.lengthTextBox.TabIndex = 29;
-            this.lengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.lengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // label12
             // 
@@ -262,7 +262,7 @@
             this.frameTextBox.Name = "frameTextBox";
             this.frameTextBox.Size = new System.Drawing.Size(182, 39);
             this.frameTextBox.TabIndex = 33;
-            this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numberKeyPress);
+            this.frameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberKeyPress);
             // 
             // formatLabel
             // 
@@ -293,7 +293,7 @@
             this.okButton.TabIndex = 36;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okCLick);
+            this.okButton.Click += new System.EventHandler(this.OkCLick);
             // 
             // cancelButton
             // 
@@ -303,7 +303,7 @@
             this.cancelButton.TabIndex = 37;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelClick);
+            this.cancelButton.Click += new System.EventHandler(this.CancelClick);
             // 
             // errorMessage
             // 
