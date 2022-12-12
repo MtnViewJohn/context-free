@@ -94,6 +94,11 @@ namespace CppWrapper {
 
     void RenderHelper::deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
     {
+        // Force application to wait for thread to terminate. This prevents
+        // temp files from clogging the disk. Renderer::AbortEverything
+        // will cause the rest of deletion to bypass
+        Threading::Thread::CurrentThread->IsBackground = false;
+
         RendererHolder^ holder = dynamic_cast<RendererHolder^>(e->Argument);
         if (holder) {
             delete holder->renderer;
