@@ -1,4 +1,4 @@
-﻿// Document.cs
+// Document.cs
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2022 John Horigan - john@glyphic.com
@@ -1492,7 +1492,10 @@ namespace CFForm
             Size newSize = renderBox.Size;
             if (newSize.Width <= 0 || newSize.Height <= 0) return;
             if (displayImage != null && (newSize.Width  != displayImage.Width ||
-                                         newSize.Height != displayImage.Height)) displayImage = null;
+                                         newSize.Height != displayImage.Height))
+            {
+                renderSizeChanged();
+            }
         }
 
         private void formHasClosed(object sender, FormClosedEventArgs e)
