@@ -119,7 +119,48 @@ namespace CFForm
 
         private CppWrapper.RenderHelper renderHelper = new RenderHelper();
 
-        private Bitmap? displayImage = null;
+        private Bitmap? mDisplayImage = null;
+
+        internal Bitmap displayImage
+        {
+            get {
+                Size newSize = renderBox.Size;
+
+                if (mDisplayImage != null) {
+                    if (newSize == mDisplayImage.Size)
+                        return mDisplayImage;
+                    mDisplayImage.Dispose();
+                    mDisplayImage = null;
+                }
+
+                if (newSize.Width <= 0 || newSize.Height <= 0) 
+                    newSize = new Size(10, 10);
+
+                try {
+                    mDisplayImage = new Bitmap(newSize.Width, newSize.Height,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    Graphics g = Graphics.FromImage(mDisplayImage);
+                    g.Clear(Color.White);
+                    renderBox.Image = mDisplayImage;
+                } catch {
+                    mDisplayImage = new Bitmap(10, 10,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    setMessage("Error creating new screen bitmap.");
+                }
+                return mDisplayImage;
+            }
+            set { mDisplayImage = value; }
+        }
+
+        internal Size displayImageSize
+        {
+            get
+            {
+                if (mDisplayImage == null) return new Size(0, 0);
+                return mDisplayImage.Size;
+            }
+        }
+
         private bool isTiled = false;
 
         private String? movieFile = null;
@@ -681,25 +722,6 @@ namespace CFForm
             cfdgMessage.Document.Write(html);
             deferredHtml.Clear();
             messageWindowUnready = false;
-        }
-
-        private void renderSizeChanged()
-        {
-            Size newSize = renderBox.Size;
-            if (newSize.Width <= 0 || newSize.Height <= 0) return;
-            if (displayImage != null && newSize.Width == displayImage.Width && 
-                                        newSize.Height == displayImage.Height) return;
-            try {
-                using (Bitmap? oldImage = displayImage) {
-                    displayImage = new Bitmap(newSize.Width, newSize.Height,
-                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    Graphics g = Graphics.FromImage(displayImage);
-                    g.Clear(Color.White);
-                    renderBox.Image = displayImage;
-                }
-            } catch {
-                setMessage("Error creating new screen bitmap.");
-            }
         }
 
         private void setMessage(String? txt)
@@ -1269,9 +1291,6 @@ namespace CFForm
                 }
             }
 
-            if (renderParameters.action == RenderParameters.RenderActions.Render && displayImage == null)
-                renderSizeChanged();
-
             postAction = PostRenderAction.DoNothing;
             if (renderHelper.PerformRender(renderThread)) {
                 statusTimer.Start();
@@ -1311,8 +1330,6 @@ namespace CFForm
 
         private void setupCanvas(int width, int height)
         {
-            if (displayImage == null)
-                renderSizeChanged();
             renderHelper.MakeCanvas(width, height);
         }
 
@@ -1489,13 +1506,8 @@ namespace CFForm
 
         private void renderBoxSizeChanged(object sender, EventArgs e)
         {
-            Size newSize = renderBox.Size;
-            if (newSize.Width <= 0 || newSize.Height <= 0) return;
-            if (displayImage != null && (newSize.Width  != displayImage.Width ||
-                                         newSize.Height != displayImage.Height))
-            {
-                renderSizeChanged();
-            }
+            if (renderBox.Size != displayImageSize)
+                displayImage = null;
         }
 
         private void formHasClosed(object sender, FormClosedEventArgs e)
