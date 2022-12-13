@@ -40,6 +40,9 @@ namespace CFForm
 {
     public partial class Form1 : Form
     {
+        [System.Runtime.InteropServices.DllImport("Shell32.dll")]
+        static extern void SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
+
         public enum StartAction
         {
             Welcome = 0, New = 1, Nothing = 2, Arguments = 3
@@ -72,42 +75,42 @@ namespace CFForm
 
             AllowDrop = true;
 
-            Version osver = Environment.OSVersion.Version;
-            if (osver.Major < 10) {
-                String appPath = Application.ExecutablePath;
+            String appPath = Application.ExecutablePath;
+            try {
                 // Check if the required registry keys exist and are correct
-                try {
-                    using (RegistryKey? classKey = Registry.CurrentUser.OpenSubKey("Software\\Classes\\.cfdg"),
-                                            key2 = classKey.OpenSubKey("ShellNew"))
-                    {
-                        String? newCmd = key2.GetValue("Command") as String;
-                        if (newCmd.IndexOf(appPath) == -1)
-                            throw new Exception();
-                    }
-                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey("Software\\Classes\\ContextFree.Document")) 
-                    {
-                        String? name = key.GetValue(String.Empty) as String;
-                    }
-                } catch {
-                    // If not then make/fix them
-                    try {
-                        using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\.cfdg"),
-                                               key2 = classKey.CreateSubKey("ShellNew")) {
-                            classKey.SetValue(String.Empty, "ContextFree.Document");
-                            key2.SetValue("Command", String.Format("\"{0}\" /new \"%1\"", appPath));
-                        }
-                        using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\ContextFree.Document"),
-                                            iconkey = classKey.CreateSubKey("DefaultIcon"),
-                                               key1 = classKey.CreateSubKey("shell"),
-                                               key2 = key1.CreateSubKey("open"),
-                                               key3 = key2.CreateSubKey("command"))
-                        {
-                            classKey.SetValue(String.Empty, "Context Free file");
-                            iconkey.SetValue(String.Empty, String.Format("\"{0}\",1", appPath));
-                            key3.SetValue(String.Empty, String.Format("\"{0}\" \"%1\"", appPath));
-                        }
-                    } catch { }
+                using (RegistryKey? classKey = Registry.CurrentUser.OpenSubKey("Software\\Classes\\.cfdg"),
+                                        key2 = classKey!.OpenSubKey("ShellNew"))
+                {
+                    String? newCmd = key2!.GetValue("Command") as String;
+                    if (newCmd!.IndexOf(appPath) == -1)
+                        throw new Exception();
                 }
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey("Software\\Classes\\ContextFree.Document\\shell\\open\\command")) 
+                {
+                    String? openCmd = key!.GetValue(String.Empty) as String;
+                    if (openCmd!.IndexOf(appPath) == -1)
+                        throw new Exception();
+                }
+            } catch {
+                // If not then make/fix them
+                try {
+                    using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\.cfdg"),
+                                           key2 = classKey.CreateSubKey("ShellNew")) {
+                        classKey.SetValue(String.Empty, "ContextFree.Document");
+                        key2.SetValue("Command", String.Format("\"{0}\" /new \"%1\"", appPath));
+                    }
+                    using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey("Software\\Classes\\ContextFree.Document"),
+                                        iconkey = classKey.CreateSubKey("DefaultIcon"),
+                                           key1 = classKey.CreateSubKey("shell"),
+                                           key2 = key1.CreateSubKey("open"),
+                                           key3 = key2.CreateSubKey("command"))
+                    {
+                        classKey.SetValue(String.Empty, "Context Free file");
+                        iconkey.SetValue(String.Empty, String.Format("\"{0}\",1", appPath));
+                        key3.SetValue(String.Empty, String.Format("\"{0}\" \"%1\"", appPath));
+                    }
+                    SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
+                } catch { }
             }
 
             String[] args = Environment.GetCommandLineArgs();
