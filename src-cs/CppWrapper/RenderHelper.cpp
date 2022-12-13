@@ -62,7 +62,7 @@ namespace CppWrapper {
         directFunction = (SciFnDirect)SendMessage(hwnd, SCI_GETDIRECTFUNCTION, 0, 0);
         mSystem = new WinSystem((void*)docHwnd);
         renderDeleter = gcnew BackgroundWorker();
-        renderDeleter->DoWork += gcnew DoWorkEventHandler(this, &RenderHelper::deleteRenderer);
+        renderDeleter->DoWork += gcnew DoWorkEventHandler(this, &RenderHelper::DeleteRenderer);
         WinSystem::MainWindow = (void*)formHwnd;
     }
 
@@ -92,7 +92,7 @@ namespace CppWrapper {
         delete mEngine;             mEngine = nullptr;
     }
 
-    void RenderHelper::deleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+    void RenderHelper::DeleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
     {
         // Force application to wait for thread to terminate. This prevents
         // temp files from clogging the disk. Renderer::AbortEverything
@@ -401,7 +401,7 @@ namespace CppWrapper {
         System::Drawing::Rectangle destRect(originX, originY, scaledWidth, scaledHeight);
         if (backBrush) {
             System::Drawing::Rectangle fullRect(0, 0, destSize.Width, destSize.Height);
-            drawCheckerBoard(g, grayBrush, fullRect);
+            DrawCheckerBoard(g, grayBrush, fullRect);
             g->FillRectangle(backBrush, fullRect);
         } else {
             g->Clear(back);
@@ -424,10 +424,10 @@ namespace CppWrapper {
         g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
         if (Tiled && scale == 1.0) {
-            drawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
+            DrawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
         } else {
             if (mCanvas->mBackground.a < 1.0 || (*mEngine)->usesBlendMode)
-                drawCheckerBoard(g, grayBrush, destRect);
+                DrawCheckerBoard(g, grayBrush, destRect);
             if (scale == 1.0) {
                 g->DrawImageUnscaled(newBitmap, originX, originY);
             } else {
@@ -515,7 +515,7 @@ namespace CppWrapper {
     }
 
     void 
-    RenderHelper::drawCheckerBoard(Graphics^ g, SolidBrush^ grayBrush, System::Drawing::Rectangle destRect)
+    RenderHelper::DrawCheckerBoard(Graphics^ g, SolidBrush^ grayBrush, System::Drawing::Rectangle destRect)
     {
         g->SetClip(destRect, System::Drawing::Drawing2D::CombineMode::Replace);
         g->Clear(Color::White);
@@ -528,7 +528,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::drawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g,
+    RenderHelper::DrawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g,
         SolidBrush^ grayBrush, int x, int y)
     {
         if (!mRenderer || !mRenderer->m_tiledCanvas)
@@ -541,7 +541,7 @@ namespace CppWrapper {
             pt != ept; ++pt) {
             if (grayBrush) {
                 System::Drawing::Rectangle tileRect(pt->x, pt->y, src->Width, src->Height);
-                drawCheckerBoard(g, grayBrush, tileRect);
+                DrawCheckerBoard(g, grayBrush, tileRect);
             }
             g->DrawImageUnscaled(src, pt->x, pt->y);
         }
