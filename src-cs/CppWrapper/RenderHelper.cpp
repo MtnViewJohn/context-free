@@ -375,7 +375,6 @@ namespace CppWrapper {
             : System::Drawing::Size(mCanvas->mWidth, mCanvas->mHeight);
 
         double scale = 1.0;
-        SolidBrush^ grayBrush = gcnew SolidBrush(Color::LightGray);
         agg::rgba8 bk(mCanvas->mBackground);
         Color back = Color::FromArgb(bk.a, bk.r, bk.g, bk.b);
         SolidBrush^ backBrush = nullptr;
@@ -401,7 +400,7 @@ namespace CppWrapper {
         System::Drawing::Rectangle destRect(originX, originY, scaledWidth, scaledHeight);
         if (backBrush) {
             System::Drawing::Rectangle fullRect(0, 0, destSize.Width, destSize.Height);
-            DrawCheckerBoard(g, grayBrush, fullRect);
+            DrawCheckerBoard(g, fullRect);
             g->FillRectangle(backBrush, fullRect);
         } else {
             g->Clear(back);
@@ -424,10 +423,10 @@ namespace CppWrapper {
         g->InterpolationMode = System::Drawing::Drawing2D::InterpolationMode::HighQualityBicubic;
 
         if (Tiled && scale == 1.0) {
-            DrawTiled(newBitmap, displayImage, g, grayBrush, originX, originY);
+            DrawTiled(newBitmap, displayImage, g, originX, originY);
         } else {
             if (mCanvas->mBackground.a < 1.0 || (*mEngine)->usesBlendMode)
-                DrawCheckerBoard(g, grayBrush, destRect);
+                DrawCheckerBoard(g, destRect);
             if (scale == 1.0) {
                 g->DrawImageUnscaled(newBitmap, originX, originY);
             } else {
@@ -515,8 +514,9 @@ namespace CppWrapper {
     }
 
     void 
-    RenderHelper::DrawCheckerBoard(Graphics^ g, SolidBrush^ grayBrush, System::Drawing::Rectangle destRect)
+    RenderHelper::DrawCheckerBoard(Graphics^ g, System::Drawing::Rectangle destRect)
     {
+        SolidBrush^ grayBrush = gcnew SolidBrush(Color::LightGray);
         g->SetClip(destRect, System::Drawing::Drawing2D::CombineMode::Replace);
         g->Clear(Color::White);
         for (int y = destRect.Y & ~7; y <= destRect.Y + destRect.Height; y += 8)
@@ -528,8 +528,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::DrawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g,
-        SolidBrush^ grayBrush, int x, int y)
+    RenderHelper::DrawTiled(Bitmap^ src, Bitmap^ dest, Graphics^ g, int x, int y)
     {
         if (!mRenderer || !mRenderer->m_tiledCanvas)
             return;
@@ -539,10 +538,8 @@ namespace CppWrapper {
 
         for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();
             pt != ept; ++pt) {
-            if (grayBrush) {
-                System::Drawing::Rectangle tileRect(pt->x, pt->y, src->Width, src->Height);
-                DrawCheckerBoard(g, grayBrush, tileRect);
-            }
+            System::Drawing::Rectangle tileRect(pt->x, pt->y, src->Width, src->Height);
+            DrawCheckerBoard(g, tileRect);
             g->DrawImageUnscaled(src, pt->x, pt->y);
         }
     }

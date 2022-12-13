@@ -151,10 +151,9 @@ namespace CppWrapper {
         cli::array<System::String^>^ FindTempFiles();
 
     private:
-        void DrawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush,
-            System::Drawing::Rectangle destRect);
+        void DrawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::Rectangle destRect);
         void DrawTiled(System::Drawing::Bitmap^ src, System::Drawing::Bitmap^ dest,
-            System::Drawing::Graphics^ g, System::Drawing::SolidBrush^ grayBrush, int x, int y);
+                       System::Drawing::Graphics^ g, int x, int y);
         System::ComponentModel::BackgroundWorker^ renderDeleter = nullptr;
         void DeleteRenderer(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
         sptr_t SciPtr = 0;
