@@ -101,7 +101,7 @@ CommandLineSystem::openFileForRead(const std::string& path)
             mInputBuffer = std::make_unique<std::string>(ss.str());
         }
         mFirstCfdgRead = false;
-        return std::make_unique<imemstream>(mInputBuffer->data(), mInputBuffer->length());
+        return std::make_unique<std::istringstream>(*mInputBuffer);
     }
 
     return AbstractSystem::openFileForRead(path);
