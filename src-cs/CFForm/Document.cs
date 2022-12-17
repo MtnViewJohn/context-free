@@ -1,4 +1,4 @@
-// Document.cs
+﻿// Document.cs
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2022 John Horigan - john@glyphic.com
@@ -224,8 +224,10 @@ namespace CFForm
 
             cfdgText.Invalidate();
 
-            renderHelper = new RenderHelper(cfdgText.Handle.ToInt64(), this.Handle.ToInt64(),
-                MdiParent.Handle.ToInt64());
+            unsafe {
+                renderHelper = new RenderHelper(cfdgText.Handle.ToPointer(), this.Handle.ToPointer(),
+                    MdiParent.Handle.ToPointer());
+            }
             renderParameters = RenderParameters;
 
             bool canAnimate = renderHelper.CanAnimate();

@@ -54,7 +54,7 @@ namespace CppWrapper {
         WinSystem* winsystem;
     };
 
-    RenderHelper::RenderHelper(intptr_t editHwnd, intptr_t docHwnd, intptr_t formHwnd)
+    RenderHelper::RenderHelper(void* editHwnd, void* docHwnd, void* formHwnd)
     : mEngine(new cfdg_ptr())
     {
         HWND hwnd = (HWND)editHwnd;
