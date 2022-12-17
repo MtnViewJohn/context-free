@@ -391,7 +391,7 @@
             this.sizeWidthBox.Text = "1000";
             this.sizeWidthBox.Visible = false;
             this.sizeWidthBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrameKeyPressed);
-            this.sizeWidthBox.TextChanged += new System.EventHandler(this.SizeChanged);
+            this.sizeWidthBox.TextChanged += new System.EventHandler(this.RenderSizeChanged);
             // 
             // sizeLabel2
             // 
@@ -407,7 +407,7 @@
             this.sizeHeightBox.Text = "1000";
             this.sizeHeightBox.Visible = false;
             this.sizeHeightBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FrameKeyPressed);
-            this.sizeHeightBox.TextChanged += new System.EventHandler(this.SizeChanged);
+            this.sizeHeightBox.TextChanged += new System.EventHandler(this.RenderSizeChanged);
             // 
             // toolStripSeparator3
             // 
@@ -476,8 +476,8 @@
             this.cfdgText.Text = " ";
             this.cfdgText.AutoCCharDeleted += new System.EventHandler<System.EventArgs>(this.autoCCharDeleted);
             this.cfdgText.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.CharAdded);
-            this.cfdgText.Delete += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.TextChanged);
-            this.cfdgText.Insert += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.TextChanged);
+            this.cfdgText.Delete += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.EditorTextChanged);
+            this.cfdgText.Insert += new System.EventHandler<ScintillaNET.ModificationEventArgs>(this.EditorTextChanged);
             this.cfdgText.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.InsertionCheck);
             this.cfdgText.SavePointLeft += new System.EventHandler<System.EventArgs>(this.ModifiedCFDG);
             this.cfdgText.SavePointReached += new System.EventHandler<System.EventArgs>(this.ModifiedCFDG);

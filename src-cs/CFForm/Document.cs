@@ -1,4 +1,4 @@
-﻿// Document.cs
+// Document.cs
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2022 John Horigan - john@glyphic.com
@@ -193,8 +193,8 @@ namespace CFForm
 
             cfdgText.StyleClearAll();
             cfdgText.Margins[0].Type = ScintillaNET.MarginType.Number;
-            FontChanged(Properties.Settings.Default.EditorFont);
-            StyleChanged();     // grab tab width and styles
+            EditorFontChanged(Properties.Settings.Default.EditorFont);
+            EditorStyleChanged();     // grab tab width and styles
             cfdgText.SetSelectionBackColor(true, ColorTranslator.FromHtml("#114D9C"));
             cfdgText.SetSelectionForeColor(true, ColorTranslator.FromHtml("#FFFFFF"));
 
@@ -855,7 +855,7 @@ namespace CFForm
             }
         }
 
-        private void TextChanged(object sender, ScintillaNET.ModificationEventArgs e)
+        private void EditorTextChanged(object sender, ScintillaNET.ModificationEventArgs e)
         {
             if (cfdgText.AutoCActive && ((int)(e.Source) & 0x60) != 0)
                 CheckAutoC();
@@ -866,7 +866,7 @@ namespace CFForm
             CheckAutoC();
         }
 
-        public void StyleChanged()
+        public void EditorStyleChanged()
         {
             cfdgText.TabWidth = Properties.Settings.Default.TabWidth;
 
@@ -898,7 +898,7 @@ namespace CFForm
             cfdgText.Styles[StyleNumber].ForeColor = ColorTranslator.FromHtml(Properties.Settings.Default.StyleNumbersColor);
         }
 
-        public void FontChanged(Font f)
+        public void EditorFontChanged(Font f)
         {
             cfdgText.Styles[ScintillaNET.Style.Default].Font = f.Name;
             cfdgText.Styles[ScintillaNET.Style.Default].SizeF = f.SizeInPoints;
@@ -972,7 +972,7 @@ namespace CFForm
             System.Media.SystemSounds.Asterisk.Play();
         }
 
-        private void SizeChanged(object sender, EventArgs e)
+        private void RenderSizeChanged(object sender, EventArgs e)
         {
             reuseVariation = true;
             ToolStripTextBox? sizebox = sender as ToolStripTextBox;

@@ -263,9 +263,9 @@ namespace CFForm
                     Document? doc = content as Document;
                     if (doc != null) {
                         if (preference.styleChanged)
-                            doc.StyleChanged();
+                            doc.EditorStyleChanged();
                         if (preference.currentFont != null)
-                            doc.FontChanged(preference.currentFont);
+                            doc.EditorFontChanged(preference.currentFont);
                     }
                 }
             }
