@@ -1,4 +1,4 @@
-﻿// Document.cs
+// Document.cs
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2022 John Horigan - john@glyphic.com

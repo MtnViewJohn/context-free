@@ -11,6 +11,7 @@
     <Title>Context Free</Title>
     <Copyright></Copyright>
     <Description></Description>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CppWrapper\CppWrapper.vcxproj" />
+    <ProjectReference Include="..\FileDlgExtenders\FileDlgExtenders_v12.csproj" />
   </ItemGroup>
 
   <ItemGroup>
