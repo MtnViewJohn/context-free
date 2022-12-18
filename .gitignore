@@ -36,4 +36,6 @@ Release64/
 packages*
 src-net/.vs/
 .vs/
-src-win/win-install/*.exe
+*.exe
+*.dll
+*.lib
