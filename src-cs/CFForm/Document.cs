@@ -554,6 +554,8 @@ namespace CFForm
                     moviePlayer.EnableRaisingEvents = true;
                 } catch (Exception ex) {
                     SetMessage(ex.Message);
+                    moviePlayer.Dispose();
+                    moviePlayer = null;
                 }
             }
         }
