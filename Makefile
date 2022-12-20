@@ -152,7 +152,7 @@ $(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp $(OBJ_DIR)/Sentry
 $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
 
 src-common/examples.h: $(INPUT_SRCS)
-	python makeexamples.py $(INPUT_SRCS) > src-common/examples.h
+	python3 makeexamples.py $(INPUT_SRCS) > src-common/examples.h
 
 #
 # Utility
@@ -196,13 +196,16 @@ check: cfdg
 #
 
 CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CXXFLAGS += -O2 -Wall -Wextra -march=native -Wno-parentheses -std=c++14
+CXXFLAGS += -O2 -Wall -Wextra -mcpu=apple-m1 -Wno-parentheses -std=c++17
 CXXFLAGS += -g -D_GLIBCXX_USE_C99_MATH=1
 CPPFLAGS += -DNDEBUG
 
 # Add this for clang
 ifeq ($(shell uname -s), Darwin)
   CXXFLAGS += -stdlib=libc++
+
+# Uncomment this line to enable FFmpeg support on macos
+# LDFLAGS += -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework VideoToolbox
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
