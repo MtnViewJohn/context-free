@@ -92,7 +92,7 @@ void log_callback_debug(void* ptr, int level, const char* fmt, va_list vl)
 #ifdef _WIN32
         ::OutputDebugStringA(line.data());
 #else
-        std::fprintf(stderr, line.data());
+        std::fputs(line.data(), stderr);
 #endif
     }
 }
