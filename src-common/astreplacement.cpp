@@ -218,8 +218,8 @@ namespace AST {
     ASTswitch::unify()
     {
         if (mElseBody.mPathOp != mPathOp) mPathOp = unknownPathop;
-        for (auto&& _case: mCases)
-            if (_case.second->mPathOp != mPathOp)
+        for (auto& [caseValue, caseBody]: mCases)
+            if (caseBody->mPathOp != mPathOp)
                 mPathOp = unknownPathop;
     }
 
@@ -476,7 +476,7 @@ namespace AST {
         caseRange cr{i, i};
         
         switchMap::const_iterator it = mCaseMap.find(cr);
-        if (it != mCaseMap.end()) (*it).second->traverse(parent, tr, r);
+        if (it != mCaseMap.cend()) (*it).second->traverse(parent, tr, r);
         else mElseBody.traverse(parent, tr, r);
     }
     
@@ -834,9 +834,9 @@ namespace AST {
     {
         ASTreplacement::compile(ph, b);
         Compile(mSwitchExp, ph, b);
-        for (auto&& _case: mCases) {
-            Compile(_case.first, ph, b);
-            _case.second->compile(ph, b);
+        for (auto& [caseValue, caseBody] : mCases) {
+            Compile(caseValue, ph, b);
+            caseBody->compile(ph, b);
         }
         mElseBody.compile(ph, b);
         
@@ -852,13 +852,13 @@ namespace AST {
                 
                 // Build the switch map from the stored case value expressions
                 double val[2] = { 0.0 };
-                for (auto&& _case: mCases) {
-                    const ASTexpression* valExp = _case.first.get();
+                for (auto& [caseValue, caseBody] : mCases) {
+                    const ASTexpression* valExp = caseValue.get();
                     if (!valExp) {
                         CfdgError::Error(mLocation, "Case value missing", b);
                         return;
                     }
-                    ASTrepContainer* body = _case.second.get();
+                    ASTrepContainer* body = caseBody.get();
                     for (auto&& term: *valExp) {
                         const ASTfunction* func = dynamic_cast<const ASTfunction*>(&term);
                         caseType high = 0, low = 0;
@@ -1081,12 +1081,13 @@ namespace AST {
             }
         };
         std::vector<tempcase> tempCases;
-        for (auto&& caseinfo: mCases)
-            tempCases.emplace_back(caseinfo.second.get());
-        for (auto&& caseinfo: mCaseMap) {
+        for (auto& [caseValue, caseContent] : mCases)
+            tempCases.emplace_back(caseContent.get());
+        for (const auto& [caseRange, caseBody]: mCaseMap) {
             for (auto&& tempcaseinfo: tempCases)
-                if (caseinfo.second == tempcaseinfo.mCaseBody) {
-                    for (auto i = caseinfo.first.first; i <= caseinfo.first.second; ++i)
+                if (caseBody == tempcaseinfo.mCaseBody) {
+                    auto [caseRangeStart, caseRangeEnd] = caseRange;
+                    for (auto i = caseRangeStart; i <= caseRangeEnd; ++i)
                         tempcaseinfo.mCases.push_back(i);
                     break;
                 }

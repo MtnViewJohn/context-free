@@ -293,16 +293,17 @@ namespace AST {
         auto nameItem = NameMap.find(func);
         if (nameItem == NameMap.end())
             return NotAFunction;
-        return (*nameItem).second;
+        const auto& [funcName, funcType] = *nameItem;
+        return funcType;
     }
     
     const std::string&
     ASTfunction::GetFuncName(ASTfunction::FuncType t)
     {
         static std::string naf = "not_a_function";
-        for (auto&& kv: NameMap)
-            if (kv.second == t)
-                return kv.first;
+        for (const auto& [name, type] : NameMap)
+            if (type == t)
+                return name;
         return naf;
     }
     
@@ -489,9 +490,9 @@ namespace AST {
             { "align",      CF_ALIGN }
         };
         
-        for (const auto& pp: paramStrings)
-            if (paramString.find(pp.first) != std::string::npos)
-                flags |= pp.second;
+        for (const auto& [paramName, paramFlags] : paramStrings)
+            if (paramString.find(paramName) != std::string::npos)
+                flags |= paramFlags;
     }
 
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)

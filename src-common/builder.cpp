@@ -237,9 +237,9 @@ const std::string&
 Builder::FlagToString(int flag)
 {
     static const std::string notfound = "Unknown flag";
-    for (auto&& kv: FlagNames)
-        if (kv.second == flag)
-            return kv.first;
+    for (const auto& [flagName, flagValue] : FlagNames)
+        if (flagValue == flag)
+            return flagName;
     return notfound;
 }
 

@@ -268,7 +268,8 @@ namespace CppWrapper {
 
         auto example = AbstractSystem::ExamplesMap.find(nameStr);
         if (example != AbstractSystem::ExamplesMap.end()) {
-            auto cfdg = mSystem->cfdgVersion == 2 ? example->second.second : example->second.first;
+            auto [v3cfdg, v2cfdg] = example->second;
+            auto cfdg = mSystem->cfdgVersion == 2 ? v2cfdg : v3cfdg;
             return gcnew String(cfdg, 0, (int)std::strlen(cfdg), System::Text::Encoding::UTF8);
         } else {
             return nullptr;

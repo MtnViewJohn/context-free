@@ -212,7 +212,8 @@ AbstractSystem::openFileForRead(const std::string& path)
 
         auto example = ExamplesMap.find(exfile);
         if (example != ExamplesMap.end()) {
-            auto cfdg = cfdgVersion == 2 ? example->second.second : example->second.first;
+            auto [v3cfdg, v2cfdg] = example->second;
+            auto cfdg = cfdgVersion == 2 ? v2cfdg : v3cfdg;
             return std::make_unique<imemstream>(cfdg, std::strlen(cfdg));
         }
     } else {

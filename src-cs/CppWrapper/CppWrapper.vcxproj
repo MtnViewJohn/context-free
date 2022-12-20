@@ -129,6 +129,7 @@
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -143,6 +144,7 @@
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -157,6 +159,7 @@
       <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -171,6 +174,7 @@
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -185,6 +189,7 @@
       <PreprocessorDefinitions>NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
@@ -199,6 +204,7 @@
       <PreprocessorDefinitions>NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\src-ffmpeg\include;..\..\src-win;..\..\src-win\derived;..\..\src-agg;..\..\src-common\agg-extras;..\..\src-common;..\CppWrapper;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;gdiplus.lib;gdi32.lib;shlwapi.lib;Advapi32.lib;user32.lib</AdditionalDependencies>
