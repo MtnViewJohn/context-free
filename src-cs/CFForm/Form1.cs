@@ -35,6 +35,7 @@ using System.Security.Policy;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Web;
 
 namespace CFForm
 {
@@ -226,7 +227,7 @@ namespace CFForm
         {
             String filename = UniqueNewFile("Document", String.Empty);
             var document = new Document {
-                Name = cfdg.Insert(0, "data:text/plain;charset=UTF-8,"),
+                Name = "data:text/plain;charset=UTF-8," + HttpUtility.UrlEncode(cfdg),
                 TabText = filename,
                 isNamed = false,
                 reloadWhenReady = true,
@@ -411,7 +412,7 @@ namespace CFForm
                     OpenDoc(file);
                 return;
             }
-            String? url = e.Data.GetData(DataFormats.Text)?.ToString();
+            String? url = e.Data.GetData(DataFormats.UnicodeText)?.ToString();
             if (url == null) return;
 
             if (url.StartsWith("file://")) {

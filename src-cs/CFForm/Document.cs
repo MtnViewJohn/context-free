@@ -46,6 +46,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Xml.Linq;
 using System.IO;
 using System.Net;
+using System.Web;
 
 namespace CFForm
 {
@@ -322,14 +323,22 @@ namespace CFForm
                 return false;
             }
 
-            if (Name.StartsWith("data:text/plain;charset=UTF-8,") ||
-                Name.StartsWith("data:text/plain;charset=US-ASCII,") ||
-                Name.StartsWith("data:,"))
-            {
-                cfdgText.Text = Name.Substring(Name.IndexOf(",") + 1);
-                cfdgText.EmptyUndoBuffer();
-                Name = TabText;
-                return true;
+            int comma = Name.IndexOf(",");
+            if (Name.StartsWith("data:") && comma >= 0) {
+                try {
+                    if (Name.IndexOf(";base64,") == comma - 7) {
+                        Byte[] utf8bytes = Convert.FromBase64String(Name[(comma + 1)..]);
+                        cfdgText.Text = Encoding.UTF8.GetString(utf8bytes);
+                    } else {
+                        cfdgText.Text = HttpUtility.UrlDecode(Name[(comma + 1)..], Encoding.UTF8);
+                    }
+                    cfdgText.EmptyUndoBuffer();
+                    Name = TabText;
+                    return true;
+                } catch {
+                    SetMessage("Could not decode the text data.");
+                    return false;
+                }
             }
 
             try {
