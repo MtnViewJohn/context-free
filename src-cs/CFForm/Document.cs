@@ -1106,19 +1106,16 @@ namespace CFForm
             String? tag = ctrl?.Tag as String;
             if (int.TryParse(tag, out int tagint)) {
                 int delta = tagint * Properties.Settings.Default.TabWidth;
-                var start = cfdgText.LineFromPosition(cfdgText.AnchorPosition);
-                var end = cfdgText.LineFromPosition(cfdgText.CurrentPosition);
-                if (start < end) {
-                    // When a whole line is selected the position is at the start
-                    // of the next line. We don't want to include that line.
-                    if (cfdgText.GetColumn(cfdgText.CurrentPosition) == 0)
-                        end--;
-                } else if (end < start) {
-                    // Same
-                    if (cfdgText.GetColumn(cfdgText.AnchorPosition) == 0)
-                        start--;
-                    var t = start; start = end; end = t;    // also swap
-                }
+                var startPos = Math.Min(cfdgText.AnchorPosition, cfdgText.CurrentPosition);
+                var endPos = Math.Max(cfdgText.AnchorPosition, cfdgText.CurrentPosition);
+                var start = cfdgText.LineFromPosition(startPos);
+                var end = cfdgText.LineFromPosition(endPos);
+
+                // When a whole line is selected the position is at the start
+                // of the next line. We don't want to include that line.
+                if (start < end && cfdgText.GetColumn(endPos) == 0)
+                    end--;
+
                 for (; start <= end; ++start) {
                     var indent = cfdgText.Lines[start].Indentation;
                     var newIndent = indent + delta;
