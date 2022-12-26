@@ -92,6 +92,7 @@ namespace CFForm
         {
             Render = 0, RenderSized = 1, Animate = 2, AnimateFrame = 3
         }
+        private String[] renderActionName = new String[] {"Render", "Sized", "Animate", "Frame"};
         private int renderButtonIndex = 0;
         private int progressDelay = 0;
         public enum PostRenderAction
@@ -299,8 +300,8 @@ namespace CFForm
             }
             base.WndProc(ref m);
         }
-        private bool Reload()
 
+        private bool Reload()
         {
             String exampleText = renderHelper.GetExample(Name);
             if (exampleText != null) {
@@ -596,20 +597,7 @@ namespace CFForm
                 else
                     renderButton.Text = "Stop";
             } else {
-                switch (renderAction) {
-                    case RenderAction.Render:
-                        renderButton.Text = "Render";
-                        break;
-                    case RenderAction.RenderSized:
-                        renderButton.Text = "Sized";
-                        break;
-                    case RenderAction.Animate:
-                        renderButton.Text = "Animate";
-                        break;
-                    case RenderAction.AnimateFrame:
-                        renderButton.Text = "Frame";
-                        break;
-                }
+                renderButton.Text = renderActionName[(int)renderAction];
                 renderButtonIndex = 0;
 
                 bool visSize = renderAction == RenderAction.RenderSized;
