@@ -59,7 +59,7 @@ namespace CFForm
         private bool mReuseVariation = false;
         private bool nonAlphaInVariation;
         private int currentVariation;
-        internal bool reuseVariation
+        internal bool ReuseVariation
         {
             get { return mReuseVariation; }
             set
@@ -92,7 +92,7 @@ namespace CFForm
         {
             Render = 0, RenderSized = 1, Animate = 2, AnimateFrame = 3
         }
-        private String[] renderActionName = new String[] {"Render", "Sized", "Animate", "Frame"};
+        private readonly String[] renderActionName = new String[] {"Render", "Sized", "Animate", "Frame"};
         private int renderButtonIndex = 0;
         private int progressDelay = 0;
         public enum PostRenderAction
@@ -576,7 +576,7 @@ namespace CFForm
         }
         private void RenderButtonChange(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             ToolStripMenuItem menu = (ToolStripMenuItem)sender;
             if (int.TryParse(menu.Tag.ToString(), out int tagnum)) {
                 renderAction = (RenderAction)tagnum;
@@ -936,7 +936,7 @@ namespace CFForm
 
         private void VariationChanged(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             if (variationTextBox.Text.Length == 0 ) {
                 variationTextBox.Text = "A";
                 System.Media.SystemSounds.Beep.Play();
@@ -953,7 +953,7 @@ namespace CFForm
 
         private void FrameChanged(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             if (frameTextBox.Text.Length == 0 ) {
                 frameTextBox.Text = "1";
                 renderParameters.frame = 1;
@@ -974,7 +974,7 @@ namespace CFForm
 
         private void RenderSizeChanged(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             ToolStripTextBox? sizebox = sender as ToolStripTextBox;
             if (sizebox != null) {
                 if (!int.TryParse(sizebox.Text, out int s) || s < 1) {
@@ -1243,9 +1243,9 @@ namespace CFForm
         {
             SetMessage(null);
             bool modifiedSinceRender = SyncToSystem();
-            if (!modifiedSinceRender && !reuseVariation && renderParameters.action != RenderParameters.RenderActions.Animate)
+            if (!modifiedSinceRender && !ReuseVariation && renderParameters.action != RenderParameters.RenderActions.Animate)
                 NextVariationClick(this, EventArgs.Empty);
-            reuseVariation = false;
+            ReuseVariation = false;
 
             MovieCleaner.Clean(moviePlayer, movieFile);
             moviePlayer = null; movieFile = null;
@@ -1427,7 +1427,7 @@ namespace CFForm
 
         private void NextVariationClick(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             ++currentVariation;
             if (currentVariation > RenderHelper.MaxVariation || currentVariation < RenderHelper.MinVariation)
                 currentVariation = RenderHelper.MaxVariation;
@@ -1436,7 +1436,7 @@ namespace CFForm
 
         private void PrevVariationClick(object sender, EventArgs e)
         {
-            reuseVariation = true;
+            ReuseVariation = true;
             --currentVariation;
             if (currentVariation > RenderHelper.MaxVariation || currentVariation < RenderHelper.MinVariation)
                 currentVariation = RenderHelper.MinVariation;
@@ -1455,8 +1455,6 @@ namespace CFForm
                 e.Cancel = true;
                 return;
             }
-
-            // cleanup movie player
 
             // If the thread is stopped and the cfdg file is up-to-date then close
             if (!cfdgText.Modified) return;
