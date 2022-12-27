@@ -111,7 +111,8 @@ namespace CppWrapper {
     cli::array<System::String^>^
     RenderHelper::FindTempFiles()
     {
-        auto temps = mSystem->findTempFiles();
+        WinSystem sys{nullptr};
+        auto temps = sys.findTempFiles();
         if (!temps.empty()) {
             cli::array<String^>^ names = gcnew  cli::array<String^>(static_cast<int>(temps.size()));
             int i = 0;

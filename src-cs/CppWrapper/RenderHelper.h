@@ -148,7 +148,7 @@ namespace CppWrapper {
         static UploadPrefs^ DownloadDesign(System::String^ responseBody);
         bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, bool JPEG);
         bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG);
-        cli::array<System::String^>^ FindTempFiles();
+        static cli::array<System::String^>^ FindTempFiles();
 
     private:
         void DrawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::Rectangle destRect);

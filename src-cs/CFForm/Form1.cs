@@ -120,20 +120,18 @@ namespace CFForm
             else
                 startAction = (StartAction)Properties.Settings.Default.StartAction;
 
-            using (var help = new CppWrapper.RenderHelper()) {
-                String[] temps = help.FindTempFiles();
-                if (temps != null && temps.Length > 0) {
-                    if (MessageBox.Show(this, "Should they be deleted?",
-                                        "Old temporary files found",
-                                        MessageBoxButtons.YesNo, 
-                                        MessageBoxIcon.Question,
-                                        MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-                    {
-                        foreach (var file in temps) {
-                            try {
-                                File.Delete(file);
-                            } catch { }
-                        }
+            String[] temps = RenderHelper.FindTempFiles();
+            if (temps != null && temps.Length > 0) {
+                if (MessageBox.Show(this, "Should they be deleted?",
+                                    "Old temporary files found",
+                                    MessageBoxButtons.YesNo, 
+                                    MessageBoxIcon.Question,
+                                    MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                {
+                    foreach (var file in temps) {
+                        try {
+                            File.Delete(file);
+                        } catch { }
                     }
                 }
             }
