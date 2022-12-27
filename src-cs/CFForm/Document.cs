@@ -123,7 +123,7 @@ namespace CFForm
 
         private Bitmap? mDisplayImage = null;
 
-        internal Bitmap displayImage
+        internal Bitmap DisplayImage
         {
             get {
                 Size newSize = renderBox.Size;
@@ -151,10 +151,9 @@ namespace CFForm
                 }
                 return mDisplayImage;
             }
-            set { mDisplayImage = value; }
         }
 
-        internal Size displayImageSize
+        internal Size DisplayImageSize
         {
             get
             {
@@ -265,7 +264,7 @@ namespace CFForm
                     {
                         CppWrapper.RenderStats stat = RenderHelper.GetStats(m.WParam);
                         if (stat.updateRender) {
-                            renderHelper.UpdateRenderBox(renderBox, displayImage, 
+                            renderHelper.UpdateRenderBox(renderBox, DisplayImage, 
                                 renderParameters.suppressDisplay);
                         } else {
                             if ((stat.toDoCount > 0 && !stat.finalOutput) ||
@@ -1504,8 +1503,8 @@ namespace CFForm
 
         private void RenderBoxSizeChanged(object sender, EventArgs e)
         {
-            if (renderBox.Size != displayImageSize)
-                displayImage = null;
+            if (renderBox.Size != DisplayImageSize)
+                mDisplayImage = null;
         }
 
         private void FormHasClosed(object sender, FormClosedEventArgs e)
