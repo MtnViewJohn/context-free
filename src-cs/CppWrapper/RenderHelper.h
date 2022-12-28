@@ -61,7 +61,7 @@ namespace CppWrapper {
             return directFunction(SciPtr, msg, wParam, lParam);
         }
 
-        void StyleLines(int startLine, int endLine);
+        void StyleLines(Sci_Position startLine, Sci_Position endLine);
 
         static cli::array<System::String^>^ GetAutoC();
 

@@ -751,7 +751,6 @@ namespace CFForm
         {
             int startPos = cfdgText.GetEndStyled();
             int startLine = cfdgText.LineFromPosition(startPos);
-            startPos = cfdgText.Lines[startLine].Position;
             int endPos = e.Position;
             int endLine = cfdgText.LineFromPosition(endPos);
             renderHelper?.StyleLines(startLine, endLine);

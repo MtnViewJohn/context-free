@@ -136,7 +136,7 @@ namespace CppWrapper {
     }
 
     void
-    RenderHelper::StyleLines(int startLine, int endLine)
+    RenderHelper::StyleLines(Sci_Position startLine, Sci_Position endLine)
     {
         CFscintilla::StyleLines(directFunction, SciPtr, startLine, endLine);
     }
