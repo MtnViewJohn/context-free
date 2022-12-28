@@ -97,9 +97,8 @@ namespace CppWrapper {
             }
             bool get() { return mRenderer ? mRenderer->requestStop.load() : false; }
         }
-        property intptr_t Renderer {
-            void set(intptr_t v) { mRenderer = (::Renderer*)v; }
-            intptr_t get() { return (intptr_t)mRenderer; }
+        property bool Renderer {
+            bool get() { return (bool)mRenderer; }
         }
         property bool Engine {
             bool get() { return mEngine->get() != nullptr; }

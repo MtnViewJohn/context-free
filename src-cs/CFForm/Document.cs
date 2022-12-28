@@ -588,7 +588,7 @@ namespace CFForm
         {
             int lastIndex = renderButtonIndex;
 
-            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
+            if (renderHelper.Renderer && renderThread.IsBusy) {
                 ++renderButtonIndex;
                 if (renderButtonIndex > 8) renderButtonIndex = 1;
                 if (renderHelper.RequestFinishUp)
@@ -626,7 +626,7 @@ namespace CFForm
 
         private void RenderButtonClick(object sender, EventArgs e)
         {
-            if (renderHelper.Renderer != 0 &&  renderThread.IsBusy) {
+            if (renderHelper.Renderer &&  renderThread.IsBusy) {
                 if (renderHelper.RequestFinishUp) {
                     renderHelper.RequestStop = true;
                 } else {
@@ -1256,7 +1256,7 @@ namespace CFForm
 
             renderHelper.PrepareForRender(width, height, renderParameters.minimumSize,
                 renderParameters.borderSize, currentVariation, shrinkTiled);
-            if (renderHelper.Renderer == 0) {
+            if (!renderHelper.Renderer) {
                 SystemSounds.Beep.Play();
                 return;
             }
@@ -1298,7 +1298,7 @@ namespace CFForm
         private void DoSVGSave(String path, UploadPrefs prefs)
         {
             SetMessage(null);
-            if (renderHelper.Renderer == 0) {
+            if (!renderHelper.Renderer) {
                 SystemSounds.Beep.Play();
                 SetMessage("There is no SVG data to save.");
                 return;
@@ -1332,7 +1332,7 @@ namespace CFForm
 
         private void menuRStopClick(object sender, EventArgs e)
         {
-            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
+            if (renderHelper.Renderer && renderThread.IsBusy) {
                 if (renderHelper.RequestFinishUp) {
                     renderHelper.RequestStop = true;
                 } else {
@@ -1493,7 +1493,7 @@ namespace CFForm
 
         private void StatusTick(object sender, EventArgs e)
         {
-            if (renderHelper.Renderer != 0 && renderThread.IsBusy) {
+            if (renderHelper.Renderer && renderThread.IsBusy) {
                 UpdateRenderButton();
                 renderHelper.RequestUpdate();
             }
