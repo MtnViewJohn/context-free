@@ -52,7 +52,7 @@ public:
     };
     
     static Style StyleLine(std::size_t length, const char* text, char* styles, Style initStyle);
-    static void StyleLines(SciFnDirect directFunction, sptr_t sciptr, int startLine, int endLine);
+    static void StyleLines(SciFnDirect directFunction, sptr_t sciptr, Sci_Position startLine, Sci_Position endLine);
 private:
     static void StyleId(std::size_t length, const char* text, char* styles);
 };

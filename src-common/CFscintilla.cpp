@@ -290,9 +290,9 @@ CFscintilla::StyleId(std::size_t length, const char* text, char* styles)
 }
 
 void
-CFscintilla::StyleLines(SciFnDirect directFunction, sptr_t sciptr, int startLine, int endLine)
+CFscintilla::StyleLines(SciFnDirect directFunction, sptr_t sciptr, Sci_Position startLine, Sci_Position endLine)
 {
-    int startPos = (int)directFunction(sciptr, SCI_POSITIONFROMLINE, startLine, 0);
+    Sci_Position startPos = (Sci_Position)directFunction(sciptr, SCI_POSITIONFROMLINE, startLine, 0);
 
     CFscintilla::Style state = Style::StyleDefault;
     if (startLine > 0 && 
@@ -304,8 +304,8 @@ CFscintilla::StyleLines(SciFnDirect directFunction, sptr_t sciptr, int startLine
     std::vector<char> text, styles;
 
     directFunction(sciptr, SCI_STARTSTYLING, startPos, 0);
-    for (int i = startLine; i <= endLine; ++i) {
-        int length = (int)directFunction(sciptr, SCI_LINELENGTH, i, 0);
+    for (Sci_Position i = startLine; i <= endLine; ++i) {
+        Sci_Position length = (Sci_Position)directFunction(sciptr, SCI_LINELENGTH, i, 0);
         if (text.size() < (size_t)(length + 1))
             text.resize(length + 1);
         if (styles.size() < (size_t)length)

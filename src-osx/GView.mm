@@ -289,6 +289,8 @@ namespace {
     FindType mFindType;
     bool mWrapSearch;
     NSInteger mLastCaretPos;
+    sptr_t SciPtr;
+    SciFnDirect directFunction;
 }
 
 + (void)initialize {
@@ -539,6 +541,8 @@ namespace {
         [window makeFirstResponder:[mEditor content]];
     }];
     NSView* superview = [mRewindView superview];
+    SciPtr = (sptr_t)[mEditor message: SCI_GETDIRECTPOINTER];
+    directFunction = (SciFnDirect)[mEditor message: SCI_GETDIRECTFUNCTION];
     [self setupEditor];
 
     [mRewindView setAlphaValue:0.0];        // Put search wrap symbol on top
@@ -1367,27 +1371,9 @@ namespace {
         case SCN_STYLENEEDED: {
             auto startpos = [mEditor getGeneralProperty:SCI_GETENDSTYLED];
             auto startline = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:startpos];
-            startpos = [mEditor getGeneralProperty:SCI_POSITIONFROMLINE parameter:startline];
-            long endpos = notification->position;
+            auto endpos = notification->position;
             auto endline = [mEditor getGeneralProperty:SCI_LINEFROMPOSITION parameter:endpos];
-            CFscintilla::Style state = CFscintilla::StyleDefault;
-            if (startline > 0 && static_cast<CFscintilla::Style>
-                ([mEditor getGeneralProperty:SCI_GETSTYLEAT
-                                   parameter:(startpos-1)]) == CFscintilla::StyleComment)
-                state = CFscintilla::StyleComment;
-            std::vector<char> text, styles;
-            [mEditor setGeneralProperty:SCI_STARTSTYLING parameter:startpos value:0];
-            for (auto i = startline; i <= endline; ++i) {
-                auto length = [mEditor getGeneralProperty:SCI_LINELENGTH parameter:i];
-                if (static_cast<long>(text.size()) < length + 1)
-                    text.resize(length + 1);
-                if (static_cast<long>(styles.size()) < length)
-                    styles.resize(length);
-                [mEditor setReferenceProperty:SCI_GETLINE parameter:i value:text.data()];
-                text[length] = '\0';
-                state = CFscintilla::StyleLine(length, text.data(), styles.data(), state);
-                [mEditor setReferenceProperty:SCI_SETSTYLINGEX parameter:length value:styles.data()];
-            }
+            CFscintilla::StyleLines(directFunction, SciPtr, startline, endline);
             break;
         }
         default:
