@@ -221,11 +221,7 @@ namespace CppWrapper {
         case RenderParameters::RenderActions::Render:
             mRenderer->run(mCanvas, rp->periodicUpdate);
             if (!mCanvas && !mRenderer->requestStop) {
-                int width = rp->action == RenderParameters::RenderActions::Render ?
-                    rp->width : rp->animateWidth;
-                int height = rp->action == RenderParameters::RenderActions::Render ?
-                    rp->height : rp->animateHeight;
-                MakeCanvas(width, height);
+                MakeCanvas(rp->width, rp->height);
                 mRenderer->draw(mCanvas);
             }
             break;
