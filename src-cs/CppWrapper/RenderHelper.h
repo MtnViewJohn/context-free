@@ -40,7 +40,7 @@ namespace CppWrapper {
     public ref class RenderHelper : public System::IDisposable
     {
     public:
-        RenderHelper(void* editHwnd, void* docHwnd, void* formHwnd);
+        RenderHelper(void* editHwnd, void* docHwnd);
         RenderHelper();
 
         ~RenderHelper();
@@ -148,6 +148,7 @@ namespace CppWrapper {
         bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::String^ path, bool JPEG);
         bool SaveToPNGorJPEG(UploadPrefs^ prefs, System::IO::Stream^ str, bool JPEG);
         static cli::array<System::String^>^ FindTempFiles();
+        static void InitWinSystem(void* formHwnd);
 
     private:
         void DrawCheckerBoard(System::Drawing::Graphics^ g, System::Drawing::Rectangle destRect);

@@ -226,8 +226,7 @@ namespace CFForm
             cfdgText.Invalidate();
 
             unsafe {
-                renderHelper = new RenderHelper(cfdgText.Handle.ToPointer(), this.Handle.ToPointer(),
-                    MdiParent.Handle.ToPointer());
+                renderHelper = new RenderHelper(cfdgText.Handle.ToPointer(), this.Handle.ToPointer());
             }
             renderParameters = RenderParameters;
 

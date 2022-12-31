@@ -344,6 +344,10 @@ namespace CFForm
 
         private void LoadInitialization(object sender, EventArgs e)
         {
+            unsafe {
+                RenderHelper.InitWinSystem(this.Handle.ToPointer());
+            }
+
             switch (startAction) {
                 case StartAction.Welcome:
                     welcomeToolStripMenuItem.PerformClick();
