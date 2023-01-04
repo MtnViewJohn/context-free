@@ -157,8 +157,7 @@ namespace CFForm
         {
             get
             {
-                if (mDisplayImage == null) return new Size(0, 0);
-                return mDisplayImage.Size;
+                return mDisplayImage?.Size ?? Size.Empty;
             }
         }
 
@@ -1342,7 +1341,7 @@ namespace CFForm
 
         private void menuROutputClick(object sender, EventArgs e)
         {
-            if (moviePlayer != null && !moviePlayer.HasExited) {
+            if (!(moviePlayer?.HasExited ?? true)) {
                 // Should close and release temp file before save dialog shows
                 moviePlayer.CloseMainWindow();
             }

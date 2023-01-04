@@ -85,7 +85,7 @@ namespace CFForm
             int frameRate = prefs.frameRate;
             if (frameRate < 8) frameRate = 15;
             for (int i = 0; i < frameRateBox.Items.Count; i++) {
-                if (int.Parse(frameRateBox.Items[i].ToString()) == frameRate) {
+                if (int.Parse(frameRateBox.Items[i].ToString()!) == frameRate) {
                     frameRateBox.SelectedIndex = i;
                     break;
                 }
@@ -141,7 +141,7 @@ namespace CFForm
                 if (length < 1) throw new ArgumentException("Length must be positive number.");
                 prefs.length = length;
 
-                int frameRate = int.Parse(frameRateBox.Items[frameRateBox.SelectedIndex].ToString());
+                int frameRate = int.Parse(frameRateBox.Items[frameRateBox.SelectedIndex].ToString()!);
                 prefs.frameRate = frameRate;
 
                 int count = (int)(length * frameRate);

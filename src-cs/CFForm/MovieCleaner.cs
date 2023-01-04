@@ -40,7 +40,7 @@ namespace CFForm
         public static void Clean(System.Diagnostics.Process? player, String? file)
         {
             if (file == null) return;
-            if (player == null || player.HasExited) {
+            if (player?.HasExited ?? true) {
                 try {
                     System.IO.File.Delete(file);
                     System.Diagnostics.Debugger.Log(3, "Delete success: ", file);
@@ -63,7 +63,7 @@ namespace CFForm
         private void DeleteIt(Object? sender, EventArgs e)
         {
             try {
-                System.IO.File.Delete(file);
+                System.IO.File.Delete(file!);
                 System.Diagnostics.Debugger.Log(3, "Delete success: ", file);
             } catch {
                 System.Diagnostics.Debugger.Log(1, "Delete failed: ", file);

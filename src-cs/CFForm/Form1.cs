@@ -121,14 +121,14 @@ namespace CFForm
                 startAction = (StartAction)Properties.Settings.Default.StartAction;
 
             String[] temps = RenderHelper.FindTempFiles();
-            if (temps != null && temps.Length > 0) {
+            if ((temps?.Length ?? 0) > 0) {
                 if (MessageBox.Show(this, "Should they be deleted?",
                                     "Old temporary files found",
                                     MessageBoxButtons.YesNo, 
                                     MessageBoxIcon.Question,
                                     MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                 {
-                    foreach (var file in temps) {
+                    foreach (var file in temps!) {
                         try {
                             File.Delete(file);
                         } catch { }
@@ -159,7 +159,7 @@ namespace CFForm
         {
             foreach (var kid in MdiChildren) {
                 Document? doc = kid as Document;
-                if (doc != null && doc.Name == name)
+                if (doc?.Name.Equals(name) ?? false)
                     return doc;
             }
             return null;
@@ -318,17 +318,14 @@ namespace CFForm
         private void FormIsClosing(object sender, FormClosingEventArgs e)
         {
             if (e.Cancel) {
-                bool userAction = false;
                 foreach (var kid in MdiChildren) {
                     Document? doc = kid as Document;
-                    if (doc != null)
-                        userAction = userAction || doc.canceledByUser;
+                    if (doc?.canceledByUser ?? false)
+                        return;
                 }
-                if (userAction)
-                    return;
                 foreach (var kid in MdiChildren) {
                     Document? doc = kid as Document;
-                    if (doc != null && doc.renderThread.IsBusy) {
+                    if (doc?.renderThread.IsBusy ?? false) {
                         doc.postAction = Document.PostRenderAction.Exit;
                         return;     // Have busy child retry the Close()
                     }
