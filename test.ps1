@@ -8,7 +8,7 @@ if ( -Not (Test-Path "output"))
 
 foreach ($cfdg in $cfdgs) {
   Write-Host -NoNewLine -foregroundcolor white $cfdg.Name
-  .\Release64\ContextFreeCLI.exe /q /P $cfdg .\output\test.png
+  .\Release\ARM64\ContextFreeCLI.exe /q /P $cfdg .\output\test.png
 
   if ($LastExitCode) {
     Write-Host -foregroundcolor red "   fail"
