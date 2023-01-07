@@ -111,6 +111,12 @@ SectionIn RO
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\FileDlgExtenders.dll.config" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\CFForm.deps.json" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\CFForm.runtimeconfig.json" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\FileDlgExtenders.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\OpenMRU.Core.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\OpenMRU.WinForm.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\WeifenLuo.WinFormsUI.Docking.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\ScintillaNET.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-i686-libx264\\ffplay.exe"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-i686-libx264\\avcodec-59.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-i686-libx264\\avformat-59.dll"
@@ -145,6 +151,13 @@ SectionIn RO
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\CFForm.dll.config" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\FileDlgExtenders.dll.config" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\CFForm.deps.json" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\CFForm.runtimeconfig.json" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\FileDlgExtenders.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\OpenMRU.Core.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\OpenMRU.WinForm.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\WeifenLuo.WinFormsUI.Docking.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\ScintillaNET.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\ffplay.exe"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\avcodec-59.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\avformat-59.dll"
@@ -155,8 +168,8 @@ SectionIn RO
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\swscale-6.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\SDL2.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-x86_64-libx264\\postproc-56.dll"
-    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x64\\CFForm.runtimeconfig.json" 
     File "C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Redist\MSVC\14.34.31931\x64\Microsoft.VC143.CRT\\vcruntime140.dll"
+    File "C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Redist\MSVC\14.34.31931\x64\Microsoft.VC143.CRT\\vcruntime140_1.dll"
     File "C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Redist\MSVC\14.34.31931\x64\Microsoft.VC143.CRT\\concrt140.dll"
     File "C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Redist\MSVC\14.34.31931\x64\Microsoft.VC143.CRT\\msvcp140.dll"
     File "C:\Program Files (x86)\Windows Kits\10\Redist\10.0.22621.0\ucrt\DLLs\x64\\ucrtbase.dll"
@@ -181,6 +194,12 @@ SectionIn RO
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\FileDlgExtenders.dll.config" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\CFForm.deps.json" 
     File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\CFForm.runtimeconfig.json" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\FileDlgExtenders.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\OpenMRU.Core.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\OpenMRU.WinForm.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\WeifenLuo.WinFormsUI.Docking.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
+    File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\arm64\\ScintillaNET.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-aarch64-libx264\\ffplay.exe"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-aarch64-libx264\\avcodec-59.dll"
     File "..\\..\\src-ffmpeg\\lib\\ffmpeg-aarch64-libx264\\avformat-59.dll"
@@ -209,12 +228,6 @@ SectionIn RO
     File "C:\Program Files (x86)\Windows Kits\10\Redist\10.0.22621.0\ucrt\DLLs\arm\\api-ms-win-crt-utility-l1-1-0.dll"
   ${Else}
   ${EndIf}
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\FileDlgExtenders.dll" 
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\OpenMRU.Core.dll" 
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\OpenMRU.WinForm.dll" 
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\WeifenLuo.WinFormsUI.Docking.dll" 
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" 
-  File "..\\..\\src-cs\\CFForm\\bin\\Release\\net6.0-windows\\publish\\x86\\ScintillaNET.dll"
 
   !insertmacro CheckDotNetCore 6.0
 
@@ -291,6 +304,8 @@ Section "Uninstall"
   Delete '$INSTDIR\ContextFreeCLI.exe'
   Delete '$INSTDIR\ffplay.exe'
   Delete '$INSTDIR\*.dll'
+  Delete '$INSTDIR\*.config'
+  Delete '$INSTDIR\*.json'
   Delete '$INSTDIR\license.txt'
   Delete '$INSTDIR\COPYING.GPLv2.txt'
   Delete '$INSTDIR\uninst-contextfree.exe' 
