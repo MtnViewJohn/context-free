@@ -33,7 +33,6 @@ RequestExecutionLevel user
 !include WordFunc.nsh
 !include "x64.nsh"
 !include WinVer.nsh
-!include "dotnetcore.nsh"
 !include "FileFunc.nsh"
 
 ;--------------------------------
@@ -228,8 +227,6 @@ SectionIn RO
     File "C:\Program Files (x86)\Windows Kits\10\Redist\10.0.22621.0\ucrt\DLLs\arm\\api-ms-win-crt-utility-l1-1-0.dll"
   ${Else}
   ${EndIf}
-
-  !insertmacro CheckDotNetCore 6.0
 
 SectionEnd
 
