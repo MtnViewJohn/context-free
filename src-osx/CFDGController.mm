@@ -215,7 +215,6 @@ static NSInteger OSXversion = 0;
 - (IBAction)setEditorFont:(id)sender
 {
     NSFontManager* fontWindow = [NSFontManager sharedFontManager];
-    [fontWindow setDelegate: self];
     [fontWindow orderFrontFontPanel: self];
 }
 
