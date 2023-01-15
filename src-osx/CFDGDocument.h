@@ -79,7 +79,6 @@
 - (IBAction) startAnimation:(id)sender;
 - (IBAction) cancelAnimation:(id)sender;
 - (IBAction) closeAll:(id)sender;
-- (IBAction) enterFullscreen:(id)sender;
 
 - (cfdg_ptr)buildEngine;
 - (AbstractSystem*)system;

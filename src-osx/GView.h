@@ -137,8 +137,6 @@ long MakeColor(id v);
     ScintillaView*                  mEditor;
     IBOutlet NSImageView*           mRewindView;
     
-    NSMenuItem*    mFullScreenMenu;
-    
     bool    mTiled;
     double  mScale;
     
@@ -156,8 +154,6 @@ long MakeColor(id v);
 - (IBAction)saveTileImage:(id)sender;
 - (IBAction)saveAsSVG:(id)sender;
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
-- (IBAction)enterFullscreen:(id)sender;
-- (void)updateFullScreenMenu;
 
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) showAnimationSheet:(id)sender;

@@ -472,8 +472,6 @@ namespace {
 
         mTiled = false;
         
-        mFullScreenMenu = nil;
-        
         mFindTextVersion = NSIntegerMin;
         mMatchCase = true;
         mFindType = FindContains;
@@ -513,14 +511,6 @@ namespace {
         NSWindowCollectionBehavior behavior = [window collectionBehavior];
         behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
         [window setCollectionBehavior:behavior];
-
-        NSButton* fullscreenButton =
-            [window standardWindowButton:NSWindowFullScreenButton];
-        [fullscreenButton setAction:@selector(enterFullscreen:)];
-        [fullscreenButton setTarget:self];
-        
-        NSMenuItem* winMenu = [[NSApp mainMenu] itemWithTitle: @"Window"];
-        mFullScreenMenu = [[winMenu submenu] itemWithTag: (NSInteger)420];
     }
     [window setDelegate: self];
     self.wantsLayer = YES;
@@ -639,18 +629,6 @@ namespace {
     }
 }
 
-- (void)windowDidBecomeMain:(NSNotification *)notification
-{
-    [self updateFullScreenMenu];
-}
-- (void)windowDidEnterFullScreen:(NSNotification *)notification
-{
-    [self updateFullScreenMenu];
-}
-- (void)windowDidExitFullScreen:(NSNotification *)notification
-{
-    [self updateFullScreenMenu];
-}
 - (BOOL)windowShouldClose:(id)sender
 {
     [self tearDownPlayer];
@@ -688,16 +666,6 @@ namespace {
     [mEditor message:SCI_SETCARETPERIOD wParam:0];
 }
 
-- (void)updateFullScreenMenu
-{
-    NSUInteger masks = [[self window] styleMask];
-    if (masks & NSFullScreenWindowMask) {
-        [mFullScreenMenu setTitle: @"Exit Full Screen"];
-    } else {
-        [mFullScreenMenu setTitle: @"Enter Full Screen"];
-    }
-}
-
 - (void)dealloc
 {
     [self tearDownPlayer];
@@ -711,11 +679,6 @@ namespace {
     [mSaveAnimationAccessory release]; mSaveAnimationAccessory = nil;
     
     [super dealloc];
-}
-
-- (IBAction)enterFullscreen:(id)sender
-{
-    [[self window] toggleFullScreen: nil];
 }
 
 - (BOOL)isOpaque
@@ -1025,9 +988,6 @@ namespace {
     if (action == @selector(startRender:) || action == @selector(toggleRender:))
         return !mRestartRenderer;
     
-    if (action == @selector(enterFullscreen:))
-        return YES;
-        
     if (action == @selector(showHiresRenderSheet:)
         ||  action == @selector(showAnimateSheet:)
         ||  action == @selector(showAnimateFrameSheet:))
