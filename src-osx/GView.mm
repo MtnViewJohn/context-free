@@ -1714,9 +1714,7 @@ long MakeColor(id v)
         [nonono setInformativeText: @"Rendered width must be a multiple of 8 pixels"];
         [nonono addButtonWithTitle: @"OK"];
         [nonono beginSheetModalForWindow: [self window]
-                           modalDelegate:nil
-                          didEndSelector:nil
-                             contextInfo:nil];
+                       completionHandler: nil];
         return;
     }
 

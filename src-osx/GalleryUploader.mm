@@ -407,9 +407,7 @@ namespace {
     
     [self updateCCInfo: YES];
     
-    [NSApp beginSheet: [self window]
-        modalForWindow: [mView window]
-        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+    [[mView window] beginSheet: [self window] completionHandler:nil];
 }
 
 
