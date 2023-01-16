@@ -240,7 +240,7 @@ namespace {
     upload.mFileName    = asString([mFileField stringValue]) + ".cfdg";
     upload.mVariation   = [mView variation];
     upload.mTiled       = 0;
-    if ([mTiled state] == NSOnState) {
+    if ([mTiled state] == NSControlStateValueOn) {
         upload.mTiled = [mView isFrieze];
         if ([mView isTiled] && !upload.mTiled)
             upload.mTiled = 3;
@@ -386,7 +386,7 @@ namespace {
     [mWidthLabel setHidden: !tiled];
     [mHeightLabel setHidden: !tiled];
     [mMultLabel setHidden: !tiled];
-    [mTiled setState: (tiled ? NSOnState : NSOffState)];
+    [mTiled setState: (tiled ? NSControlStateValueOn : NSControlStateValueOff)];
     
     if (tiled) {
         CFDG::frieze_t frz = (CFDG::frieze_t)[mView isFrieze];

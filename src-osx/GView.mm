@@ -738,7 +738,7 @@ namespace {
     if ([mMoviePlayer rate] == 0.0f) {
         if (mAtEndofMovie)
             [mMoviePlayer seekToTime: kCMTimeZero];
-        mLoop = [mRewindButton state] != NSOffState;
+        mLoop = [mRewindButton state] != NSControlStateValueOff;
         [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
         [mMoviePlayer play];
         mAtEndofMovie = false;
@@ -754,7 +754,7 @@ namespace {
 - (IBAction) movieRewind:(id)sender
 {
     // Rewind button repurposed as looping button
-    mLoop = [mRewindButton state] != NSOffState;
+    mLoop = [mRewindButton state] != NSControlStateValueOff;
     [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
     [[self window] makeFirstResponder: mTimeSlider];
 }
@@ -837,7 +837,7 @@ namespace {
             }
             
             [mDrawingImage drawAtPoint: dPoint fromRect: NSZeroRect
-                             operation: NSCompositeSourceAtop
+                             operation: NSCompositingOperationSourceAtop
                               fraction: 1.0];
         }
             
@@ -856,7 +856,7 @@ namespace {
         
         [mDrawingImage drawInRect: dRect
                          fromRect: NSZeroRect
-                        operation: NSCompositeSourceAtop
+                        operation: NSCompositingOperationSourceAtop
                          fraction: 1.0];
     }
     
@@ -1015,7 +1015,7 @@ namespace {
         NSMenuItem* menu = (NSMenuItem*)anItem;
         switch (tag) {
             case 0:
-                menu.state = mMatchCase ? NSOnState : NSOffState;
+                menu.state = mMatchCase ? NSControlStateValueOn : NSControlStateValueOff;
                 break;
             case 1:
             case 2:
@@ -1023,7 +1023,7 @@ namespace {
                 menu.state = mFindType == tag;
                 break;
             case 4:
-                menu.state = mWrapSearch ? NSOnState : NSOffState;
+                menu.state = mWrapSearch ? NSControlStateValueOn : NSControlStateValueOff;
                 break;
             default:
                 break;
@@ -1387,8 +1387,7 @@ long MakeColor(id v)
     }
     if ([v isKindOfClass:[NSColor class]]) {
         NSColor* value = (NSColor*)v;
-        if (value.colorSpaceName != NSDeviceRGBColorSpace)
-            value = [value colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+        value = [value colorUsingColorSpace: [NSColorSpace deviceRGBColorSpace]];
         long red = static_cast<long>(value.redComponent * 255);
         long green = static_cast<long>(value.greenComponent * 255);
         long blue = static_cast<long>(value.blueComponent * 255);
@@ -2411,8 +2410,8 @@ long MakeColor(id v)
 
 - (void) setMovieImagesPlay:(BOOL)play
 {
-    if ([mStartStopButton state] != (play ? NSOnState : NSOffState))
-        [mStartStopButton setState: (play ? NSOnState : NSOffState)];
+    if ([mStartStopButton state] != (play ? NSControlStateValueOn : NSControlStateValueOff))
+        [mStartStopButton setState: (play ? NSControlStateValueOn : NSControlStateValueOff)];
 }
 
 - (void)drawCheckerboardRect:(NSRect)rect
@@ -2575,7 +2574,7 @@ long MakeColor(id v)
     rect.size.width = sz;
     [mCurrentTime setFrame: rect];
     mCurrentTime.doubleValue = 0.0;
-    [mRewindButton setState: (mLoop ? NSOnState : NSOffState)];
+    [mRewindButton setState: (mLoop ? NSControlStateValueOn : NSControlStateValueOff)];
     [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
 
     if (!mMoviePlayerLayer) {

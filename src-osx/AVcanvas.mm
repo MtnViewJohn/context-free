@@ -82,9 +82,9 @@
     NSURL* _writeURL = [NSURL fileURLWithPath: name];
     [[NSFileManager defaultManager] removeItemAtPath:[_writeURL path] error:NULL];
     
-    auto codec = AVVideoCodecH264;
-    if (fmt == AVcanvas::ProRes422) codec = AVVideoCodecAppleProRes422;
-    if (fmt == AVcanvas::ProRes4444) codec = AVVideoCodecAppleProRes4444;
+    auto codec = AVVideoCodecTypeH264;
+    if (fmt == AVcanvas::ProRes422) codec = AVVideoCodecTypeAppleProRes422;
+    if (fmt == AVcanvas::ProRes4444) codec = AVVideoCodecTypeAppleProRes4444;
     NSDictionary *outputSettings = @{
         AVVideoCodecKey:  codec,
         AVVideoWidthKey:  [NSNumber numberWithInteger: [bits pixelsWide]],

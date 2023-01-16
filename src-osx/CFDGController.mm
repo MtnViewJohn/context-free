@@ -288,9 +288,14 @@ static NSInteger OSXversion = 0;
     [self checkForUpdateInBackground];
     NSArray* tempFiles = [CFDGDocument checkForTempFiles];
     if (tempFiles) {
-        NSInteger button = NSRunAlertPanel(@"Old temporary files found", @"",
-                                           @"Delete", @"Leave", nil);
-        if (button == NSAlertDefaultReturn) {
+        NSAlert* askDelete = [[[NSAlert alloc] init] autorelease];
+        [askDelete setMessageText: @"Old temporary files found"];
+        [askDelete setAlertStyle: NSAlertStyleWarning];
+        [askDelete addButtonWithTitle: @"Delete"];
+        [askDelete addButtonWithTitle: @"Do Not Delete"];
+        
+        NSInteger button = [askDelete runModal];
+        if (button == NSAlertFirstButtonReturn) {
             for (NSString* file in tempFiles) {
                 [[NSFileManager defaultManager] removeItemAtPath: file error: nil];
             }
@@ -533,8 +538,8 @@ static NSInteger OSXversion = 0;
     NSString* lastUpdateCheckString =
         [defaults stringForKey: prefKeyCheckUpdateLast];
     if (lastUpdateCheckString) {
-        NSDate* lastUpdateCheck = 
-            [NSDate dateWithString: lastUpdateCheckString];
+        NSDate* lastUpdateCheck =
+        [[[NSDate alloc] initWithTimeIntervalSinceReferenceDate: [lastUpdateCheckString doubleValue]] autorelease];
         NSTimeInterval sinceLastCheck = - [lastUpdateCheck timeIntervalSinceNow];
 
         if (sinceLastCheck < updateCheckingInterval)
@@ -617,7 +622,7 @@ static NSInteger OSXversion = 0;
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
     [defaults
-        setObject: [[NSDate date] description]
+     setObject: [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSinceReferenceDate]]
         forKey: prefKeyCheckUpdateLast];
     [defaults synchronize];
     
@@ -639,7 +644,7 @@ static NSInteger OSXversion = 0;
                     NSLocalizedString(@"You are running version %@ (v%d).", @""),
                         [bundleInfo objectForKey: updateKeyShortVersion],
                         thisVersion]];
-            [alert setAlertStyle: NSInformationalAlertStyle];
+            [alert setAlertStyle: NSAlertStyleInformational];
             [alert addButtonWithTitle: NSLocalizedString(@"OK", @"")];
             [alert runModal];
         }
@@ -654,7 +659,7 @@ static NSInteger OSXversion = 0;
             NSLocalizedString(@"You are running version %@ (v%d).  Version %@ (v%d) is now available.", @""),
             [bundleInfo objectForKey: updateKeyShortVersion], thisVersion,
             [mUpdateInfo objectForKey: updateKeyShortVersion], updateVersion]];
-    [alert setAlertStyle: NSInformationalAlertStyle];
+    [alert setAlertStyle: NSAlertStyleInformational];
     [alert addButtonWithTitle: NSLocalizedString(@"Download now", @"")];
     [alert addButtonWithTitle: NSLocalizedString(@"Go to website", @"")];
     [alert addButtonWithTitle: NSLocalizedString(@"Remind me later", @"")];

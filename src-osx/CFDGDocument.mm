@@ -384,7 +384,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)noteCatastrophicError:(NSString*)s
 {
-    (void)NSRunAlertPanel(@"A major error has occured", @"Error: %@", nil, nil, nil, s);
+    NSAlert* die = [[[NSAlert alloc] init] autorelease];
+    [die setMessageText: @"A major error has occured!"];
+    [die setInformativeText: s];
+    [die setAlertStyle: NSAlertStyleCritical];
+    (void)[die runModal];
     [[NSApplication sharedApplication] terminate:self];
 }
 
@@ -606,9 +610,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (IBAction) showHiresRenderSheet:(id)sender
 {
-    [NSApp beginSheet: mHiresSheet
-        modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
-        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+    [[(NSWindowController*)[[self windowControllers] lastObject] window] beginSheet: mHiresSheet completionHandler: nil];
 }
 
 - (IBAction) startHiresRender:(id)sender
@@ -633,9 +635,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mAnimationFrame setHidden: YES];
     [mCodecLabel setHidden: NO];
     [mAnimationCodec setHidden: NO];
-    [NSApp beginSheet: mAnimateSheet
-       modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
-        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+    [[(NSWindowController*)[[self windowControllers] lastObject] window] beginSheet: mAnimateSheet completionHandler: nil];
 }
 
 - (IBAction) showAnimateFrameSheet:(id)sender
@@ -646,9 +646,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mCodecLabel setHidden: YES];
     [mAnimationCodec setHidden: YES];
     [mAnimationFrame setIntValue: static_cast<int>([mGView animationFrame])];
-    [NSApp beginSheet: mAnimateSheet
-       modalForWindow: [(NSWindowController*)[[self windowControllers] lastObject] window]
-        modalDelegate: nil didEndSelector: nil contextInfo: nil];
+    [[(NSWindowController*)[[self windowControllers] lastObject] window] beginSheet: mAnimateSheet completionHandler: nil];
 }
 
 - (IBAction) startAnimation:(id)sender
@@ -690,10 +688,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         [nonono setMessageText: message];
         [nonono setInformativeText: problem];
         [nonono addButtonWithTitle: @"OK"];
-        [nonono beginSheetModalForWindow: mAnimateSheet
-                           modalDelegate:nil
-                          didEndSelector:nil
-                             contextInfo:nil];
+        [nonono beginSheetModalForWindow: mAnimateSheet completionHandler: nil];
         return;
     }
 
