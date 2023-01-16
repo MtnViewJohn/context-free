@@ -592,9 +592,9 @@ namespace {
             [mFindButtons setEnabled: canFind];
             [mReplaceButtons setEnabled: canFind];
             [mFindText setStringValue: [mEditor selectedString]];
-            NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
-            mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-            [pBoard setString:[mEditor selectedString] forType:NSStringPboardType];
+            NSPasteboard* pBoard = [NSPasteboard pasteboardWithName: NSPasteboardNameFind];
+            mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject: NSPasteboardTypeString] owner:nil];
+            [pBoard setString:[mEditor selectedString] forType: NSPasteboardTypeString];
             break;
         }
         case NSTextFinderActionShowReplaceInterface:
@@ -650,10 +650,10 @@ namespace {
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-    NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
+    NSPasteboard* pBoard = [NSPasteboard pasteboardWithName: NSPasteboardNameFind];
     NSInteger version = [pBoard changeCount];
     if (version != mFindTextVersion) {
-        NSString* find = [pBoard stringForType:NSPasteboardTypeString];
+        NSString* find = [pBoard stringForType: NSPasteboardTypeString];
         mFindTextVersion = version;
         if (find)
             [mFindText setStringValue: find];
@@ -1203,9 +1203,9 @@ namespace {
         BOOL canFind = [[mFindText stringValue] length] > 0;
         [mFindButtons setEnabled: canFind];
         [mReplaceButtons setEnabled: canFind];
-        NSPasteboard* pBoard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-        [pBoard setString:[mFindText stringValue] forType:NSStringPboardType];
+        NSPasteboard* pBoard = [NSPasteboard pasteboardWithName: NSPasteboardNameFind];
+        mFindTextVersion = [pBoard declareTypes:[NSArray arrayWithObject:NSPasteboardTypeString] owner:nil];
+        [pBoard setString:[mFindText stringValue] forType:NSPasteboardTypeString];
     }
 }
 
@@ -2784,7 +2784,7 @@ long MakeColor(id v)
     [sp beginWithCompletionHandler: ^(NSInteger result) {
         [saveImageDirectory release];
         saveImageDirectory = [[sp directoryURL] retain];
-        if (result == NSFileHandlingPanelOKButton) {
+        if (result == NSModalResponseOK) {
             NSURL* file = [sp URL];
             NSInvocation* send
             = [NSInvocation invocationWithMethodSignature:

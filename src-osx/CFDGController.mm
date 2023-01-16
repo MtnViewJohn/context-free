@@ -350,67 +350,72 @@ static NSInteger OSXversion = 0;
 }
 
 -(void)displayGalleryCfdg:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
-    static NSArray* CFAdomains = [[NSArray alloc] initWithObjects:
-                                  @"http://www.contextfreeart.org/gallery",
-                                  @"http://contextfreeart.org/gallery",
-                                  @"https://www.contextfreeart.org/gallery",
-                                  @"https://contextfreeart.org/gallery",
-                                  @"https://localhost/~john/cfa2/gallery",
-                                  @"http://localhost/~john/cfa2/gallery",
-                                  nil];
-    
     if (NSAppKitVersionNumber < NSAppKitVersionNumber10_9)
         return;
     
-    NSString * pboardString = [pboard stringForType:NSStringPboardType];
+    NSError* err = nil;
+    CFDGDocument* doc = nil;
+
+    NSString* pboardString = [pboard stringForType:NSPasteboardTypeString];
+    NSURL* pboardURL = [NSURL URLWithString: pboardString];
+    if (pboardURL == nil) {
+        // cfdg text drop
+        doc = [[NSDocumentController sharedDocumentController]
+               openUntitledDocumentAndDisplay: NO error: nil];
+        
+        if (doc) {
+            [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding]
+                       ofType: [CFDGDocument documentType]
+                        error: &err];
+            [doc makeWindowControllers];
+            [doc showWindows];
+        } else {
+            NSBeep();
+        }
+        return;
+    }
 
     // File drop
-    if ([pboardString hasPrefix: @"file://"]) {
-        [[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: pboardString]];
+    if ([[pboardURL scheme] isEqualToString: @"file"]) {
+        [[NSWorkspace sharedWorkspace] openURL: pboardURL];
         return;
     }
     
-    NSError* err = nil;
-    id doc = nil;
-
-    // CFA gallery URL drop
-    for (id cfaurl in CFAdomains) {
-        if ([pboardString hasPrefix: cfaurl]) {
-            NSRange idLoc = [pboardString rangeOfString: @"id="];
-            if (idLoc.location == NSNotFound)
-                idLoc = [pboardString rangeOfString: @"#design/"];
-            if (idLoc.location != NSNotFound) {
-                int designID = [[pboardString substringFromIndex: (idLoc.location + idLoc.length)] intValue];
-                doc = [[NSDocumentController sharedDocumentController]
-                       openUntitledDocumentAndDisplay: NO error: nil];
-                [[GalleryDownloader alloc] initWithDesignID: designID document: doc];
-            } else if ([pboardString hasSuffix: @".cfdg"]) {
-                NSURL* cfdgurl = [NSURL URLWithString: pboardString];
-                doc = [[NSDocumentController sharedDocumentController]
-                       openUntitledDocumentAndDisplay: NO error: nil];
-                [[GalleryDownloader alloc] initWithUrl:cfdgurl document: doc];
-            }
-            if (doc) {
-                [doc makeWindowControllers];
-                [doc showWindows];
-                [doc noteStatus: @"Downloading from the gallery…"];
-            } else {
-                NSBeep();
-            }
-            return;
-        }
+    if ((![[pboardURL scheme] isEqualToString: @"http"] &&
+         ![[pboardURL scheme] isEqualToString: @"https"]) ||
+        (![[pboardURL host] isEqualToString: @"www.contextfreeart.org"] &&
+         ![[pboardURL host] isEqualToString: @"contextfreeart.org"]) ||
+        ![[pboardURL pathComponents][1] isEqualToString: @"gallery"])
+    {
+        NSBeep();
+        return;
     }
     
-    // cfdg text drop
-    doc = [[NSDocumentController sharedDocumentController]
-           openUntitledDocumentAndDisplay: NO error: nil];
+    // CFA gallery URL drop
+    NSString* query = [pboardURL query];
+    NSString* frag = [pboardURL fragment];
+    NSString* idStr = nil;
+    NSRange idLoc = [query rangeOfString: @"id="];
+    if (idLoc.location != NSNotFound)
+        idStr = query;
+    else if ((idLoc = [frag rangeOfString: @"#design/"]).location != NSNotFound)
+        idStr = frag;
     
+    if (idLoc.location != NSNotFound && idStr != nil) {
+        int designID = [[idStr substringFromIndex: (idLoc.location + idLoc.length)] intValue];
+        doc = [[NSDocumentController sharedDocumentController]
+               openUntitledDocumentAndDisplay: NO error: nil];
+        [[GalleryDownloader alloc] initWithDesignID: designID document: doc];
+    } else if ([[pboardURL pathExtension] isEqualToString: @"cfdg"]) {
+        doc = [[NSDocumentController sharedDocumentController]
+               openUntitledDocumentAndDisplay: NO error: nil];
+        [[GalleryDownloader alloc] initWithUrl: pboardURL document: doc];
+    }
+
     if (doc) {
-        [doc readFromData: [pboardString dataUsingEncoding: NSUTF8StringEncoding]
-                   ofType: [CFDGDocument documentType]
-                    error: &err];
         [doc makeWindowControllers];
         [doc showWindows];
+        [doc noteStatus: @"Downloading from the gallery…"];
     } else {
         NSBeep();
     }
