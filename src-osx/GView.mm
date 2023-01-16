@@ -2352,14 +2352,12 @@ long MakeColor(id v)
         return;
     }
     
-    bool canUndo = [mEditor getGeneralProperty:SCI_CANUNDO];
     int cnt = [self findAndReplaceText:text
                                 byText:replaceText
                              matchCase:mMatchCase
                               findType:mFindType
                                  doAll:YES
                            inSelection:inSelection];
-    canUndo = [mEditor getGeneralProperty:SCI_CANUNDO];
 
     switch (cnt) {
         case 0:

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment version="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <deployment version="101200" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,7 +29,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="44" y="91" width="1200" height="800"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="500" height="300"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="1200" height="800"/>
@@ -38,7 +38,7 @@
                     <box fixedFrame="YES" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="135">
                         <rect key="frame" x="0.0" y="757" width="1200" height="6"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <view key="contentView" ambiguous="YES" id="GHH-J2-OEk">
+                        <view key="contentView" id="GHH-J2-OEk">
                             <rect key="frame" x="0.0" y="0.0" width="1200" height="6"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
@@ -109,7 +109,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <popUpButtonCell key="cell" type="push" title="Case sensitive" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="4z1-NF-CMK" id="6sb-Ya-Beh">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="system"/>
+                                                        <font key="font" metaFont="menu"/>
                                                         <menu key="menu" id="pCO-6r-0bj">
                                                             <items>
                                                                 <menuItem title="Case sensitive" state="on" id="4z1-NF-CMK">
@@ -173,7 +173,7 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cpk-DK-ad8">
-                                                    <rect key="frame" x="178" y="274" width="64" height="64"/>
+                                                    <rect key="frame" x="177" y="274.5" width="64.5" height="64"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="NSRefreshTemplate" id="tmD-WJ-XYA"/>
                                                 </imageView>
@@ -273,7 +273,7 @@
                             <box fixedFrame="YES" title="Render Controls" titlePosition="noTitle" transparent="YES" translatesAutoresizingMaskIntoConstraints="NO" id="81">
                                 <rect key="frame" x="5" y="5" width="471" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                                <view key="contentView" ambiguous="YES" id="Jyt-NW-G0k">
+                                <view key="contentView" id="Jyt-NW-G0k">
                                     <rect key="frame" x="3" y="3" width="465" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -359,7 +359,7 @@ The variation code is a one to six letter sequence.</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="Render" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="RXa-rI-z9w" id="Ggn-pT-u5d">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" id="9w0-Pe-geL">
                                                     <items>
                                                         <menuItem title="Render" state="on" tag="1" id="RXa-rI-z9w"/>
@@ -439,7 +439,7 @@ The variation code is a one to six letter sequence.</string>
                             <box hidden="YES" fixedFrame="YES" borderType="none" title="MovieBox" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="NKb-OZ-zg6">
                                 <rect key="frame" x="802" y="0.0" width="232" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                <view key="contentView" ambiguous="YES" id="Hbp-dZ-A4c">
+                                <view key="contentView" id="Hbp-dZ-A4c">
                                     <rect key="frame" x="0.0" y="0.0" width="232" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -530,7 +530,7 @@ The variation code is a one to six letter sequence.</string>
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="175" y="404" width="427" height="371"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="85">
                 <rect key="frame" x="0.0" y="0.0" width="427" height="371"/>
@@ -678,7 +678,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                         <rect key="frame" x="115" y="79" width="190" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" alignment="left" minValue="-1" maxValue="2" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="418">
-                            <font key="font" metaFont="user"/>
+                            <font key="font" usesAppearanceFont="YES"/>
                         </sliderCell>
                         <connections>
                             <binding destination="119" name="value" keyPath="values.BorderSize" id="242"/>
@@ -738,7 +738,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="526" y="169" width="305" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="138">
                 <rect key="frame" x="0.0" y="0.0" width="305" height="107"/>
@@ -784,7 +784,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="636" y="421" width="746" height="130"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="191">
                 <rect key="frame" x="0.0" y="0.0" width="746" height="130"/>
@@ -793,7 +793,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                     <box fixedFrame="YES" boxType="oldStyle" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="218">
                         <rect key="frame" x="20" y="20" width="472" height="90"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <view key="contentView" ambiguous="YES" id="THW-vL-BES">
+                        <view key="contentView" id="THW-vL-BES">
                             <rect key="frame" x="0.0" y="0.0" width="472" height="90"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
@@ -842,7 +842,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="462" id="427">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="223">
                                             <items>
                                                 <menuItem title="8" tag="800" id="225"/>
@@ -892,7 +892,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="476" id="474">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="475">
                                             <items>
                                                 <menuItem title="H.264" state="on" id="476"/>
@@ -937,7 +937,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="767" y="252" width="305" height="56"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="213" height="56"/>
             <view key="contentView" id="305">
                 <rect key="frame" x="0.0" y="0.0" width="305" height="56"/>
@@ -998,7 +998,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="175" y="404" width="427" height="439"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="ao4-GS-fc9">
                 <rect key="frame" x="0.0" y="0.0" width="427" height="439"/>
@@ -1144,7 +1144,7 @@ Gw
                         <rect key="frame" x="114" y="203" width="190" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <sliderCell key="cell" alignment="left" minValue="-1" maxValue="2" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="n1o-gN-GPS">
-                            <font key="font" metaFont="user"/>
+                            <font key="font" usesAppearanceFont="YES"/>
                         </sliderCell>
                         <connections>
                             <binding destination="119" name="value" keyPath="values.BorderSize" id="bo5-lN-mHR"/>
@@ -1231,7 +1231,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="15" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1500" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="hpR-EU-fGD" id="duC-Mg-zdl">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="rMz-Ei-B63">
                                 <items>
                                     <menuItem title="8" tag="800" id="mQR-xP-yMQ"/>
@@ -1301,7 +1301,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Gbf-tD-ief" id="Vip-dp-Dwn">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="del-9h-lpq">
                                 <items>
                                     <menuItem title="H.264" state="on" id="Gbf-tD-ief"/>
@@ -1322,7 +1322,7 @@ Gw
                                 <attributedString key="attributedStringForNotANumber">
                                     <fragment content="NaN">
                                         <attributes>
-                                            <font key="NSFont" metaFont="user"/>
+                                            <font key="NSFont" usesAppearanceFont="YES"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
@@ -1330,7 +1330,7 @@ Gw
                                 <attributedString key="attributedStringForZero">
                                     <fragment content="0">
                                         <attributes>
-                                            <font key="NSFont" metaFont="user"/>
+                                            <font key="NSFont" usesAppearanceFont="YES"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
@@ -1362,11 +1362,11 @@ Gw
         </numberFormatter>
     </objects>
     <resources>
-        <image name="NSGoLeftTemplate" width="9" height="12"/>
-        <image name="NSGoRightTemplate" width="9" height="12"/>
-        <image name="NSRefreshTemplate" width="11" height="15"/>
-        <image name="NSRemoveTemplate" width="11" height="11"/>
-        <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
+        <image name="NSGoLeftTemplate" width="10" height="14"/>
+        <image name="NSGoRightTemplate" width="10" height="14"/>
+        <image name="NSRefreshTemplate" width="14" height="16"/>
+        <image name="NSRemoveTemplate" width="14" height="4"/>
+        <image name="NSStopProgressFreestandingTemplate" width="15" height="15"/>
         <image name="doc" width="128" height="128"/>
         <image name="magnifying-glass" width="512" height="512"/>
     </resources>
