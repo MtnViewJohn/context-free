@@ -196,7 +196,7 @@ check: cfdg
 #
 
 CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CXXFLAGS += -O2 -Wall -Wextra -mcpu=apple-m1 -Wno-parentheses -std=c++17
+CXXFLAGS += -O2 -Wall -Wextra -Wno-parentheses -std=c++17
 CXXFLAGS += -g -D_GLIBCXX_USE_C99_MATH=1
 CPPFLAGS += -DNDEBUG
 
