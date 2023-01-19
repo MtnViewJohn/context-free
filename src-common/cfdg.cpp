@@ -31,6 +31,7 @@
 #include "cfdg.h"
 
 #include <string>
+#include <cstring>
 
 #include "builder.h"
 #include "cfdgimpl.h"

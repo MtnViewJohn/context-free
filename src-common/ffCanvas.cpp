@@ -74,6 +74,7 @@ public:
     friend class ffCanvas;
 };
 
+#if defined(_WIN32) && defined(_DEBUG)
 void log_callback_debug(void* ptr, int level, const char* fmt, va_list vl)
 {
     using av_log_default_callback_ptr = void(__cdecl*)(void* avcl, int level, const char* fmt, va_list vl);
@@ -89,20 +90,17 @@ void log_callback_debug(void* ptr, int level, const char* fmt, va_list vl)
     av_log_format_line(ptr, level, fmt, vl2, line.data(), (int)line.size(), &print_prefix);
     va_end(vl2);
     if (AV_LOG_DEBUG >= level) {
-#ifdef _WIN32
         ::OutputDebugStringA(line.data());
-#else
-        std::fputs(line.data(), stderr);
-#endif
     }
 }
+#endif
 
 
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
                      int fps, QTcodec _codec)
 : mWidth(width), mHeight(height), mStride(stride), mBuffer(stride * height), mFrameRate(fps)
 {
-#ifdef _DEBUG
+#if defined(_WIN32) && defined(_DEBUG)
     av_log_set_callback(log_callback_debug);
 #endif
 
