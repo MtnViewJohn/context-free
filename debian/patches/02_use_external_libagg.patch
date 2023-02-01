@@ -1,11 +1,12 @@
-From maintainer, John Horigan <john@glyphic.com>
-Context Free ships with a local copy of libagg which it uses by
-default. The Makefile can be configured to use a system copy of
-libagg and this patch makes this change to the Makefile.
+Description: Context Free ships with a local copy of libagg which it uses by
+ default. The Makefile can be configured to use a system copy of
+ libagg and this patch makes this change to the Makefile.
+Author: John Horigan <john@glyphic.com>
+Forwarded: not-needed
 
 --- a/Makefile
 +++ b/Makefile
-@@ -97,14 +97,14 @@
+@@ -98,14 +98,14 @@
  #
  # Configuration for local AGG
  #

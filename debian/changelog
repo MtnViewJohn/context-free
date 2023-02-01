@@ -1,3 +1,20 @@
+contextfree (3.4+dfsg-1) unstable; urgency=medium
+
+  * New upstream release
+  * Remove FFmpeg patch, fix move to upstream.
+  * Remove 01_* patch, moved upstream
+  * Remaining patches updated to have DEP-3 compliant headers
+  * Updated Standards-Version to 4.6.1 (no changes)
+
+ -- John Horigan <john@glyphic.com>  Wed, 18 Jan 2023 15:52:13 -0800
+
+contextfree (3.3+dfsg1-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/patches: Fix build with ffmpeg 5.0 (Closes: #1004803)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 27 Feb 2022 17:03:40 +0100
+
 contextfree (3.3+dfsg1-1) unstable; urgency=medium
 
   * New upstream release

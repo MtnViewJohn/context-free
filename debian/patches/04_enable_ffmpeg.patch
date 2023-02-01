@@ -1,7 +1,8 @@
-From maintainer, John Horigan <john@glyphic.com>
-Context Free has an optional ability to generate QuickTime
-files using FFmpeg. This is disabled by default. This patch enables
-FFmpeg in Context Free.
+Description: Context Free has an optional ability to generate QuickTime
+ files using FFmpeg. This is disabled by default. This patch enables
+ FFmpeg in Context Free.
+Author: John Horigan <john@glyphic.com>
+Forwarded: not-needed
 
 --- a/Makefile
 +++ b/Makefile
