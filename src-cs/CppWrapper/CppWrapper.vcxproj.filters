@@ -171,9 +171,6 @@
     <ClInclude Include="RenderStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src-net\FindReplaceForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ColorCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -211,6 +208,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src-common\ffCanvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FindReplaceForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -353,9 +353,6 @@
     <ClCompile Include="RenderStats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src-net\FindReplaceForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ColorCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -392,6 +389,9 @@
     <ClCompile Include="..\..\src-common\ffCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FindReplaceForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -410,7 +410,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\src-net\FindReplaceForm.resx">
+    <EmbeddedResource Include="FindReplaceForm.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>

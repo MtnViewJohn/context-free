@@ -257,7 +257,6 @@
     <ClInclude Include="..\..\src-common\variation.h" />
     <ClInclude Include="..\..\src-common\version.h" />
     <ClInclude Include="..\..\src-common\xorshift64star.h" />
-    <ClInclude Include="..\..\src-net\FindReplaceForm.h" />
     <ClInclude Include="..\..\src-win\derived\cfdg.tab.hpp" />
     <ClInclude Include="..\..\src-win\derived\FlexLexer.h" />
     <ClInclude Include="..\..\src-win\derived\location.hh" />
@@ -274,6 +273,7 @@
     <ClInclude Include="ColorComponentChoose.h">
       <FileType>CppControl</FileType>
     </ClInclude>
+    <ClInclude Include="FindReplaceForm.h" />
     <ClInclude Include="GalleryUploader.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -820,7 +820,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\src-net\FindReplaceForm.cpp" />
     <ClCompile Include="..\..\src-win\derived\cfdg.tab.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">false</CompileAsManaged>
@@ -972,6 +971,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ColorCalculator.cpp" />
     <ClCompile Include="ColorComponentChoose.cpp" />
+    <ClCompile Include="FindReplaceForm.cpp" />
     <ClCompile Include="GalleryUploader.cpp" />
     <ClCompile Include="HSBChoose.cpp" />
     <ClCompile Include="hsbColorClr.cpp" />
@@ -1016,7 +1016,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ScintillaNET">
-      <HintPath>..\..\src-net\packages\fernandreu.ScintillaNET.4.2.0\lib\net471\ScintillaNET.dll</HintPath>
+      <HintPath>..\..\..\..\.nuget\packages\fernandreu.scintillanet\4.2.0\lib\net6.0-windows7.0\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -1034,10 +1034,10 @@
     <None Include="..\CFForm\Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\src-net\FindReplaceForm.resx" />
     <EmbeddedResource Include="ColorCalculator.resx">
       <DependentUpon>ColorCalculator.h</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FindReplaceForm.resx" />
     <EmbeddedResource Include="GalleryUploader.resx">
       <DependentUpon>GalleryUploader.h</DependentUpon>
     </EmbeddedResource>
