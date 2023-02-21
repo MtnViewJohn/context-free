@@ -38,15 +38,13 @@
 
 #ifdef _WIN32
 #include "Win32System.h"
+#define CLI_SYSTEM_BASE Win32System
 #else
 #include "posixSystem.h"
+#define CLI_SYSTEM_BASE PosixSystem
 #endif
 
-#ifdef _WIN32
-class CommandLineSystem : public Win32System
-#else
-class CommandLineSystem : public PosixSystem
-#endif
+class CommandLineSystem : public CLI_SYSTEM_BASE
 {
 protected:
     bool mQuiet = false;
@@ -69,5 +67,7 @@ public:
 private:
     std::vector<char> buf;
 };
+
+#undef CLI_SYSTEM_BASE
 
 #endif // INCLUDE_COMMANDLINE_SYSTEM
