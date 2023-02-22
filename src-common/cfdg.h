@@ -86,7 +86,7 @@ class AbstractSystem {
     public:
         enum TempType { ShapeTemp = 0, ExpansionTemp = 1, MergeTemp = 2, MovieTemp = 3, NumberofTempTypes = 4 };
         enum SystemSize : std::uint64_t {
-#if defined(_WIN64) || defined(__x86_64__)
+#if defined(_WIN64) || defined(__x86_64__) || defined(__aarch64__)
             MaximumMemory = 17179869184ULL,     // 16GB
             SystemIs64bit = 1
 #else
