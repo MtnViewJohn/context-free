@@ -38,17 +38,17 @@ public:
             WM_USER_STATUS_UPDATE   = myWM_USER + 101};
     WinSystem(void*);
     ~WinSystem();
-    virtual void message(const char* fmt, ...);
-    virtual void syntaxError(const CfdgError& err);
-    virtual bool error(bool errorOccurred = true);
-    virtual void catastrophicError(const char* what);
+    virtual void message(const char* fmt, ...) override;
+    virtual void syntaxError(const CfdgError& err) override;
+    virtual bool error(bool errorOccurred = true) override;
+    virtual void catastrophicError(const char* what) override;
 
     virtual istr_ptr openFileForRead(const std::string& path) override;
     // caller must delete returned streams when done
     
-    virtual void orphan();
+    virtual void orphan() override;
 
-    virtual void stats(const Stats&);
+    virtual void stats(const Stats&) override;
     void statusUpdate();
 
     bool updateInfo(const char* name, const char* text);
