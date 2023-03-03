@@ -133,7 +133,7 @@ namespace AST {
         void compileLoopMod(Builder* b);
         void to_json(json& j) const final;
     };
-    class ASTtransform: public ASTreplacement {
+    class ASTtransform final: public ASTreplacement {
     public:
         ASTrepContainer mBody;
         exp_ptr mExpHolder;              // strong pointer
