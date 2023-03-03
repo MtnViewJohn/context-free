@@ -257,7 +257,7 @@ class Renderer {
         std::unique_ptr<tiledCanvas> m_tiledCanvas;
     
         static double Infinity;
-        static bool   AbortEverything;
+        static std::atomic_bool   AbortEverything;
         static unsigned ParamCount;
     protected:
         Renderer(int w, int h);
