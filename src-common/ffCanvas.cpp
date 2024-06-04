@@ -271,7 +271,11 @@ ffCanvas::Impl::addFrame(bool end)
         const uint8_t* src = (uint8_t*)(mBuffer.data());
         if (sws_scale(mSwsCtx, &src, &mLineSize, 0, mHeight, frame->data, frame->linesize) < mHeight)
             mError = "Error recoding frame";
+#if LIBAVCODEC_VERSION_MAJOR < 60
         frame->pts = av_rescale_q(mEncCtx->frame_number, mEncCtx->time_base, mStream->time_base);
+#else
+        frame->pts = av_rescale_q(mEncCtx->frame_num, mEncCtx->time_base, mStream->time_base);
+#endif
     }
 
     do {
