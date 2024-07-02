@@ -13,7 +13,7 @@ Build-Depends: debhelper-compat (= 13),
 	       libavformat-dev (>= 7:4.0),
 	       libswscale-dev (>= 7:4.0),
 	       libx264-dev (>= 2:0.155),
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Homepage: https://www.contextfreeart.org/index.html
 Vcs-Browser: https://github.com/MtnViewJohn/context-free
 Vcs-Git: https://github.com/MtnViewJohn/context-free.git
@@ -21,7 +21,7 @@ Rules-Requires-Root: binary-targets
 
 Package: contextfree
 Architecture: any
-Depends: libagg2 (>= 1:2.6.1), ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: image generator based on context-free grammars
  Context Free is a program that produces images based on context-free grammars.
  These grammars are sets of non-deterministic rules that determine what an

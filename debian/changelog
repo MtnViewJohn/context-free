@@ -1,3 +1,17 @@
+contextfree (3.4.2+dfsg-1) unstable; urgency=medium
+
+  * New upstream release (Closes: #1072407)
+  * Updated Standards-Version to 4.6.2 (no changes)
+
+ -- John Horigan <john@glyphic.com>  Tue, 04 Jun 2024 00:10:09 -0700
+
+contextfree (3.4+dfsg-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Drop libagg2 runtime dependency (Closes: #1067428)
+
+ -- Gianfranco Costamagna <locutusofborg@debian.org>  Thu, 21 Mar 2024 15:00:29 +0100
+
 contextfree (3.4+dfsg-1) unstable; urgency=medium
 
   * New upstream release

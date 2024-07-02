@@ -2,19 +2,19 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: contextfree
 Upstream-Contact: John Horigan <john@glyphic.com>
 Source: https://www.contextfreeart.org/index.html
-Files-Excluded: src-cs src-ffmpeg src-agg src-osx src-win src-scintilla
+Files-Excluded: src-net src-ffmpeg src-agg src-osx src-win src-scintilla
 
 Files: *
 Copyright:
   2005 Chris Coyne <ccoyne77@gmail.com>
-  2005-2023 John Horigan <john@glyphic.com>
+  2005-2024 John Horigan <john@glyphic.com>
   2005-2009 Mark Lentczner <markl@glyphic.com>
 License: GPL-2+
 
 Files: debian/*
 Copyright:
   2008-2013 Bram Senders <bram@luon.net>
-  2017-2023 John Horigan <john@glyphic.com>
+  2017-2024 John Horigan <john@glyphic.com>
 License: GPL-2+
 
 License: GPL-2+
