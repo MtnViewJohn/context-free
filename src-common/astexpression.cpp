@@ -1852,9 +1852,38 @@ namespace AST {
     {
         ent.append(entropyVal);
     }
-    
-    void
-    ASTstartSpecifier::entropy(std::string& ent) const
+
+    ASTstartSpecifier::~ASTstartSpecifier() = default;
+
+    ASTstartSpecifier::ASTstartSpecifier(
+        int t, const std::string& name, exp_ptr args, const yy::location& loc,
+        mod_ptr mod)
+        : ASTruleSpecifier(t, name, std::move(args), loc, nullptr)
+        , mModification(std::move(mod))
+    {
+    }
+
+    ASTstartSpecifier::ASTstartSpecifier(
+        int nameIndex, const std::string& name, const yy::location& loc, mod_ptr mod)
+        : ASTruleSpecifier(nameIndex, name, loc)
+        , mModification(std::move(mod))
+    {
+    }
+
+    ASTstartSpecifier::ASTstartSpecifier(
+        exp_ptr args, const yy::location& loc, mod_ptr mod)
+        : ASTruleSpecifier(std::move(args), loc)
+        , mModification(std::move(mod))
+    {
+    }
+
+    ASTstartSpecifier::ASTstartSpecifier(ruleSpec_ptr r, mod_ptr m) noexcept
+        : ASTruleSpecifier(std::move(r))
+        , mModification(std::move(m))
+    {
+    }
+
+    void ASTstartSpecifier::entropy(std::string& ent) const
     {
         ent.append(entropyVal);
         if (mModification)
