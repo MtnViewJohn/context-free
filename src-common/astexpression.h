@@ -309,17 +309,15 @@ namespace AST {
     class ASTstartSpecifier final : public ASTruleSpecifier {
     public:
         mod_ptr mModification;
-        ASTstartSpecifier(int t, const std::string& name, exp_ptr args,
-                          const yy::location& loc, mod_ptr mod)
-        : ASTruleSpecifier(t, name, std::move(args), loc, nullptr),
-          mModification(std::move(mod)) { };
-        ASTstartSpecifier(int nameIndex, const std::string& name,
-                          const yy::location& loc, mod_ptr mod)
-        : ASTruleSpecifier(nameIndex, name, loc), mModification(std::move(mod)) { };
-        ASTstartSpecifier(exp_ptr args, const yy::location& loc, mod_ptr mod)
-        : ASTruleSpecifier(std::move(args), loc), mModification(std::move(mod)) { };
-        ASTstartSpecifier(ruleSpec_ptr r, mod_ptr m) noexcept
-        : ASTruleSpecifier(std::move(r)), mModification(std::move(m)) { };
+        ASTstartSpecifier(
+            int t, const std::string& name, exp_ptr args, const yy::location& loc,
+            mod_ptr mod);
+        ASTstartSpecifier(
+            int nameIndex, const std::string& name, const yy::location& loc,
+            mod_ptr mod);
+        ASTstartSpecifier(exp_ptr args, const yy::location& loc, mod_ptr mod);
+        ASTstartSpecifier(ruleSpec_ptr r, mod_ptr m) noexcept;
+        ~ASTstartSpecifier() override;
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
