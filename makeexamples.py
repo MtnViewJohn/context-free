@@ -10,7 +10,7 @@ def print_cfdg(cfdg_name):
     transtable = str.maketrans({'"': r'\"', "…": r'\u2026'})
     with open(cfdg_file, 'r') as fp:
         for line in fp:
-            sys.stdout.write('u8"')
+            sys.stdout.write('"')
             sys.stdout.write(line.rstrip().translate(transtable))
             print('\\n"')
 
