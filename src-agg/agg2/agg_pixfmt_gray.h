@@ -24,7 +24,7 @@
 #ifndef AGG_PIXFMT_GRAY_INCLUDED
 #define AGG_PIXFMT_GRAY_INCLUDED
 
-#include <string.h>
+#include <cstring>
 #include "agg_pixfmt_base.h"
 #include "agg_rendering_buffer.h"
 
@@ -649,7 +649,7 @@ namespace agg
         {
             if (const int8u* p = from.row_ptr(ysrc))
             {
-                memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
+                std::memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
                         p + xsrc * pix_width, 
                         len * pix_width);
             }

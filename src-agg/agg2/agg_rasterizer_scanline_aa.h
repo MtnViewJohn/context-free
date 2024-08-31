@@ -93,8 +93,8 @@ namespace agg
         };
 
         //--------------------------------------------------------------------
-        rasterizer_scanline_aa() : 
-            m_outline(),
+        rasterizer_scanline_aa(unsigned cell_block_limit=1024) : 
+            m_outline(cell_block_limit),
             m_clipper(),
             m_filling_rule(fill_non_zero),
             m_auto_close(true),
@@ -108,8 +108,8 @@ namespace agg
 
         //--------------------------------------------------------------------
         template<class GammaF> 
-        rasterizer_scanline_aa(const GammaF& gamma_function) : 
-            m_outline(),
+        rasterizer_scanline_aa(const GammaF& gamma_function, unsigned cell_block_limit) : 
+            m_outline(cell_block_limit),
             m_clipper(m_outline),
             m_filling_rule(fill_non_zero),
             m_auto_close(true),
@@ -133,7 +133,7 @@ namespace agg
             int i;
             for(i = 0; i < aa_scale; i++)
             {
-                m_gamma[i] = uround(gamma_function(double(i) / aa_mask) * aa_mask);
+                m_gamma[i] = uround(gamma_function(double(i) / (double)aa_mask) * (double)aa_mask);
             }
         }
 

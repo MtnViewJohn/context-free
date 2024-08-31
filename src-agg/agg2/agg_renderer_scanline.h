@@ -18,6 +18,7 @@
 
 #include <limits>
 #include <cstdlib>
+#include <cstring>
 #include "agg_basics.h"
 #include "agg_renderer_base.h"
 
@@ -556,7 +557,7 @@ namespace agg
                         num_spans = sl_bin.num_spans();
                         for(;;)
                         {
-                            memset(mix_buffer + span_bin->x - min_x, 
+                            std::memset(mix_buffer + span_bin->x - min_x, 
                                    0, 
                                    span_bin->len * sizeof(color_type));
 
@@ -739,11 +740,11 @@ namespace agg
 
                     if(sl_len)
                     {
-                        memset(mix_buffer + sl_start - min_x, 
+                        std::memset(mix_buffer + sl_start - min_x, 
                                0, 
                                sl_len * sizeof(color_type));
 
-                        memset(cover_buffer + sl_start - min_x, 
+                        std::memset(cover_buffer + sl_start - min_x, 
                                0, 
                                sl_len * sizeof(cover_type));
 

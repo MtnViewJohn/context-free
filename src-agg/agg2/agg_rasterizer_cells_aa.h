@@ -29,7 +29,7 @@
 #ifndef AGG_RASTERIZER_CELLS_AA_INCLUDED
 #define AGG_RASTERIZER_CELLS_AA_INCLUDED
 
-#include <string.h>
+#include <cstring>
 #include <cstdlib>
 #include <limits>
 #include "agg_math.h"
@@ -49,8 +49,7 @@ namespace agg
             cell_block_shift = 12,
             cell_block_size  = 1 << cell_block_shift,
             cell_block_mask  = cell_block_size - 1,
-            cell_block_pool  = 256,
-            cell_block_limit = 1024
+            cell_block_pool  = 256
         };
 
         struct sorted_y
@@ -64,7 +63,7 @@ namespace agg
         typedef rasterizer_cells_aa<Cell> self_type;
 
         ~rasterizer_cells_aa();
-        rasterizer_cells_aa();
+        rasterizer_cells_aa(unsigned cell_block_limit=1024);
 
         void reset();
         void style(const cell_type& style_cell);
@@ -108,6 +107,7 @@ namespace agg
         unsigned                m_max_blocks;
         unsigned                m_curr_block;
         unsigned                m_num_cells;
+	unsigned                m_cell_block_limit;
         cell_type**             m_cells;
         cell_type*              m_curr_cell_ptr;
         pod_vector<cell_type*>  m_sorted_cells;
@@ -142,11 +142,12 @@ namespace agg
 
     //------------------------------------------------------------------------
     template<class Cell> 
-    rasterizer_cells_aa<Cell>::rasterizer_cells_aa() :
+    rasterizer_cells_aa<Cell>::rasterizer_cells_aa(unsigned cell_block_limit) :
         m_num_blocks(0),
         m_max_blocks(0),
         m_curr_block(0),
         m_num_cells(0),
+	m_cell_block_limit(cell_block_limit),
         m_cells(0),
         m_curr_cell_ptr(0),
         m_sorted_cells(),
@@ -184,7 +185,7 @@ namespace agg
         {
             if((m_num_cells & cell_block_mask) == 0)
             {
-                if(m_num_blocks >= cell_block_limit) return;
+                if(m_num_blocks >= m_cell_block_limit) return;
                 allocate_block();
             }
             *m_curr_cell_ptr++ = m_curr_cell;
@@ -479,7 +480,7 @@ namespace agg
 
                 if(m_cells)
                 {
-                    memcpy(new_cells, m_cells, m_max_blocks * sizeof(cell_type*));
+                    std::memcpy(new_cells, m_cells, m_max_blocks * sizeof(cell_type*));
                     pod_allocator<cell_type*>::deallocate(m_cells, m_max_blocks);
                 }
                 m_cells = new_cells;

@@ -16,7 +16,7 @@
 #ifndef AGG_GAMMA_LUT_INCLUDED
 #define AGG_GAMMA_LUT_INCLUDED
 
-#include <math.h>
+#include <cmath>
 #include "agg_basics.h"
 #include "agg_gamma_functions.h"
 
@@ -58,12 +58,12 @@ namespace agg
             unsigned i;
             for(i = 0; i < gamma_size; i++)
             {
-                m_dir_gamma[i] = HiResT(i << (hi_res_shift - gamma_shift));
+                m_dir_gamma[i] = HiResT(i << (+hi_res_shift - gamma_shift));
             }
 
             for(i = 0; i < hi_res_size; i++)
             {
-                m_inv_gamma[i] = LoResT(i >> (hi_res_shift - gamma_shift));
+                m_inv_gamma[i] = LoResT(i >> (+hi_res_shift - gamma_shift));
             }
         }
 
@@ -83,14 +83,14 @@ namespace agg
             for(i = 0; i < gamma_size; i++)
             {
                 m_dir_gamma[i] = (HiResT)
-                    uround(pow(i / double(gamma_mask), m_gamma) * double(hi_res_mask));
+                    uround(std::pow(i / double(gamma_mask), m_gamma) * double(hi_res_mask));
             }
 
             double inv_g = 1.0 / g;
             for(i = 0; i < hi_res_size; i++)
             {
                 m_inv_gamma[i] = (LoResT)
-                    uround(pow(i / double(hi_res_mask), inv_g) * double(gamma_mask));
+                    uround(std::pow(i / double(hi_res_mask), inv_g) * double(gamma_mask));
             }
         }
 
@@ -122,103 +122,108 @@ namespace agg
     // sRGB support classes
     //
 
+    // Optimized sRGB lookup table. The direct conversion (sRGB to linear) 
+    // is a straightforward lookup. The inverse conversion (linear to sRGB) 
+    // is implemented using binary search.
+    template<class LinearType>
+    class sRGB_lut_base
+    {
+    public:
+        LinearType dir(int8u v) const
+        {
+            return m_dir_table[v];
+        }
+
+        int8u inv(LinearType v) const
+        {
+            // Unrolled binary search.
+            int8u x = 0;
+            if (v > m_inv_table[128]) x = 128;
+            if (v > m_inv_table[x + 64]) x += 64;
+            if (v > m_inv_table[x + 32]) x += 32;
+            if (v > m_inv_table[x + 16]) x += 16;
+            if (v > m_inv_table[x + 8]) x += 8;
+            if (v > m_inv_table[x + 4]) x += 4;
+            if (v > m_inv_table[x + 2]) x += 2;
+            if (v > m_inv_table[x + 1]) x += 1;
+            return x;
+        }
+
+    protected:
+        LinearType m_dir_table[256];
+        LinearType m_inv_table[256];
+
+        // Only derived classes may instantiate.
+        sRGB_lut_base() 
+        {
+        }
+    };
+
+
     // sRGB_lut - implements sRGB conversion for the various types.
     // Base template is undefined, specializations are provided below.
     template<class LinearType>
     class sRGB_lut;
 
     template<>
-    class sRGB_lut<float>
+    class sRGB_lut<float> : public sRGB_lut_base<float>
     {
     public:
 		sRGB_lut()
 		{
 			// Generate lookup tables.
-			for (int i = 0; i <= 255; ++i)
+			m_dir_table[0] = 0;
+			m_inv_table[0] = 0;
+			for (unsigned i = 1; i <= 255; ++i)
 			{
+				// Floating-point RGB is in range [0,1].
 				m_dir_table[i] = float(sRGB_to_linear(i / 255.0));
-			}
-			for (int i = 0; i <= 65535; ++i)
-			{
-				m_inv_table[i] = uround(255.0 * linear_to_sRGB(i / 65535.0));
+				m_inv_table[i] = float(sRGB_to_linear((i - 0.5) / 255.0));
 			}
 		}
-
-		float dir(int8u v) const
-		{
-			return m_dir_table[v];
-		}
-
-		int8u inv(float v) const
-		{
-			return m_inv_table[int16u(0.5 + v * 65535)];
-		}
-
-	private:
-		float m_dir_table[256];
-		int8u m_inv_table[65536];
     };
 
     template<>
-    class sRGB_lut<int16u>
+    class sRGB_lut<int16u> : public sRGB_lut_base<int16u>
     {
     public:
         sRGB_lut()
         {
             // Generate lookup tables.
-            for (int i = 0; i <= 255; ++i)
+            m_dir_table[0] = 0;
+            m_inv_table[0] = 0;
+            for (int i = 1; i <= 255; ++i)
             {
+                // 16-bit RGB is in range [0,65535].
                 m_dir_table[i] = uround(65535.0 * sRGB_to_linear(i / 255.0));
+                m_inv_table[i] = uround(65535.0 * sRGB_to_linear((i - 0.5) / 255.0));
             }
-			for (int i = 0; i <= 65535; ++i)
-			{
-				m_inv_table[i] = uround(255.0 * linear_to_sRGB(i / 65535.0));
-			}
-		}
-
-		int16u dir(int8u v) const
-		{
-			return m_dir_table[v];
-		}
-
-		int8u inv(int16u v) const
-		{
-			return m_inv_table[v];
-		}
-
-	private:
-		int16u m_dir_table[256];
-		int8u m_inv_table[65536];
-	};
+        }
+    };
 
     template<>
-    class sRGB_lut<int8u>
+    class sRGB_lut<int8u> : public sRGB_lut_base<int8u>
     {
     public:
         sRGB_lut()
         {
             // Generate lookup tables. 
-            for (int i = 0; i <= 255; ++i)
+            m_dir_table[0] = 0;
+            m_inv_table[0] = 0;
+            for (int i = 1; i <= 255; ++i)
             {
+                // 8-bit RGB is handled with simple bidirectional lookup tables.
                 m_dir_table[i] = uround(255.0 * sRGB_to_linear(i / 255.0));
                 m_inv_table[i] = uround(255.0 * linear_to_sRGB(i / 255.0));
             }
         }
 
-		int8u dir(int8u v) const
-		{
-			return m_dir_table[v];
-		}
-
-		int8u inv(int8u v) const
+        int8u inv(int8u v) const
         {
+            // In this case, the inverse transform is a simple lookup.
             return m_inv_table[v];
         }
-
-	private:
-		int8u m_dir_table[256];
-		int8u m_inv_table[256];
-	};
+    };
 
     // Common base class for sRGB_conv objects. Defines an internal 
     // sRGB_lut object so that users don't have to.
@@ -256,12 +261,14 @@ namespace agg
     public:
         static float alpha_from_sRGB(int8u x)
         {
-			static const double y = 1 / 255.0;
+            static const double y = 1 / 255.0;
             return float(x * y);
         }
 
         static int8u alpha_to_sRGB(float x)
         {
+            if (x < 0) return 0;
+            if (x > 1) return 255;
             return int8u(0.5 + x * 255);
         }
     };

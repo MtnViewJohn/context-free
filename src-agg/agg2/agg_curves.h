@@ -96,6 +96,7 @@ namespace agg
     public:
         curve3_div() : 
             m_approximation_scale(1.0),
+            m_distance_tolerance_square(0.0),
             m_angle_tolerance(0.0),
             m_count(0)
         {}
@@ -376,6 +377,7 @@ namespace agg
     public:
         curve4_div() : 
             m_approximation_scale(1.0),
+            m_distance_tolerance_square(0.0),
             m_angle_tolerance(0.0),
             m_cusp_limit(0.0),
             m_count(0)

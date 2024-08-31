@@ -17,7 +17,6 @@
 //
 //----------------------------------------------------------------------------
 
-#include <math.h>
 #include "agg_vcgen_contour.h"
 
 namespace agg
@@ -109,6 +108,7 @@ namespace agg
             case initial:
                 rewind(0);
 
+                AGG_FALLTHROUGH
             case ready:
                 if(m_src_vertices.size() < 2 + unsigned(m_closed != 0))
                 {
@@ -120,6 +120,7 @@ namespace agg
                 m_src_vertex = 0;
                 m_out_vertex = 0;
 
+                AGG_FALLTHROUGH
             case outline:
                 if(m_src_vertex >= m_src_vertices.size())
                 {
@@ -136,6 +137,7 @@ namespace agg
                 m_status = out_vertices;
                 m_out_vertex = 0;
 
+                AGG_FALLTHROUGH
             case out_vertices:
                 if(m_out_vertex >= m_out_vertices.size())
                 {
@@ -153,7 +155,7 @@ namespace agg
             case end_poly:
                 if(!m_closed) return path_cmd_stop;
                 m_status = stop;
-                return path_cmd_end_poly | path_flags_close | path_flags_ccw;
+                return +path_cmd_end_poly | path_flags_close | path_flags_ccw;
 
             case stop:
                 return path_cmd_stop;

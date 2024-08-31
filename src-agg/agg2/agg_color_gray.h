@@ -56,7 +56,7 @@ namespace agg
         static value_type luminance(const rgba& c)
         {
             // Calculate grayscale value as per ITU-R BT.709.
-            return value_type(uround((0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) * base_mask));
+            return value_type(uround((0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) * (double)base_mask));
         }
 
         static value_type luminance(const rgba8& c)
@@ -115,7 +115,7 @@ namespace agg
         //--------------------------------------------------------------------
         gray8T(const rgba& c) :
             v(luminance(c)),
-            a(value_type(uround(c.a * base_mask))) {}
+            a(value_type(uround(c.a * (double)base_mask))) {}
 
         //--------------------------------------------------------------------
         template<class T>
@@ -215,13 +215,13 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE double to_double(value_type a)
         {
-            return double(a) / base_mask;
+            return double(a) / (double)base_mask;
         }
 
         //--------------------------------------------------------------------
         static AGG_INLINE value_type from_double(double a)
         {
-            return value_type(uround(a * base_mask));
+            return value_type(uround(a * (double)base_mask));
         }
 
         //--------------------------------------------------------------------
@@ -375,7 +375,7 @@ namespace agg
         self_type gradient(self_type c, double k) const
         {
             self_type ret;
-            calc_type ik = uround(k * base_scale);
+            calc_type ik = uround(k * (double)base_scale);
             ret.v = lerp(v, c.v, ik);
             ret.a = lerp(a, c.a, ik);
             return ret;
@@ -436,7 +436,7 @@ namespace agg
         static value_type luminance(const rgba& c)
         {
             // Calculate grayscale value as per ITU-R BT.709.
-            return value_type(uround((0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) * base_mask));
+            return value_type(uround((0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) * (double)base_mask));
         }
 
         static value_type luminance(const rgba16& c)
@@ -544,13 +544,13 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE double to_double(value_type a)
         {
-            return double(a) / base_mask;
+            return double(a) / (double)base_mask;
         }
 
         //--------------------------------------------------------------------
         static AGG_INLINE value_type from_double(double a)
         {
-            return value_type(uround(a * base_mask));
+            return value_type(uround(a * (double)base_mask));
         }
 
         //--------------------------------------------------------------------
@@ -705,7 +705,7 @@ namespace agg
         self_type gradient(self_type c, double k) const
         {
             self_type ret;
-            calc_type ik = uround(k * base_scale);
+            calc_type ik = uround(k * (double)base_scale);
             ret.v = lerp(v, c.v, ik);
             ret.a = lerp(a, c.a, ik);
             return ret;
@@ -955,7 +955,7 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type mult_cover(value_type a, cover_type b) 
         {
-            return value_type(a * b / cover_mask);
+            return value_type(a * b / (value_type)cover_mask);
         }
 
         //--------------------------------------------------------------------

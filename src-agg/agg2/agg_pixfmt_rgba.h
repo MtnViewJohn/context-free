@@ -24,8 +24,8 @@
 #ifndef AGG_PIXFMT_RGBA_INCLUDED
 #define AGG_PIXFMT_RGBA_INCLUDED
 
-#include <string.h>
-#include <math.h>
+#include <cstring>
+#include <cmath>
 #include "agg_pixfmt_base.h"
 #include "agg_rendering_buffer.h"
 
@@ -950,7 +950,7 @@ namespace agg
             double dcasa = dca * sa;
             if (2 * sca <= sa) return dcasa - (sada - 2 * sca * da) * dcasa * (sada - dcasa) + sca * d1a + dca * s1a;
             if (4 * dca <= da) return dcasa + (2 * sca * da - sada) * ((((16 * dcasa - 12) * dcasa + 4) * dca * da) - dca * da) + sca * d1a + dca * s1a;
-            return dcasa + (2 * sca * da - sada) * (sqrt(dcasa) - dcasa) + sca * d1a + dca * s1a;
+            return dcasa + (2 * sca * da - sada) * (std::sqrt(dcasa) - dcasa) + sca * d1a + dca * s1a;
         }
 
         static AGG_INLINE void blend_pix(value_type* p, 
@@ -2052,7 +2052,7 @@ namespace agg
         {
             if (const int8u* p = from.row_ptr(ysrc))
             {
-                memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
+                std::memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
                         p + xsrc * pix_width, 
                         len * pix_width);
             }
@@ -2571,7 +2571,7 @@ namespace agg
         {
             if (const int8u* p = from.row_ptr(ysrc))
             {
-                memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
+                std::memmove(m_rbuf->row_ptr(xdst, ydst, len) + xdst * pix_width, 
                         p + xsrc * pix_width, 
                         len * pix_width);
             }

@@ -99,6 +99,7 @@ namespace agg
                 m_last_cmd = m_source->vertex(&m_start_x, &m_start_y);
                 m_status = accumulate;
 
+                AGG_FALLTHROUGH
             case accumulate:
                 if(is_stop(m_last_cmd)) return path_cmd_stop;
 
@@ -138,6 +139,7 @@ namespace agg
                 m_generator.rewind(0);
                 m_status = generate;
 
+                AGG_FALLTHROUGH
             case generate:
                 cmd = m_generator.vertex(x, y);
                 if(is_stop(cmd))

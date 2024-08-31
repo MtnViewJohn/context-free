@@ -24,7 +24,7 @@
 #ifndef AGG_COLOR_RGBA_INCLUDED
 #define AGG_COLOR_RGBA_INCLUDED
 
-#include <math.h>
+#include <cmath>
 #include "agg_basics.h"
 #include "agg_gamma_lut.h"
 
@@ -229,9 +229,9 @@ namespace agg
         if (wl > 700.0)       s = 0.3 + 0.7 * (780.0 - wl) / (780.0 - 700.0);
         else if (wl <  420.0) s = 0.3 + 0.7 * (wl - 380.0) / (420.0 - 380.0);
 
-        t.r = pow(t.r * s, gamma);
-        t.g = pow(t.g * s, gamma);
-        t.b = pow(t.b * s, gamma);
+        t.r = std::pow(t.r * s, gamma);
+        t.g = std::pow(t.g * s, gamma);
+        t.b = std::pow(t.b * s, gamma);
         return t;
     }
 
@@ -281,10 +281,10 @@ namespace agg
 
         static void convert(rgba8T<linear>& dst, const rgba& src)
         {
-            dst.r = value_type(uround(src.r * base_mask));
-            dst.g = value_type(uround(src.g * base_mask));
-            dst.b = value_type(uround(src.b * base_mask));
-            dst.a = value_type(uround(src.a * base_mask));
+            dst.r = value_type(uround(src.r * (rgba::value_type)base_mask));
+            dst.g = value_type(uround(src.g * (rgba::value_type)base_mask));
+            dst.b = value_type(uround(src.b * (rgba::value_type)base_mask));
+            dst.a = value_type(uround(src.a * (rgba::value_type)base_mask));
         }
 
         static void convert(rgba8T<sRGB>& dst, const rgba& src)
@@ -351,13 +351,13 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE double to_double(value_type a)
         {
-            return double(a) / base_mask;
+            return double(a) / (double)base_mask;
         }
 
         //--------------------------------------------------------------------
         static AGG_INLINE value_type from_double(double a)
         {
-            return value_type(uround(a * base_mask));
+            return value_type(uround(a * (double)base_mask));
         }
 
         //--------------------------------------------------------------------
@@ -552,7 +552,7 @@ namespace agg
         AGG_INLINE self_type gradient(const self_type& c, double k) const
         {
             self_type ret;
-            calc_type ik = uround(k * base_mask);
+            calc_type ik = uround(k * (double)base_mask);
             ret.r = lerp(r, c.r, ik);
             ret.g = lerp(g, c.g, ik);
             ret.b = lerp(b, c.b, ik);
@@ -743,13 +743,13 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE double to_double(value_type a)
         {
-            return double(a) / base_mask;
+            return double(a) / (double)base_mask;
         }
 
         //--------------------------------------------------------------------
         static AGG_INLINE value_type from_double(double a)
         {
-            return value_type(uround(a * base_mask));
+            return value_type(uround(a * (double)base_mask));
         }
 
         //--------------------------------------------------------------------
@@ -944,7 +944,7 @@ namespace agg
         AGG_INLINE self_type gradient(const self_type& c, double k) const
         {
             self_type ret;
-            calc_type ik = uround(k * base_mask);
+            calc_type ik = uround(k * (double)base_mask);
             ret.r = lerp(r, c.r, ik);
             ret.g = lerp(g, c.g, ik);
             ret.b = lerp(b, c.b, ik);
@@ -1183,7 +1183,7 @@ namespace agg
         //--------------------------------------------------------------------
         static AGG_INLINE value_type mult_cover(value_type a, cover_type b) 
         {
-            return value_type(a * b / cover_mask);
+            return value_type(a * b / (value_type)cover_mask);
         }
 
         //--------------------------------------------------------------------

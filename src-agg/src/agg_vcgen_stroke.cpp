@@ -16,7 +16,6 @@
 // Stroke generator
 //
 //----------------------------------------------------------------------------
-#include <math.h>
 #include "agg_vcgen_stroke.h"
 #include "agg_shorten_path.h"
 
@@ -92,6 +91,7 @@ namespace agg
             case initial:
                 rewind(0);
 
+                AGG_FALLTHROUGH
             case ready:
                 if(m_src_vertices.size() < 2 + unsigned(m_closed != 0))
                 {
@@ -159,6 +159,7 @@ namespace agg
                 m_status = outline2;
                 cmd = path_cmd_move_to;
 
+                AGG_FALLTHROUGH
             case outline2:
                 if(m_src_vertex <= unsigned(m_closed == 0))
                 {
@@ -196,11 +197,11 @@ namespace agg
 
             case end_poly1:
                 m_status = m_prev_status;
-                return path_cmd_end_poly | path_flags_close | path_flags_ccw;
+                return +path_cmd_end_poly | path_flags_close | path_flags_ccw;
 
             case end_poly2:
                 m_status = m_prev_status;
-                return path_cmd_end_poly | path_flags_close | path_flags_cw;
+                return +path_cmd_end_poly | path_flags_close | path_flags_cw;
 
             case stop:
                 cmd = path_cmd_stop;

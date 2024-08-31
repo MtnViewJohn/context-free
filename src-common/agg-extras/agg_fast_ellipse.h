@@ -115,7 +115,7 @@ namespace agg
         if(m_step == m_num) 
         {
             ++m_step;
-            return path_cmd_end_poly | path_flags_close | path_flags_ccw;
+            return +path_cmd_end_poly | path_flags_close | path_flags_ccw;
         }
         if(m_step > m_num) return path_cmd_stop;
         int quadrant = m_step / (m_num / 4);

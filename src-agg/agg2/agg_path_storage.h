@@ -16,8 +16,7 @@
 #ifndef AGG_PATH_STORAGE_INCLUDED
 #define AGG_PATH_STORAGE_INCLUDED
 
-#include <string.h>
-#include <math.h>
+#include <cstring>
 #include "agg_math.h"
 #include "agg_array.h"
 #include "agg_bezier_arc.h"
@@ -308,11 +307,11 @@ namespace agg
 
             if(m_coord_blocks)
             {
-                memcpy(new_coords, 
+                std::memcpy(new_coords, 
                        m_coord_blocks, 
                        m_max_blocks * sizeof(T*));
 
-                memcpy(new_cmds, 
+                std::memcpy(new_cmds, 
                        m_cmd_blocks, 
                        m_max_blocks * sizeof(unsigned char*));
 
@@ -398,7 +397,7 @@ namespace agg
             if(m_closed && !m_stop)
             {
                 m_stop = true;
-                return path_cmd_end_poly | path_flags_close;
+                return +path_cmd_end_poly | path_flags_close;
             }
             return path_cmd_stop;
         }
@@ -463,7 +462,7 @@ namespace agg
             if(m_closed && !m_stop)
             {
                 m_stop = true;
-                return path_cmd_end_poly | path_flags_close;
+                return +path_cmd_end_poly | path_flags_close;
             }
             return path_cmd_stop;
         }
@@ -525,7 +524,7 @@ namespace agg
             if(m_closed && !m_stop)
             {
                 m_stop = true;
-                return path_cmd_end_poly | path_flags_close;
+                return +path_cmd_end_poly | path_flags_close;
             }
             return path_cmd_stop;
         }
@@ -720,7 +719,8 @@ namespace agg
         template<class VertexSource> 
         void concat_path(VertexSource& vs, unsigned path_id = 0)
         {
-            double x, y;
+            double x = 0;
+            double y = 0;
             unsigned cmd;
             vs.rewind(path_id);
             while(!is_stop(cmd = vs.vertex(&x, &y)))
@@ -986,8 +986,8 @@ namespace agg
             double y0 = 0.0;
             m_vertices.last_vertex(&x0, &y0);
 
-            rx = fabs(rx);
-            ry = fabs(ry);
+            rx = std::fabs(rx);
+            ry = std::fabs(ry);
 
             // Ensure radii are valid
             //-------------------------

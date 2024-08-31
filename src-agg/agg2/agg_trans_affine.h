@@ -19,7 +19,7 @@
 #ifndef AGG_TRANS_AFFINE_INCLUDED
 #define AGG_TRANS_AFFINE_INCLUDED
 
-#include <math.h>
+#include <cmath>
 #include "agg_basics.h"
 
 namespace agg
@@ -318,9 +318,9 @@ namespace agg
     //------------------------------------------------------------------------
     inline double trans_affine::scale() const
     {
-        double x = 0.707106781 * sx  + 0.707106781 * shx;
-        double y = 0.707106781 * shy + 0.707106781 * sy;
-        return sqrt(x*x + y*y);
+        double x = 0.70710678118654752440 * sx  + 0.70710678118654752440 * shx;
+        double y = 0.70710678118654752440 * shy + 0.70710678118654752440 * sy;
+        return std::sqrt(x*x + y*y);
     }
 
     //------------------------------------------------------------------------
@@ -334,8 +334,8 @@ namespace agg
     //------------------------------------------------------------------------
     inline const trans_affine& trans_affine::rotate(double a) 
     {
-        double ca = cos(a); 
-        double sa = sin(a);
+        double ca = std::cos(a); 
+        double sa = std::sin(a);
         double t0 = sx  * ca - shy * sa;
         double t2 = shx * ca - sy * sa;
         double t4 = tx  * ca - ty * sa;
@@ -404,8 +404,8 @@ namespace agg
         // Used to calculate scaling coefficients in image resampling. 
         // When there is considerable shear this method gives us much
         // better estimation than just sx, sy.
-        *x = sqrt(sx  * sx  + shx * shx);
-        *y = sqrt(shy * shy + sy  * sy);
+        *x = std::sqrt(sx  * sx  + shx * shx);
+        *y = std::sqrt(shy * shy + sy  * sy);
     }
 
     //====================================================trans_affine_rotation
@@ -417,7 +417,7 @@ namespace agg
     {
     public:
         trans_affine_rotation(double a) : 
-          trans_affine(cos(a), sin(a), -sin(a), cos(a), 0.0, 0.0)
+          trans_affine(std::cos(a), std::sin(a), -std::sin(a), std::cos(a), 0.0, 0.0)
         {}
     };
 
@@ -451,7 +451,7 @@ namespace agg
     {
     public:
         trans_affine_skewing(double x, double y) : 
-          trans_affine(1.0, tan(y), tan(x), 1.0, 0.0, 0.0)
+          trans_affine(1.0, std::tan(y), std::tan(x), 1.0, 0.0, 0.0)
         {}
     };
 
@@ -469,9 +469,9 @@ namespace agg
             double dy = y2 - y1;
             if(dist > 0.0)
             {
-                multiply(trans_affine_scaling(sqrt(dx * dx + dy * dy) / dist));
+                multiply(trans_affine_scaling(std::sqrt(dx * dx + dy * dy) / dist));
             }
-            multiply(trans_affine_rotation(atan2(dy, dx)));
+            multiply(trans_affine_rotation(std::atan2(dy, dx)));
             multiply(trans_affine_translation(x1, y1));
         }
     };
@@ -502,12 +502,12 @@ namespace agg
     {
     public:
         trans_affine_reflection(double a) :
-          trans_affine_reflection_unit(cos(a), sin(a))
+          trans_affine_reflection_unit(std::cos(a), std::sin(a))
         {}
 
 
         trans_affine_reflection(double x, double y) :
-          trans_affine_reflection_unit(x / sqrt(x * x + y * y), y / sqrt(x * x + y * y))
+          trans_affine_reflection_unit(x / std::sqrt(x * x + y * y), y / std::sqrt(x * x + y * y))
         {}
     };
 
