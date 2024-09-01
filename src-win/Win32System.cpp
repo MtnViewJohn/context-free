@@ -101,22 +101,29 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    std::array<wchar_t, 32768> wbase, wrel;
-    std::array<char, 32768> buf;
+    int wchars_rel  = ::MultiByteToWideChar(CP_UTF8, 0,  rel.c_str(), -1, nullptr, 0);
+    int wchars_base = ::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, nullptr, 0) + wchars_rel + 1;
 
-    if (!::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase.data(), (int)wbase.size()) ||
-        !::MultiByteToWideChar(CP_UTF8, 0, rel.c_str(), -1, wrel.data(), (int)wrel.size()))
+    std::vector<wchar_t> wbase(wchars_base, L' '), wrel(wchars_rel, L' ');
+
+    if (::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase.data(), wchars_base) == 0 ||
+        ::MultiByteToWideChar(CP_UTF8, 0,  rel.c_str(), -1,  wrel.data(), wchars_rel)  == 0)
     {
         message("Cannot find %s relative to %s", rel.c_str(), base.c_str());
         return std::string();
     }
+
     PathRemoveFileSpecW(wbase.data());
     // Perform PathCombineW w/o the weird canonicalization behavior
     if (wbase[0] && wbase[wcslen(wbase.data()) - 1] != L'\\')
-        wcscat_s(wbase.data(), wbase.size(), L"\\");
-    wcscat_s(wbase.data(), wbase.size(), wrel.data());
+        wcscat_s(wbase.data(), wchars_base, L"\\");
+    wcscat_s(wbase.data(), wchars_base, wrel.data());
+
+    int char_buf = ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, nullptr, 0, nullptr, nullptr);
+    std::vector<char> buf(char_buf, ' ');
+
     if (PathFileExistsW(wbase.data()) && 
-        ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, buf.data(), (int)buf.size(), nullptr, nullptr))
+        ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, buf.data(), char_buf, nullptr, nullptr) != 0)
     {
         return std::string(buf.data());
     } else {
@@ -138,7 +145,7 @@ Win32System::findTempFiles()
     std::vector<FileString> ret;
     const FileChar* tempdir = tempFileDirectory();
 
-    std::array<wchar_t, 32768> wtempdir;
+    std::vector<wchar_t> wtempdir(32768, L' ');
     if (wcscpy_s(wtempdir.data(), wtempdir.size(), tempFileDirectory()) ||
         !::PathAppendW(wtempdir.data(), TempPrefixAll) || 
         wcsncat_s(wtempdir.data(), wtempdir.size(), L"*", 1))

@@ -274,9 +274,11 @@ SVGCanvas::SVGCanvas(const char* opath, int width, int height, bool crop,
     if (*opath) {
         mFileName = opath;
 #ifdef _WIN32
-        wchar_t wpath[32768];
-        if (::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath, 32768))
-            mOutputFile.open(wpath, std::ios::binary | std::ios::trunc | std::ios::out);
+        int wchars_num = ::MultiByteToWideChar(CP_UTF8, 0, opath, -1, nullptr, 0);
+        std::vector<wchar_t> wpath(wchars_num, L' ');
+
+        if (::MultiByteToWideChar(CP_UTF8, 0, opath, -1, wpath.data(), wchars_num) != 0)
+            mOutputFile.open(wpath.data(), std::ios::binary | std::ios::trunc | std::ios::out);
 #else
         mOutputFile.open(opath, std::ios::binary | std::ios::trunc | std::ios::out);
 #endif

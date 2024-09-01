@@ -101,9 +101,12 @@ void WinSystem::catastrophicError(const char* what)
 {
     if (!MainWindow)
         return;
-    wchar_t wbuf[32768];
-    if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf, 32768))
-        (void)::MessageBoxW(NULL, wbuf, L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
+
+    int wchars_num = ::MultiByteToWideChar(CP_UTF8, 0, what, -1, nullptr, 0);
+    std::vector<wchar_t> wbuf(wchars_num, L' ');
+
+    if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf.data(), wchars_num) != 0)
+        (void)::MessageBoxW(NULL, wbuf.data(), L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
     else
         (void)::MessageBoxW(NULL, L"", L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
     ::PostMessageW((HWND)MainWindow, WM_CLOSE, NULL, NULL);
