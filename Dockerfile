@@ -1,10 +1,8 @@
 FROM ubuntu:24.04
 
 RUN apt update -y
-RUN apt install make bison g++ -y
-RUN apt install libpng-dev -y
-RUN apt install flex -y
-RUN apt install libicu-dev -y
+RUN apt upgrade -y
+RUN apt install flex bison g++ make libpng-dev libicu-dev -y
 
 RUN mkdir /context-free
 WORKDIR /context-free
