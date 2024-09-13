@@ -78,6 +78,8 @@ else
   LIBS += stdc++ atomic icui18n icuuc icudata
 endif
 
+
+
 #
 # FFmpeg support
 #
@@ -184,9 +186,12 @@ uninstall:
 # Tests
 #
 
-.PHONY: test check
+.PHONY: test test-mpeg check
 test: cfdg
 	./runtests.sh
+
+test-mpeg: cfdg
+	./runtests-mpeg.sh
 
 check: cfdg
 	./runtests.sh
