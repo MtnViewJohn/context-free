@@ -26,7 +26,7 @@ COPY src-unix ./src-unix
 COPY input ./input
 RUN TARGET=wasm emmake make
 RUN mv cfdg cfdg.js
-COPY src-js/cfdg cfdg
+COPY src-js/main.js cfdg
 RUN touch cfdg # avoid make recompiling stuff
 COPY ./runtests.sh .
 RUN make test
