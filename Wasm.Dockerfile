@@ -25,6 +25,8 @@ COPY src-common ./src-common
 COPY src-unix ./src-unix
 COPY input ./input
 RUN TARGET=wasm emmake make
-RUN (echo '#!/usr/bin/env node\n' && cat cfdg) > cfdg.new && mv cfdg.new cfdg && chmod 755 cfdg
+RUN mv cfdg cfdg.js
+COPY src-js/cfdg cfdg
+RUN touch cfdg # avoid make recompiling stuff
 COPY ./runtests.sh .
 RUN make test
