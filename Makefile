@@ -1,7 +1,6 @@
 
 all: cfdg
 
-
 #
 # Dirs
 #
@@ -20,6 +19,7 @@ vpath %.cfdg input
 
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras
 INC_DIRS += /usr/local/include
+#INC_DIRS += /usr/local/include /emsdk/local/include
 
 #
 # Installation directories
@@ -35,6 +35,7 @@ MAN_DIR = $(DESTDIR)$(prefix)/share/man
 #
 
 LIB_DIRS = /usr/local/lib
+#LIB_DIRS += /emsdk/local/lib
 
 #
 # Sources and Objects
@@ -72,12 +73,16 @@ INPUT_SRCS = ciliasun_v2.cfdg demo1_v2.cfdg demo2_v2.cfdg funky_flower_v2.cfdg \
 LIBS = png m
 
 # Use the first one for clang and the second one for gcc
+ifeq ($(TARGET), wasm)
+	LIBS += c++
+	#LIBS += c++ icui18n icuuc icudata
+else
 ifeq ($(shell uname -s), Darwin)
   LIBS += c++ icucore
 else
   LIBS += stdc++ atomic icui18n icuuc icudata
 endif
-
+endif
 
 
 #
@@ -116,6 +121,10 @@ DEPS = $(patsubst %.o,%.d,$(OBJS))
 LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
+ifeq ($(TARGET), wasm)
+	LINKFLAGS += -s USE_LIBPNG=1 -s USE_ICU=1
+	#LINKFLAGS += -s ASSERTIONS=2 -s EXCEPTION_DEBUG=1 -s DYLINK_DEBUG=1 -s FS_DEBUG=1 -s LIBRARY_DEBUG=1 -s SYSCALL_DEBUG=1
+endif
 
 deps: $(OBJ_DIR) $(DEPS)
 
@@ -134,9 +143,15 @@ $(OBJS): $(OBJ_DIR)/Sentry
 #
 # Under Cygwin replace strip $@ with strip $@.exe
 
+ifeq ($(TARGET), wasm)
+STRIP = echo
+else
+STRIP = strip
+endif
+
 cfdg: $(OBJS)
 	$(LINK.o) $^ $(LINKFLAGS) -o $@
-	strip $@
+	$(STRIP) $@
 
 
 #
@@ -211,6 +226,10 @@ ifeq ($(shell uname -s), Darwin)
 
 # Uncomment this line to enable FFmpeg support on macos
 # LDFLAGS += -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework VideoToolbox
+endif
+
+ifeq ($(TARGET), wasm)
+CXXFLAGS += -DNOSYSCTL=1 -DNONORMALIZE=1
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
