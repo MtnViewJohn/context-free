@@ -23,10 +23,13 @@ COPY Makefile .
 COPY src-agg ./src-agg
 COPY src-common ./src-common
 COPY src-unix ./src-unix
-COPY input ./input
+RUN mkdir ./input
+COPY ./input/*.cfdg ./input
 RUN TARGET=wasm emmake make
 RUN mv cfdg cfdg.js
 COPY src-js/main.js cfdg
 RUN touch cfdg # avoid make recompiling stuff
+COPY ./input/*.SKIP ./input
+COPY ./input/tests ./input/tests
 COPY ./runtests.sh .
 RUN make test
