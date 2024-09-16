@@ -25,7 +25,11 @@ COPY src-common ./src-common
 COPY src-unix ./src-unix
 RUN mkdir ./input
 COPY ./input/*.cfdg ./input
-RUN TARGET=wasm emmake make
+
+RUN TARGET=wasm LINKFLAGS='-s ENVIRONMENT=web,worker -s WASM=1 -s SINGLE_FILE=1' emmake make
+RUN mkdir web && mv cfdg cfdg.js && mv cfdg.* web
+
+RUN TARGET=wasm LINKFLAGS='-lnodefs.js -lnoderawfs.js' emmake make
 RUN mv cfdg cfdg.js
 COPY src-js/main.js cfdg
 RUN touch cfdg # avoid make recompiling stuff
