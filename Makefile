@@ -122,7 +122,7 @@ LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
 ifeq ($(TARGET), wasm)
-	LINKFLAGS += -s ASSERTIONS=2 -s EXCEPTION_DEBUG=1 -s USE_LIBPNG=1 -s USE_ICU=1 -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS=callMain,FS -g -gsource-map -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=104857600
+	LINKFLAGS += -fexceptions -s SUPPORT_LONGJMP=emscripten -s ASSERTIONS=2 -s USE_LIBPNG=1 -s USE_ICU=1 -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS=callMain,FS -g -gsource-map -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=104857600
 	#LINKFLAGS += -s ASSERTIONS=2 -s EXCEPTION_DEBUG=1 -s DYLINK_DEBUG=1 -s FS_DEBUG=1 -s LIBRARY_DEBUG=1 -s SYSCALL_DEBUG=1
 endif
 
@@ -229,7 +229,7 @@ ifeq ($(shell uname -s), Darwin)
 endif
 
 ifeq ($(TARGET), wasm)
-CXXFLAGS += -DNOSYSCTL=1 -DNONORMALIZE=1
+CXXFLAGS += -DNOSYSCTL=1 -DNONORMALIZE=1 -fexceptions -s SUPPORT_LONGJMP=emscripten
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
