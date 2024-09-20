@@ -122,8 +122,10 @@ LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
 ifeq ($(TARGET), wasm)
-	LINKFLAGS += -fexceptions -s SUPPORT_LONGJMP=emscripten -s ASSERTIONS=2 -s USE_LIBPNG=1 -s USE_ICU=1 -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS=callMain,FS -g -gsource-map -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=104857600
-	#LINKFLAGS += -s ASSERTIONS=2 -s EXCEPTION_DEBUG=1 -s DYLINK_DEBUG=1 -s FS_DEBUG=1 -s LIBRARY_DEBUG=1 -s SYSCALL_DEBUG=1
+ifeq ($(WASM_DEBUG), 1)
+	LINKFLAGS += -s EXCEPTION_DEBUG=1 -s SYSCALL_DEBUG=1 -s FS_DEBUG=1 -s ASSERTIONS=2 -g -gsource-map
+endif
+	LINKFLAGS += -fexceptions -s SUPPORT_LONGJMP=emscripten -s USE_LIBPNG=1 -s USE_ICU=1 -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS=callMain,FS -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=104857600
 endif
 
 deps: $(OBJ_DIR) $(DEPS)
@@ -216,8 +218,8 @@ check: cfdg
 #
 
 CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
-CXXFLAGS += -Wall -Wextra -Wno-parentheses -std=c++17
-CXXFLAGS += -g -gsource-map -D_GLIBCXX_USE_C99_MATH=1
+CXXFLAGS += -O2 -Wall -Wextra -Wno-parentheses -std=c++17
+CXXFLAGS += -D_GLIBCXX_USE_C99_MATH=1
 #CPPFLAGS += -DNDEBUG
 
 # Add this for clang
@@ -230,6 +232,9 @@ endif
 
 ifeq ($(TARGET), wasm)
 CXXFLAGS += -DNOSYSCTL=1 -DNONORMALIZE=1 -fexceptions -s SUPPORT_LONGJMP=emscripten
+ifeq ($(WASM_DEBUG), 1)
+CXXFLAGS += -g -gsource-map
+endif
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
