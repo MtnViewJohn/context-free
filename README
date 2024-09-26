@@ -127,3 +127,38 @@ will install cfdg and the cfdg.1 man page in /usr/local.
 FFmpeg BUILD NOTES
 
 Check out README.ffmpeg for building ffmpeg and enabling ffmpeg support
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+DOCKER BUILD NOTES
+
+You can build and run the Linux/Posix version of cfdg inside a docker container
+by running the command:
+
+    $ docker build . -f Dockerfile
+
+This will install the operating system and all the build tools (GCC, Make, etc)
+inside an image, copy the cfdg files needed for the build, compile it, then run
+the tests.  Note that to use cfdg inside a container, you need to mount your
+files/folders into the container then execute the cfdg command on the mounted
+files.
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+WEBASSEMBLY
+
+You can compile cfdg to wasm by running the command:
+
+    $ docker build . -f Wasm.Dockerfile
+
+This will install the operating system and all the build tools (Emscripten and
+friends), then build and test cfdg wasm scripts/libraries.
+
+At the end, the docker file will produce two artifacts:
+
+(1) The browser-suitable library:
+  /context-free/web/cfdg.js
+
+(2) NodeJS executable script:
+  /context-free/cfdg
+
+The executable script is used for running the tests.  The web library is not
+tested here.
