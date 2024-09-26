@@ -36,6 +36,9 @@
 #define UCHAR_TYPE char16_t
 #include <unicode/ucnv.h>
 #include <unicode/unorm2.h>
+#include <unicode/putil.h>
+#include <unicode/unistr.h> // ICU header for UnicodeString
+
 
 #include <cstdlib>
 #include <iostream>
@@ -45,12 +48,14 @@
 #include <dirent.h>
 #include <cstring>
 
+#ifndef NOSYSCTL
 #if defined(__GNU__) || (defined(__ILP32__) && defined(__x86_64__))
   #define NOSYSCTL
 #else
   #ifndef __linux__
     #include <sys/sysctl.h>
   #endif
+#endif
 #endif
 #include <sys/types.h>
 #include <unistd.h>
@@ -219,6 +224,17 @@ PosixSystem::~PosixSystem()
         ucnv_close(mConverter);
 }
 
+#ifdef NONORMALIZE
+std::wstring
+PosixSystem::normalize(const std::string& u8name) {
+    icu::UnicodeString ustr = icu::UnicodeString::fromUTF8(icu::StringPiece(u8name.c_str()));
+    std::wstring wstr(ustr.length(), L' ');
+    for (int32_t i = 0; i < ustr.length(); ++i) {
+        wstr[i] = ustr.charAt(i);
+    }
+    return wstr;
+}
+#else
 std::wstring
 PosixSystem::normalize(const std::string& u8name)
 {
@@ -226,13 +242,14 @@ PosixSystem::normalize(const std::string& u8name)
     UErrorCode status = U_ZERO_ERROR;
     if (!mConverter)
         mConverter = ucnv_open("utf-8", &status);
-    if (!mNormalizer && U_SUCCESS(status))
+    if (U_FAILURE(status)) {
+        catastrophicError("No Converter");
+    }
+    if (!mNormalizer)
         mNormalizer = unorm2_getNFKCInstance(&status);
-    if (!mConverter || !mNormalizer) {
-        if (!mErrorReported)
-            catastrophicError("String conversion initialization error");
-        mErrorReported = true;
-        return std::wstring();
+    if (U_FAILURE(status)) {
+        std::cerr << "Error getting NFKC normalizer: " << u_errorName(status) << std::endl;
+        catastrophicError("No Normalizer");
     }
     
     // Convert from utf-8 to utf-16
@@ -273,4 +290,4 @@ PosixSystem::normalize(const std::string& u8name)
     }
     return ret;
 }
-
+#endif
