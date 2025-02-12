@@ -141,18 +141,6 @@ int CContextFreeApp::ExitInstance()
 
 // CContextFreeApp message handlers
 
-afx_msg void CContextFreeApp::OnFileNew()
-{
-	CWinAppEx::OnFileNew();
-}
-
-afx_msg void CContextFreeApp::OnFileOpen()
-{
-	CFileDialog myOpen(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("CFDG Files (*.cfdg)|*.cfdg"));
-	if (myOpen.DoModal() == IDOK) {
-		CContextFreeApp::OpenDocumentFile(myOpen.m_ofn.lpstrFile);
-	}
-}
 
 // CAboutDlg dialog used for App About
 
