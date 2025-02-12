@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <string>
 
 class CContextFreeDoc : public CDocument
 {
@@ -18,6 +19,8 @@ public:
 
 // Operations
 public:
+	void LoadCfdg(std::string textUtf8);
+    std::string GetCfdg();
 
 // Overrides
 public:

@@ -57,54 +57,14 @@ BOOL CContextFreeDoc::OnNewDocument()
 
 void CContextFreeDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: add storing code here
-	}
-	else
-	{
+	if (ar.IsStoring()) {
+		auto utf8text = GetCfdg();
+		ar.Write(utf8text.data(), (UINT)utf8text.length());
+	} else {
 		auto len = ar.GetFile()->GetLength();
-
-		if (len > 0) {
-			std::vector<char> bytes(len + 1);
-			ar.Read(bytes.data(), len);
-			bytes[len] = '\0';
-
-			int crCount = 0, lfCount = 0;
-			for (char c : bytes) {
-				if (c == '\r') ++crCount;
-				if (c == '\n') ++lfCount;
-			}
-			if (lfCount > crCount) {
-				std::vector<char> bytes2(len + 1 + (lfCount - crCount));
-				auto it = bytes.begin();
-				auto it2 = bytes2.begin();
-				while (*it) {
-					if (*it == '\r' && *(it + 1) == '\n') {
-						*it2++ = '\r';
-						*it2++ = '\n';
-						it += 2;
-					} else if (*it == '\n') {
-						*it2++ = '\r';
-						*it2++ = '\n';
-						it += 1;
-					} else {
-						*it2++ = *it++;
-					}
-				}
-				*it2 = '\0';
-				bytes.swap(bytes2);
-			}
-			auto wlen = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, bytes.data(), -1, nullptr, 0);
-			if (wlen > 0) {
-				std::vector<wchar_t> u16chars(wlen);
-				if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, bytes.data(), -1, u16chars.data(), wlen) == wlen) {
-					m_vwEditorView->GetEditCtrl().SetWindowTextW(u16chars.data());
-					return;
-				}
-			}
-		}
-		m_vwEditorView->GetEditCtrl().SetWindowTextW(_T(""));
+		std::string bytes(len, ' ');
+		ar.Read(bytes.data(), (UINT)len);
+		LoadCfdg(std::move(bytes));
 	}
 }
 
@@ -178,3 +138,61 @@ void CContextFreeDoc::Dump(CDumpContext& dc) const
 
 
 // CContextFreeDoc commands
+void CContextFreeDoc::LoadCfdg(std::string utf8text)
+{
+	auto len = utf8text.length();
+
+	if (len > 0) {
+		int crCount = 0, lfCount = 0;
+		for (char c : utf8text) {
+			if (c == '\r') ++crCount;
+			if (c == '\n') ++lfCount;
+		}
+		if (lfCount > crCount) {
+			std::string bytes2(len + 1 + (lfCount - crCount), ' ');
+			auto it = utf8text.begin();
+			auto it2 = bytes2.begin();
+			while (it != utf8text.end()) {
+				if (*it == '\r' && *(it + 1) == '\n') {
+					*it2++ = '\r';
+					*it2++ = '\n';
+					it += 2;
+				} else if (*it == '\n') {
+					*it2++ = '\r';
+					*it2++ = '\n';
+					it += 1;
+				} else {
+					*it2++ = *it++;
+				}
+			}
+			*it2 = '\0';
+			utf8text.swap(bytes2);
+		}
+		auto wlen = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8text.data(), -1, nullptr, 0);
+		if (wlen > 0) {
+			std::vector<wchar_t> u16chars(wlen);
+			if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8text.data(), -1, u16chars.data(), wlen) == wlen) {
+				m_vwEditorView->GetEditCtrl().SetWindowTextW(u16chars.data());
+				return;
+			}
+		}
+	}
+	m_vwEditorView->GetEditCtrl().SetWindowTextW(_T(""));
+}
+
+std::string CContextFreeDoc::GetCfdg()
+{
+	std::string utf8text;
+	CString wText;
+	m_vwEditorView->GetEditCtrl().GetWindowTextW(wText);
+	if (wText.GetLength() > 0) {
+		auto len = ::WideCharToMultiByte(CP_UTF8, 0, wText, -1, nullptr, 0, NULL, NULL);
+		if (len > 0) {
+			utf8text.resize(len - 1);
+			auto len2 = ::WideCharToMultiByte(CP_UTF8, 0, wText, -1, utf8text.data(), len, NULL, NULL);
+			if (len2 < len)
+				utf8text.resize(len2 - 1);		// should never happen
+		}
+	}
+	return utf8text;
+}
