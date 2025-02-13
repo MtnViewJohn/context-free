@@ -197,6 +197,7 @@ class CFDG;
 
 using cfdg_ptr = std::shared_ptr<CFDG>;
 using renderer_ptr = std::unique_ptr<Renderer>;
+using canvas_ptr = std::unique_ptr<Canvas>;
 
 class CFDG {
     public:

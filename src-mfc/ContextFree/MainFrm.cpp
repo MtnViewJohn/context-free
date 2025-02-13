@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
-	ON_MESSAGE(WM_TICKLE_SIZE, &CMainFrame::OnTickleSize)
+	ON_MESSAGE(WM_TICKLE_SIZE, OnTickleSize)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -84,6 +84,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Create edit box
 
 	return 0;
+}
+
+void CMainFrame::UpdateStatusBar(int progress, const CString& text)
+{
+	m_wndStatusBar.SetPaneProgress(nStatusProgress, progress);
+	m_wndStatusBar.SetPaneText(nStatusText, (LPCTSTR)text);
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)

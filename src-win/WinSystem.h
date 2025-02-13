@@ -30,12 +30,13 @@
 #include <utility>
 #include "Win32System.h"
 
-#define myWM_USER (0x400)
+#define myWM_APP (0x8000)
 class WinSystem : public Win32System 
 {
 public:
-    enum {  WM_USER_MESSAGE_UPDATE  = myWM_USER + 100, 
-            WM_USER_STATUS_UPDATE   = myWM_USER + 101};
+    enum {  WM_USER_MESSAGE_UPDATE  = myWM_APP + 100, 
+            WM_USER_STATUS_UPDATE   = myWM_APP + 101,
+            WM_USER_RENDER_COMPLETE = myWM_APP + 102 };
     WinSystem(void*);
     ~WinSystem();
     virtual void message(const char* fmt, ...) override;

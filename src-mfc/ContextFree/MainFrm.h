@@ -21,7 +21,7 @@ public:
 	CFont m_editFont;
 // Operations
 public:
-
+	void UpdateStatusBar(int progress, const CString& text);
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

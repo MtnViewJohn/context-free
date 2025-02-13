@@ -30,6 +30,9 @@
 #include <memory>
 
 class WinSystem;
+class WinCanvas;
+
+using wincanvas_ptr = std::unique_ptr<WinCanvas>;
 
 class WinCanvas : public aggCanvas
 {
