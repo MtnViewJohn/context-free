@@ -28,6 +28,7 @@ public:
 
 // Implementation
 	UINT  m_nAppLook;
+	ULONG_PTR gdiplusToken;
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 };

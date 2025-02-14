@@ -77,6 +77,9 @@ BOOL CContextFreeApp::InitInstance()
 	// AfxInitRichEdit2() is required to use RichEdit control
 	// AfxInitRichEdit2();
 
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	// of your final executable, you should remove from the following
@@ -135,6 +138,7 @@ BOOL CContextFreeApp::InitInstance()
 
 int CContextFreeApp::ExitInstance()
 {
+	Gdiplus::GdiplusShutdown(gdiplusToken);
 	//TODO: handle additional resources you may have added
 	return CWinAppEx::ExitInstance();
 }

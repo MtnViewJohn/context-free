@@ -12,6 +12,9 @@
 
 #include "ContextFreeDoc.h"
 #include "ContextFreeView.h"
+#include "WinCanvas.h"
+#include <gdipluspixelformats.h>
+#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,6 +26,7 @@
 IMPLEMENT_DYNCREATE(CContextFreeView, CView)
 
 BEGIN_MESSAGE_MAP(CContextFreeView, CView)
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 // CContextFreeView construction/destruction
@@ -45,16 +49,162 @@ BOOL CContextFreeView::PreCreateWindow(CREATESTRUCT& cs)
 	return CView::PreCreateWindow(cs);
 }
 
+BOOL CContextFreeView::OnEraseBkgnd(CDC* pDC)
+{
+	if (m_iBoxSize == 0)
+		m_iBoxSize = pDC->GetDeviceCaps(LOGPIXELSY) / 12;
+
+	if (!m_pWinCanvas || !*m_pWinCanvas)
+		return CView::OnEraseBkgnd(pDC);
+
+#if 0
+	CRect cr;
+	pDC->GetClipBox(&cr);
+	agg::rgba8 bk((*m_pWinCanvas)->mBackground);
+	Gdiplus::Color bkColor = Gdiplus::Color(bk.a, bk.r, bk.g, bk.b);
+	Gdiplus::Graphics g(pDC->GetSafeHdc());
+	Gdiplus::Rect clipRect(cr.left, cr.top, cr.Width(), cr.Height());
+
+	if (bk.a < 255) {
+		DrawCheckerBoard(g, clipRect);
+		Gdiplus::SolidBrush bkBrush(bkColor);
+		g.FillRectangle(&bkBrush, clipRect);
+	} else {
+		g.Clear(bkColor);
+	}
+#endif
+	return TRUE;
+}
+
 // CContextFreeView drawing
 
-void CContextFreeView::OnDraw(CDC* /*pDC*/)
+void CContextFreeView::OnDraw(CDC* pDC)
 {
-	CContextFreeDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
+	if (m_iBoxSize == 0)
+		m_iBoxSize = pDC->GetDeviceCaps(LOGPIXELSY) / 12;
+
+	if (!m_pWinCanvas || !*m_pWinCanvas)
 		return;
 
-	// TODO: add draw code for native data here
+	Gdiplus::Graphics g(pDC->GetSafeHdc());
+	CRect clipRect, cr;
+	pDC->GetClipBox(&clipRect);
+	GetClientRect(&cr);
+
+	agg::rgba8 bk((*m_pWinCanvas)->mBackground);
+	Gdiplus::Color bkColor = Gdiplus::Color(bk.a, bk.r, bk.g, bk.b);
+	Gdiplus::SolidBrush backBrush(bkColor);
+
+	double scale = 1.0;
+	Gdiplus::Size destSize(cr.Width(), cr.Height());
+	auto srcSize = m_bTiled ? Gdiplus::Size((*m_pWinCanvas)->cropWidth(), (*m_pWinCanvas)->cropHeight()) :
+							  Gdiplus::Size((*m_pWinCanvas)->mWidth, (*m_pWinCanvas)->mHeight);
+
+	// check if the bitmap is too big and shrink it to fit
+	if (srcSize.Width > destSize.Width || srcSize.Height > destSize.Height) {
+		double widthScale = (double)destSize.Width / srcSize.Width;
+		double heightScale = (double)destSize.Height / srcSize.Height;
+		scale = (widthScale < heightScale) ? widthScale : heightScale;
+	}
+
+	// scale the bitmap if it is too big
+	int scaledWidth = (int)(srcSize.Width * scale);
+	int scaledHeight = (int)(srcSize.Height * scale);
+
+	// center the scaled bitmap
+	int originX = (destSize.Width - scaledWidth) / 2;
+	int originY = (destSize.Height - scaledHeight) / 2;
+
+	auto newBitmap = MakeBitmap(m_bTiled);
+
+	// Draw background
+	Gdiplus::Rect destRect(originX, originY, scaledWidth, scaledHeight);
+	if (bk.a < 255) {
+		Gdiplus::Rect fullRect(0, 0, destSize.Width, destSize.Height);
+		DrawCheckerBoard(g, fullRect);
+		g.FillRectangle(&backBrush, fullRect);
+	} else {
+		g.Clear(bkColor);
+	}
+
+	if (!newBitmap)
+		return;
+
+	g.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+
+	if (m_bTiled && scale == 1.0) {
+		// DrawTiled ...
+	} else {
+		if (bk.a < 255 || m_bBlendMode)
+			DrawCheckerBoard(g, destRect);
+		if (scale == 1.0) {
+			g.DrawImage(newBitmap.get(), originX, originY);
+		} else {
+			g.DrawImage(newBitmap.get(), destRect,
+				0, 0, srcSize.Width, srcSize.Height,
+				Gdiplus::Unit::UnitPixel);
+		}
+	}
+
+	Gdiplus::Pen p2(Gdiplus::Color::Black);
+	p2.SetDashStyle(Gdiplus::DashStyle::DashStyleDashDot);
+	g.DrawRectangle(&p2, originX - 1, originY - 1, scaledWidth + 1, scaledHeight + 1);
+}
+
+void CContextFreeView::DrawCheckerBoard(Gdiplus::Graphics& g, Gdiplus::Rect destRect)
+{
+	Gdiplus::SolidBrush grayBrush(Gdiplus::Color::LightGray);
+	g.Clear(Gdiplus::Color::White);
+	for (int y = destRect.Y - destRect.Y % m_iBoxSize; y <= destRect.GetBottom(); y += m_iBoxSize)
+		for (int x = destRect.X - destRect.X % m_iBoxSize; x <= destRect.GetRight(); x += m_iBoxSize)
+			if (((x / m_iBoxSize) ^ (y / m_iBoxSize)) & 1)
+				g.FillRectangle(&grayBrush, x, y, m_iBoxSize, m_iBoxSize);
+}
+
+std::unique_ptr<Gdiplus::Bitmap> CContextFreeView::MakeBitmap(bool cropped)
+{
+	WinCanvas* canvas = m_pWinCanvas->get();
+	wincanvas_ptr tempCanvas;
+	if (canvas->mPixelFormat & aggCanvas::Has_16bit_Color) {
+		tempCanvas.reset(canvas->Make8bitCopy());
+		canvas = tempCanvas.get();
+	}
+
+	BYTE* data = (BYTE*)(canvas->bitmap());
+	int width = canvas->mWidth;
+	int height = canvas->mHeight;
+	if (cropped) {
+		width = canvas->cropWidth();
+		height = canvas->cropHeight();
+		data += canvas->mStride * canvas->cropY() +
+			aggCanvas::BytesPerPixel.at(canvas->mPixelFormat) * canvas->cropX();
+	}
+
+
+	try {
+		switch (canvas->mPixelFormat) {
+		case aggCanvas::Gray8_Blend: {
+			auto bm = std::make_unique<Gdiplus::Bitmap>(width, height, canvas->mStride, PixelFormat8bppIndexed, data);
+			std::vector<char> paletteBuf(sizeof(Gdiplus::ColorPalette) + 255 * sizeof(Gdiplus::ARGB));
+			Gdiplus::ColorPalette* gray = (Gdiplus::ColorPalette*)paletteBuf.data();
+			for (int i = 0; i < 256; ++i)
+				gray->Entries[i] = Gdiplus::Color::MakeARGB(255, i, i, i);
+			gray->Count = 256;
+			gray->Flags = Gdiplus::PaletteFlags::PaletteFlagsGrayScale;
+			bm->SetPalette(gray);
+			return bm;
+		}
+		case aggCanvas::RGB8_Blend:
+			return std::make_unique<Gdiplus::Bitmap>(width, height, canvas->mStride, PixelFormat24bppRGB, data);
+		case aggCanvas::RGBA8_Blend:
+		case aggCanvas::RGBA8_Custom_Blend:
+			return std::make_unique<Gdiplus::Bitmap>(width, height, canvas->mStride, PixelFormat32bppPARGB, data);
+		default:
+			return nullptr;
+		}
+	} catch (...) {
+		return nullptr;
+	}
 }
 
 
@@ -77,6 +227,5 @@ CContextFreeDoc* CContextFreeView::GetDocument() const // non-debug version is i
 	return (CContextFreeDoc*)m_pDocument;
 }
 #endif //_DEBUG
-
 
 // CContextFreeView message handlers

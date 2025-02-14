@@ -85,6 +85,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_CFdoc = (CContextFreeDoc*)(pContext->m_pCurrentDoc);
 	CMainFrame* mf = dynamic_cast<CMainFrame *>(GetMDIFrameWndEx());
 	m_vwCfdgEditor->GetEditCtrl().SetFont(&(mf->m_editFont));
+	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
 
@@ -144,6 +145,7 @@ LRESULT CChildFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
 			mf->UpdateStatusBar(ProgressBar, statusText);
 	} else {
 		// update render box
+		m_vwOutputView->Invalidate();
 	}
 	return 0;
 }
@@ -206,11 +208,14 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, m_iCurrentVariation);
 	if (!m_Engine)
 		return;
-
-	if (shrinkTiled && m_Engine->isTiledOrFrieze()) {
+	bool tiled = m_Engine->isTiledOrFrieze();
+	if (shrinkTiled && tiled) {
 		width = (9 * width) / 10;
 		height = (9 * height) / 10;
 	}
+
+	m_vwOutputView->m_bTiled = tiled;
+	m_vwOutputView->m_bBlendMode = m_Engine->usesBlendMode;
 
 	m_Renderer = m_Engine->renderer(m_Engine, width, height,
 		(float)renderParams.minimumSize, m_iCurrentVariation, renderParams.borderSize);
