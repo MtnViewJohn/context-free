@@ -15,6 +15,7 @@
 #include "WinCanvas.h"
 #include <gdipluspixelformats.h>
 #include <vector>
+#include "CMemDC.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,18 +79,20 @@ BOOL CContextFreeView::OnEraseBkgnd(CDC* pDC)
 
 // CContextFreeView drawing
 
-void CContextFreeView::OnDraw(CDC* pDC)
+void CContextFreeView::OnDraw(CDC* pdc)
 {
 	if (m_iBoxSize == 0)
-		m_iBoxSize = pDC->GetDeviceCaps(LOGPIXELSY) / 12;
+		m_iBoxSize = pdc->GetDeviceCaps(LOGPIXELSY) / 12;
 
 	if (!m_pWinCanvas || !*m_pWinCanvas)
 		return;
 
-	Gdiplus::Graphics g(pDC->GetSafeHdc());
 	CRect clipRect, cr;
-	pDC->GetClipBox(&clipRect);
+	pdc->GetClipBox(&clipRect);
 	GetClientRect(&cr);
+	xCMemDC pDC(pdc, &cr);
+
+	Gdiplus::Graphics g(pDC->GetSafeHdc());
 
 	agg::rgba8 bk((*m_pWinCanvas)->mBackground);
 	Gdiplus::Color bkColor = Gdiplus::Color(bk.a, bk.r, bk.g, bk.b);

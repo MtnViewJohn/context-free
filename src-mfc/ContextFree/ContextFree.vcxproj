@@ -333,6 +333,7 @@
     <ClInclude Include="..\..\src-win\WinSystem.h" />
     <ClInclude Include="..\..\src-win\winTimer.h" />
     <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="CMemDC.h" />
     <ClInclude Include="ContextFree.h" />
     <ClInclude Include="ContextFreeDoc.h" />
     <ClInclude Include="ContextFreeView.h" />
