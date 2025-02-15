@@ -31,18 +31,23 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_MESSAGE(WinSystem::WM_USER_STATUS_UPDATE, OnStatusUpdate)
 	ON_MESSAGE(WinSystem::WM_USER_MESSAGE_UPDATE, OnMessage)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
+
+std::set<CChildFrame*> CChildFrame::Children;
 
 // CChildFrame construction/destruction
 
 CChildFrame::CChildFrame() noexcept
 {
 	// TODO: add member initialization code here
+	Children.insert(this);
 }
 
 CChildFrame::~CChildFrame()
 {
 	delete m_System; m_System = nullptr;
+	Children.erase(this);
 }
 
 
@@ -159,7 +164,24 @@ LRESULT CChildFrame::OnMessage(WPARAM wParam, LPARAM lParam)
 LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 {
 	cleanupTimer();
-	return LRESULT();
+	::CloseHandle(m_hRenderThread);
+	m_hRenderThread = NULL;
+
+	if (m_ePostRenderAction == PostRenderAction::Exit) {
+		GetMDIFrame()->PostMessageW(WM_CLOSE);
+		return 0;
+	}
+	if (m_ePostRenderAction == PostRenderAction::Close) {
+		PostMessageW(WM_CLOSE);
+		return 0;
+	}
+
+	// update render button
+
+	// perform other actions
+
+	// if nothing and animation is done then preveiw it
+	return 0;
 }
 
 void CChildFrame::OnRender()
@@ -183,6 +205,22 @@ void CChildFrame::OnAnimate() {}
 void CChildFrame::OnAnimateFrame() {}
 void CChildFrame::OnNextVariation() {}
 void CChildFrame::OnPrevVariation() {}
+
+void CChildFrame::OnClose()
+{
+	if (CanClose(false))
+		DestroyWindow();
+}
+
+bool CChildFrame::CanClose(bool andExit)
+{
+	if (isBusy()) {
+		SetPostRenderAction(andExit ? PostRenderAction::Exit : PostRenderAction::Close);
+		m_Renderer->requestStop = true;
+		return false;
+	}
+	return true;
+}
 
 // CChildFrame implementation
 void CChildFrame::DoRender(bool shrinkTiled)
@@ -319,6 +357,31 @@ void CChildFrame::RunRenderThread()
 			MakeCanvas(rp.width, rp.height);
 			m_Renderer->draw(m_Canvas);
 		}
+		break;
+	}
+}
+
+bool CChildFrame::isBusy()
+{
+	// Thread is considered "busy" until the handle is cleared in the UI thread
+	//DWORD status;
+	return m_hRenderThread != NULL; //&& ::GetExitCodeThread(m_hRenderThread, &status) && status == STILL_ACTIVE;
+}
+
+void CChildFrame::SetPostRenderAction(PostRenderAction v)
+{
+	switch (v) {
+	case PostRenderAction::DoNothing:
+	case PostRenderAction::Exit:
+		m_ePostRenderAction = v;
+		break;
+	case PostRenderAction::Close:
+		if (m_ePostRenderAction != PostRenderAction::Exit)
+			m_ePostRenderAction = v;
+		break;
+	default:
+		if (m_ePostRenderAction != PostRenderAction::Exit && m_ePostRenderAction != PostRenderAction::Close)
+			m_ePostRenderAction = v;
 		break;
 	}
 }

@@ -7,6 +7,7 @@
 #include "ContextFree.h"
 
 #include "MainFrm.h"
+#include "ChildFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,6 +19,7 @@ IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
+	ON_WM_CLOSE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_MESSAGE(WM_TICKLE_SIZE, OnTickleSize)
@@ -84,6 +86,16 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Create edit box
 
 	return 0;
+}
+
+void CMainFrame::OnClose()
+{
+	bool canClose = true;
+	for (auto child: CChildFrame::Children)
+		canClose = child->CanClose(true) && canClose;	// always call CanClose()
+
+	if (canClose)
+		DestroyWindow();
 }
 
 void CMainFrame::UpdateStatusBar(int progress, const CString& text)

@@ -6,6 +6,7 @@
 #include "RenderParams.h"
 #include "cfdg.h"
 #include "WinCanvas.h"
+#include <set>
 
 class CContextFreeView;
 class CContextFreeDoc;
@@ -28,10 +29,11 @@ protected:
 public:
 	CEditView* m_vwCfdgEditor = nullptr;
 	CContextFreeView* m_vwOutputView = nullptr;
+	static std::set<CChildFrame*> Children;
 
 // Operations
 public:
-
+	bool CanClose(bool andExit);
 // Overrides
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
@@ -43,6 +45,11 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 protected:
+	enum class PostRenderAction
+	{
+		DoNothing, Render, RenderSize, RenderRepeat,
+		Animate, AnimateFrame, SaveOutput, Close, Exit
+	};
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	virtual void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnStatusUpdate(WPARAM wParam, LPARAM lParam);
@@ -55,6 +62,7 @@ protected:
 	void OnAnimateFrame();
 	void OnNextVariation();
 	void OnPrevVariation();
+	afx_msg void OnClose();
 
 	RenderParameters renderParams;
 	cfdg_ptr m_Engine;
@@ -63,6 +71,8 @@ protected:
 	wincanvas_ptr m_WinCanvas;
 	WinSystem* m_System = nullptr;
 	HANDLE m_hRenderThread = NULL;
+	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
+	void SetPostRenderAction(PostRenderAction v);
 
 	void DoRender(bool shrinkTiled);
 	bool SyncToSystem();
@@ -70,6 +80,7 @@ protected:
 	void PerformRender();
 	static UINT RenderControllingFunction(LPVOID pParam);
 	void RunRenderThread();
+	bool isBusy();
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
