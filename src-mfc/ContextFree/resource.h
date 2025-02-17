@@ -3,6 +3,8 @@
 // Used by ContextFree.rc
 //
 #define IDD_ABOUTBOX                    100
+#define IDD_DIALOGBAR                   103
+#define IDD_RENDERBAR                   103
 #define IDR_MAINFRAME                   128
 #define IDR_ContextFreeTYPE             130
 #define ID_WINDOW_MANAGER               131
@@ -28,6 +30,17 @@
 #define ID_ANIMATE_FRAME                316
 #define ID_RENDER_STOP                  317
 #define ID_SAVE_IMAGE                   318
+#define IDC_RENDERSPLIT                 1002
+#define IDC_SAVE                        1003
+#define IDC_VARIATION                   1004
+#define IDC_VARIATION_SPIN              1005
+#define IDC_FRAME_LABEL                 1006
+#define IDC_FRAME_EDIT                  1007
+#define IDC_FRAME_SPIN                  1008
+#define IDC_SIZE_LABEL1                 1009
+#define IDC_SIZE_WIDTH                  1010
+#define IDC_SIZE_LABEL2                 1011
+#define IDC_SIZE_HEIGHT                 1012
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -39,9 +52,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        310
+#define _APS_NEXT_RESOURCE_VALUE        311
 #define _APS_NEXT_COMMAND_VALUE         32784
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           319
 #endif
 #endif

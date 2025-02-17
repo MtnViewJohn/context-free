@@ -47,20 +47,21 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	CMDITabInfo mdiTabParams;
-	mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; // other styles available...
-	mdiTabParams.m_bActiveTabCloseButton = TRUE;      // set to FALSE to place close button at right of tab area
-	mdiTabParams.m_bTabIcons = FALSE;    // set to TRUE to enable document icons on MDI taba
-	mdiTabParams.m_bAutoColor = TRUE;    // set to FALSE to disable auto-coloring of MDI tabs
-	mdiTabParams.m_bDocumentMenu = FALSE; // enable the document menu at the right edge of the tab area
-	EnableMDITabbedGroups(TRUE, mdiTabParams);
+	EnableMDITabs(TRUE, FALSE, CMFCBaseTabCtrl::LOCATION_TOP, FALSE, CMFCTabCtrl::STYLE_3D_SCROLLED, FALSE, TRUE);
 
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
+	
+	if (!m_wndRenderbar.Create(_T(""), this, FALSE, IDD_RENDERBAR, WS_CHILD | WS_VISIBLE | CBRS_TOP, IDD_RENDERBAR)) {
+		TRACE0("Could not create renderbar\n");
+		return -1;
 	}
+	CDockingManager::SetDockingMode(DT_SMART);
+	m_wndRenderbar.EnableDocking(CBRS_ALIGN_ANY);
+	if (!EnableDocking(CBRS_ALIGN_ANY) || !AddPane(&m_wndRenderbar)) {
+		TRACE0("Could not dock renderbar\n");
+		return -1;
+	}
+	DockPane(&m_wndRenderbar, AFX_IDW_DOCKBAR_TOP);
+	m_wndRenderbar.ShowPane(TRUE, FALSE, FALSE);
 
 	if (!m_wndStatusBar.Create(this) ||
 		!m_wndStatusBar.SetIndicators(indicators,

@@ -81,9 +81,13 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	CRect cr;
 	GetClientRect(&cr);
 	
-	m_wndSplitterCfdg.CreateStatic(this, 1, 2);
-	m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CEditView), CSize(cr.Width() / 3, 0), pContext);
-	m_wndSplitterCfdg.CreateView(0, 1, pContext->m_pNewViewClass, CSize(0, 0), pContext);
+	if (!m_wndSplitterCfdg.CreateStatic(this, 1, 2) ||
+		!m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CEditView), CSize(cr.Width() / 3, 0), pContext) ||
+		!m_wndSplitterCfdg.CreateView(0, 1, pContext->m_pNewViewClass, CSize(0, 0), pContext))
+	{
+		TRACE0("Could not create splitter.\n");
+		return FALSE;
+	}
 
 	m_vwCfdgEditor = (CEditView*)m_wndSplitterCfdg.GetPane(0, 0);
 	m_vwOutputView = (CContextFreeView*)m_wndSplitterCfdg.GetPane(0, 1);
@@ -98,7 +102,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	m_System = new ::WinSystem(GetSafeHwnd());
 
-	GetMDIFrame()->PostMessageW(WM_TICKLE_SIZE, 0, 0);
+	ShowWindow(SW_MAXIMIZE);
 
 	return CMDIChildWndEx::OnCreateClient(lpcs, pContext);
 }

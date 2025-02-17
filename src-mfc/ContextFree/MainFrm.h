@@ -35,8 +35,8 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CToolBar          m_wndToolBar;
 	CMFCStatusBar     m_wndStatusBar;
+	CPaneDialog m_wndRenderbar;
 
 	int m_intTickleAmount = 1;
 
