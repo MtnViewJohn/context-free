@@ -263,6 +263,7 @@ void CMainFrame::OnRenderBar(UINT id)
 void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 {
 	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	HWND hDlgItem = ::GetDlgItem(m_wndRenderbar.GetSafeHwnd(), pCmdUI->m_nID);
 	switch (pCmdUI->m_nID) {
 	case IDC_RENDERSPLIT:
 		if (c == nullptr) {
@@ -315,22 +316,28 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			auto f16 = std::to_wstring(c->renderParams.MovieFrame);
 			pCmdUI->SetText(f16.c_str());
 		}
+		[[fallthrough]];
+	case IDC_FRAME_LABEL:
+	case IDC_FRAME_SPIN:
+		::ShowWindow(hDlgItem, (c->renderParams.action == RenderParameters::RenderActions::Animate &&
+								c->renderParams.animateFrame) ? SW_SHOWNA : SW_HIDE);
 		break;
 	case IDC_SIZE_WIDTH: 
-		if (c->renderParams.RenderWidth == 0) {
+	case IDC_SIZE_HEIGHT: {
+		int sz = pCmdUI->m_nID == IDC_SIZE_WIDTH ? c->renderParams.RenderWidth
+												 : c->renderParams.RenderHeight;
+		if (sz == 0) {
 			pCmdUI->SetText(_T(""));
 		} else {
-			auto w16 = std::to_wstring(c->renderParams.RenderWidth);
+			auto w16 = std::to_wstring(sz);
 			pCmdUI->SetText(w16.c_str());
 		}
-		break;
-	case IDC_SIZE_HEIGHT: 
-		if (c->renderParams.RenderHeight == 0) {
-			pCmdUI->SetText(_T(""));
-		} else {
-			auto h16 = std::to_wstring(c->renderParams.RenderHeight);
-			pCmdUI->SetText(h16.c_str());
-		}
+	}
+		[[fallthrough]];
+	case IDC_SIZE_LABEL1:
+	case IDC_SIZE_LABEL2:
+		::ShowWindow(hDlgItem, (c->renderParams.action == RenderParameters::RenderActions::Render &&
+								c->renderParams.renderSize) ? SW_SHOWNA : SW_HIDE);
 		break;
 	default:
 		pCmdUI->ContinueRouting();
