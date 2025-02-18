@@ -72,6 +72,7 @@ protected:
 	WinSystem* m_System = nullptr;
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);
+	bool m_bRenderAgain = false;
 
 	void DoRender(bool shrinkTiled);
 	bool SyncToSystem();

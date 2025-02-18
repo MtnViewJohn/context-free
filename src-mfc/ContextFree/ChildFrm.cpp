@@ -14,6 +14,7 @@
 #include "WinCanvas.h"
 #include "winTimer.h"
 #include "variation.h"
+#include "RenderSize.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -191,9 +192,10 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 
 void CChildFrame::OnRender()
 {
-	// Update Render button
-
-	// check if rendering -> post render action
+	if (m_hRenderThread) {
+		SetPostRenderAction(PostRenderAction::Render);
+		return;
+	}
 
 	renderParams.action = RenderParameters::RenderActions::Render;
 	renderParams.renderSize = false;
@@ -205,9 +207,31 @@ void CChildFrame::OnRender()
 
 	DoRender(true);
 }
-void CChildFrame::OnRenderSize() {}
+
+void CChildFrame::OnRenderSize()
+{
+	if (m_hRenderThread) {
+		SetPostRenderAction(PostRenderAction::RenderSize);
+		return;
+	}
+
+	if (!m_bRenderAgain) {
+		RenderSize rsDlg(renderParams, this);
+		if (rsDlg.DoModal() != IDOK)
+			return;
+	}
+
+	renderParams.action = RenderParameters::RenderActions::Render;
+	renderParams.renderSize = true;
+	renderParams.width = renderParams.RenderWidth;
+	renderParams.height = renderParams.RenderHeight;
+
+	DoRender(false);
+}
+
 void CChildFrame::OnRenderAgain()
 {
+	m_bRenderAgain = true;
 	switch (renderParams.action) {
 	case RenderParameters::RenderActions::Render:
 	case RenderParameters::RenderActions::SaveSVG:
@@ -223,9 +247,41 @@ void CChildFrame::OnRenderAgain()
 			OnAnimate();
 		break;
 	}
+	m_bRenderAgain = false;
 }
-void CChildFrame::OnAnimate() {}
-void CChildFrame::OnAnimateFrame() {}
+
+void CChildFrame::OnAnimate()
+{
+	if (m_hRenderThread) {
+		SetPostRenderAction(PostRenderAction::Animate);
+		return;
+	}
+
+	if (!m_bRenderAgain)
+		; // animate modal dialog
+
+	renderParams.action = RenderParameters::RenderActions::Animate;
+	renderParams.animateFrame = false;
+
+	DoRender(false);
+}
+
+void CChildFrame::OnAnimateFrame()
+{
+	if (m_hRenderThread) {
+		SetPostRenderAction(PostRenderAction::AnimateFrame);
+		return;
+	}
+
+	if (!m_bRenderAgain)
+		; // animate frame modal dialog
+
+	renderParams.action = RenderParameters::RenderActions::Animate;
+	renderParams.animateFrame = true;
+
+	DoRender(false);
+}
+
 void CChildFrame::OnNextVariation()
 {
 	++renderParams.variation;
@@ -280,8 +336,10 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	m_Canvas = nullptr;
 
 	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, renderParams.variation);
-	if (!m_Engine)
+	if (!m_Engine) {
+		::MessageBeep(0);
 		return;
+	}
 	bool tiled = m_Engine->isTiledOrFrieze();
 	if (shrinkTiled && tiled) {
 		width = (9 * width) / 10;
@@ -313,7 +371,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 
 	// setup animation canvas
 
-	// clear post-render action
+	SetPostRenderAction(PostRenderAction::DoNothing);
+
 	PerformRender();
 }
 
