@@ -13,6 +13,7 @@
 #include "WinSystem.h"
 #include "WinCanvas.h"
 #include "winTimer.h"
+#include "variation.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -194,8 +195,9 @@ void CChildFrame::OnRender()
 
 	// check if rendering -> post render action
 
-	renderParams.Load();
 	renderParams.action = RenderParameters::RenderActions::Render;
+	renderParams.renderSize = false;
+
 	CRect cr;
 	m_vwOutputView->GetClientRect(&cr);
 	renderParams.width = cr.Width();
@@ -204,11 +206,38 @@ void CChildFrame::OnRender()
 	DoRender(true);
 }
 void CChildFrame::OnRenderSize() {}
-void CChildFrame::OnRenderAgain() {}
+void CChildFrame::OnRenderAgain()
+{
+	switch (renderParams.action) {
+	case RenderParameters::RenderActions::Render:
+	case RenderParameters::RenderActions::SaveSVG:
+		if (renderParams.renderSize)
+			OnRenderSize();
+		else
+			OnRender();
+		break;
+	case RenderParameters::RenderActions::Animate:
+		if (renderParams.animateFrame)
+			OnAnimateFrame();
+		else
+			OnAnimate();
+		break;
+	}
+}
 void CChildFrame::OnAnimate() {}
 void CChildFrame::OnAnimateFrame() {}
-void CChildFrame::OnNextVariation() {}
-void CChildFrame::OnPrevVariation() {}
+void CChildFrame::OnNextVariation()
+{
+	++renderParams.variation;
+	if (renderParams.variation > Variation::recommendedMax(6))
+		renderParams.variation = Variation::recommendedMin();
+}
+void CChildFrame::OnPrevVariation()
+{
+	--renderParams.variation;
+	if (renderParams.variation < Variation::recommendedMin())
+		renderParams.variation = Variation::recommendedMax(6);
+}
 
 void CChildFrame::OnClose()
 {
@@ -236,18 +265,21 @@ void CChildFrame::DoRender(bool shrinkTiled)
 		OnNextVariation();
 	m_bReuseVariation = false;
 
+	if (renderParams.variation == 0)
+		OnNextVariation();
+
 	// clean up movie preview
 
 	bool useAnimateSize = renderParams.action == RenderParameters::RenderActions::Animate;
-	int width = useAnimateSize ? renderParams.animateWidth : renderParams.width;
-	int height = useAnimateSize ? renderParams.animateHeight : renderParams.height;
+	int width = useAnimateSize ? renderParams.AnimateWidth : renderParams.width;
+	int height = useAnimateSize ? renderParams.AnimateHeight : renderParams.height;
 
 	m_Renderer.reset();		// TODO move deletion into async thread
 	m_Engine.reset();
 	m_WinCanvas.reset();
 	m_Canvas = nullptr;
 
-	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, m_iCurrentVariation);
+	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, renderParams.variation);
 	if (!m_Engine)
 		return;
 	bool tiled = m_Engine->isTiledOrFrieze();
@@ -260,7 +292,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	m_vwOutputView->m_bBlendMode = m_Engine->usesBlendMode;
 
 	m_Renderer = m_Engine->renderer(m_Engine, width, height,
-		(float)renderParams.minimumSize, m_iCurrentVariation, renderParams.borderSize);
+		(float)renderParams.MinimumSize, renderParams.variation, renderParams.BorderSize);
 
 	if (!m_Renderer) {
 		m_Engine.reset();
@@ -274,7 +306,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	}
 
 	if (renderParams.action == RenderParameters::RenderActions::Animate ?
-		renderParams.animateFrame : renderParams.periodicUpdate)
+		renderParams.animateFrame : renderParams.PeriodicUpdate)
 	{
 		MakeCanvas(width, height);
 	}
@@ -343,11 +375,11 @@ void CChildFrame::RunRenderThread()
 	switch (rp.action) {
 	case RenderParameters::RenderActions::Animate:
 		if (rp.animateFrame) {
-			m_Renderer->animate(m_Canvas, rp.animateFrameCount,
-				rp.frame, rp.animateZoom && !m_Engine->isTiledOrFrieze());
+			m_Renderer->animate(m_Canvas, rp.AnimateFrameCount,
+				rp.MovieFrame, rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 		} else {
-			m_Renderer->animate(m_Canvas, rp.animateFrameCount, 0,
-				rp.animateZoom && !m_Engine->isTiledOrFrieze());
+			m_Renderer->animate(m_Canvas, rp.AnimateFrameCount, 0,
+				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 			// delete animate canvas
 		}
 		break;
@@ -356,7 +388,7 @@ void CChildFrame::RunRenderThread()
 		// delete SVG canvas
 		break;
 	case RenderParameters::RenderActions::Render:
-		m_Renderer->run(m_Canvas, rp.periodicUpdate);
+		m_Renderer->run(m_Canvas, rp.PeriodicUpdate);
 		if (!m_Canvas && !m_Renderer->requestStop) {
 			MakeCanvas(rp.width, rp.height);
 			m_Renderer->draw(m_Canvas);

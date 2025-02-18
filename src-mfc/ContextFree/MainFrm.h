@@ -37,6 +37,7 @@ public:
 protected:  // control bar embedded members
 	CMFCStatusBar     m_wndStatusBar;
 	CPaneDialog m_wndRenderbar;
+	HMENU m_hSplitMenu;
 
 	int m_intTickleAmount = 1;
 
@@ -45,6 +46,12 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
+	afx_msg void OnRenderBar(UINT id);
+	afx_msg void OnUpdateRenderBar(CCmdUI* pCmdUI);
+	afx_msg void OnRenderSplitMenu(NMHDR* pNotifyStruct, LRESULT* result);
+	afx_msg void OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result);
+	afx_msg void OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result);
+	afx_msg void OnRenderEdits(UINT id);
 	afx_msg LRESULT OnTickleSize(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnClose();
 	DECLARE_MESSAGE_MAP()

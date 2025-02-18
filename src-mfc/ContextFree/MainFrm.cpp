@@ -8,6 +8,8 @@
 
 #include "MainFrm.h"
 #include "ChildFrm.h"
+#include "variation.h"
+#include <cstdlib>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,7 +24,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CLOSE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
+	ON_COMMAND_RANGE(IDC_RENDERSPLIT, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderBar)
+	ON_COMMAND_RANGE(ID_RB_RENDER, ID_RB_FRAME, &CMainFrame::OnRenderBar)
+	ON_UPDATE_COMMAND_UI_RANGE(IDC_RENDERSPLIT, IDC_SIZE_HEIGHT, &CMainFrame::OnUpdateRenderBar)
 	ON_MESSAGE(WM_TICKLE_SIZE, OnTickleSize)
+	ON_NOTIFY(BCN_DROPDOWN, IDC_RENDERSPLIT, &CMainFrame::OnRenderSplitMenu)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_VARIATION_SPIN, &CMainFrame::OnRenderVariationUD)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_FRAME_SPIN, &CMainFrame::OnRenderFrameUD)
+	ON_CONTROL_RANGE(EN_CHANGE, IDC_VARIATION, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderEdits)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -62,6 +71,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	DockPane(&m_wndRenderbar, AFX_IDW_DOCKBAR_TOP);
 	m_wndRenderbar.ShowPane(TRUE, FALSE, FALSE);
+
+	m_hSplitMenu = ::CreatePopupMenu();
+	::AppendMenuW(m_hSplitMenu, MF_BYPOSITION, ID_RB_RENDER,  _T("Render"));
+	::AppendMenuW(m_hSplitMenu, MF_BYPOSITION, ID_RB_SIZED,   _T("Render to Size"));
+	::AppendMenuW(m_hSplitMenu, MF_BYPOSITION, ID_RB_ANIMATE, _T("Animate"));
+	::AppendMenuW(m_hSplitMenu, MF_BYPOSITION, ID_RB_FRAME,   _T("Animate a Frame"));
 
 	if (!m_wndStatusBar.Create(this) ||
 		!m_wndStatusBar.SetIndicators(indicators,
@@ -204,6 +219,229 @@ void CMainFrame::OnApplicationLook(UINT id)
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
+}
+
+void CMainFrame::OnRenderBar(UINT id)
+{
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	if (c == nullptr) return;
+	switch (id) {
+	case IDC_RENDERSPLIT:
+		if (c->m_hRenderThread && c->m_Renderer) {
+			if (c->m_Renderer->requestFinishUp)
+				c->m_Renderer->requestStop = true;
+			else
+				c->m_Renderer->requestFinishUp = true;
+		} else {
+			c->OnRenderAgain();
+		}
+		break;
+	case IDC_SAVE:
+		// not implemented yet
+		break;
+	case ID_RB_RENDER:
+		c->renderParams.action = RenderParameters::RenderActions::Render;
+		c->renderParams.renderSize = false;
+		break;
+	case ID_RB_SIZED:
+		c->renderParams.action = RenderParameters::RenderActions::Render;
+		c->renderParams.renderSize = true;
+		break;
+	case ID_RB_ANIMATE:
+		c->renderParams.action = RenderParameters::RenderActions::Animate;
+		c->renderParams.animateFrame = false;
+		break;
+	case ID_RB_FRAME:
+		c->renderParams.action = RenderParameters::RenderActions::Animate;
+		c->renderParams.animateFrame = true;
+		break;
+	default:
+		break;
+	}
+}
+
+void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
+{
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	switch (pCmdUI->m_nID) {
+	case IDC_RENDERSPLIT:
+		if (c == nullptr) {
+			pCmdUI->Enable(FALSE);
+			pCmdUI->SetText(_T("Render"));
+		} else {
+			pCmdUI->Enable();
+			if (c->m_hRenderThread && c->m_Renderer) {
+				if (c->m_Renderer->requestFinishUp)
+					pCmdUI->SetText(_T("STOP!"));
+				else 
+					pCmdUI->SetText(_T("Stop"));
+			} else {
+				switch (c->renderParams.action) {
+				case RenderParameters::RenderActions::Render:
+					if (c->renderParams.renderSize)
+						pCmdUI->SetText(_T("Sized"));
+					else
+						pCmdUI->SetText(_T("Render"));
+					break;
+				case RenderParameters::RenderActions::Animate:
+					if (c->renderParams.animateFrame)
+						pCmdUI->SetText(_T("Frame"));
+					else
+						pCmdUI->SetText(_T("Animate"));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		break;
+	case IDC_SAVE:
+		pCmdUI->Enable(c && c->m_WinCanvas);
+		break;
+	case IDC_VARIATION:
+		if (c->renderParams.variation == 0) {
+			pCmdUI->SetText(_T(""));
+		} else {
+			std::string v = Variation::toString(c->renderParams.variation, false);
+			std::wstring v16((int)v.length(), L' ');
+			int l = ::MultiByteToWideChar(CP_UTF8, 0, v.c_str(), (int)v.length(), v16.data(), (int)v16.length());
+			pCmdUI->SetText(v16.c_str());
+		}
+		break;
+	case IDC_FRAME_EDIT: 
+		if (c->renderParams.MovieFrame == 0) {
+			pCmdUI->SetText(_T(""));
+		} else {
+			auto f16 = std::to_wstring(c->renderParams.MovieFrame);
+			pCmdUI->SetText(f16.c_str());
+		}
+		break;
+	case IDC_SIZE_WIDTH: 
+		if (c->renderParams.RenderWidth == 0) {
+			pCmdUI->SetText(_T(""));
+		} else {
+			auto w16 = std::to_wstring(c->renderParams.RenderWidth);
+			pCmdUI->SetText(w16.c_str());
+		}
+		break;
+	case IDC_SIZE_HEIGHT: 
+		if (c->renderParams.RenderHeight == 0) {
+			pCmdUI->SetText(_T(""));
+		} else {
+			auto h16 = std::to_wstring(c->renderParams.RenderHeight);
+			pCmdUI->SetText(h16.c_str());
+		}
+		break;
+	default:
+		pCmdUI->ContinueRouting();
+		break;
+	}
+}
+
+void CMainFrame::OnRenderSplitMenu(NMHDR* pNotifyStruct, LRESULT* result)
+{
+	NMBCDROPDOWN* pDropDown = (NMBCDROPDOWN*)pNotifyStruct;
+	HWND rb = NULL;
+	m_wndRenderbar.GetDlgItem(IDC_RENDERSPLIT, &rb);
+	if (pDropDown->hdr.hwndFrom == rb && pDropDown->hdr.idFrom == IDC_RENDERSPLIT) {
+		// Get screen coordinates of the button.
+		POINT pt;
+		pt.x = pDropDown->rcButton.left;
+		pt.y = pDropDown->rcButton.bottom;
+		::ClientToScreen(pDropDown->hdr.hwndFrom, &pt);
+		::TrackPopupMenu(m_hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, GetSafeHwnd(), NULL);
+		*result = 1;
+	}
+	*result = 0;
+}
+
+void CMainFrame::OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result)
+{
+	LPNMUPDOWN pUpDown = (LPNMUPDOWN)pNotifyStruct;
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	if (c) {
+		if (pUpDown->iDelta < 0)
+			c->OnNextVariation();
+		if (pUpDown->iDelta > 0)
+			c->OnPrevVariation();
+	}
+
+	*result = 1;	// always block
+}
+
+void CMainFrame::OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result)
+{
+	LPNMUPDOWN pUpDown = (LPNMUPDOWN)pNotifyStruct;
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	if (c) {
+		int v = c->renderParams.MovieFrame - pUpDown->iDelta;
+		if (v < 1)
+			v = 1;
+		if (v > c->renderParams.AnimateFrameCount)
+			v = c->renderParams.AnimateFrameCount;
+		RenderParameters::Modify(c->renderParams.MovieFrame, v);
+	}
+
+	*result = 1;	// always block
+}
+
+void CMainFrame::OnRenderEdits(UINT id)
+{
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	if (!c) return;
+
+	HWND hDlg = m_wndRenderbar.GetSafeHwnd();
+
+	std::string buf(20, ' ');
+	auto len = ::GetDlgItemTextA(hDlg, id, buf.data(), 20);
+	buf.resize(len);
+
+	int i = std::atoi(buf.c_str());
+
+	switch (id) {
+	case IDC_VARIATION:
+		if (len == 0) {
+			c->renderParams.variation = 0;
+		} else {
+			int v = Variation::fromString(buf.c_str());
+			if (v == -1) {
+				auto str = Variation::toString(c->renderParams.variation, false);
+				::SetDlgItemTextA(hDlg, id, str.c_str());
+			} else {
+				c->renderParams.variation = v;
+			}
+		}
+		break;
+	case IDC_FRAME_EDIT:
+		if (len == 0)
+			i = 0;
+		else if (i < 1)
+			i = 1;
+		else if (i > c->renderParams.AnimateFrameCount)
+			i = c->renderParams.AnimateFrameCount;
+		RenderParameters::Modify(c->renderParams.MovieFrame, i);
+		break;
+	case IDC_SIZE_WIDTH:
+		if (len == 0)
+			i = 0;
+		else if (i < 10)
+			i = 10;
+		else if (i > 32768)
+			i = 32768;
+		RenderParameters::Modify(c->renderParams.RenderWidth, i);
+		break;
+	case IDC_SIZE_HEIGHT:
+		if (len == 0)
+			i = 0;
+		else if (i < 10)
+			i = 10;
+		else if (i > 32768)
+			i = 32768;
+		RenderParameters::Modify(c->renderParams.RenderHeight, i);
+		break;
+	default:
+		break;
+	}
 }
 
 LRESULT CMainFrame::OnTickleSize(WPARAM wParam, LPARAM lParam)

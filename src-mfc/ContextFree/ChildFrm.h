@@ -24,7 +24,6 @@ protected:
 	BOOL m_bInitSplitter = FALSE;
 	CContextFreeDoc* m_CFdoc = nullptr;
 	BOOL m_bReuseVariation = FALSE;
-	int m_iCurrentVariation = 42;
 	int m_iProgressDelay = 0;
 public:
 	CEditView* m_vwCfdgEditor = nullptr;
@@ -44,6 +43,13 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+	RenderParameters renderParams;
+	std::shared_ptr<Renderer> m_Renderer;
+	HANDLE m_hRenderThread = NULL;
+	wincanvas_ptr m_WinCanvas;
+	void OnRenderAgain();
+	void OnNextVariation();
+	void OnPrevVariation();
 protected:
 	enum class PostRenderAction
 	{
@@ -57,20 +63,13 @@ protected:
 	afx_msg LRESULT OnRenderDone(WPARAM wParam, LPARAM lParam);
 	void OnRender();
 	void OnRenderSize();
-	void OnRenderAgain();
 	void OnAnimate();
 	void OnAnimateFrame();
-	void OnNextVariation();
-	void OnPrevVariation();
 	afx_msg void OnClose();
 
-	RenderParameters renderParams;
 	cfdg_ptr m_Engine;
-	std::shared_ptr<Renderer> m_Renderer;
 	Canvas* m_Canvas = nullptr;
-	wincanvas_ptr m_WinCanvas;
 	WinSystem* m_System = nullptr;
-	HANDLE m_hRenderThread = NULL;
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);
 

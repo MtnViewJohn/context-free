@@ -23,6 +23,7 @@
 #define ID_VIEW_APPLOOK_WINDOWS_7       219
 #define ID_INDICATOR_PROGRESS           310
 #define ID_INDICATOR_STATUS             311
+#define IDR_MENU1                       311
 #define ID_RENDER                       312
 #define ID_RENDER_AGAIN                 313
 #define ID_RENDER_SIZE                  314
@@ -30,6 +31,10 @@
 #define ID_ANIMATE_FRAME                316
 #define ID_RENDER_STOP                  317
 #define ID_SAVE_IMAGE                   318
+#define ID_RB_RENDER                    319
+#define ID_RB_SIZED                     320
+#define ID_RB_ANIMATE                   321
+#define ID_RB_FRAME                     322
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -52,9 +57,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1013
-#define _APS_NEXT_SYMED_VALUE           319
+#define _APS_NEXT_SYMED_VALUE           323
 #endif
 #endif
