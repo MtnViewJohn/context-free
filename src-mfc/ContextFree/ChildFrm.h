@@ -6,6 +6,7 @@
 #include "RenderParams.h"
 #include "cfdg.h"
 #include "WinCanvas.h"
+#include "ffCanvas.h"
 #include <set>
 
 class CContextFreeView;
@@ -70,6 +71,7 @@ protected:
 	cfdg_ptr m_Engine;
 	Canvas* m_Canvas = nullptr;
 	WinSystem* m_System = nullptr;
+	ffCanvas_ptr m_AnimationCanvas;
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);
 	bool m_bRenderAgain = false;

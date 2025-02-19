@@ -47,5 +47,7 @@ private:
     std::unique_ptr<Impl> impl;
 };
 
+using ffCanvas_ptr = std::unique_ptr<ffCanvas>;
+
 #endif // INCLUDE_FFCANVAS_H
 

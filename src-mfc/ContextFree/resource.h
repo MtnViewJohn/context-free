@@ -36,6 +36,7 @@
 #define ID_RB_ANIMATE                   321
 #define ID_RB_FRAME                     322
 #define IDD_RenderSize                  323
+#define IDD_Animate                     324
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -54,6 +55,15 @@
 #define IDC_BORDERSLIDER                1016
 #define IDC_CHECK1                      1017
 #define IDC_NODISPLAY                   1017
+#define IDC_ZOOM                        1017
+#define IDC_PREVIEW                     1019
+#define IDC_PREVIEWLOOP                 1020
+#define IDC_LENGTH                      1021
+#define IDC_FRAMERATE                   1023
+#define IDC_CODEC                       1024
+#define IDC_EDIT3                       1025
+#define IDC_FRAME                       1025
+#define IDC_CODEC_LABEL                 1026
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -65,9 +75,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
+#define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32784
-#define _APS_NEXT_CONTROL_VALUE         1019
-#define _APS_NEXT_SYMED_VALUE           324
+#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_SYMED_VALUE           325
 #endif
 #endif

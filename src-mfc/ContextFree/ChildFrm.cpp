@@ -15,6 +15,7 @@
 #include "winTimer.h"
 #include "variation.h"
 #include "RenderSize.h"
+#include "Animate.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -257,8 +258,11 @@ void CChildFrame::OnAnimate()
 		return;
 	}
 
-	if (!m_bRenderAgain)
-		; // animate modal dialog
+	if (!m_bRenderAgain) {
+		Animate aDlg(renderParams, false, this);
+		if (aDlg.DoModal() != IDOK)
+			return;
+	}
 
 	renderParams.action = RenderParameters::RenderActions::Animate;
 	renderParams.animateFrame = false;
@@ -273,8 +277,11 @@ void CChildFrame::OnAnimateFrame()
 		return;
 	}
 
-	if (!m_bRenderAgain)
-		; // animate frame modal dialog
+	if (!m_bRenderAgain) {
+		Animate aDlg(renderParams, true, this);
+		if (aDlg.DoModal() != IDOK)
+			return;
+	}
 
 	renderParams.action = RenderParameters::RenderActions::Animate;
 	renderParams.animateFrame = true;
@@ -369,7 +376,20 @@ void CChildFrame::DoRender(bool shrinkTiled)
 		MakeCanvas(width, height);
 	}
 
-	// setup animation canvas
+	if (renderParams.action == RenderParameters::RenderActions::Animate &&
+		!renderParams.animateFrame)
+	{
+		m_AnimationCanvas = std::make_unique<ffCanvas>("", WinCanvas::SuggestPixelFormat(m_Engine.get()),
+			renderParams.AnimateWidth, renderParams.AnimateHeight,
+			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true);
+
+		if (m_AnimationCanvas->mError) {
+			::MessageBeep(0);
+			::MessageBoxA(GetSafeHwnd(), m_AnimationCanvas->mErrorMsg, "Animation Error", MB_ICONEXCLAMATION);
+			m_AnimationCanvas.reset();
+			return;
+		}
+	}
 
 	SetPostRenderAction(PostRenderAction::DoNothing);
 
