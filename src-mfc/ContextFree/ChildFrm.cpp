@@ -457,9 +457,9 @@ void CChildFrame::RunRenderThread()
 			m_Renderer->animate(m_Canvas, rp.AnimateFrameCount,
 				rp.MovieFrame, rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 		} else {
-			m_Renderer->animate(m_Canvas, rp.AnimateFrameCount, 0,
+			m_Renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
 				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
-			// delete animate canvas
+			m_AnimationCanvas.reset();
 		}
 		break;
 	case RenderParameters::RenderActions::SaveSVG:
