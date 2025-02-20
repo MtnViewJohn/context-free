@@ -342,6 +342,7 @@
     <ClInclude Include="ContextFreeView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MovieFileSave.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderParams.h" />
     <ClInclude Include="RenderSize.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="ContextFreeDoc.cpp" />
     <ClCompile Include="ContextFreeView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MovieFileSave.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

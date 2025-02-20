@@ -37,8 +37,6 @@ int      RenderParameters::MovieLength = 10;
 int      RenderParameters::MovieFrameRate = 15;
 int      RenderParameters::MovieFrame = 1;
 RenderParameters::Codecs   RenderParameters::Codec = RenderParameters::Codecs::H264;
-bool     RenderParameters::PreviewMovie = false;
-bool     RenderParameters::LoopMovie = false;
 
 RenderParameters::RenderParameters()
 {
@@ -69,8 +67,6 @@ void RenderParameters::Load()
     MovieFrameRate = pApp->GetProfileIntW(pszKey, _T("AnimateFrameRate"), 15);
     MovieFrame = pApp->GetProfileIntW(pszKey, _T("AnimateFrame"), 1);
     Codec = (Codecs)pApp->GetProfileIntW(pszKey, _T("AnimateCodec"), 0);
-    LoopMovie = pApp->GetProfileIntW(pszKey, _T("AnimatePreviewLoop"), 0) != 0;
-    PreviewMovie = pApp->GetProfileIntW(pszKey, _T("AnimatePreview"), 0) != 0;
     AnimateFrameCount = MovieLength * MovieFrameRate;
 }
 
@@ -93,8 +89,6 @@ void RenderParameters::Save()
     pApp->WriteProfileInt(pszKey, _T("AnimateFrameRate"), MovieFrameRate);
     pApp->WriteProfileInt(pszKey, _T("AnimateFrame"), MovieFrame);
     pApp->WriteProfileInt(pszKey, _T("AnimateCodec"), (int)Codec);
-    pApp->WriteProfileInt(pszKey, _T("AnimatePreviewLoop"), LoopMovie);
-    pApp->WriteProfileInt(pszKey, _T("AnimatePreview"), PreviewMovie);
 }
 
 // Capture a write to a parameter and flush it to the registry if the value

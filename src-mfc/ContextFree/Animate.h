@@ -28,8 +28,6 @@ public:
 	CEdit m_ctrlMinSize;
 	CSliderCtrl m_ctrlBorderSize;
 	CButton m_ctrlZoom;
-	CButton m_ctrlPreview;
-	CButton m_ctrlLoop;
 	CEdit m_ctrlLength;
 	CComboBox m_ctrlFrameRate;
 	CComboBox m_ctrlCodec;

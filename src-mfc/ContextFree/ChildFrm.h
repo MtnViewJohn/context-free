@@ -51,6 +51,7 @@ public:
 	void OnRenderAgain();
 	void OnNextVariation();
 	void OnPrevVariation();
+	CString NameWithoutExtension();
 protected:
 	enum class PostRenderAction
 	{
@@ -75,6 +76,7 @@ protected:
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);
 	bool m_bRenderAgain = false;
+	std::string m_strMovieFile;
 
 	void DoRender(bool shrinkTiled);
 	bool SyncToSystem();

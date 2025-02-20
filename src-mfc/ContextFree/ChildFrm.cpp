@@ -16,6 +16,7 @@
 #include "variation.h"
 #include "RenderSize.h"
 #include "Animate.h"
+#include "MovieFileSave.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -183,11 +184,32 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
-	// update render button
+	if (!m_strMovieFile.empty()) {
+		int len = ::MultiByteToWideChar(CP_UTF8, 0, m_strMovieFile.c_str(), -1, NULL, 0);
+		std::wstring tempMovie16(len - 1, L' ');
+		::MultiByteToWideChar(CP_UTF8, 0, m_strMovieFile.c_str(), -1, tempMovie16.data(), len);
+		bool moved = false;
+		DWORD attr = ::GetFileAttributes(tempMovie16.c_str());
+		if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY)) {
+			CString name = NameWithoutExtension();
+			MovieFileSave fsDlg(tempMovie16, name);
+			if (fsDlg.DoModal() == IDOK) {
+				auto ofn = fsDlg.GetOFN();
+				if (::MoveFileEx(tempMovie16.c_str(), ofn.lpstrFile, MOVEFILE_REPLACE_EXISTING)) {
+					moved = true;
+				} else {
+					::MessageBeep(0);
+					::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
+				}
+			}
+		}
+		if (!moved)
+			::DeleteFile(tempMovie16.c_str());	// clean up unsaved movies
+		m_strMovieFile.clear();					// file is moved or deleted
+	}
 
 	// perform other actions
 
-	// if nothing and animation is done then preveiw it
 	return 0;
 }
 
@@ -319,6 +341,16 @@ bool CChildFrame::CanClose(bool andExit)
 }
 
 // CChildFrame implementation
+CString CChildFrame::NameWithoutExtension()
+{
+	CString name = m_CFdoc->GetPathName();
+	if (name.IsEmpty())
+		GetWindowTextW(name);
+	::PathRemoveExtensionW(name.LockBuffer());
+	name.UnlockBuffer();
+	return name;
+}
+
 void CChildFrame::DoRender(bool shrinkTiled)
 {
 	// clear message buffer
@@ -389,6 +421,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			m_AnimationCanvas.reset();
 			return;
 		}
+
+		m_strMovieFile = m_AnimationCanvas->mFileName;
 	}
 
 	SetPostRenderAction(PostRenderAction::DoNothing);

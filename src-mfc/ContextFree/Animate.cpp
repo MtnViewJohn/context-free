@@ -36,8 +36,6 @@ void Animate::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MINSIZE, m_ctrlMinSize);
 	DDX_Control(pDX, IDC_BORDERSLIDER, m_ctrlBorderSize);
 	DDX_Control(pDX, IDC_ZOOM, m_ctrlZoom);
-	DDX_Control(pDX, IDC_PREVIEW, m_ctrlPreview);
-	DDX_Control(pDX, IDC_PREVIEWLOOP, m_ctrlLoop);
 	DDX_Control(pDX, IDC_LENGTH, m_ctrlLength);
 	DDX_Control(pDX, IDC_FRAMERATE, m_ctrlFrameRate);
 	DDX_Control(pDX, IDC_CODEC, m_ctrlCodec);
@@ -72,8 +70,6 @@ BOOL Animate::OnInitDialog()
 	m_ctrlBorderSize.SetPos((int)(params.BorderSize * 100.0));
 
 	m_ctrlZoom.SetCheck(params.AnimateZoom ? BST_CHECKED : BST_UNCHECKED);
-	m_ctrlPreview.SetCheck(params.PreviewMovie ? BST_CHECKED : BST_UNCHECKED);
-	m_ctrlLoop.SetCheck(params.LoopMovie ? BST_CHECKED : BST_UNCHECKED);
 
 	SetDlgItemInt(IDC_LENGTH, params.MovieLength, FALSE);
 
@@ -114,8 +110,6 @@ void Animate::OnOK()
 	params.BorderSize = m_ctrlBorderSize.GetPos() / 100.0;
 
 	params.AnimateZoom = m_ctrlZoom.GetState() == BST_CHECKED;
-	params.PreviewMovie = m_ctrlPreview.GetState() == BST_CHECKED;
-	params.LoopMovie = m_ctrlLoop.GetState() == BST_CHECKED;
 
 	v = GetDlgItemInt(IDC_LENGTH, &ok, FALSE);
 	if (ok) {

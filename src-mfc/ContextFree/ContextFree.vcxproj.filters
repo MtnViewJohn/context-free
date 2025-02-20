@@ -198,6 +198,9 @@
     <ClInclude Include="Animate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MovieFileSave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp">
@@ -345,6 +348,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src-common\ffCanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovieFileSave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
