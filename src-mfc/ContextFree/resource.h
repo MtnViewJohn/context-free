@@ -37,6 +37,9 @@
 #define ID_RB_FRAME                     322
 #define IDD_RenderSize                  323
 #define IDD_Animate                     324
+#define IDC_CROPPED                     325
+#define IDC_JPEGQUALITY                 326
+#define IDC_APPEND_VARIATION            327
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -78,6 +81,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1027
-#define _APS_NEXT_SYMED_VALUE           325
+#define _APS_NEXT_SYMED_VALUE           328
 #endif
 #endif

@@ -297,7 +297,10 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 		}
 		break;
 	case IDC_SAVE:
-		pCmdUI->Enable(c && c->m_WinCanvas);
+		if (c)
+			c->OnUpdateSaveImage(pCmdUI);
+		else
+			pCmdUI->Enable(FALSE);
 		break;
 	case IDC_VARIATION:
 		if (c->renderParams.variation == 0) {

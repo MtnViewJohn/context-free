@@ -341,6 +341,7 @@
     <ClInclude Include="ContextFreeDoc.h" />
     <ClInclude Include="ContextFreeView.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="ImageFileSave.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MovieFileSave.h" />
     <ClInclude Include="pch.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="ContextFree.cpp" />
     <ClCompile Include="ContextFreeDoc.cpp" />
     <ClCompile Include="ContextFreeView.cpp" />
+    <ClCompile Include="ImageFileSave.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MovieFileSave.cpp" />
     <ClCompile Include="pch.cpp">

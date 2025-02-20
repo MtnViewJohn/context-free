@@ -17,6 +17,7 @@
 #include "RenderSize.h"
 #include "Animate.h"
 #include "MovieFileSave.h"
+#include "ImageFileSave.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,6 +33,10 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_COMMAND(ID_RENDER_AGAIN, OnRenderAgain)
 	ON_COMMAND(ID_ANIMATE, OnAnimate)
 	ON_COMMAND(ID_ANIMATE_FRAME, OnAnimateFrame)
+	ON_COMMAND(ID_RENDER_STOP, OnRenderStop)
+	ON_COMMAND(ID_SAVE_IMAGE, OnSaveOutput)
+	ON_UPDATE_COMMAND_UI(ID_SAVE_IMAGE, OnUpdateSaveImage)
+	ON_UPDATE_COMMAND_UI(ID_RENDER_STOP, OnUpdateRenderStop)
 	ON_MESSAGE(WinSystem::WM_USER_STATUS_UPDATE, OnStatusUpdate)
 	ON_MESSAGE(WinSystem::WM_USER_MESSAGE_UPDATE, OnMessage)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
@@ -198,7 +203,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 				if (::MoveFileEx(tempMovie16.c_str(), ofn.lpstrFile, MOVEFILE_REPLACE_EXISTING)) {
 					moved = true;
 				} else {
-					::MessageBeep(0);
+					::MessageBeep(MB_ICONEXCLAMATION);
 					::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
 				}
 			}
@@ -208,7 +213,25 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 		m_strMovieFile.clear();					// file is moved or deleted
 	}
 
-	// perform other actions
+	switch (m_ePostRenderAction) {
+	case PostRenderAction::SaveOutput:
+		//OnSaveOutput();
+		break;
+	case PostRenderAction::Render:
+		OnRender();
+		break;
+	case PostRenderAction::RenderSize:
+		OnRenderSize();
+		break;
+	case PostRenderAction::Animate:
+		OnAnimate();
+		break;
+	case PostRenderAction::AnimateFrame:
+		OnAnimateFrame();
+		break;
+	default:
+		break;
+	}
 
 	return 0;
 }
@@ -311,6 +334,54 @@ void CChildFrame::OnAnimateFrame()
 	DoRender(false);
 }
 
+void CChildFrame::OnRenderStop()
+{
+	if (m_hRenderThread && m_Renderer) {
+		if (m_Renderer->requestFinishUp)
+			m_Renderer->requestStop = true;
+		else
+			m_Renderer->requestFinishUp = true;
+	}
+}
+
+void CChildFrame::OnSaveOutput()
+{
+	if (!m_WinCanvas || !m_Renderer) {
+		::MessageBeep(MB_ICONASTERISK);
+		// send message "There is nothing to save."
+		return;
+	}
+
+	CString name = NameWithoutExtension();
+	ImageFileSave ifsDlg(name);
+	if (ifsDlg.DoModal() == IDOK) {
+		switch (ifsDlg.m_ofn.nFilterIndex) {
+		case 1:
+			// PNG
+			break;
+		case 2:
+			// JPEG
+			break;
+		case 3:
+			// SVG
+			break;
+		default:
+			// unsupported
+			break;
+		}
+	}
+}
+
+void CChildFrame::OnUpdateRenderStop(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(m_hRenderThread && m_Renderer);
+}
+
+void CChildFrame::OnUpdateSaveImage(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(m_WinCanvas && m_Renderer);
+}
+
 void CChildFrame::OnNextVariation()
 {
 	++renderParams.variation;
@@ -393,7 +464,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 
 	if (!m_Renderer) {
 		m_Engine.reset();
-		::MessageBeep(0);
+		::MessageBeep(MB_ICONEXCLAMATION);
 		return;
 	}
 
@@ -416,7 +487,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true);
 
 		if (m_AnimationCanvas->mError) {
-			::MessageBeep(0);
+			::MessageBeep(MB_ICONEXCLAMATION);
 			::MessageBoxA(GetSafeHwnd(), m_AnimationCanvas->mErrorMsg, "Animation Error", MB_ICONEXCLAMATION);
 			m_AnimationCanvas.reset();
 			return;

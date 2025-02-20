@@ -49,8 +49,10 @@ public:
 	HANDLE m_hRenderThread = NULL;
 	wincanvas_ptr m_WinCanvas;
 	void OnRenderAgain();
+	void OnSaveOutput();
 	void OnNextVariation();
 	void OnPrevVariation();
+	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);
 	CString NameWithoutExtension();
 protected:
 	enum class PostRenderAction
@@ -63,8 +65,10 @@ protected:
 	afx_msg LRESULT OnStatusUpdate(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnRenderDone(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnUpdateRenderStop(CCmdUI* pCmdUI);
 	void OnRender();
 	void OnRenderSize();
+	void OnRenderStop();
 	void OnAnimate();
 	void OnAnimateFrame();
 	afx_msg void OnClose();
