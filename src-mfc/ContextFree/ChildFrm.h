@@ -81,6 +81,10 @@ protected:
 	void SetPostRenderAction(PostRenderAction v);
 	bool m_bRenderAgain = false;
 	std::string m_strMovieFile;
+	int m_iJpegQuality = 80;
+	int m_iMultWidth = 1;
+	int m_iMultHeight = 1;
+	bool m_bCropped = false;
 
 	void DoRender(bool shrinkTiled);
 	bool SyncToSystem();

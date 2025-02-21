@@ -1,0 +1,44 @@
+#include "pch.h"
+#include "WinPngCanvas.h"
+#include "WinCanvas.h"
+
+WinPngCanvas::WinPngCanvas( const char* name, WinCanvas* canvas, bool crop,
+                            int variation, Renderer* r, int mx, int my)
+: pngCanvas(name, true, crop ? canvas->cropWidth() : canvas->mWidth,
+    crop ? canvas->cropHeight() : canvas->mHeight, canvas->mPixelFormat,
+    crop, 0, variation, false, r, mx, my, false),
+    m_Canvas(canvas)
+{
+}
+
+WinPngCanvas::~WinPngCanvas() = default;
+
+void WinPngCanvas::end()
+{
+    // Copy source WinCanvas to center of this canvas
+    int bpp = BytesPerPixel.at(mPixelFormat);
+    int destx = mOriginX * bpp;
+    int desty = mOriginY;
+    int srcx = mCrop ? m_Canvas->cropX() * bpp : 0;
+    int srcy = mCrop ? m_Canvas->cropY() : 0;
+    unsigned char* sourceData = reinterpret_cast<unsigned char*>(m_Canvas->mBM.get());
+
+    for (int y = 0; y < mHeight; ++y) {
+        if (y + desty < 0 || y + desty >= mFullHeight) continue;
+        for (int x = 0; x < mWidth * bpp; ++x) {
+            if (destx + x >= 0 && destx + x < mStride)
+                mData[(y + desty) * mStride + destx + x] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x];
+        }
+    }
+
+    // tile source WinCanvas and then output to PNG
+    pngCanvas::end();
+}
+
+void WinPngCanvas::output(const char* outfilename, int frame)
+{
+    // Skip PNG output for canvas that will be used for JPEG output
+    if (std::strlen(outfilename))
+        pngCanvas::output(outfilename, frame);
+}
+

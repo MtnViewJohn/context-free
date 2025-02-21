@@ -41,7 +41,7 @@ public:
       usetmpfile(tmp)
     { }
 protected:
-    void output(const char * outfilename, int frame = -1) override;
+    virtual void output(const char * outfilename, int frame = -1) override;
 private:
 	bool usetmpfile;
 };

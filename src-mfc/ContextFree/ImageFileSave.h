@@ -7,14 +7,16 @@ class ImageFileSave : public CFileDialog
 	DECLARE_DYNAMIC(ImageFileSave)
 
 public:
-	ImageFileSave(LPCTSTR name);
+	ImageFileSave(LPCTSTR name, bool tiled, bool& cropped, int& qual, int& w, int& h);
 	virtual ~ImageFileSave();
 
-	bool m_bCropped = false;
-	std::wstring m_sJpegQuality;
+	bool& m_bCropped;
+	int& m_iJpegQuality;
+	int& m_iMultWidth;
+	int& m_iMultHeight;
 protected:
 	virtual void OnCheckButtonToggled(DWORD dwIDCtl, BOOL bChecked);
-	virtual BOOL OnFileNameOK();
+	virtual void OnItemSelected(DWORD dwIDCtl, DWORD dwIDItem);	
 	DECLARE_MESSAGE_MAP()
 public:
 };

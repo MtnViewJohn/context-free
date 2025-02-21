@@ -18,6 +18,7 @@
 #include "Animate.h"
 #include "MovieFileSave.h"
 #include "ImageFileSave.h"
+#include "WinPngCanvas.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -348,22 +349,37 @@ void CChildFrame::OnSaveOutput()
 {
 	if (!m_WinCanvas || !m_Renderer) {
 		::MessageBeep(MB_ICONASTERISK);
-		// send message "There is nothing to save."
+		// TODO: send message "There is nothing to save."
 		return;
 	}
 
 	CString name = NameWithoutExtension();
-	ImageFileSave ifsDlg(name);
+	ImageFileSave ifsDlg(name, m_Renderer && m_Renderer->m_tiledCanvas, m_bCropped,
+						 m_iJpegQuality, m_iMultWidth, m_iMultHeight);
 	if (ifsDlg.DoModal() == IDOK) {
+		int len = ::WideCharToMultiByte(CP_UTF8, 0, ifsDlg.m_ofn.lpstrFile, -1, NULL, 0, NULL, NULL);
+		std::string fileMB(len - 1, ' ');
+		::WideCharToMultiByte(CP_UTF8, 0, ifsDlg.m_ofn.lpstrFile, -1, fileMB.data(), len, NULL, NULL);
 		switch (ifsDlg.m_ofn.nFilterIndex) {
-		case 1:
-			// PNG
+		case 1: {		// PNG
+			WinPngCanvas saveCanvas(fileMB.c_str(), m_WinCanvas.get(), 
+				m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
+				renderParams.variation, m_Renderer.get(), m_iMultWidth, m_iMultHeight);
+			saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
+				m_WinCanvas->cropHeight());
+			saveCanvas.end();		// writes out the PNG file
 			break;
-		case 2:
-			// JPEG
+		}
+		case 2: {		// JPEG
+			WinPngCanvas saveCanvas("", m_WinCanvas.get(), 
+				m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
+				renderParams.variation, m_Renderer.get(), m_iMultWidth, m_iMultHeight);
+			saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
+				m_WinCanvas->cropHeight());
+			saveCanvas.end();		// does not write a PNG file
 			break;
-		case 3:
-			// SVG
+		}
+		case 3:			// SVG
 			break;
 		default:
 			// unsupported
@@ -379,7 +395,7 @@ void CChildFrame::OnUpdateRenderStop(CCmdUI* pCmdUI)
 
 void CChildFrame::OnUpdateSaveImage(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(m_WinCanvas && m_Renderer);
+	pCmdUI->Enable(m_WinCanvas && m_Renderer && !m_hRenderThread);
 }
 
 void CChildFrame::OnNextVariation()

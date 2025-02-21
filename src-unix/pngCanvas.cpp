@@ -32,9 +32,22 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
-#include <arpa/inet.h>
 #include "prettyint.h"
+
+#ifndef _WIN32
+#include <arpa/inet.h>
 #include <unistd.h>
+#else
+#include <io.h>
+#include <fcntl.h>
+
+namespace {
+    unsigned short htons(unsigned short s)
+    {
+        return ((s & 0xff) << 8) | ((s & 0xff00) >> 8);
+    }
+}
+#endif
 
 using std::cerr;
 using std::endl;
@@ -88,16 +101,35 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         if (*outfilename || usetmpfile) {
             if (usetmpfile) {
+#ifdef _WIN32
+                FILE* fp = nullptr;
+                mFileName = "cfdg_temp_image_XXXXXX.png";
+                if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
+                    fopen_s(&fp, mFileName.c_str(), "wb"))
+                {
+                    out.reset(fp);
+                }
+#else
                 mFileName = "/tmp/cfdg_temp_image_XXXXXX.png";
-                int fd = mkstemps(&mFileName[0], 4);
+                int fd = mkstemps(mFileName.data(), 4);
                 if (fd != -1)
                     out.reset(fdopen(fd, "w"));
+#endif
             } else {
-                out.reset(std::fopen(outfilename, "wb"));
+                FILE* fp = nullptr;
+#ifdef _WIN32
+                fopen_s(&fp, outfilename, "wb");
+#else
+                fp = std::fopen(outfilename, "wb");
+#endif
+                if (fp)
+                    out.reset(fp);
             }
         } else {
             out.reset(stdout);
-#ifdef WIN32
+#ifdef _WIN32
+            _setmode(_fileno(stdout), _O_BINARY);
+#else
             setmode(fileno(stdout), O_BINARY);
 #endif
         }
