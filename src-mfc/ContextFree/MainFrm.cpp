@@ -44,11 +44,28 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame() noexcept
 {
-	// TODO: add member initialization code here
+	m_wndMessageLog.m_wndMainFrm = this;
 }
 
 CMainFrame::~CMainFrame()
 {
+}
+
+void CMainFrame::Message(LPCSTR msg)
+{
+	m_wndMessageLog.Message(msg);
+}
+
+void CMainFrame::ShowMessages()
+{
+	m_wndMessageLog.SetAutoHideMode(FALSE, CBRS_ALIGN_RIGHT, NULL, 0);
+}
+
+void CMainFrame::ForwardLink(LPCTSTR link)
+{
+	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+	if (c)
+		c->RecvErrorLinkClick(link);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -64,6 +81,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 	CDockingManager::SetDockingMode(DT_SMART);
+	EnableAutoHidePanes(CBRS_ALIGN_RIGHT);
 	m_wndRenderbar.EnableDocking(CBRS_ALIGN_ANY);
 	if (!EnableDocking(CBRS_ALIGN_ANY) || !AddPane(&m_wndRenderbar)) {
 		TRACE0("Could not dock renderbar\n");
@@ -71,6 +89,16 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	DockPane(&m_wndRenderbar, AFX_IDW_DOCKBAR_TOP);
 	m_wndRenderbar.ShowPane(TRUE, FALSE, FALSE);
+
+	if (!m_wndMessageLog.Create(_T("Messages"), this, CRect(0, 0, 800, 300), TRUE, IDC_RICHLOG,
+		WS_CHILD | WS_VISIBLE | CBRS_RIGHT | CBRS_HIDE_INPLACE))
+	{
+		TRACE0("Could not create log window.\n");
+		return -1;
+	}
+	m_wndMessageLog.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndMessageLog, AFX_IDW_DOCKBAR_RIGHT);
+	m_wndMessageLog.SetAutoHideMode(TRUE, CBRS_ALIGN_RIGHT, NULL, 0);
 
 	m_hSplitMenu = ::CreatePopupMenu();
 	::AppendMenuW(m_hSplitMenu, MF_BYPOSITION, ID_RB_RENDER,  _T("Render"));

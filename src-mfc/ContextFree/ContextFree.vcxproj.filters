@@ -210,6 +210,9 @@
     <ClInclude Include="WinPngCanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MessagePane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp">
@@ -369,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WinPngCanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MessagePane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

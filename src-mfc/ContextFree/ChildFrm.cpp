@@ -102,8 +102,8 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_vwCfdgEditor = (CEditView*)m_wndSplitterCfdg.GetPane(0, 0);
 	m_vwOutputView = (CContextFreeView*)m_wndSplitterCfdg.GetPane(0, 1);
 	m_CFdoc = (CContextFreeDoc*)(pContext->m_pCurrentDoc);
-	CMainFrame* mf = dynamic_cast<CMainFrame *>(GetMDIFrameWndEx());
-	m_vwCfdgEditor->GetEditCtrl().SetFont(&(mf->m_editFont));
+	m_wndParent = dynamic_cast<CMainFrame *>(GetMDIFrameWndEx());
+	m_vwCfdgEditor->GetEditCtrl().SetFont(&(m_wndParent->m_editFont));
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
@@ -159,9 +159,8 @@ LRESULT CChildFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
 		} else {
 			m_iProgressDelay = 0;
 		}
-		CMainFrame* mf = dynamic_cast<CMainFrame*>(GetMDIFrameWndEx());
-		if (mf)
-			mf->UpdateStatusBar(ProgressBar, statusText);
+		if (m_wndParent)
+			m_wndParent->UpdateStatusBar(ProgressBar, statusText);
 	} else {
 		// update render box
 		m_vwOutputView->Invalidate();
@@ -172,7 +171,36 @@ LRESULT CChildFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
 LRESULT CChildFrame::OnMessage(WPARAM wParam, LPARAM lParam)
 {
 	std::unique_ptr<char[]> message((char*)wParam);
+	m_wndParent->Message(message.get());
+	if (message)
+		m_wndParent->Message("\r\n");
 	return 0;
+}
+
+void CChildFrame::RecvErrorLinkClick(LPCTSTR link)
+{
+	const wchar_t* start = link + 3;
+	wchar_t* next = nullptr;
+	int start_line = std::wcstol(start, &next, 10);
+	if (*next != L':')
+		return;
+	start = next + 1;
+	int start_char = std::wcstol(start, &next, 10);
+	if (*next != L':')
+		return;
+	start = next + 1;
+	int end_line = std::wcstol(start, &next, 10);
+	if (*next != L':')
+		return;
+	start = next + 1;
+	int end_char = std::wcstol(start, &next, 10);
+	if (*next != L'\0')
+		return;
+	int start_line_char = m_vwCfdgEditor->GetEditCtrl().LineIndex(start_line - 1);
+	int end_line_char = m_vwCfdgEditor->GetEditCtrl().LineIndex(end_line - 1);
+	if (start_line_char >= 0 && end_line_char >= 0)
+		m_vwCfdgEditor->GetEditCtrl().SetSel(start_line_char + start_char, end_line_char + end_char, TRUE);
+
 }
 
 LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
@@ -347,7 +375,7 @@ void CChildFrame::OnSaveOutput()
 {
 	if (!m_WinCanvas || !m_Renderer) {
 		::MessageBeep(MB_ICONASTERISK);
-		// TODO: send message "There is nothing to save."
+		MessageBoxW(_T("There is nothing to save."), NULL, MB_ICONASTERISK);
 		return;
 	}
 
@@ -436,7 +464,7 @@ CString CChildFrame::NameWithoutExtension()
 
 void CChildFrame::DoRender(bool shrinkTiled)
 {
-	// clear message buffer
+	OnMessage(0, 0);		// clear message window
 
 	bool modifiedSinceRender = SyncToSystem();
 	if (!modifiedSinceRender && !m_bReuseVariation && renderParams.action != RenderParameters::RenderActions::Animate)
@@ -445,8 +473,6 @@ void CChildFrame::DoRender(bool shrinkTiled)
 
 	if (renderParams.variation == 0)
 		OnNextVariation();
-
-	// clean up movie preview
 
 	bool useAnimateSize = renderParams.action == RenderParameters::RenderActions::Animate;
 	int width = useAnimateSize ? renderParams.AnimateWidth : renderParams.width;
@@ -460,6 +486,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, renderParams.variation);
 	if (!m_Engine) {
 		::MessageBeep(0);
+		m_wndParent->ShowMessages();
 		return;
 	}
 	bool tiled = m_Engine->isTiledOrFrieze();
@@ -477,6 +504,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	if (!m_Renderer) {
 		m_Engine.reset();
 		::MessageBeep(MB_ICONEXCLAMATION);
+		m_wndParent->ShowMessages();
 		return;
 	}
 
@@ -544,7 +572,6 @@ void CChildFrame::PerformRender()
 		::ResumeThread(m_hRenderThread);
 		
 		setupTimer(m_Renderer);
-		// update render button
 	} else {
 		m_WinCanvas.reset();
 		m_Canvas = nullptr;

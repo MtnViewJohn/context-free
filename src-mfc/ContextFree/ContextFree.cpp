@@ -76,6 +76,9 @@ BOOL CContextFreeApp::InitInstance()
 
 	// AfxInitRichEdit2() is required to use RichEdit control
 	// AfxInitRichEdit2();
+	m_bRichEdit5 = AfxInitRichEdit5();
+	if (!m_bRichEdit5)
+		AfxInitRichEdit2();
 
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);

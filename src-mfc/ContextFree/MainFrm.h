@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "MessagePane.h"
+
 //-----------------
 // Statusbar panes:
 //-----------------
@@ -33,10 +35,14 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+	void Message(LPCSTR msg);
+	void ShowMessages();
+	void ForwardLink(LPCTSTR link);
 
 protected:  // control bar embedded members
 	CMFCStatusBar     m_wndStatusBar;
 	CPaneDialog m_wndRenderbar;
+	MessagePane m_wndMessageLog;
 	HMENU m_hSplitMenu;
 
 	int m_intTickleAmount = 1;

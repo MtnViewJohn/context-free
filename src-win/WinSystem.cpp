@@ -113,13 +113,15 @@ void WinSystem::syntaxError(const CfdgError& errLoc)
 {
     if (!mWindow) return;
     if (!errLoc.where.begin.filename || mName.compare(*(errLoc.where.begin.filename)) == 0) {
-        message("Error - <a href='#e:%d:%d:%d:%d'>%s</a>",
+        message(
+            R"({\rtf1 Error - 
+{\field{\*\fldinst {HYPERLINK "#e:%d:%d:%d:%d" }}{\fldrslt {%s}}}})",
                 errLoc.where.begin.line, errLoc.where.begin.column,
                 errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
     } else {
-        message("Error in file %s at line %d:%d - %d:%d - %s", errLoc.where.end.filename->c_str(), 
-                errLoc.where.begin.line, errLoc.where.begin.column, 
-                errLoc.where.end.line, errLoc.where.end.column, errLoc.what());
+        message("Error in file %s at line %d:%d to line %d:%d - %s", errLoc.where.end.filename->c_str(), 
+                errLoc.where.begin.line, errLoc.where.begin.column + 1, 
+                errLoc.where.end.line, errLoc.where.end.column + 1, errLoc.what());
     }
 }
 

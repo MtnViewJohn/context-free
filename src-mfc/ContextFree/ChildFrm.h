@@ -12,6 +12,7 @@
 class CContextFreeView;
 class CContextFreeDoc;
 class WinSystem;
+class CMainFrame;
 
 class CChildFrame : public CMDIChildWndEx
 {
@@ -54,6 +55,7 @@ public:
 	void OnPrevVariation();
 	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);
 	CString NameWithoutExtension();
+	void RecvErrorLinkClick(LPCTSTR link);
 protected:
 	enum class PostRenderAction
 	{
@@ -85,6 +87,7 @@ protected:
 	int m_iMultWidth = 1;
 	int m_iMultHeight = 1;
 	bool m_bCropped = false;
+	CMainFrame* m_wndParent = nullptr;
 
 	void DoRender(bool shrinkTiled);
 	bool SyncToSystem();
