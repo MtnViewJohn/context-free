@@ -191,9 +191,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 	}
 
 	if (!m_strMovieFile.empty()) {
-		int len = ::MultiByteToWideChar(CP_UTF8, 0, m_strMovieFile.c_str(), -1, NULL, 0);
-		std::wstring tempMovie16(len - 1, L' ');
-		::MultiByteToWideChar(CP_UTF8, 0, m_strMovieFile.c_str(), -1, tempMovie16.data(), len);
+		std::wstring tempMovie16 = Utf8ToUtf16(m_strMovieFile.c_str());
 		bool moved = false;
 		DWORD attr = ::GetFileAttributes(tempMovie16.c_str());
 		if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -357,9 +355,7 @@ void CChildFrame::OnSaveOutput()
 	ImageFileSave ifsDlg(name, m_Renderer && m_Renderer->m_tiledCanvas, m_bCropped,
 						 m_iJpegQuality, m_iMultWidth, m_iMultHeight);
 	if (ifsDlg.DoModal() == IDOK) {
-		int len = ::WideCharToMultiByte(CP_UTF8, 0, ifsDlg.m_ofn.lpstrFile, -1, NULL, 0, NULL, NULL);
-		std::string fileMB(len - 1, ' ');
-		::WideCharToMultiByte(CP_UTF8, 0, ifsDlg.m_ofn.lpstrFile, -1, fileMB.data(), len, NULL, NULL);
+		std::string fileMB = Utf16ToUtf8(ifsDlg.m_ofn.lpstrFile);
 		switch (ifsDlg.m_ofn.nFilterIndex) {
 		case 1: {		// PNG
 			WinPngCanvas saveCanvas(fileMB.c_str(), m_WinCanvas.get(), 
@@ -521,9 +517,7 @@ bool CChildFrame::SyncToSystem()
 {
 	auto txt = m_CFdoc->GetCfdg();
 	const CString& wname = m_CFdoc->GetPathName();
-	int len = ::WideCharToMultiByte(CP_UTF8, 0, wname, -1, nullptr, 0, NULL, NULL);
-	std::string name(len - 1, ' ');
-	::WideCharToMultiByte(CP_UTF8, 0, wname, -1, name.data(), len, NULL, NULL);
+	std::string name = Utf16ToUtf8((LPCTSTR)wname);
 	return m_System->updateInfo(name.c_str(), txt.c_str());
 }
 

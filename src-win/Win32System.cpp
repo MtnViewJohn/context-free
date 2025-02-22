@@ -101,31 +101,19 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    int wchars_rel  = ::MultiByteToWideChar(CP_UTF8, 0,  rel.c_str(), -1, nullptr, 0);
-    int wchars_base = ::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, nullptr, 0) + wchars_rel + 1;
+    std::wstring wbase = Utf8ToUtf16(base.c_str());
+    std::wstring wrel = Utf8ToUtf16(rel.c_str());
 
-    std::vector<wchar_t> wbase(wchars_base, L' '), wrel(wchars_rel, L' ');
+    ::PathRemoveFileSpecW(wbase.data());        // modify wbase in-situ
+    wbase.resize(wcslen(wbase.data()), L' ');   // update wbase to shunken size
 
-    if (::MultiByteToWideChar(CP_UTF8, 0, base.c_str(), -1, wbase.data(), wchars_base) == 0 ||
-        ::MultiByteToWideChar(CP_UTF8, 0,  rel.c_str(), -1,  wrel.data(), wchars_rel)  == 0)
-    {
-        message("Cannot find %s relative to %s", rel.c_str(), base.c_str());
-        return std::string();
-    }
-
-    PathRemoveFileSpecW(wbase.data());
     // Perform PathCombineW w/o the weird canonicalization behavior
-    if (wbase[0] && wbase[wcslen(wbase.data()) - 1] != L'\\')
-        wcscat_s(wbase.data(), wchars_base, L"\\");
-    wcscat_s(wbase.data(), wchars_base, wrel.data());
+    if (!wbase.empty() && wbase.back() != L'\\')
+        wbase.append(L"\\");
+    wbase.append(wrel);
 
-    int char_buf = ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, nullptr, 0, nullptr, nullptr);
-    std::vector<char> buf(char_buf, ' ');
-
-    if (PathFileExistsW(wbase.data()) && 
-        ::WideCharToMultiByte(CP_UTF8, 0, wbase.data(), -1, buf.data(), char_buf, nullptr, nullptr) != 0)
-    {
-        return std::string(buf.data());
+    if (::PathFileExistsW(wbase.c_str())) {
+        return Utf16ToUtf8(wbase.data());
     } else {
         return rel;
     }
@@ -191,38 +179,17 @@ Win32System::normalize(const std::string& u8name)
         return std::wstring();
 
     // Convert from utf-8 to utf-16
-    std::wstring u16name(u8name.length(), L' ');
-    for (;;) {
-		wchar_t* wbuf = &u16name[0];	// can't use uname16.data() pre-C++17
-        // Null termination is neither passed in nor returned
-        auto sz = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
-            u8name.data(), static_cast<int>(u8name.length()), 
-            wbuf, static_cast<int>(u16name.length()));
-        if (sz) {
-            u16name.resize(sz);
-            break;
-        } else if (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-            u16name.resize(u16name.length() * 2, L' ');
-        } else {
-            return std::wstring();
-        }
-    }
+    std::wstring u16name = Utf8ToUtf16(u8name.c_str());
 
     // normalize the utf-16 string
-    std::wstring ret(u16name.length() + 20, L' ');
-    for (;;) {
-		wchar_t* retbuf = &ret[0];
-        // Null termination is neither passed in nor returned
-        auto sz = ::NormalizeString(NormalizationKC,
-            u16name.data(), static_cast<int>(u16name.length()), 
-            retbuf, static_cast<int>(ret.length()));
-        if (sz > 0) {
-            ret.resize(sz);
-            return ret;
-        } else if (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-            ret.resize(ret.length() * 2, L' ');
-        } else {
-            return std::wstring();
-        }
-    }
+    int normLen = ::NormalizeString(NormalizationKC, u16name.c_str(), -1, NULL, 0);
+    if (normLen == 0 && ::GetLastError() != ERROR_SUCCESS)
+        return std::wstring();
+    std::wstring ret(normLen - 1, L' ');
+    int len2 = ::NormalizeString(NormalizationKC, u16name.c_str(), -1, ret.data(), normLen);
+    if (len2 == 0 && ::GetLastError() != ERROR_SUCCESS)
+        return std::wstring();
+    if (len2 != normLen)
+        ret.resize(len2 - 1, L' ');
+    return ret;
 }

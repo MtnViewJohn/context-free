@@ -35,6 +35,39 @@
 #include <string.h>
 #include <windows.h>
 
+std::string  Utf16ToUtf8(const wchar_t* wstr)
+{
+    std::string str;
+    int wlen = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, NULL, NULL);
+    if (wlen == 0)
+        return str;
+    str.resize(wlen - 1, ' ');
+    int len = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str.data(), wlen, NULL, NULL);
+    if (len == 0) {
+        str.clear();
+        return str;
+    }
+    if (len != wlen)
+        str.resize(len - 1, ' ');
+    return str;
+}
+
+std::wstring Utf8ToUtf16(const char* str)
+{
+    std::wstring wstr;
+    int len = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, nullptr, 0);
+    if (len == 0)
+        return wstr;
+    wstr.resize(len - 1, L' ');
+    int wlen = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr.data(), len);
+    if (wlen == 0) {
+        wstr.clear();
+        return wstr;
+    }
+    if (len != wlen)
+        wstr.resize(wlen - 1, L' ');
+    return wstr;
+}
 
 void* WinSystem::MainWindow = nullptr;
 
@@ -102,13 +135,9 @@ void WinSystem::catastrophicError(const char* what)
     if (!MainWindow)
         return;
 
-    int wchars_num = ::MultiByteToWideChar(CP_UTF8, 0, what, -1, nullptr, 0);
-    std::vector<wchar_t> wbuf(wchars_num, L' ');
+    std::wstring wwhat = Utf8ToUtf16(what);
 
-    if (::MultiByteToWideChar(CP_UTF8, 0, what, -1, wbuf.data(), wchars_num) != 0)
-        (void)::MessageBoxW(NULL, wbuf.data(), L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
-    else
-        (void)::MessageBoxW(NULL, L"", L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
+    (void)::MessageBoxW(NULL, wwhat.c_str(), L"Unexpected error", MB_OK | MB_ICONEXCLAMATION);
     ::PostMessageW((HWND)MainWindow, WM_CLOSE, NULL, NULL);
     MainWindow = nullptr;   // Only do this once
 }

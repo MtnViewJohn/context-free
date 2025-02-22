@@ -82,6 +82,11 @@ private:
     const char* mMsg;
 };
 
+#ifdef _WIN32
+std::string  Utf16ToUtf8(const wchar_t* wstr);
+std::wstring Utf8ToUtf16(const char* str);
+#endif
+
 class AbstractSystem {
     public:
         enum TempType { ShapeTemp = 0, ExpansionTemp = 1, MergeTemp = 2, MovieTemp = 3, NumberofTempTypes = 4 };

@@ -307,8 +307,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			pCmdUI->SetText(_T(""));
 		} else {
 			std::string v = Variation::toString(c->renderParams.variation, false);
-			std::wstring v16((int)v.length(), L' ');
-			int l = ::MultiByteToWideChar(CP_UTF8, 0, v.c_str(), (int)v.length(), v16.data(), (int)v16.length());
+			std::wstring v16 = Utf8ToUtf16(v.c_str());
 			pCmdUI->SetText(v16.c_str());
 		}
 		break;

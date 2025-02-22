@@ -12,6 +12,7 @@
 
 #include "ContextFreeDoc.h"
 #include <vector>
+#include "cfdg.h"
 
 #include <propkey.h>
 
@@ -168,31 +169,16 @@ void CContextFreeDoc::LoadCfdg(std::string utf8text)
 			*it2 = '\0';
 			utf8text.swap(bytes2);
 		}
-		auto wlen = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8text.data(), -1, nullptr, 0);
-		if (wlen > 0) {
-			std::vector<wchar_t> u16chars(wlen);
-			if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8text.data(), -1, u16chars.data(), wlen) == wlen) {
-				m_vwEditorView->GetEditCtrl().SetWindowTextW(u16chars.data());
-				return;
-			}
-		}
+		std::wstring utf16text = Utf8ToUtf16(utf8text.c_str());
+		m_vwEditorView->GetEditCtrl().SetWindowTextW(utf16text.c_str());
+		return;
 	}
 	m_vwEditorView->GetEditCtrl().SetWindowTextW(_T(""));
 }
 
 std::string CContextFreeDoc::GetCfdg()
 {
-	std::string utf8text;
 	CString wText;
 	m_vwEditorView->GetEditCtrl().GetWindowTextW(wText);
-	if (wText.GetLength() > 0) {
-		auto len = ::WideCharToMultiByte(CP_UTF8, 0, wText, -1, nullptr, 0, NULL, NULL);
-		if (len > 0) {
-			utf8text.resize(len - 1);
-			auto len2 = ::WideCharToMultiByte(CP_UTF8, 0, wText, -1, utf8text.data(), len, NULL, NULL);
-			if (len2 < len)
-				utf8text.resize(len2 - 1);		// should never happen
-		}
-	}
-	return utf8text;
+	return Utf16ToUtf8((LPCTSTR)wText);
 }
