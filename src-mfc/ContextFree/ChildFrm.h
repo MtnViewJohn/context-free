@@ -8,6 +8,7 @@
 #include "WinCanvas.h"
 #include "ffCanvas.h"
 #include <set>
+#include "SVGCanvas.h"
 
 class CContextFreeView;
 class CContextFreeDoc;
@@ -79,6 +80,7 @@ protected:
 	Canvas* m_Canvas = nullptr;
 	WinSystem* m_System = nullptr;
 	ffCanvas_ptr m_AnimationCanvas;
+	svgCanvas_ptr m_SvgCanvas;
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);
 	bool m_bRenderAgain = false;

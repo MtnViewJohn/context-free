@@ -68,3 +68,4 @@ private:
     void indent(int);
 };
 
+using svgCanvas_ptr = std::unique_ptr<SVGCanvas>;

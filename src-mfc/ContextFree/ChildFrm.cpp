@@ -233,6 +233,9 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 	::CloseHandle(m_hRenderThread);
 	m_hRenderThread = NULL;
 
+	if (renderParams.action == RenderParameters::RenderActions::SaveSVG)
+		m_wndParent->Message("SVG save complete.\r\n");
+
 	if (m_ePostRenderAction == PostRenderAction::Exit) {
 		GetMDIFrame()->PostMessageW(WM_CLOSE);
 		return 0;
@@ -459,6 +462,19 @@ void CChildFrame::OnSaveOutput()
 			break;
 		}
 		case 3:			// SVG
+			m_SvgCanvas = std::make_unique<SVGCanvas>(fileMB.c_str(), m_WinCanvas->mWidth,
+				m_WinCanvas->mHeight, ifsDlg.m_bCropped);
+			if (m_SvgCanvas->mError) {
+				TRACE0("SVG file save failed\n");
+				::MessageBeep(MB_ICONASTERISK);
+				::MessageBoxW(GetSafeHwnd(), _T("SVG file save failed!"), _T(""), MB_ICONASTERISK);
+				m_SvgCanvas.reset();
+				break;
+			}
+			renderParams.action = RenderParameters::RenderActions::SaveSVG;
+			SetPostRenderAction(PostRenderAction::DoNothing);
+			PerformRender();
+			m_wndParent->Message("Saving SVG file.\r\n");
 			break;
 		default:
 			// unsupported
@@ -663,8 +679,8 @@ void CChildFrame::RunRenderThread()
 		}
 		break;
 	case RenderParameters::RenderActions::SaveSVG:
-		m_Renderer->draw(m_Canvas);
-		// delete SVG canvas
+		m_Renderer->draw(m_SvgCanvas.get());	// draw SVG
+		m_SvgCanvas.reset();					// save and close file
 		break;
 	case RenderParameters::RenderActions::Render:
 		m_Renderer->run(m_Canvas, rp.PeriodicUpdate);
