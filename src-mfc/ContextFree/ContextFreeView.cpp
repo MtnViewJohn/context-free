@@ -16,6 +16,7 @@
 #include <gdipluspixelformats.h>
 #include <vector>
 #include "CMemDC.h"
+#include "tiledCanvas.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,22 +59,6 @@ BOOL CContextFreeView::OnEraseBkgnd(CDC* pDC)
 	if (!m_pWinCanvas || !*m_pWinCanvas)
 		return CView::OnEraseBkgnd(pDC);
 
-#if 0
-	CRect cr;
-	pDC->GetClipBox(&cr);
-	agg::rgba8 bk((*m_pWinCanvas)->mBackground);
-	Gdiplus::Color bkColor = Gdiplus::Color(bk.a, bk.r, bk.g, bk.b);
-	Gdiplus::Graphics g(pDC->GetSafeHdc());
-	Gdiplus::Rect clipRect(cr.left, cr.top, cr.Width(), cr.Height());
-
-	if (bk.a < 255) {
-		DrawCheckerBoard(g, clipRect);
-		Gdiplus::SolidBrush bkBrush(bkColor);
-		g.FillRectangle(&bkBrush, clipRect);
-	} else {
-		g.Clear(bkColor);
-	}
-#endif
 	return TRUE;
 }
 
@@ -122,10 +107,9 @@ void CContextFreeView::OnDraw(CDC* pdc)
 
 	// Draw background
 	Gdiplus::Rect destRect(originX, originY, scaledWidth, scaledHeight);
-	if (bk.a < 255) {
-		Gdiplus::Rect fullRect(0, 0, destSize.Width, destSize.Height);
+	Gdiplus::Rect fullRect(0, 0, destSize.Width, destSize.Height);
+	if (bk.a < 255 || m_bBlendMode) {
 		DrawCheckerBoard(g, fullRect);
-		g.FillRectangle(&backBrush, fullRect);
 	} else {
 		g.Clear(bkColor);
 	}
@@ -135,18 +119,34 @@ void CContextFreeView::OnDraw(CDC* pdc)
 
 	g.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
 
+	std::vector< Gdiplus::Rect> drawRects;
+
 	if (m_bTiled && scale == 1.0) {
-		// DrawTiled ...
+		tileList points = m_Renderer->m_tiledCanvas->getTessellation(cr.Width(), cr.Height(),
+			originX, originY, true);
+		drawRects.reserve(points.size());
+
+		for (tileList::reverse_iterator pt = points.rbegin(), ept = points.rend();pt != ept; ++pt) {
+			g.DrawImage(newBitmap.get(), pt->x, pt->y);
+			drawRects.emplace_back(pt->x, pt->y, srcSize.Width, srcSize.Height);
+		}
 	} else {
-		if (bk.a < 255 || m_bBlendMode)
-			DrawCheckerBoard(g, destRect);
 		if (scale == 1.0) {
 			g.DrawImage(newBitmap.get(), originX, originY);
+			drawRects.emplace_back(originX, originY, srcSize.Width, srcSize.Height);
 		} else {
 			g.DrawImage(newBitmap.get(), destRect,
 				0, 0, srcSize.Width, srcSize.Height,
 				Gdiplus::Unit::UnitPixel);
+			drawRects.push_back(destRect);
 		}
+	}
+
+	if (bk.a < 255 || m_bBlendMode) {
+		for (auto&& drawRect: drawRects)
+			g.SetClip(drawRect, Gdiplus::CombineModeExclude);
+		g.FillRectangle(&backBrush, fullRect);
+		g.ResetClip();
 	}
 
 	Gdiplus::Pen p2(Gdiplus::Color::Black);
@@ -157,11 +157,13 @@ void CContextFreeView::OnDraw(CDC* pdc)
 void CContextFreeView::DrawCheckerBoard(Gdiplus::Graphics& g, Gdiplus::Rect destRect)
 {
 	Gdiplus::SolidBrush grayBrush(Gdiplus::Color::LightGray);
+	g.SetClip(destRect);
 	g.Clear(Gdiplus::Color::White);
 	for (int y = destRect.Y - destRect.Y % m_iBoxSize; y <= destRect.GetBottom(); y += m_iBoxSize)
 		for (int x = destRect.X - destRect.X % m_iBoxSize; x <= destRect.GetRight(); x += m_iBoxSize)
 			if (((x / m_iBoxSize) ^ (y / m_iBoxSize)) & 1)
 				g.FillRectangle(&grayBrush, x, y, m_iBoxSize, m_iBoxSize);
+	g.ResetClip();
 }
 
 std::unique_ptr<Gdiplus::Bitmap> CContextFreeView::MakeBitmap(bool cropped)

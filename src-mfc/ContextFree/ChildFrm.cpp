@@ -482,6 +482,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	m_Engine.reset();
 	m_WinCanvas.reset();
 	m_Canvas = nullptr;
+	m_vwOutputView->m_Renderer = nullptr;
 
 	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, renderParams.variation);
 	if (!m_Engine) {
@@ -500,6 +501,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 
 	m_Renderer = m_Engine->renderer(m_Engine, width, height,
 		(float)renderParams.MinimumSize, renderParams.variation, renderParams.BorderSize);
+
+	m_vwOutputView->m_Renderer = m_Renderer.get();
 
 	if (!m_Renderer) {
 		m_Engine.reset();

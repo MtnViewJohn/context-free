@@ -5,6 +5,7 @@
 #pragma once
 
 #include "WinCanvas.h"
+class Renderer;
 
 class CContextFreeView : public CView
 {
@@ -34,6 +35,7 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 	wincanvas_ptr* m_pWinCanvas = nullptr;
+	Renderer* m_Renderer = nullptr;
 	BOOL m_bTiled;
 	BOOL m_bBlendMode;
 	int m_iBoxSize = 0;
