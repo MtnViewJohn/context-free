@@ -459,22 +459,13 @@ void CMainFrame::OnRenderEdits(UINT id)
 		RenderParameters::Modify(c->renderParams.MovieFrame, i);
 		break;
 	case IDC_SIZE_WIDTH:
-		if (len == 0)
-			i = 0;
-		else if (i < 10)
-			i = 10;
-		else if (i > 32768)
-			i = 32768;
-		RenderParameters::Modify(c->renderParams.RenderWidth, i);
-		break;
 	case IDC_SIZE_HEIGHT:
 		if (len == 0)
 			i = 0;
-		else if (i < 10)
-			i = 10;
-		else if (i > 32768)
+		if (i > 32768)
 			i = 32768;
-		RenderParameters::Modify(c->renderParams.RenderHeight, i);
+		RenderParameters::Modify(id == IDC_SIZE_WIDTH ? c->renderParams.RenderWidth
+													  : c->renderParams.RenderHeight, i);
 		break;
 	default:
 		break;
