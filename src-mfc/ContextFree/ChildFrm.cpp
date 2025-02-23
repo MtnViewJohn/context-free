@@ -19,11 +19,35 @@
 #include "MovieFileSave.h"
 #include "ImageFileSave.h"
 #include "WinPngCanvas.h"
+#include <Gdipluspixelformats.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+namespace {
+	Gdiplus::PixelFormat GetPixFormat(aggCanvas::PixelFormat pfmt)
+	{
+		switch (pfmt) {
+		case aggCanvas::Gray8_Blend:
+			return PixelFormat8bppIndexed;
+		case aggCanvas::Gray16_Blend:
+			return PixelFormat16bppGrayScale;
+		case aggCanvas::RGB8_Blend:
+			return PixelFormat24bppRGB;
+		case aggCanvas::RGB16_Blend:
+			return PixelFormat48bppRGB;
+		case aggCanvas::RGBA8_Blend:
+		case aggCanvas::RGBA8_Custom_Blend:
+			return PixelFormat32bppARGB;
+		case aggCanvas::RGBA16_Blend:
+		case aggCanvas::RGBA16_Custom_Blend:
+			return PixelFormat64bppPARGB;
+		default:
+			return 0;
+		}
+	}
+}
 // CChildFrame
 
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWndEx)
@@ -242,7 +266,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 
 	switch (m_ePostRenderAction) {
 	case PostRenderAction::SaveOutput:
-		//OnSaveOutput();
+		OnSaveOutput();
 		break;
 	case PostRenderAction::Render:
 		OnRender();
@@ -373,6 +397,11 @@ void CChildFrame::OnRenderStop()
 
 void CChildFrame::OnSaveOutput()
 {
+	if (m_hRenderThread) {
+		SetPostRenderAction(PostRenderAction::SaveOutput);
+		return;
+	}
+
 	if (!m_WinCanvas || !m_Renderer) {
 		::MessageBeep(MB_ICONASTERISK);
 		MessageBoxW(_T("There is nothing to save."), NULL, MB_ICONASTERISK);
@@ -401,6 +430,32 @@ void CChildFrame::OnSaveOutput()
 			saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
 				m_WinCanvas->cropHeight());
 			saveCanvas.end();		// does not write a PNG file
+			auto pixfmt = GetPixFormat(m_WinCanvas->mPixelFormat);
+			if (pixfmt) {
+				Gdiplus::Bitmap newBM(saveCanvas.mWidth, saveCanvas.mHeight, saveCanvas.mStride,
+					pixfmt, (BYTE*)saveCanvas.mData.data());
+				if (pixfmt == PixelFormat8bppIndexed)
+					CContextFreeView::AddGrayPalette(&newBM);
+
+				// image/jpeg : {557cf401-1a04-11d3-9a73-0000f81ef32e}
+				const CLSID jpgEncoderClsId = { 0x557cf401, 0x1a04, 0x11d3,{ 0x9a,0x73,0x00,0x00,0xf8,0x1e,0xf3,0x2e } };
+				Gdiplus::Status  stat;
+				Gdiplus::EncoderParameters encoderParameters;
+				ULONG    quality = ifsDlg.m_iJpegQuality;
+
+				encoderParameters.Count = 1;
+				encoderParameters.Parameter[0].Guid = Gdiplus::EncoderQuality;
+				encoderParameters.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+				encoderParameters.Parameter[0].NumberOfValues = 1;
+				encoderParameters.Parameter[0].Value = &quality;
+
+				stat = newBM.Save(ifsDlg.m_ofn.lpstrFile, &jpgEncoderClsId, &encoderParameters);
+				if (stat != Gdiplus::Status::Ok) {
+					TRACE1("JPEG file save failed: %d\n", stat);
+					::MessageBeep(MB_ICONASTERISK);
+					::MessageBoxW(GetSafeHwnd(), _T("JPEG file save failed!"), _T(""), MB_ICONASTERISK);
+				}
+			}
 			break;
 		}
 		case 3:			// SVG

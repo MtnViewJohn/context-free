@@ -37,14 +37,14 @@ public:
     void start(bool , const agg::rgba& , int , int ) override;
     void end() override;
     
+    int mStride;
+    std::vector<unsigned char> mData;
 protected:
     const char* mOutputFileName;
     int mFrameCount;
     int mCurrentFrame;
     int  mVariation;
 
-    std::vector<unsigned char> mData;
-    int mStride;
     PixelFormat mPixelFormat;
     bool mCrop;
     bool mQuiet;

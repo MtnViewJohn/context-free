@@ -154,6 +154,17 @@ void CContextFreeView::OnDraw(CDC* pdc)
 	g.DrawRectangle(&p2, originX - 1, originY - 1, scaledWidth + 1, scaledHeight + 1);
 }
 
+void CContextFreeView::AddGrayPalette(Gdiplus::Bitmap* bm)
+{
+	std::vector<char> paletteBuf(sizeof(Gdiplus::ColorPalette) + 255 * sizeof(Gdiplus::ARGB));
+	Gdiplus::ColorPalette* gray = (Gdiplus::ColorPalette*)paletteBuf.data();
+	for (int i = 0; i < 256; ++i)
+		gray->Entries[i] = Gdiplus::Color::MakeARGB(255, i, i, i);
+	gray->Count = 256;
+	gray->Flags = Gdiplus::PaletteFlags::PaletteFlagsGrayScale;
+	bm->SetPalette(gray);
+}
+
 void CContextFreeView::DrawCheckerBoard(Gdiplus::Graphics& g, Gdiplus::Rect destRect)
 {
 	Gdiplus::SolidBrush grayBrush(Gdiplus::Color::LightGray);
@@ -190,13 +201,7 @@ std::unique_ptr<Gdiplus::Bitmap> CContextFreeView::MakeBitmap(bool cropped)
 		switch (canvas->mPixelFormat) {
 		case aggCanvas::Gray8_Blend: {
 			auto bm = std::make_unique<Gdiplus::Bitmap>(width, height, canvas->mStride, PixelFormat8bppIndexed, data);
-			std::vector<char> paletteBuf(sizeof(Gdiplus::ColorPalette) + 255 * sizeof(Gdiplus::ARGB));
-			Gdiplus::ColorPalette* gray = (Gdiplus::ColorPalette*)paletteBuf.data();
-			for (int i = 0; i < 256; ++i)
-				gray->Entries[i] = Gdiplus::Color::MakeARGB(255, i, i, i);
-			gray->Count = 256;
-			gray->Flags = Gdiplus::PaletteFlags::PaletteFlagsGrayScale;
-			bm->SetPalette(gray);
+			AddGrayPalette(bm.get());
 			return bm;
 		}
 		case aggCanvas::RGB8_Blend:

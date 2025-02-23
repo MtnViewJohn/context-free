@@ -39,6 +39,7 @@ public:
 	BOOL m_bTiled;
 	BOOL m_bBlendMode;
 	int m_iBoxSize = 0;
+	static void AddGrayPalette(Gdiplus::Bitmap* bm);
 
 protected:
 	void DrawCheckerBoard(Gdiplus::Graphics& g, Gdiplus::Rect destRect);
