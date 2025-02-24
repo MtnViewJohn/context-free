@@ -654,7 +654,7 @@ void CChildFrame::PerformRender()
 
 UINT CChildFrame::RenderControllingFunction(LPVOID pParam)
 {
-	CChildFrame* cf = (CChildFrame*)pParam;
+	CChildFrame* cf = reinterpret_cast<CChildFrame*>(pParam);
 	if (cf == NULL || !cf->IsKindOf(RUNTIME_CLASS(CChildFrame)))
 		return 1;   // if cf is not valid
 
@@ -665,28 +665,29 @@ UINT CChildFrame::RenderControllingFunction(LPVOID pParam)
 
 void CChildFrame::RunRenderThread()
 {
-	RenderParameters rp = renderParams;	// make local copy
+	RenderParameters rp = renderParams;	// make local copies
+	std::shared_ptr<Renderer> renderer = m_Renderer;
 
 	switch (rp.action) {
 	case RenderParameters::RenderActions::Animate:
 		if (rp.animateFrame) {
-			m_Renderer->animate(m_Canvas, rp.AnimateFrameCount,
+			renderer->animate(m_Canvas, rp.AnimateFrameCount,
 				rp.MovieFrame, rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 		} else {
-			m_Renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
+			renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
 				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 			m_AnimationCanvas.reset();
 		}
 		break;
 	case RenderParameters::RenderActions::SaveSVG:
-		m_Renderer->draw(m_SvgCanvas.get());	// draw SVG
-		m_SvgCanvas.reset();					// save and close file
+		renderer->draw(m_SvgCanvas.get());	// draw SVG
+		m_SvgCanvas.reset();				// save and close file
 		break;
 	case RenderParameters::RenderActions::Render:
-		m_Renderer->run(m_Canvas, rp.PeriodicUpdate);
-		if (!m_Canvas && !m_Renderer->requestStop) {
+		renderer->run(m_Canvas, rp.PeriodicUpdate);
+		if (!m_Canvas && !renderer->requestStop) {
 			MakeCanvas(rp.width, rp.height);
-			m_Renderer->draw(m_Canvas);
+			renderer->draw(m_Canvas);
 		}
 		break;
 	}
