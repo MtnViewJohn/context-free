@@ -331,6 +331,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			pCmdUI->Enable(FALSE);
 		break;
 	case IDC_VARIATION:
+		if (!c) break;
 		if (c->renderParams.variation == 0) {
 			pCmdUI->SetText(_T(""));
 		} else {
@@ -340,6 +341,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 		}
 		break;
 	case IDC_FRAME_EDIT: 
+		if (!c) break;
 		if (c->renderParams.MovieFrame == 0) {
 			pCmdUI->SetText(_T(""));
 		} else {
@@ -349,11 +351,13 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 		[[fallthrough]];
 	case IDC_FRAME_LABEL:
 	case IDC_FRAME_SPIN:
+		if (!c) break;
 		::ShowWindow(hDlgItem, (c->renderParams.action == RenderParameters::RenderActions::Animate &&
 								c->renderParams.animateFrame) ? SW_SHOWNA : SW_HIDE);
 		break;
 	case IDC_SIZE_WIDTH: 
 	case IDC_SIZE_HEIGHT: {
+		if (!c) break;
 		int sz = pCmdUI->m_nID == IDC_SIZE_WIDTH ? c->renderParams.RenderWidth
 												 : c->renderParams.RenderHeight;
 		if (sz == 0) {
@@ -366,6 +370,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 		[[fallthrough]];
 	case IDC_SIZE_LABEL1:
 	case IDC_SIZE_LABEL2:
+		if (!c) break;
 		::ShowWindow(hDlgItem, (c->renderParams.action == RenderParameters::RenderActions::Render &&
 								c->renderParams.renderSize) ? SW_SHOWNA : SW_HIDE);
 		break;
