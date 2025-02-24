@@ -74,13 +74,34 @@
 #define ID_RENDER_ANIMATE               32774
 #define ID_RENDER_ANIMATEFRAME          32775
 #define ID_RENDER_STOP32782             32782
+#define ID_EXAMPLE_CILIASUN             32784
+#define ID_EXAMPLE_DEMO1                32785
+#define ID_EXAMPLE_DEMO2                32786
+#define ID_EXAMPLE_FUNKY                32787
+#define ID_EXAMPLE_ICURVES              32788
+#define ID_EXAMPLE_IPIX                 32789
+#define ID_EXAMPLE_IPOLYGONS            32790
+#define ID_EXAMPLE_LESSON               32791
+#define ID_EXAMPLE_LESSON2              32792
+#define ID_EXAMPLE_MTREE                32793
+#define ID_EXAMPLE_OCTOPI               32794
+#define ID_EXAMPLE_QUADCITY             32795
+#define ID_EXAMPLE_ROSE                 32796
+#define ID_EXAMPLE_SIERPINSKI           32797
+#define ID_EXAMPLE_SNOWFLAKE            32798
+#define ID_EXAMPLE_TANGLE               32799
+#define ID_EXAMPLE_TRIPLES              32800
+#define ID_EXAMPLE_UNDERGROUND          32801
+#define ID_EXAMPLE_WEIGHTING            32802
+#define ID_EXAMPLE_WELCOME              32803
+#define ID_EXAMPLE_ZIGGY                32804
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
-#define _APS_NEXT_COMMAND_VALUE         32784
+#define _APS_NEXT_COMMAND_VALUE         32806
 #define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           329
 #endif

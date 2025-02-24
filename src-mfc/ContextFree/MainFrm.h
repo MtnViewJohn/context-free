@@ -21,6 +21,7 @@ public:
 // Attributes
 public:
 	CFont m_editFont;
+	static LPCTSTR NextExample;
 // Operations
 public:
 	void UpdateStatusBar(int progress, const CString& text);
@@ -53,6 +54,7 @@ protected:
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	afx_msg void OnRenderBar(UINT id);
+	afx_msg void OnExample(UINT id);
 	afx_msg void OnUpdateRenderBar(CCmdUI* pCmdUI);
 	afx_msg void OnRenderSplitMenu(NMHDR* pNotifyStruct, LRESULT* result);
 	afx_msg void OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result);

@@ -10,11 +10,37 @@
 #include "ChildFrm.h"
 #include "variation.h"
 #include <cstdlib>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+namespace {
+	std::map<UINT, LPCTSTR> ExampleMenuMap = {
+		{ID_EXAMPLE_CILIASUN,    L"ciliasun.cfdg"},
+		{ID_EXAMPLE_DEMO1,       L"demo1.cfdg"},
+		{ID_EXAMPLE_DEMO2,       L"demo2.cfdg"},
+		{ID_EXAMPLE_FUNKY,       L"funky_flower.cfdg"},
+		{ID_EXAMPLE_ICURVES,     L"i_curves.cfdg"},
+		{ID_EXAMPLE_IPIX,        L"i_pix.cfdg"},
+		{ID_EXAMPLE_IPOLYGONS,   L"i_polygones.cfdg"},
+		{ID_EXAMPLE_LESSON,      L"lesson.cfdg"},
+		{ID_EXAMPLE_LESSON2,     L"lesson2.cfdg"},
+		{ID_EXAMPLE_MTREE,       L"mtree.cfdg"},
+		{ID_EXAMPLE_OCTOPI,      L"octopi.cfdg"},
+		{ID_EXAMPLE_QUADCITY,    L"quadcity.cfdg"},
+		{ID_EXAMPLE_ROSE,        L"rose.cfdg"},
+		{ID_EXAMPLE_SIERPINSKI,  L"sierpinski.cfdg"},
+		{ID_EXAMPLE_SNOWFLAKE,   L"snowflake.cfdg"},
+		{ID_EXAMPLE_TANGLE,      L"tangle.cfdg"},
+		{ID_EXAMPLE_TRIPLES,     L"triples.cfdg"},
+		{ID_EXAMPLE_UNDERGROUND, L"underground.cfdg"},
+		{ID_EXAMPLE_WEIGHTING,   L"weighting_demo.cfdg"},
+		{ID_EXAMPLE_WELCOME,     L"welcome.cfdg"},
+		{ID_EXAMPLE_ZIGGY,       L"ziggy.cfdg"},
+	};
+}
 // CMainFrame
 
 IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
@@ -26,6 +52,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_COMMAND_RANGE(IDC_RENDERSPLIT, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderBar)
 	ON_COMMAND_RANGE(ID_RB_RENDER, ID_RB_FRAME, &CMainFrame::OnRenderBar)
+	ON_COMMAND_RANGE(ID_EXAMPLE_CILIASUN, ID_EXAMPLE_ZIGGY, &CMainFrame::OnExample)
 	ON_UPDATE_COMMAND_UI_RANGE(IDC_RENDERSPLIT, IDC_SIZE_HEIGHT, &CMainFrame::OnUpdateRenderBar)
 	ON_MESSAGE(WM_TICKLE_SIZE, OnTickleSize)
 	ON_NOTIFY(BCN_DROPDOWN, IDC_RENDERSPLIT, &CMainFrame::OnRenderSplitMenu)
@@ -41,6 +68,8 @@ static UINT indicators[] =
 };
 
 // CMainFrame construction/destruction
+
+LPCTSTR CMainFrame::NextExample = nullptr;
 
 CMainFrame::CMainFrame() noexcept
 {
@@ -247,6 +276,12 @@ void CMainFrame::OnApplicationLook(UINT id)
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
+}
+
+void CMainFrame::OnExample(UINT id)
+{
+	NextExample = ExampleMenuMap[id];
+	theApp.m_pDocManager->OnFileNew();
 }
 
 void CMainFrame::OnRenderBar(UINT id)

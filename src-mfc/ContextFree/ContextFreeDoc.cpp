@@ -13,6 +13,7 @@
 #include "ContextFreeDoc.h"
 #include <vector>
 #include "cfdg.h"
+#include "MainFrm.h"
 
 #include <propkey.h>
 
@@ -45,8 +46,16 @@ BOOL CContextFreeDoc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
+	if (CMainFrame::NextExample) {
+		auto name8 = Utf16ToUtf8(CMainFrame::NextExample);
+		auto it = AbstractSystem::ExamplesMap.find(name8);
+		if (it != AbstractSystem::ExamplesMap.end())
+			LoadCfdg(it->second.first);
+		std::wstring title = CMainFrame::NextExample;
+		::PathRemoveExtensionW(title.data());
+		SetTitle(title.data());
+		CMainFrame::NextExample = nullptr;
+	}
 
 	return TRUE;
 }
