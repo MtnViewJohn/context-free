@@ -24,7 +24,7 @@ namespace {
 		{ID_EXAMPLE_FUNKY,       L"funky_flower.cfdg"},
 		{ID_EXAMPLE_ICURVES,     L"i_curves.cfdg"},
 		{ID_EXAMPLE_IPIX,        L"i_pix.cfdg"},
-		{ID_EXAMPLE_IPOLYGONS,   L"i_polygones.cfdg"},
+		{ID_EXAMPLE_IPOLYGONS,   L"i_polygons.cfdg"},
 		{ID_EXAMPLE_LESSON,      L"lesson.cfdg"},
 		{ID_EXAMPLE_LESSON2,     L"lesson2.cfdg"},
 		{ID_EXAMPLE_MTREE,       L"mtree.cfdg"},
