@@ -9,6 +9,7 @@
 #include "ffCanvas.h"
 #include <set>
 #include "SVGCanvas.h"
+#include "winTimer.h"
 
 class CContextFreeView;
 class CContextFreeDoc;
@@ -98,6 +99,7 @@ protected:
 	static UINT RenderControllingFunction(LPVOID pParam);
 	void RunRenderThread();
 	bool isBusy();
+	WinTimer m_Timer;
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()

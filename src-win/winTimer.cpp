@@ -26,33 +26,46 @@
 #define NOMINMAX 1
 #include <Windows.h>
 #include "cfdg.h"
-#include <memory>
+#include "winTimer.h"
 
-static std::weak_ptr<Renderer> gRenderer;
 
-VOID CALLBACK 
-statusTimer(PVOID, BOOLEAN)
+void WinTimer::TimerProc(void* InstancePointer, BOOLEAN TimerOrWaitFired)
+{
+    WinTimer* obj = reinterpret_cast<WinTimer*>(InstancePointer);
+    obj->timerProc(TimerOrWaitFired);
+}
+
+void WinTimer::timerProc(BOOLEAN TimerOrWaitFired)
 {
     if (auto runningRenderer = gRenderer.lock())
         runningRenderer->requestUpdate = true;
 }
 
-HANDLE timerQueueTimer = NULL;
-
-void
-setupTimer(std::shared_ptr<Renderer>& renderer)
+WinTimer::WinTimer()
 {
-    gRenderer = renderer;
-    if (renderer) {
-        CreateTimerQueueTimer(&timerQueueTimer, NULL, statusTimer, 
-            nullptr, 250, 250, WT_EXECUTEINTIMERTHREAD);
-    }
 }
 
-void
-cleanupTimer()
+WinTimer::~WinTimer()
 {
-    if (timerQueueTimer) {
-        DeleteTimerQueueTimer(NULL, timerQueueTimer, INVALID_HANDLE_VALUE);
+    if (m_timerHandle)
+        Stop();
+}
+
+void WinTimer::Stop()
+{
+    DeleteTimerQueueTimer(NULL, m_timerHandle, NULL);
+    //CloseHandle(m_timerHandle);
+    m_timerHandle = NULL;
+    gRenderer.reset();
+}
+
+void WinTimer::Start(std::shared_ptr<Renderer>& renderer)
+{
+    if (m_timerHandle)
+        Stop();
+    gRenderer = renderer;
+    if (renderer) {
+        CreateTimerQueueTimer(&m_timerHandle, NULL, TimerProc, reinterpret_cast<PVOID>(this),
+            250, 250, WT_EXECUTEINTIMERTHREAD);
     }
 }

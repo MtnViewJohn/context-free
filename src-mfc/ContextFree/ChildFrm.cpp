@@ -229,7 +229,7 @@ void CChildFrame::RecvErrorLinkClick(LPCTSTR link)
 
 LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 {
-	cleanupTimer();
+	m_Timer.Stop();
 	::CloseHandle(m_hRenderThread);
 	m_hRenderThread = NULL;
 
@@ -645,7 +645,7 @@ void CChildFrame::PerformRender()
 							0);
 		::ResumeThread(m_hRenderThread);
 		
-		setupTimer(m_Renderer);
+		m_Timer.Start(m_Renderer);
 	} else {
 		m_WinCanvas.reset();
 		m_Canvas = nullptr;
