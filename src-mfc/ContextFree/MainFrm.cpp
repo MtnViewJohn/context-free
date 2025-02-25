@@ -331,32 +331,36 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 	case IDC_RENDERSPLIT:
 		if (c == nullptr) {
 			pCmdUI->Enable(FALSE);
-			pCmdUI->SetText(_T("Render"));
+			pCmdUI->SetText(_T(" ▶ Render"));
 		} else {
 			pCmdUI->Enable();
+			std::wstring txt = L" ";
+			txt.append(1, L"▶◰◱◲◳"[c->m_iBusyIndex]);
 			if (c->m_hRenderThread && c->m_Renderer) {
 				if (c->m_Renderer->requestFinishUp)
-					pCmdUI->SetText(_T("STOP!"));
+					txt.append(L" STOP!");
 				else 
-					pCmdUI->SetText(_T("Stop"));
+					txt.append(L" Stop");
 			} else {
 				switch (c->renderParams.action) {
 				case RenderParameters::RenderActions::Render:
 					if (c->renderParams.renderSize)
-						pCmdUI->SetText(_T("Sized"));
+						txt.append(L" Sized");
 					else
-						pCmdUI->SetText(_T("Render"));
+						txt.append(L" Render");
 					break;
 				case RenderParameters::RenderActions::Animate:
 					if (c->renderParams.animateFrame)
-						pCmdUI->SetText(_T("Frame"));
+						txt.append(L" Frame");
 					else
-						pCmdUI->SetText(_T("Animate"));
+						txt.append(L" Animate");
 					break;
 				default:
+					txt.append(L" Render");
 					break;
 				}
 			}
+			pCmdUI->SetText(txt.c_str());
 		}
 		break;
 	case IDC_SAVE:

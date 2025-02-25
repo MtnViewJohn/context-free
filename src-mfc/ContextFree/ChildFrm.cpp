@@ -161,6 +161,7 @@ LRESULT CChildFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
 {
 	std::unique_ptr<AbstractSystem::Stats> stat((AbstractSystem::Stats*)wParam);
 	if (stat) {
+		m_iBusyIndex = (m_iBusyIndex % 4) + 1;
 		CString statusText;
 		if ((stat->toDoCount > 0 && !stat->finalOutput) || !m_Canvas) {
 			statusText.Format(_T("%d shapes and %d expansions to do"),
@@ -233,6 +234,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 	m_Timer.Stop();
 	::CloseHandle(m_hRenderThread);
 	m_hRenderThread = NULL;
+	m_iBusyIndex = 0;
 
 	if (renderParams.action == RenderParameters::RenderActions::SaveSVG)
 		m_wndParent->Message("SVG save complete.\r\n");

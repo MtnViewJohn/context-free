@@ -51,6 +51,7 @@ public:
 	std::shared_ptr<Renderer> m_Renderer;
 	HANDLE m_hRenderThread = NULL;
 	wincanvas_ptr m_WinCanvas;
+	int m_iBusyIndex = 0;
 	void OnRenderAgain();
 	void OnSaveOutput();
 	void OnNextVariation();
