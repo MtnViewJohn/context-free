@@ -103,4 +103,6 @@ protected:
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+public:
 };

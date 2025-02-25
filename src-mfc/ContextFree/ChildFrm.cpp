@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_MESSAGE(WinSystem::WM_USER_MESSAGE_UPDATE, OnMessage)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
 	ON_WM_CLOSE()
+	ON_MESSAGE_VOID(WM_COMMAND, OnCommand)
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -519,7 +520,7 @@ bool CChildFrame::CanClose(bool andExit)
 		m_Renderer->requestStop = true;
 		return false;
 	}
-	return true;
+	return m_CFdoc->SaveModified();
 }
 
 // CChildFrame implementation
@@ -716,4 +717,11 @@ void CChildFrame::SetPostRenderAction(PostRenderAction v)
 			m_ePostRenderAction = v;
 		break;
 	}
+}
+BOOL CChildFrame::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	if (HIWORD(wParam) == EN_CHANGE && lParam == (LPARAM)m_vwCfdgEditor->GetSafeHwnd()) {
+		m_CFdoc->SetModifiedFlag();		// TODO: check undo buffer in Scintilla
+	}
+	return CMDIChildWndEx::OnCommand(wParam, lParam);
 }
