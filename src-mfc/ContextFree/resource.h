@@ -23,7 +23,6 @@
 #define ID_VIEW_APPLOOK_WINDOWS_7       219
 #define ID_INDICATOR_PROGRESS           310
 #define ID_INDICATOR_STATUS             311
-#define IDR_MENU1                       311
 #define ID_RENDER                       312
 #define ID_RENDER_AGAIN                 313
 #define ID_RENDER_SIZE                  314
