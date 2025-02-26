@@ -15,6 +15,7 @@
 #include "cfdg.h"
 #include "MainFrm.h"
 #include "ChildFrm.h"
+#include <set>
 
 #include <propkey.h>
 
@@ -56,6 +57,26 @@ BOOL CContextFreeDoc::OnNewDocument()
 		::PathRemoveExtensionW(title.data());
 		SetTitle(title.data());
 		CMainFrame::NextExample = nullptr;
+	} else {
+		// Ensure that the new document title is unique
+		std::set<CString> titles;
+		auto position = AfxGetApp()->GetFirstDocTemplatePosition();
+		auto docTemp = AfxGetApp()->GetNextDocTemplate(position);
+		position = docTemp->GetFirstDocPosition();
+		while (position) {
+			auto doc = docTemp->GetNextDoc(position);
+			titles.insert(doc->GetTitle());
+		}
+		if (titles.count(GetTitle()) == 0)
+			return TRUE;		// never happens
+		CString newTitle;
+		for (int i = 1;; ++i) {
+			newTitle.Format(_T("%s%d"), (LPCTSTR)GetTitle(), i);
+			if (titles.count(newTitle) == 0) {
+				SetTitle(newTitle);
+				return TRUE;
+			}
+		}
 	}
 
 	return TRUE;
