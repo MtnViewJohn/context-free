@@ -132,6 +132,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
+	m_CFdoc->m_wndChild = this;
 
 	m_bInitSplitter = TRUE;
 
@@ -486,6 +487,16 @@ void CChildFrame::OnSaveOutput()
 	}
 }
 
+void CChildFrame::UpdateModifiedIndicator()
+{
+	// trigger redrawing of tabs
+	CMFCTabCtrl& tabs = m_wndParent->GetMDITabs();
+	auto tab = tabs.GetActiveTab();
+	CString label;
+	tabs.GetTabLabel(tab, label);
+	tabs.SetTabLabel(tab, label);
+}
+
 void CChildFrame::OnUpdateRenderStop(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(m_hRenderThread && m_Renderer);
@@ -726,4 +737,11 @@ BOOL CChildFrame::OnCommand(WPARAM wParam, LPARAM lParam)
 		m_CFdoc->SetModifiedFlag();		// TODO: check undo buffer in Scintilla
 	}
 	return CMDIChildWndEx::OnCommand(wParam, lParam);
+}
+
+HICON CChildFrame::GetFrameIcon() const
+{
+	static HICON hModified = ::LoadIconW(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_MODIFIED));
+
+	return m_CFdoc->IsModified() ? hModified : NULL;
 }

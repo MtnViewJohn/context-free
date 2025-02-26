@@ -102,7 +102,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	EnableMDITabs(TRUE, FALSE, CMFCBaseTabCtrl::LOCATION_TOP, FALSE, CMFCTabCtrl::STYLE_3D_SCROLLED, FALSE, TRUE);
+	EnableMDITabs(TRUE, TRUE, CMFCBaseTabCtrl::LOCATION_TOP, FALSE, CMFCTabCtrl::STYLE_3D_SCROLLED, FALSE, TRUE);
 
 	
 	if (!m_wndRenderbar.Create(_T(""), this, FALSE, IDD_RENDERBAR, WS_CHILD | WS_VISIBLE | CBRS_TOP, IDD_RENDERBAR)) {

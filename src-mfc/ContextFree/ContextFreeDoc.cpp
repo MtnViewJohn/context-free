@@ -14,6 +14,7 @@
 #include <vector>
 #include "cfdg.h"
 #include "MainFrm.h"
+#include "ChildFrm.h"
 
 #include <propkey.h>
 
@@ -60,17 +61,12 @@ BOOL CContextFreeDoc::OnNewDocument()
 	return TRUE;
 }
 
-
 void CContextFreeDoc::SetModifiedFlag(BOOL bModified)
 {
+	bool changed = IsModified() != bModified;
 	CDocument::SetModifiedFlag(bModified);
-	CString t = GetTitle();
-	if ( bModified && t.Left(2) != _T("* ")) {
-		SetTitle(_T("* ") + t);
-	}
-	if (!bModified && t.Left(2) == _T("* ")) {
-		SetTitle(t.Right(t.GetLength() - 2));
-	}
+	if (changed)
+		m_wndChild->UpdateModifiedIndicator();
 }
 
 // CContextFreeDoc serialization
@@ -200,21 +196,4 @@ std::string CContextFreeDoc::GetCfdg()
 	CString wText;
 	m_vwEditorView->GetEditCtrl().GetWindowTextW(wText);
 	return Utf16ToUtf8((LPCTSTR)wText);
-}
-
-BOOL CContextFreeDoc::SaveModified()
-{
-	CString t = GetTitle();
-	bool wasModified = t.Left(2) == _T("* ");
-	if (wasModified) {
-		SetTitle(t.Right(t.GetLength() - 2));
-	}
-
-	if (CDocument::SaveModified()) {
-		return TRUE;
-	} else {
-		if (wasModified)
-			SetTitle(t);
-		return FALSE;
-	}
 }

@@ -27,6 +27,7 @@
 #define ID_RENDER                       312
 #define ID_RENDER_AGAIN                 313
 #define ID_RENDER_SIZE                  314
+#define IDI_MODIFIED                    314
 #define ID_ANIMATE                      315
 #define ID_ANIMATE_FRAME                316
 #define ID_RENDER_STOP                  317
@@ -100,7 +101,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        313
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32806
 #define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           329

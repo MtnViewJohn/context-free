@@ -59,6 +59,7 @@ public:
 	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);
 	CString NameWithoutExtension();
 	void RecvErrorLinkClick(LPCTSTR link);
+	void UpdateModifiedIndicator();
 protected:
 	enum class PostRenderAction
 	{
@@ -106,4 +107,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
+	virtual HICON GetFrameIcon() const;
 };

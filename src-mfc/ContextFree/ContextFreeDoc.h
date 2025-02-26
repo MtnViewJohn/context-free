@@ -5,6 +5,7 @@
 
 #pragma once
 
+class CChildFrame;
 #include <string>
 
 class CContextFreeDoc : public CDocument
@@ -21,13 +22,13 @@ public:
 public:
 	void LoadCfdg(std::string textUtf8);
     std::string GetCfdg();
+	CChildFrame* m_wndChild = nullptr;
 
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
-	virtual BOOL SaveModified();
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
