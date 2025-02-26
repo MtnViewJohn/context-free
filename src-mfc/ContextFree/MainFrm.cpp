@@ -280,8 +280,9 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 
 void CMainFrame::OnExample(UINT id)
 {
-	NextExample = ExampleMenuMap[id];
-	theApp.m_pDocManager->OnFileNew();
+	NextExample = id ? ExampleMenuMap[id] : ExampleMenuMap[ID_EXAMPLE_WELCOME];
+	if (id)
+		theApp.m_pDocManager->OnFileNew();
 }
 
 void CMainFrame::OnRenderBar(UINT id)

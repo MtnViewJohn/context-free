@@ -371,6 +371,7 @@
     <ClInclude Include="RenderParams.h" />
     <ClInclude Include="RenderSize.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WinPngCanvas.h" />
   </ItemGroup>
@@ -722,6 +723,7 @@
     </ClCompile>
     <ClCompile Include="RenderParams.cpp" />
     <ClCompile Include="RenderSize.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="WinPngCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>

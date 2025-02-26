@@ -20,6 +20,7 @@
 #include "ImageFileSave.h"
 #include "WinPngCanvas.h"
 #include <Gdipluspixelformats.h>
+#include "Settings.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -139,6 +140,9 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_System = new ::WinSystem(GetSafeHwnd());
 
 	ShowWindow(SW_MAXIMIZE);
+
+	if (Settings::RenderOnOpen)
+		PostMessage(WM_COMMAND, MAKEWPARAM(ID_RENDER, 0), 0);
 
 	return CMDIChildWndEx::OnCreateClient(lpcs, pContext);
 }

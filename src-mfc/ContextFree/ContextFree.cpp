@@ -12,6 +12,7 @@
 #include "ChildFrm.h"
 #include "ContextFreeDoc.h"
 #include "ContextFreeView.h"
+#include "Settings.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -127,6 +128,18 @@ BOOL CContextFreeApp::InitInstance()
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
 
+	Settings setting;
+	switch (Settings::AtLaunch) {
+	case Settings::LaunchActions::NoDocument:
+		if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)
+			cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
+		break;
+	case Settings::LaunchActions::NewDocument:
+		break;
+	case Settings::LaunchActions::Welcome:
+		pMainFrame->OnExample(0);
+		break;
+	}
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.

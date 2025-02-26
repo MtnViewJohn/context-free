@@ -52,7 +52,7 @@ void RenderParameters::Load()
 {
     CWinApp* pApp = AfxGetApp();
 
-    const TCHAR* pszKey = _T("Render");
+    const TCHAR* pszKey = _T("Settings");
 
     PeriodicUpdate = pApp->GetProfileIntW(pszKey, _T("ProgressiveRender"), 1) != 0;
     AnimateZoom = pApp->GetProfileIntW(pszKey, _T("AnimateZoom"), 0) != 0;
@@ -74,7 +74,7 @@ void RenderParameters::Save()
 {
     CWinApp* pApp = AfxGetApp();
 
-    const TCHAR* pszKey = _T("Render");
+    const TCHAR* pszKey = _T("Settings");
 
     pApp->WriteProfileInt(pszKey, _T("ProgressiveRender"), PeriodicUpdate);
     pApp->WriteProfileInt(pszKey, _T("AnimateZoom"), AnimateZoom);
@@ -94,6 +94,13 @@ void RenderParameters::Save()
 // Capture a write to a parameter and flush it to the registry if the value
 // actually changes
 void RenderParameters::Modify(int& param, int v)
+{
+    if (param != v) {
+        param = v;
+        Save();
+    }
+}
+void RenderParameters::Modify(bool& param, bool v)
 {
     if (param != v) {
         param = v;

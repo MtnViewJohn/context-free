@@ -54,7 +54,9 @@ protected:
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	afx_msg void OnRenderBar(UINT id);
+public:
 	afx_msg void OnExample(UINT id);
+protected:
 	afx_msg void OnUpdateRenderBar(CCmdUI* pCmdUI);
 	afx_msg void OnRenderSplitMenu(NMHDR* pNotifyStruct, LRESULT* result);
 	afx_msg void OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result);
