@@ -299,9 +299,6 @@ void CMainFrame::OnRenderBar(UINT id)
 			c->OnRenderAgain();
 		}
 		break;
-	case IDC_SAVE:
-		// not implemented yet
-		break;
 	case ID_RB_RENDER:
 		c->renderParams.action = RenderParameters::RenderActions::Render;
 		c->renderParams.renderSize = false;
