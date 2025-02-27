@@ -362,12 +362,16 @@
     <ClInclude Include="ContextFree.h" />
     <ClInclude Include="ContextFreeDoc.h" />
     <ClInclude Include="ContextFreeView.h" />
+    <ClInclude Include="EditorParams.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ImageFileSave.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MessagePane.h" />
     <ClInclude Include="MovieFileSave.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Preferences.h" />
+    <ClInclude Include="PrefsPageEditor.h" />
+    <ClInclude Include="PrefsPageGeneral.h" />
     <ClInclude Include="RenderParams.h" />
     <ClInclude Include="RenderSize.h" />
     <ClInclude Include="Resource.h" />
@@ -709,6 +713,7 @@
     <ClCompile Include="ContextFree.cpp" />
     <ClCompile Include="ContextFreeDoc.cpp" />
     <ClCompile Include="ContextFreeView.cpp" />
+    <ClCompile Include="EditorParams.cpp" />
     <ClCompile Include="ImageFileSave.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MessagePane.cpp" />
@@ -721,6 +726,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Preferences.cpp" />
+    <ClCompile Include="PrefsPageEditor.cpp" />
+    <ClCompile Include="PrefsPageGeneral.cpp" />
     <ClCompile Include="RenderParams.cpp" />
     <ClCompile Include="RenderSize.cpp" />
     <ClCompile Include="Settings.cpp" />

@@ -25,6 +25,7 @@ public:
 // Operations
 public:
 	void UpdateStatusBar(int progress, const CString& text);
+	void UpdateEditorFont();
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -62,6 +63,7 @@ protected:
 	afx_msg void OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result);
 	afx_msg void OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result);
 	afx_msg void OnRenderEdits(UINT id);
+	afx_msg void OnPreferences();
 	afx_msg LRESULT OnTickleSize(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnClose();
 	DECLARE_MESSAGE_MAP()

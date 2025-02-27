@@ -1,6 +1,9 @@
 #pragma once
+
 #include "RenderParams.h"
-class Settings : public RenderParameters
+#include "EditorParams.h"
+
+class Settings : public RenderParameters, public EditorParams
 {
 public:
     Settings();

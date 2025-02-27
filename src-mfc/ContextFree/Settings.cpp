@@ -23,6 +23,7 @@ void Settings::Load()
     RenderOnOpen = pApp->GetProfileIntW(pszKey, _T("RenderOnOpen"), 1) != 0;
 
     RenderParameters::Load();
+    EditorParams::Load();
 }
 
 void Settings::Save(bool justme)
@@ -34,8 +35,10 @@ void Settings::Save(bool justme)
     pApp->WriteProfileInt(pszKey, _T("LaunchAction"), (int)AtLaunch);
     pApp->WriteProfileInt(pszKey, _T("RenderOnOpen"), RenderOnOpen);
 
-    if (!justme)
+    if (!justme) {
         RenderParameters::Save();
+        EditorParams::Save();
+    }
 }
 
 // Capture a write to a parameter and flush it to the registry if the value

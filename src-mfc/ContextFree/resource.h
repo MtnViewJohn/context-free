@@ -29,8 +29,10 @@
 #define IDI_MODIFIED                    314
 #define ID_ANIMATE                      315
 #define ID_ANIMATE_FRAME                316
+#define IDD_PREF_GENERAL                316
 #define ID_RENDER_STOP                  317
 #define ID_SAVE_IMAGE                   318
+#define IDD_PREFS_EDITOR                318
 #define ID_RB_RENDER                    319
 #define ID_RB_SIZED                     320
 #define ID_RB_ANIMATE                   321
@@ -54,12 +56,14 @@
 #define IDC_SIZE_HEIGHT                 1012
 #define IDC_EDIT1                       1013
 #define IDC_RENDERWIDTH                 1013
+#define IDC_FONTNAME                    1013
 #define IDC_RENDERHEIGHT                1014
 #define IDC_MINSIZE                     1015
 #define IDC_BORDERSLIDER                1016
 #define IDC_CHECK1                      1017
 #define IDC_NODISPLAY                   1017
 #define IDC_ZOOM                        1017
+#define IDC_OPENRENDER                  1017
 #define IDC_PREVIEW                     1019
 #define IDC_PREVIEWLOOP                 1020
 #define IDC_LENGTH                      1021
@@ -68,6 +72,13 @@
 #define IDC_EDIT3                       1025
 #define IDC_FRAME                       1025
 #define IDC_CODEC_LABEL                 1026
+#define IDC_WELCOME                     1027
+#define IDC_NEWDOC                      1028
+#define IDC_RADIO3                      1029
+#define IDC_NODOC                       1029
+#define IDC_PROGRESSIVE                 1030
+#define IDC_BUTTON1                     1031
+#define IDC_FONTCHANGE                  1031
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -95,14 +106,16 @@
 #define ID_EXAMPLE_WEIGHTING            32802
 #define ID_EXAMPLE_WELCOME              32803
 #define ID_EXAMPLE_ZIGGY                32804
+#define ID_FILE_PREFERENCES             32806
+#define ID_FILE_PREFERENCES32807        32807
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        316
-#define _APS_NEXT_COMMAND_VALUE         32806
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_RESOURCE_VALUE        320
+#define _APS_NEXT_COMMAND_VALUE         32809
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           329
 #endif
 #endif

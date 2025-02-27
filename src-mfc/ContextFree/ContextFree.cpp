@@ -107,6 +107,7 @@ BOOL CContextFreeApp::InitInstance()
 	AddDocTemplate(pDocTemplate);
 
 	// create main MDI Frame window
+	Settings setting;
 	CMainFrame* pMainFrame = new CMainFrame;
 	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
 	{
@@ -128,7 +129,6 @@ BOOL CContextFreeApp::InitInstance()
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
 
-	Settings setting;
 	switch (Settings::AtLaunch) {
 	case Settings::LaunchActions::NoDocument:
 		if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)

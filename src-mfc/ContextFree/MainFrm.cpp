@@ -11,6 +11,8 @@
 #include "variation.h"
 #include <cstdlib>
 #include <map>
+#include "Preferences.h"
+#include "Settings.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,6 +61,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_VARIATION_SPIN, &CMainFrame::OnRenderVariationUD)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_FRAME_SPIN, &CMainFrame::OnRenderFrameUD)
 	ON_CONTROL_RANGE(EN_CHANGE, IDC_VARIATION, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderEdits)
+	ON_COMMAND(ID_FILE_PREFERENCES, &CMainFrame::OnPreferences)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -151,10 +154,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// improves the usability of the taskbar because the document name is visible with the thumbnail.
 	ModifyStyle(0, FWS_PREFIXTITLE);
 
-	CClientDC dc(this);
-	int nFontSize = 10;
-	int nHeight = -((dc.GetDeviceCaps(LOGPIXELSY) * nFontSize) / 72);
-	m_editFont.CreateFont(nHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_CHARACTER_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Cascadia Code"));
+	UpdateEditorFont();
 
 	// Create edit box
 
@@ -512,6 +512,21 @@ void CMainFrame::OnRenderEdits(UINT id)
 	default:
 		break;
 	}
+}
+
+void CMainFrame::OnPreferences()
+{
+	Preferences prefs;
+	if (prefs.DoModal() == IDOK && prefs.m_bFontChanged)
+		UpdateEditorFont();
+}
+
+void CMainFrame::UpdateEditorFont()
+{
+	m_editFont.Detach();
+	m_editFont.CreatePointFont(Settings::FontSize * 10, (LPCTSTR)Settings::FontName);
+	for (auto&& child: CChildFrame::Children)
+		child->m_vwCfdgEditor->GetEditCtrl().SetFont(&m_editFont);
 }
 
 LRESULT CMainFrame::OnTickleSize(WPARAM wParam, LPARAM lParam)
