@@ -225,6 +225,12 @@
     <ClInclude Include="PrefsPageGeneral.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PrefsPageEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CFFontDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp">
@@ -399,6 +405,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PrefsPageGeneral.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrefsPageEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CFFontDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

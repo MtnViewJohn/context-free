@@ -7,6 +7,7 @@
 #include "PrefsPageEditor.h"
 #include "EditorParams.h"
 #include <vector>
+#include "CFFontDialog.h"
 
 // PrefsPageEditor dialog
 
@@ -65,7 +66,8 @@ void PrefsPageEditor::OnClickedFontchange()
 	logFont.lfQuality = PROOF_QUALITY;
 	logFont.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 	::wcsncpy_s(logFont.lfFaceName, (LPCTSTR)fname, 32);
-	CFontDialog fDlg(&logFont, CF_FIXEDPITCHONLY | CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS);
+	CFFontDialog fDlg(&logFont, CF_FIXEDPITCHONLY | CF_INITTOLOGFONTSTRUCT |
+							   CF_SCREENFONTS | CF_NOSCRIPTSEL | CF_NOSTYLESEL);
 
 	if (fDlg.DoModal() == IDOK) {
 		fname = fDlg.GetFaceName();

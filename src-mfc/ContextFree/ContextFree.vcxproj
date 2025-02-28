@@ -357,6 +357,7 @@
     <ClInclude Include="..\..\src-win\WinSystem.h" />
     <ClInclude Include="..\..\src-win\winTimer.h" />
     <ClInclude Include="Animate.h" />
+    <ClInclude Include="CFFontDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CMemDC.h" />
     <ClInclude Include="ContextFree.h" />
@@ -709,6 +710,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Animate.cpp" />
+    <ClCompile Include="CFFontDialog.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ContextFree.cpp" />
     <ClCompile Include="ContextFreeDoc.cpp" />
