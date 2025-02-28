@@ -25,9 +25,51 @@ void WinPngCanvas::end()
 
     for (int y = 0; y < mHeight; ++y) {
         if (y + desty < 0 || y + desty >= mFullHeight) continue;
-        for (int x = 0; x < mWidth * bpp; ++x) {
+        for (int x = 0; x < mWidth * bpp; x += bpp) {
             if (destx + x >= 0 && destx + x < mStride)
-                mData[(y + desty) * mStride + destx + x] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x];
+                switch (mPixelFormat) {
+                case Gray8_Blend:           // Gray8 <- Gray8
+                    mData[(y + desty) * mStride + destx + x] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x];
+                    break;
+                case Gray16_Blend:          // Gray16 <- Gray16
+                    mData[(y + desty) * mStride + destx + x] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    break;
+                case RGB8_Blend:            // RGB24 <- BGR24
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    break;
+                case RGB16_Blend:           // RGB48 <- BGR48
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
+                    mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
+                    mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
+                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    break;
+                case RGBA8_Blend:
+                case RGBA8_Custom_Blend:    // RGBA32 <- BGRA32
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
+                    break;
+                case RGBA16_Blend:
+                case RGBA16_Custom_Blend:   // RGBA64 <- BGRA64
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
+                    mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
+                    mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
+                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    mData[(y + desty) * mStride + destx + x + 6] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 6];
+                    mData[(y + desty) * mStride + destx + x + 7] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 7];
+                    break;
+                default:
+                    TRACE0("Unsupported pixel format in WinPngCanvas!\n");
+                    break;
+                }
         }
     }
 
