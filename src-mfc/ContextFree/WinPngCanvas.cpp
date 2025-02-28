@@ -40,13 +40,13 @@ void WinPngCanvas::end()
                     mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
                     mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
                     break;
-                case RGB16_Blend:           // RGB48 <- BGR48
-                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
-                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
+                case RGB16_Blend:           // RGB48 <- RGB48
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
                     mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
                     mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
-                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
-                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
+                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
                     break;
                 case RGBA8_Blend:
                 case RGBA8_Custom_Blend:    // RGBA32 <- BGRA32
@@ -56,13 +56,13 @@ void WinPngCanvas::end()
                     mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
                     break;
                 case RGBA16_Blend:
-                case RGBA16_Custom_Blend:   // RGBA64 <- BGRA64
-                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
-                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
+                case RGBA16_Custom_Blend:   // RGBA64 <- RGBA64
+                    mData[(y + desty) * mStride + destx + x + 0] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
+                    mData[(y + desty) * mStride + destx + x + 1] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
                     mData[(y + desty) * mStride + destx + x + 2] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 2];
                     mData[(y + desty) * mStride + destx + x + 3] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 3];
-                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 0];
-                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 1];
+                    mData[(y + desty) * mStride + destx + x + 4] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 4];
+                    mData[(y + desty) * mStride + destx + x + 5] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 5];
                     mData[(y + desty) * mStride + destx + x + 6] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 6];
                     mData[(y + desty) * mStride + destx + x + 7] = sourceData[(y + srcy) * m_Canvas->mStride + srcx + x + 7];
                     break;

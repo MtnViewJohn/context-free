@@ -69,11 +69,16 @@ WinCanvas::bitmap()
     return (char*)mBM.get();
 }
 
-WinCanvas* WinCanvas::Make8bitCopy()
+void WinCanvas::Make8bitCopy(wincanvas_ptr& eight)
 {
-    WinCanvas* eight = new WinCanvas(mSystem, 
-        (aggCanvas::PixelFormat)(mPixelFormat & (~ aggCanvas::Has_16bit_Color)), 
-        mWidth, mHeight, mBackground);
+    auto fmt8 = (aggCanvas::PixelFormat)(mPixelFormat & (~aggCanvas::Has_16bit_Color));
+    if (!eight || eight->mWidth != mWidth || eight->mHeight != mHeight ||
+                  eight->mPixelFormat != fmt8 || eight->mSystem != mSystem)
+    {
+        eight = std::make_unique<WinCanvas>(mSystem, fmt8, mWidth, mHeight, mBackground);
+    } else {
+        eight->mBackground = mBackground;
+    }
 
     eight->mNoUpdate = true;
     eight->start(true, mBackground, cropWidth(), cropHeight());
@@ -81,6 +86,4 @@ WinCanvas* WinCanvas::Make8bitCopy()
     eight->mNoUpdate = false;
 
     eight->copy((void*)(mBM.get()), mWidth, mHeight, mStride, mPixelFormat);
-
-    return eight;
 }

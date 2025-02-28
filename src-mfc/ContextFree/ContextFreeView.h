@@ -35,6 +35,7 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 	wincanvas_ptr* m_pWinCanvas = nullptr;
+	wincanvas_ptr m_WinCanvas8;
 	Renderer* m_Renderer = nullptr;
 	BOOL m_bTiled;
 	BOOL m_bBlendMode;

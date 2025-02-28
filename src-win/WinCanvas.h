@@ -50,7 +50,7 @@ public:
     
     void start(bool clear, const agg::rgba& bk, int, int);
     void end();
-    WinCanvas* Make8bitCopy();
+    void Make8bitCopy(wincanvas_ptr& canvas8);
     char* bitmap();
     
 protected:

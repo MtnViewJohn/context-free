@@ -180,10 +180,9 @@ void CContextFreeView::DrawCheckerBoard(Gdiplus::Graphics& g, Gdiplus::Rect dest
 std::unique_ptr<Gdiplus::Bitmap> CContextFreeView::MakeBitmap(bool cropped)
 {
 	WinCanvas* canvas = m_pWinCanvas->get();
-	wincanvas_ptr tempCanvas;
 	if (canvas->mPixelFormat & aggCanvas::Has_16bit_Color) {
-		tempCanvas.reset(canvas->Make8bitCopy());
-		canvas = tempCanvas.get();
+		canvas->Make8bitCopy(m_WinCanvas8);
+		canvas = m_WinCanvas8.get();
 	}
 
 	BYTE* data = (BYTE*)(canvas->bitmap());
