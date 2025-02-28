@@ -123,7 +123,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndRenderbar.ShowPane(TRUE, FALSE, FALSE);
 
 	if (!m_wndMessageLog.Create(_T("Messages"), this, CRect(0, 0, 800, 300), TRUE, IDC_RICHLOG,
-		WS_CHILD | WS_VISIBLE | CBRS_RIGHT | CBRS_HIDE_INPLACE))
+		WS_CHILD | WS_VISIBLE | CBRS_RIGHT | CBRS_HIDE_INPLACE, AFX_CBRS_REGULAR_TABS, 
+		AFX_CBRS_FLOAT | AFX_CBRS_RESIZE | AFX_CBRS_AUTOHIDE))
 	{
 		TRACE0("Could not create log window.\n");
 		return -1;
