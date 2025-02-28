@@ -53,7 +53,7 @@ BOOL PrefsPageGeneral::OnInitDialog()
 void PrefsPageGeneral::OnOK()
 {
 	Settings::AtLaunch = (Settings::LaunchActions)(2 - m_iAtLaunch);
-	Settings::BorderSize = m_ctrlBorderSize.GetPos();
+	Settings::BorderSize = m_ctrlBorderSize.GetPos() / 100.0;
 	Settings::RenderOnOpen = m_bOpenRender;
 	Settings::PeriodicUpdate = m_bProgressive;
 
