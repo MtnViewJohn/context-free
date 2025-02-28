@@ -23,6 +23,7 @@ public:
 	void LoadCfdg(std::string textUtf8);
     std::string GetCfdg();
 	CChildFrame* m_wndChild = nullptr;
+	bool m_bEmpty = true;
 
 // Overrides
 public:

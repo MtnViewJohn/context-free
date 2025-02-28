@@ -301,6 +301,9 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 
 void CChildFrame::OnRender()
 {
+	if (m_CFdoc->m_bEmpty)
+		return;
+
 	if (m_hRenderThread) {
 		SetPostRenderAction(PostRenderAction::Render);
 		return;

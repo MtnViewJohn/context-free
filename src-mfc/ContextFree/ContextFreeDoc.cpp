@@ -178,6 +178,7 @@ void CContextFreeDoc::Dump(CDumpContext& dc) const
 void CContextFreeDoc::LoadCfdg(std::string utf8text)
 {
 	auto len = utf8text.length();
+	m_bEmpty = len == 0;
 
 	if (len > 0) {
 		int crCount = 0, lfCount = 0;
