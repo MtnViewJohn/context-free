@@ -21,6 +21,7 @@
 #include "WinPngCanvas.h"
 #include <Gdipluspixelformats.h>
 #include "Settings.h"
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,6 +49,8 @@ namespace {
 			return 0;
 		}
 	}
+
+	std::map<UINT, CString> InsertMap;
 }
 // CChildFrame
 
@@ -68,6 +71,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
 	ON_WM_CLOSE()
 	ON_MESSAGE_VOID(WM_COMMAND, OnCommand)
+	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -144,6 +148,32 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	if (Settings::RenderOnOpen)
 		PostMessage(WM_COMMAND, MAKEWPARAM(ID_RENDER, 0), 0);
+
+	// Create map of insertion menu command IDs to the text to insert
+	if (InsertMap.empty()) {
+		CMenu* top = m_wndParent->GetMenu();
+		CString mText;
+		for (int i = 0; i < top->GetMenuItemCount(); ++i) {
+			top->GetMenuStringW(i, mText, MF_BYPOSITION);
+			if (mText == _T("&Edit")) {
+				CMenu* edit = top->GetSubMenu(i);
+				for (int j = 0; j < edit->GetMenuItemCount(); ++j) {
+					edit->GetMenuStringW(j, mText, MF_BYPOSITION);
+					if (mText.Find(_T("Insert")) >= 0) {
+						CMenu* insert = edit->GetSubMenu(j);
+						for (int k = 0; k < insert->GetMenuItemCount(); ++k) {
+							UINT id = insert->GetMenuItemID(k);
+							if (id != (UINT)(-1) && insert->GetMenuStringW(k, mText, MF_BYPOSITION)) {
+								if (mText.Find(L'=', 0) >= 0)
+									mText.Append(_T("\r\n"));
+								InsertMap.insert({ id, mText });
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	return CMDIChildWndEx::OnCreateClient(lpcs, pContext);
 }
@@ -752,4 +782,11 @@ HICON CChildFrame::GetFrameIcon() const
 	static HICON hModified = ::LoadIconW(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_MODIFIED));
 
 	return m_CFdoc->IsModified() ? hModified : NULL;
+}
+
+void CChildFrame::OnInsertChars(UINT id)
+{
+	auto it = InsertMap.find(id);
+	if (it != InsertMap.end())
+		m_vwCfdgEditor->GetEditCtrl().ReplaceSel(it->second, TRUE);
 }

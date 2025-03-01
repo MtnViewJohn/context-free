@@ -108,4 +108,5 @@ protected:
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
 	virtual HICON GetFrameIcon() const;
+	afx_msg void OnInsertChars(UINT id);
 };
