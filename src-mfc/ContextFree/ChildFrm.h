@@ -15,6 +15,7 @@ class CContextFreeView;
 class CContextFreeDoc;
 class WinSystem;
 class CMainFrame;
+class CFScintillaView;
 
 class CChildFrame : public CMDIChildWndEx
 {
@@ -30,7 +31,7 @@ protected:
 	BOOL m_bReuseVariation = FALSE;
 	int m_iProgressDelay = 0;
 public:
-	CEditView* m_vwCfdgEditor = nullptr;
+	CFScintillaView* m_vwCfdgEditor = nullptr;
 	CContextFreeView* m_vwOutputView = nullptr;
 	static std::set<CChildFrame*> Children;
 

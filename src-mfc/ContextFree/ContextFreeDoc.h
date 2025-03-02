@@ -2,13 +2,13 @@
 // ContextFreeDoc.h : interface of the CContextFreeDoc class
 //
 
-
 #pragma once
 
 class CChildFrame;
 #include <string>
+#include "ScintillaDocView.h"
 
-class CContextFreeDoc : public CDocument
+class CContextFreeDoc : public Scintilla::CScintillaDoc
 {
 protected: // create from serialization only
 	CContextFreeDoc() noexcept;
@@ -16,19 +16,18 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	CEditView* m_vwEditorView = nullptr;
+	Scintilla::CScintillaView* m_vwEditorView = nullptr;
 
 // Operations
 public:
 	void LoadCfdg(std::string textUtf8);
     std::string GetCfdg();
 	CChildFrame* m_wndChild = nullptr;
-	bool m_bEmpty = true;
+	bool Empty();
 
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();

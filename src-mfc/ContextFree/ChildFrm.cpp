@@ -22,6 +22,7 @@
 #include <Gdipluspixelformats.h>
 #include "Settings.h"
 #include <map>
+#include "CFScintillaView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -121,20 +122,20 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	CRect cr;
 	GetClientRect(&cr);
-	
+
 	if (!m_wndSplitterCfdg.CreateStatic(this, 1, 2) ||
-		!m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CEditView), CSize(cr.Width() / 3, 0), pContext) ||
+		!m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CFScintillaView), CSize(cr.Width() / 3, 0), pContext) ||
 		!m_wndSplitterCfdg.CreateView(0, 1, pContext->m_pNewViewClass, CSize(0, 0), pContext))
 	{
 		TRACE0("Could not create splitter.\n");
 		return FALSE;
 	}
 
-	m_vwCfdgEditor = (CEditView*)m_wndSplitterCfdg.GetPane(0, 0);
+	m_vwCfdgEditor = (CFScintillaView*)m_wndSplitterCfdg.GetPane(0, 0);
 	m_vwOutputView = (CContextFreeView*)m_wndSplitterCfdg.GetPane(0, 1);
 	m_CFdoc = (CContextFreeDoc*)(pContext->m_pCurrentDoc);
 	m_wndParent = dynamic_cast<CMainFrame *>(GetMDIFrameWndEx());
-	m_vwCfdgEditor->GetEditCtrl().SetFont(&(m_wndParent->m_editFont));
+	m_vwCfdgEditor->GetCtrl().SetFont(&(m_wndParent->m_editFont));
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
@@ -258,10 +259,10 @@ void CChildFrame::RecvErrorLinkClick(LPCTSTR link)
 	int end_char = std::wcstol(start, &next, 10);
 	if (*next != L'\0')
 		return;
-	int start_line_char = m_vwCfdgEditor->GetEditCtrl().LineIndex(start_line - 1);
-	int end_line_char = m_vwCfdgEditor->GetEditCtrl().LineIndex(end_line - 1);
+	auto start_line_char = m_vwCfdgEditor->GetCtrl().GetLine(start_line - 1, nullptr);
+	auto end_line_char = m_vwCfdgEditor->GetCtrl().GetLine(end_line - 1, nullptr);
 	if (start_line_char >= 0 && end_line_char >= 0)
-		m_vwCfdgEditor->GetEditCtrl().SetSel(start_line_char + start_char, end_line_char + end_char, TRUE);
+		m_vwCfdgEditor->GetCtrl().SetSel(start_line_char + start_char, end_line_char + end_char);
 
 }
 
@@ -331,7 +332,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 
 void CChildFrame::OnRender()
 {
-	if (m_CFdoc->m_bEmpty)
+	if (m_CFdoc->Empty())
 		return;
 
 	if (m_hRenderThread) {
@@ -788,5 +789,5 @@ void CChildFrame::OnInsertChars(UINT id)
 {
 	auto it = InsertMap.find(id);
 	if (it != InsertMap.end())
-		m_vwCfdgEditor->GetEditCtrl().ReplaceSel(it->second, TRUE);
+		m_vwCfdgEditor->GetCtrl().ReplaceSel((LPCTSTR)(it->second));
 }

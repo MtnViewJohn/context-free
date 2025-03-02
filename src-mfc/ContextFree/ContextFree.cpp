@@ -55,6 +55,50 @@ CContextFreeApp::CContextFreeApp() noexcept
 
 CContextFreeApp theApp;
 
+CString CContextFreeApp::GetModuleFileName(_Inout_opt_ DWORD* pdwLastError)
+{
+	CString sModuleFileName;
+	DWORD dwSize{ _MAX_PATH };
+	while (true)
+	{
+		TCHAR* pszModuleFileName{ sModuleFileName.GetBuffer(dwSize) };
+		const DWORD dwResult{ ::GetModuleFileName(nullptr, pszModuleFileName, dwSize) };
+		if (dwResult == 0)
+		{
+			if (pdwLastError != nullptr)
+				*pdwLastError = GetLastError();
+			sModuleFileName.ReleaseBuffer(0);
+			return CString{};
+		} else if (dwResult < dwSize)
+		{
+			if (pdwLastError != nullptr)
+				*pdwLastError = ERROR_SUCCESS;
+			sModuleFileName.ReleaseBuffer(dwResult);
+			return sModuleFileName;
+		} else if (dwResult == dwSize)
+		{
+			sModuleFileName.ReleaseBuffer(0);
+			dwSize *= 2;
+		}
+	}
+}
+
+HMODULE CContextFreeApp::LoadLibraryFromApplicationDirectory(_In_z_ LPCTSTR lpFileName)
+{
+	//Get the Application directory
+	CString sFullPath{ GetModuleFileName() };
+	if (sFullPath.IsEmpty())
+#pragma warning(suppress: 26487)
+		return nullptr;
+
+	//Form the new path
+	std::filesystem::path path{ sFullPath.GetString() };
+	std::filesystem::path DLLPath{ lpFileName };
+	path.replace_filename(DLLPath.filename());
+
+	//Delegate to LoadLibrary
+	return LoadLibraryW(path.c_str());
+}
 
 // CContextFreeApp initialization
 
@@ -83,6 +127,31 @@ BOOL CContextFreeApp::InitInstance()
 
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+	//Load the Scintilla \ Lexilla dlls
+	CString sLexillaDLL;
+	sLexillaDLL.Format(_T("%s%s"), _T(LEXILLA_LIB), _T(LEXILLA_EXTENSION));
+	m_hLexilla = LoadLibraryFromApplicationDirectory(sLexillaDLL);
+	if (m_hLexilla == nullptr) {
+		CString sMsg;
+		sMsg.Format(_T("%s is not installed, Please built the Scintilla '%s' and copy it into this application's directory\r\nError: %d"), sLexillaDLL.GetString(), sLexillaDLL.GetString(), GetLastError());
+		AfxMessageBox(sMsg);
+		return FALSE;
+	}
+	m_hScintilla = LoadLibraryFromApplicationDirectory(_T("Scintilla.dll"));
+	if (m_hScintilla == nullptr) {
+		AfxMessageBox(_T("Scintilla DLL is not installed, Please built the Scintilla 'Scintilla.dll' and copy it into this application's directory"));
+		return FALSE;
+	}
+
+	//Create the C++ Lexer from Lexilla
+#pragma warning(suppress: 26490)
+	m_pCreateLexer = reinterpret_cast<Lexilla::CreateLexerFn>(GetProcAddress(m_hLexilla, LEXILLA_CREATELEXER)); //NOLINT(clang-diagnostic-cast-function-type-mismatch)
+	if (m_pCreateLexer == nullptr)
+	{
+		AfxMessageBox(_T("Could not find the Lexilla CreateLexer function"));
+		return FALSE;
+	}
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
@@ -154,8 +223,18 @@ BOOL CContextFreeApp::InitInstance()
 
 int CContextFreeApp::ExitInstance()
 {
+	//Unload the Scintilla \ Lexilla dlls
+	if (m_hScintilla != nullptr) {
+		FreeLibrary(m_hScintilla);
+		m_hScintilla = nullptr;
+	}
+	if (m_hLexilla != nullptr) {
+		FreeLibrary(m_hLexilla);
+		m_hLexilla = nullptr;
+	}
+
 	Gdiplus::GdiplusShutdown(gdiplusToken);
-	//TODO: handle additional resources you may have added
+
 	return CWinAppEx::ExitInstance();
 }
 

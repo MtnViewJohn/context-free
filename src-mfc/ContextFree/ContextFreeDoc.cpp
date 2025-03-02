@@ -24,10 +24,11 @@
 #endif
 
 // CContextFreeDoc
+using namespace Scintilla;
 
-IMPLEMENT_DYNCREATE(CContextFreeDoc, CDocument)
+IMPLEMENT_DYNCREATE(CContextFreeDoc, CScintillaDoc)
 
-BEGIN_MESSAGE_MAP(CContextFreeDoc, CDocument)
+BEGIN_MESSAGE_MAP(CContextFreeDoc, CScintillaDoc)
 END_MESSAGE_MAP()
 
 
@@ -45,7 +46,7 @@ CContextFreeDoc::~CContextFreeDoc()
 
 BOOL CContextFreeDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
+	if (!CScintillaDoc::OnNewDocument())
 		return FALSE;
 
 	if (CMainFrame::NextExample) {
@@ -53,6 +54,7 @@ BOOL CContextFreeDoc::OnNewDocument()
 		auto it = AbstractSystem::ExamplesMap.find(name8);
 		if (it != AbstractSystem::ExamplesMap.end())
 			LoadCfdg(it->second.first);
+		m_vwEditorView->GetCtrl().SetSavePoint();
 		std::wstring title = CMainFrame::NextExample;
 		::PathRemoveExtensionW(title.data());
 		SetTitle(title.data());
@@ -85,24 +87,9 @@ BOOL CContextFreeDoc::OnNewDocument()
 void CContextFreeDoc::SetModifiedFlag(BOOL bModified)
 {
 	bool changed = IsModified() != bModified;
-	CDocument::SetModifiedFlag(bModified);
+	CScintillaDoc::SetModifiedFlag(bModified);
 	if (changed)
 		m_wndChild->UpdateModifiedIndicator();
-}
-
-// CContextFreeDoc serialization
-
-void CContextFreeDoc::Serialize(CArchive& ar)
-{
-	if (ar.IsStoring()) {
-		auto utf8text = GetCfdg();
-		ar.Write(utf8text.data(), (UINT)utf8text.length());
-	} else {
-		auto len = ar.GetFile()->GetLength();
-		std::string bytes(len, ' ');
-		ar.Read(bytes.data(), (UINT)len);
-		LoadCfdg(std::move(bytes));
-	}
 }
 
 #ifdef SHARED_HANDLERS
@@ -164,12 +151,12 @@ void CContextFreeDoc::SetSearchContent(const CString& value)
 #ifdef _DEBUG
 void CContextFreeDoc::AssertValid() const
 {
-	CDocument::AssertValid();
+	CScintillaDoc::AssertValid();
 }
 
 void CContextFreeDoc::Dump(CDumpContext& dc) const
 {
-	CDocument::Dump(dc);
+	CScintillaDoc::Dump(dc);
 }
 #endif //_DEBUG
 
@@ -177,45 +164,20 @@ void CContextFreeDoc::Dump(CDumpContext& dc) const
 // CContextFreeDoc commands
 void CContextFreeDoc::LoadCfdg(std::string utf8text)
 {
-	auto len = utf8text.length();
-	m_bEmpty = len == 0;
-
-	if (len > 0) {
-		int crCount = 0, lfCount = 0;
-		for (char c : utf8text) {
-			if (c == '\r') ++crCount;
-			if (c == '\n') ++lfCount;
-		}
-		if (lfCount > crCount) {
-			std::string bytes2(len + 1 + (lfCount - crCount), ' ');
-			auto it = utf8text.begin();
-			auto it2 = bytes2.begin();
-			while (it != utf8text.end()) {
-				if (*it == '\r' && *(it + 1) == '\n') {
-					*it2++ = '\r';
-					*it2++ = '\n';
-					it += 2;
-				} else if (*it == '\n') {
-					*it2++ = '\r';
-					*it2++ = '\n';
-					it += 1;
-				} else {
-					*it2++ = *it++;
-				}
-			}
-			*it2 = '\0';
-			utf8text.swap(bytes2);
-		}
-		std::wstring utf16text = Utf8ToUtf16(utf8text.c_str());
-		m_vwEditorView->GetEditCtrl().SetWindowTextW(utf16text.c_str());
-		return;
-	}
-	m_vwEditorView->GetEditCtrl().SetWindowTextW(_T(""));
+	m_vwEditorView->GetCtrl().SetText(utf8text.c_str());
 }
 
 std::string CContextFreeDoc::GetCfdg()
 {
-	CString wText;
-	m_vwEditorView->GetEditCtrl().GetWindowTextW(wText);
-	return Utf16ToUtf8((LPCTSTR)wText);
+	auto len = m_vwEditorView->GetCtrl().GetTextLength();
+	std::string txt(len, ' ');
+	auto len2 = m_vwEditorView->GetCtrl().GetText(len, txt.data());
+	if (len2 != len)
+		txt.resize(len2, ' ');
+	return txt;
+}
+
+bool CContextFreeDoc::Empty()
+{
+	return m_vwEditorView->GetCtrl().GetTextLength() == 0;
 }

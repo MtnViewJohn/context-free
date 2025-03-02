@@ -9,6 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace Scintilla;
 
 const TCHAR* g_cppKeyWords
 {_T("alignas alignof and and_eq asm atomic_cancel atomic_commit atomic_noexcept auto bitand bitor bool break ")

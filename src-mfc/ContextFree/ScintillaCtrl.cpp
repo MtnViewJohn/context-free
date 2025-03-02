@@ -376,6 +376,7 @@ CScintillaCtrl::CScintillaCtrl() noexcept : m_DirectStatusFunction{nullptr},
                                             m_dwOwnerThreadID{0},
                                             m_bDoneInitialSetup{false}
 {
+    TRACE0("In CScintillaCtrl ctor.\n");
 }
 
 #ifdef _AFX

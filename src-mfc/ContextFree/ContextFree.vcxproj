@@ -105,27 +105,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-png/lib/ARM64;../../src-ffmpeg/lib/ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/ARM64;../../src-png/lib/ARM64;../../src-ffmpeg/lib/ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-ffmpeg/lib/ffmpeg-i686-libx264;../../src-png/lib/Win32;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/x86;../../src-ffmpeg/lib/ffmpeg-i686-libx264;../../src-png/lib/Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-ffmpeg/lib/ffmpeg-x86_64-libx264;../../src-png/lib/x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/x86-64;../../src-ffmpeg/lib/ffmpeg-x86_64-libx264;../../src-png/lib/x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-ffmpeg/lib/ffmpeg-i686-libx264;../../src-png/lib/Win32;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/x86;../../src-ffmpeg/lib/ffmpeg-i686-libx264;../../src-png/lib/Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-png/lib/ARM64;../../src-ffmpeg/lib/ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/ARM64;../../src-png/lib/ARM64;../../src-ffmpeg/lib/ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>../../src-ffmpeg/lib/ffmpeg-x86_64-libx264;../../src-png/lib/x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../../src-scintilla/lib/x86-64;../../src-ffmpeg/lib/ffmpeg-x86_64-libx264;../../src-png/lib/x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
@@ -140,7 +140,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -168,7 +168,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -196,7 +196,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -228,7 +228,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -260,7 +260,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Midl>
@@ -291,7 +291,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>

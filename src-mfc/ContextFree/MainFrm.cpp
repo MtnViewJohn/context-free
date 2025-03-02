@@ -13,6 +13,7 @@
 #include <map>
 #include "Preferences.h"
 #include "Settings.h"
+#include "CFScintillaView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -527,7 +528,7 @@ void CMainFrame::UpdateEditorFont()
 	m_editFont.Detach();
 	m_editFont.CreatePointFont(Settings::FontSize * 10, (LPCTSTR)Settings::FontName);
 	for (auto&& child: CChildFrame::Children)
-		child->m_vwCfdgEditor->GetEditCtrl().SetFont(&m_editFont);
+		child->m_vwCfdgEditor->GetCtrl().SetFont(&m_editFont);
 }
 
 LRESULT CMainFrame::OnTickleSize(WPARAM wParam, LPARAM lParam)
