@@ -135,7 +135,12 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_vwOutputView = (CContextFreeView*)m_wndSplitterCfdg.GetPane(0, 1);
 	m_CFdoc = (CContextFreeDoc*)(pContext->m_pCurrentDoc);
 	m_wndParent = dynamic_cast<CMainFrame *>(GetMDIFrameWndEx());
-	m_vwCfdgEditor->GetCtrl().SetFont(&(m_wndParent->m_editFont));
+
+	auto& ctrl = m_vwCfdgEditor->GetCtrl();
+	ctrl.SetFont(&(m_wndParent->m_editFont));
+	int w = ctrl.TextWidth((int)Scintilla::StylesCommon::LineNumber, "_88888");
+	ctrl.SetMarginWidthN(0, w);
+
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
