@@ -5,8 +5,8 @@
 # Requires Python 2.7 or later
 
 def sanitiseLine(line):
-	if line[-1:] == '\n': line = line[:-1]
-	if line.find("##") != -1:
+	line = line.rstrip('\n')
+	if "##" in line:
 		line = line[:line.find("##")]
 	line = line.strip()
 	return line
@@ -40,6 +40,23 @@ def decodeParam(p):
 
 def IsEnumeration(t):
 	return t[:1].isupper()
+
+def PascalCase(s):
+	capitalized = s.title()
+	# Remove '_' except between digits
+	pascalCase = ""
+	characterPrevious = " "
+	# Loop until penultimate character
+	for i in range(len(capitalized)-1):
+		character = capitalized[i]
+		characterNext = capitalized[i+1]
+		if character != "_" or (
+			characterPrevious.isnumeric() and characterNext.isnumeric()):
+			pascalCase += character
+		characterPrevious = character
+	# Add last character - not between digits so no special treatment
+	pascalCase += capitalized[-1]
+	return pascalCase
 
 class Face:
 
@@ -127,4 +144,4 @@ class Face:
 						name, value = featureVal.split("=", 1)
 						self.aliases[name] = value
 						currentComment = []
-
+		file.close()
