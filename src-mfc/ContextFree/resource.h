@@ -6,8 +6,12 @@
 #define IDD_DIALOGBAR                   103
 #define IDD_RENDERBAR                   103
 #define IDR_MAINFRAME                   128
+#define IDP_ALLOW_MODIFY_READONLY_FILE  129
 #define IDR_ContextFreeTYPE             130
 #define ID_WINDOW_MANAGER               131
+#define IDP_FAIL_SCINTILLA_ADDDATA_DURING_LOAD 131
+#define IDP_FAIL_SCINTILLA_CREATE_ILOADER 132
+#define IDP_FAIL_SCINTILLA_DOCUMENT_TOO_LARGE 133
 #define IDR_THEME_MENU                  200
 #define ID_SET_STYLE                    201
 #define ID_VIEW_APPLOOK_WIN_2000        205
@@ -43,6 +47,8 @@
 #define IDC_JPEGQUALITY                 326
 #define IDC_APPEND_VARIATION            327
 #define IDC_RICHLOG                     328
+#define IDD_SCINTILLA_FINDDLGORD        329
+#define IDD_SCINTILLA_REPLACEDLGORD     330
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -198,6 +204,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        320
 #define _APS_NEXT_COMMAND_VALUE         32891
 #define _APS_NEXT_CONTROL_VALUE         1032
-#define _APS_NEXT_SYMED_VALUE           329
+#define _APS_NEXT_SYMED_VALUE           331
 #endif
 #endif

@@ -135,7 +135,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -163,7 +163,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -191,7 +191,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -221,7 +221,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -253,7 +253,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -284,7 +284,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src-lexilla/include;../../src-scintilla/include;../../src-unix;../../src-png/include;../../src-common;../../src-agg/agg2;../../src-ffmpeg/include;../../src-win;../../src-common/agg-extras;../../src-win/derived;../../src-agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -358,6 +358,7 @@
     <ClInclude Include="..\..\src-win\winTimer.h" />
     <ClInclude Include="Animate.h" />
     <ClInclude Include="CFFontDialog.h" />
+    <ClInclude Include="CFScintillaView.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CMemDC.h" />
     <ClInclude Include="ContextFree.h" />
@@ -376,6 +377,8 @@
     <ClInclude Include="RenderParams.h" />
     <ClInclude Include="RenderSize.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScintillaCtrl.h" />
+    <ClInclude Include="ScintillaDocView.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WinPngCanvas.h" />
@@ -711,6 +714,7 @@
     </ClCompile>
     <ClCompile Include="Animate.cpp" />
     <ClCompile Include="CFFontDialog.cpp" />
+    <ClCompile Include="CFScintillaView.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ContextFree.cpp" />
     <ClCompile Include="ContextFreeDoc.cpp" />
@@ -733,6 +737,8 @@
     <ClCompile Include="PrefsPageGeneral.cpp" />
     <ClCompile Include="RenderParams.cpp" />
     <ClCompile Include="RenderSize.cpp" />
+    <ClCompile Include="ScintillaCtrl.cpp" />
+    <ClCompile Include="ScintillaDocView.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="WinPngCanvas.cpp" />
   </ItemGroup>

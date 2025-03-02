@@ -231,6 +231,15 @@
     <ClInclude Include="CFFontDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CFScintillaView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScintillaCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScintillaDocView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp">
@@ -411,6 +420,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CFFontDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CFScintillaView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScintillaCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScintillaDocView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -13,6 +13,27 @@
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
+#include <memory>
+#include <array>
+#include <vector>
+#include <string>
+#include <string_view>
+#include <filesystem>
+
+
+//Pull in support for Scintilla \ Lexilla
+#pragma warning(push)
+#pragma warning(disable: 26812)
+#pragma warning(pop)
+#include <ScintillaTypes.h>
+#include <ScintillaCall.h>
+#include <ScintillaMessages.h>
+#include <ScintillaStructures.h>
+#include <ILexer.h>
+#include <Lexilla.h>
+#include <SciLexer.h>
+#include <ILoader.h>
+#include <Scintilla.h>
 
 
 
