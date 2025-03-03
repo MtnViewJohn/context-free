@@ -755,6 +755,7 @@
     <Image Include="res\ContextFree.ico" />
     <Image Include="res\ContextFreeDoc.ico" />
     <Image Include="res\dot.ico" />
+    <Image Include="res\Edera.bmp" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>

@@ -259,15 +259,34 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	CString m_sCopyright;
+	CString m_sMainCopyright;
+	CString m_sTitle;
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
+, m_sCopyright(
+L"CFDG Copyright © 2005 Chris Coyne\r\n"
+L"Anti-Grain Geometry library Copyright © 2002-2006 Maxim Shemanarev\r\n"
+L"LLVM/libc++ random functions from <random> Copyright © 2009-2015 LLVM Team\r\n"
+L"Scintilla text editor component, Copyright © 1998-2025 by Neil Hodgson <neilh@scintilla.org>\r\n"
+L"CScintillaCtrl, CScintillaView & CScintillaDoc, Copyright © 2004-2025 by PJ Naughter <pjna@naughter.com>\r\n"
+L"This program is free software; you can redistribute it and /or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\r\n"
+L"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU General Public License for more details.\r\n"
+L"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 - 1307 USA"
+)
+, m_sMainCopyright(_T("Copyright © 2005-2025\r\nJohn Horigan && Mark Lentczner"))
+, m_sTitle(_T("Context Free, Version 3.4.2(v49)"))
 {
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_COPYRIGHT, m_sCopyright);
+	DDX_Text(pDX, IDC_COPYRIGHT2, m_sMainCopyright);
+	DDX_Text(pDX, IDC_TITLE, m_sTitle);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
