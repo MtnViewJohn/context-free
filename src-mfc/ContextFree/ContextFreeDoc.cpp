@@ -84,14 +84,6 @@ BOOL CContextFreeDoc::OnNewDocument()
 	return TRUE;
 }
 
-void CContextFreeDoc::SetModifiedFlag(BOOL bModified)
-{
-	bool changed = IsModified() != bModified;
-	CScintillaDoc::SetModifiedFlag(bModified);
-	if (changed)
-		m_wndChild->UpdateModifiedIndicator();
-}
-
 #ifdef SHARED_HANDLERS
 
 // Support for thumbnails

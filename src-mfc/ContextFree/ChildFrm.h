@@ -53,6 +53,7 @@ public:
 	HANDLE m_hRenderThread = NULL;
 	wincanvas_ptr m_WinCanvas;
 	int m_iBusyIndex = 0;
+	bool m_bDirty;
 	void OnRenderAgain();
 	void OnSaveOutput();
 	void OnNextVariation();
@@ -60,7 +61,7 @@ public:
 	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);
 	CString NameWithoutExtension();
 	void RecvErrorLinkClick(LPCTSTR link);
-	void UpdateModifiedIndicator();
+	void UpdateDirtyIndicator(bool dirty);
 protected:
 	enum class PostRenderAction
 	{
@@ -106,7 +107,6 @@ protected:
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
 	virtual HICON GetFrameIcon() const;
 	afx_msg void OnInsertChars(UINT id);

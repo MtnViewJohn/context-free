@@ -3,6 +3,7 @@
 
 #include "ScintillaDocView.h"
 
+class CChildFrame;
 
 class CScintillaDemoCtrl : public Scintilla::CScintillaCtrl
 {
@@ -25,6 +26,7 @@ public:
   CContextFreeDoc* GetDocument();
   void OnDraw(CDC* pDC) override;
   void OnInitialUpdate() override;
+  CChildFrame* m_wndChild = nullptr;
 
 protected:
 //Member variables
@@ -36,6 +38,8 @@ protected:
   void OnDwellEnd(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnModifyAttemptRO(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnModified(_Inout_ Scintilla::NotificationData* pSCNotification) override;
+  void OnSavePointReached(_Inout_ Scintilla::NotificationData* pSCNotification) override;
+  void OnSavePointLeft(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   std::unique_ptr<Scintilla::CScintillaCtrl> CreateScintillaControl() override;
   void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff, 0xff, 0xff), int size = -1, const char* face = nullptr);
   void DefineMarker(int marker, Scintilla::MarkerSymbol markerType, COLORREF fore, COLORREF back);

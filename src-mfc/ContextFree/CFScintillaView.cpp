@@ -3,7 +3,7 @@
 #include "ContextFree.h"
 #include "ContextFreeDoc.h"
 #include "CFScintillaView.h"
-
+#include "ChildFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -998,6 +998,16 @@ void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotific
       rCtrl.ChangeInsertion(18, _T("Capital of Ireland"));
   #endif
   }
+}
+
+void CFScintillaView::OnSavePointReached(Scintilla::NotificationData* pSCNotification)
+{
+    m_wndChild->UpdateDirtyIndicator(false);
+}
+
+void CFScintillaView::OnSavePointLeft(Scintilla::NotificationData* pSCNotification)
+{
+    m_wndChild->UpdateDirtyIndicator(true);
 }
 
 std::unique_ptr<Scintilla::CScintillaCtrl> CFScintillaView::CreateScintillaControl()

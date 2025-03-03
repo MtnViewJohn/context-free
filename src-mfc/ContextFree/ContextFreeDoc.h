@@ -4,7 +4,6 @@
 
 #pragma once
 
-class CChildFrame;
 #include <string>
 #include "ScintillaDocView.h"
 
@@ -22,13 +21,11 @@ public:
 public:
 	void LoadCfdg(std::string textUtf8);
     std::string GetCfdg();
-	CChildFrame* m_wndChild = nullptr;
 	bool Empty();
 
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
-	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);

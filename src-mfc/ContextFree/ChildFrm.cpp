@@ -71,7 +71,6 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_MESSAGE(WinSystem::WM_USER_MESSAGE_UPDATE, OnMessage)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
 	ON_WM_CLOSE()
-	ON_MESSAGE_VOID(WM_COMMAND, OnCommand)
 	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
 END_MESSAGE_MAP()
 
@@ -144,7 +143,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
-	m_CFdoc->m_wndChild = this;
+	m_vwCfdgEditor->m_wndChild = this;
 
 	m_bInitSplitter = TRUE;
 
@@ -531,8 +530,9 @@ void CChildFrame::OnSaveOutput()
 	}
 }
 
-void CChildFrame::UpdateModifiedIndicator()
+void CChildFrame::UpdateDirtyIndicator(bool dirty)
 {
+	m_bDirty = dirty;
 	// trigger redrawing of tabs
 	CMFCTabCtrl& tabs = m_wndParent->GetMDITabs();
 	auto tab = tabs.GetActiveTab();
@@ -775,19 +775,11 @@ void CChildFrame::SetPostRenderAction(PostRenderAction v)
 		break;
 	}
 }
-BOOL CChildFrame::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	if (HIWORD(wParam) == EN_CHANGE && lParam == (LPARAM)m_vwCfdgEditor->GetSafeHwnd()) {
-		m_CFdoc->SetModifiedFlag();		// TODO: check undo buffer in Scintilla
-	}
-	return CMDIChildWndEx::OnCommand(wParam, lParam);
-}
-
 HICON CChildFrame::GetFrameIcon() const
 {
 	static HICON hModified = ::LoadIconW(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_MODIFIED));
 
-	return m_CFdoc->IsModified() ? hModified : NULL;
+	return m_bDirty ? hModified : NULL;
 }
 
 void CChildFrame::OnInsertChars(UINT id)
