@@ -335,7 +335,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 		} else {
 			pCmdUI->Enable();
 			std::wstring txt = L" ";
-			txt.append(1, L"▶◰◱◲◳"[c->m_iBusyIndex]);
+			txt.append(1, L"▶▘▝▗▖"[c->m_iBusyIndex]);
 			if (c->m_hRenderThread && c->m_Renderer) {
 				if (c->m_Renderer->requestFinishUp)
 					txt.append(L" STOP!");
