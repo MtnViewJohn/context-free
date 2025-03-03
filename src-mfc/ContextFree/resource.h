@@ -50,6 +50,7 @@
 #define IDC_RICHLOG                     328
 #define IDD_SCINTILLA_FINDDLGORD        329
 #define IDD_SCINTILLA_REPLACEDLGORD     330
+#define IDC_REGULAR_EXPRESSION          331
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -200,14 +201,21 @@
 #define ID_INSERTCHAR74                 32888
 #define ID_INSERTCHAR75                 32889
 #define ID_INSERTCHAR76                 32890
+#define ID_EDIT_REDO32891               32891
+#define ID_EDIT_DELETE                  32892
+#define ID_EDIT_SELECTALL               32893
+#define ID_EDIT_32894                   32894
+#define ID_EDIT_FIND32899               32899
+#define ID_EDIT_FINDNEXT                32900
+#define ID_EDIT_REPLACE32901            32901
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        322
-#define _APS_NEXT_COMMAND_VALUE         32891
+#define _APS_NEXT_COMMAND_VALUE         32904
 #define _APS_NEXT_CONTROL_VALUE         1034
-#define _APS_NEXT_SYMED_VALUE           331
+#define _APS_NEXT_SYMED_VALUE           332
 #endif
 #endif

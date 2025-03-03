@@ -217,7 +217,7 @@ CScintillaEditState::CScintillaEditState() noexcept : pFindReplaceDlg{nullptr},
 
 #pragma warning(suppress: 26433 26435 26440)
 BEGIN_MESSAGE_MAP(CScintillaFindReplaceDlg, CFindReplaceDialog) //NOLINT(modernize-avoid-c-arrays)
-  // TODO ON_BN_CLICKED(IDC_REGULAR_EXPRESSION, &CScintillaFindReplaceDlg::OnRegularExpression)
+  ON_BN_CLICKED(IDC_REGULAR_EXPRESSION, &CScintillaFindReplaceDlg::OnRegularExpression)
   ON_WM_NCDESTROY()
 END_MESSAGE_MAP()
 
@@ -246,10 +246,10 @@ BOOL CScintillaFindReplaceDlg::OnInitDialog()
 
   //Should we check the regular expression check box
 #pragma warning(suppress: 26466)
-  // TODO auto pCtrl{static_cast<CButton*>(GetDlgItem(IDC_REGULAR_EXPRESSION))};
+  auto pCtrl{static_cast<CButton*>(GetDlgItem(IDC_REGULAR_EXPRESSION))};
 #pragma warning(suppress: 26496)
-  // AFXASSUME(pCtrl != nullptr);
-  // pCtrl->SetCheck(m_bRegularExpression);
+  AFXASSUME(pCtrl != nullptr);
+  pCtrl->SetCheck(m_bRegularExpression);
 
   return bReturn;
 }
@@ -258,10 +258,10 @@ void CScintillaFindReplaceDlg::OnRegularExpression()
 {
   //Save the state of the Regular expression checkbox into a member variable
 #pragma warning(suppress: 26466)
-  // TODO const CButton* pCtrl{static_cast<CButton*>(GetDlgItem(IDC_REGULAR_EXPRESSION))};
+  const CButton* pCtrl{static_cast<CButton*>(GetDlgItem(IDC_REGULAR_EXPRESSION))};
 #pragma warning(suppress: 26496)
-  // AFXASSUME(pCtrl != nullptr);
-  // m_bRegularExpression = (pCtrl->GetCheck() == 1);
+  AFXASSUME(pCtrl != nullptr);
+  m_bRegularExpression = (pCtrl->GetCheck() == 1);
 }
 
 #pragma warning(suppress: 26434)
