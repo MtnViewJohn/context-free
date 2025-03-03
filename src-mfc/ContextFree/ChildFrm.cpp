@@ -72,6 +72,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_MESSAGE(WinSystem::WM_USER_RENDER_COMPLETE, OnRenderDone)
 	ON_WM_CLOSE()
 	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
+	ON_COMMAND_RANGE(ID_EDIT_INDENT, ID_EDIT_UNDENT, &CChildFrame::OnEditIndent)
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -787,4 +788,36 @@ void CChildFrame::OnInsertChars(UINT id)
 	auto it = InsertMap.find(id);
 	if (it != InsertMap.end())
 		m_vwCfdgEditor->GetCtrl().ReplaceSel((LPCTSTR)(it->second));
+}
+
+void CChildFrame::OnEditIndent(UINT id)
+{
+	int delta = (id == ID_EDIT_INDENT) ? EditorParams::TabWidth : -EditorParams::TabWidth;
+	bool didIndent = false;
+
+	auto& rCtrl = m_vwCfdgEditor->GetCtrl();
+	auto startPos = std::min(rCtrl.GetAnchor(), rCtrl.GetCurrentPos());
+	auto   endPos = std::max(rCtrl.GetAnchor(), rCtrl.GetCurrentPos());
+	auto start = rCtrl.LineFromPosition(startPos);
+	auto   end = rCtrl.LineFromPosition(  endPos);
+
+	// When a whole line is selected, the position is at the start
+	// of the next line. We don't want to include that line.
+	if (start < end && rCtrl.GetColumn(endPos) == 0)
+		end--;
+
+	for (; start <= end; ++start) {
+		auto indent = rCtrl.GetLineIndentation(start);
+		auto newIndent = indent + delta;
+		if (newIndent < 0) newIndent = 0;
+		if (indent != newIndent) {
+			if (!didIndent)
+				rCtrl.BeginUndoAction();
+			didIndent = true;
+			rCtrl.SetLineIndentation(start, newIndent);
+		}
+	}
+
+	if (didIndent)
+		rCtrl.EndUndoAction();
 }

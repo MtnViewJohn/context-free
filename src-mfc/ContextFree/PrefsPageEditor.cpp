@@ -29,11 +29,13 @@ void PrefsPageEditor::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_FONTNAME, m_sFontName);
 	DDX_Control(pDX, IDC_FONTNAME, m_ctrlFontName);
+	DDX_Control(pDX, IDC_TABSPIN, m_ctrlTabSpin);
 }
 
 
 BEGIN_MESSAGE_MAP(PrefsPageEditor, CPropertyPage)
 	ON_BN_CLICKED(IDC_FONTCHANGE, &PrefsPageEditor::OnClickedFontchange)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_TABSPIN, &PrefsPageEditor::OnTabWidthUD)
 END_MESSAGE_MAP()
 
 
@@ -42,6 +44,7 @@ END_MESSAGE_MAP()
 void PrefsPageEditor::OnOK()
 {
 	EditorParams::SetFont(m_sFontName);
+	EditorParams::TabWidth = m_iTabWidth;
 	EditorParams::Save();
 
 	CPropertyPage::OnOK();
@@ -87,5 +90,24 @@ BOOL PrefsPageEditor::OnInitDialog()
 
 	m_ctrlFontName.SetFont(&m_Font);
 
+	m_ctrlTabSpin.SetRange(1, 1000);
+	m_ctrlTabSpin.SetPos(500);
+
+	m_iTabWidth = EditorParams::TabWidth;
+	SetDlgItemInt(IDC_TABWIDTH, m_iTabWidth, 0);
+
 	return TRUE;
+}
+
+void PrefsPageEditor::OnTabWidthUD(NMHDR* pNotifyStruct, LRESULT* result)
+{
+	LPNMUPDOWN pUpDown = (LPNMUPDOWN)pNotifyStruct;
+	if (pUpDown->iDelta > 0 && m_iTabWidth < 8) {
+		++m_iTabWidth;
+		SetDlgItemInt(IDC_TABWIDTH, m_iTabWidth, 0);
+	}
+	if (pUpDown->iDelta < 0 && m_iTabWidth > 1) {
+		--m_iTabWidth;
+		SetDlgItemInt(IDC_TABWIDTH, m_iTabWidth, 0);
+	}
 }

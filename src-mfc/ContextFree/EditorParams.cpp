@@ -4,6 +4,7 @@
 
 int EditorParams::FontSize = 10;
 CString EditorParams::FontName = _T("Courier New");
+int EditorParams::TabWidth = 4;
 
 EditorParams::EditorParams()
 {
@@ -22,6 +23,7 @@ void EditorParams::Load()
 
     FontSize = pApp->GetProfileIntW(pszKey, _T("FontSize"), 10);
     FontName = pApp->GetProfileStringW(pszKey, _T("FontName"), _T("Courier New"));
+    TabWidth = pApp->GetProfileIntW(pszKey, _T("TabWidth"), 4);
 }
 
 void EditorParams::Save()
@@ -32,6 +34,7 @@ void EditorParams::Save()
 
     pApp->WriteProfileInt(pszKey, _T("FontSize"), FontSize);
     pApp->WriteProfileStringW(pszKey, _T("FontName"), FontName);
+    pApp->WriteProfileInt(pszKey, _T("TabWidth"), TabWidth);
 }
 
 bool EditorParams::SetFont(CString name, CString& fname, int& fsize)

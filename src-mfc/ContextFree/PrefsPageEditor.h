@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	afx_msg void OnTabWidthUD(NMHDR* pNotifyStruct, LRESULT* result);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -29,4 +30,6 @@ public:
 	CFont m_Font;
 	virtual BOOL OnInitDialog();
 	bool m_FontChanged = false;
+	CSpinButtonCtrl m_ctrlTabSpin;
+	int m_iTabWidth;
 };

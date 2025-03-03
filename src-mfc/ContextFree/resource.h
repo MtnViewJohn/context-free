@@ -80,6 +80,7 @@
 #define IDC_CODEC                       1024
 #define IDC_EDIT3                       1025
 #define IDC_FRAME                       1025
+#define IDC_TABWIDTH                    1025
 #define IDC_CODEC_LABEL                 1026
 #define IDC_WELCOME                     1027
 #define IDC_NEWDOC                      1028
@@ -90,6 +91,7 @@
 #define IDC_FONTCHANGE                  1031
 #define IDC_COPYRIGHT2                  1032
 #define IDC_TITLE                       1033
+#define IDC_TABSPIN                     1035
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -201,21 +203,17 @@
 #define ID_INSERTCHAR74                 32888
 #define ID_INSERTCHAR75                 32889
 #define ID_INSERTCHAR76                 32890
-#define ID_EDIT_REDO32891               32891
-#define ID_EDIT_DELETE                  32892
-#define ID_EDIT_SELECTALL               32893
-#define ID_EDIT_32894                   32894
-#define ID_EDIT_FIND32899               32899
-#define ID_EDIT_FINDNEXT                32900
-#define ID_EDIT_REPLACE32901            32901
+#define ID_EDIT_INDENT                  32891
+#define ID_EDIT_UN                      32892
+#define ID_EDIT_UNDENT                  32893
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        322
-#define _APS_NEXT_COMMAND_VALUE         32904
-#define _APS_NEXT_CONTROL_VALUE         1034
+#define _APS_NEXT_COMMAND_VALUE         32896
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           332
 #endif
 #endif
