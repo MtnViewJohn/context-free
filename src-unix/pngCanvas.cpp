@@ -129,8 +129,6 @@ void pngCanvas::output(const char* outfilename, int frame)
             out.reset(stdout);
 #ifdef _WIN32
             _setmode(_fileno(stdout), _O_BINARY);
-#else
-            setmode(fileno(stdout), O_BINARY);
 #endif
         }
         if (!out) {
