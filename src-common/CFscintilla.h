@@ -29,22 +29,31 @@
 #include <string.h>
 #include <cstddef>
 #include "Scintilla.h"
+#include <set>
 
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
-#define strncasecmp _strincmp
+#define strncasecmp _strnicmp
 #endif
 
 class CFscintilla {
 public:
     struct AutoCmp {
-        inline bool operator()(const char* a, const char* b)
+        inline bool operator()(const char* a, const char* b) const
         {
             return strcasecmp(a, b) < 0;        // a POSIX function
+        }
+        inline int operator()(const char* a, const char* b, int len)
+        {
+            return strncasecmp(a, b, len);
         }
     };
     
     static std::vector<const char*> AutoComplete;
+
+    using AutoSet = std::set<const char*, AutoCmp>;
+    static AutoSet AutoCSet;
+    static std::pair<AutoSet::iterator, AutoSet::iterator> GetAutoCList(const char* frag);
     
     enum Style {
         StyleDefault, StyleComment, StyleSymbol, StyleIdentifier,

@@ -4,6 +4,7 @@
 #include "ContextFreeDoc.h"
 #include "CFScintillaView.h"
 #include "ChildFrm.h"
+#include "CFscintilla.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -138,7 +139,10 @@ void CFScintillaView::OnInitialUpdate()
   DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderMidTail), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
 
   //Setup auto completion
-  rCtrl.AutoCSetSeparator(10); //Use a separator of line feed
+  rCtrl.SetWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:");
+  rCtrl.AutoCStops("[]{}<>,1234567890()/*+-|=!&^ \t.\r\n");
+  rCtrl.AutoCSetIgnoreCase(true);
+  rCtrl.AutoCSetCaseInsensitiveBehaviour(Scintilla::CaseInsensitiveBehaviour::IgnoreCase);
 
   //Setup call tips
   rCtrl.SetMouseDwellTime(1000);
@@ -354,32 +358,10 @@ void CFScintillaView::OnCharAdded(_Inout_ Scintilla::NotificationData* pSCNotifi
 {
   UNREFERENCED_PARAMETER(pSCNotification);
 
-  auto& rCtrl{GetCtrl()};
+  // TODO autoindent
 
-  //Get the previous 13 characters and if it is "scintilla is " case insensitive
-  //then display a list which allows "very cool", "easy" and "way cool!!"
-  const Scintilla::Position nStartSel{rCtrl.GetSelectionStart()};
-  const Scintilla::Position nEndSel{rCtrl.GetSelectionEnd()};
-  if ((nStartSel == nEndSel) && (nStartSel >= 13))
-  {
-    Scintilla::TextRangeFull tr{};
-    tr.chrg.cpMin = nStartSel - 13;
-    tr.chrg.cpMax = nEndSel;
-    CStringA sText;
-    tr.lpstrText = sText.GetBuffer(13);
-    rCtrl.GetTextRangeFull(&tr);
-    sText.ReleaseBuffer();
-
-    //Display the auto completion list
-    if (sText.CompareNoCase("scintilla is ") == 0)
-    {
-      //Display the auto completion list
-      //rCtrl.AutoCSetOrder(Scintilla::Ordering::PerformSort);
-      //int nOrder{rCtrl.AutoCGetOrder()};
-      rCtrl.AutoCShow(0, _T("very cool\neasy to use\nway cool!!"));
-    }
-  }
-
+  CheckAutoC();
+  
 #ifdef _DEBUG
   /*
   //Test out some of the methods
@@ -878,52 +860,6 @@ void CFScintillaView::OnCharAdded(_Inout_ Scintilla::NotificationData* pSCNotifi
   rCtrl.LineDedent();
   */
 #endif //#ifdef _DEBUG
-
-  //As another example, get the previous 2 characters and if it is "res" case sensitive
-  //then display a list which allows "resize", "restart" and "restore"
-  if ((nStartSel == nEndSel) && (nStartSel >= 3))
-  {
-    Scintilla::TextRangeFull tr{};
-    tr.chrg.cpMin = nStartSel - 3;
-    tr.chrg.cpMax = nEndSel;
-    CStringA sText;
-    tr.lpstrText = sText.GetBuffer(3);
-    rCtrl.GetTextRangeFull(&tr);
-    sText.ReleaseBuffer();
-
-    //Display the auto completion list
-    if (sText == "res")
-    {
-      //Display the auto completion list
-      rCtrl.AutoCShow(3, _T("resize\nrestart\nrestore"));
-    }
-  }
-
-  //As another example, get the previous 16 characters and if it is "SAMPLE_INDICATOR" case insensitive
-  //then display that text with a squiggly underline
-  if ((nStartSel == nEndSel) && (nStartSel >= 16))
-  {
-    Scintilla::TextRangeFull tr{};
-    tr.chrg.cpMin = nStartSel - 16;
-    tr.chrg.cpMax = nEndSel;
-    CStringA sText;
-    tr.lpstrText = sText.GetBuffer(16);
-    rCtrl.GetTextRangeFull(&tr);
-    sText.ReleaseBuffer();
-
-    //Display the Sample indicator
-    if (sText.CompareNoCase("sample_indicator") == 0)
-    {
-      //For demonstration purposes lets make the "C" Comment style into hotspots which turn red
-      rCtrl.SetIndicatorCurrent(0);
-      rCtrl.StyleSetHotSpot(SCE_C_COMMENT, TRUE);
-      rCtrl.SetHotspotActiveFore(TRUE, RGB(255, 0, 0));
-
-      //Show the indicator
-#pragma warning(suppress: 26472)
-      rCtrl.IndicatorFillRange(tr.chrg.cpMin, static_cast<int>(nStartSel));
-    }
-  }
 }
 
 //A simple example of call tips
@@ -988,15 +924,11 @@ void CFScintillaView::OnModifyAttemptRO(_Inout_ Scintilla::NotificationData* /*p
 #pragma warning(suppress: 26440)
 void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
-  if (static_cast<int>(pSCNotification->modificationType) & static_cast<int>(Scintilla::ModificationFlags::InsertCheck))
+  if (static_cast<int>(pSCNotification->modificationType) & 
+      static_cast<int>(Scintilla::ModificationFlags::Undo | Scintilla::ModificationFlags::Redo |
+                       Scintilla::ModificationFlags::DeleteText))
   {
-  #ifdef _DEBUG
-    //Just some demo code to test out "InsertCheck" notification
-    auto& rCtrl{GetCtrl()};
-#pragma warning(suppress: 26486)
-    if (strcmp(pSCNotification->text, "Dublin") == 0)
-      rCtrl.ChangeInsertion(18, _T("Capital of Ireland"));
-  #endif
+      CheckAutoC();
   }
 }
 
@@ -1033,4 +965,35 @@ int CFScintillaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     return -1;
 #endif
   return 0;
+}
+
+void CFScintillaView::CheckAutoC()
+{
+    auto& rCtrl = GetCtrl();
+    auto pos = rCtrl.GetCurrentPos();
+    auto wordPos = rCtrl.WordStartPosition(pos, true);
+    auto len = pos - wordPos;
+    if (len > 1) {
+        std::string frag(len, ' ');
+        Scintilla::TextRangeFull trf{ {wordPos, pos}, frag.data()};
+        auto len2 = rCtrl.GetTextRangeFull(&trf);
+        ASSERT(len == len2);
+        auto [first, last] = CFscintilla::GetAutoCList(frag.c_str());
+        if (first != last) {
+            size_t total = 0;
+            for (auto it = first; it != last; ++it)
+                total += std::strlen(*it) + 1;
+            std::string list;
+            list.reserve(total);
+            for (auto it = first; it != last; ++it) {
+                list.append(*it);
+                list.append(" ");
+            }
+            list.pop_back();
+            rCtrl.AutoCShow(len, list.c_str());
+            return;
+        }
+    }
+    if (rCtrl.AutoCActive())
+        rCtrl.AutoCCancel();
 }

@@ -52,6 +52,21 @@ std::vector<const char*> CFscintilla::AutoComplete = {
         "dot", "cross", "hsb2rgb", "rgb2hsb"
     };
 
+CFscintilla::AutoSet CFscintilla::AutoCSet(CFscintilla::AutoComplete.begin(),
+                                           CFscintilla::AutoComplete.end());
+
+std::pair<CFscintilla::AutoSet::iterator, CFscintilla::AutoSet::iterator>
+CFscintilla::GetAutoCList(const char* frag)
+{
+    int len = (int)std::strlen(frag);
+    auto first = CFscintilla::AutoCSet.lower_bound(frag);
+    auto last = first;
+    auto comp = CFscintilla::AutoCSet.key_comp();
+    while (last != CFscintilla::AutoCSet.end() && comp(*last, frag, (int)len) == 0)
+        ++last;
+    return { first, last };
+}
+
 static std::size_t isUTF8op(const char* text)
 {
     static const char* utf8ops[6] = {
