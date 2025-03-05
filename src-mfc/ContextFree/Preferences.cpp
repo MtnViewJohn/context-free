@@ -11,7 +11,9 @@
 IMPLEMENT_DYNAMIC(Preferences, CPropertySheet)
 
 Preferences::Preferences()
-	:CPropertySheet(_T("Preferences")), m_bFontChanged(m_wndEditorPage.m_FontChanged)
+	: CPropertySheet(_T("Preferences"))
+	, m_bFontChanged(m_wndEditorPage.m_FontChanged)
+	, m_bStyleChanged(m_wndEditorPage.m_StyleChanged)
 {
 	AddPage(&m_wndGeneralPage);
 	AddPage(&m_wndEditorPage);

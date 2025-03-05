@@ -7,7 +7,6 @@
 #include "PrefsPageEditor.h"
 #include "EditorParams.h"
 #include <vector>
-#include "CFFontDialog.h"
 
 // PrefsPageEditor dialog
 
@@ -201,8 +200,8 @@ void PrefsPageEditor::OnClickedFontchange()
 	logFont.lfQuality = PROOF_QUALITY;
 	logFont.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 	::wcsncpy_s(logFont.lfFaceName, (LPCTSTR)fname, 32);
-	CFFontDialog fDlg(&logFont, CF_FIXEDPITCHONLY | CF_INITTOLOGFONTSTRUCT |
-							   CF_SCREENFONTS | CF_NOSCRIPTSEL | CF_NOSTYLESEL);
+	CFontDialog fDlg(&logFont, CF_FIXEDPITCHONLY | CF_INITTOLOGFONTSTRUCT |
+							   CF_SCREENFONTS | CF_NOSCRIPTSEL);
 
 	if (fDlg.DoModal() == IDOK) {
 		fname = fDlg.GetFaceName();
@@ -297,6 +296,7 @@ void PrefsPageEditor::OnTabWidthUD(NMHDR* pNotifyStruct, LRESULT* result)
 		--m_iTabWidth;
 		SetDlgItemInt(IDC_TABWIDTH, m_iTabWidth, 0);
 	}
+	m_StyleChanged = true;
 }
 
 void PrefsPageEditor::OnColorBtn(UINT id)
@@ -320,6 +320,7 @@ void PrefsPageEditor::OnColorBtn(UINT id)
 
 void PrefsPageEditor::OnTypeBtn(UINT id)
 {
+	m_StyleChanged = true;
 	UpdateData(TRUE);
 	if (id - IDC_DEFAULT_BOLD   == m_iCurrentColor - IDC_DEFAULT_COLOR ||
 		id - IDC_DEFAULT_ITALIC == m_iCurrentColor - IDC_DEFAULT_COLOR)
@@ -365,6 +366,7 @@ void PrefsPageEditor::OnClickedRGBPicker(UINT id)
 
 void PrefsPageEditor::UpdateColor(COLORREF col, UINT id)
 {
+	m_StyleChanged = true;
 	*m_CRefMap[id] = col;
 	m_CBtnMap[id]->SetFaceColor(col);
 	COLORREF altColor = UpdateRGBText(col);

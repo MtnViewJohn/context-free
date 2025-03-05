@@ -45,6 +45,7 @@ public:
 	CFont m_Font;
 	virtual BOOL OnInitDialog();
 	bool m_FontChanged = false;
+	bool m_StyleChanged = false;
 	CSpinButtonCtrl m_ctrlTabSpin;
 	int m_iTabWidth;
 	BOOL m_bDefaultBold;

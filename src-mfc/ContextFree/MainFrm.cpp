@@ -156,10 +156,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// improves the usability of the taskbar because the document name is visible with the thumbnail.
 	ModifyStyle(0, FWS_PREFIXTITLE);
 
-	UpdateEditorFont();
-
-	// Create edit box
-
 	return 0;
 }
 
@@ -519,16 +515,18 @@ void CMainFrame::OnRenderEdits(UINT id)
 void CMainFrame::OnPreferences()
 {
 	Preferences prefs;
-	if (prefs.DoModal() == IDOK && prefs.m_bFontChanged)
-		UpdateEditorFont();
+	if (prefs.DoModal() == IDOK && (prefs.m_bFontChanged || prefs.m_bStyleChanged))
+		UpdateEditors(prefs.m_bFontChanged, prefs.m_bStyleChanged);
 }
 
-void CMainFrame::UpdateEditorFont()
+void CMainFrame::UpdateEditors(bool font, bool style)
 {
-	m_editFont.Detach();
-	m_editFont.CreatePointFont(Settings::FontSize * 10, (LPCTSTR)Settings::FontName);
-	for (auto&& child: CChildFrame::Children)
-		child->m_vwCfdgEditor->GetCtrl().SetFont(&m_editFont);
+	for (auto&& child : CChildFrame::Children) {
+		if (font)
+			child->m_vwCfdgEditor->EditorFontChanged();
+		if (style)
+			child->m_vwCfdgEditor->EditorStyleChanged();
+	}
 }
 
 LRESULT CMainFrame::OnTickleSize(WPARAM wParam, LPARAM lParam)

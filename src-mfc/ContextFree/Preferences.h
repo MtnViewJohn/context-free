@@ -13,6 +13,7 @@ public:
 	Preferences();
 	virtual ~Preferences();
 	bool& m_bFontChanged;
+	bool& m_bStyleChanged;
 
 protected:
 	PrefsPageGeneral m_wndGeneralPage;

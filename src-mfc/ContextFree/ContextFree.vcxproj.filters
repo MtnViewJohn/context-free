@@ -228,9 +228,6 @@
     <ClInclude Include="PrefsPageEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CFFontDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CFScintillaView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -420,9 +417,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PrefsPageEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CFFontDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CFScintillaView.cpp">

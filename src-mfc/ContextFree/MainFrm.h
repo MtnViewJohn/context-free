@@ -20,13 +20,12 @@ public:
 
 // Attributes
 public:
-	CFont m_editFont;
 	static LPCTSTR NextExample;
 // Operations
 public:
 	void UpdateStatusBar(int progress, const CString& text);
-	void UpdateEditorFont();
-// Overrides
+	void UpdateEditors(bool font, bool style);
+	// Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
