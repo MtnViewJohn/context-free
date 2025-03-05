@@ -116,16 +116,16 @@ void EditorParams::Save()
 
 bool EditorParams::SetFont(CString name, CString& fname, int& fsize)
 {
-    std::wstring wname((LPCTSTR)name);
-    auto div = wname.find_last_of(L' ');
+    auto div = name.ReverseFind(L' ');
 
-    if (div != std::wstring::npos) {
+    if (div != -1) {
+        wchar_t* wname = name.LockBuffer();
         wchar_t* end = nullptr;
-        int maybeSize = std::wcstol(wname.c_str() + div + 1, &end, 10);
+        int maybeSize = std::wcstol(wname + div + 1, &end, 10);
+        name.UnlockBuffer();
         if (maybeSize > 0 && end && *end == L'\0') {
             fsize = maybeSize;
-            wname[div] = L'\0';
-            fname = wname.c_str();
+            fname = name.Mid(0, div);
             return true;
         }
     }
