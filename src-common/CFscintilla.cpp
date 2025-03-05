@@ -292,11 +292,11 @@ CFscintilla::StyleId(std::size_t length, const char* text, char* styles)
     
     Style state = StyleIdentifier;
     std::string temp{text, length};
-    if (length > 5 && std::strncmp(text + (length - 5), ".cfdg", 5) == 0)
+    if (temp.ends_with(".cfdg"))
         state = StyleString;
-    else if (keywords.count(temp))
+    else if (keywords.contains(temp))
         state = StyleKeywords;
-    else if (builtins.count(temp))
+    else if (builtins.contains(temp))
         state = StyleBuiltins;
     
     if (state != StyleIdentifier)
