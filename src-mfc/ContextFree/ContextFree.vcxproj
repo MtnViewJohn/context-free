@@ -370,6 +370,7 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MessagePane.h" />
     <ClInclude Include="MovieFileSave.h" />
+    <ClInclude Include="myafxcolorpickerctrl.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Preferences.h" />
     <ClInclude Include="PrefsPageEditor.h" />
@@ -732,6 +733,7 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MessagePane.cpp" />
     <ClCompile Include="MovieFileSave.cpp" />
+    <ClCompile Include="myafxcolorpickerctrl.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
