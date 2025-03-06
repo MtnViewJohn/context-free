@@ -35,6 +35,7 @@ protected:
   Scintilla::ILexer5* m_pCLexer;
   SciFnDirect m_pDirectFn = nullptr;
   Scintilla::sptr_t m_pSciPtr = 0;
+  Scintilla::Position m_iLastCaretPosition = -1;
 
 //Methods
   void OnCharAdded(_Inout_ Scintilla::NotificationData* pSCNotification) override;
@@ -45,6 +46,7 @@ protected:
   void OnModified(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnSavePointReached(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnSavePointLeft(_Inout_ Scintilla::NotificationData* pSCNotification) override;
+  void OnUpdateUI(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   std::unique_ptr<Scintilla::CScintillaCtrl> CreateScintillaControl() override;
   void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff, 0xff, 0xff), bool bold = false, bool italic = false, int size = -1, const char* face = nullptr);
   void DefineMarker(int marker, Scintilla::MarkerSymbol markerType, COLORREF fore, COLORREF back);

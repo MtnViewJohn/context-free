@@ -493,6 +493,37 @@ void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotific
   }
 }
 
+namespace {
+    // GetCharAt() can return '\0'. Map this to 'A' to avoid false hits in strchr()
+    char SafeBraceChar(char c) {
+        return c ? c : 'A';
+    }
+}
+
+void CFScintillaView::OnUpdateUI(NotificationData* pSCNotification)
+{
+    auto& rCtrl{GetCtrl()};
+
+    auto caretPos = rCtrl.GetCurrentPos();
+    if (caretPos == m_iLastCaretPosition) return;
+    m_iLastCaretPosition = caretPos;
+    Position bracepos1 = -1;
+    Position bracepos2 = -1;
+    if (std::strchr("()[]{}", SafeBraceChar(rCtrl.GetCharAt(caretPos - 1))))
+        bracepos1 = caretPos - 1;
+    else if (std::strchr("()[]{}", SafeBraceChar(rCtrl.GetCharAt(caretPos))))
+        bracepos1 = caretPos;
+    if (bracepos1 >= 0) {
+        bracepos2 = rCtrl.BraceMatch(bracepos1, 0);
+        if (bracepos2 == InvalidPosition)
+            rCtrl.BraceBadLight(bracepos1);
+        else
+            rCtrl.BraceHighlight(bracepos1, bracepos2);
+    } else {
+        rCtrl.BraceHighlight(InvalidPosition, InvalidPosition);
+    }
+}
+
 void CFScintillaView::OnSavePointReached(Scintilla::NotificationData* pSCNotification)
 {
     m_wndChild->UpdateDirtyIndicator(false);
