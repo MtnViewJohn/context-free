@@ -44,7 +44,7 @@ protected:  // control bar embedded members
 	CMFCStatusBar     m_wndStatusBar;
 	CPaneDialog m_wndRenderbar;
 	MessagePane m_wndMessageLog;
-	HMENU m_hSplitMenu;
+	HMENU m_hSplitMenu = NULL;
 
 	int m_intTickleAmount = 1;
 

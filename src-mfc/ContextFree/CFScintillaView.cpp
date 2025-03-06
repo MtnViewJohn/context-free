@@ -379,7 +379,7 @@ void CFScintillaView::OnCharAdded(_Inout_ Scintilla::NotificationData* pSCNotifi
   CheckAutoC();
 }
 
-void CFScintillaView::OnStyleNeeded(NotificationData* pSCNotification)
+void CFScintillaView::OnStyleNeeded(_Inout_ NotificationData* pSCNotification)
 {
     if (m_pDirectFn == nullptr || m_pSciPtr == 0)
         return;
@@ -500,7 +500,7 @@ namespace {
     }
 }
 
-void CFScintillaView::OnUpdateUI(NotificationData* pSCNotification)
+void CFScintillaView::OnUpdateUI(_Inout_ NotificationData* pSCNotification)
 {
     auto& rCtrl{GetCtrl()};
 
@@ -524,12 +524,12 @@ void CFScintillaView::OnUpdateUI(NotificationData* pSCNotification)
     }
 }
 
-void CFScintillaView::OnSavePointReached(Scintilla::NotificationData* pSCNotification)
+void CFScintillaView::OnSavePointReached(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
     m_wndChild->UpdateDirtyIndicator(false);
 }
 
-void CFScintillaView::OnSavePointLeft(Scintilla::NotificationData* pSCNotification)
+void CFScintillaView::OnSavePointLeft(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
     m_wndChild->UpdateDirtyIndicator(true);
 }
