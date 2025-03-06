@@ -62,7 +62,7 @@ CContextFreeDoc* CFScintillaView::GetDocument()
   return static_cast<CContextFreeDoc*>(m_pDocument);
 }
 
-void CFScintillaView::SetAStyle(int style, COLORREF fore, bool bold, bool italic, COLORREF back, int size, const char* face)
+void CFScintillaView::SetAStyle(int style, COLORREF fore, COLORREF back, bool bold, bool italic, int size, const char* face)
 {
   auto& rCtrl{GetCtrl()};
 
@@ -88,14 +88,14 @@ void CFScintillaView::DefineMarker(int marker, Scintilla::MarkerSymbol markerTyp
 void CFScintillaView::EditorStyleChanged()
 {
     GetCtrl().SetTabWidth(EditorParams::TabWidth);
-    SetAStyle(CFscintilla::StyleDefault, EditorParams::DefaultColor, EditorParams::DefaultBold, EditorParams::DefaultItalic);
-    SetAStyle(CFscintilla::StyleComment, EditorParams::CommentColor, EditorParams::CommentBold, EditorParams::CommentItalic);
-    SetAStyle(CFscintilla::StyleSymbol, EditorParams::SymbolColor, EditorParams::SymbolBold, EditorParams::SymbolItalic);
-    SetAStyle(CFscintilla::StyleIdentifier, EditorParams::IdentColor, EditorParams::IdentBold, EditorParams::IdentItalic);
-    SetAStyle(CFscintilla::StyleKeywords, EditorParams::KeywordColor, EditorParams::KeywordBold, EditorParams::KeywordItalic);
-    SetAStyle(CFscintilla::StyleBuiltins, EditorParams::BuiltinColor, EditorParams::BuiltinBold, EditorParams::BuiltinItalic);
-    SetAStyle(CFscintilla::StyleString, EditorParams::FileColor, EditorParams::FileBold, EditorParams::FileItalic);
-    SetAStyle(CFscintilla::StyleNumber, EditorParams::NumberColor, EditorParams::NumberBold, EditorParams::NumberItalic);
+    SetAStyle(CFscintilla::StyleDefault, EditorParams::DefaultColor, RGB(0xff, 0xff, 0xff), EditorParams::DefaultBold, EditorParams::DefaultItalic);
+    SetAStyle(CFscintilla::StyleComment, EditorParams::CommentColor, RGB(0xff, 0xff, 0xff), EditorParams::CommentBold, EditorParams::CommentItalic);
+    SetAStyle(CFscintilla::StyleSymbol, EditorParams::SymbolColor, RGB(0xff, 0xff, 0xff), EditorParams::SymbolBold, EditorParams::SymbolItalic);
+    SetAStyle(CFscintilla::StyleIdentifier, EditorParams::IdentColor, RGB(0xff, 0xff, 0xff), EditorParams::IdentBold, EditorParams::IdentItalic);
+    SetAStyle(CFscintilla::StyleKeywords, EditorParams::KeywordColor, RGB(0xff, 0xff, 0xff), EditorParams::KeywordBold, EditorParams::KeywordItalic);
+    SetAStyle(CFscintilla::StyleBuiltins, EditorParams::BuiltinColor, RGB(0xff, 0xff, 0xff), EditorParams::BuiltinBold, EditorParams::BuiltinItalic);
+    SetAStyle(CFscintilla::StyleString, EditorParams::FileColor, RGB(0xff, 0xff, 0xff), EditorParams::FileBold, EditorParams::FileItalic);
+    SetAStyle(CFscintilla::StyleNumber, EditorParams::NumberColor, RGB(0xff, 0xff, 0xff), EditorParams::NumberBold, EditorParams::NumberItalic);
 }
 
 void CFScintillaView::EditorFontChanged()
@@ -128,7 +128,7 @@ void CFScintillaView::OnInitialUpdate()
   //Setup styles
   auto fontName = Utf16ToUtf8((LPCTSTR)EditorParams::FontName);
   SetAStyle(static_cast<int>(Scintilla::StylesCommon::Default), EditorParams::DefaultColor,
-      EditorParams::DefaultBold, EditorParams::DefaultItalic, 0xffffff, EditorParams::FontSize,
+      RGB(0xff, 0xff, 0xff), EditorParams::DefaultBold, EditorParams::DefaultItalic, EditorParams::FontSize,
       fontName.c_str());
   rCtrl.StyleClearAll();
   EditorFontChanged();
