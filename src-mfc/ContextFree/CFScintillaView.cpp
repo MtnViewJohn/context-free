@@ -133,22 +133,8 @@ void CFScintillaView::OnInitialUpdate()
   rCtrl.StyleClearAll();
   EditorFontChanged();
   EditorStyleChanged();
-
-  //Setup folding
-  rCtrl.SetMarginWidthN(2, 16);
-  rCtrl.SetMarginSensitiveN(2, TRUE);
-  rCtrl.SetMarginTypeN(2, Scintilla::MarginType::Symbol);
-  rCtrl.SetMarginMaskN(2, Scintilla::MaskFolders);
-  rCtrl.SetSCIProperty(_T("fold"), _T("1"));
-
-  //Setup markers
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderOpen), Scintilla::MarkerSymbol::Minus, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0xFF));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::Folder), Scintilla::MarkerSymbol::Plus, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderSub), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderTail), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderEnd), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderOpenMid), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
-  DefineMarker(static_cast<int>(Scintilla::MarkerOutline::FolderMidTail), Scintilla::MarkerSymbol::Empty, RGB(0xff, 0xff, 0xff), RGB(0, 0, 0));
+  rCtrl.SetSelFore(TRUE, RGB(0xff, 0xff, 0xff));
+  rCtrl.SetSelBack(TRUE, RGB(0x11, 0x4d, 0x9c));
 
   //Setup auto completion
   rCtrl.SetWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:");
@@ -162,6 +148,13 @@ void CFScintillaView::OnInitialUpdate()
   //Enable Multiple selection
   rCtrl.SetMultipleSelection(TRUE);
 
+  // Setup indentation
+  rCtrl.SetTabIndents(TRUE);
+  rCtrl.SetBackSpaceUnIndents(TRUE);
+
+  // Brace highlighting
+  SetAStyle(static_cast<int>(Scintilla::StylesCommon::BraceLight), RGB(0x8a, 0x2b, 0xe2), RGB(0xe6, 0xe6, 0xfa));
+  SetAStyle(static_cast<int>(Scintilla::StylesCommon::BraceLight), RGB(0xff, 0, 0), RGB(0xff, 0xff, 0xff), true);
   /*
   auto ConvertColorRefToColorAlpha = [](COLORREF color, uint8_t alpha = 255) -> uint32_t
   {
@@ -365,12 +358,23 @@ void CFScintillaView::OnUpdateLine(CCmdUI* pCmdUI)
   pCmdUI->SetText(sLine);
 }
 
-//Some simple examples of implementing auto completion
 void CFScintillaView::OnCharAdded(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
-  UNREFERENCED_PARAMETER(pSCNotification);
+  // auto unindent
+  if (pSCNotification->ch == '}') {
+      auto& rCtrl{GetCtrl()};
 
-  // TODO autoindent
+      auto pos = rCtrl.GetCurrentPos();
+      auto lineno = rCtrl.LineFromPosition(pos);
+      auto indentPos = rCtrl.GetLineIndentPosition(lineno);
+      if (indentPos + 1 == pos) {
+          auto indent = rCtrl.GetLineIndentation(lineno);
+          indent -= EditorParams::TabWidth;
+          if (indent < 0)
+              indent = 0;
+          rCtrl.SetLineIndentation(lineno, indent);
+      }
+  }
 
   CheckAutoC();
 }
@@ -456,6 +460,36 @@ void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotific
                        Scintilla::ModificationFlags::DeleteText))
   {
       CheckAutoC();
+  }
+
+  if (static_cast<int>(pSCNotification->modificationType) & 
+      static_cast<int>(Scintilla::ModificationFlags::InsertCheck))
+  {
+      // auto indent
+      const char* text = pSCNotification->text;
+      if (std::strcmp(text, "\r\n") == 0 || std::strcmp(text, "\n") == 0 || std::strcmp(text, "\r") == 0) {
+          auto& rCtrl{GetCtrl()};
+
+          auto lineno = rCtrl.LineFromPosition(pSCNotification->position);
+          auto len = rCtrl.GetLine(lineno, nullptr);
+          std::string line(len, ' ');
+          rCtrl.GetLine(lineno, line.data());
+          auto indent = rCtrl.GetLineIndentation(lineno);
+          bool white = true;
+          for (char c: line) {
+              if (c == '{')
+                  indent += EditorParams::TabWidth;
+              if (c == '}' && !white)
+                  indent -= EditorParams::TabWidth;
+              if (c <= 0 || c >= 0x80 || !std::isspace((unsigned char)c))
+                  white = false;
+          }
+          if (indent > 0) {
+              std::string nextLine(indent, ' ');
+              nextLine.insert(0, pSCNotification->text);
+              rCtrl.ChangeInsertion(nextLine.length(), nextLine.c_str());
+          }
+      }
   }
 }
 
