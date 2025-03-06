@@ -47,6 +47,7 @@ protected:
   void OnSavePointReached(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnSavePointLeft(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   void OnUpdateUI(_Inout_ Scintilla::NotificationData* pSCNotification) override;
+  void OnAutoCCharDeleted(_Inout_ Scintilla::NotificationData* pSCNotification) override;
   std::unique_ptr<Scintilla::CScintillaCtrl> CreateScintillaControl() override;
   void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff, 0xff, 0xff), bool bold = false, bool italic = false, int size = -1, const char* face = nullptr);
   void DefineMarker(int marker, Scintilla::MarkerSymbol markerType, COLORREF fore, COLORREF back);

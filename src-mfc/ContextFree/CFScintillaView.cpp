@@ -455,9 +455,10 @@ void CFScintillaView::OnModifyAttemptRO(_Inout_ Scintilla::NotificationData* /*p
 #pragma warning(suppress: 26440)
 void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
-  if (static_cast<int>(pSCNotification->modificationType) & 
-      static_cast<int>(Scintilla::ModificationFlags::Undo | Scintilla::ModificationFlags::Redo |
-                       Scintilla::ModificationFlags::DeleteText))
+    auto& rCtrl{ GetCtrl() };
+
+    if (rCtrl.AutoCActive() && (static_cast<int>(pSCNotification->modificationType) &
+      static_cast<int>(Scintilla::ModificationFlags::Undo | Scintilla::ModificationFlags::Redo)))
   {
       CheckAutoC();
   }
@@ -468,8 +469,6 @@ void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotific
       // auto indent
       const char* text = pSCNotification->text;
       if (std::strcmp(text, "\r\n") == 0 || std::strcmp(text, "\n") == 0 || std::strcmp(text, "\r") == 0) {
-          auto& rCtrl{GetCtrl()};
-
           auto lineno = rCtrl.LineFromPosition(pSCNotification->position);
           auto len = rCtrl.GetLine(lineno, nullptr);
           std::string line(len, ' ');
@@ -522,6 +521,11 @@ void CFScintillaView::OnUpdateUI(_Inout_ NotificationData* pSCNotification)
     } else {
         rCtrl.BraceHighlight(InvalidPosition, InvalidPosition);
     }
+}
+
+void CFScintillaView::OnAutoCCharDeleted(_Inout_ Scintilla::NotificationData* pSCNotification)
+{
+    CheckAutoC();
 }
 
 void CFScintillaView::OnSavePointReached(_Inout_ Scintilla::NotificationData* pSCNotification)
@@ -577,8 +581,8 @@ void CFScintillaView::CheckAutoC()
                 total += std::strlen(*it) + 1;
             std::string list;
             list.reserve(total);
-            for (auto it = first; it != last; ++it) {
-                list.append(*it);
+            for (; first != last; ++first) {
+                list.append(*first);
                 list.append(" ");
             }
             list.pop_back();
