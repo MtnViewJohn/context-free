@@ -64,13 +64,13 @@ public:
 
 	void SetLuminanceBarWidth	(int w);
 
-	double GetHue() const        { return m_COLORSPACE == HLSspace ? m_dblHue : 360.0 * m_dblHue; };
+	double GetHue() const        { return m_dblHue; };
 	double GetLuminance() const  { return m_dblLum; };
 	double GetSaturation() const { return m_dblSat; };
 	double GetValue() const      { return m_dblLum; };
 	COLORREF GetColor() const    { return m_colorNew; };
 
-	void SetHue(double Hue)               { m_dblHue = m_COLORSPACE == HLSspace ? Hue : Hue / 360.0; };
+	void SetHue(double Hue)               { m_dblHue = Hue; };
 	void SetLuminance(double Luminance)   { m_dblLum = Luminance; };
 	void SetSaturation(double Saturation) { m_dblSat = Saturation; };
 	void SetValue(double value)           { m_dblLum = value; };
