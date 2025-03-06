@@ -254,6 +254,8 @@ BOOL PrefsPageEditor::OnInitDialog()
 
 	m_ctrlColorPicker.SetType(myCMFCColorPickerCtrl::COLORTYPE::PICKER);
 	m_ctrlLumPicker.SetType(myCMFCColorPickerCtrl::COLORTYPE::LUMINANCE);
+	m_ctrlColorPicker.SetSpace(myCMFCColorPickerCtrl::COLORSPACE::HSVspace);
+	m_ctrlLumPicker.SetSpace(myCMFCColorPickerCtrl::COLORSPACE::HSVspace);
 	m_ctrlRedPicker.SetType(myCMFCColorPickerCtrl::COLORTYPE::RED);
 	m_ctrlGreenPicker.SetType(myCMFCColorPickerCtrl::COLORTYPE::GREEN);
 	m_ctrlBluePicker.SetType(myCMFCColorPickerCtrl::COLORTYPE::BLUE);
@@ -341,7 +343,7 @@ void PrefsPageEditor::OnClickedColorPicker()
 
 void PrefsPageEditor::OnClickedLumPicker()
 {
-	m_ctrlColorPicker.SetLuminance(m_ctrlLumPicker.GetLuminance());
+	m_ctrlColorPicker.SetValue(m_ctrlLumPicker.GetValue());
 	COLORREF col = m_ctrlLumPicker.GetColor();
 	m_ctrlRedPicker.SetColor(col);
 	m_ctrlGreenPicker.SetColor(col);

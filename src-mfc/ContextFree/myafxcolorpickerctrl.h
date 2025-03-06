@@ -38,6 +38,7 @@ public:
 public:
 
 	enum COLORTYPE { CURRENT, LUMINANCE, RED, GREEN, BLUE, PICKER, HEX, HEX_GREYSCALE };
+	enum COLORSPACE { HLSspace, HSVspace };
 
 // Operations
 public:
@@ -51,23 +52,28 @@ protected:
 // Implementation
 public:
 	void SetType(COLORTYPE colorType);
+	void SetSpace(COLORSPACE colorSpace);
 	void SetPalette(CPalette*	pPalette);
 
 	void SetOriginalColor(COLORREF ref);
 
 	void SetHLS(double hue,double luminance, double saturation, BOOL bInvalidate = TRUE);
 	void GetHLS(double *hue,double *luminance, double *saturation);
+	void SetHSV(double hue, double saturation, double value, BOOL bInvalidate = TRUE);
+	void GetHSV(double* hue, double* saturation, double* value);
 
 	void SetLuminanceBarWidth	(int w);
 
-	double GetHue() const        { return m_dblHue; };
+	double GetHue() const        { return m_COLORSPACE == HLSspace ? m_dblHue : 360.0 * m_dblHue; };
 	double GetLuminance() const  { return m_dblLum; };
 	double GetSaturation() const { return m_dblSat; };
+	double GetValue() const      { return m_dblLum; };
 	COLORREF GetColor() const    { return m_colorNew; };
 
-	void SetHue(double Hue)               { m_dblHue = Hue; };
+	void SetHue(double Hue)               { m_dblHue = m_COLORSPACE == HLSspace ? Hue : Hue / 360.0; };
 	void SetLuminance(double Luminance)   { m_dblLum = Luminance; };
 	void SetSaturation(double Saturation) { m_dblSat = Saturation; };
+	void SetValue(double value)           { m_dblLum = value; };
 	void SetColor(COLORREF Color);
 
 	void SelectCellHexagon(BYTE R, BYTE G, BYTE B);
@@ -117,6 +123,7 @@ protected:
 // Attributes:
 protected:
 	COLORTYPE m_COLORTYPE;
+	COLORSPACE m_COLORSPACE;
 
 	double    m_dblLum, m_dblSat, m_dblHue;
 	COLORREF  m_colorNew;
