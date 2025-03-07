@@ -37,7 +37,7 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 	void Message(LPCSTR msg);
-	void ShowMessages();
+	void ShowMessages(BOOL bShow = TRUE);
 	void ForwardLink(LPCTSTR link);
 
 protected:  // control bar embedded members

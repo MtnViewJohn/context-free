@@ -323,6 +323,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 		if (!moved)
 			::DeleteFile(tempMovie16.c_str());	// clean up unsaved movies
 		m_strMovieFile.clear();					// file is moved or deleted
+		m_wndParent->ShowMessages(FALSE);
 	}
 
 	switch (m_ePostRenderAction) {
@@ -621,11 +622,12 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	int width = useAnimateSize ? renderParams.AnimateWidth : renderParams.width;
 	int height = useAnimateSize ? renderParams.AnimateHeight : renderParams.height;
 
+	m_vwOutputView->m_Renderer = nullptr;
 	m_Renderer.reset();		// TODO move deletion into async thread
 	m_Engine.reset();
 	m_WinCanvas.reset();
 	m_Canvas = nullptr;
-	m_vwOutputView->m_Renderer = nullptr;
+	m_vwOutputView->Invalidate();
 
 	m_Engine = CFDG::ParseFile(m_System->mName.c_str(), m_System, renderParams.variation);
 	if (!m_Engine) {
@@ -678,6 +680,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			m_AnimationCanvas.reset();
 			return;
 		}
+
+		m_wndParent->ShowMessages();
 
 		m_strMovieFile = m_AnimationCanvas->mFileName;
 	}

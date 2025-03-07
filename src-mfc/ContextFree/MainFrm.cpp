@@ -87,9 +87,14 @@ void CMainFrame::Message(LPCSTR msg)
 	m_wndMessageLog.Message(msg);
 }
 
-void CMainFrame::ShowMessages()
+void CMainFrame::ShowMessages(BOOL bShow)
 {
-	m_wndMessageLog.SetAutoHideMode(FALSE, CBRS_ALIGN_RIGHT, NULL, 0);
+	m_wndMessageLog.ShowPane(bShow, FALSE, bShow);
+	if (!bShow) {
+		CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
+		if (c)
+			c->m_vwCfdgEditor->SetFocus();
+	}
 }
 
 void CMainFrame::ForwardLink(LPCTSTR link)
