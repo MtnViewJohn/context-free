@@ -205,7 +205,7 @@ myCMFCColorPickerCtrl::myCMFCColorPickerCtrl()
 	m_colorNew = 0;
 	m_colorOriginal = 0;
 
-	CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+	CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLumVal);
 
 	m_nLumBarWidth  = AFX_DEFAULT_WIDTH_OF_LUMINANCE_BAR;
 	m_COLORTYPE = PICKER;
@@ -337,9 +337,9 @@ void myCMFCColorPickerCtrl::SetColor(COLORREF Color)
 {
 	m_colorNew = Color;
 	if (m_COLORSPACE == HLSspace)
-		CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+		CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLumVal);
 	else
-		CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+		CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLumVal);
 
 	if (m_dblHue < 0.)
 		m_dblHue = 0.;
@@ -361,9 +361,9 @@ BOOL myCMFCColorPickerCtrl::SelectCellHexagon(int x, int y)
 		{
 			m_colorNew = pCell->m_CellColor;
 			if (m_COLORSPACE == HLSspace)
-				CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+				CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLumVal);
 			else
-				CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+				CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLumVal);
 
 			if (m_dblHue < 0.)
 				m_dblHue = 0.;
@@ -662,11 +662,11 @@ void myCMFCColorPickerCtrl::SetHLS(double hue, double luminance, double saturati
 		m_dblSat = saturation;
 
 	if (luminance != -1)
-		m_dblLum = luminance;
+		m_dblLumVal = luminance;
 
 	m_colorNew = m_COLORSPACE == HLSspace
-		? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-		: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+		? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+		: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 	if (bInvalidate && GetSafeHwnd() != NULL)
 	{
@@ -683,7 +683,7 @@ void myCMFCColorPickerCtrl::SetHSV(double hue, double saturation, double value, 
 void myCMFCColorPickerCtrl::GetHLS(double *hue, double *luminance, double *saturation)
 {
 	*hue = m_dblHue;
-	*luminance = m_dblLum;
+	*luminance = m_dblLumVal;
 	*saturation = m_dblSat;
 }
 
@@ -720,10 +720,10 @@ void myCMFCColorPickerCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			CRect rectCursorOld = GetCursorRect();
 			rectCursorOld.InflateRect(1, 1);
 
-			m_dblLum = LumFromPoint(point.y);
+			m_dblLumVal = LumFromPoint(point.y);
 			m_colorNew = m_COLORSPACE == HLSspace
-				? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-				: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+				? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+				: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 			InvalidateRect(rectCursorOld);
 			InvalidateRect(GetCursorRect());
@@ -764,8 +764,8 @@ void myCMFCColorPickerCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				m_dblHue *= 360.0;
 			m_dblSat = 1. -(double) point.y / rectClient.Height();
 			m_colorNew = m_COLORSPACE == HLSspace
-				? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-				: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+				? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+				: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 			InvalidateRect(rectCursorOld);
 			InvalidateRect(GetCursorRect());
@@ -790,8 +790,8 @@ void myCMFCColorPickerCtrl::OnMouseMove(UINT nFlags, CPoint point)
 		}
 
 		m_colorNew = m_COLORSPACE == HLSspace
-			? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-			: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+			? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+			: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 		InvalidateRect(rectCursorOld);
 		InvalidateRect(GetCursorRect());
@@ -913,8 +913,8 @@ void myCMFCColorPickerCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (m_dblHue != dblHue || m_dblSat != dblSat)
 			{
 				m_colorNew = m_COLORSPACE == HLSspace
-					? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-					: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+					? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+					: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 				InvalidateRect(rectCursorOld);
 				InvalidateRect(GetCursorRect());
@@ -929,25 +929,25 @@ void myCMFCColorPickerCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			CRect rectCursorOld = GetCursorRect();
 			rectCursorOld.InflateRect(1, 1);
 
-			double dblLum = m_dblLum;
+			double dblLum = m_dblLumVal;
 
 			switch (nChar)
 			{
 			case VK_UP:
-				m_dblLum += dblDelta;
+				m_dblLumVal += dblDelta;
 				break;
 
 			case VK_DOWN:
-				m_dblLum -= dblDelta;
+				m_dblLumVal -= dblDelta;
 				break;
 			}
 
-			m_dblLum = std::min(1., std::max(0., m_dblLum));
-			if (dblLum != m_dblLum)
+			m_dblLumVal = std::min(1., std::max(0., m_dblLumVal));
+			if (dblLum != m_dblLumVal)
 			{
 				m_colorNew = m_COLORSPACE == HLSspace
-					? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
-					: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+					? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLumVal, m_dblSat)
+					: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLumVal);
 
 				InvalidateRect(rectCursorOld);
 				InvalidateRect(GetCursorRect());
@@ -1387,7 +1387,7 @@ CPoint myCMFCColorPickerCtrl::GetCursorPos()
 	switch (m_COLORTYPE)
 	{
 	case LUMINANCE:
-		point =  CPoint(rectClient.left + m_nLumBarWidth + 6, PointFromLum(m_dblLum));
+		point =  CPoint(rectClient.left + m_nLumBarWidth + 6, PointFromLum(m_dblLumVal));
 		break;
 
 	case RED:

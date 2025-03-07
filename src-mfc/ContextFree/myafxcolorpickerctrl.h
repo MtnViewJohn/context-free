@@ -66,15 +66,15 @@ public:
 	void SetLuminanceBarWidth	(int w);
 
 	double GetHue() const        { return m_dblHue; };
-	double GetLuminance() const  { return m_dblLum; };
+	double GetLuminance() const  { return m_dblLumVal; };
 	double GetSaturation() const { return m_dblSat; };
-	double GetValue() const      { return m_dblLum; };
+	double GetValue() const      { return m_dblLumVal; };
 	COLORREF GetColor() const    { return m_colorNew; };
 
 	void SetHue(double Hue)               { m_dblHue = Hue; };
-	void SetLuminance(double Luminance)   { m_dblLum = Luminance; };
+	void SetLuminance(double Luminance)   { m_dblLumVal = Luminance; };
 	void SetSaturation(double Saturation) { m_dblSat = Saturation; };
-	void SetValue(double value)           { m_dblLum = value; };
+	void SetValue(double Value)           { m_dblLumVal = Value; };
 	void SetColor(COLORREF Color);
 
 	void SelectCellHexagon(BYTE R, BYTE G, BYTE B);
@@ -128,7 +128,7 @@ protected:
 	COLORTYPE m_COLORTYPE;
 	COLORSPACE m_COLORSPACE;
 
-	double    m_dblLum, m_dblSat, m_dblHue;
+	double    m_dblLumVal, m_dblSat, m_dblHue;
 	COLORREF  m_colorNew;
 	COLORREF  m_colorOriginal;
 
