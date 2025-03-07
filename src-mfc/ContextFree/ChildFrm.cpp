@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_WM_CLOSE()
 	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
 	ON_COMMAND_RANGE(ID_EDIT_INDENT, ID_EDIT_UNDENT, &CChildFrame::OnEditIndent)
+	ON_WM_MOVE()
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -191,6 +192,23 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 		m_wndSplitterCfdg.SetColumnInfo(1, cr.Width() * 2 / 3, 50);
 
 		m_wndSplitterCfdg.RecalcLayout();
+	}
+
+	if (m_vwCfdgEditor) {
+		auto& rCtrl{m_vwCfdgEditor->GetCtrl()};
+		if (rCtrl.CallTipActive())
+			rCtrl.CallTipCancel();
+	}
+}
+
+void CChildFrame::OnMove(int x, int y)
+{
+	CMDIChildWndEx::OnMove(x, y);
+
+	if (m_vwCfdgEditor) {
+		auto& rCtrl{m_vwCfdgEditor->GetCtrl()};
+		if (rCtrl.CallTipActive())
+			rCtrl.CallTipCancel();
 	}
 }
 

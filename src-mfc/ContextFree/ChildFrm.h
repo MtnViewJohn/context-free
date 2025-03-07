@@ -111,4 +111,5 @@ public:
 	virtual HICON GetFrameIcon() const;
 	afx_msg void OnInsertChars(UINT id);
 	afx_msg void OnEditIndent(UINT id);
+	afx_msg void OnMove(int x, int y);
 };
