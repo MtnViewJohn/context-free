@@ -41,6 +41,7 @@ static const float cfxOffset[] = { -0.5, -1.0, -0.5, 0.5, 1.0, 0.5 };
 static const float cfyOffset[] = { AFX_YOFFSET, 0.0, -AFX_YOFFSET, -AFX_YOFFSET, 0.0, AFX_YOFFSET };
 
 static const COLORREF colorWhite = RGB(255, 255, 255);
+static const COLORREF colorLightGray = RGB(200, 200, 200);
 static const COLORREF colorBlack = RGB(0, 0, 0);
 
 static long __stdcall AlignColor(long lPart, const long lDelta)
@@ -210,7 +211,12 @@ myCMFCColorPickerCtrl::myCMFCColorPickerCtrl()
 	m_COLORTYPE = PICKER;
 	m_COLORSPACE = HLSspace;
 
-	m_dblLum = 0.500;
+	m_nRadius = 0;
+	m_nCenterX = 0;
+	m_nCenterY = 0;
+	m_nSizeX = 0;
+	m_nSizeY = 0;
+
 	m_pPalette = NULL;
 }
 
@@ -335,6 +341,9 @@ void myCMFCColorPickerCtrl::SetColor(COLORREF Color)
 	else
 		CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
 
+	if (m_dblHue < 0.)
+		m_dblHue = 0.;
+
 	if (GetSafeHwnd() != NULL)
 	{
 		RedrawWindow();
@@ -355,6 +364,10 @@ BOOL myCMFCColorPickerCtrl::SelectCellHexagon(int x, int y)
 				CDrawingManager::RGBtoHSL(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
 			else
 				CDrawingManager::RGBtoHSV(m_colorNew, &m_dblHue, &m_dblSat, &m_dblLum);
+
+			if (m_dblHue < 0.)
+				m_dblHue = 0.;
+
 			return TRUE;
 		}
 	}
@@ -500,6 +513,62 @@ void myCMFCColorPickerCtrl::DrawPicker(CDC* pDC)
 	pDC->DrawState(CPoint(0, 0), szColorPicker, &m_bmpPicker, DSS_NORMAL);
 }
 
+void myCMFCColorPickerCtrl::DrawCircle(CDC* pDC)
+{
+	CRect rectClient;
+	GetClientRect(rectClient);
+
+	CSize szColorPicker = rectClient.Size();
+
+	if (m_bmpPicker.GetSafeHandle() == NULL)
+	{
+		m_nCenterX = szColorPicker.cx / 2;
+		m_nCenterY = szColorPicker.cy / 2;
+		m_nRadius = std::min(m_nCenterX, m_nCenterY) - 2;
+		m_nSizeX = szColorPicker.cx;
+		m_nSizeY = szColorPicker.cy;
+
+		// Prepare picker's bitmap:
+		CDC dcMem;
+		if (dcMem.CreateCompatibleDC(pDC) && m_bmpPicker.CreateCompatibleBitmap(pDC, szColorPicker.cx, szColorPicker.cy))
+		{
+			CBitmap* pOldBmp = dcMem.SelectObject(&m_bmpPicker);
+
+			int nStep = (GetGlobalData()->m_nBitsPerPixel > 8) ? 1 : 4;
+
+			for (int i = 0; i < szColorPicker.cy; i += nStep)
+			{
+				for (int j = 0; j < szColorPicker.cx; j += nStep)
+				{
+					CPoint pt(j, i);
+					auto [hue, sat] = HueSatFromPoint(pt);
+					COLORREF color = pDC->GetBkColor();
+					if (sat <= 1.)
+					{
+						color = m_COLORSPACE == HLSspace
+							? CDrawingManager::HLStoRGB_ONE(hue, AFX_DEFAULT_LUMINANCE, sat)
+							: CDrawingManager::HSVtoRGB(hue, sat, AFX_DEFAULT_VALUE);
+					}
+					if (GetGlobalData()->m_nBitsPerPixel > 8) // High/True color
+					{
+						// Draw exact color:
+						dcMem.SetPixelV(pt, color);
+					} else
+					{
+						// Draw dithered rectangle:
+						CBrush br(color);
+						dcMem.FillRect(CRect(pt, CSize(nStep, nStep)), &br);
+					}
+				}
+			}
+
+			dcMem.SelectObject(pOldBmp);
+		}
+	}
+
+	pDC->DrawState(CPoint(0, 0), szColorPicker, &m_bmpPicker, DSS_NORMAL);
+}
+
 void myCMFCColorPickerCtrl :: DrawLuminanceBar(CDC* pDC)
 {
 	CRect rectClient;
@@ -543,9 +612,9 @@ void myCMFCColorPickerCtrl::DrawCursor(CDC* pDC, const CRect& rect)
 {
 	const int nHalfSize = rect.Width() / 2; // Assume square
 
-	if (m_COLORTYPE == PICKER)
+	if (m_COLORTYPE == PICKER || m_COLORTYPE == CIRCLE)
 	{
-		COLORREF colorFocus = (GetFocus() == this) ? colorBlack : colorWhite;
+		COLORREF colorFocus = (GetFocus() == this) ? colorBlack : colorLightGray;
 
 		pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.top, 3, 5, colorFocus); // Top
 		pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.bottom - 5, 3, 5, colorFocus); // Bottom
@@ -703,6 +772,32 @@ void myCMFCColorPickerCtrl::OnMouseMove(UINT nFlags, CPoint point)
 		}
 		break;
 
+	case CIRCLE:
+	{
+		CRect rectCursorOld = GetCursorRect();
+		rectCursorOld.InflateRect(1, 1);
+
+		auto [newHue, newSat] = HueSatFromPoint(point);
+
+		if ((nFlags & MK_CONTROL) == 0)
+		{
+			m_dblHue = newHue;
+		}
+
+		if ((nFlags & MK_SHIFT) == 0)
+		{
+			m_dblSat = std::min(1., newSat);
+		}
+
+		m_colorNew = m_COLORSPACE == HLSspace
+			? CDrawingManager::HLStoRGB_ONE(m_dblHue, m_dblLum, m_dblSat)
+			: CDrawingManager::HSVtoRGB(m_dblHue, m_dblSat, m_dblLum);
+
+		InvalidateRect(rectCursorOld);
+		InvalidateRect(GetCursorRect());
+	}
+	break;
+
 	case HEX:
 	case HEX_GREYSCALE:
 		if (!SelectCellHexagon(point.x, point.y))
@@ -771,11 +866,13 @@ UINT myCMFCColorPickerCtrl::OnGetDlgCode()
 void myCMFCColorPickerCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	const double dblDelta = .05;
-	double dblDeltaHue = dblDelta * (m_COLORSPACE == HLSspace ? 1. : 360.);
+	double hueMax = m_COLORSPACE == HLSspace ? 1. : 360.;
+	double dblDeltaHue = dblDelta * hueMax;
 
 	switch (m_COLORTYPE)
 	{
 	case PICKER:
+	case CIRCLE:
 		{
 			CRect rectCursorOld = GetCursorRect();
 			rectCursorOld.InflateRect(1, 1);
@@ -803,7 +900,15 @@ void myCMFCColorPickerCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 
 			m_dblSat = std::min(1., std::max(0., m_dblSat));
-			m_dblHue = std::min(m_COLORSPACE == HLSspace ? 1. : 360., std::max(0., m_dblHue));
+			if (m_COLORTYPE == PICKER)
+			{
+				m_dblHue = std::min(hueMax, std::max(0., m_dblHue));
+			}
+			else
+			{
+				m_dblHue = std::fmod(m_dblHue + hueMax, hueMax);
+			}
+
 
 			if (m_dblHue != dblHue || m_dblSat != dblSat)
 			{
@@ -1113,6 +1218,11 @@ void myCMFCColorPickerCtrl::DrawItem(LPDRAWITEMSTRUCT lpDIS)
 		DrawCursor(pDC, GetCursorRect());
 		pDC->Draw3dRect(rectClient, GetGlobalData()->clrBtnDkShadow, GetGlobalData()->clrBtnHilite);
 		break;
+	case CIRCLE:
+		DrawCircle(pDC);
+		DrawCursor(pDC, GetCursorRect());
+		//pDC->Draw3dRect(rectClient, GetGlobalData()->clrBtnDkShadow, GetGlobalData()->clrBtnHilite);
+		break;
 
 	case LUMINANCE:
 		DrawLuminanceBar(pDC);
@@ -1214,6 +1324,31 @@ COLORREF myCMFCColorPickerCtrl::ReplaceColor(int c)
 	}
 }
 
+std::pair<double, double> myCMFCColorPickerCtrl::HueSatFromPoint(CPoint point)
+{
+	if (m_COLORTYPE == PICKER)
+	{
+		double hue = ((double)point.x / (double)m_nSizeX) * (m_COLORSPACE == HLSspace ? 1. : 360.);
+		double sat = (double)point.y / (double)m_nSizeY;
+		return { hue, sat };
+	}
+
+	if (m_COLORTYPE == CIRCLE)
+	{
+		double deltaX = point.x - m_nCenterX, deltaY = point.y - m_nCenterY;
+		double hue = std::atan2(deltaY, deltaX);
+		if (hue < 0.) hue += 2 * AFX_PI;
+		hue *= (m_COLORSPACE == HLSspace) ? (0.5 / AFX_PI)
+			: (180. / AFX_PI);
+		double sat = std::sqrt(deltaX * deltaX + deltaY * deltaY) / m_nRadius;
+
+		return { hue, sat };
+	}
+
+	ASSERT(FALSE);
+	return std::pair<double, double>();
+}
+
 COLORREF myCMFCColorPickerCtrl::ColorFromPoint(int nY)
 {
 	ASSERT(m_COLORTYPE >= RED && m_COLORTYPE <= BLUE);
@@ -1262,10 +1397,16 @@ CPoint myCMFCColorPickerCtrl::GetCursorPos()
 		break;
 
 	case PICKER:
-		point =  CPoint((long)((double) rectClient.Width() * m_dblHue / (m_COLORSPACE == HLSspace ? 1. : 360.)),
+		point = CPoint((long)((double)rectClient.Width() * m_dblHue / (m_COLORSPACE == HLSspace ? 1. : 360.)),
 			(long)((1. - m_dblSat) * rectClient.Height()));
 		break;
 
+	case CIRCLE: {
+		double angle = m_dblHue * AFX_PI * (m_COLORSPACE == HLSspace ? 2. : (1. / 180.));
+		point = CPoint( m_nCenterX + (int)((double)m_nRadius * m_dblSat * std::cos(angle)),
+						m_nCenterY + (int)((double)m_nRadius * m_dblSat * std::sin(angle)));
+		break;
+	}
 	case HEX:
 	case HEX_GREYSCALE:
 	default:
@@ -1282,6 +1423,7 @@ CRect myCMFCColorPickerCtrl::GetCursorRect()
 	switch (m_COLORTYPE)
 	{
 	case PICKER:
+	case CIRCLE:
 		rect = CRect(GetCursorPos(), CSize(AFX_PICKER_CURSOR_SIZE, AFX_PICKER_CURSOR_SIZE));
 		break;
 
@@ -1322,6 +1464,7 @@ void myCMFCColorPickerCtrl::OnLButtonDblClk(UINT nFlags, CPoint point)
 	switch (m_COLORTYPE)
 	{
 	case PICKER:
+	case CIRCLE:
 	case HEX:
 	case HEX_GREYSCALE:
 		{

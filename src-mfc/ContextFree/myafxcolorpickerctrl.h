@@ -11,6 +11,7 @@
 #pragma once
 
 #include "afxcontrolbarutil.h"
+#include <utility>
 
 #include <__atlmfc_core.h>
 #pragma warning(push)
@@ -37,7 +38,7 @@ public:
 // Attributes
 public:
 
-	enum COLORTYPE { CURRENT, LUMINANCE, RED, GREEN, BLUE, PICKER, HEX, HEX_GREYSCALE };
+	enum COLORTYPE { CURRENT, LUMINANCE, RED, GREEN, BLUE, PICKER, CIRCLE, HEX, HEX_GREYSCALE };
 	enum COLORSPACE { HLSspace, HSVspace };
 
 // Operations
@@ -60,7 +61,7 @@ public:
 	void SetHLS(double hue,double luminance, double saturation, BOOL bInvalidate = TRUE);
 	void GetHLS(double *hue,double *luminance, double *saturation);
 	void SetHSV(double hue, double saturation, double value, BOOL bInvalidate = TRUE);
-	void GetHSV(double* hue, double* saturation, double* value);
+	void GetHSV(double *hue, double *saturation, double *value);
 
 	void SetLuminanceBarWidth	(int w);
 
@@ -84,6 +85,7 @@ protected:
 
 	void DrawHex(CDC* pDC);
 	void DrawPicker(CDC* pDC);
+	void DrawCircle(CDC* pDC);
 	void DrawLuminanceBar(CDC* pDC);
 	void DrawColorBar(CDC* pDC);
 
@@ -97,6 +99,7 @@ protected:
 	COLORREF ColorFromPoint(int nY);
 	int PointFromColor(COLORREF col);
 	COLORREF ReplaceColor(int c);
+	std::pair<double, double> HueSatFromPoint(CPoint point);
 
 	CPoint GetCursorPos();
 	CRect GetCursorRect();
@@ -128,6 +131,12 @@ protected:
 	double    m_dblLum, m_dblSat, m_dblHue;
 	COLORREF  m_colorNew;
 	COLORREF  m_colorOriginal;
+
+	int       m_nRadius;
+	int       m_nCenterX;
+	int       m_nCenterY;
+	int       m_nSizeX;
+	int       m_nSizeY;
 
 	int       m_nLumBarWidth;
 
