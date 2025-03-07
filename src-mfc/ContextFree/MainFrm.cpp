@@ -65,7 +65,8 @@ END_MESSAGE_MAP()
 static UINT indicators[] =
 {
 	ID_INDICATOR_PROGRESS,	// progress bar
-	ID_INDICATOR_STATUS,	// status test
+	ID_INDICATOR_STATUS,	// status text
+	ID_INDICATOR_LINE,		// line#
 };
 
 // CMainFrame construction/destruction

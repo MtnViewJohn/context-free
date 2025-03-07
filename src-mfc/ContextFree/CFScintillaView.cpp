@@ -31,11 +31,11 @@ BEGIN_MESSAGE_MAP(CFScintillaView, CScintillaView) //NOLINT(modernize-avoid-c-ar
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_VIEW_LINENUMBERS, &CFScintillaView::OnUpdateOptionsViewLinenumbers)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_ADDMARKER, &CFScintillaView::OnUpdateOptionsAddmarker)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_FOLD_MARGIN, &CFScintillaView::OnUpdateOptionsFoldMargin)
-  ON_UPDATE_COMMAND_UI(ID_INDICATOR_LINE, &CFScintillaView::OnUpdateLine)
   ON_UPDATE_COMMAND_UI(ID_INDICATOR_STYLE, &CFScintillaView::OnUpdateStyle)
   ON_UPDATE_COMMAND_UI(ID_INDICATOR_FOLD, &CFScintillaView::OnUpdateFold)
   ON_UPDATE_COMMAND_UI(ID_INDICATOR_OVR, &CFScintillaView::OnUpdateInsert)
 #endif
+  ON_UPDATE_COMMAND_UI(ID_INDICATOR_LINE, &CFScintillaView::OnUpdateLine)
   ON_WM_ACTIVATE()
   ON_WM_CREATE()
 END_MESSAGE_MAP()
@@ -349,11 +349,11 @@ void CFScintillaView::OnUpdateLine(CCmdUI* pCmdUI)
 {
   auto& rCtrl{GetCtrl()};
   const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  const Scintilla::Position nColumn{rCtrl.GetColumn(nPos)};
+  const auto nLine{rCtrl.LineFromPosition(nPos) + 1};
+  const Scintilla::Position nColumn{rCtrl.GetColumn(nPos) + 1};
 
   CString sLine;
-  // TBD sLine.Format(IDS_LINE_INDICATOR, nLine, nColumn, nPos);
+  sLine.Format(_T("Line: %d, Col: %d"), nLine, nColumn);
 #pragma warning(suppress: 26486)
   pCmdUI->SetText(sLine);
 }
