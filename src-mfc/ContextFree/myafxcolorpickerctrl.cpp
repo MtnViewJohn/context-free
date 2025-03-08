@@ -614,12 +614,14 @@ void myCMFCColorPickerCtrl::DrawCursor(CDC* pDC, const CRect& rect)
 
 	if (m_COLORTYPE == PICKER || m_COLORTYPE == CIRCLE)
 	{
-		COLORREF colorFocus = (GetFocus() == this) ? colorBlack : colorLightGray;
-
-		pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.top, 3, 5, colorFocus); // Top
-		pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.bottom - 5, 3, 5, colorFocus); // Bottom
-		pDC->FillSolidRect(rect.left, (rect.top + nHalfSize) - 1, 5, 3, colorFocus); // Left
-		pDC->FillSolidRect(rect.right - 5, (rect.top + nHalfSize) - 1, 5, 3, colorFocus); // Right
+		if (GetFocus() == this) {
+			pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.top, 3, 5, colorBlack); // Top
+			pDC->FillSolidRect((rect.left + nHalfSize) - 1, rect.bottom - 5, 3, 5, colorBlack); // Bottom
+			pDC->FillSolidRect(rect.left, (rect.top + nHalfSize) - 1, 5, 3, colorBlack); // Left
+			pDC->FillSolidRect(rect.right - 5, (rect.top + nHalfSize) - 1, 5, 3, colorBlack); // Right
+		} else {
+			pDC->DrawFocusRect(&rect);
+		}
 	}
 	else if (m_COLORTYPE >= LUMINANCE && m_COLORTYPE <= BLUE)
 	{
