@@ -1338,7 +1338,7 @@ std::pair<double, double> myCMFCColorPickerCtrl::HueSatFromPoint(CPoint point)
 	if (m_COLORTYPE == CIRCLE)
 	{
 		double deltaX = point.x - m_nCenterX, deltaY = point.y - m_nCenterY;
-		double hue = std::atan2(deltaY, deltaX);
+		double hue = std::atan2(-deltaY, deltaX);
 		if (hue < 0.) hue += 2 * AFX_PI;
 		hue *= (m_COLORSPACE == HLSspace) ? (0.5 / AFX_PI)
 			: (180. / AFX_PI);
@@ -1406,7 +1406,7 @@ CPoint myCMFCColorPickerCtrl::GetCursorPos()
 	case CIRCLE: {
 		double angle = m_dblHue * AFX_PI * (m_COLORSPACE == HLSspace ? 2. : (1. / 180.));
 		point = CPoint( m_nCenterX + (int)((double)m_nRadius * m_dblSat * std::cos(angle)),
-						m_nCenterY + (int)((double)m_nRadius * m_dblSat * std::sin(angle)));
+						m_nCenterY - (int)((double)m_nRadius * m_dblSat * std::sin(angle)));
 		break;
 	}
 	case HEX:
