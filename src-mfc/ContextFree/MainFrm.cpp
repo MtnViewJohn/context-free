@@ -338,8 +338,12 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			pCmdUI->SetText(f16.c_str());
 		}
 		[[fallthrough]];
-	case IDC_FRAME_LABEL:
 	case IDC_FRAME_SPIN:
+		if (!c) break;
+		::SendMessage(hDlgItem, UDM_SETRANGE32, (WPARAM)0, (LPARAM)c->renderParams.AnimateFrameCount);
+		::SendMessage(hDlgItem, UDM_SETPOS32, 0, (LPARAM)c->renderParams.MovieFrame);
+		[[fallthrough]];
+	case IDC_FRAME_LABEL:
 		if (!c) break;
 		::ShowWindow(hDlgItem, (c->renderParams.action == RenderParameters::RenderActions::Animate &&
 								c->renderParams.animateFrame) ? SW_SHOWNA : SW_HIDE);
@@ -408,16 +412,13 @@ void CMainFrame::OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result)
 {
 	LPNMUPDOWN pUpDown = (LPNMUPDOWN)pNotifyStruct;
 	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
-	if (c) {
-		int v = c->renderParams.MovieFrame - pUpDown->iDelta;
-		if (v < 1)
-			v = 1;
-		if (v > c->renderParams.AnimateFrameCount)
-			v = c->renderParams.AnimateFrameCount;
-		RenderParameters::Modify(c->renderParams.MovieFrame, v);
+	if (c && pUpDown->iPos + pUpDown->iDelta > 0) {
+		RenderParameters::Modify(c->renderParams.MovieFrame, pUpDown->iPos + pUpDown->iDelta);
+		*result = 0;		// allow valid change
+		return;
 	}
 
-	*result = 1;	// always block
+	*result = 1;			// block invalid changes
 }
 
 void CMainFrame::OnRenderEdits(UINT id)
@@ -426,7 +427,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 	if (!c) return;
 
 	HWND hDlg = m_wndRenderbar.GetSafeHwnd();
-	HWND hDlgItem = ::GetDlgItem(hDlg, id);
+	HWND hDlgItem = NULL;
 
 	std::string buf(20, ' ');
 	auto len = ::GetDlgItemTextA(hDlg, id, buf.data(), 20);
@@ -447,6 +448,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 				c->renderParams.variation = v;
 			}
 		}
+		hDlgItem = GetDlgItem(IDC_VARIATION_SPIN)->GetSafeHwnd();
 		::SendMessage(hDlgItem, UDM_SETPOS32, 0, (LPARAM)c->renderParams.variation);
 		break;
 	case IDC_FRAME_EDIT:
@@ -457,6 +459,8 @@ void CMainFrame::OnRenderEdits(UINT id)
 		else if (i > c->renderParams.AnimateFrameCount)
 			i = c->renderParams.AnimateFrameCount;
 		RenderParameters::Modify(c->renderParams.MovieFrame, i);
+		hDlgItem = GetDlgItem(IDC_FRAME_SPIN)->GetSafeHwnd();
+		::SendMessage(hDlgItem, UDM_SETPOS32, 0, (LPARAM)i);
 		break;
 	case IDC_SIZE_WIDTH:
 	case IDC_SIZE_HEIGHT:
