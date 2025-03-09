@@ -47,7 +47,9 @@
 #define IDD_Animate                     324
 #define IDC_CROPPED                     325
 #define IDC_JPEGQUALITY                 326
+#define IDC_DROPPER                     326
 #define IDC_APPEND_VARIATION            327
+#define IDI_DROPPER                     327
 #define IDC_RICHLOG                     328
 #define IDD_SCINTILLA_FINDDLGORD        329
 #define IDD_SCINTILLA_REPLACEDLGORD     330
@@ -135,6 +137,7 @@
 #define IDC_DELTA_TEXT                  1059
 #define IDC_STEPS_SPIN                  1060
 #define IDC_SWAP                        1061
+#define IDC_DROPPERPIC                  1062
 #define IDC_END_HUE                     1066
 #define IDC_END_SAT                     1067
 #define IDC_END_VAL                     1068
@@ -259,9 +262,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        326
+#define _APS_NEXT_RESOURCE_VALUE        328
 #define _APS_NEXT_COMMAND_VALUE         32896
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           335
 #endif
 #endif

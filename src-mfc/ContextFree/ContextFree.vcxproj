@@ -757,6 +757,7 @@
     <None Include="..\..\src-common\cfdg.ypp" />
     <None Include="ContextFree.reg" />
     <None Include="res\ContextFree.rc2" />
+    <None Include="res\eyedropper.cur" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ContextFree.rc" />
@@ -766,6 +767,7 @@
     <Image Include="res\ContextFreeDoc.ico" />
     <Image Include="res\dot.ico" />
     <Image Include="res\Edera.bmp" />
+    <Image Include="res\eyedropper.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>

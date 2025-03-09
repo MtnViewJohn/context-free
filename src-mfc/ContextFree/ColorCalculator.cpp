@@ -131,11 +131,13 @@ ColorCalculator::ColorCalculator(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_COLORCALC, pParent)
 	, m_sRGBtext(_T(""))
 {
-
+	m_hDropperCursor = theApp.LoadCursorW(IDC_DROPPER);
+	m_hStandardCursor = theApp.LoadStandardCursor(IDC_ARROW);
 }
 
 ColorCalculator::~ColorCalculator()
 {
+
 }
 
 void ColorCalculator::DoDataExchange(CDataExchange* pDX)
@@ -164,6 +166,7 @@ void ColorCalculator::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DELTA_VAL, m_ctrlDeltaVal);
 	DDX_Control(pDX, IDC_DELTA_TEXT, m_ctrlDeltaText);
 	DDX_Control(pDX, IDC_SWAP, m_ctrlSwap);
+	DDX_Control(pDX, IDC_DROPPERPIC, m_ctrlDropper);
 }
 
 
@@ -189,6 +192,11 @@ BEGIN_MESSAGE_MAP(ColorCalculator, CDialogEx)
 	ON_EN_CHANGE(IDC_END_SAT, &ColorCalculator::OnChangeEndSat)
 	ON_EN_CHANGE(IDC_END_VAL, &ColorCalculator::OnChangeEndVal)
 	ON_EN_CHANGE(IDC_STEPS, &ColorCalculator::OnChangeSteps)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
+	ON_WM_CAPTURECHANGED()
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -518,6 +526,26 @@ BOOL ColorCalculator::PreTranslateMessage(MSG* pMsg)
 {
 	m_ToolTip.RelayEvent(pMsg);
 
+	if (pMsg->message == WM_KEYDOWN && m_bEyedropping) {
+		switch (pMsg->wParam) {
+		case VK_ESCAPE:
+			StopCapture();
+			return TRUE;
+		case VK_UP:
+			::SetCursorPos(pMsg->pt.x, pMsg->pt.y - 1);
+			return TRUE;
+		case VK_DOWN:
+			::SetCursorPos(pMsg->pt.x, pMsg->pt.y + 1);
+			return TRUE;
+		case VK_LEFT:
+			::SetCursorPos(pMsg->pt.x - 1, pMsg->pt.y);
+			return TRUE;
+		case VK_RIGHT:
+			::SetCursorPos(pMsg->pt.x + 1, pMsg->pt.y);
+			return TRUE;
+		}
+	}
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -595,4 +623,78 @@ BOOL ColorCalculator::Create(UINT nIDTemplate, CWnd* pParentWnd)
 	auto lock = EditLock();
 
 	return CDialogEx::Create(nIDTemplate, pParentWnd);
+}
+
+void ColorCalculator::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CDialogEx::OnLButtonDown(nFlags, point);
+
+	CWnd* pWnd = ChildWindowFromPoint(point);
+	if (pWnd && pWnd->GetSafeHwnd() == m_ctrlDropper.GetSafeHwnd()) {
+		m_bEyedropping = true;
+		::SetCursor(theApp.LoadCursorW(IDC_DROPPER));
+		SetCapture();
+	}
+}
+
+void ColorCalculator::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (m_bEyedropping)
+		StopCapture();
+
+	CDialogEx::OnLButtonUp(nFlags, point);
+}
+
+void ColorCalculator::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (m_bEyedropping) {
+		if (::GetCapture() == NULL) {
+			SetCapture();
+		} else {
+			ClientToScreen(&point);
+
+			COLORREF crefxy;
+			HDC hdc = ::GetDC(NULL);
+			crefxy = ::GetPixel(hdc, point.x, point.y);
+			if (crefxy != CLR_INVALID) {
+				double hue, sat, val;
+				CDrawingManager::RGBtoHSV(crefxy, &hue, &sat, &val);
+				UpdateColor(crefxy, hue, sat, val);
+				UpdatePickers(crefxy, hue, sat, val);
+			}
+			::ReleaseDC(::GetForegroundWindow(), hdc);
+		}
+		return;
+	}
+
+	CWnd* pWnd = ChildWindowFromPoint(point);
+	m_bInDropper = pWnd && pWnd->GetSafeHwnd() == m_ctrlDropper.GetSafeHwnd();
+
+	CDialogEx::OnMouseMove(nFlags, point);
+}
+
+void ColorCalculator::OnCaptureChanged(CWnd* pWnd)
+{
+	if (m_bEyedropping)
+		StopCapture();
+
+	CDialogEx::OnCaptureChanged(pWnd);
+}
+
+void ColorCalculator::StopCapture()
+{
+	m_bEyedropping = false;
+	m_bInDropper = false;
+	::ReleaseCapture();
+	::SetCursor(m_hStandardCursor);
+}
+
+BOOL ColorCalculator::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	if (m_bInDropper) {
+		::SetCursor(theApp.LoadCursorW(IDC_DROPPER));
+		return TRUE;
+	}
+
+	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
 }

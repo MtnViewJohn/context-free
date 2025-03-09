@@ -448,6 +448,9 @@
     </None>
     <None Include="..\..\src-common\cfdg.l" />
     <None Include="..\..\src-common\cfdg.ypp" />
+    <None Include="res\eyedropper.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ContextFree.rc">
@@ -468,6 +471,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\Edera.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\eyedropper.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

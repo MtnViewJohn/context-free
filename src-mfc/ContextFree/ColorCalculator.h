@@ -42,6 +42,11 @@ protected:
 	double m_dEndSat = 0.;
 	double m_dEndVal = 0.;
 	CToolTipCtrl m_ToolTip;
+	HCURSOR m_hDropperCursor = NULL;
+	HCURSOR m_hStandardCursor = NULL;
+	void StopCapture();
+	bool m_bEyedropping = false;
+	bool m_bInDropper = false;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -92,4 +97,10 @@ public:
 	afx_msg void OnChangeEndVal();
 	afx_msg void OnChangeSteps();
 	virtual BOOL Create(UINT nIDTemplate, CWnd* pParentWnd = NULL);
+	CStatic m_ctrlDropper;
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnCaptureChanged(CWnd* pWnd);
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };
