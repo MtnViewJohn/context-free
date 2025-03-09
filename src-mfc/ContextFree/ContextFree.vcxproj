@@ -360,6 +360,7 @@
     <ClInclude Include="CFScintillaView.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CMemDC.h" />
+    <ClInclude Include="ColorCalculator.h" />
     <ClInclude Include="ContextFree.h" />
     <ClInclude Include="ContextFreeDoc.h" />
     <ClInclude Include="ContextFreeView.h" />
@@ -723,6 +724,7 @@
     <ClCompile Include="Animate.cpp" />
     <ClCompile Include="CFScintillaView.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="ColorCalculator.cpp" />
     <ClCompile Include="ContextFree.cpp" />
     <ClCompile Include="ContextFreeDoc.cpp" />
     <ClCompile Include="ContextFreeView.cpp" />

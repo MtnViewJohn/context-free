@@ -5,6 +5,7 @@
 #pragma once
 
 #include "MessagePane.h"
+#include "ColorCalculator.h"
 
 //-----------------
 // Statusbar panes:
@@ -38,6 +39,7 @@ public:
 #endif
 	void Message(LPCSTR msg);
 	void ShowMessages(BOOL bShow = TRUE);
+	BOOL ShowColorCalculator(BOOL bShow);
 	void ForwardLink(LPCTSTR link);
 
 protected:  // control bar embedded members
@@ -45,6 +47,7 @@ protected:  // control bar embedded members
 	CPaneDialog m_wndRenderbar;
 	MessagePane m_wndMessageLog;
 	HMENU m_hSplitMenu = NULL;
+	ColorCalculator m_wndColorCalc;
 
 // Generated message map functions
 protected:

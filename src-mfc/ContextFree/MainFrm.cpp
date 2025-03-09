@@ -97,6 +97,22 @@ void CMainFrame::ShowMessages(BOOL bShow)
 	}
 }
 
+BOOL CMainFrame::ShowColorCalculator(BOOL bShow)
+{
+	BOOL showing = ::IsWindow(m_wndColorCalc.GetSafeHwnd());
+	if (bShow) {
+		if (showing) {
+			showing = m_wndColorCalc.ShowWindow(SW_SHOW);
+		} else {
+			showing = m_wndColorCalc.Create(IDD_COLORCALC, this);
+			showing = m_wndColorCalc.ShowWindow(SW_SHOW);
+		}
+		return TRUE;
+	} else {
+		return showing;
+	}
+}
+
 void CMainFrame::ForwardLink(LPCTSTR link)
 {
 	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
@@ -168,8 +184,11 @@ void CMainFrame::OnClose()
 	for (auto child: CChildFrame::Children)
 		canClose = child->CanClose(true) && canClose;	// always call CanClose()
 
-	if (canClose)
+	if (canClose) {
+		if (ShowColorCalculator(FALSE))
+			m_wndColorCalc.DestroyWindow();
 		DestroyWindow();
+	}
 }
 
 void CMainFrame::UpdateStatusBar(int progress, const CString& text)

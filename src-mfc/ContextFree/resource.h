@@ -42,6 +42,7 @@
 #define IDB_EDERA                       320
 #define ID_RB_ANIMATE                   321
 #define ID_RB_FRAME                     322
+#define IDD_COLORCALC                   322
 #define IDD_RenderSize                  323
 #define IDD_Animate                     324
 #define IDC_CROPPED                     325
@@ -89,6 +90,7 @@
 #define IDC_DEFAULT_ITALIC              1025
 #define IDC_EDIT3                       1025
 #define IDC_FRAME                       1025
+#define IDC_STEPS                       1025
 #define IDC_COMMENT_ITALIC              1026
 #define IDC_CODEC_LABEL                 1026
 #define IDC_SYMBOL_ITALIC               1027
@@ -122,6 +124,22 @@
 #define IDC_GREEN_PICKER                1047
 #define IDC_BLUE_PICKER                 1048
 #define IDC_RGB_TEXT                    1049
+#define IDC_START_HUE                   1051
+#define IDC_START_SAT                   1052
+#define IDC_START_VAL                   1053
+#define IDC_START_TEXT                  1054
+#define IDC_START_SELECT                1055
+#define IDC_DELTA_HUE                   1056
+#define IDC_DELTA_SAT                   1057
+#define IDC_DELTA_VAL                   1058
+#define IDC_DELTA_TEXT                  1059
+#define IDC_STEPS_SPIN                  1060
+#define IDC_SWAP                        1061
+#define IDC_END_HUE                     1066
+#define IDC_END_SAT                     1067
+#define IDC_END_VAL                     1068
+#define IDC_END_TEXT                    1069
+#define IDC_END_SELECT                  1070
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -241,9 +259,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
+#define _APS_NEXT_RESOURCE_VALUE        326
 #define _APS_NEXT_COMMAND_VALUE         32896
-#define _APS_NEXT_CONTROL_VALUE         1050
-#define _APS_NEXT_SYMED_VALUE           333
+#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_SYMED_VALUE           335
 #endif
 #endif

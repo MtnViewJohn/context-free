@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_WM_CLOSE()
 	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
 	ON_COMMAND_RANGE(ID_EDIT_INDENT, ID_EDIT_UNDENT, &CChildFrame::OnEditIndent)
+	ON_COMMAND(IDD_COLORCALC, &CChildFrame::OnColorCalculator)
 	ON_WM_MOVE()
 END_MESSAGE_MAP()
 
@@ -837,4 +838,9 @@ void CChildFrame::OnEditIndent(UINT id)
 
 	if (didIndent)
 		rCtrl.EndUndoAction();
+}
+
+void CChildFrame::OnColorCalculator()
+{
+	m_wndParent->ShowColorCalculator(TRUE);
 }
