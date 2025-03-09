@@ -42,7 +42,7 @@
 #define IDB_EDERA                       320
 #define ID_RB_ANIMATE                   321
 #define ID_RB_FRAME                     322
-#define IDD_COLORCALC                   322
+#define IDD_COLORCALC                   333
 #define IDD_RenderSize                  323
 #define IDD_Animate                     324
 #define IDC_CROPPED                     325
@@ -262,7 +262,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        328
+#define _APS_NEXT_RESOURCE_VALUE        334
 #define _APS_NEXT_COMMAND_VALUE         32896
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           335
