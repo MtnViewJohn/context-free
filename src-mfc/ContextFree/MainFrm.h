@@ -48,6 +48,7 @@ protected:  // control bar embedded members
 	MessagePane m_wndMessageLog;
 	HMENU m_hSplitMenu = NULL;
 	ColorCalculator m_wndColorCalc;
+	bool m_bVariationSpinInit = false;
 
 // Generated message map functions
 protected:

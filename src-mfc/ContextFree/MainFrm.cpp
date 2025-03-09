@@ -321,6 +321,14 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			pCmdUI->SetText(v16.c_str());
 		}
 		break;
+	case IDC_VARIATION_SPIN:
+		if (!m_bVariationSpinInit) {
+			::SendMessage(hDlgItem, UDM_SETRANGE32, (WPARAM)0, (LPARAM)Variation::recommendedMax(6));
+			m_bVariationSpinInit = true;
+		}
+		if (c)
+			::SendMessage(hDlgItem, UDM_SETPOS32, 0, (LPARAM)c->renderParams.variation);
+		break;
 	case IDC_FRAME_EDIT: 
 		if (!c) break;
 		if (c->renderParams.MovieFrame == 0) {
@@ -383,13 +391,17 @@ void CMainFrame::OnRenderVariationUD(NMHDR* pNotifyStruct, LRESULT* result)
 	LPNMUPDOWN pUpDown = (LPNMUPDOWN)pNotifyStruct;
 	CChildFrame* c = dynamic_cast<CChildFrame*>(MDIGetActive());
 	if (c) {
-		if (pUpDown->iDelta < 0)
-			c->OnNextVariation();
-		if (pUpDown->iDelta > 0)
-			c->OnPrevVariation();
+		if (pUpDown->iPos + pUpDown->iDelta > 0) {
+			if (pUpDown->iDelta > 0)
+				c->OnNextVariation();
+			if (pUpDown->iDelta < 0)
+				c->OnPrevVariation();
+			*result = 0;	// allow valid change
+			return;
+		}
 	}
 
-	*result = 1;	// always block
+	*result = 1;			// block invalid changes
 }
 
 void CMainFrame::OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result)
@@ -414,6 +426,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 	if (!c) return;
 
 	HWND hDlg = m_wndRenderbar.GetSafeHwnd();
+	HWND hDlgItem = ::GetDlgItem(hDlg, id);
 
 	std::string buf(20, ' ');
 	auto len = ::GetDlgItemTextA(hDlg, id, buf.data(), 20);
@@ -434,6 +447,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 				c->renderParams.variation = v;
 			}
 		}
+		::SendMessage(hDlgItem, UDM_SETPOS32, 0, (LPARAM)c->renderParams.variation);
 		break;
 	case IDC_FRAME_EDIT:
 		if (len == 0)
