@@ -157,11 +157,7 @@ double HSBColor::delta(double to, double from, unsigned int steps)
 
 double HSBColor::deltaHue(double to, double from, unsigned int steps)
 { 
-    double diff = fmod(to - from, 360.0) / steps;
-    // Normalize result to the interval (-180,180]
-    if (diff <= -180.0) return diff + 360.0;
-    if (diff >   180.0) return diff - 360.0;
-    return diff;
+    return (to - from) / (double)steps;
 }
 
 

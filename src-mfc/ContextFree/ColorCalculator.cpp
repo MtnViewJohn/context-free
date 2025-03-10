@@ -101,26 +101,6 @@ namespace {
 		inline static int MasterLock = 0;
 		int m_iLock;
 	};
-
-	double adjustFrom(double to, double from, unsigned int steps)
-	{
-		if (std::fabs(to - from) < EQUALITY_THRESHOLD)
-			return 0.0;
-
-		if (to > from)
-			return -adjustFrom(1.0 - to, 1.0 - from, steps);
-
-		// from >= EQUALITY_THRESHOLD
-		if (steps == 1)
-			return to / from - 1.0;
-
-		return std::pow(to / from, 1.0 / ((double)steps)) - 1.0;
-	}
-
-	double adjustHueFrom(double to, double from, unsigned int steps)
-	{
-		return (to - from) / (double)steps;
-	}
 }
 
 // ColorCalculator dialog
@@ -315,9 +295,9 @@ void ColorCalculator::CalculateDelta()
 {
 	auto lock = EditLock();
 	int steps = m_ctrlStepsSpin.GetPos();
-	m_dDeltaHue = adjustHueFrom(m_dEndHue, m_dStartHue, steps);
-	m_dDeltaSat =    adjustFrom(m_dEndSat, m_dStartSat, steps);
-	m_dDeltaVal =    adjustFrom(m_dEndVal, m_dStartVal, steps);
+	m_dDeltaHue = HSBColor::deltaHue(m_dEndHue, m_dStartHue, steps);
+	m_dDeltaSat =    HSBColor::delta(m_dEndSat, m_dStartSat, steps);
+	m_dDeltaVal =    HSBColor::delta(m_dEndVal, m_dStartVal, steps);
 
 	CString txt;
 	txt.Format(L"%g", m_dDeltaHue);
