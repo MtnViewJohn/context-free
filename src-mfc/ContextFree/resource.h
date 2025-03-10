@@ -42,7 +42,6 @@
 #define IDB_EDERA                       320
 #define ID_RB_ANIMATE                   321
 #define ID_RB_FRAME                     322
-#define IDD_COLORCALC                   333
 #define IDD_RenderSize                  323
 #define IDD_Animate                     324
 #define IDC_CROPPED                     325
@@ -55,6 +54,7 @@
 #define IDD_SCINTILLA_REPLACEDLGORD     330
 #define IDC_REGULAR_EXPRESSION          331
 #define ID_INDICATOR_LINE               332
+#define IDD_COLORCALC                   333
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -127,7 +127,7 @@
 #define IDC_BLUE_PICKER                 1048
 #define IDC_RGB_TEXT                    1049
 #define IDC_START_HUE                   1051
-#define IDC_START_SAT                   1052
+#define IDC_START_SAT                   1063
 #define IDC_START_VAL                   1053
 #define IDC_START_TEXT                  1054
 #define IDC_START_SELECT                1055
@@ -138,7 +138,9 @@
 #define IDC_STEPS_SPIN                  1060
 #define IDC_SWAP                        1061
 #define IDC_DROPPERPIC                  1062
-#define IDC_END_HUE                     1066
+#define IDC_STARTHUE_SPIN               1052
+#define IDC_ENDHUE_SPIN                 1065
+#define IDC_END_HUE                     1064
 #define IDC_END_SAT                     1067
 #define IDC_END_VAL                     1068
 #define IDC_END_TEXT                    1069
@@ -264,7 +266,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        334
 #define _APS_NEXT_COMMAND_VALUE         32896
-#define _APS_NEXT_CONTROL_VALUE         1063
+#define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           335
 #endif
 #endif

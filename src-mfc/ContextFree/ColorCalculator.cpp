@@ -167,6 +167,8 @@ void ColorCalculator::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DELTA_TEXT, m_ctrlDeltaText);
 	DDX_Control(pDX, IDC_SWAP, m_ctrlSwap);
 	DDX_Control(pDX, IDC_DROPPERPIC, m_ctrlDropper);
+	DDX_Control(pDX, IDC_STARTHUE_SPIN, m_ctrlStartHueSpin);
+	DDX_Control(pDX, IDC_ENDHUE_SPIN, m_ctrlEndHueSpin);
 }
 
 
@@ -197,6 +199,8 @@ BEGIN_MESSAGE_MAP(ColorCalculator, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_CAPTURECHANGED()
 	ON_WM_SETCURSOR()
+	ON_NOTIFY(UDN_DELTAPOS, IDC_STARTHUE_SPIN, &ColorCalculator::OnDeltaposStarthueSpin)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_ENDHUE_SPIN, &ColorCalculator::OnDeltaposEndhueSpin)
 END_MESSAGE_MAP()
 
 
@@ -364,7 +368,11 @@ BOOL ColorCalculator::OnInitDialog()
 
 	m_ctrlStepsSpin.SetRange(1, 1000);
 	m_ctrlStepsSpin.SetPos(1);
-	
+	m_ctrlStartHueSpin.SetRange(-30000, 30000);
+	m_ctrlEndHueSpin.SetRange(-30000, 30000);
+	m_ctrlStartHueSpin.SetPos(0);
+	m_ctrlEndHueSpin.SetPos(0);
+
 	auto lock = EditLock();
 	UpdateStartEndControls(false);
 	UpdateStartEndControls(true);
@@ -697,4 +705,32 @@ BOOL ColorCalculator::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	}
 
 	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
+}
+
+void ColorCalculator::OnDeltaposStarthueSpin(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	m_dStartHue += 360.0 * (double)pNMUpDown->iDelta;
+	auto lock = EditLock();
+	CString hue;
+	hue.Format(L"%g", m_dStartHue);
+	m_ctrlStartHue.SetWindowTextW((LPCTSTR)hue);
+	hue.Format(HSVformat, m_dStartHue, m_dStartSat, m_dStartVal);
+	m_ctrlStartText.SetWindowTextW((LPCTSTR)hue);
+	CalculateDelta();
+	*pResult = 0;
+}
+
+void ColorCalculator::OnDeltaposEndhueSpin(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	m_dEndHue += 360.0 * (double)pNMUpDown->iDelta;
+	auto lock = EditLock();
+	CString hue;
+	hue.Format(L"%g", m_dEndHue);
+	m_ctrlEndHue.SetWindowTextW((LPCTSTR)hue);
+	hue.Format(HSVformat, m_dEndHue, m_dEndSat, m_dEndVal);
+	m_ctrlEndText.SetWindowTextW((LPCTSTR)hue);
+	CalculateDelta();
+	*pResult = 0;
 }

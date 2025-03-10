@@ -103,4 +103,8 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnCaptureChanged(CWnd* pWnd);
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+	CSpinButtonCtrl m_ctrlStartHueSpin;
+	CSpinButtonCtrl m_ctrlEndHueSpin;
+	afx_msg void OnDeltaposStarthueSpin(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeltaposEndhueSpin(NMHDR* pNMHDR, LRESULT* pResult);
 };
