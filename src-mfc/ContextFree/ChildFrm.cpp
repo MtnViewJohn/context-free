@@ -490,37 +490,12 @@ void CChildFrame::OnSaveOutput()
 			break;
 		}
 		case 2: {		// JPEG
-			WinPngCanvas saveCanvas("", m_WinCanvas.get(), 
-				m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
-				renderParams.variation, m_Renderer.get(), m_iMultWidth, m_iMultHeight);
-			saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
-				m_WinCanvas->cropHeight());
-			saveCanvas.end();		// does not write a PNG file
-			auto pixfmt = GetPixFormat(m_WinCanvas->mPixelFormat);
-			if (pixfmt) {
-				Gdiplus::Bitmap newBM(saveCanvas.mWidth, saveCanvas.mHeight, saveCanvas.mStride,
-					pixfmt, (BYTE*)saveCanvas.mData.data());
-				if (pixfmt == PixelFormat8bppIndexed)
-					CContextFreeView::AddGrayPalette(&newBM);
-
-				// image/jpeg : {557cf401-1a04-11d3-9a73-0000f81ef32e}
-				const CLSID jpgEncoderClsId = { 0x557cf401, 0x1a04, 0x11d3,{ 0x9a,0x73,0x00,0x00,0xf8,0x1e,0xf3,0x2e } };
-				Gdiplus::Status  stat;
-				Gdiplus::EncoderParameters encoderParameters;
-				ULONG    quality = ifsDlg.m_iJpegQuality;
-
-				encoderParameters.Count = 1;
-				encoderParameters.Parameter[0].Guid = Gdiplus::EncoderQuality;
-				encoderParameters.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
-				encoderParameters.Parameter[0].NumberOfValues = 1;
-				encoderParameters.Parameter[0].Value = &quality;
-
-				stat = newBM.Save(ifsDlg.m_ofn.lpstrFile, &jpgEncoderClsId, &encoderParameters);
-				if (stat != Gdiplus::Status::Ok) {
-					TRACE1("JPEG file save failed: %d\n", stat);
-					::MessageBeep(MB_ICONASTERISK);
-					::MessageBoxW(GetSafeHwnd(), _T("JPEG file save failed!"), _T(""), MB_ICONASTERISK);
-				}
+			if (SaveJPEG(nullptr, ifsDlg.m_ofn.lpstrFile, 
+						 m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
+						 m_iMultWidth, m_iMultHeight, ifsDlg.m_iJpegQuality) != Gdiplus::Status::Ok)
+			{
+				::MessageBeep(MB_ICONASTERISK);
+				::MessageBoxW(GetSafeHwnd(), _T("JPEG file save failed!"), _T(""), MB_ICONASTERISK);
 			}
 			break;
 		}
@@ -546,6 +521,45 @@ void CChildFrame::OnSaveOutput()
 	}
 }
 
+Gdiplus::Status CChildFrame::SaveJPEG(IStream* out, LPCTSTR file, bool crop, int iMultWidth, int iMultHeight, int qual)
+{
+	ASSERT((out == nullptr) != (file == nullptr));
+	WinPngCanvas saveCanvas("", m_WinCanvas.get(), crop,
+		renderParams.variation, m_Renderer.get(), iMultWidth, iMultHeight);
+	saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
+		m_WinCanvas->cropHeight());
+	saveCanvas.end();		// does not write a PNG file
+	auto pixfmt = GetPixFormat(m_WinCanvas->mPixelFormat);
+	if (!pixfmt) return Gdiplus::Status::UnknownImageFormat;
+	Gdiplus::Bitmap newBM(saveCanvas.mWidth, saveCanvas.mHeight, saveCanvas.mStride,
+		pixfmt, (BYTE*)saveCanvas.mData.data());
+	if (pixfmt == PixelFormat8bppIndexed)
+		CContextFreeView::AddGrayPalette(&newBM);
+
+	// image/jpeg : {557cf401-1a04-11d3-9a73-0000f81ef32e}
+	// image/png  : {557cf406-1a04-11d3-9a73-0000f81ef32e}
+	const CLSID  jpgEncoderClsId = { 0x557cf401, 0x1a04, 0x11d3,{ 0x9a,0x73,0x00,0x00,0xf8,0x1e,0xf3,0x2e } };
+	const CLSID  pngEncoderClsId = { 0x557cf406, 0x1a04, 0x11d3,{ 0x9a,0x73,0x00,0x00,0xf8,0x1e,0xf3,0x2e } };
+	const CLSID* pEncoderClsId = qual > 0 ? &jpgEncoderClsId : &pngEncoderClsId;
+	Gdiplus::EncoderParameters encoderParameters;
+	Gdiplus::EncoderParameters* pEncoderParameters = nullptr;
+	ULONG    quality = (ULONG)qual;
+
+	if (qual > 0) {
+		pEncoderParameters = &encoderParameters;
+		encoderParameters.Count = 1;
+		encoderParameters.Parameter[0].Guid = Gdiplus::EncoderQuality;
+		encoderParameters.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+		encoderParameters.Parameter[0].NumberOfValues = 1;
+		encoderParameters.Parameter[0].Value = &quality;
+	}
+
+	auto stat = out ? newBM.Save(out, pEncoderClsId, pEncoderParameters)
+					: newBM.Save(file, pEncoderClsId, pEncoderParameters);
+	return stat;
+}
+
+void CChildFrame::OnUploadGallery()
 void CChildFrame::UpdateDirtyIndicator(bool dirty)
 {
 	m_bDirty = dirty;
