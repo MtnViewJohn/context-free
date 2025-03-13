@@ -243,6 +243,12 @@
     <ClInclude Include="ColorCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UploadParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GalleryUpload.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp">
@@ -440,6 +446,12 @@
     <ClCompile Include="ColorCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UploadParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GalleryUpload.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ContextFree.reg" />
@@ -474,6 +486,30 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\eyedropper.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\cc-zero.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\cc-zero.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by-nc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by-nc-nd.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by-nc-sa.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by-nd.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\by-sa.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

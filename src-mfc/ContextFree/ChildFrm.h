@@ -113,5 +113,6 @@ public:
 	afx_msg void OnInsertChars(UINT id);
 	afx_msg void OnEditIndent(UINT id);
 	afx_msg void OnColorCalculator();
+	afx_msg void OnUploadGallery();
 	afx_msg void OnMove(int x, int y);
 };

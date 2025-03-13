@@ -23,6 +23,8 @@
 #include "Settings.h"
 #include <map>
 #include "CFScintillaView.h"
+#include "GalleryUpload.h"
+#include "UploadParams.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,6 +76,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_COMMAND_RANGE(ID_INSERTCHAR1, ID_INSERTCHAR76, &CChildFrame::OnInsertChars)
 	ON_COMMAND_RANGE(ID_EDIT_INDENT, ID_EDIT_UNDENT, &CChildFrame::OnEditIndent)
 	ON_COMMAND(IDD_COLORCALC, &CChildFrame::OnColorCalculator)
+	ON_COMMAND(ID_RENDER_UPLOADTOGALLERY, &CChildFrame::OnUploadGallery)
 	ON_WM_MOVE()
 END_MESSAGE_MAP()
 
@@ -560,6 +563,22 @@ Gdiplus::Status CChildFrame::SaveJPEG(IStream* out, LPCTSTR file, bool crop, int
 }
 
 void CChildFrame::OnUploadGallery()
+{
+	UploadParams uParams;
+	auto& rCtrl{ m_vwCfdgEditor->GetCtrl() };
+	uParams.cfdgName = m_CFdoc->GetTitle();
+	uParams.variation = renderParams.variation;
+	uParams.variationText = Utf8ToUtf16(Variation::toString(renderParams.variation, false).c_str()).c_str();
+	uParams.cfdgText.resize(rCtrl.GetTextLength(), ' ');
+	rCtrl.GetText(uParams.cfdgText.length(), uParams.cfdgText.data());
+	uParams.Tiled = m_Engine->isFrieze();
+	if (m_Engine->isTiled())
+		uParams.Tiled = 3;
+
+	GalleryUpload uDlg(*this, uParams);
+	uDlg.DoModal();
+}
+
 void CChildFrame::UpdateDirtyIndicator(bool dirty)
 {
 	m_bDirty = dirty;

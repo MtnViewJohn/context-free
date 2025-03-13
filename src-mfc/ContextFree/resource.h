@@ -55,6 +55,15 @@
 #define IDC_REGULAR_EXPRESSION          331
 #define ID_INDICATOR_LINE               332
 #define IDD_COLORCALC                   333
+#define IDD_UPLOAD                      334
+#define IDB_CC0                         337
+#define IDB_BY                          338
+#define IDB_BYNC                        339
+#define IDB_BYNCND                      340
+#define IDB_BYNCSA                      341
+#define IDB_BYND                        342
+#define IDB_BITMAP1                     343
+#define IDB_BYSA                        343
 #define IDC_RENDERSPLIT                 1002
 #define IDC_SAVE                        1003
 #define IDC_VARIATION                   1004
@@ -70,7 +79,9 @@
 #define IDC_RENDERWIDTH                 1013
 #define IDC_FONTNAME                    1013
 #define IDC_COPYRIGHT                   1013
+#define IDC_USERNAME                    1013
 #define IDC_RENDERHEIGHT                1014
+#define IDC_PASSWORD                    1014
 #define IDC_MINSIZE                     1015
 #define IDC_BORDERSLIDER                1016
 #define IDC_DEFAULT_BOLD                1017
@@ -93,6 +104,7 @@
 #define IDC_EDIT3                       1025
 #define IDC_FRAME                       1025
 #define IDC_STEPS                       1025
+#define IDC_NOTES                       1025
 #define IDC_COMMENT_ITALIC              1026
 #define IDC_CODEC_LABEL                 1026
 #define IDC_SYMBOL_ITALIC               1027
@@ -106,6 +118,7 @@
 #define IDC_PROGRESSIVE                 1030
 #define IDC_BUTTON1                     1031
 #define IDC_FILE_ITALIC                 1031
+#define IDC_ACCOUNT                     1031
 #define IDC_COPYRIGHT2                  1032
 #define IDC_NUMBER_ITALIC               1032
 #define IDC_TABWIDTH                    1033
@@ -127,7 +140,7 @@
 #define IDC_BLUE_PICKER                 1048
 #define IDC_RGB_TEXT                    1049
 #define IDC_START_HUE                   1051
-#define IDC_START_SAT                   1063
+#define IDC_STARTHUE_SPIN               1052
 #define IDC_START_VAL                   1053
 #define IDC_START_TEXT                  1054
 #define IDC_START_SELECT                1055
@@ -138,13 +151,35 @@
 #define IDC_STEPS_SPIN                  1060
 #define IDC_SWAP                        1061
 #define IDC_DROPPERPIC                  1062
-#define IDC_STARTHUE_SPIN               1052
-#define IDC_ENDHUE_SPIN                 1065
+#define IDC_START_SAT                   1063
 #define IDC_END_HUE                     1064
+#define IDC_ENDHUE_SPIN                 1065
 #define IDC_END_SAT                     1067
 #define IDC_END_VAL                     1068
 #define IDC_END_TEXT                    1069
 #define IDC_END_SELECT                  1070
+#define IDC_TAG                         1073
+#define IDC_TAGMOVE                     1074
+#define IDC_TAGLIST                     1076
+#define IDC_EDIT5                       1077
+#define IDC_FILENAME                    1077
+#define IDC_JPEG                        1079
+#define IDC_PNG8                        1080
+#define IDC_CROP                        1081
+#define IDC_EDIT7                       1082
+#define IDC_CCNAME                      1082
+#define IDC_CCIMAGE                     1083
+#define IDC_COMBO1                      1084
+#define IDC_LICENSE                     1084
+#define IDC_UPLOAD                      1085
+#define IDC_WIDTH                       1086
+#define IDC_WIDTHSPIN                   1087
+#define IDC_HEIGHT                      1088
+#define IDC_HEIGHTSPIN                  1089
+#define IDC_MULTSTATIC1                 1090
+#define IDC_MULTSTATIC2                 1091
+#define IDC_MULTSTATIC3                 1092
+#define IDC_BUTTON2                     1093
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -259,14 +294,15 @@
 #define ID_EDIT_INDENT                  32891
 #define ID_EDIT_UN                      32892
 #define ID_EDIT_UNDENT                  32893
+#define ID_RENDER_UPLOADTOGALLERY       32896
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        334
-#define _APS_NEXT_COMMAND_VALUE         32896
-#define _APS_NEXT_CONTROL_VALUE         1072
-#define _APS_NEXT_SYMED_VALUE           335
+#define _APS_NEXT_RESOURCE_VALUE        344
+#define _APS_NEXT_COMMAND_VALUE         32897
+#define _APS_NEXT_CONTROL_VALUE         1094
+#define _APS_NEXT_SYMED_VALUE           339
 #endif
 #endif

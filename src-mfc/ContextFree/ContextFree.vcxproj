@@ -140,7 +140,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -168,7 +168,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -196,7 +196,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -228,7 +228,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -260,7 +260,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Midl>
@@ -291,7 +291,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;Rpcrt4.lib;Scintilla.lib;lexilla.lib;libpng16.lib;zlib.lib;Gdiplus.lib;avcodec.lib;avformat.lib;avfilter.lib;avdevice.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -366,6 +366,7 @@
     <ClInclude Include="ContextFreeView.h" />
     <ClInclude Include="EditorParams.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GalleryUpload.h" />
     <ClInclude Include="ImageFileSave.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MessagePane.h" />
@@ -382,6 +383,7 @@
     <ClInclude Include="ScintillaDocView.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UploadParams.h" />
     <ClInclude Include="WinPngCanvas.h" />
   </ItemGroup>
   <ItemGroup>
@@ -729,6 +731,7 @@
     <ClCompile Include="ContextFreeDoc.cpp" />
     <ClCompile Include="ContextFreeView.cpp" />
     <ClCompile Include="EditorParams.cpp" />
+    <ClCompile Include="GalleryUpload.cpp" />
     <ClCompile Include="ImageFileSave.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MessagePane.cpp" />
@@ -750,6 +753,7 @@
     <ClCompile Include="ScintillaCtrl.cpp" />
     <ClCompile Include="ScintillaDocView.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="UploadParams.cpp" />
     <ClCompile Include="WinPngCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -763,6 +767,14 @@
     <ResourceCompile Include="ContextFree.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\by-nc-nd.bmp" />
+    <Image Include="res\by-nc-sa.bmp" />
+    <Image Include="res\by-nc.bmp" />
+    <Image Include="res\by-nd.bmp" />
+    <Image Include="res\by-sa.bmp" />
+    <Image Include="res\by.bmp" />
+    <Image Include="res\cc-zero.bmp" />
+    <Image Include="res\cc-zero.png" />
     <Image Include="res\ContextFree.ico" />
     <Image Include="res\ContextFreeDoc.ico" />
     <Image Include="res\dot.ico" />
