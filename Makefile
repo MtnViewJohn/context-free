@@ -1,7 +1,6 @@
 
 all: cfdg
 
-
 #
 # Dirs
 #
@@ -20,6 +19,7 @@ vpath %.cfdg input
 
 INC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(COMMON_DIR)/agg-extras
 INC_DIRS += /usr/local/include
+#INC_DIRS += /usr/local/include /emsdk/local/include
 
 #
 # Installation directories
@@ -35,6 +35,7 @@ MAN_DIR = $(DESTDIR)$(prefix)/share/man
 #
 
 LIB_DIRS = /usr/local/lib
+#LIB_DIRS += /emsdk/local/lib
 
 #
 # Sources and Objects
@@ -72,11 +73,17 @@ INPUT_SRCS = ciliasun_v2.cfdg demo1_v2.cfdg demo2_v2.cfdg funky_flower_v2.cfdg \
 LIBS = png m
 
 # Use the first one for clang and the second one for gcc
+ifeq ($(TARGET), wasm)
+	LIBS += c++
+	#LIBS += c++ icui18n icuuc icudata
+else
 ifeq ($(shell uname -s), Darwin)
   LIBS += c++ icucore
 else
   LIBS += stdc++ atomic icui18n icuuc icudata
 endif
+endif
+
 
 #
 # FFmpeg support
@@ -114,6 +121,12 @@ DEPS = $(patsubst %.o,%.d,$(OBJS))
 LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
+ifeq ($(TARGET), wasm)
+ifeq ($(WASM_DEBUG), 1)
+	LINKFLAGS += -s EXCEPTION_DEBUG=1 -s SYSCALL_DEBUG=1 -s FS_DEBUG=1 -s ASSERTIONS=2 -g -gsource-map
+endif
+	LINKFLAGS += -fexceptions -s SUPPORT_LONGJMP=emscripten -s USE_LIBPNG=1 -s USE_ICU=1 -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS=callMain,FS -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=104857600
+endif
 
 deps: $(OBJ_DIR) $(DEPS)
 
@@ -132,9 +145,15 @@ $(OBJS): $(OBJ_DIR)/Sentry
 #
 # Under Cygwin replace strip $@ with strip $@.exe
 
+ifeq ($(TARGET), wasm)
+STRIP = echo
+else
+STRIP = strip
+endif
+
 cfdg: $(OBJS)
 	$(LINK.o) $^ $(LINKFLAGS) -o $@
-	strip $@
+	$(STRIP) $@
 
 
 #
@@ -184,9 +203,12 @@ uninstall:
 # Tests
 #
 
-.PHONY: test check
+.PHONY: test test-mpeg check
 test: cfdg
 	./runtests.sh
+
+test-mpeg: cfdg
+	./runtests-mpeg.sh
 
 check: cfdg
 	./runtests.sh
@@ -197,8 +219,8 @@ check: cfdg
 
 CXXFLAGS += $(patsubst %,-I%,$(INC_DIRS))
 CXXFLAGS += -O2 -Wall -Wextra -Wno-parentheses -std=c++17
-CXXFLAGS += -g -D_GLIBCXX_USE_C99_MATH=1
-CPPFLAGS += -DNDEBUG
+CXXFLAGS += -D_GLIBCXX_USE_C99_MATH=1
+#CPPFLAGS += -DNDEBUG
 
 # Add this for clang
 ifeq ($(shell uname -s), Darwin)
@@ -206,6 +228,13 @@ ifeq ($(shell uname -s), Darwin)
 
 # Uncomment this line to enable FFmpeg support on macos
 # LDFLAGS += -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework VideoToolbox
+endif
+
+ifeq ($(TARGET), wasm)
+CXXFLAGS += -DNOSYSCTL=1 -DNONORMALIZE=1 -fexceptions -s SUPPORT_LONGJMP=emscripten
+ifeq ($(WASM_DEBUG), 1)
+CXXFLAGS += -g -gsource-map
+endif
 endif
 
 $(OBJ_DIR)/%.o : %.cpp
