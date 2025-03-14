@@ -22,6 +22,7 @@ public:
 #endif
 
 protected:
+	enum class TagMoveDirection { AddToList, DeleteFromList };
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	CChildFrame& m_rChild;
 	UploadParams& m_rParams;
@@ -37,6 +38,11 @@ protected:
 	HANDLE m_hRenderThread = nullptr;
 	static UINT UploadControllingFunction(LPVOID pParam);
 	bool m_bShouldClose = false;
+	static std::atomic_bool TagsLoaded;
+	static UINT TagsControllingFunction(LPVOID pParam);
+	void InitTagsAC();
+	TagMoveDirection m_eTagMoveDirection = TagMoveDirection::AddToList;
+	CString m_sCurrentTag;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -69,4 +75,10 @@ public:
 	virtual void OnCancel();
 	CMFCButton m_ctrlAccount;
 	afx_msg void OnClose();
+	CComboBox m_ctrlTagEdit;
+	CComboBox m_ctrlTagsList;
+	CButton m_ctrlTagMove;
+	afx_msg void OnSelchangeTaglist();
+	afx_msg void OnEditchangeTag();
+	afx_msg void OnClickedTagMove();
 };

@@ -12,6 +12,7 @@
 #include "ChildFrm.h"
 #include <sstream>
 #include "WinSystem.h"
+#include "EditLock.h"
 
 namespace {
 	std::vector<const wchar_t*> LicenseIndicators{
@@ -51,9 +52,25 @@ namespace {
 	std::vector<UINT> LicenceIDs{
 		0, IDB_CC0, IDB_BY, IDB_BYSA, IDB_BYND, IDB_BYNC, IDB_BYNCSA, IDB_BYNCND, 0
 	};
+
+	struct AutoCmpWStr {
+		inline bool operator()(const std::wstring& a, const std::wstring& b) const
+		{
+			return _wcsicmp(a.c_str(), b.c_str()) < 0;        // a POSIX function
+		}
+		inline int operator()(const std::wstring& a, const std::wstring& b, int len)
+		{
+			return _wcsnicmp(a.c_str(), b.c_str(), len);
+		}
+	};
+	
+	std::vector<std::string> AllTags;
+	std::set<std::wstring, AutoCmpWStr> AllTagsL;
 }
 
 // GalleryUpload dialog
+
+std::atomic_bool GalleryUpload::TagsLoaded = false;
 
 IMPLEMENT_DYNAMIC(GalleryUpload, CDialogEx)
 
@@ -109,6 +126,9 @@ void GalleryUpload::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_UPLOAD, m_ctrlUpload);
 	DDX_Control(pDX, IDCANCEL, m_ctrlCancel);
 	DDX_Control(pDX, IDC_ACCOUNT, m_ctrlAccount);
+	DDX_Control(pDX, IDC_TAG, m_ctrlTagEdit);
+	DDX_Control(pDX, IDC_TAGLIST, m_ctrlTagsList);
+	DDX_Control(pDX, IDC_TAGMOVE, m_ctrlTagMove);
 }
 
 using WinSystem::WM_USER_RENDER_COMPLETE;
@@ -120,6 +140,9 @@ BEGIN_MESSAGE_MAP(GalleryUpload, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_LICENSE, &GalleryUpload::OnSelchangeLicense)
 	ON_MESSAGE(WM_USER_RENDER_COMPLETE, &GalleryUpload::UploadDone)
 	ON_WM_CLOSE()
+	ON_CBN_SELCHANGE(IDC_TAGLIST, &GalleryUpload::OnSelchangeTaglist)
+	ON_CBN_EDITCHANGE(IDC_TAG, &GalleryUpload::OnEditchangeTag)
+	ON_BN_CLICKED(IDC_TAGMOVE, &GalleryUpload::OnClickedTagMove)
 END_MESSAGE_MAP()
 
 
@@ -171,7 +194,20 @@ BOOL GalleryUpload::OnInitDialog()
 	m_ctrlCCimage.m_nFlatStyle = CMFCButton::FlatStyle::BUTTONSTYLE_SEMIFLAT;
 	m_ctrlAccount.m_nFlatStyle = CMFCButton::FlatStyle::BUTTONSTYLE_SEMIFLAT;
 
+	if (TagsLoaded)
+		InitTagsAC();
+	else
+		CWinThread* rt = ::AfxBeginThread(TagsControllingFunction, GetSafeHwnd(), 0, 0, 0);
+
+	m_ctrlTagMove.SetWindowTextW(m_eTagMoveDirection == TagMoveDirection::AddToList ? L"►" : L"◄");
+
 	return TRUE;
+}
+
+void GalleryUpload::InitTagsAC()
+{
+	for (auto&& tag : AllTagsL)
+		m_ctrlTagEdit.AddString(tag.c_str());
 }
 
 void GalleryUpload::OnClickedAccount()
@@ -221,6 +257,17 @@ void GalleryUpload::OnClickedUpload()
 	upload.mPassword = Utf16ToUtf8((LPCTSTR)m_sPassword);
 	upload.mTitle = Utf16ToUtf8((LPCTSTR)m_sTitle);
 	upload.mNotes = Utf16ToUtf8((LPCTSTR)m_sNotes);
+
+	for (int i = 0; i < m_ctrlTagsList.GetCount(); ++i) {
+		CString tag;
+		m_ctrlTagsList.GetLBText(i, tag);
+		if (AllTagsL.insert((LPCTSTR)tag).second)		// Save new tags for future uploads
+			m_ctrlTagEdit.AddString(tag);
+		if (!upload.mTags.empty())
+			upload.mTags.push_back(' ');
+		upload.mTags.append(Utf16ToUtf8(tag));
+	}
+
 	upload.mFileName = Utf16ToUtf8((LPCTSTR)m_sFilename) + ".cfdg";
 	upload.mVariation = m_rParams.variation;
 	upload.mTiled = m_rParams.Tiled && m_ctrlCropTile.GetCheck() == BST_CHECKED ? m_rParams.Tiled : 0;
@@ -293,7 +340,51 @@ UINT GalleryUpload::UploadControllingFunction(LPVOID pParam)
 		return 1;   // if cf is not valid
 
 	cf->PerformPost();
-	cf->PostMessageW(WM_USER_RENDER_COMPLETE);
+	cf->PostMessageW(WM_USER_RENDER_COMPLETE, 0, 0);
+	return 0;
+}
+
+UINT GalleryUpload::TagsControllingFunction(LPVOID pParam)
+{
+	HWND hDlg = reinterpret_cast<HWND>(pParam);
+	HINTERNET hInetInit = nullptr;
+	HINTERNET hInetCnxn = nullptr;
+	HINTERNET hInetReq = nullptr;
+
+	hInetInit = ::InternetOpen(L"Context Free", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+
+	if (hInetInit)
+		hInetCnxn = ::InternetConnect(hInetInit, L"www.contextfreeart.org",
+			INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL);
+
+	if (hInetCnxn)
+		hInetReq = ::HttpOpenRequest(hInetCnxn, L"GET", L"/gallery/tags.php?t=tags", L"HTTP/1.1",
+			NULL, NULL, INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE, NULL);
+
+	if (hInetReq && ::HttpSendRequest(hInetReq, NULL, 0, NULL, 0)) {
+		DWORD length = sizeof(DWORD);
+		DWORD status = 0;
+		HttpQueryInfo(hInetReq, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+			&status, &length, NULL);
+		if (status == 200) {
+			char buf[200];
+			DWORD bytesRead;
+			std::string response;
+			while (::InternetReadFile(hInetReq, (LPVOID)buf, 200, &bytesRead) && bytesRead) {
+				response.append(buf, bytesRead);
+				bytesRead = 0;
+			}
+
+			if (!response.empty()) {
+				AllTags = Upload::AllTags(response.c_str(), response.length());
+				for (const auto& tag : AllTags)
+					AllTagsL.insert(Utf8ToUtf16(tag.c_str()));
+				::PostMessageW(hDlg, WM_USER_RENDER_COMPLETE, 1, 0);
+			}
+		}
+
+	}
+
 	return 0;
 }
 
@@ -362,6 +453,12 @@ LRESULT GalleryUpload::UploadDone(WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
+	if (wParam == 1) {
+		TagsLoaded = true;
+		InitTagsAC();
+		return 0;
+	}
+
 	if (m_iDesignID) {
 		m_ctrlCancel.SetWindowTextW(L"See Design");
 		m_ctrlCancel.SetMouseCursorHand();
@@ -414,4 +511,54 @@ void GalleryUpload::OnClose()
 	}
 
 	CDialogEx::OnClose();
+}
+
+void GalleryUpload::OnSelchangeTaglist()
+{
+	if (auto lock = EditLock()) {
+		if (m_eTagMoveDirection == TagMoveDirection::AddToList) {
+			m_ctrlTagMove.SetWindowTextW(L"◄");
+			m_eTagMoveDirection = TagMoveDirection::DeleteFromList;
+		}
+	}
+}
+
+void GalleryUpload::OnEditchangeTag()
+{
+	if (auto lock = EditLock()) {
+		if (m_eTagMoveDirection == TagMoveDirection::DeleteFromList) {
+			m_ctrlTagMove.SetWindowTextW(L"►");
+			m_eTagMoveDirection = TagMoveDirection::AddToList;
+		}
+		CString newTag;
+		m_ctrlTagEdit.GetWindowTextW(newTag);
+		if (newTag.FindOneOf(L" \r\n\t\f") == -1) {
+			m_sCurrentTag = newTag;
+		} else {
+			::MessageBeep(MB_ICONERROR);
+			m_ctrlTagEdit.SetWindowTextW(m_sCurrentTag);
+		}
+	}
+}
+
+void GalleryUpload::OnClickedTagMove()
+{
+	if (m_eTagMoveDirection == TagMoveDirection::AddToList) {
+		CString tag;
+		m_ctrlTagEdit.GetWindowTextW(tag);
+		if (!tag.IsEmpty()) {
+			if (m_ctrlTagsList.FindStringExact(-1, tag) == CB_ERR)
+				m_ctrlTagsList.AddString(tag);
+			EditLock lock;
+			m_ctrlTagsList.SelectString(-1, tag);
+			m_ctrlTagEdit.SetEditSel(0, -1);
+			m_ctrlTagEdit.Clear();
+		}
+	} else {
+		int sel = m_ctrlTagsList.GetCurSel();
+		if (sel != CB_ERR) {
+			m_ctrlTagsList.DeleteString(sel);
+			m_ctrlTagsList.SetCurSel(-1);
+		}
+	}
 }
