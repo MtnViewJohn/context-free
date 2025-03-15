@@ -1,6 +1,5 @@
 #pragma once
 #include "afxdialogex.h"
-#include "UploadParams.h"
 #include <wininet.h>
 
 // GalleryUpload dialog
