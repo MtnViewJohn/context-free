@@ -198,8 +198,18 @@ BOOL GalleryUpload::OnInitDialog()
 		InitTagsAC();
 	else
 		CWinThread* rt = ::AfxBeginThread(TagsControllingFunction, GetSafeHwnd(), 0, 0, 0);
+	m_ctrlTagEdit.SetCueBanner(L"Type or select tag");
 
 	m_ctrlTagMove.SetWindowTextW(m_eTagMoveDirection == TagMoveDirection::AddToList ? L"►" : L"◄");
+
+	if (m_ctrlToolTip.Create(this)) {
+		m_ctrlToolTip.AddTool(&m_ctrlTagEdit, L"Type or select tag");
+		m_ctrlToolTip.AddTool(&m_ctrlTagMove, 
+			m_eTagMoveDirection == TagMoveDirection::AddToList  ? L"Add tag to tags list" 
+																: L"Remove tag from tags list");
+		m_ctrlToolTip.AddTool(&m_ctrlTagsList, L"The list of tags");
+		m_ctrlToolTip.AddTool(&m_ctrlCCimage, L"Click to see license details");
+	}
 
 	return TRUE;
 }
@@ -518,6 +528,7 @@ void GalleryUpload::OnSelchangeTaglist()
 	if (auto lock = EditLock()) {
 		if (m_eTagMoveDirection == TagMoveDirection::AddToList) {
 			m_ctrlTagMove.SetWindowTextW(L"◄");
+			m_ctrlToolTip.UpdateTipText(L"Add tag to tags list", &m_ctrlTagMove, IDC_TAGMOVE);
 			m_eTagMoveDirection = TagMoveDirection::DeleteFromList;
 		}
 	}
@@ -528,6 +539,7 @@ void GalleryUpload::OnEditchangeTag()
 	if (auto lock = EditLock()) {
 		if (m_eTagMoveDirection == TagMoveDirection::DeleteFromList) {
 			m_ctrlTagMove.SetWindowTextW(L"►");
+			m_ctrlToolTip.UpdateTipText(L"Remove tag from tags list", &m_ctrlTagMove, IDC_TAGMOVE);
 			m_eTagMoveDirection = TagMoveDirection::AddToList;
 		}
 		CString newTag;
@@ -561,4 +573,16 @@ void GalleryUpload::OnClickedTagMove()
 			m_ctrlTagsList.SetCurSel(-1);
 		}
 	}
+}
+
+BOOL GalleryUpload::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_LBUTTONDOWN ||
+		pMsg->message == WM_LBUTTONUP ||
+		pMsg->message == WM_MOUSEMOVE)
+	{
+		m_ctrlToolTip.RelayEvent(pMsg);
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

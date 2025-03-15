@@ -43,6 +43,7 @@ protected:
 	void InitTagsAC();
 	TagMoveDirection m_eTagMoveDirection = TagMoveDirection::AddToList;
 	CString m_sCurrentTag;
+	CToolTipCtrl m_ctrlToolTip;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -81,4 +82,5 @@ public:
 	afx_msg void OnSelchangeTaglist();
 	afx_msg void OnEditchangeTag();
 	afx_msg void OnClickedTagMove();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
