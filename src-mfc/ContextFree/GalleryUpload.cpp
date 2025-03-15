@@ -395,6 +395,13 @@ UINT GalleryUpload::TagsControllingFunction(LPVOID pParam)
 
 	}
 
+	if (hInetReq)
+		::InternetCloseHandle(hInetReq);
+	if (hInetCnxn)
+		::InternetCloseHandle(hInetCnxn);
+	if (hInetInit)
+		::InternetCloseHandle(hInetInit);
+
 	return 0;
 }
 
