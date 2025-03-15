@@ -116,6 +116,9 @@ BOOL CContextFreeApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
+	if (!AfxOleInit()) {
+		TRACE0("Could not initialize OLE\n");
+	}
 
 	EnableTaskbarInteraction();
 

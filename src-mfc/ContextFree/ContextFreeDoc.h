@@ -7,6 +7,8 @@
 #include <string>
 #include "ScintillaDocView.h"
 
+class CChildFrame;
+
 class CContextFreeDoc : public Scintilla::CScintillaDoc
 {
 protected: // create from serialization only
@@ -16,6 +18,7 @@ protected: // create from serialization only
 // Attributes
 public:
 	Scintilla::CScintillaView* m_vwEditorView = nullptr;
+	CChildFrame* m_wndChild = nullptr;
 
 // Operations
 public:

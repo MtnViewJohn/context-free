@@ -6,6 +6,7 @@
 
 #include "MessagePane.h"
 #include "ColorCalculator.h"
+#include "CFDropTarget.h"
 
 //-----------------
 // Statusbar panes:
@@ -22,10 +23,19 @@ public:
 // Attributes
 public:
 	static LPCTSTR NextExample;
+	static std::string NextString;
+	static CString NextName;
+	static int NextVariation;
+
 // Operations
 public:
 	void UpdateStatusBar(int progress, const CString& text);
 	void UpdateEditors(bool font, bool style);
+	DROPEFFECT OnDragEnter(COleDataObject* pDataObject);
+	DROPEFFECT OnDragOver(COleDataObject* pDataObject);
+	BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect);
+	CFDropTarget m_CFDropTarget;
+
 	// Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -49,11 +59,13 @@ protected:  // control bar embedded members
 	HMENU m_hSplitMenu = NULL;
 	ColorCalculator m_wndColorCalc;
 	bool m_bVariationSpinInit = false;
+	void DownLoadGallery(std::wstring_view wview);
 
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnRenderBar(UINT id);
+	afx_msg LRESULT DownloadDone(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnExample(UINT id);
 protected:

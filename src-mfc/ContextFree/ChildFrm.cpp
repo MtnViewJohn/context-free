@@ -144,6 +144,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_vwOutputView->m_pWinCanvas = &m_WinCanvas;
 
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
+	m_CFdoc->m_wndChild = this;
 	m_vwCfdgEditor->m_wndChild = this;
 
 	m_bInitSplitter = TRUE;

@@ -14,10 +14,16 @@
 #include "Preferences.h"
 #include "Settings.h"
 #include "CFScintillaView.h"
+#include <wininet.h>
+#include "WinSystem.h"
+#include <afxinet.h>
+#include "upload.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using WinSystem::WM_USER_RENDER_COMPLETE;
 
 namespace {
 	std::map<UINT, LPCTSTR> ExampleMenuMap = {
@@ -43,6 +49,90 @@ namespace {
 		{ID_EXAMPLE_WELCOME,     L"welcome.cfdg"},
 		{ID_EXAMPLE_ZIGGY,       L"ziggy.cfdg"},
 	};
+
+	struct DownloadInfo {
+		CMainFrame& m_hMainFrame;
+		CString m_sUrl;
+	};
+
+	struct InternetCloser
+	{
+		void operator()(HINTERNET hInet) const {
+			::InternetCloseHandle(hInet);
+		}
+	};
+
+	using inet_ptr = std::unique_ptr<void, InternetCloser>;
+
+	UINT DownloadControllingFunction(LPVOID pParam)
+	{
+		std::unique_ptr<DownloadInfo> pDI{ (DownloadInfo*)pParam };
+		inet_ptr hInetInit;
+		inet_ptr hInetCnxn;
+		inet_ptr hInetReq;
+
+		DWORD service = 0;
+		CString server;
+		CString object;
+		INTERNET_PORT port = 0;
+		if (!AfxParseURL(pDI->m_sUrl, service, server, object, port))
+			return 1;
+		if (service != AFX_INET_SERVICE_HTTP && service != AFX_INET_SERVICE_HTTPS)
+			return 1;
+
+		hInetInit.reset(::InternetOpen(L"Context Free", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0));
+
+		if (hInetInit)
+			hInetCnxn.reset(::InternetConnect(hInetInit.get(), server, port,
+				NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL));
+
+		if (hInetCnxn)
+			hInetReq.reset(::HttpOpenRequest(hInetCnxn.get(), L"GET", object, L"HTTP/1.1",
+				NULL, NULL, INTERNET_FLAG_KEEP_CONNECTION | 
+				(service == AFX_INET_SERVICE_HTTP ? 0 : INTERNET_FLAG_SECURE),
+				NULL));
+
+		if (hInetReq && ::HttpSendRequest(hInetReq.get(), NULL, 0, NULL, 0)) {
+			DWORD length = sizeof(DWORD);
+			DWORD status = 0;
+			HttpQueryInfo(hInetReq.get(), HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+				&status, &length, NULL);
+			if (status == 200) {
+				char buf[200];
+				DWORD bytesRead;
+				std::string response;
+				while (::InternetReadFile(hInetReq.get(), (LPVOID)buf, 200, &bytesRead) && bytesRead) {
+					response.append(buf, bytesRead);
+					bytesRead = 0;
+				}
+
+				if (!response.empty()) {
+					if (pDI->m_sUrl.Right(5) == L".cfdg") {		// link to cfdg file
+						CMainFrame::NextString = std::move(response);
+						CMainFrame::NextName = pDI->m_sUrl;
+						CMainFrame::NextVariation = 0;
+					} else {									// link to gallery page
+						Upload download(response.c_str(), response.length());
+						if (!download.mId)
+							return 1;
+						CMainFrame::NextString = std::move(download.mPassword);
+						CMainFrame::NextName = Utf8ToUtf16(download.mFileName.c_str()).c_str();
+						CMainFrame::NextVariation = download.mVariation;
+					}
+					// Trim path components and extension
+					int idx = CMainFrame::NextName.ReverseFind(L'/');
+					if (idx != -1)
+						CMainFrame::NextName = CMainFrame::NextName.Mid(idx + 1);
+					if (CMainFrame::NextName.Right(5) == L".cfdg")
+						CMainFrame::NextName = CMainFrame::NextName.Left(CMainFrame::NextName.GetLength() - 5);
+					pDI->m_hMainFrame.PostMessageW(WM_USER_RENDER_COMPLETE);
+				}
+			}
+		}
+
+		return 0;
+	}
+
 }
 // CMainFrame
 
@@ -60,6 +150,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_FRAME_SPIN, &CMainFrame::OnRenderFrameUD)
 	ON_CONTROL_RANGE(EN_CHANGE, IDC_VARIATION, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderEdits)
 	ON_COMMAND(ID_FILE_PREFERENCES, &CMainFrame::OnPreferences)
+	ON_MESSAGE(WM_USER_RENDER_COMPLETE, &CMainFrame::DownloadDone)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -72,8 +163,13 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 LPCTSTR CMainFrame::NextExample = nullptr;
+std::string CMainFrame::NextString;
+CString CMainFrame::NextName;
+int CMainFrame::NextVariation = 0;
 
 CMainFrame::CMainFrame() noexcept
+: CMDIFrameWndEx()
+, m_CFDropTarget(*this)
 {
 	m_wndMessageLog.m_wndMainFrm = this;
 }
@@ -120,6 +216,93 @@ void CMainFrame::ForwardLink(LPCTSTR link)
 		c->RecvErrorLinkClick(link);
 }
 
+DROPEFFECT CMainFrame::OnDragEnter(COleDataObject* pDataObject)
+{
+	if (pDataObject->IsDataAvailable(CF_TEXT) || pDataObject->IsDataAvailable(CF_UNICODETEXT))
+		return DROPEFFECT_COPY;
+	else
+		return DROPEFFECT_NONE;
+}
+
+DROPEFFECT CMainFrame::OnDragOver(COleDataObject* pDataObject)
+{
+	SetCursor(LoadCursor(NULL, IDC_HAND));
+	if (pDataObject->IsDataAvailable(CF_TEXT) || pDataObject->IsDataAvailable(CF_UNICODETEXT))
+		return DROPEFFECT_COPY;
+	else
+		return DROPEFFECT_NONE;
+}
+
+BOOL CMainFrame::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect)
+{
+	if (HGLOBAL hData = pDataObject->GetGlobalData(CF_UNICODETEXT)) {
+		wchar_t* wtxt = reinterpret_cast<wchar_t*>(::GlobalLock(hData));
+		if (wtxt && *wtxt) {
+			std::wstring_view wview = wtxt;
+			if (wview.starts_with(L"https://www.contextfreeart.org/gallery") ||
+				wview.starts_with(L"http://www.contextfreeart.org/gallery") ||
+				wview.starts_with(L"https://contextfreeart.org/gallery") ||
+				wview.starts_with(L"http://contextfreeart.org/gallery"))
+			{
+				DownLoadGallery(wview);
+			} else {
+				NextString = Utf16ToUtf8(wtxt);
+				theApp.m_pDocManager->OnFileNew();
+			}
+		}
+		::GlobalUnlock(hData);
+		::GlobalFree(hData);
+		return TRUE;
+	}
+	if (HGLOBAL hData = pDataObject->GetGlobalData(CF_TEXT)) {
+		char* txt = reinterpret_cast<char*>(::GlobalLock(hData));
+		if (txt && *txt) {
+			auto wview = Utf8ToUtf16(txt);
+			if (wview.starts_with(L"https://www.contextfreeart.org/gallery") ||
+				wview.starts_with(L"http://www.contextfreeart.org/gallery") ||
+				wview.starts_with(L"https://contextfreeart.org/gallery") ||
+				wview.starts_with(L"http://contextfreeart.org/gallery"))
+			{
+				DownLoadGallery(wview);
+			} else {
+				NextString = txt;
+				theApp.m_pDocManager->OnFileNew();
+			}
+		}
+		::GlobalUnlock(hData);
+		::GlobalFree(hData);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void CMainFrame::DownLoadGallery(std::wstring_view wview)
+{
+	DownloadInfo* di = new DownloadInfo{ *this, L"" };
+	auto idx = wview.find(L"id=");
+	if (idx != std::wstring_view::npos) {
+		idx += 3;
+	} else {
+		idx = wview.find(L"#design/");
+		if (idx != std::wstring_view::npos)
+			idx += 8;
+	}
+	if (idx != std::wstring_view::npos) {
+		wchar_t* end = nullptr;
+		long id = std::wcstol(wview.data() + idx, &end, 10);
+		if (end != wview.data() + idx && id != 0 && id != LONG_MAX)
+			di->m_sUrl.Format(L"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", id);
+		else
+			return;
+	} else if (wview.ends_with(L".cfdg")) {
+		di->m_sUrl = wview.data();
+	} else {
+		return;
+	}
+
+	CWinThread* rt = ::AfxBeginThread(DownloadControllingFunction, (LPVOID)di);
+}
+
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
@@ -127,7 +310,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	EnableMDITabs(TRUE, TRUE, CMFCBaseTabCtrl::LOCATION_TOP, FALSE, CMFCTabCtrl::STYLE_3D_SCROLLED, FALSE, TRUE);
 
-	
+	if (!m_CFDropTarget.Register(this)) {
+		TRACE0("Could not register drop window\n");
+	}
+
+
 	if (!m_wndRenderbar.Create(_T(""), this, FALSE, IDD_RENDERBAR, WS_CHILD | WS_VISIBLE | CBRS_TOP, IDD_RENDERBAR)) {
 		TRACE0("Could not create renderbar\n");
 		return -1;
@@ -227,6 +414,12 @@ void CMainFrame::OnExample(UINT id)
 	NextExample = id ? ExampleMenuMap[id] : ExampleMenuMap[ID_EXAMPLE_WELCOME];
 	if (id)
 		theApp.m_pDocManager->OnFileNew();
+}
+
+LRESULT CMainFrame::DownloadDone(WPARAM, LPARAM)
+{
+	theApp.m_pDocManager->OnFileNew();
+	return 0;
 }
 
 void CMainFrame::OnRenderBar(UINT id)

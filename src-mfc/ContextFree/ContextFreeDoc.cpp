@@ -60,24 +60,38 @@ BOOL CContextFreeDoc::OnNewDocument()
 		SetTitle(title.data());
 		CMainFrame::NextExample = nullptr;
 	} else {
-		// Ensure that the new document title is unique
-		std::set<CString> titles;
-		auto position = AfxGetApp()->GetFirstDocTemplatePosition();
-		auto docTemp = AfxGetApp()->GetNextDocTemplate(position);
-		position = docTemp->GetFirstDocPosition();
-		while (position) {
-			auto doc = docTemp->GetNextDoc(position);
-			titles.insert(doc->GetTitle());
+		if (!CMainFrame::NextString.empty()) {
+			LoadCfdg(CMainFrame::NextString);
+			m_vwEditorView->GetCtrl().SetSavePoint();
+			CMainFrame::NextString.clear();
 		}
-		if (titles.count(GetTitle()) == 0)
-			return TRUE;		// never happens
-		CString newTitle;
-		for (int i = 1;; ++i) {
-			newTitle.Format(_T("%s%d"), (LPCTSTR)GetTitle(), i);
-			if (titles.count(newTitle) == 0) {
-				SetTitle(newTitle);
-				return TRUE;
+		if (CMainFrame::NextVariation) {
+			m_wndChild->renderParams.variation = CMainFrame::NextVariation;
+			CMainFrame::NextVariation = 0;
+		}
+		if (CMainFrame::NextName.IsEmpty()) {
+			// Ensure that the new document title is unique
+			std::set<CString> titles;
+			auto position = AfxGetApp()->GetFirstDocTemplatePosition();
+			auto docTemp = AfxGetApp()->GetNextDocTemplate(position);
+			position = docTemp->GetFirstDocPosition();
+			while (position) {
+				auto doc = docTemp->GetNextDoc(position);
+				titles.insert(doc->GetTitle());
 			}
+			if (titles.count(GetTitle()) == 0)
+				return TRUE;		// never happens
+			CString newTitle;
+			for (int i = 1;; ++i) {
+				newTitle.Format(_T("%s%d"), (LPCTSTR)GetTitle(), i);
+				if (titles.count(newTitle) == 0) {
+					SetTitle(newTitle);
+					return TRUE;
+				}
+			}
+		} else {
+			SetTitle(CMainFrame::NextName);
+			CMainFrame::NextName.Empty();
 		}
 	}
 
