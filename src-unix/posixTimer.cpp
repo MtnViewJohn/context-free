@@ -22,22 +22,28 @@
 //
 //
 
+#include "posixTimer.h"
 #include "cfdg.h"
 #include <sys/time.h>
 #include <signal.h>
 #include <memory>
 
-static std::weak_ptr<Renderer> gRenderer;
+std::weak_ptr<Renderer> PosixTimer::gRenderer;
 
-void
-statusTimer(int)
-{
-  if (auto runningRenderer = gRenderer.lock())
-      runningRenderer->requestUpdate = true;
+namespace {
+    void
+    statusTimer(int)
+    {
+      if (auto runningRenderer = PosixTimer::gRenderer.lock())
+          runningRenderer->requestUpdate = true;
+    }
 }
 
+PosixTimer::PosixTimer() {}
+PosixTimer::~PosixTimer() {}
+
 void
-setupTimer(std::shared_ptr<Renderer>& renderer)
+PosixTimer::Start(std::shared_ptr<Renderer>& renderer)
 {
     gRenderer = renderer;
 
@@ -55,13 +61,14 @@ setupTimer(std::shared_ptr<Renderer>& renderer)
 }
 
 void
-cleanupTimer()
+PosixTimer::Stop()
 {
     itimerval period;
     period.it_interval.tv_sec = 0;
     period.it_interval.tv_usec = 0;
     period.it_value = period.it_interval;
     setitimer(ITIMER_REAL, &period, 0);
+    gRenderer.reset();
 }
 
 

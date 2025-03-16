@@ -99,8 +99,10 @@ void termination_handler(int)
 
 #ifdef _WIN32
 #include "winTimer.h"
+#define Timer WinTimer
 #else
 #include "posixTimer.h"
+#define Timer PosixTimer
 #endif
 
 struct options {
@@ -422,7 +424,7 @@ namespace {
 int main (int argc, char* argv[]) {
     options opts;
     int var = Variation::random(6);
-    WinTimer timer;
+    Timer timer;
     
 #ifdef _WIN32
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE);
