@@ -35,40 +35,6 @@
 #include <string.h>
 #include <windows.h>
 
-std::string  Utf16ToUtf8(const wchar_t* wstr)
-{
-    std::string str;
-    int wlen = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, NULL, NULL);
-    if (wlen == 0)
-        return str;
-    str.resize(wlen - 1, ' ');
-    int len = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str.data(), wlen, NULL, NULL);
-    if (len == 0) {
-        str.clear();
-        return str;
-    }
-    if (len != wlen)
-        str.resize(len - 1, ' ');
-    return str;
-}
-
-std::wstring Utf8ToUtf16(const char* str)
-{
-    std::wstring wstr;
-    int len = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, nullptr, 0);
-    if (len == 0)
-        return wstr;
-    wstr.resize(len - 1, L' ');
-    int wlen = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr.data(), len);
-    if (wlen == 0) {
-        wstr.clear();
-        return wstr;
-    }
-    if (len != wlen)
-        wstr.resize(wlen - 1, L' ');
-    return wstr;
-}
-
 void* WinSystem::MainWindow = nullptr;
 
 WinSystem::WinSystem(void* h)
