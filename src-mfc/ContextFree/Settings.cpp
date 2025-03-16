@@ -21,6 +21,7 @@ void Settings::Load()
 
     AtLaunch = (LaunchActions)pApp->GetProfileIntW(pszKey, _T("LaunchAction"), (int)LaunchActions::Welcome);
     RenderOnOpen = pApp->GetProfileIntW(pszKey, _T("RenderOnOpen"), 1) != 0;
+    AtLaunch = (LaunchActions)std::clamp((int)AtLaunch, 0, 2);
 
     RenderParameters::Load();
     EditorParams::Load();

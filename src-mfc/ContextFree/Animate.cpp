@@ -7,10 +7,11 @@
 #include "Animate.h"
 
 namespace {
-	auto rates = { 8, 10, 12, 15, 24, 25, 30, 50, 60 };
 	auto rateStrings =
 		{ _T("8"), _T("10"), _T("12"), _T("15"), _T("24"), _T("25"), _T("30"), _T("50"), _T("60") };
 }
+
+std::vector<int> Animate::Rates{ 8, 10, 12, 15, 24, 25, 30, 50, 60 };
 
 // Animate dialog
 
@@ -75,11 +76,11 @@ BOOL Animate::OnInitDialog()
 
 	for (auto rate : rateStrings)
 		m_ctrlFrameRate.AddString(rate);
-	auto it = std::find(rates.begin(), rates.end(), params.MovieFrameRate);
-	if (it == rates.end())
+	auto it = std::find(Rates.begin(), Rates.end(), params.MovieFrameRate);
+	if (it == Rates.end())
 		m_ctrlFrameRate.SetCurSel(3);		// 15fps
 	else
-		m_ctrlFrameRate.SetCurSel((int)(it - rates.begin()));
+		m_ctrlFrameRate.SetCurSel((int)(it - Rates.begin()));
 
 	m_ctrlCodec.AddString(_T("H.264"));
 	m_ctrlCodec.AddString(_T("ProRes"));
@@ -116,7 +117,7 @@ void Animate::OnOK()
 		params.MovieLength = (int)v;
 	}
 
-	params.MovieFrameRate = *(rates.begin() + m_ctrlFrameRate.GetCurSel());
+	params.MovieFrameRate = *(Rates.begin() + m_ctrlFrameRate.GetCurSel());
 
 	if (!m_bFrame)
 		params.Codec = (RenderParameters::Codecs)m_ctrlCodec.GetCurSel();

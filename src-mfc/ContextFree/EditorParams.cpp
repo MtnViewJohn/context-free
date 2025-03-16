@@ -2,6 +2,15 @@
 #include "EditorParams.h"
 #include <string>
 
+namespace {
+    int CALLBACK EnumFontFamProc(CONST LOGFONTW*, CONST TEXTMETRICW*, DWORD, LPARAM lParam)
+    {
+        int* count = reinterpret_cast<int*>(lParam);
+        ++(*count);
+        return *count;
+    }
+}
+
 int EditorParams::FontSize = 10;
 CString EditorParams::FontName = _T("Courier New");
 int EditorParams::TabWidth = 4;
@@ -75,6 +84,28 @@ void EditorParams::Load()
     BuiltinColor = pApp->GetProfileIntW(pszKey, _T("BuiltinColor"), 0x0007F00);
     FileColor = pApp->GetProfileIntW(pszKey, _T("FileColor"), 0x0FFAA3E);
     NumberColor = pApp->GetProfileIntW(pszKey, _T("NumberColor"), 0x07F7F00);
+
+    FontSize = std::clamp(FontSize, 6, 30);
+
+    if (FontName.GetLength() < 3 || FontName.GetLength() > 31)
+        FontName = L"Courier New";
+    LOGFONT logFont = { 0 };
+    logFont.lfCharSet = SC_CHARSET_DEFAULT;
+    ::wcsncpy_s(logFont.lfFaceName, (LPCTSTR)FontName, 32);
+    int fontCount = 0;
+    if (::EnumFontFamilies(::GetDC(NULL), (LPCTSTR)FontName, &EnumFontFamProc, (LPARAM)(&fontCount)) == 0)
+        FontName = L"Courier New";
+
+    TabWidth = std::clamp(TabWidth, 1, 8);
+
+    DefaultColor &= 0xFFFFFF;
+    CommentColor &= 0xFFFFFF;
+    SymbolColor &= 0xFFFFFF;
+    IdentColor &= 0xFFFFFF;
+    KeywordColor &= 0xFFFFFF;
+    BuiltinColor &= 0xFFFFFF;
+    FileColor &= 0xFFFFFF;
+    NumberColor &= 0xFFFFFF;
 }
 
 void EditorParams::Save()

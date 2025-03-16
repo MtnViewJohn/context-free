@@ -23,6 +23,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	static std::vector<int> Rates;
 	CEdit m_ctrlWidth;
 	CEdit m_ctrlHeight;
 	CEdit m_ctrlMinSize;

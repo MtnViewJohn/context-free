@@ -2,6 +2,7 @@
 #include "RenderParams.h"
 #include <cwchar>
 #include "variation.h"
+#include "Animate.h"
 
 namespace {
     double GetDouble(const CString& str, double def)
@@ -68,6 +69,17 @@ void RenderParameters::Load()
     MovieFrame = pApp->GetProfileIntW(pszKey, _T("AnimateFrame"), 1);
     Codec = (Codecs)pApp->GetProfileIntW(pszKey, _T("AnimateCodec"), 0);
     AnimateFrameCount = MovieLength * MovieFrameRate;
+
+    RenderWidth = std::clamp(RenderWidth, 8, 32768);
+    RenderHeight = std::clamp(RenderHeight, 8, 32768);
+    MinimumSize = std::clamp(MinimumSize, 0.0, 10.0);
+    BorderSize = std::clamp(BorderSize, -1.0, 2.0);
+    AnimateWidth = std::clamp(AnimateWidth, 8, 32768);
+    AnimateHeight = std::clamp(AnimateHeight, 8, 32768);
+    if (std::find(Animate::Rates.begin(), Animate::Rates.end(), MovieFrameRate) == Animate::Rates.end())
+        MovieFrameRate = 15;
+    MovieFrame = std::clamp(MovieFrame, 1, AnimateFrameCount);
+    Codec = (Codecs)std::clamp((int)Codec, 0, 1);
 }
 
 void RenderParameters::Save()

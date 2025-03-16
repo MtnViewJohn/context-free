@@ -68,6 +68,14 @@ namespace {
 	std::set<std::wstring, AutoCmpWStr> AllTagsL;
 }
 
+bool GalleryUpload::Validate(CString name, CString license, CString image)
+{
+	for (size_t i = 0; i < 9; ++i)
+		if (name == LicenseNames[i] && license == LicenseURLs[i] && image == LicenseImages[i])
+			return true;
+	return false;
+}
+
 // GalleryUpload dialog
 
 std::atomic_bool GalleryUpload::TagsLoaded = false;

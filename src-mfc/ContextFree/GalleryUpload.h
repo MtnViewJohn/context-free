@@ -15,6 +15,8 @@ public:
 	GalleryUpload(CChildFrame& child, UploadParams& params, CWnd* pParent = nullptr);   // standard constructor
 	virtual ~GalleryUpload();
 
+	static bool Validate(CString name, CString license, CString image);
+
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_UPLOAD };

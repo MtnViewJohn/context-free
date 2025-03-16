@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UploadParams.h"
 #include <dpapi.h>
+#include "GalleryUpload.h"
 
 CString UploadParams::Username;
 CString UploadParams::Password;
@@ -31,6 +32,9 @@ void UploadParams::Load()
     ccName = pApp->GetProfileStringW(pszKey, _T("ccName"), _T(""));
     Salt = pApp->GetProfileStringW(pszKey, _T("Salt"), _T(""));
 
+    if (Salt.GetLength() > 200)
+        Salt.Empty();
+
     BYTE* passwordBin = nullptr;
     UINT passwordBinLength = 0;
     pApp->GetProfileBinary(pszKey, _T("GalleryPassword"), &passwordBin, &passwordBinLength);
@@ -46,6 +50,14 @@ void UploadParams::Load()
         Password.Empty();
     }
     Salt.UnlockBuffer();
+
+    if (Username.GetLength() < 3 || Username.GetLength() > 20)
+        Username.Empty();
+    if (!GalleryUpload::Validate(ccName, ccLicense, ccImage)) {
+        ccName.Empty(); ccLicense.Empty(); ccImage.Empty();
+    }
+    if (Password.GetLength() > 200)
+        Password.Empty();
 
     Modified = false;
 }
