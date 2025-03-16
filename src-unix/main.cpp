@@ -58,9 +58,6 @@ using std::string;
 using std::cerr;
 using std::endl;
 
-void setupTimer(std::shared_ptr<Renderer>& renderer);
-void cleanupTimer();
-
 std::ostream* myCout = &cerr;
 
 static std::weak_ptr<Renderer> gRenderer;
@@ -100,6 +97,11 @@ void termination_handler(int)
 }
 #endif
 
+#ifdef _WIN32
+#include "winTimer.h"
+#else
+#include "posixTimer.h"
+#endif
 
 struct options {
     enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 4 };
@@ -420,6 +422,7 @@ namespace {
 int main (int argc, char* argv[]) {
     options opts;
     int var = Variation::random(6);
+    WinTimer timer;
     
 #ifdef _WIN32
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE);
@@ -528,7 +531,7 @@ int main (int argc, char* argv[]) {
         
     gRenderer = TheRenderer;    // weak pointer for interrupt signal handler
 
-    if (!opts.quiet) setupTimer(TheRenderer);
+    if (!opts.quiet) timer.Start(TheRenderer);
     
     if (opts.maxShapes > 0)
         TheRenderer->setMaxShapes(opts.maxShapes);
@@ -582,7 +585,7 @@ int main (int argc, char* argv[]) {
     }
     
     if (myCanvas->mError || system.error(false) || TheRenderer->requestStop) {
-        cleanupTimer();
+        timer.Stop();
         Renderer::AbortEverything = true;
         return 5;
     }
@@ -601,7 +604,7 @@ int main (int argc, char* argv[]) {
     }
     *myCout << endl;
     
-    if (!opts.quiet) cleanupTimer();
+    if (!opts.quiet) timer.Stop();
     
     *myCout << "DONE!" << endl;
     *myCout << "The output file name is " << 
