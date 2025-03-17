@@ -13,6 +13,7 @@
 #include "ContextFreeDoc.h"
 #include "ContextFreeView.h"
 #include "Settings.h"
+#include "EditLock.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -170,6 +171,7 @@ BOOL CContextFreeApp::InitInstance()
 	AddDocTemplate(pDocTemplate);
 
 	// create main MDI Frame window
+	auto lock = EditLock();
 	Settings setting;
 	CMainFrame* pMainFrame = new CMainFrame;
 	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))

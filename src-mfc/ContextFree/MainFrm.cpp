@@ -18,6 +18,7 @@
 #include "WinSystem.h"
 #include <afxinet.h>
 #include "upload.h"
+#include "EditLock.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -697,18 +698,24 @@ void CMainFrame::UpdateEditors(bool font, bool style)
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CMDIFrameWndEx::OnSize(nType, cx, cy);
+	CRect rc;
+	GetWindowRect(&rc);
 
-	switch (nType) {
-	case SIZE_MAXIMIZED:
-		Settings::WindowWidth = INT_MAX;
-		Settings::WindowHeight = INT_MAX;
-		break;
-	case SIZE_RESTORED:
-		Settings::WindowWidth = cx;
-		Settings::WindowHeight = cy;
-		break;
-	default:
-		return;
+	if (auto lock = EditLock()) {
+		switch (nType) {
+		case SIZE_MAXIMIZED:
+			Settings::WindowWidth = INT_MAX;
+			Settings::WindowHeight = INT_MAX;
+			break;
+		case SIZE_RESTORED:
+			if (std::abs(Settings::WindowWidth - rc.Width()) > 1)
+				Settings::WindowWidth = rc.Width();
+			if (std::abs(Settings::WindowHeight - rc.Height()) > 1)
+				Settings::WindowHeight = rc.Height();
+			break;
+		default:
+			return;
+		}
+		Settings::Save(true);
 	}
-	Settings::Save(true);
 }
