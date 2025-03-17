@@ -25,6 +25,7 @@
 #include "CFScintillaView.h"
 #include "GalleryUpload.h"
 #include "UploadParams.h"
+#include "EditLock.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,6 +79,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_COMMAND(IDD_COLORCALC, &CChildFrame::OnColorCalculator)
 	ON_COMMAND(ID_RENDER_UPLOADTOGALLERY, &CChildFrame::OnUploadGallery)
 	ON_WM_MOVE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -129,7 +131,8 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	GetClientRect(&cr);
 
 	if (!m_wndSplitterCfdg.CreateStatic(this, 1, 2) ||
-		!m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CFScintillaView), CSize(cr.Width() / 3, 0), pContext) ||
+		!m_wndSplitterCfdg.CreateView(0, 0, RUNTIME_CLASS(CFScintillaView), 
+			CSize(cr.Width() * Settings::EditorWidth / 100, 0), pContext) ||
 		!m_wndSplitterCfdg.CreateView(0, 1, pContext->m_pNewViewClass, CSize(0, 0), pContext))
 	{
 		TRACE0("Could not create splitter.\n");
@@ -146,6 +149,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_CFdoc->m_vwEditorView = m_vwCfdgEditor;
 	m_CFdoc->m_wndChild = this;
 	m_vwCfdgEditor->m_wndChild = this;
+	m_vwOutputView->m_wndChild = this;
 
 	m_bInitSplitter = TRUE;
 
@@ -192,9 +196,10 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 	GetWindowRect(&cr);
 
 	if (m_bInitSplitter && nType != SIZE_MINIMIZED) {
+		auto lock = EditLock();
 		m_wndSplitterCfdg.SetRowInfo(0, cy, 0);
-		m_wndSplitterCfdg.SetColumnInfo(0, cr.Width() / 3, 50);
-		m_wndSplitterCfdg.SetColumnInfo(1, cr.Width() * 2 / 3, 50);
+		m_wndSplitterCfdg.SetColumnInfo(0, cr.Width() * Settings::EditorWidth / 100, 50);
+		//m_wndSplitterCfdg.SetColumnInfo(1, cr.Width() * 2 / 3, 50);
 
 		m_wndSplitterCfdg.RecalcLayout();
 	}
@@ -204,6 +209,16 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 		if (rCtrl.CallTipActive())
 			rCtrl.CallTipCancel();
 	}
+}
+
+void CChildFrame::PaneResize()
+{
+	int min = 0, editWidth = 0, outputWidth = 0;
+	m_wndSplitterCfdg.GetColumnInfo(0, editWidth, min);
+	m_wndSplitterCfdg.GetColumnInfo(1, outputWidth, min);
+	int percent = (editWidth * 100) / (editWidth + outputWidth);
+	Settings::EditorWidth = percent;
+	Settings::Save(true);
 }
 
 void CChildFrame::OnMove(int x, int y)

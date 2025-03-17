@@ -217,6 +217,10 @@ BOOL CContextFreeApp::InitInstance()
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
+
+	if (Settings::WindowWidth == INT_MAX || Settings::WindowHeight == INT_MAX)
+		m_nCmdShow = SW_SHOWMAXIMIZED;
+
 	// The main window has been initialized, so show and update it
 	pMainFrame->ShowWindow(m_nCmdShow);
 	pMainFrame->UpdateWindow();

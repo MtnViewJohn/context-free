@@ -16,5 +16,8 @@ public:
 
     static LaunchActions AtLaunch;
     static bool RenderOnOpen;
+    static int EditorWidth;
+    static int WindowWidth;
+    static int WindowHeight;
 };
 

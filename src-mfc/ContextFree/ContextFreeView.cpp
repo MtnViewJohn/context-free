@@ -17,6 +17,8 @@
 #include <vector>
 #include "CMemDC.h"
 #include "tiledCanvas.h"
+#include "ChildFrm.h"
+#include "EditLock.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +31,7 @@ IMPLEMENT_DYNCREATE(CContextFreeView, CView)
 
 BEGIN_MESSAGE_MAP(CContextFreeView, CView)
 	ON_WM_ERASEBKGND()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CContextFreeView construction/destruction
@@ -238,3 +241,12 @@ CContextFreeDoc* CContextFreeView::GetDocument() const // non-debug version is i
 #endif //_DEBUG
 
 // CContextFreeView message handlers
+
+void CContextFreeView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
+
+	auto lock = EditLock();
+	if (m_wndChild && lock)
+		m_wndChild->PaneResize();
+}

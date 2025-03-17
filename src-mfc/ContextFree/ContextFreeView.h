@@ -6,6 +6,7 @@
 
 #include "WinCanvas.h"
 class Renderer;
+class CChildFrame;
 
 class CContextFreeView : public CView
 {
@@ -37,6 +38,7 @@ public:
 	wincanvas_ptr* m_pWinCanvas = nullptr;
 	wincanvas_ptr m_WinCanvas8;
 	Renderer* m_Renderer = nullptr;
+	CChildFrame* m_wndChild = nullptr;
 	BOOL m_bTiled;
 	BOOL m_bBlendMode;
 	int m_iBoxSize = 0;
@@ -48,6 +50,8 @@ protected:
 protected:
 	std::unique_ptr<Gdiplus::Bitmap> MakeBitmap(bool cropped);
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // debug version in ContextFreeView.cpp

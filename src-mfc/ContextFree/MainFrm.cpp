@@ -151,6 +151,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_CONTROL_RANGE(EN_CHANGE, IDC_VARIATION, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderEdits)
 	ON_COMMAND(ID_FILE_PREFERENCES, &CMainFrame::OnPreferences)
 	ON_MESSAGE(WM_USER_RENDER_COMPLETE, &CMainFrame::DownloadDone)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -388,6 +389,13 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CMDIFrameWndEx::PreCreateWindow(cs) )
 		return FALSE;
+
+	if (Settings::WindowWidth != 0 && Settings::WindowHeight != 0 &&
+		Settings::WindowWidth != INT_MAX && Settings::WindowHeight != INT_MAX)
+	{
+		cs.cx = Settings::WindowWidth;
+		cs.cy = Settings::WindowHeight;
+	}
 
 	return TRUE;
 }
@@ -684,4 +692,23 @@ void CMainFrame::UpdateEditors(bool font, bool style)
 		if (style)
 			child->m_vwCfdgEditor->EditorStyleChanged();
 	}
+}
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CMDIFrameWndEx::OnSize(nType, cx, cy);
+
+	switch (nType) {
+	case SIZE_MAXIMIZED:
+		Settings::WindowWidth = INT_MAX;
+		Settings::WindowHeight = INT_MAX;
+		break;
+	case SIZE_RESTORED:
+		Settings::WindowWidth = cx;
+		Settings::WindowHeight = cy;
+		break;
+	default:
+		return;
+	}
+	Settings::Save(true);
 }

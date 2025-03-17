@@ -63,6 +63,7 @@ public:
 	void RecvErrorLinkClick(LPCTSTR link);
 	void UpdateDirtyIndicator(bool dirty);
 	Gdiplus::Status SaveJPEG(IStream* out, LPCTSTR file, bool crop, int iMultWidth, int iMultHeight, int quality);
+	void PaneResize();
 protected:
 	enum class PostRenderAction
 	{
