@@ -297,7 +297,7 @@ void CChildFrame::RecvErrorLinkClick(LPCTSTR link)
 	int end_char = std::wcstol(start, &next, 10);
 	if (*next != L'\0')
 		return;
-	auto& rCtrl = m_vwCfdgEditor->GetCtrl();
+	auto& rCtrl{m_vwCfdgEditor->GetCtrl()};
 	auto start_line_char = rCtrl.PositionFromLine(start_line - 1);
 	auto end_line_char = rCtrl.PositionFromLine(end_line - 1);
 	if (start_line_char >= 0 && end_line_char >= 0)

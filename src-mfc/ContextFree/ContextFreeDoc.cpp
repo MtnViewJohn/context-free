@@ -175,9 +175,10 @@ void CContextFreeDoc::LoadCfdg(std::string utf8text)
 
 std::string CContextFreeDoc::GetCfdg()
 {
-	auto len = m_vwEditorView->GetCtrl().GetTextLength();
+	auto& rCtrl{m_vwEditorView->GetCtrl()};
+	auto len = rCtrl.GetTextLength();
 	std::string txt(len, ' ');
-	auto len2 = m_vwEditorView->GetCtrl().GetText(len, txt.data());
+	auto len2 = rCtrl.GetText(len, txt.data());
 	if (len2 != len)
 		txt.resize(len2, ' ');
 	return txt;

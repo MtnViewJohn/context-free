@@ -72,7 +72,7 @@ void CFScintillaView::EditorStyleChanged()
 
 void CFScintillaView::EditorFontChanged()
 {
-    auto& rCtrl{ GetCtrl() };
+    auto& rCtrl{GetCtrl()};
     auto fontName = Utf16ToUtf8((LPCTSTR)EditorParams::FontName);
 
     rCtrl.StyleSetFont(static_cast<int>(Scintilla::StylesCommon::Default), fontName.c_str());
@@ -217,7 +217,7 @@ void CFScintillaView::OnStyleNeeded(_Inout_ NotificationData* pSCNotification)
     if (m_pDirectFn == nullptr || m_pSciPtr == 0)
         return;
 
-    auto& rCtrl{ GetCtrl() };
+    auto& rCtrl{GetCtrl()};
 
     auto startPos = rCtrl.GetEndStyled();
     auto startLine = rCtrl.LineFromPosition(startPos);
@@ -236,7 +236,7 @@ void CFScintillaView::OnModifyAttemptRO(_Inout_ Scintilla::NotificationData* /*p
 #pragma warning(suppress: 26440)
 void CFScintillaView::OnModified(_Inout_ Scintilla::NotificationData* pSCNotification)
 {
-    auto& rCtrl{ GetCtrl() };
+    auto& rCtrl{GetCtrl()};
 
     if (rCtrl.AutoCActive() && (static_cast<int>(pSCNotification->modificationType) &
       static_cast<int>(Scintilla::ModificationFlags::Undo | Scintilla::ModificationFlags::Redo)))
@@ -326,7 +326,7 @@ std::unique_ptr<Scintilla::CScintillaCtrl> CFScintillaView::CreateScintillaContr
 
 void CFScintillaView::CheckAutoC()
 {
-    auto& rCtrl = GetCtrl();
+    auto& rCtrl{GetCtrl()};
     auto pos = rCtrl.GetCurrentPos();
     auto wordPos = rCtrl.WordStartPosition(pos, true);
     auto len = pos - wordPos;

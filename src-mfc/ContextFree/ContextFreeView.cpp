@@ -38,8 +38,6 @@ END_MESSAGE_MAP()
 
 CContextFreeView::CContextFreeView() noexcept
 {
-	// TODO: add construction code here
-
 }
 
 CContextFreeView::~CContextFreeView()
@@ -48,9 +46,6 @@ CContextFreeView::~CContextFreeView()
 
 BOOL CContextFreeView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
 	return CView::PreCreateWindow(cs);
 }
 
