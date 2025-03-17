@@ -62,7 +62,7 @@ class aggCanvas : public Canvas {
         void primitive(int shape, RGBA8 c, agg::trans_affine tr, agg::comp_op_e blend) override;
         void path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr) override;
         
-        bool colorCount256();
+        bool colorCount256() const;
             // return whether the aggCanvas can fit in byte pixels
         
         static PixelFormat SuggestPixelFormat(CFDG* engine);
@@ -80,10 +80,10 @@ class aggCanvas : public Canvas {
             // copy the image from different pixel buffer
 
     public:
-        int cropX();
-        int cropY();
-        int cropWidth();
-        int cropHeight();
+        int cropX() const;
+        int cropY() const;
+        int cropWidth() const;
+        int cropHeight() const;
 
         void draw(const aggCanvas& src, int x, int y);
     

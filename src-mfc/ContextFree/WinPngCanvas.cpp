@@ -108,3 +108,32 @@ void WinPngCanvas::output(const char* outfilename, int frame)
         pngCanvas::output(outfilename, frame);
 }
 
+int WinPngCanvas::ActualWidth() const
+{
+    if (mRenderer && mRenderer->m_tiledCanvas)
+        return mFullWidth;
+    if (mCrop)
+        return cropWidth();
+    else
+        return mWidth;
+}
+
+int WinPngCanvas::ActualHeight() const
+{
+    if (mRenderer && mRenderer->m_tiledCanvas)
+        return mFullHeight;
+    if (mCrop)
+        return cropHeight();
+    else
+        return mHeight;
+}
+
+int WinPngCanvas::ActualOffset() const
+{
+    if (mRenderer && mRenderer->m_tiledCanvas)
+        return 0;
+    if (mCrop)
+        return (mStride * mOriginY + mOriginX) * BytesPerPixel.at(mPixelFormat);
+    else
+        return 0;
+}

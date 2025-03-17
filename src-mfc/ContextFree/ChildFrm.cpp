@@ -551,8 +551,8 @@ Gdiplus::Status CChildFrame::SaveJPEG(IStream* out, LPCTSTR file, bool crop, int
 	saveCanvas.end();		// does not write a PNG file
 	auto pixfmt = GetPixFormat(m_WinCanvas->mPixelFormat);
 	if (!pixfmt) return Gdiplus::Status::UnknownImageFormat;
-	Gdiplus::Bitmap newBM(saveCanvas.mWidth, saveCanvas.mHeight, saveCanvas.mStride,
-		pixfmt, (BYTE*)saveCanvas.mData.data());
+	Gdiplus::Bitmap newBM(saveCanvas.ActualWidth(), saveCanvas.ActualHeight(), saveCanvas.mStride,
+		pixfmt, (BYTE*)saveCanvas.mData.data() + saveCanvas.ActualOffset());
 	if (pixfmt == PixelFormat8bppIndexed)
 		CContextFreeView::AddGrayPalette(&newBM);
 

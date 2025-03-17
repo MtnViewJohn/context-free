@@ -490,11 +490,11 @@ aggCanvas::draw(const aggCanvas& src, int x, int y)
     m->draw(src, x, y);
 }
 
-bool    aggCanvas::colorCount256()  { return m->colorCount256(); }
-int     aggCanvas::cropX()          { return m->offsetX; }
-int     aggCanvas::cropY()          { return m->offsetY; }
-int     aggCanvas::cropWidth()      { return m->cropWidth; }
-int     aggCanvas::cropHeight()     { return m->cropHeight; }
+bool    aggCanvas::colorCount256() const { return m->colorCount256(); }
+int     aggCanvas::cropX()      const { return m->offsetX; }
+int     aggCanvas::cropY()      const { return m->offsetY; }
+int     aggCanvas::cropWidth()  const { return m->cropWidth; }
+int     aggCanvas::cropHeight() const { return m->cropHeight; }
 
 aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
 {

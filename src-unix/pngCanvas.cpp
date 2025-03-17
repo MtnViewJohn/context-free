@@ -165,7 +165,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         int height = mFullHeight;
         int srcx = 0;
         int srcy = 0;
-        if (mCrop) {
+        if (mCrop && (!mRenderer || !mRenderer->m_tiledCanvas)) {
             width = cropWidth();
             height = cropHeight();
             srcx = cropX();
