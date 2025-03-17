@@ -104,6 +104,18 @@ GalleryUpload::GalleryUpload(CChildFrame& child, UploadParams& params, CWnd* pPa
 		m_iCurrentLicense = 8;
 	m_sCCname = LicenseNames[m_iCurrentLicense];
 	m_iInitialLicense = m_iCurrentLicense;
+	
+	std::wstring_view wstr = (LPCTSTR)params.cfdgName;
+	if (wstr.ends_with(L".cfdg")) {
+		m_sFilename = CString(wstr.data(), wstr.length() - 5);
+		m_sTitle = m_sFilename;
+	}
+
+	if (iswlower(*(LPCTSTR)m_sTitle)) {
+		wchar_t* buf = m_sTitle.LockBuffer();
+		*buf = towupper(*buf);
+		m_sTitle.UnlockBuffer();
+	}
 }
 
 GalleryUpload::~GalleryUpload()
