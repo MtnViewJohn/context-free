@@ -18,26 +18,7 @@ IMPLEMENT_DYNCREATE(CFScintillaView, CScintillaView)
 
 #pragma warning(suppress: 26433 26435 26440)
 BEGIN_MESSAGE_MAP(CFScintillaView, CScintillaView) //NOLINT(modernize-avoid-c-arrays)
-#if 0
-  ON_COMMAND(ID_OPTIONS_ADDMARKER, &CFScintillaView::OnOptionsAddmarker)
-  ON_COMMAND(ID_OPTIONS_DELETEMARKER, &CFScintillaView::OnOptionsDeletemarker)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_DELETEMARKER, &CFScintillaView::OnUpdateOptionsDeletemarker)
-  ON_COMMAND(ID_OPTIONS_FIND_NEXTMARKER, &CFScintillaView::OnOptionsFindNextmarker)
-  ON_COMMAND(ID_OPTIONS_FIND_PREVMARKER, &CFScintillaView::OnOptionsFindPrevmarker)
-  ON_COMMAND(ID_OPTIONS_FOLD_MARGIN, &CFScintillaView::OnOptionsFoldMargin)
-  ON_COMMAND(ID_OPTIONS_SELECTION_MARGIN, &CFScintillaView::OnOptionsSelectionMargin)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_SELECTION_MARGIN, &CFScintillaView::OnUpdateOptionsSelectionMargin)
-  ON_COMMAND(ID_OPTIONS_VIEW_LINENUMBERS, &CFScintillaView::OnOptionsViewLinenumbers)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_VIEW_LINENUMBERS, &CFScintillaView::OnUpdateOptionsViewLinenumbers)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_ADDMARKER, &CFScintillaView::OnUpdateOptionsAddmarker)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_FOLD_MARGIN, &CFScintillaView::OnUpdateOptionsFoldMargin)
-  ON_UPDATE_COMMAND_UI(ID_INDICATOR_STYLE, &CFScintillaView::OnUpdateStyle)
-  ON_UPDATE_COMMAND_UI(ID_INDICATOR_FOLD, &CFScintillaView::OnUpdateFold)
-  ON_UPDATE_COMMAND_UI(ID_INDICATOR_OVR, &CFScintillaView::OnUpdateInsert)
-#endif
   ON_UPDATE_COMMAND_UI(ID_INDICATOR_LINE, &CFScintillaView::OnUpdateLine)
-  ON_WM_ACTIVATE()
-  ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -74,15 +55,6 @@ void CFScintillaView::SetAStyle(int style, COLORREF fore, COLORREF back, bool bo
     rCtrl.StyleSetSize(style, size);
   if (face)
     rCtrl.StyleSetFont(style, face);
-}
-
-void CFScintillaView::DefineMarker(int marker, Scintilla::MarkerSymbol markerType, COLORREF fore, COLORREF back)
-{
-  auto& rCtrl{GetCtrl()};
-
-  rCtrl.MarkerDefine(marker, markerType);
-  rCtrl.MarkerSetFore(marker, fore);
-  rCtrl.MarkerSetBack(marker, back);
 }
 
 void CFScintillaView::EditorStyleChanged()
@@ -195,119 +167,6 @@ void CFScintillaView::OnInitialUpdate()
 #endif
 }
 
-void CFScintillaView::OnOptionsAddmarker()
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  rCtrl.MarkerAdd(nLine, 0);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateOptionsAddmarker(CCmdUI* pCmdUI)
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  const int nBits{rCtrl.MarkerGet(nLine)};
-#pragma warning(suppress: 26486)
-  pCmdUI->Enable((nBits & 0x1) == 0);
-}
-
-void CFScintillaView::OnOptionsDeletemarker()
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  rCtrl.MarkerDelete(nLine, 0);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateOptionsDeletemarker(CCmdUI* pCmdUI)
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  const int nBits{rCtrl.MarkerGet(nLine)};
-#pragma warning(suppress: 26486)
-  pCmdUI->Enable(nBits & 0x1);
-}
-
-void CFScintillaView::OnOptionsFindNextmarker()
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  const auto nFoundLine{rCtrl.MarkerNext(nLine + 1, 0x1)};
-  if (nFoundLine >= 0)
-    rCtrl.GotoLine(nFoundLine);
-  else
-    MessageBeep(MB_ICONHAND);
-}
-
-void CFScintillaView::OnOptionsFindPrevmarker()
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  const auto nFoundLine{rCtrl.MarkerPrevious(nLine - 1, 0x1)};
-  if (nFoundLine >= 0)
-    rCtrl.GotoLine(nFoundLine);
-  else
-    MessageBeep(MB_ICONHAND);
-}
-
-void CFScintillaView::OnOptionsFoldMargin()
-{
-  auto& rCtrl{GetCtrl()};
-  const int nMarginWidth{rCtrl.GetMarginWidthN(2)};
-  if (nMarginWidth)
-    rCtrl.SetMarginWidthN(2, 0);
-  else
-    rCtrl.SetMarginWidthN(2, 16);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateOptionsFoldMargin(CCmdUI* pCmdUI)
-{
-#pragma warning(suppress: 26486)
-  pCmdUI->SetCheck(GetCtrl().GetMarginWidthN(2) != 0);
-}
-
-void CFScintillaView::OnOptionsSelectionMargin()
-{
-  auto& rCtrl{GetCtrl()};
-  const int nMarginWidth{rCtrl.GetMarginWidthN(1)};
-  if (nMarginWidth)
-    rCtrl.SetMarginWidthN(1, 0);
-  else
-    rCtrl.SetMarginWidthN(1, 16);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateOptionsSelectionMargin(CCmdUI* pCmdUI)
-{
-#pragma warning(suppress: 26486)
-  pCmdUI->SetCheck(GetCtrl().GetMarginWidthN(1) != 0);
-}
-
-void CFScintillaView::OnOptionsViewLinenumbers()
-{
-  auto& rCtrl{GetCtrl()};
-  const int nMarginWidth{rCtrl.GetMarginWidthN(0)};
-  if (nMarginWidth)
-    rCtrl.SetMarginWidthN(0, 0);
-  else
-    rCtrl.SetMarginWidthN(0, 32);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateOptionsViewLinenumbers(CCmdUI* pCmdUI)
-{
-#pragma warning(suppress: 26486)
-  pCmdUI->SetCheck(GetCtrl().GetMarginWidthN(0) != 0);
-}
-
 #pragma warning(suppress: 26429)
 void CFScintillaView::OnUpdateInsert(CCmdUI* pCmdUI)
 {
@@ -316,32 +175,6 @@ void CFScintillaView::OnUpdateInsert(CCmdUI* pCmdUI)
     VERIFY(sText.LoadString(ID_INDICATOR_OVR));
 #pragma warning(suppress: 26486)
   pCmdUI->SetText(sText);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateStyle(CCmdUI* pCmdUI)
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const int nStyle{rCtrl.GetStyleAt(nPos)};
-  CString sLine;
-  // TBD sLine.Format(IDS_STYLE_INDICATOR, nStyle);
-#pragma warning(suppress: 26486)
-  pCmdUI->SetText(sLine);
-}
-
-#pragma warning(suppress: 26429)
-void CFScintillaView::OnUpdateFold(CCmdUI* pCmdUI)
-{
-  auto& rCtrl{GetCtrl()};
-  const Scintilla::Position nPos{rCtrl.GetCurrentPos()};
-  const auto nLine{rCtrl.LineFromPosition(nPos)};
-  int nLevel{static_cast<int>(rCtrl.GetFoldLevel(nLine) & Scintilla::FoldLevel::NumberMask)};
-  nLevel -= 1024;
-  CString sLine;
-  // TBD sLine.Format(IDS_FOLD_INDICATOR, nLevel);
-#pragma warning(suppress: 26486)
-  pCmdUI->SetText(sLine);
 }
 
 #pragma warning(suppress: 26429)
@@ -391,58 +224,6 @@ void CFScintillaView::OnStyleNeeded(_Inout_ NotificationData* pSCNotification)
     auto endPos = pSCNotification->position;
     auto endLine = rCtrl.LineFromPosition(endPos);
     CFscintilla::StyleLines(m_pDirectFn, m_pSciPtr, startLine, endLine);
-}
-
-//A simple example of call tips
-void CFScintillaView::OnDwellStart(_Inout_ Scintilla::NotificationData* pSCNotification)
-{
-  auto& rCtrl{GetCtrl()};
-
-  //Only display the call tip if the scintilla window has focus
-  const CWnd* pFocusWnd{GetFocus()};
-  if (pFocusWnd != nullptr)
-  {
-    if (pFocusWnd->GetSafeHwnd() == rCtrl.GetSafeHwnd())
-    {
-      //Get the previous 7 characters and next 7 characters around
-      //the current dwell position and if it is "author " case insensitive
-      //then display "PJ Naughter" as a call tip
-      Scintilla::TextRangeFull tr{};
-      tr.chrg.cpMin = std::max((long long)0, pSCNotification->position - 7);
-      tr.chrg.cpMax = std::min(pSCNotification->position + 7, rCtrl.GetLength());
-      CStringA sText;
-      tr.lpstrText = sText.GetBuffer(14);
-      rCtrl.GetTextRangeFull(&tr);
-      sText.ReleaseBuffer();
-
-      //Display the call tip
-      sText.MakeUpper();
-      if (sText.Find("AUTHOR ") != -1)
-        rCtrl.CallTipShow(pSCNotification->position, _T("PJ Naughter"));
-    }
-  }
-}
-
-void CFScintillaView::OnDwellEnd(_Inout_ Scintilla::NotificationData* /*pSCNotification*/)
-{
-  auto& rCtrl{GetCtrl()};
-
-  //Cancel any outstanding call tip
-  if (rCtrl.CallTipActive())
-    rCtrl.CallTipCancel();
-}
-
-#pragma warning(suppress: 26434)
-void CFScintillaView::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
-{
-  //Let the base class do its thing
-  __super::OnActivate(nState, pWndOther, bMinimized);
-
-  auto& rCtrl{GetCtrl()};
-
-  //Cancel any outstanding call tip
-  if ((nState == WA_INACTIVE) && rCtrl.CallTipActive())
-    rCtrl.CallTipCancel();
 }
 
 void CFScintillaView::OnModifyAttemptRO(_Inout_ Scintilla::NotificationData* /*pSCNotification*/)
@@ -541,26 +322,6 @@ void CFScintillaView::OnSavePointLeft(_Inout_ Scintilla::NotificationData* pSCNo
 std::unique_ptr<Scintilla::CScintillaCtrl> CFScintillaView::CreateScintillaControl()
 {
   return std::make_unique<CScintillaDemoCtrl>();
-}
-
-#pragma warning(suppress: 26434)
-int CFScintillaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-  //Let the base class do its thing
-  if (__super::OnCreate(lpCreateStruct) == -1)
-    return -1;
-
-#if 0
-  //Create the C++ Lexer  TODO cfdg lexer
-#pragma warning(suppress: 26429)
-  const CScintillaDemoApp* theApp{dynamic_cast<CScintillaDemoApp*>(AfxGetApp())};
-  ASSERT(theApp != nullptr);
-  ASSERT(theApp->m_pCreateLexer != nullptr);
-  m_pCLexer = theApp->m_pCreateLexer("cpp");
-  if (m_pCLexer == nullptr)
-    return -1;
-#endif
-  return 0;
 }
 
 void CFScintillaView::CheckAutoC()

@@ -147,15 +147,6 @@ BOOL CContextFreeApp::InitInstance()
 		return FALSE;
 	}
 
-	//Create the C++ Lexer from Lexilla
-#pragma warning(suppress: 26490)
-	m_pCreateLexer = reinterpret_cast<Lexilla::CreateLexerFn>(GetProcAddress(m_hLexilla, LEXILLA_CREATELEXER)); //NOLINT(clang-diagnostic-cast-function-type-mismatch)
-	if (m_pCreateLexer == nullptr)
-	{
-		AfxMessageBox(_T("Could not find the Lexilla CreateLexer function"));
-		return FALSE;
-	}
-
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	// of your final executable, you should remove from the following
