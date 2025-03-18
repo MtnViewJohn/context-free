@@ -1115,6 +1115,9 @@ void CScintillaView::OnReplaceAll(_In_z_ LPCTSTR lpszFind, _In_z_ LPCTSTR lpszRe
   bool bFoundSomething{false};
   while (FindTextSimple(g_scintillaEditState.strFind, g_scintillaEditState.bNext, bCase, bWord, bRegularExpression))
   {
+    if (!bFoundSomething)
+      rCtrl.BeginUndoAction();
+
     bFoundSomething = true;
     if (bRegularExpression)
     {
@@ -1124,6 +1127,9 @@ void CScintillaView::OnReplaceAll(_In_z_ LPCTSTR lpszFind, _In_z_ LPCTSTR lpszRe
     else
       rCtrl.ReplaceSel(g_scintillaEditState.strReplace);
   }
+
+  if (bFoundSomething)
+      rCtrl.EndUndoAction();
 
   //Restore the old selection
   rCtrl.HideSelection(FALSE);
