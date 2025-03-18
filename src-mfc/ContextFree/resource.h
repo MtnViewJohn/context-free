@@ -295,13 +295,14 @@
 #define ID_EDIT_UN                      32892
 #define ID_EDIT_UNDENT                  32893
 #define ID_RENDER_UPLOADTOGALLERY       32896
+#define ID_FILE_REVERT                  32897
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        344
-#define _APS_NEXT_COMMAND_VALUE         32897
+#define _APS_NEXT_COMMAND_VALUE         32898
 #define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           339
 #endif

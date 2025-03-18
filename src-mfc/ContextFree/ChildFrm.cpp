@@ -80,6 +80,8 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_COMMAND(ID_RENDER_UPLOADTOGALLERY, &CChildFrame::OnUploadGallery)
 	ON_WM_MOVE()
 	ON_WM_SIZE()
+	ON_COMMAND(ID_FILE_REVERT, &CChildFrame::OnFileRevert)
+	ON_UPDATE_COMMAND_UI(ID_FILE_REVERT, &CChildFrame::OnUpdateFileRevert)
 END_MESSAGE_MAP()
 
 std::set<CChildFrame*> CChildFrame::Children;
@@ -897,4 +899,29 @@ void CChildFrame::OnEditIndent(UINT id)
 void CChildFrame::OnColorCalculator()
 {
 	m_wndParent->ShowColorCalculator(TRUE);
+}
+
+void CChildFrame::OnFileRevert()
+{
+	CString name = m_CFdoc->GetPathName();
+	if (!m_bDirty || name.IsEmpty() || !::PathFileExists(name))
+		return;
+
+	if (AfxMessageBox(L"Lose all changes?", MB_YESNO) == IDYES) {
+		CFileException cfe;
+		auto pFile = m_CFdoc->GetFile(name, CFile::modeRead | CFile::typeBinary | CFile::shareDenyNone, &cfe);
+		if (cfe.m_cause != CFileException::none) {
+			::MessageBeep(MB_ICONERROR);
+			return;
+		}
+		CArchive ar(pFile, CArchive::load);
+		m_CFdoc->Serialize(ar);
+		m_vwCfdgEditor->GetCtrl().SetSavePoint();
+	}
+}
+
+void CChildFrame::OnUpdateFileRevert(CCmdUI* pCmdUI)
+{
+	CString name = m_CFdoc->GetPathName();
+	pCmdUI->Enable(m_bDirty && !name.IsEmpty() && ::PathFileExists(name));
 }

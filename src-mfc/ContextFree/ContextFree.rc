@@ -21,7 +21,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(65001)
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -182,6 +182,7 @@ BEGIN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM "Re&vert...",                  ID_FILE_REVERT
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
@@ -201,13 +202,13 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Insert Character"
         BEGIN
-            MENUITEM "≤",                         ID_INSERTCHAR1
-            MENUITEM "≥",                         ID_INSERTCHAR2
-            MENUITEM "≠",                         ID_INSERTCHAR3
-            MENUITEM "…",                         ID_INSERTCHAR4
-            MENUITEM "±",                          ID_INSERTCHAR5
-            MENUITEM "∞",                         ID_INSERTCHAR6
-            MENUITEM "π",                          ID_INSERTCHAR7
+            MENUITEM "=",                           ID_INSERTCHAR1
+            MENUITEM "=",                           ID_INSERTCHAR2
+            MENUITEM "?",                           ID_INSERTCHAR3
+            MENUITEM "…",                           ID_INSERTCHAR4
+            MENUITEM "±",                           ID_INSERTCHAR5
+            MENUITEM "8",                           ID_INSERTCHAR6
+            MENUITEM "p",                           ID_INSERTCHAR7
         END
         POPUP "Insert Symmetry"
         BEGIN
@@ -416,7 +417,7 @@ IDD_DIALOGBAR DIALOGEX 0, 0, 485, 12
 STYLE DS_SETFONT | WS_CHILD
 FONT 9, "Microsoft Sans Serif", 700, 0, 0x0
 BEGIN
-    CONTROL         " ▶ Render",IDC_RENDERSPLIT,"Button",BS_SPLITBUTTON | BS_LEFT | WS_TABSTOP,1,1,50,10
+    CONTROL         " ? Render",IDC_RENDERSPLIT,"Button",BS_SPLITBUTTON | BS_LEFT | WS_TABSTOP,1,1,50,10
     PUSHBUTTON      "Save",ID_SAVE_IMAGE,53,1,37,10,BS_ICON
     LTEXT           "Variation:",IDC_STATIC,94,2,30,8
     EDITTEXT        IDC_VARIATION,125,1,48,10,ES_RIGHT | ES_UPPERCASE | ES_AUTOHSCROLL,WS_EX_RIGHT
@@ -634,7 +635,7 @@ BEGIN
     EDITTEXT        IDC_END_VAL,101,260,40,14,ES_AUTOHSCROLL,WS_EX_RIGHT
     PUSHBUTTON      "Button3",IDC_END_TEXT,12,279,130,14,BS_FLAT
     PUSHBUTTON      "",IDC_END_SELECT,147,262,32,30
-    PUSHBUTTON      "↕",IDC_SWAP,194,214,20,14
+    PUSHBUTTON      "?",IDC_SWAP,194,214,20,14
     LTEXT           "Hue",IDC_STATIC,39,144,13,8
     LTEXT           "Saturation",IDC_STATIC,63,144,33,8
     LTEXT           "Brightness",IDC_STATIC,106,144,34,8
@@ -912,6 +913,7 @@ BEGIN
     ID_FILE_CLOSE           "Close the active document\nClose"
     ID_FILE_SAVE            "Save the active document\nSave"
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_REVERT          "Discard changes and reload file\nRevert"
 END
 
 STRINGTABLE

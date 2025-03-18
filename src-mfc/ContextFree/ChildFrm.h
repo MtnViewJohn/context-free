@@ -116,4 +116,6 @@ public:
 	afx_msg void OnColorCalculator();
 	afx_msg void OnUploadGallery();
 	afx_msg void OnMove(int x, int y);
+	afx_msg void OnFileRevert();
+	afx_msg void OnUpdateFileRevert(CCmdUI* pCmdUI);
 };
