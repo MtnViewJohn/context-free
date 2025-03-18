@@ -205,8 +205,8 @@ BEGIN
             MENUITEM "=",                           ID_INSERTCHAR1
             MENUITEM "=",                           ID_INSERTCHAR2
             MENUITEM "?",                           ID_INSERTCHAR3
-            MENUITEM "…",                           ID_INSERTCHAR4
-            MENUITEM "±",                           ID_INSERTCHAR5
+            MENUITEM "…",                         ID_INSERTCHAR4
+            MENUITEM "±",                          ID_INSERTCHAR5
             MENUITEM "8",                           ID_INSERTCHAR6
             MENUITEM "p",                           ID_INSERTCHAR7
         END
@@ -499,11 +499,11 @@ BEGIN
     CONTROL         "start rendering",IDC_OPENRENDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,76,63,10
     CONTROL         "update display progressively",IDC_PROGRESSIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,91,104,10
     LTEXT           "Image border size:",IDC_STATIC,7,115,60,8
-    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,113,202,28
-    CTEXT           "Negative",IDC_STATIC,62,130,28,8
-    CTEXT           "None",IDC_STATIC,129,130,17,8
-    CTEXT           "Dynamic",IDC_STATIC,250,130,28,8
-    CTEXT           "Fixed",IDC_STATIC,192,130,17,8
+    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,113,202,16
+    CTEXT           "Negative",IDC_STATIC,62,131,28,8
+    CTEXT           "None",IDC_STATIC,129,131,17,8
+    CTEXT           "Dynamic",IDC_STATIC,250,131,28,8
+    CTEXT           "Fixed",IDC_STATIC,192,131,17,8
 END
 
 IDD_PREFS_EDITOR DIALOGEX 0, 0, 316, 195
@@ -913,6 +913,10 @@ BEGIN
     ID_FILE_CLOSE           "Close the active document\nClose"
     ID_FILE_SAVE            "Save the active document\nSave"
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+END
+
+STRINGTABLE
+BEGIN
     ID_FILE_REVERT          "Discard changes and reload file\nRevert"
 END
 
