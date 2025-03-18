@@ -20,6 +20,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	int m_iLength;
+	int m_iFrameRate;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -42,4 +44,7 @@ public:
 	virtual void OnOK();
 	afx_msg void OnChangeMinsize();
 	CStatic m_ctrlCodecLabel;
+	CSpinButtonCtrl m_ctrlFrameSpin;
+	afx_msg void OnChangeLength();
+	afx_msg void OnChangeFramerate();
 };

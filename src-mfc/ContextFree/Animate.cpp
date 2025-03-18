@@ -20,6 +20,8 @@ IMPLEMENT_DYNAMIC(Animate, CDialog)
 Animate::Animate(RenderParameters& p, bool frame, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_Animate, pParent)
 	, params(p)
+	, m_iLength(p.MovieLength)
+	, m_iFrameRate(p.MovieFrameRate)
 	, m_bFrame(frame)
 {
 
@@ -43,11 +45,14 @@ void Animate::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FRAME_LABEL, m_ctrlFrameLabel);
 	DDX_Control(pDX, IDC_FRAME, m_ctrlFrame);
 	DDX_Control(pDX, IDC_CODEC_LABEL, m_ctrlCodecLabel);
+	DDX_Control(pDX, IDC_FRAME_SPIN, m_ctrlFrameSpin);
 }
 
 
 BEGIN_MESSAGE_MAP(Animate, CDialog)
 	ON_EN_CHANGE(IDC_MINSIZE, &Animate::OnChangeMinsize)
+	ON_EN_CHANGE(IDC_LENGTH, &Animate::OnChangeLength)
+	ON_CBN_SELCHANGE(IDC_FRAMERATE, &Animate::OnChangeFramerate)
 END_MESSAGE_MAP()
 
 
@@ -76,7 +81,7 @@ BOOL Animate::OnInitDialog()
 
 	for (auto rate : rateStrings)
 		m_ctrlFrameRate.AddString(rate);
-	auto it = std::find(Rates.begin(), Rates.end(), params.MovieFrameRate);
+	auto it = std::find(Rates.begin(), Rates.end(), m_iFrameRate);
 	if (it == Rates.end())
 		m_ctrlFrameRate.SetCurSel(3);		// 15fps
 	else
@@ -88,9 +93,11 @@ BOOL Animate::OnInitDialog()
 	m_ctrlCodecLabel.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
 	m_ctrlCodec.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
 
-	SetDlgItemInt(IDC_FRAME, params.MovieFrame, FALSE);
+	m_ctrlFrameSpin.SetRange32(1, m_iLength * m_iFrameRate);
+	m_ctrlFrameSpin.SetPos32(params.MovieFrame);
 	m_ctrlFrameLabel.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
 	m_ctrlFrame.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
+	m_ctrlFrameSpin.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
 
 	return TRUE;
 }
@@ -112,20 +119,14 @@ void Animate::OnOK()
 
 	params.AnimateZoom = m_ctrlZoom.GetState() == BST_CHECKED;
 
-	v = GetDlgItemInt(IDC_LENGTH, &ok, FALSE);
-	if (ok) {
-		params.MovieLength = (int)v;
-	}
-
-	params.MovieFrameRate = *(Rates.begin() + m_ctrlFrameRate.GetCurSel());
+	params.MovieLength = m_iLength;
+	params.MovieFrameRate = m_iFrameRate;
+	params.AnimateFrameCount = m_iLength * m_iFrameRate;
 
 	if (!m_bFrame)
 		params.Codec = (RenderParameters::Codecs)m_ctrlCodec.GetCurSel();
 
-	v = GetDlgItemInt(IDC_FRAME, &ok, FALSE);
-	if (ok && m_bFrame) {
-		params.MovieFrame = (int)v;
-	}
+	params.MovieFrame = m_ctrlFrameSpin.GetPos32();
 
 	params.Save();
 
@@ -156,4 +157,27 @@ void Animate::OnChangeMinsize()
 	} catch (...) {}
 
 	m_ctrlMinSize.SetWindowTextW(m_MinString.c_str());
+}
+
+void Animate::OnChangeLength()
+{
+	CString len;
+	GetDlgItemText(IDC_LENGTH, len);
+	if (len.IsEmpty())
+		return;
+
+	BOOL ok;
+	auto v = GetDlgItemInt(IDC_LENGTH, &ok, FALSE);
+	if (ok && v > 0) {
+		m_iLength = (int)v;
+		m_ctrlFrameSpin.SetRange32(1, m_iLength * m_iFrameRate);
+		m_ctrlFrameSpin.SetPos32(std::clamp(m_ctrlFrameSpin.GetPos32(), 1, m_iLength * m_iFrameRate));
+	}
+}
+
+void Animate::OnChangeFramerate()
+{
+	m_iFrameRate = *(Rates.begin() + m_ctrlFrameRate.GetCurSel());
+	m_ctrlFrameSpin.SetRange32(1, m_iLength * m_iFrameRate);
+	m_ctrlFrameSpin.SetPos32(std::clamp(m_ctrlFrameSpin.GetPos32(), 1, m_iLength * m_iFrameRate));
 }
