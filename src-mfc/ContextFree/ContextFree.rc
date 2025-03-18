@@ -446,12 +446,12 @@ BEGIN
     LTEXT           "Size of smallest element:",IDC_STATIC,7,26,79,8
     EDITTEXT        IDC_MINSIZE,88,24,40,12,ES_AUTOHSCROLL,WS_EX_RIGHT
     LTEXT           "Image border size:",IDC_STATIC,7,43,60,8
-    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,41,202,28
+    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,41,202,16
     CONTROL         "Don't display final result",IDC_NODISPLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,91,10
-    CTEXT           "Negative",IDC_STATIC,62,58,28,8
-    CTEXT           "None",IDC_STATIC,129,58,17,8
-    CTEXT           "Dynamic",IDC_STATIC,250,58,28,8
-    CTEXT           "Fixed",IDC_STATIC,192,58,17,8
+    CTEXT           "Negative",IDC_STATIC,62,59,28,8
+    CTEXT           "None",IDC_STATIC,129,59,17,8
+    CTEXT           "Dynamic",IDC_STATIC,250,59,28,8
+    CTEXT           "Fixed",IDC_STATIC,192,59,17,8
 END
 
 IDD_Animate DIALOGEX 0, 0, 320, 114
@@ -469,11 +469,11 @@ BEGIN
     LTEXT           "Size of smallest element:",IDC_STATIC,7,26,79,8
     EDITTEXT        IDC_MINSIZE,88,24,40,12,ES_AUTOHSCROLL,WS_EX_RIGHT
     LTEXT           "Image border size:",IDC_STATIC,7,43,60,8
-    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,41,202,28
-    CTEXT           "Negative",IDC_STATIC,62,58,28,8
-    CTEXT           "None",IDC_STATIC,129,58,17,8
-    CTEXT           "Dynamic",IDC_STATIC,250,58,28,8
-    CTEXT           "Fixed",IDC_STATIC,192,58,17,8
+    CONTROL         "",IDC_BORDERSLIDER,"msctls_trackbar32",WS_TABSTOP,68,41,202,16
+    CTEXT           "Negative",IDC_STATIC,62,59,28,8
+    CTEXT           "None",IDC_STATIC,129,59,17,8
+    CTEXT           "Dynamic",IDC_STATIC,250,59,28,8
+    CTEXT           "Fixed",IDC_STATIC,192,59,17,8
     CONTROL         "Zoom",IDC_ZOOM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,216,76,33,10
     LTEXT           "Length in seconds:",IDC_STATIC,7,77,60,8
     EDITTEXT        IDC_LENGTH,68,76,40,12,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
