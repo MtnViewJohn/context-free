@@ -137,8 +137,8 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
 
-    /* resolution must be a multiple of 8 */
-    assert(((width & 7) | (height & 7)) == 0);
+    /* resolution must be a multiple of 8,2 */
+    assert(((width & 7) | (height & 1)) == 0);
     mEncCtx->width = width;
     mEncCtx->height = height;
     /* frames per second */
@@ -327,8 +327,8 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
                    int fps, QTcodec codec, bool temp)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
-    if (width <= 0 || height <= 0 || width & 7 || height & 7) {
-        mErrorMsg = "Dimensions must be multiples of 8 pixels";
+    if (width <= 0 || height <= 0 || width & 7 || height & 1) {
+        mErrorMsg = "Dimensions must be multiples of (8,2) pixels";
         mError = true;
         return;
     }
