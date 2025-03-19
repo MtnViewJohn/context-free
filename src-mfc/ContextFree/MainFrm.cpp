@@ -151,6 +151,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_FRAME_SPIN, &CMainFrame::OnRenderFrameUD)
 	ON_CONTROL_RANGE(EN_CHANGE, IDC_VARIATION, IDC_SIZE_HEIGHT, &CMainFrame::OnRenderEdits)
 	ON_COMMAND(ID_FILE_PREFERENCES, &CMainFrame::OnPreferences)
+	ON_COMMAND(ID_HELP_DOCUMENTATION, &CMainFrame::OnDocumentation)
+	ON_COMMAND(ID_HELP_CONTEXTFREESITE, &CMainFrame::OnCFAsite)
+	ON_COMMAND(ID_HELP_DESIGNGALLERY, &CMainFrame::OnGallerySite)
 	ON_MESSAGE(WM_USER_RENDER_COMPLETE, &CMainFrame::DownloadDone)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
@@ -683,6 +686,21 @@ void CMainFrame::OnPreferences()
 	Preferences prefs;
 	if (prefs.DoModal() == IDOK && (prefs.m_bFontChanged || prefs.m_bStyleChanged))
 		UpdateEditors(prefs.m_bFontChanged, prefs.m_bStyleChanged);
+}
+
+void CMainFrame::OnDocumentation()
+{
+	::ShellExecute(NULL, L"open", L"https://github.com/MtnViewJohn/context-free/wiki", NULL, NULL, SW_SHOWNORMAL);
+}
+
+void CMainFrame::OnCFAsite()
+{
+	::ShellExecute(NULL, L"open", L"https://www.contextfreeart.org/index.html", NULL, NULL, SW_SHOWNORMAL);
+}
+
+void CMainFrame::OnGallerySite()
+{
+	::ShellExecute(NULL, L"open", L"https://www.contextfreeart.org/gallery/", NULL, NULL, SW_SHOWNORMAL);
 }
 
 void CMainFrame::UpdateEditors(bool font, bool style)

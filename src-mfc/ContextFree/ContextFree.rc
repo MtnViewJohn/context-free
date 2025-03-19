@@ -169,7 +169,10 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About ContextFree...",       ID_APP_ABOUT
+        MENUITEM "&Documentation...",           ID_HELP_DOCUMENTATION
+        MENUITEM "&Context Free Site...",       ID_HELP_CONTEXTFREESITE
+        MENUITEM "Design &Gallery...",          ID_HELP_DESIGNGALLERY
+        MENUITEM "&About Context Free...",      ID_APP_ABOUT
     END
 END
 
@@ -344,7 +347,10 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About ContextFree...",       ID_APP_ABOUT
+        MENUITEM "&Documentation...",           ID_HELP_DOCUMENTATION
+        MENUITEM "&Context Free Site...",       ID_HELP_CONTEXTFREESITE
+        MENUITEM "Design &Gallery...",          ID_HELP_DESIGNGALLERY
+        MENUITEM "&About Context Free...",      ID_APP_ABOUT
     END
 END
 

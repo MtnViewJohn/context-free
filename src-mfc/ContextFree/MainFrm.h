@@ -75,6 +75,9 @@ protected:
 	afx_msg void OnRenderFrameUD(NMHDR* pNotifyStruct, LRESULT* result);
 	afx_msg void OnRenderEdits(UINT id);
 	afx_msg void OnPreferences();
+	afx_msg void OnDocumentation();
+	afx_msg void OnCFAsite();
+	afx_msg void OnGallerySite();
 	afx_msg void OnClose();
 	DECLARE_MESSAGE_MAP()
 
