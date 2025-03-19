@@ -343,8 +343,12 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 				if (::MoveFileEx(tempMovie16.c_str(), ofn.lpstrFile, MOVEFILE_REPLACE_EXISTING)) {
 					moved = true;
 				} else {
-					::MessageBeep(MB_ICONEXCLAMATION);
-					::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
+					if (!::PathFileExists(ofn.lpstrFile) || ::DeleteFile(ofn.lpstrFile)) {
+						if (!::CopyFile(tempMovie16.c_str(), ofn.lpstrFile, FALSE))
+							::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
+					} else {
+						::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
+					}
 				}
 			}
 		}
