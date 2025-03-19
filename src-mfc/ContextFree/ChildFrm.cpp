@@ -500,7 +500,6 @@ void CChildFrame::OnSaveOutput()
 	}
 
 	if (!m_WinCanvas || !m_Renderer) {
-		::MessageBeep(MB_ICONASTERISK);
 		MessageBoxW(_T("There is nothing to save."), NULL, MB_ICONASTERISK);
 		return;
 	}
@@ -525,7 +524,6 @@ void CChildFrame::OnSaveOutput()
 						 m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
 						 m_iMultWidth, m_iMultHeight, ifsDlg.m_iJpegQuality) != Gdiplus::Status::Ok)
 			{
-				::MessageBeep(MB_ICONASTERISK);
 				::MessageBoxW(GetSafeHwnd(), _T("JPEG file save failed!"), _T(""), MB_ICONASTERISK);
 			}
 			break;
@@ -535,7 +533,6 @@ void CChildFrame::OnSaveOutput()
 				m_WinCanvas->mHeight, ifsDlg.m_bCropped);
 			if (m_SvgCanvas->mError) {
 				TRACE0("SVG file save failed\n");
-				::MessageBeep(MB_ICONASTERISK);
 				::MessageBoxW(GetSafeHwnd(), _T("SVG file save failed!"), _T(""), MB_ICONASTERISK);
 				m_SvgCanvas.reset();
 				break;
@@ -741,7 +738,6 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true);
 
 		if (m_AnimationCanvas->mError) {
-			::MessageBeep(MB_ICONEXCLAMATION);
 			::MessageBoxA(GetSafeHwnd(), m_AnimationCanvas->mErrorMsg, "Animation Error", MB_ICONEXCLAMATION);
 			m_AnimationCanvas.reset();
 			return;

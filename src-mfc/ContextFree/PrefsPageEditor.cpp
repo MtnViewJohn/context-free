@@ -186,7 +186,6 @@ void PrefsPageEditor::OnClickedFontchange()
 	CString fname = _T("Courier New");
 	int fsize = 10;
 	if (!EditorParams::SetFont(m_sFontName, fname, fsize) || fname.GetLength() > 31) {
-		MessageBeep(MB_ICONEXCLAMATION);
 		MessageBoxW(_T("Cannot parse font name, using default."), NULL, MB_ICONEXCLAMATION);
 	}
 
