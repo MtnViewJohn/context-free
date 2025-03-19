@@ -22,6 +22,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	CPalette m_Palette;
 	CFont m_RGBFont;
+	CFont m_SwapFont;
 	void UpdateColor(COLORREF col, double hue, double sat, double val);
 	void UpdatePickers(COLORREF col, double hue, double sat, double val);
 	void UpdateStartEndControls(bool bStart);

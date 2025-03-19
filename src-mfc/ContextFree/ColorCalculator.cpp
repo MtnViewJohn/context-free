@@ -340,6 +340,10 @@ BOOL ColorCalculator::OnInitDialog()
 	m_RGBFont.CreatePointFont(80, L"Lucida Console", &dc);
 	m_ctrlRGBtext.SetFont(&m_RGBFont);
 
+	m_ctrlSwap.SetWindowTextW(L"⬆⬇");
+	m_SwapFont.CreatePointFont(160, L"Arial", &dc);
+	m_ctrlSwap.SetFont(&m_SwapFont);
+
 	if (m_ToolTip.Create(this)) {
 		m_ToolTip.AddTool(&m_ctrlStartText, _T("Click to copy text"));
 		m_ToolTip.AddTool(&m_ctrlDeltaText, _T("Click to copy text"));
