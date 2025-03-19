@@ -26,6 +26,7 @@
 #include "GalleryUpload.h"
 #include "UploadParams.h"
 #include "EditLock.h"
+#include "tiledCanvas.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -244,9 +245,13 @@ LRESULT CChildFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
 			statusText.Format(_T("%d shapes and %d expansions to do"),
 				stat->shapeCount, stat->toDoCount);
 		} else if (m_Renderer) {
-			LPCTSTR endText = (m_Engine && m_Engine->isTiledOrFrieze()) ? _T(", tiled") : _T("");
-			statusText.Format(_T("%d shapes, %d x %d pixels%s"),
-					stat->shapeCount, m_Renderer->m_width, m_Renderer->m_height, endText);
+			if (m_Engine && m_Engine->isTiledOrFrieze() && m_Renderer && m_Renderer->m_tiledCanvas) {
+				statusText.Format(_T("%d shapes, %d x %d pixels, tiled"),
+					stat->shapeCount, m_Renderer->m_tiledCanvas->mWidth, m_Renderer->m_tiledCanvas->mHeight);
+			} else {
+				statusText.Format(_T("%d shapes, %d x %d pixels"),
+					stat->shapeCount, m_Renderer->m_width, m_Renderer->m_height);
+			}
 		}
 		int ProgressBar = 0;
 		if ((stat->inOutput && stat->fullOutput) || stat->showProgress) {
