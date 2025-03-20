@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -47,8 +47,6 @@
 		524D22E613BA0200002732C2 /* posixTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22E113BA0200002732C2 /* posixTimer.cpp */; };
 		524D22E713BA0200002732C2 /* posixVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22E213BA0200002732C2 /* posixVersion.cpp */; };
 		524D22FE13BA0661002732C2 /* makeCFfilename.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 524D22FC13BA0661002732C2 /* makeCFfilename.cpp */; };
-		525114B821350D7100065F80 /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; };
-		525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 525A45F5213505A6008E0954 /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5260DC632144EC8B0099D906 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC612144EC8B0099D906 /* MainMenu.xib */; };
 		5260DC662144ED440099D906 /* CFDGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC642144ED440099D906 /* CFDGDocument.xib */; };
 		5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC672144ED8C0099D906 /* GalleryUploader.xib */; };
@@ -74,6 +72,8 @@
 		529049A30F3E4CC900484FED /* cfdg.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 529049A10F3E4CC900484FED /* cfdg.ypp */; };
 		529262BB1FFCAAC800D00B7D /* prettyint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 529262B91FFCAAC800D00B7D /* prettyint.cpp */; };
 		52954E62175EFCC800AE6516 /* GalleryDownloader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52954E61175EFCC700AE6516 /* GalleryDownloader.mm */; };
+		52AE595D2D8B8DED005CC31B /* Scintilla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52AE595A2D8B8923005CC31B /* Scintilla.framework */; };
+		52AE595E2D8B8DED005CC31B /* Scintilla.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 52AE595A2D8B8923005CC31B /* Scintilla.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
@@ -216,18 +216,18 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		525114BA21350D7100065F80 /* PBXContainerItemProxy */ = {
+		52AE59592D8B8923005CC31B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			containerPortal = 52AE59552D8B8923005CC31B /* Scintilla.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 287F3C41246F8DC70040E76F;
 			remoteInfo = Scintilla;
 		};
-		525A45F4213505A6008E0954 /* PBXContainerItemProxy */ = {
+		52AE595B2D8B8B3A005CC31B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			containerPortal = 52AE59552D8B8923005CC31B /* Scintilla.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 287F3C40246F8DC70040E76F;
 			remoteInfo = Scintilla;
 		};
 /* End PBXContainerItemProxy section */
@@ -239,7 +239,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				525114B921350D7100065F80 /* Scintilla.framework in Embed Frameworks */,
+				52AE595E2D8B8DED005CC31B /* Scintilla.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -345,7 +345,6 @@
 		524D22FC13BA0661002732C2 /* makeCFfilename.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = makeCFfilename.cpp; sourceTree = "<group>"; };
 		524D22FD13BA0661002732C2 /* makeCFfilename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeCFfilename.h; sourceTree = "<group>"; };
 		5257B1611261754500A65849 /* CmdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdInfo.h; sourceTree = "<group>"; };
-		525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ScintillaFramework.xcodeproj; path = "src-scintilla/cocoa/ScintillaFramework/ScintillaFramework.xcodeproj"; sourceTree = "<group>"; };
 		526271EE2140E4D200412E84 /* magnifying-glass.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "magnifying-glass.icns"; sourceTree = "<group>"; };
 		526271F221430D3200412E84 /* CFscintilla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFscintilla.h; sourceTree = "<group>"; };
 		526271F3214312C700412E84 /* CFscintilla.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CFscintilla.cpp; sourceTree = "<group>"; };
@@ -385,6 +384,7 @@
 		529D6A9321517CC600C9C74F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CFDGDocument.xib; sourceTree = "<group>"; };
 		529D6A9421517CC600C9C74F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		52A1B8171D72073700A310F0 /* args.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = args.hxx; path = "src-unix/args.hxx"; sourceTree = "<group>"; };
+		52AE59552D8B8923005CC31B /* Scintilla.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Scintilla.xcodeproj; path = "src-scintilla/cocoa/Scintilla/Scintilla.xcodeproj"; sourceTree = "<group>"; };
 		52BA888A155F30490026AF04 /* ast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cpp; sourceTree = "<group>"; };
 		52C267B6154F268C00230EB9 /* abstractPngCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = abstractPngCanvas.h; sourceTree = "<group>"; };
 		52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abstractPngCanvas.cpp; sourceTree = "<group>"; };
@@ -514,7 +514,7 @@
 			files = (
 				52154E811DD038690031905B /* Security.framework in Frameworks */,
 				5200D96A1D8C972C00F60731 /* CoreVideo.framework in Frameworks */,
-				525114B821350D7100065F80 /* Scintilla.framework in Frameworks */,
+				52AE595D2D8B8DED005CC31B /* Scintilla.framework in Frameworks */,
 				5200D9681D8C96F400F60731 /* CoreMedia.framework in Frameworks */,
 				5200D9661D8C96BF00F60731 /* AVFoundation.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
@@ -557,9 +557,9 @@
 		29B97314FDCFA39411CA2CEA /* CFDA */ = {
 			isa = PBXGroup;
 			children = (
+				52AE59552D8B8923005CC31B /* Scintilla.xcodeproj */,
 				5265007D2848114D00BA44F6 /* cfdg.entitlements */,
 				5226A6EB22F1510F0012ED20 /* Context Free.entitlements */,
-				525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */,
 				524D22DB13BA01D8002732C2 /* src-unix */,
 				FD1EF08A0811ADE500FD38C6 /* src-common */,
 				FD1EF0970811AE1900FD38C6 /* src-osx */,
@@ -604,10 +604,10 @@
 			name = "src-unix";
 			sourceTree = "<group>";
 		};
-		525A45F1213505A6008E0954 /* Products */ = {
+		52AE59562D8B8923005CC31B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				525A45F5213505A6008E0954 /* Scintilla.framework */,
+				52AE595A2D8B8923005CC31B /* Scintilla.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -845,7 +845,7 @@
 				529049B90F3E9C9B00484FED /* PBXBuildRule */,
 			);
 			dependencies = (
-				525114BB21350D7100065F80 /* PBXTargetDependency */,
+				52AE595C2D8B8B3A005CC31B /* PBXTargetDependency */,
 			);
 			name = "Context Free";
 			productInstallPath = "$(HOME)/Applications";
@@ -859,12 +859,8 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1420;
-				TargetAttributes = {
-					8D1107260486CEB800E47090 = {
-						DevelopmentTeam = 23E5SF7D5S;
-					};
-				};
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1620;
 			};
 			buildConfigurationList = FDB0D3D3085CEE00002FBEED /* Build configuration list for PBXProject "Context Free" */;
 			compatibilityVersion = "Xcode 9.3";
@@ -881,8 +877,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 525A45F1213505A6008E0954 /* Products */;
-					ProjectRef = 525A45F0213505A6008E0954 /* ScintillaFramework.xcodeproj */;
+					ProductGroup = 52AE59562D8B8923005CC31B /* Products */;
+					ProjectRef = 52AE59552D8B8923005CC31B /* Scintilla.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -894,11 +890,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		525A45F5213505A6008E0954 /* Scintilla.framework */ = {
+		52AE595A2D8B8923005CC31B /* Scintilla.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Scintilla.framework;
-			remoteRef = 525A45F4213505A6008E0954 /* PBXContainerItemProxy */;
+			remoteRef = 52AE59592D8B8923005CC31B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1021,10 +1017,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		525114BB21350D7100065F80 /* PBXTargetDependency */ = {
+		52AE595C2D8B8B3A005CC31B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Scintilla;
-			targetProxy = 525114BA21350D7100065F80 /* PBXContainerItemProxy */;
+			targetProxy = 52AE595B2D8B8B3A005CC31B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1087,7 +1083,7 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"-lpng",
 					"-lagg",
@@ -1138,7 +1134,7 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"-lpng",
 					"-lagg",
@@ -1172,7 +1168,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
@@ -1183,6 +1179,7 @@
 				CURRENT_PROJECT_VERSION = 52;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				DEVELOPMENT_TEAM = TQF8PPHU3U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -1201,7 +1198,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				"OTHER_CFLAGS[arch=*]" = "-DNDEBUG=1";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-DRAW_UTF8_LENGTH=1",
@@ -1262,6 +1259,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_FAST_MATH = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
@@ -1275,7 +1273,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";
 				USE_HEADERMAP = NO;
@@ -1287,7 +1285,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
@@ -1297,6 +1295,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 52;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = TQF8PPHU3U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
@@ -1316,7 +1315,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-DRAW_UTF8_LENGTH=1",
 					"$(OTHER_CFLAGS)",
@@ -1377,6 +1376,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_FAST_MATH = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
@@ -1391,7 +1391,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";

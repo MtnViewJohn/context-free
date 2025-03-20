@@ -41,3 +41,5 @@ src-net/.vs/
 *.lib
 *.aps
 *.user
+src-scintilla/cocoa/Scintilla/build
+src-scintilla/cocoa/Scintilla/Scintilla.xcodeproj/xcuserdata
