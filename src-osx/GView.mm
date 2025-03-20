@@ -2064,7 +2064,7 @@ long MakeColor(id v)
 
     [self updateStyling];
     
-    InfoBar* infoBar = [[[InfoBar alloc] initWithFrame: NSMakeRect(0, 0, 400, 0)] autorelease];
+    InfoBar* infoBar = [[[InfoBar alloc] initWithFrame: NSMakeRect(0, 0, 400, 154)] autorelease];
     [infoBar setDisplay: IBShowStatusText | IBShowCaretPosition];
     [mEditor setInfoBar: infoBar top: NO];
     [mEditor setStatusText: @"Operation complete"];
