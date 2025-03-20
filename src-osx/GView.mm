@@ -1703,14 +1703,14 @@ long MakeColor(id v)
             break;
     }
     
-    if ((int)movieWidth & 7) {
+    if ((int)movieWidth & 15 || (int)movieHeight & 1) {
         NSString* message =     parameters.animateFrame ?
                                 @"Cannot create animation movie frame" :
                                 @"Cannot create animation movie";
         NSAlert* nonono = [[[NSAlert alloc] init] autorelease];
         [nonono setAlertStyle: NSAlertStyleWarning];
         [nonono setMessageText: message];
-        [nonono setInformativeText: @"Rendered width must be a multiple of 8 pixels"];
+        [nonono setInformativeText: @"Rendered dimensions must be a multiple of 16 pixels wide by 2 pixels high"];
         [nonono addButtonWithTitle: @"OK"];
         [nonono beginSheetModalForWindow: [self window]
                        completionHandler: nil];
@@ -1727,10 +1727,10 @@ long MakeColor(id v)
 
     auto width = mRenderer->m_width;
     auto height = mRenderer->m_height;
-    if (width & 7)
-        width = (width + 8) & (~7);
-    if (height & 7)
-        height = (height + 8) & (~7);
+    if (width & 15)
+        width = (width + 16) & (~15);
+    if (height & 1)
+        height = (height + 2) & (~1);
     mRenderSize.width = (CGFloat)width;
     mRenderSize.height = (CGFloat)height;
     mRenderedRect.origin.x = 0.0;
