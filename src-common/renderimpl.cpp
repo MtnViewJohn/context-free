@@ -1067,7 +1067,7 @@ void RendererImpl::output(bool final)
     m_drawingMode = true;
     //OutputDraw draw(*this, final);
     try {
-        forEachShape(final, [=](const FinishedShape& s) {
+        forEachShape(final, [=,this](const FinishedShape& s) {
             this->drawShape(s);
         });
     }
