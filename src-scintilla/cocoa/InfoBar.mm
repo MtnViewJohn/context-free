@@ -383,7 +383,7 @@ static float BarFontSize = 10.0;
 		mCurrentCaretX = newX;
 		mCurrentCaretY = newY;
 
-		mCaretPositionLabel.stringValue = [NSString stringWithFormat: @"%d:%d", newX, newY];
+		mCaretPositionLabel.stringValue = [NSString stringWithFormat: @"%d:%d", newY, newX];
 	}
 }
 
