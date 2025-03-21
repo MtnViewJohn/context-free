@@ -670,6 +670,7 @@ namespace {
 {
     [self tearDownPlayer];
     [self deleteRenderer];
+    [mEditor setDelegate: nil];
     [mDocument release];            mDocument = nil;
     [mDrawingImage release];        mDrawingImage = nil;
     [mRenderBitmap release];        mRenderBitmap = nil;
