@@ -292,6 +292,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
         mUploader = nil;
         mDisplayName = nil;
         mEditor = nil;
+        mIsExample = NO;
     }
     return self;
 }
@@ -352,6 +353,24 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     return mSystem;
 }
 
+- (BOOL)isExample
+{
+    return mIsExample;
+}
+
+- (void)makeExample
+{
+    mIsExample = YES;
+}
+
+- (BOOL) readFromURL:(NSURL *) url
+              ofType:(NSString *) typeName
+               error:(NSError * *) outError
+{
+    if ([[url absoluteString] containsString: @"/Contents/Resources/Examples/"])
+        mIsExample = YES;
+    return [super readFromURL: url ofType: typeName error: outError];
+}
 
 
 - (void)noteStatus:(NSString*)s
@@ -499,9 +518,12 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 -(void)saveDocument:sender
 {
-    [self saveDocumentWithDelegate:self
-                   didSaveSelector:@selector(didSaveDocument:didSave:contextInfo:)
-                       contextInfo:NULL];
+    if (mIsExample)
+        [self saveDocumentAs: sender];
+    else
+        [self saveDocumentWithDelegate:self
+                       didSaveSelector:@selector(didSaveDocument:didSave:contextInfo:)
+                           contextInfo:NULL];
 }
 
 -(void)saveDocumentAs:sender
@@ -761,12 +783,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 }
 
 
-- (void)readFromExample:(NSString*)path
-{
-    [self readDesign: [[path lastPathComponent] stringByDeletingPathExtension]
-            cfdgText: [NSData dataWithContentsOfFile: path]];
-}
-
 - (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg
 {
     [self readFromData: cfdg ofType: CFDGDocumentType error: nil];
@@ -844,6 +860,8 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
          BOOL OKToClose = YES;
          switch (returnCode) {
              case NSAlertFirstButtonReturn:     // Save & close
+                 if (mIsExample)
+                     [self setFileURL: nil];
                  [self saveDocumentWithDelegate: delegate
                                 didSaveSelector: shouldCloseSelector
                                     contextInfo: contextInfo];

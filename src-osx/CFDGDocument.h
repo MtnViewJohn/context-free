@@ -59,6 +59,8 @@
     GalleryUploader*        mUploader;
 
     NSString*               mDisplayName;
+    
+    BOOL                    mIsExample;
 }
 
 - (IBAction) startRender:(id)sender;
@@ -71,6 +73,10 @@
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 
+- (BOOL) readFromURL:(NSURL *) url
+              ofType:(NSString *) typeName
+               error:(NSError * *) outError;
+
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) startHiresRender:(id)sender;
 - (IBAction) cancelHiresRender:(id)sender;
@@ -82,6 +88,9 @@
 
 - (cfdg_ptr)buildEngine;
 - (AbstractSystem*)system;
+
+- (BOOL)isExample;
+- (void)makeExample;
 
 - (void)setEditor:(ScintillaView*)editor;
 - (void)showContent;
@@ -98,7 +107,6 @@
 - (void) setVariation:(int)var;
 - (void)noteError:(CfdgErrorWrapper*)e;
 - (void)highlightChars:(CfdgErrorWrapper*)link;
-- (void)readFromExample:(NSString*)path;
 - (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg;
 
 + (NSString*)documentType;

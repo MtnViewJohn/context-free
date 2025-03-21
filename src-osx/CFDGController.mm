@@ -504,16 +504,17 @@ static NSInteger OSXversion = 0;
 @implementation CFDGController (internal)
 - (void)openExampleFromPath:(NSString*)path
 {
-    id doc = [[NSDocumentController sharedDocumentController]
-                openUntitledDocumentAndDisplay: NO error: nil];
-
-    if (doc) {
-        [doc readFromExample: path];
-        [doc makeWindowControllers];
-        [doc showWindows];
-    } else {
-        NSBeep();
-    }
+    [ [NSDocumentController sharedDocumentController]
+              openDocumentWithContentsOfURL: [NSURL fileURLWithPath: path] display: YES
+                completionHandler: ^(NSDocument* document, BOOL documentWasAlreadyOpen, NSError* error)
+    {
+        if (document && !error && [document isKindOfClass: [CFDGDocument class]]) {
+            CFDGDocument* cfDoc = (CFDGDocument*)document;
+            [cfDoc makeExample];
+        } else {
+            NSBeep();
+        }
+    }];
 }
 
 - (void)updateFontDisplay:(NSFont*)font
