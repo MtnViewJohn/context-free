@@ -107,12 +107,9 @@
 - (void) setVariation:(int)var;
 - (void)noteError:(CfdgErrorWrapper*)e;
 - (void)highlightChars:(CfdgErrorWrapper*)link;
-- (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg;
 
 + (NSString*)documentType;
 + (BOOL)autosavesInPlace;
 + (NSArray*) checkForTempFiles;
-
--(void)downloadDone:(GalleryDownloader*)downloader;
 
 @end

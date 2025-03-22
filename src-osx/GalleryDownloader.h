@@ -25,8 +25,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class CFDGDocument;
-
 @interface GalleryDownloader : NSObject <NSURLConnectionDelegate>
 {
 @public
@@ -38,9 +36,9 @@
     
 @private
     NSURLSessionDataTask*   download;
-    CFDGDocument*           document;
 }
 
-- (id)initWithDesignID:(int)design document:(CFDGDocument*)doc;
-- (id)initWithUrl:(NSURL*)url document:(CFDGDocument*)doc;
+- (id)initWithDesignID:(int)design;
+- (id)initWithUrl:(NSURL*)url;
+- (void)downloadDone: (id)obj;
 @end

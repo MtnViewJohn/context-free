@@ -29,19 +29,27 @@
 #include <errno.h>
 #include "upload.h"
 
-@interface GalleryDownloader (internal)
-- (void)allDone;
-@end
+
+namespace {
+void GalleryError(NSString* info)
+{
+    NSAlert* fail = [[[NSAlert alloc] init] autorelease];
+    [fail setAlertStyle: NSAlertStyleWarning];
+    [fail setInformativeText: info];
+    [fail setMessageText: @"Context Free Downloader"];
+    [fail addButtonWithTitle: @"OK"];
+    [fail runModal];
+}
+}
 
 @implementation GalleryDownloader
 
-- (id)initWithDesignID:(int)design document:(CFDGDocument*)doc
+- (id)initWithDesignID:(int)design
 {
     self = [super init];
     if (self) {
         designID = design;
         variation = Variation::random();
-        document = doc;
 #if 1
         NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", designID];
 #else
@@ -54,45 +62,44 @@
                                           completionHandler:^(NSData *data,
                                                               NSURLResponse *response,
                                                               NSError *error)
-                                              {
-                                                  if (data) {
-                                                      Upload response(static_cast<const char*>([data bytes]),
-                                                                      static_cast<std::size_t>([data length]));
-                                                      if (response.mId == 0) {
-                                                          DLerror = [[NSError alloc]
-                                                                     initWithDomain: NSURLErrorDomain
-                                                                               code: NSURLErrorFileDoesNotExist
-                                                                           userInfo: nil];
-                                                      } else {
-                                                          cfdgContents = [[NSData alloc]
-                                                                          initWithBytes: response.mPassword.c_str()
-                                                                          length: response.mPassword.length()];
-                                                          variation = response.mVariation;
-                                                          fileName = [[[NSString stringWithUTF8String: response.mFileName.c_str()]
-                                                                       lastPathComponent] retain];
-                                                      }
+                                          {
+                                              if (data) {
+                                                  Upload response(static_cast<const char*>([data bytes]),
+                                                                  static_cast<std::size_t>([data length]));
+                                                  if (response.mId == 0) {
+                                                      DLerror = [[NSError alloc]
+                                                                 initWithDomain: NSURLErrorDomain
+                                                                           code: NSURLErrorFileDoesNotExist
+                                                                       userInfo: nil];
                                                   } else {
-                                                      DLerror = [error retain];
+                                                      cfdgContents = [[NSData alloc]
+                                                                      initWithBytes: response.mPassword.c_str()
+                                                                      length: response.mPassword.length()];
+                                                      variation = response.mVariation;
+                                                      fileName = [[[NSString stringWithUTF8String: response.mFileName.c_str()]
+                                                                   lastPathComponent] retain];
                                                   }
-                                                  [document performSelector: @selector(downloadDone:)
-                                                                   onThread: [NSThread mainThread]
-                                                                 withObject: self
-                                                              waitUntilDone: NO];
-                                              }];
+                                              } else {
+                                                  DLerror = [error retain];
+                                              }
+                                              [self performSelector: @selector(downloadDone:)
+                                                           onThread: [NSThread mainThread]
+                                                         withObject: nil
+                                                      waitUntilDone: NO];
+                                          }];
         [download resume];
         [download retain];
     }
     return self;
 }
 
-- (id)initWithUrl:(NSURL*)url document:(CFDGDocument*)doc
+- (id)initWithUrl:(NSURL*)url
 {
     self = [super init];
     if (self) {
         designID = 0;
         variation = Variation::random();
         fileName = [[[url pathComponents] lastObject] retain];
-        document = doc;
         
         NSURLSessionDataTask* download = [[NSURLSession sharedSession]
                                           dataTaskWithURL: url
@@ -102,10 +109,10 @@
                                           {
                                               cfdgContents = [data retain];
                                               DLerror = [error retain];
-                                              [document performSelector: @selector(downloadDone:)
-                                                               onThread: [NSThread mainThread]
-                                                             withObject: self
-                                                          waitUntilDone: NO];
+                                              [self performSelector: @selector(downloadDone:)
+                                                           onThread: [NSThread mainThread]
+                                                         withObject: nil
+                                                      waitUntilDone: NO];
                                           }];
         [download resume];
         [download retain];
@@ -124,6 +131,45 @@
         [download release];
     }
     [super dealloc];
+}
+
+- (void)downloadDone: (id)obj
+{
+    if (DLerror || !cfdgContents) {
+        GalleryError(@"Gallery download failed.");
+        return;
+    }
+
+    NSString* baseName = [fileName stringByDeletingPathExtension];
+    NSString* homeDir = NSHomeDirectory();
+    NSString* dlPath = [NSString stringWithFormat: @"%@/Downloads/%@.cfdg", homeDir, baseName];
+    int count = 0;
+    while ([[NSFileManager defaultManager] fileExistsAtPath: dlPath]) {
+        ++count;
+        dlPath = [NSString stringWithFormat: @"%@/Downloads/%@ %d.cfdg", homeDir, baseName, count];
+    }
+    
+    if ([cfdgContents writeToFile: dlPath options: NSDataWritingWithoutOverwriting error: nil]) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL: [NSURL fileURLWithPath: dlPath]
+                                                                               display: YES
+                                                                     completionHandler:^(NSDocument * _Nullable document,
+                                                                                         BOOL documentWasAlreadyOpen,
+                                                                                         NSError * _Nullable error)
+         {
+            if (!document || error) {
+                GalleryError(@"Could not open download.");
+            } else {
+                if ([document isKindOfClass: [CFDGDocument class]]) {
+                    CFDGDocument* cfDoc = (CFDGDocument*)document;
+                    [cfDoc setVariation: variation];
+                    [cfDoc noteStatus: @"Download complete."];
+                }
+            }
+        }];
+    } else {
+        GalleryError(@"Gallery download failed to save.");
+    }
+
 }
 
 @end

@@ -403,13 +403,9 @@ static NSInteger OSXversion = 0;
     
     if (idLoc.location != NSNotFound && idStr != nil) {
         int designID = [[idStr substringFromIndex: (idLoc.location + idLoc.length)] intValue];
-        doc = [[NSDocumentController sharedDocumentController]
-               openUntitledDocumentAndDisplay: NO error: nil];
-        [[GalleryDownloader alloc] initWithDesignID: designID document: doc];
+        [[GalleryDownloader alloc] initWithDesignID: designID];
     } else if ([[pboardURL pathExtension] isEqualToString: @"cfdg"]) {
-        doc = [[NSDocumentController sharedDocumentController]
-               openUntitledDocumentAndDisplay: NO error: nil];
-        [[GalleryDownloader alloc] initWithUrl: pboardURL document: doc];
+        [[GalleryDownloader alloc] initWithUrl: pboardURL];
     }
 
     if (doc) {

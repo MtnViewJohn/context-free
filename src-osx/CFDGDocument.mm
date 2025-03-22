@@ -783,18 +783,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 }
 
 
-- (void)readDesign:(NSString*)name cfdgText:(NSData*)cfdg
-{
-    [self readFromData: cfdg ofType: CFDGDocumentType error: nil];
-    
-    if (name) {
-        [mDisplayName release];
-        mDisplayName = [name retain];
-        [self setDisplayName: name];
-        [[mGView window] setTitleWithRepresentedFilename: name];
-    }
-}
-
 - (NSString*)displayName
 {
     if (mDisplayName) return mDisplayName;
@@ -878,21 +866,6 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
          delegateMethod = (void (*)(id, SEL, id, BOOL, void *))[delegate methodForSelector: shouldCloseSelector];
          delegateMethod(delegate, shouldCloseSelector, self, OKToClose, contextInfo);
      }];
-}
-
-
-- (void)downloadDone:(GalleryDownloader*)downloader
-{
-    if (!downloader || !downloader->cfdgContents || downloader->DLerror) {
-        [self noteStatus: @"Download failed!"];
-        return;
-    }
-    
-    [self noteStatus: @"Download complete."];
-    [self readDesign: downloader->fileName
-            cfdgText: downloader->cfdgContents];
-    [self setVariation: downloader->variation];
-    [downloader release];
 }
 @end
 
