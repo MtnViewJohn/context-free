@@ -536,8 +536,10 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (void)didSaveDocument:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo
 {
-    if (didSave)
+    if (didSave) {
         [mEditor getGeneralProperty:SCI_SETSAVEPOINT];
+        mIsExample = NO;
+    }
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)windowController
