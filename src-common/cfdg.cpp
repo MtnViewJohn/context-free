@@ -288,12 +288,12 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
         
         b.m_CFDG->fileNames.push_back(fname);
         b.m_currentPath = &(b.m_CFDG->fileNames.back());
-        {
 #ifdef _MSC_VER
             static char dirchar = '\\';
 #else
             static char dirchar = '/';
 #endif
+        {
             auto dirptr = b.m_currentPath->find_last_of(dirchar);
             if (dirptr == std::string::npos)
                 b.m_basePath = std::make_unique<std::string>(*b.m_currentPath);
@@ -305,8 +305,17 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
         b.m_includeNamespace.push(false);
         b.push_repContainer(b.m_CFDG->mCFDGcontents);
         
-        if (version == 2)
-            system->message("Reading rules file %s", fname);
+        if (version == 2) {
+            const char* miniName = std::strrchr(fname, dirchar);
+            if (miniName != fname)
+                --miniName;
+            while (miniName != fname && *miniName != dirchar)
+                --miniName;
+            if (miniName != fname)
+                system->message("Reading rules file ...%s", miniName);
+            else
+                system->message("Reading rules file %s", fname);
+        }
 
         lexer.yyrestart(b.m_streamsToLoad.top().get());
         //parser.set_debug_level(1);
