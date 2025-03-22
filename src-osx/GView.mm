@@ -1401,6 +1401,9 @@ long MakeColor(id v)
 
 - (void)updateStyling
 {
+    if (!mEditor)
+        return;
+    
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     NSString* fontName = [defaults stringForKey: prefKeyEditorFontName];
     float fontSize = [defaults floatForKey: prefKeyEditorFontSize];
