@@ -41,7 +41,7 @@ extern NSString* PrefKeyMovieHeight;
 extern NSString* PrefKeyHiresWidth;
 extern NSString* PrefKeyHiresHeight;
 extern NSString* PrefKeyMinumumSize;
-extern NSString* prefKeyEditorFontName;
+extern NSString* prefKeyEditorFontFamily;
 extern NSString* prefKeyEditorFontSize;
 
 @class CFDGDocument;

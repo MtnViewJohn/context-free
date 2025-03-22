@@ -8,8 +8,8 @@
 	<false/>
 	<key>EditorFontSize</key>
 	<real>12</real>
-	<key>EditorFontName</key>
-	<string>Courier</string>
+	<key>EditorFontFamily</key>
+	<string>Courier New</string>
 	<key>EditorDefaultBold</key>
 	<false/>
 	<key>EditorDefaultItalic</key>

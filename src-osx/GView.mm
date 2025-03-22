@@ -1405,14 +1405,14 @@ long MakeColor(id v)
         return;
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    NSString* fontName = [defaults stringForKey: prefKeyEditorFontName];
+    NSString* fontName = [defaults stringForKey: prefKeyEditorFontFamily];
     float fontSize = [defaults floatForKey: prefKeyEditorFontSize];
     NSFont* font = [NSFont fontWithName:fontName size:fontSize];
     if (!font) {
-        fontName = @"Courier";
+        fontName = @"Courier New";
         fontSize = 12.0;
         font = [NSFont fontWithName:fontName size:fontSize];
-        [defaults setObject:fontName forKey:prefKeyEditorFontName];
+        [defaults setObject:fontName forKey:prefKeyEditorFontFamily];
         [defaults setFloat:fontSize forKey:prefKeyEditorFontSize];
     }
 

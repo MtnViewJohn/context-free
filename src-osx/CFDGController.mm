@@ -69,7 +69,7 @@ enum {
 
 #endif  // MAC_OS_X_VERSION_10_7
 
-NSString* prefKeyEditorFontName = @"EditorFontName";
+NSString* prefKeyEditorFontFamily = @"EditorFontFamily";
 NSString* prefKeyEditorFontSize = @"EditorFontSize";
 
 NSInteger CurrentTabWidth;
@@ -249,10 +249,10 @@ static NSInteger OSXversion = 0;
 {
     NSFont* oldFont = [mFontDisplay font];
     NSFont* newFont = [sender convertFont: oldFont];
-    NSString* name = [newFont fontName];
+    NSString* name = [newFont familyName];
     float size = static_cast<float>([newFont pointSize]);
     [[NSUserDefaults standardUserDefaults] setObject: name 
-                                              forKey: prefKeyEditorFontName];
+                                              forKey: prefKeyEditorFontFamily];
     [[NSUserDefaults standardUserDefaults] setFloat: size 
                                              forKey: prefKeyEditorFontSize];
 
