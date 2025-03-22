@@ -73,10 +73,6 @@
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 
-- (BOOL) readFromURL:(NSURL *) url
-              ofType:(NSString *) typeName
-               error:(NSError * *) outError;
-
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) startHiresRender:(id)sender;
 - (IBAction) cancelHiresRender:(id)sender;

@@ -65,6 +65,9 @@ NSString* PrefKeyMinumumSize = @"HiresMinimumSize";
 NSString* PrefKeyHiresWidth = @"HiresWidth";
 NSString* PrefKeyHiresHeight = @"HiresHeight";
 
+NSString* ASCExampleKey = @"CFDGDocumentIsExample";
+NSString* ASCVariationKey = @"CFDGDocumentVariation";
+
 extern NSInteger CurrentTabWidth;
 
 namespace {
@@ -363,15 +366,24 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     mIsExample = YES;
 }
 
-- (BOOL) readFromURL:(NSURL *) url
-              ofType:(NSString *) typeName
-               error:(NSError * *) outError
+- (void) encodeRestorableStateWithCoder:(NSCoder *) coder
 {
-    if ([[url absoluteString] containsString: @"/Contents/Resources/Examples/"])
-        mIsExample = YES;
-    return [super readFromURL: url ofType: typeName error: outError];
+    [super encodeRestorableStateWithCoder: coder];
+    [coder encodeBool: mIsExample forKey: ASCExampleKey];
+    [coder encodeInt: [mGView variation] forKey: ASCVariationKey];
 }
 
+- (void) restoreStateWithCoder:(NSCoder *) coder
+{
+    [super restoreStateWithCoder: coder];
+    
+    if ([coder containsValueForKey: ASCExampleKey] && [coder containsValueForKey: ASCVariationKey]) {
+        mIsExample = [coder decodeBoolForKey: ASCExampleKey];
+        int var = [coder decodeIntForKey: ASCVariationKey];
+        if (mGView)
+            [mGView setVariation: var];
+    }
+}
 
 - (void)noteStatus:(NSString*)s
 {
