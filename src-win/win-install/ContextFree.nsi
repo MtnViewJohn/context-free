@@ -36,12 +36,6 @@ RequestExecutionLevel user
 !include "FileFunc.nsh"
 
 ;--------------------------------
-;Variables
-
-  Var MUI_TEMP
-  Var STARTMENU_FOLDER
-
-;--------------------------------
 ;Configuration
 
   !define MUI_ICON "ContextFree.ico"
@@ -72,13 +66,6 @@ ShowUninstDetails show
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "license.txt"
 !insertmacro MUI_PAGE_DIRECTORY
-
-  ;Start Menu Folder Page Configuration
-  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OzoneSoft\ContextFree" 
-  !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-  
-  !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -167,15 +154,11 @@ Section -post
   ; that any old installer that is readonly is overwritten.
   Delete $INSTDIR\uninst-contextfree.exe 
   WriteUninstaller $INSTDIR\uninst-contextfree.exe
-
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
-    ;Create shortcuts
-    CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Context Free.lnk" "$INSTDIR\ContextFree.exe"
+    ;Create shortcut
+    RMDir /r "$SMPROGRAMS\ContextFree"
+    CreateShortCut "$SMPROGRAMS\Context Free.lnk" "$INSTDIR\ContextFree.exe"
   
-  !insertmacro MUI_STARTMENU_WRITE_END
-
 SectionEnd
 
 Function .onInstSuccess
@@ -216,11 +199,9 @@ Section "Uninstall"
   Delete '$INSTDIR\uninst-contextfree.exe' 
   RMDir  '$INSTDIR'
 
-  !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
-
-  RMDir /r "$SMPROGRAMS\$MUI_TEMP"
+  Delete "$SMPROGRAMS\Context Free.lnk"
   SetShellVarContext all
-  RMDir /r "$SMPROGRAMS\$MUI_TEMP"
+  Delete "$SMPROGRAMS\Context Free.lnk"
   
 
   SetRegView 32
