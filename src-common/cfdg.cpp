@@ -307,6 +307,8 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
         
         if (version == 2) {
             const char* miniName = std::strrchr(fname, dirchar);
+            if (!miniName)
+                miniName = fname;
             if (miniName != fname)
                 --miniName;
             while (miniName != fname && *miniName != dirchar)
