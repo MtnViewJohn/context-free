@@ -242,6 +242,10 @@ static NSInteger OSXversion = 0;
     // Make the color fields validate and write out their data
     NSWindow* window = (NSWindow*)sender;
     [window makeFirstResponder:window];
+    
+    if (auto fontPanel = [[NSFontManager sharedFontManager] fontPanel: NO])
+        [fontPanel orderOut: self];
+    
     return YES;
 }
 
