@@ -99,16 +99,18 @@ namespace {
     CFDGDocument*
     CocoaSystem::findDocFor(const std::string& path)
     {
-        if (path.empty())
-            return mDoc;
-
         NSString* pathStr =
             [NSString stringWithUTF8String: path.c_str() ];
         
         NSURL* pathURL = [NSURL fileURLWithPath: pathStr];
             
-        return [[NSDocumentController sharedDocumentController]
-                    documentForURL: pathURL];
+        auto doc = [[NSDocumentController sharedDocumentController]
+                        documentForURL: pathURL];
+        
+        if (!doc && path == [[mDoc displayName] UTF8String])
+            doc = mDoc;
+        
+        return doc;
     }
     
     
@@ -338,8 +340,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 {
     [[[mStatusText textStorage] mutableString] setString: @""];
     
-    const char* fileName = [[[self fileURL] path] UTF8String];
-    if (!fileName) fileName = "";
+    NSString* path = [[self fileURL] path];
+    if (!path)
+        path = [self displayName];
+    const char* fileName = [path UTF8String];
+    if (!fileName) fileName = "cfdg";
     
     static NSLock* parseLock = [[NSLock alloc] init];
     
