@@ -756,7 +756,9 @@ void CChildFrame::DoRender(bool shrinkTiled)
 bool CChildFrame::SyncToSystem()
 {
 	auto txt = m_CFdoc->GetCfdg();
-	const CString& wname = m_CFdoc->GetPathName();
+	CString wname = m_CFdoc->GetPathName();
+	if (wname.IsEmpty())
+		wname = m_CFdoc->GetTitle();
 	std::string name = Utf16ToUtf8((LPCTSTR)wname);
 	return m_System->updateInfo(name.c_str(), txt.c_str());
 }
