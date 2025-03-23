@@ -141,7 +141,7 @@ BEGIN
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Preferences\tCtrl+P",        ID_FILE_PREFERENCES
-        MENUITEM "E&xit",                       ID_APP_EXIT
+        MENUITEM "E&xit\tAlt+F4",               ID_APP_EXIT
     END
     POPUP "E&xample"
     BEGIN
@@ -190,7 +190,7 @@ BEGIN
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Preferences\tCtrl+P",        ID_FILE_PREFERENCES
-        MENUITEM "E&xit",                       ID_APP_EXIT
+        MENUITEM "E&xit\tAlt+F4",               ID_APP_EXIT
     END
     POPUP "&Edit"
     BEGIN
@@ -399,6 +399,7 @@ BEGIN
     "R",            ID_RENDER_AGAIN,        VIRTKEY, CONTROL, ALT, NOINVERT
     "R",            ID_RENDER_SIZE,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_END,         ID_RENDER_STOP,         VIRTKEY, CONTROL, NOINVERT
+    VK_F4,          ID_APP_EXIT,            VIRTKEY, ALT, NOINVERT
 END
 
 
