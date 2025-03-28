@@ -56,5 +56,8 @@ Linux variants:
 * Uncomment out LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
 * Comment out COMMON_SRCS += ffCanvasDummy.cpp
 
+or you can define the CFDG_FFMPEG environment variable before running make:
+  CFDG_FFMPEG=1 make all
+
 5) make clean && make
 

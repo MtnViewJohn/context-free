@@ -80,33 +80,37 @@ endif
 
 #
 # FFmpeg support
+ifdef CFDG_FFMPEG
 #
-# Uncomment these lines to enable FFmpeg support
+# Define CFDG_FFMPEG to enable FFmpeg support
 #
 
-# COMMON_SRCS += ffCanvas.cpp
-# LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
-
+ COMMON_SRCS += ffCanvas.cpp
+ LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
+else
 #
 # Comment out this line to enable FFmpeg support
 #
 
-COMMON_SRCS += ffCanvasDummy.cpp
+ COMMON_SRCS += ffCanvasDummy.cpp
+endif
 
 SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)
 
+# Define CFDG_LIBAGG to use system libagg instead of local
+ifndef CFDG_LIBAGG
 #
 # Configuration for local AGG
 #
-SRCS += $(AGG_SRCS)
-INC_DIRS += $(AGG_DIR) $(AGG_DIR)/agg2
+ SRCS += $(AGG_SRCS)
+ INC_DIRS += $(AGG_DIR) $(AGG_DIR)/agg2
 
-
+else
 #
 # Configuration for system AGG
 #
-#LIBS += agg
-
+ LIBS += agg
+endif
 
 OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst %.o,%.d,$(OBJS))
