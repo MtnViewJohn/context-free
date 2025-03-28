@@ -138,7 +138,9 @@ $(OBJS): $(OBJ_DIR)/Sentry
 
 cfdg: $(OBJS)
 	$(LINK.o) $^ $(LINKFLAGS) -o $@
+ifndef DEB_BUILD_MAINT_OPTIONS
 	strip $@
+endif
 
 
 #
