@@ -1,5 +1,64 @@
   Change Log
 
+V3.4.2 - July 2024 (Linux)/March 2025(rest)
+-------------------------------------------
+* Support FFmpeg 7.0 API change
+* Win: Installs on Intel and Arm systems. Has been rewritten as an MFC application.
+
+  Bug fixes:
+
+* Mac: Bold and italic styling restored in the text editor.
+* Mac: Context Free would permit movie sizes that AV Foundation rejects. Now it 
+  enforces the correct requirements (multiple of 16 pixel width, even height).
+* Mac: Context Free would accumulate blank Untitled windows as it was quit and restarted.
+
+V3.4.1 - February 2023
+----------------------
+  Bug fixes:
+
+* Random number generator was broken in v3.4. v3.3 variations are now restored.
+
+V3.4 - February 2023
+--------------------
+* startshape is now optional. If there is no startshape then the first shape or 
+  path with no parameters is selected as the startshape. This is primarily useful 
+  for code golf, where every bytre counts.
+* Win: Native support for Arm64 CPUs added. Application has been rewritten in C#. 
+  Should behave the same as previous versions.
+
+  Bug fixes:
+
+* Multiple flags work for path operations, as they do for path commands and shape replacements.
+
+V3.3.1 - January 2021
+---------------------
+* Mac: Universal application natively supports Apple Silicon.
+
+  Bug fixes:
+
+* Win: Fixed crash after closing a tab and then opening the File menu, or changing the editor font or style.
+* Mac: Fixed synchronization in animation viewer looping/non-looping checkbox and viewer internal state.
+
+V3.3 - April 2020
+-----------------
+* Color blending modes using a new blend adjustment have been added. They work like the 
+  CSS color blendng modes except that hue, saturation, color, and luminosity modes are 
+  not provided. The Porter-Duff Clear, Plus, and Xor compositing modes have also been 
+  added, as they seemed useful.
+* Animation preview can now loop the animation.
+* Command-line version can now invoke a display executable to view png, svg, or QuickTime 
+  output. This facilitates integration of Context Free with editor tools. A cfdg build 
+  system for Sublime Text on a Mac might look like:
+
+    {
+        "cmd": ["/usr/local/bin/cfdg", "--display=/usr/bin/open", "$file"],
+        "file_regex": "^([^\n:]+):([0-9]+):([0-9]+): (error: .+)$"
+    }
+
+  Bug fixes:
+
+* Animation of tiled/frieze designs did not work if the design used the ftime() or frame() functions.
+
 V3.2 - July 2019
 ----------------
 * -D option added to Posix and Windows command-line versions. This option permits the 
@@ -13,7 +72,7 @@ V3.2 - July 2019
 * Fixed bug where the gallery uploader crashes Context Free if it cannot connect to the server.
 
 V3.1 - January 2019
---------------------
+-------------------
 * Editor upgraded to the Scintilla cross-platform code editor. Context Free now has syntax
   highlighting, auto-completion, auto indentation, and more.
 * Uploads to and downloads from the new Gallery API at https://www.contextfreeart.org/index.html
