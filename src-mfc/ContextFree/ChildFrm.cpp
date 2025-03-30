@@ -628,12 +628,14 @@ void CChildFrame::OnUpdateSaveImage(CCmdUI* pCmdUI)
 void CChildFrame::OnNextVariation()
 {
 	++renderParams.variation;
+	m_bReuseVariation = TRUE;
 	if (renderParams.variation > Variation::recommendedMax(6))
 		renderParams.variation = Variation::recommendedMin();
 }
 void CChildFrame::OnPrevVariation()
 {
 	--renderParams.variation;
+	m_bReuseVariation = TRUE;
 	if (renderParams.variation < Variation::recommendedMin())
 		renderParams.variation = Variation::recommendedMax(6);
 }

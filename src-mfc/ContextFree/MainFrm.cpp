@@ -452,18 +452,22 @@ void CMainFrame::OnRenderBar(UINT id)
 	case ID_RB_RENDER:
 		c->renderParams.action = RenderParameters::RenderActions::Render;
 		c->renderParams.renderSize = false;
+		c->m_bReuseVariation = true;
 		break;
 	case ID_RB_SIZED:
 		c->renderParams.action = RenderParameters::RenderActions::Render;
 		c->renderParams.renderSize = true;
+		c->m_bReuseVariation = true;
 		break;
 	case ID_RB_ANIMATE:
 		c->renderParams.action = RenderParameters::RenderActions::Animate;
 		c->renderParams.animateFrame = false;
+		c->m_bReuseVariation = true;
 		break;
 	case ID_RB_FRAME:
 		c->renderParams.action = RenderParameters::RenderActions::Animate;
 		c->renderParams.animateFrame = true;
+		c->m_bReuseVariation = true;
 		break;
 	default:
 		break;
@@ -644,6 +648,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 	case IDC_VARIATION:
 		if (len == 0) {
 			c->renderParams.variation = 0;
+			c->m_bReuseVariation = true;
 		} else {
 			int v = Variation::fromString(buf.c_str());
 			if (v == -1) {
@@ -651,6 +656,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 				::SetDlgItemTextA(hDlg, id, str.c_str());
 			} else {
 				c->renderParams.variation = v;
+				c->m_bReuseVariation = true;
 			}
 		}
 		hDlgItem = GetDlgItem(IDC_VARIATION_SPIN)->GetSafeHwnd();

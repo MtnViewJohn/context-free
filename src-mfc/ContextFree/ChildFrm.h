@@ -28,9 +28,9 @@ protected:
 	CSplitterWnd m_wndSplitterCfdg;
 	BOOL m_bInitSplitter = FALSE;
 	CContextFreeDoc* m_CFdoc = nullptr;
-	BOOL m_bReuseVariation = FALSE;
 	int m_iProgressDelay = 0;
 public:
+	BOOL m_bReuseVariation = FALSE;
 	CFScintillaView* m_vwCfdgEditor = nullptr;
 	CContextFreeView* m_vwOutputView = nullptr;
 	static std::set<CChildFrame*> Children;
