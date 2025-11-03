@@ -24,14 +24,15 @@
 
 #import "HtmlColorFormatter.h"
 #include <cctype>
+#include <vector>
 
 @implementation HtmlColorFormatter
 - (BOOL)isPartialStringValid:(NSString *)partialString
             newEditingString:(NSString *__autoreleasing *)newString
             errorDescription:(NSString *__autoreleasing *)error {
     NSUInteger len = [partialString length];
-    unichar buffer[len+1];
-    [partialString getCharacters:buffer range:NSMakeRange(0, len)];
+    std::vector<unichar> buffer(len+1);
+    [partialString getCharacters:buffer.data() range:NSMakeRange(0, len)];
     if (len == 0) return YES;
     if (buffer[0] == (unichar)'#') {
         if (len > 7) return NO;
