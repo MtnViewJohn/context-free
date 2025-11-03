@@ -125,6 +125,8 @@ RendererImpl::init()
     mShapeBorder = 1.0;
     mTotalArea = 0.0;
     
+    mTimeBounds.tend = 1.0;
+    
     m_minArea = 0.3; 
     m_outputSoFar = m_stats.shapeCount = m_stats.toDoCount = 0;
     double minSize = m_minSize;
