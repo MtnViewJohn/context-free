@@ -671,7 +671,7 @@ RendererImpl::processPrimShapeSiblings(Shape&& s, const ASTrule* path)
     m_stats.shapeCount++;
     FinishedShape fs(std::move(s), m_stats.shapeCount, mPathBounds);
     fs.mWorldState.m_Z.sz = mCurrentArea;
-    if (!m_cfdg->usesTime) {
+    if (!m_cfdg->usesTime && !m_cfdg->usesFrameTime) {
         fs.mWorldState.m_time.tbegin = mTotalArea;
         fs.mWorldState.m_time.tend = Renderer::Infinity;
     }
