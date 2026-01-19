@@ -118,20 +118,20 @@ void SVGCanvas::complete(RGBA8 c, agg::trans_affine tr, int padding,
         }
         
         mOutput << " stroke-linecap=\"";
-        switch ((attr.mFlags >> 4) & 15) {
+        switch ((attr.mFlags >> 4) & 7) {
             case agg::square_cap:
                 mOutput << "butt";
                 break;
             case agg::round_cap:
-                mOutput << "circle";
+                mOutput << "round";
                 break;
             default:
-                mOutput << "miter";
+                mOutput << "square";
                 break;
         }
         
         mOutput << "\" stroke-linejoin=\"";
-        switch (attr.mFlags & 15) {
+        switch (attr.mFlags & 7) {
             case agg::bevel_join:
                 mOutput << "bevel";
                 break;
