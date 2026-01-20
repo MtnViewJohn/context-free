@@ -1021,8 +1021,9 @@ RendererImpl::drawShape(const FinishedShape& s)
         rule->traversePath(s, this);
     } else {
         RGBA8 color = m_cfdg->getColor(s.mWorldState.m_Color);
-        agg::comp_op_e blend = (s.mWorldState.m_BlendMode & (1 << 20)) ?
-            static_cast<agg::comp_op_e>((s.mWorldState.m_BlendMode >> 21) & 31) : agg::comp_op_e::comp_op_src_over;
+        agg::comp_op_e blend = (s.mWorldState.m_BlendMode & CF_BLEND_PRESENT)
+            ? static_cast<agg::comp_op_e>((s.mWorldState.m_BlendMode & CF_BLEND_MASK) >> CF_BLEND_SHIFT)
+            : agg::comp_op_e::comp_op_src_over;
 
         if (primShape::isPrimShape(s.mShapeType)) {
             m_canvas->primitive(s.mShapeType, color, tr, blend);

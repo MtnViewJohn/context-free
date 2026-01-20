@@ -457,7 +457,9 @@ aggCanvas::path(RGBA8 c, agg::trans_affine tr, const AST::CommandInfo& attr)
     
     agg::filling_rule_e rule =  (attr.mFlags & (AST::CF_EVEN_ODD | AST::CF_FILL)) == (AST::CF_EVEN_ODD | AST::CF_FILL) ?
         agg::fill_even_odd : agg::fill_non_zero;
-    agg::comp_op_e blend = (attr.mFlags & (1 << 20)) ? static_cast<agg::comp_op_e>((attr.mFlags >> 21) & 31) : agg::comp_op_e::comp_op_src_over;
+    agg::comp_op_e blend = (attr.mFlags & AST::CF_BLEND_PRESENT)
+        ? static_cast<agg::comp_op_e>((attr.mFlags & AST::CF_BLEND_MASK) >> AST::CF_BLEND_SHIFT)
+        : agg::comp_op_e::comp_op_src_over;
     
     m->pathSource.addPath(m->rasterizer, tr, attr);
     m->draw(c, rule, blend);

@@ -1646,7 +1646,7 @@ namespace AST {
             }
             case ASTmodTerm::blend: {
                 int f = static_cast<int>(modArgs[0]);
-                if ((f & (1 << 20)) == 0) {
+                if ((f & CF_BLEND_PRESENT) == 0) {
                     CfdgError::Error(where, "Blend adjustments require blend flag arguments");
                     return;
                 }

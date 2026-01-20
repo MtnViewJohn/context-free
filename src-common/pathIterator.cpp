@@ -52,8 +52,8 @@ pathIterator::apply(const AST::CommandInfo& attr,
             curved.attach(*attr.mPath);
             curvedTrans.transformer(tr);
             curvedTransStroked.width(attr.mStrokeWidth * scale);
-            curvedTransStroked.line_join(static_cast<agg::line_join_e>(attr.mFlags & 7));
-            curvedTransStroked.line_cap(static_cast<agg::line_cap_e>((attr.mFlags >> 4) & 7));
+            curvedTransStroked.line_join(static_cast<agg::line_join_e>(attr.mFlags & AST::CF_JOIN_MASK));
+            curvedTransStroked.line_cap(static_cast<agg::line_cap_e>((attr.mFlags & AST::CF_CAP_MASK) >> AST::CF_CAP_SHIFT));
             curvedTransStroked.miter_limit(attr.mMiterLimit);
             curvedTransStroked.inner_join(agg::inner_round);
             curvedTransStroked.approximation_scale(accuracy);
@@ -71,8 +71,8 @@ pathIterator::apply(const AST::CommandInfo& attr,
             curved.attach(*attr.mPath);
             curvedStrokedTrans.transformer(tr);
             curvedStroked.width(attr.mStrokeWidth);
-            curvedStroked.line_join(static_cast<agg::line_join_e>(attr.mFlags & 7));
-            curvedStroked.line_cap(static_cast<agg::line_cap_e>((attr.mFlags >> 4) & 7));
+            curvedStroked.line_join(static_cast<agg::line_join_e>(attr.mFlags & AST::CF_JOIN_MASK));
+            curvedStroked.line_cap(static_cast<agg::line_cap_e>((attr.mFlags & AST::CF_CAP_MASK) >> AST::CF_CAP_SHIFT));
             curvedStroked.miter_limit(attr.mMiterLimit);
             curvedStroked.inner_join(agg::inner_round);
             curvedStroked.approximation_scale(accuracy * scale);
