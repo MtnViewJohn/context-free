@@ -476,7 +476,7 @@ namespace AST {
     ASTmodTerm::ASTmodTerm(modTypeEnum t, const std::string& paramString, const yy::location& loc)
     : ASTexpression(loc, true, false, ModType), modType(t), args(nullptr), flags(0)
     {
-        static const std::vector<std::pair<std::string, int>> paramStrings = {
+        static const std::map<std::string, int> paramStrings = {
             { "evenodd",    CF_EVEN_ODD },
             { "iso",        CF_ISO_WIDTH },
             { "miterjoin",  CF_MITER_JOIN | CF_JOIN_PRESENT },
@@ -487,12 +487,18 @@ namespace AST {
             { "roundcap",   CF_ROUND_CAP  | CF_CAP_PRESENT },
             { "large",      CF_ARC_LARGE },
             { "cw",         CF_ARC_CW },
-            { "align",      CF_ALIGN }
+            { "align",      CF_ALIGN },
+            { "",           0},
         };
         
-        for (const auto& [paramName, paramFlags] : paramStrings)
-            if (paramString.find(paramName) != std::string::npos)
-                flags |= paramFlags;
+        std::stringstream paramStrm(paramString);
+        for (std::string param; std::getline(paramStrm, param, ' '); )
+            if (auto f = paramStrings.find(param); f != paramStrings.end()) {
+                flags |= f->second;
+            } else if (Builder::CurrentBuilder) {
+                std::string msg = "Unrecognized parameter: "s + param;
+                Builder::CurrentBuilder->warning(loc, msg);
+            }
     }
 
     ASTmodification::ASTmodification(const ASTmodification& m, const yy::location& loc)
