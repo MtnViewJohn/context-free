@@ -276,8 +276,8 @@ L"This program is free software; you can redistribute it and /or modify it under
 L"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU General Public License for more details.\r\n"
 L"You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 - 1307 USA"
 )
-, m_sMainCopyright(_T("Copyright © 2005-2025\r\nJohn Horigan && Mark Lentczner"))
-, m_sTitle(_T("Context Free, Version 3.4.2(v50)"))
+, m_sMainCopyright(_T("Copyright © 2005-2026\r\nJohn Horigan && Mark Lentczner"))
+, m_sTitle(_T("Context Free, Version 3.4.3(v51)"))
 {
 }
 
