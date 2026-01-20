@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101200" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -881,7 +881,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="396" y="318" width="489" height="418"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <view key="contentView" id="243">
                 <rect key="frame" x="0.0" y="0.0" width="489" height="418"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1730,7 +1730,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="471" y="451" width="337" height="231"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1085"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="337" height="231"/>
             <value key="maxSize" type="size" width="338" height="232"/>
             <view key="contentView" id="325">
@@ -1967,7 +1967,7 @@
                         <rect key="frame" x="20" y="82" width="297" height="1"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView" id="75J-6G-4Wp">
-                            <rect key="frame" x="1" y="0.5" width="295" height="0.0"/>
+                            <rect key="frame" x="1" y="1" width="295" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                     </box>
