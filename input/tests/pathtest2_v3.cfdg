@@ -1,0 +1,14 @@
+startshape pentagram
+
+path pentagram {
+    MOVETO( -1,0)
+    ARCTO( 1,0, 1)
+    ARCTO( -1,0, 1)
+    CLOSEPOLY()
+    STROKE(CF::BevelJoin)[]
+    MOVETO(0, 1)
+    loop 5 [r 144] 
+        LINETO ( (cos(234)) , (sin(234)))
+    CLOSEPOLY(CF::Align)
+    STROKE(CF::MiterJoin)[ s 0.82]
+}

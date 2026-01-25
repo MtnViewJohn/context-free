@@ -5,7 +5,7 @@ path pentagram {
     ARCTO{x 1}
     ARCTO{x -1}
     CLOSEPOLY{}
-    STROKE{p buttjoin}
+    STROKE{p beveljoin}
     MOVETO{y 1}
     5* {r 144} 
         LINETO {x (cos(234)) y (sin(234))}
