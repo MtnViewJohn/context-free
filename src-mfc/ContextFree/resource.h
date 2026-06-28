@@ -291,10 +291,11 @@
 #define ID_INSERTCHAR73                 32887
 #define ID_INSERTCHAR74                 32888
 #define ID_INSERTCHAR75                 32889
-#define ID_INSERTCHAR76                 32890
-#define ID_EDIT_INDENT                  32891
-#define ID_EDIT_UN                      32892
-#define ID_EDIT_UNDENT                  32893
+#define ID_INSERTVARIABLE_CF            32890
+#define ID_INSERTCHAR76                 32891
+#define ID_EDIT_INDENT                  32892
+#define ID_EDIT_UN                      32893
+#define ID_EDIT_UNDENT                  32894
 #define ID_RENDER_UPLOADTOGALLERY       32896
 #define ID_FILE_REVERT                  32897
 #define ID_HELP_DOCUMENTATION           32898
@@ -306,7 +307,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        344
-#define _APS_NEXT_COMMAND_VALUE         32903
+#define _APS_NEXT_COMMAND_VALUE         32904
 #define _APS_NEXT_CONTROL_VALUE         1095
 #define _APS_NEXT_SYMED_VALUE           339
 #endif

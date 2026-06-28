@@ -272,6 +272,7 @@ BEGIN
             MENUITEM "CF::Frame = 60",              ID_INSERTCHAR54
             MENUITEM "CF::FrameTime = 0.2",         ID_INSERTCHAR55
             MENUITEM "CF::Impure = 1",              ID_INSERTCHAR56
+            MENUITEM "CF::Looping = 1",             ID_INSERTVARIABLE_CF
             MENUITEM "CF::MaxNatural = 10000",      ID_INSERTCHAR57
             MENUITEM "CF::MaxShapes = 1000000",     ID_INSERTCHAR58
             MENUITEM "CF::MinimumSize = 0.1",       ID_INSERTCHAR59
