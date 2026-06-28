@@ -555,6 +555,12 @@
                                                 <action selector="insertUnicode:" target="-1" id="718"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="CF::Looped = 1" id="MIf-ZW-ObP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="insertUnicode:" target="-1" id="OQP-ua-UFv"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="CF::MaxNatural = 10000" id="760">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -1967,7 +1973,7 @@
                         <rect key="frame" x="20" y="82" width="297" height="1"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView" id="75J-6G-4Wp">
-                            <rect key="frame" x="1" y="1" width="295" height="0.0"/>
+                            <rect key="frame" x="1" y="0.5" width="295" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                     </box>
