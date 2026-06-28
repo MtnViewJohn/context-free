@@ -32,6 +32,7 @@
 #include <cassert>
 #include <algorithm>
 #include <array>
+#include <sstream>
 
 using std::floor;
 
