@@ -115,6 +115,7 @@ class CFDGImpl : public CFDG {
         AbstractSystem* m_system = nullptr;
         Builder*        m_builder = nullptr;
         bool            m_impure = false;
+        bool            m_looped = false;
     
         int m_Parameters = 0;
     

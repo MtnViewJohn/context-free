@@ -48,6 +48,7 @@ public:
     
         double      mMaxNatural = 1000.0;
         bool        mImpure = false;
+        double      mFrameOffset = 1.0;
 
         double      mCurrentTime = 0.0;
         double      mCurrentFrame = 0.0;

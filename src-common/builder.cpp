@@ -528,6 +528,15 @@ Builder::TypeCheckConfig(ASTdefine* cfg)
         }
     }
     
+    if (cfgNum == CFG::Looped) {
+        double v = 0.0;
+        if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
+            error(expLoc, "CF::Looped requires a constant numeric expression");
+        } else {
+            m_CFDG->m_looped = v != 0.0;
+        }
+    }
+    
     if (cfgNum == CFG::MaxNatural && MaxNaturalDepth > cfg->mConfigDepth) {
         auto max = cfg->mExpression.get();
         double v = -1.0;

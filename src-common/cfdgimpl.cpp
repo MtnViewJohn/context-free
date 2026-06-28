@@ -700,6 +700,7 @@ CFDGImpl::renderer(const cfdg_ptr& ptr, int width, int height, double minSize,
     try {
         r = std::make_unique<RendererImpl>(ptr, width, height, minSize, variation, border);
         r->mImpure = m_impure;
+        r->mFrameOffset = m_looped ? 0.0 : 1.0;
         Modification tiled;
         Modification sized;
         Modification timed;

@@ -63,6 +63,7 @@ const CfgArray<std::string> CFDG::ParamNames = {
     "CF::Frame",
     "CF::FrameTime",
     "CF::Impure",
+    "CF::Looped",
     "CF::MaxNatural",
     "CF::MaxShapes",
     "CF::MinimumSize",

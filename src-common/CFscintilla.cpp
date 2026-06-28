@@ -35,7 +35,7 @@ std::vector<const char*> CFscintilla::AutoComplete = {
         "CF::Align", "CF::AllowOverlap", "CF::Alpha", "CF::ArcCW", "CF::ArcLarge", "CF::Background",
         "CF::BevelJoin", "CF::BorderDynamic", "CF::BorderFixed", "CF::ButtCap", "CF::cm", "CF::cmm", "CF::Color",
         "CF::ColorDepth", "CF::Continuous", "CF::Cyclic", "CF::Dihedral", "CF::EvenOdd", "CF::Frame",
-        "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::MaxNatural", "CF::MaxShapes",
+        "CF::FrameTime", "CF::Impure", "CF::IsoWidth", "CF::Looped", "CF::MaxNatural", "CF::MaxShapes",
         "CF::MinimumSize", "CF::MiterJoin",
         "CF::Normal", "CF::Clear", "CF::Xor", "CF::Plus", "CF::Multiply", "CF::Screen", "CF::Overlay",
         "CF::Darken", "CF::Lighten", "CF::ColorDodge", "CF::ColorBurn", "CF::HardLight", "CF::SoftLight",
@@ -285,7 +285,7 @@ CFscintilla::StyleId(std::size_t length, const char* text, char* styles)
         "CF::p2mg", "CF::p2mm", "CF::pm", "CF::pg", "CF::cm", "CF::pmm", "CF::pmg", "CF::pgg", "CF::cmm",
         "CF::p4", "CF::p4m", "CF::p4g", "CF::p3", "CF::p3m1", "CF::p31m", "CF::p6", "CF::p6m",
         "CF::AllowOverlap", "CF::Alpha", "CF::Background", "CF::BorderDynamic", "CF::BorderFixed",
-        "CF::Color", "CF::ColorDepth", "CF::Frame", "CF::FrameTime", "CF::Impure", "CF::MaxNatural",
+        "CF::Color", "CF::ColorDepth", "CF::Frame", "CF::FrameTime", "CF::Impure", "CF::Looped", "CF::MaxNatural",
         "CF::MaxShapes", "CF::MinimumSize", "CF::Size", "CF::StartShape", "CF::Symmetry",
         "CF::Tile", "CF::Time"
     };

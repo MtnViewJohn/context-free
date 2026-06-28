@@ -41,6 +41,7 @@ enum class CFG {
     Frame,
     FrameTime,
     Impure,
+    Looped,
     MaxNatural,
     MaxShapes,
     MinimumSize,
