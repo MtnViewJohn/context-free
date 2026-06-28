@@ -337,7 +337,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 		DWORD attr = ::GetFileAttributes(tempMovie16.c_str());
 		if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY)) {
 			CString name = NameWithoutExtension();
-			MovieFileSave fsDlg(tempMovie16, name);
+			MovieFileSave fsDlg(tempMovie16, name, m_Engine->isLooped);
 			if (fsDlg.DoModal() == IDOK) {
 				auto ofn = fsDlg.GetOFN();
 				if (::MoveFileEx(tempMovie16.c_str(), ofn.lpstrFile, MOVEFILE_REPLACE_EXISTING)) {

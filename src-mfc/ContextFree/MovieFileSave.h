@@ -7,7 +7,7 @@ class MovieFileSave : public CFileDialog
 	DECLARE_DYNAMIC(MovieFileSave)
 
 public:
-	MovieFileSave(std::wstring& temp, LPCTSTR name);
+	MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop);
 	virtual ~MovieFileSave();
 	PROCESS_INFORMATION processInfo;
 

@@ -18,14 +18,15 @@ IMPLEMENT_DYNAMIC(MovieFileSave, CFileDialog)
 
 
 
-MovieFileSave::MovieFileSave(std::wstring& temp, LPCTSTR name)
+MovieFileSave::MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop)
 	: CFileDialog(FALSE, _T("mov"), name, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("MOV files (*.mov)|*.mov|All files (*.*)|*.*||")),
 	  m_sTempName(temp),
-	  processInfo{}
+	  processInfo{},
+	  m_bLoop(loop)
 {
 	AddPushButton(IDC_PREVIEW, _T("Preview"));
-	AddCheckButton(IDC_PREVIEWLOOP, _T("Loop preview"), FALSE);
+	AddCheckButton(IDC_PREVIEWLOOP, _T("Loop preview"), loop);
 }
 
 MovieFileSave::~MovieFileSave()
