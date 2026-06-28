@@ -1726,6 +1726,7 @@ long MakeColor(id v)
     [self buildEngine];
     if (!mEngine) return;
     [self buildRendererSize: size minimum: minSize];
+    mLoop = mEngine->isLooped;
     if (!mRenderer) return;
     parameters.animateZoom = [defaults boolForKey: PrefKeyMovieZoom] && !mTiled;
 
