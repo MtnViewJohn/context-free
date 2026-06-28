@@ -533,7 +533,7 @@ Builder::TypeCheckConfig(ASTdefine* cfg)
         if (!cfg->mExpression || !cfg->mExpression->isConstant || cfg->mExpression->evaluate(&v, 1) != 1) {
             error(expLoc, "CF::Looped requires a constant numeric expression");
         } else {
-            m_CFDG->m_looped = v != 0.0;
+            m_CFDG->isLooped = v != 0.0;
         }
     }
     

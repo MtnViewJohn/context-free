@@ -223,6 +223,7 @@ class CFDG {
         bool usesBlendMode = false;
         bool usesTime = false;
         bool usesFrameTime = false;
+        bool isLooped = false;
         static const CfgArray<std::string>  ParamNames;
         static CFG lookupCfg(const std::string& name);
         static const std::string& getCfgName(int c);
