@@ -185,6 +185,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     av_dict_set(&opt, "crf", "20.0", 0);
     
     if (int open_codec_stat = avcodec_open2(mEncCtx, codec, &opt)) {
+        (void)open_codec_stat;
         mError = "could not open codec";
         return;
     }
@@ -209,11 +210,13 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     mFrame->height = height;
 
     if (int fb_alloc_stat = av_frame_get_buffer(mFrame, 32)) {
+        (void)fb_alloc_stat;
         mError = "Out of memory";
         return;
     }
     
     if (int open_stat = avio_open(&(mOutputCtx->pb), name, AVIO_FLAG_WRITE)) {
+        (void)open_stat;
         mError = "failed to open movie file";
         return;
     }
