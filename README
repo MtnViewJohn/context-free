@@ -1,9 +1,9 @@
 *** Context Free
-*** version 3.3
+*** version 3.4.3
 
     by Chris Coyne, John Horigan and Mark Lentczner
 
-    Context Free Copyright 2005-2018 Mark Lentczner and John Horigan
+    Context Free Copyright 2005-2026 Mark Lentczner and John Horigan
     CFDG Copyright 2005 Chris Coyne
 	Anti-Grain Geometry library Copyright 2002-2005 Maxim Shemanarev
 
@@ -41,8 +41,7 @@ FILE TREE
 ./src-common/   - the CFDG engine
 ./src-ffmpeg/   - FFmpeg resources
 ./src-ffmpeg/include/  - FFmpeg include files
-./src-ffmpeg/lib/      - FFmpeg libraries for Linux
-./src-net/	    - Windows .Net specific sources
+./src-mfc/	    - Windows MFC specific sources
 ./src-osx/      - Mac specific sources
 ./src-scintilla - Mac Scintilla sources
 ./src-unix/     - Unix/Posix specific sources 
@@ -67,7 +66,7 @@ The Xcode project file is in the top directory:
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS GUI BUILD NOTES
 
-Requires Visual Studio 2019 or later.
+Requires Visual Studio 2022 or later.
 
 The VS2019 solution file is at ./src-net/ContextFreeNetVS11.sln
 
@@ -79,7 +78,7 @@ src-win/derived and type 'make' (you will need bison and flex too).
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 WINDOWS CLI (command line) BUILD NOTES
 
-Requires Visual Studio 2019 or later.
+Requires Visual Studio 2022 or later.
 
 The VS2019 CLI solution file is at ./ContextFreeCLIVS11.sln
 

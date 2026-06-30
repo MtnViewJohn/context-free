@@ -1,5 +1,20 @@
   Change Log
 
+V3.4.3 - June 2026
+------------------
+  Bug fixes:
+
+* Make animation work when only frame()/ftime() are used and no time
+adjustments.
+* Fix SVG stroke line-caps and line-joins.
+* Win: Unicode character insertion commands were corrupted.
+* Win: CFDG files were displayed as if they were in Windows code
+page 1252 instead of UTF8.
+* frame() function did not have correct semantics for looping
+animation. The first and last frames were always identical, resulting
+in a stutter. Added CF::Looping configuration variable to change the 
+range of frame() from [0,1] to [0,1).
+
 V3.4.2 - July 2024 (Linux)/March 2025(rest)
 -------------------------------------------
 * Support FFmpeg 7.0 API change
