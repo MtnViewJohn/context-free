@@ -1564,9 +1564,9 @@ void CScintillaView::Serialize(CArchive& ar)
     rCtrl.SetDocPointer(static_cast<IDocumentEditable*>(pLoader->ConvertToDocument())); //NOLINT(clang-analyzer-core.CallAndMessage)
 
     //If we detected UTF data, then use the UTF8 codepage else disable multi-byte support
-    if (m_BOM == BOM::Unknown)
-      rCtrl.SetCodePage(0);
-    else
+    //if (m_BOM == BOM::Unknown)
+    //  rCtrl.SetCodePage(0);
+    //else
       rCtrl.SetCodePage(CpUtf8);
 
     //Set the read only state if required
