@@ -21,7 +21,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
+#pragma code_page(65001)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -205,13 +205,13 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Insert Character"
         BEGIN
-            MENUITEM "=",                           ID_INSERTCHAR1
-            MENUITEM "=",                           ID_INSERTCHAR2
-            MENUITEM "?",                           ID_INSERTCHAR3
+            MENUITEM "≤",                           ID_INSERTCHAR1
+            MENUITEM "≥",                           ID_INSERTCHAR2
+            MENUITEM "≠",                           ID_INSERTCHAR3
             MENUITEM "…",                         ID_INSERTCHAR4
             MENUITEM "±",                          ID_INSERTCHAR5
-            MENUITEM "8",                           ID_INSERTCHAR6
-            MENUITEM "p",                           ID_INSERTCHAR7
+            MENUITEM "∞",                           ID_INSERTCHAR6
+            MENUITEM "π",                           ID_INSERTCHAR7
         END
         POPUP "Insert Symmetry"
         BEGIN
