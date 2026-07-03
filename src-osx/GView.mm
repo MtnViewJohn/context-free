@@ -32,6 +32,7 @@
 #import "TopBar.h"
 #import "BitmapImageHolder.h"
 #import "CFDGController.h"
+#import <WebKit/WKWebViewConfiguration.h>
 
 #include "cfdg.h"
 #include "SVGCanvas.h"
@@ -176,8 +177,6 @@ typedef NS_ENUM(NSInteger, FindType) {
 
 - (void)drawCheckerboardRect:(NSRect)rect;
 
-- (void) setMovieImagesPlay:(BOOL)play;
-
 - (void)buildEngine;
 - (void)buildRendererSize:(NSSize)size minimum:(double)minSize;
 - (void)buildImageCanvasSize;
@@ -191,10 +190,6 @@ typedef NS_ENUM(NSInteger, FindType) {
 
 - (void)setupPlayer:(NSURL*)movie;
 - (void)tearDownPlayer;
-- (void)stopLoadingAnimationAndHandleError:(NSError *)error;
-
-- (bool)setupTimeSlider:(AVPlayerItem*)playerItem;
-- (void)setUpPlaybackOfAsset:(AVURLAsset *)asset withKeys:(NSArray *)keys;
 
 - (void)showSavePanelTitle:(NSString *)title
                   fileType:(NSArray *)fileType
@@ -274,6 +269,48 @@ namespace {
     NSArray*    ActionStrings = nil;
     
     NSDictionary<NSString*, NSString*>* ColorNames = nil;
+
+    NSString* htmlgif = @"<!doctype html>\
+<html lang=\"en-US\">\
+  <head>\
+    <meta charset=\"utf-8\" />\
+    <title>Video preview</title>\
+    <style  type=\"text/css\">\
+body {\
+  display: flex;\
+  align-items: center;\
+  justify-content: center;\
+  height: %dpx;\
+}\
+    </style>\
+  </head>\
+  <body>\
+    <img src=\"%@\" />\
+  </body>\
+</html>\
+";
+    NSString* htmlmov = @"<!doctype html>\
+<html lang=\"en-US\">\
+  <head>\
+    <meta charset=\"utf-8\" />\
+    <title>Video preview</title>\
+    <style  type=\"text/css\">\
+body {\
+display: flex;\
+align-items: center;\
+justify-content: center;\
+height: %dpx;\
+}\
+    </style>\
+  </head>\
+  <body>\
+    <video src=\"%@\" controls %@>\
+      <p>Video playback failed.</p>\
+    </video>\
+  </body>\
+</html>\
+";
+
 }
 
 
@@ -460,6 +497,7 @@ namespace {
         mDrawingImage = nil;
         mRestartRenderer = false;
         mUpdateTimer = nil;
+        mMovieView = nil;
         
         mRendering = false;
         mRestartRenderer = false;
@@ -687,91 +725,9 @@ namespace {
     return YES;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context
-{
-    if (context == ItemDurationContext) {
-        AVPlayerItem* playerItem = (AVPlayerItem*)object;
-        dispatch_async(dispatch_get_main_queue(),
-                       ^{
-                           [self setupTimeSlider: playerItem];
-                       });
-        return;
-    }
-    if (context == ItemStatusContext) {
-        AVPlayerItem* playerItem = (AVPlayerItem*)object;
-        dispatch_async(dispatch_get_main_queue(),
-                       ^{
-                           AVPlayerItemStatus stat = [playerItem status];
-                           if (stat == AVPlayerItemStatusReadyToPlay &&
-                               [mMoviePlayerLayer isReadyForDisplay])
-                           {
-                               [mMovieControls setHidden: NO];
-                               [mStatus setHidden: YES];
-                           }
-                           if (stat == AVPlayerItemStatusFailed) {
-                               [self stopLoadingAnimationAndHandleError: [playerItem error]];
-                           }
-                       });
-        return;
-    }
-    if (context == LayerStatusContext) {
-        AVPlayerLayer* playerLayer = (AVPlayerLayer*)object;
-        dispatch_async(dispatch_get_main_queue(),
-                       ^{
-                           AVPlayerItemStatus stat = [[[playerLayer player] currentItem] status];
-                           if (stat == AVPlayerItemStatusReadyToPlay &&
-                               [playerLayer isReadyForDisplay])
-                           {
-                               [mMovieControls setHidden: NO];
-                               [mStatus setHidden: YES];
-                           }
-                       });
-        return;
-    }
-
-    [super observeValueForKeyPath:keyPath ofObject:object
-                           change:change context:context];
-}
-
-- (IBAction) toggleMovieStartStop:(id)sender
-{
-    if ([mMoviePlayer rate] == 0.0f) {
-        if (mAtEndofMovie)
-            [mMoviePlayer seekToTime: kCMTimeZero];
-        mLoop = [mRewindButton state] != NSControlStateValueOff;
-        [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
-        [mMoviePlayer play];
-        mAtEndofMovie = false;
-        [self setMovieImagesPlay: YES];
-        [[self window] makeFirstResponder: [mEditor content]];
-    } else {
-        [mMoviePlayer pause];
-        [self setMovieImagesPlay: NO];
-        [[self window] makeFirstResponder: mTimeSlider];
-    }
-}
-
-- (IBAction) movieRewind:(id)sender
-{
-    // Rewind button repurposed as looping button
-    mLoop = [mRewindButton state] != NSControlStateValueOff;
-    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
-    [[self window] makeFirstResponder: mTimeSlider];
-}
-
-- (IBAction) movieTimeChange:(id)sender
-{
-    auto scale = mMoviePlayer.currentItem.duration.timescale;
-    double time = [mTimeSlider doubleValue] / mFrameRate;
-    CMTime t = CMTimeMakeWithSeconds(time, scale);
-    [mMoviePlayer seekToTime:t toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-    [[self window] makeFirstResponder: mTimeSlider];
-}
-
 - (void)drawRect:(NSRect)rect
 {
-    if (mMoviePlayer || ![self validateDrawingImage]) {
+    if (mMovieView || ![self validateDrawingImage]) {
         [[NSColor whiteColor] set];
         [NSBezierPath fillRect: rect];
         return;
@@ -873,7 +829,6 @@ namespace {
 - (void)viewDidChangeEffectiveAppearance
 {
     [self updateStyling];
-    [self setMovieImagesPlay: mMoviePlayer && mMoviePlayer.rate > 0.0f];
 }
 
 - (IBAction)toggleRender:(id)sender
@@ -1806,7 +1761,6 @@ long MakeColor(id v)
     [mStatus setStringValue: @""];
 
     [mProgress setHidden: NO];
-    [mMovieControls setHidden: YES];
     [mStatus setHidden: NO];
     [mTopBar relayout];
 #ifndef PROGRESS_ANIMATE_DIRECTLY
@@ -2411,12 +2365,6 @@ long MakeColor(id v)
         [mEditor setGeneralProperty:SCI_AUTOCCANCEL value:0];
 }
 
-- (void) setMovieImagesPlay:(BOOL)play
-{
-    if ([mStartStopButton state] != (play ? NSControlStateValueOn : NSControlStateValueOff))
-        [mStartStopButton setState: (play ? NSControlStateValueOn : NSControlStateValueOff)];
-}
-
 - (void)drawCheckerboardRect:(NSRect)rect
 {
     [[NSColor whiteColor] set];
@@ -2552,198 +2500,39 @@ long MakeColor(id v)
 
 - (void)setupPlayer:(NSURL*)movie
 {
-    if (!mMoviePlayer) {
-        mMoviePlayer = [[AVPlayer alloc] init];
-        mTimeObserverToken = [mMoviePlayer addPeriodicTimeObserverForInterval: CMTimeMake(1, 10)
-                                                                        queue: dispatch_get_main_queue()
-                                                                   usingBlock: ^(CMTime time) {
-                                                                       if ([[mMoviePlayer currentItem] status] == AVPlayerItemStatusReadyToPlay) {
-                                                                           double now = CMTimeGetSeconds([mMoviePlayer currentTime]);
-                                                                           mTimeSlider.doubleValue = now * mFrameRate;
-                                                                           mCurrentTime.doubleValue = now;
-                                                                           [mTimeSlider setEnabled: YES];
-                                                                       } else {
-                                                                           [mTimeSlider setEnabled: NO];
-                                                                       }
-                                                                   }];
-        mEndMovieToken = nil;
-    }
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    mCurrentTime.doubleValue = [defaults floatForKey: PrefKeyMovieLength];
-    NSCell *cell = [[[NSCell alloc]initTextCell: [mCurrentTime stringValue]] autorelease];
-    CGFloat sz = [cell cellSize].width + 20.0;
-    NSRect rect = [mCurrentTime frame];
-    rect.origin.x -= (sz - rect.size.width) / 2.0;
-    rect.size.width = sz;
-    [mCurrentTime setFrame: rect];
-    mCurrentTime.doubleValue = 0.0;
-    [mRewindButton setState: (mLoop ? NSControlStateValueOn : NSControlStateValueOff)];
-    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
-
-    if (!mMoviePlayerLayer) {
-        AVPlayerLayer *newPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: mMoviePlayer];
-        newPlayerLayer.frame = self.layer.bounds;
-        newPlayerLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-        [self.layer addSublayer:newPlayerLayer];
-        mMoviePlayerLayer = [newPlayerLayer retain];
-        [mMoviePlayerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:LayerStatusContext];
-        
-    }
+    if (mMovieView)
+        [self tearDownPlayer];
     
-    // Create an asset with our URL, asychronously load its tracks and whether it's playable or protected.
-    // When that loading is complete, configure a player to play the asset.
-    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL: movie options: nil];
-    NSArray *assetKeysToLoadAndTest = @[@"playable", @"hasProtectedContent", @"tracks", @"duration"];
-    [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
-        // The asset invokes its completion handler on an arbitrary queue when loading is complete.
-        // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self setUpPlaybackOfAsset:asset withKeys:assetKeysToLoadAndTest];
-        });
-    }];
+    auto fr = [self frame];
+    fr.origin.x = fr.origin.y = 0;
+    mMovieView = [[[WKWebView alloc] initWithFrame: fr
+                                     configuration: [[WKWebViewConfiguration alloc] init]] retain];
+    [self addSubview: mMovieView];
+    
+    NSURL* htmlurl = [[movie URLByDeletingLastPathComponent] URLByAppendingPathComponent: @"preview.html"];
+    NSString* html = nil;
+    if ([[movie pathExtension] isEqualToString: @"mov"]) {
+        html = [NSString stringWithFormat: htmlmov,
+                          (int)(fr.size.height)-16,
+                          [movie lastPathComponent],
+                          mEngine->isLooped ? @"loop" : @""];
+    } else {
+        html = [NSString stringWithFormat: htmlgif,
+                          (int)(fr.size.height)-16,
+                          [movie lastPathComponent]];
+    }
+    [html writeToURL: htmlurl atomically: NO encoding: NSASCIIStringEncoding error: nil];
+    NSURLRequest* req = [NSURLRequest requestWithURL: htmlurl];
+    [mMovieView loadRequest: req];
 }
 
 - (void)tearDownPlayer
 {
-    if (!mMoviePlayer) return;
-    [mMoviePlayer pause];
+    if (!mMovieView) return;
     
-    if (mMoviePlayerLayer) {
-        [mMoviePlayerLayer setPlayer:nil];
-        [mMoviePlayerLayer removeFromSuperlayer];
-        [mMoviePlayerLayer removeObserver:self forKeyPath:@"readyForDisplay" context:LayerStatusContext];
-        [mMoviePlayerLayer release]; mMoviePlayerLayer = nil;
-    }
-    
-    if (mTimeObserverToken)
-        [mMoviePlayer removeTimeObserver: mTimeObserverToken];
-    if (mEndMovieToken)
-        [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
-    mEndMovieToken = nil;
-    mTimeObserverToken = nil;
-    
-    AVPlayerItem* playerItem = [mMoviePlayer currentItem];
-    if (playerItem) {
-        [playerItem removeObserver:self forKeyPath:@"duration" context:ItemDurationContext];
-        [playerItem removeObserver:self forKeyPath:@"status" context:ItemStatusContext];
-    }
-    
-    [mMoviePlayer replaceCurrentItemWithPlayerItem: nil];
-    
-    [mMoviePlayer release]; mMoviePlayer = nil;
-    
-    [mMovieControls setHidden: YES];
-    [mStatus setHidden: NO];
-}
-
-- (void)setUpPlaybackOfAsset:(AVURLAsset *)asset withKeys:(NSArray *)keys
-{
-    [asset autorelease];
-    
-    // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
-    // We set up playback of the asset here.
-    AVPlayerItem* playerItem = nil;
-    
-    // First test whether the values of each of the keys we need have been successfully loaded.
-    for (NSString *key in keys) {
-        NSError *error = nil;
-        
-        if ([asset statusOfValueForKey:key error:&error] == AVKeyValueStatusFailed) {
-            // We can fail here even though the movie media is OK. Try a different
-            // method for loading the item and hope for the best.
-            playerItem = [AVPlayerItem playerItemWithURL: [asset URL]];
-            if ([playerItem status] == AVPlayerItemStatusFailed) {
-                [self stopLoadingAnimationAndHandleError: [playerItem error]];
-                return;
-            }
-            [playerItem addObserver:self forKeyPath:@"duration" options:0 context:ItemDurationContext];
-            break;
-        }
-    }
-    
-    if (!playerItem) {      // Only test if the keys all loaded the first time
-        if (![asset isPlayable] || [asset hasProtectedContent] ||
-            [[asset tracksWithMediaType:AVMediaTypeVideo] count] == 0)
-        {
-            [mDocument noteStatus: @"Cannot play movie."];
-            return;
-        }
-    }
-    
-    // We can play this asset.
-    // Create a new AVPlayerItem and make it our player's current item.
-    if (!playerItem) {
-        playerItem = [AVPlayerItem playerItemWithAsset:asset];
-        [playerItem addObserver:self forKeyPath:@"duration" options:0 context:ItemDurationContext];
-    }
-    
-    if (mEndMovieToken) {
-        [[NSNotificationCenter defaultCenter] removeObserver: mEndMovieToken];
-        mEndMovieToken = nil;
-    }
-    
-    AVPlayerItem* oldPlayerItem = [mMoviePlayer currentItem];
-    if (oldPlayerItem) {
-        [oldPlayerItem removeObserver:self forKeyPath:@"duration" context:ItemDurationContext];
-        [oldPlayerItem removeObserver:self forKeyPath:@"status" context:ItemStatusContext];
-    }
-    
-
-    
-    if (playerItem) {
-        [self setupTimeSlider: playerItem];
-        
-        [playerItem addObserver:self forKeyPath:@"status" options:0 context:ItemStatusContext];
-        
-        // Subscribe to the AVPlayerItem's DidPlayToEndTime notification.
-        mEndMovieToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
-                                                                           object:playerItem
-                                                                            queue:[NSOperationQueue mainQueue]
-                                                                       usingBlock:^(NSNotification *note) {
-                                                                            if (mLoop) {
-                                                                                [mMoviePlayer seekToTime: kCMTimeZero];
-                                                                            } else {
-                                                                                mAtEndofMovie = true;
-                                                                                [[self window] makeFirstResponder: mTimeSlider];
-                                                                                [self setMovieImagesPlay: NO];
-                                                                            }
-                                                                        }
-                          ];
-    }
-    [mMoviePlayer replaceCurrentItemWithPlayerItem:playerItem];
-    [mMoviePlayer setActionAtItemEnd: (mLoop ? AVPlayerActionAtItemEndNone : AVPlayerActionAtItemEndPause)];
-
-    mAtEndofMovie = false;
-}
-
-- (bool)setupTimeSlider:(AVPlayerItem*)playerItem
-{
-    CMTime lengthTime = [playerItem duration];
-    double length = CMTimeGetSeconds(lengthTime);
-    if (isfinite(length)) {
-        for (AVPlayerItemTrack* track in [playerItem tracks]) {
-            AVAssetTrack* asset = [track assetTrack];
-            mFrameRate = [asset nominalFrameRate];
-        }
-        mTimeSlider.altIncrementValue = 1.0;
-        mTimeSlider.maxValue = length * mFrameRate;
-        mTimeLabel.doubleValue = length;
-        mTimeSlider.doubleValue = 0.0;
-        [self setMovieImagesPlay: NO];
-        return true;
-    }
-    return false;
-}
-
-- (void)stopLoadingAnimationAndHandleError:(NSError *)error
-{
-    if (error) {
-        [mDocument noteStatus: [error localizedDescription]];
-        NSString* fail = [error localizedFailureReason];
-        if (fail)
-            [mDocument noteStatus: fail];
-    }
-    NSBeep();
+    [mMovieView removeFromSuperview];
+    [mMovieView release];
+    mMovieView = nil;
 }
 
 - (void)showSavePanelTitle:(NSString *)title

@@ -27,7 +27,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <AVFoundation/AVFoundation.h>
+#import <WebKit/WKWebView.h>
 #import "../src-scintilla/cocoa/ScintillaView.h"
 #import "../src-scintilla/cocoa/InfoBar.h"
 #include <memory>
@@ -72,8 +72,7 @@ long MakeColor(id v);
     NSTimer*    mUpdateTimer;
     int         mOutputProgressDelay;
     
-    AVPlayer*       mMoviePlayer;
-    AVPlayerLayer*  mMoviePlayerLayer;
+    WKWebView*      mMovieView;
     id              mTimeObserverToken;
     bool            mAtEndofMovie;
     id              mEndMovieToken;
@@ -120,13 +119,6 @@ long MakeColor(id v);
     IBOutlet NSTextField*           mRenderHeight;
     IBOutlet NSTextField*           mRenderX;
 
-    IBOutlet NSBox*                 mMovieControls;
-    IBOutlet NSButton*              mStartStopButton;
-    IBOutlet NSButton*              mRewindButton;
-    IBOutlet NSSlider*              mTimeSlider;
-    IBOutlet NSTextField*           mTimeLabel;
-    IBOutlet NSTextField*           mCurrentTime;
-    
     IBOutlet NSView*                mSaveImageAccessory;
     IBOutlet NSView*                mSaveTileAccessory;
     IBOutlet NSTextField*           mSaveTileWidth;
@@ -158,10 +150,6 @@ long MakeColor(id v);
 - (IBAction) showHiresRenderSheet:(id)sender;
 - (IBAction) showAnimationSheet:(id)sender;
 - (IBAction) showAnimationFrameSheet:(id)sender;
-
-- (IBAction) toggleMovieStartStop:(id)sender;
-- (IBAction) movieRewind:(id)sender;
-- (IBAction) movieTimeChange:(id)sender;
 
 - (void)noteStats:(NSValue*)v;
 - (void)redisplayImage:(NSValue*)sizeObj;

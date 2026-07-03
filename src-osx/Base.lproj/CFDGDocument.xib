@@ -19,7 +19,6 @@
                 <outlet property="mHiresSheet" destination="86" id="100"/>
                 <outlet property="mSheetLabel" destination="Pa7-Cu-daJ" id="nLu-Jg-rbV"/>
                 <outlet property="mStatusText" destination="450" id="455"/>
-                <outlet property="mTimeLabel" destination="RXc-Hd-mgh" id="yEI-V0-MbS"/>
                 <outlet property="window" destination="5" id="8"/>
             </connections>
         </customObject>
@@ -29,7 +28,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="44" y="91" width="1200" height="800"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="500" height="300"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="1200" height="800"/>
@@ -222,7 +221,6 @@
                                 <connections>
                                     <outlet property="mActionControl" destination="bIH-dW-BZL" id="CY1-bn-3N6"/>
                                     <outlet property="mActionSelect" destination="N40-Ev-FF7" id="QLg-kq-juE"/>
-                                    <outlet property="mCurrentTime" destination="RXc-Hd-mgh" id="3jx-9g-AiG"/>
                                     <outlet property="mDocument" destination="-2" id="42"/>
                                     <outlet property="mEditorBox" destination="XA2-UN-xFF" id="JqG-4U-ydm"/>
                                     <outlet property="mFindButtons" destination="hVl-9P-zsR" id="yao-i7-K1C"/>
@@ -231,7 +229,6 @@
                                     <outlet property="mFrameField" destination="K4z-to-cnJ" id="RdA-OU-hir"/>
                                     <outlet property="mFrameLabel" destination="3lN-Sg-Kwl" id="mZ9-We-c0W"/>
                                     <outlet property="mFrameStepper" destination="p8c-G8-kLd" id="dv2-g6-l61"/>
-                                    <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="NEk-HM-85g"/>
                                     <outlet property="mOutputProgress" destination="111" id="112"/>
                                     <outlet property="mProgress" destination="60" id="63"/>
                                     <outlet property="mRenderHeight" destination="Gd4-wd-MxT" id="hCs-Ga-fci"/>
@@ -239,17 +236,13 @@
                                     <outlet property="mRenderX" destination="bYG-Y8-qhE" id="O0R-sE-CMN"/>
                                     <outlet property="mReplaceButtons" destination="Ob9-iI-Nhp" id="mXx-o5-BjY"/>
                                     <outlet property="mReplaceText" destination="e7S-vb-lWZ" id="Bpd-mB-0Oe"/>
-                                    <outlet property="mRewindButton" destination="ZZH-fi-HFl" id="yCW-Hq-6uV"/>
                                     <outlet property="mRewindView" destination="cpk-DK-ad8" id="RQD-rd-aoK"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
                                     <outlet property="mSaveTileAccessory" destination="305" id="499"/>
                                     <outlet property="mSaveTileHeight" destination="507" id="511"/>
                                     <outlet property="mSaveTileWidth" destination="502" id="510"/>
-                                    <outlet property="mStartStopButton" destination="BOb-PW-Ohi" id="BNM-U6-AP0"/>
                                     <outlet property="mStatus" destination="61" id="65"/>
-                                    <outlet property="mTimeLabel" destination="bNs-Sr-c94" id="RMY-JY-vmq"/>
-                                    <outlet property="mTimeSlider" destination="255-aH-Z3p" id="1VZ-hA-ifd"/>
                                     <outlet property="mTopBar" destination="126" id="136"/>
                                     <outlet property="mVariationField" destination="68" id="71"/>
                                     <outlet property="mVariationLabel" destination="67" id="70"/>
@@ -428,7 +421,7 @@ The variation code is a one to six letter sequence.</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="61">
-                                <rect key="frame" x="812" y="12" width="280" height="14"/>
+                                <rect key="frame" x="811" y="12" width="281" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
                                     <font key="font" metaFont="message" size="11"/>
@@ -436,83 +429,9 @@ The variation code is a one to six letter sequence.</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <box hidden="YES" fixedFrame="YES" borderType="none" title="MovieBox" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="NKb-OZ-zg6">
-                                <rect key="frame" x="802" y="0.0" width="232" height="42"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                <view key="contentView" id="Hbp-dZ-A4c">
-                                    <rect key="frame" x="0.0" y="0.0" width="232" height="42"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button toolTip="Play/Pause" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOb-PW-Ohi">
-                                            <rect key="frame" x="4" y="5" width="27" height="27"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="bevel" title="▶️" alternateTitle="⏸️" bezelStyle="circular" alignment="center" imageScaling="proportionallyDown" inset="2" id="3qn-hH-uZw">
-                                                <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="controlContent"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="toggleMovieStartStop:" target="19" id="wMY-ql-oyl"/>
-                                            </connections>
-                                        </button>
-                                        <button toolTip="Loop Video" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZZH-fi-HFl">
-                                            <rect key="frame" x="28" y="5" width="27" height="27"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="bevel" title="➡️" alternateTitle="🔁" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="pFT-b1-ADs">
-                                                <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="controlContent"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="movieRewind:" target="19" id="zlh-sz-VN8"/>
-                                            </connections>
-                                        </button>
-                                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RXc-Hd-mgh">
-                                            <rect key="frame" x="128" y="6" width="38" height="14"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="center" title="0" bezelStyle="round" id="wrh-9d-w2T">
-                                                <font key="font" metaFont="message" size="11"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                            <connections>
-                                                <outlet property="formatter" destination="Ga5-0a-PI5" id="mcm-CK-Q3H"/>
-                                            </connections>
-                                        </textField>
-                                        <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="255-aH-Z3p">
-                                            <rect key="frame" x="62" y="20" width="170" height="15"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="UlB-il-bj9"/>
-                                            <connections>
-                                                <action selector="movieTimeChange:" target="19" id="jjl-Ka-jMC"/>
-                                            </connections>
-                                        </slider>
-                                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q7E-1c-gJL">
-                                            <rect key="frame" x="60" y="6" width="38" height="14"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0" id="9ep-fS-FTM">
-                                                <font key="font" metaFont="message" size="11"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bNs-Sr-c94">
-                                            <rect key="frame" x="196" y="6" width="38" height="14"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="10" id="x7Y-SU-clC">
-                                                <font key="font" metaFont="message" size="11"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                            <connections>
-                                                <outlet property="formatter" destination="Ga5-0a-PI5" id="P4F-b8-kAn"/>
-                                            </connections>
-                                        </textField>
-                                    </subviews>
-                                </view>
-                            </box>
                         </subviews>
                         <connections>
                             <outlet property="mCenterControls" destination="81" id="128"/>
-                            <outlet property="mMovieControls" destination="NKb-OZ-zg6" id="4iX-Dd-vYY"/>
                             <outlet property="mProgressOne" destination="60" id="130"/>
                             <outlet property="mProgressTwo" destination="111" id="131"/>
                             <outlet property="mRightStatus" destination="61" id="129"/>
@@ -530,7 +449,7 @@ The variation code is a one to six letter sequence.</string>
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="175" y="404" width="427" height="371"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="85">
                 <rect key="frame" x="0.0" y="0.0" width="427" height="371"/>
@@ -738,7 +657,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="526" y="169" width="305" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="138">
                 <rect key="frame" x="0.0" y="0.0" width="305" height="107"/>
@@ -784,7 +703,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="636" y="421" width="746" height="130"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="191">
                 <rect key="frame" x="0.0" y="0.0" width="746" height="130"/>
@@ -937,7 +856,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="767" y="252" width="305" height="56"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="213" height="56"/>
             <view key="contentView" id="305">
                 <rect key="frame" x="0.0" y="0.0" width="305" height="56"/>
@@ -998,7 +917,7 @@ To speed up the process of larger renders, no updates will occur in the window w
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="175" y="404" width="427" height="439"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1068"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="ao4-GS-fc9">
                 <rect key="frame" x="0.0" y="0.0" width="427" height="439"/>
