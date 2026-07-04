@@ -2,12 +2,14 @@
 #include <afxdlgs.h>
 #include <string>
 
+class RenderParameters;
+
 class MovieFileSave : public CFileDialog
 {
 	DECLARE_DYNAMIC(MovieFileSave)
 
 public:
-	MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop);
+	MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop, RenderParameters& p);
 	virtual ~MovieFileSave();
 	PROCESS_INFORMATION processInfo;
 

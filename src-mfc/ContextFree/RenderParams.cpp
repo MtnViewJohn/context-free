@@ -79,7 +79,7 @@ void RenderParameters::Load()
     if (std::find(Animate::Rates.begin(), Animate::Rates.end(), MovieFrameRate) == Animate::Rates.end())
         MovieFrameRate = 15;
     MovieFrame = std::clamp(MovieFrame, 1, AnimateFrameCount);
-    Codec = (Codecs)std::clamp((int)Codec, 0, 1);
+    Codec = (Codecs)std::clamp((int)Codec, 0, 2);
 }
 
 void RenderParameters::Save()
