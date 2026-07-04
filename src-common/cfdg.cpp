@@ -168,10 +168,11 @@ const std::array<const AbstractSystem::FileChar*, AbstractSystem::NumberofTempTy
     FileStr("cfdg-temp-fin-"),
     FileStr("cfdg-temp-unfin-"),
     FileStr("cfdg-temp-mrg-"),
-    FileStr("cfdg-temp-movie-")
+    FileStr("cfdg-temp-movie-"),
+    FileStr("cfdg-temp-GIF-")
 };
 const std::array<const AbstractSystem::FileChar*, AbstractSystem::NumberofTempTypes> AbstractSystem::TempSuffixes = {
-    FileStr(""), FileStr(""), FileStr(""), FileStr(".mov")
+    FileStr(""), FileStr(""), FileStr(""), FileStr(".mov"), FileStr(".gif")
 };
 const AbstractSystem::FileChar* AbstractSystem::TempPrefixAll = FileStr("cfdg-temp-");
 

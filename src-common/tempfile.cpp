@@ -64,7 +64,7 @@ const std::string&
 TempFile::type() const
 {
     static std::array<std::string, AbstractSystem::NumberofTempTypes> typeStrings = {
-        "shapes", "expansion", "merge", "movie"
+        "shapes", "expansion", "merge", "movie", "GIF"
     };
     
     assert(mType >= 0 && mType < AbstractSystem::NumberofTempTypes);
