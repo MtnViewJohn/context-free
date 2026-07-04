@@ -104,14 +104,16 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     av_log_set_callback(log_callback_debug);
 #endif
 
-    if (int alloc_outctx_stat = avformat_alloc_output_context2(&mOutputCtx, nullptr, "mov", name);
+    static const char* muxerNames[3] = { "mov", "mov", "gif" };
+    if (int alloc_outctx_stat = avformat_alloc_output_context2(&mOutputCtx, nullptr, muxerNames[_codec], name);
         alloc_outctx_stat < 0)
     {
         mError = "out of memory";
         return;
     }
     
-    const AVCodec *codec = avcodec_find_encoder_by_name(_codec ? "prores_ks" : "libx264");
+    static const char* codecNames[3] = { "libx264", "prores_ks", "gif" };
+    const AVCodec *codec = avcodec_find_encoder_by_name(codecNames[_codec]);
     if (!codec) {
         mError = "codec not found";
         return;
@@ -149,16 +151,19 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         mEncCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     if (mEncCtx->codec_id == AV_CODEC_ID_H264)
         mEncCtx->mb_decision = 2;
-    if (_codec)
+    if (_codec == ProRes)
         mEncCtx->profile = 2;  // ProRes422 main profile is 2
     
+    static const AVPixelFormat dstFormats[3] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_RGB8 };
     AVPixelFormat srcFormat;
-    AVPixelFormat dstFormat = _codec ? AV_PIX_FMT_YUV422P10LE : AV_PIX_FMT_YUV420P;
+    AVPixelFormat dstFormat = dstFormats[_codec];
 
     switch (fmt) {
         case aggCanvas::Gray8_Blend:
             srcFormat = AV_PIX_FMT_GRAY8;
             mLineSize = mWidth;
+            if (_codec == GIF)
+                dstFormat = AV_PIX_FMT_GRAY8;
             break;
         case aggCanvas::FF24_Blend:
             srcFormat = AV_PIX_FMT_RGB24;
@@ -168,7 +173,7 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         case aggCanvas::FF_Custom_Blend:
             srcFormat = AV_PIX_FMT_ARGB;
             mLineSize = mWidth * 4;
-            if (_codec) {   // switch from ProRes422 to ProRes4444
+            if (_codec == ProRes) {   // switch from ProRes422 to ProRes4444
                 dstFormat = AV_PIX_FMT_YUVA444P10LE;
                 mEncCtx->profile = 4;
             }
@@ -348,7 +353,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
             mFileName = tempname;
 #endif
         if (!mFileName.empty())
-            mFileName += ".mov";
+            mFileName += codec == GIF ? ".gif" : ".mov";
         name = mFileName.c_str();
     } else {
         mFileName = name;
