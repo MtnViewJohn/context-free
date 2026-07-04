@@ -78,6 +78,7 @@ long MakeColor(id v);
     id              mEndMovieToken;
     BOOL            mLoop;
     double          mFrameRate;
+    int             mLoopCount;
     
     bool mRendering;
     bool mRestartRenderer;
@@ -171,7 +172,7 @@ long MakeColor(id v);
 - (IBAction) finishRender:(id)sender;
 - (IBAction) stopRender:(id)sender;
 - (void) startHiresRender;
-- (void) startAnimation:(float) frame;
+- (void) startAnimation:(float) frame loops:(int)loops;
 @end
 
 @interface GView (variationControl)

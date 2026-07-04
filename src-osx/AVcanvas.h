@@ -28,7 +28,7 @@
 
 @class NSString;
 @class NSError;
-@class AVimpl;
+@class Impl;
 @class BitmapImageHolder;
 
 #include "aggCanvas.h"
@@ -36,16 +36,17 @@
 class AVcanvas : public aggCanvas {
 public:
     enum VideoFormat {
-        H264, ProRes422, ProRes4444
+        H264, ProRes422, ProRes4444, GIF
     };
-    AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt, int fps, VideoFormat format);
+    AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt,
+             int fps, VideoFormat format, int frames, int loops);
     ~AVcanvas() override;
     AVcanvas& operator=(const AVcanvas& c) = delete;
     
     void end() override;
     
 private:
-    AVimpl* impl;
+    Impl* impl;
 };
 
 

@@ -858,7 +858,7 @@ height: %dpx;\
                 [self updateVariation: YES];
                 frame = mLastAnimateFrame;
             case AnimateAction: {
-                [self startAnimation: frame];
+                [self startAnimation: frame loops: mLoopCount];
                 break;
             }
             case StopAction:
@@ -882,7 +882,7 @@ height: %dpx;\
             return;
         }
         [self showSavePanelTitle: NSLocalizedString(@"Save as Animation", @"")
-                        fileType: @[@"mov"]
+                        fileType: @[mMovieFile->type() == "GIF" ? @"gif" : @"mov"]
                    accessoryView: nil
                   didEndSelector: @selector(saveMovietoFile:)];
     } else if (mTiled) {
@@ -1635,7 +1635,7 @@ long MakeColor(id v)
     [self renderBegin: &parameters];
 }
 
-- (void) startAnimation: (float) frame
+- (void) startAnimation: (float) frame loops: (int) loops
 {
     RenderParameters parameters;
     parameters.render = false;
@@ -1650,6 +1650,7 @@ long MakeColor(id v)
     double minSize = [defaults doubleForKey: PrefKeyMinumumSize];
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
+    mLoopCount = loops;
     auto fmt = AVcanvas::H264;
     switch ([defaults integerForKey: PrefKeyMovieFormat]) {
         case 2:
@@ -1657,6 +1658,9 @@ long MakeColor(id v)
             break;
         case 3:
             fmt = AVcanvas::ProRes4444;
+            break;
+        case 4:
+            fmt = AVcanvas::GIF;
             break;
         default:
             break;
@@ -1719,13 +1723,15 @@ long MakeColor(id v)
         }
         
         [self tearDownPlayer];
-        mMovieFile = std::make_unique<TempFile>([mDocument system], AbstractSystem::MovieTemp, 0);
+        mMovieFile = std::make_unique<TempFile>([mDocument system],
+            fmt == AVcanvas::GIF ? AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, 0);
         auto stream = mMovieFile->forWrite();
         stream.reset();  // close the temp file, we need its name
         NSString* path = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         
         mCanvas = std::make_unique<AVcanvas>(path, [bits autorelease], pixfmt,
-                                             static_cast<int>(movieFrameRate), fmt);
+                                             static_cast<int>(movieFrameRate), fmt,
+                                             parameters.animateFrameCount, loops);
         
         if (!mCanvas->mError) {
             [self renderBegin: &parameters];

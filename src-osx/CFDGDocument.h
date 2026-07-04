@@ -48,6 +48,10 @@
     IBOutlet NSPopUpButton* mAnimationCodec;
     IBOutlet NSTextField*   mCodecLabel;
     
+    IBOutlet NSTextField*   mLoopLabel;
+    IBOutlet NSTextField*   mLoopValue;
+    IBOutlet NSStepper*     mLoopStepper;
+    
     IBOutlet GView*         mGView;
     IBOutlet NSPanel*       mHiresSheet;
     IBOutlet NSPanel*       mAnimateSheet;
@@ -70,6 +74,8 @@
 - (IBAction) uploadToGallery:(id)sender;
 - (IBAction) insertUnicode:(id)sender;
 - (IBAction)shiftLeftRight:(id)sender;
+
+- (IBAction) setCodec:(id)sender;
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem;
 

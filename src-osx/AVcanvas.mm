@@ -26,10 +26,46 @@
 #include "AVcanvas.h"
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <ImageIO/ImageIO.h>
+#import <ImageIO/CGImageProperties.h>
 #import "BitmapImageHolder.h"
 #include <cstddef>
 
-@interface AVimpl : NSObject
+@interface Impl : NSObject
+{
+}
+
+
+- (instancetype) initWithName: (NSString*)name
+                         data: (BitmapImageHolder*)bits
+                    frameRate: (CMTimeScale)fps
+                   frameCount: (int)count
+                    loopCount: (int)loops
+                       format: (AVcanvas::VideoFormat)fmt;
+
+- (void) addFrame;
+- (void) finishUp;
+- (NSError*) error;
+@end
+
+@implementation Impl
+- (instancetype) initWithName: (NSString*)name
+                         data: (BitmapImageHolder*)bits
+                    frameRate: (CMTimeScale)fps
+                   frameCount: (int)count
+                    loopCount: (int)loops
+                       format: (AVcanvas::VideoFormat)fmt
+{
+    self = [super init];
+    return self;
+}
+
+- (void) addFrame {}
+- (void) finishUp {}
+- (NSError*) error {return nil;}
+@end
+
+@interface AVimpl : Impl
 {
     BitmapImageHolder                    *_imageData;
     NSError                              *_error;
@@ -46,6 +82,8 @@
 - (instancetype) initWithName: (NSString*)name
                          data: (BitmapImageHolder*)bits
                     frameRate: (CMTimeScale)fps
+                   frameCount: (int)count
+                    loopCount: (int)loops
                        format: (AVcanvas::VideoFormat)fmt;
 
 - (void) addFrame;
@@ -70,6 +108,8 @@
 - (instancetype) initWithName: (NSString*)name
                          data: (BitmapImageHolder*)bits
                     frameRate: (CMTimeScale)fps
+                   frameCount: (int)count
+                    loopCount: (int)loops
                        format: (AVcanvas::VideoFormat)fmt
 {
     self = [super init];
@@ -245,11 +285,130 @@
 
 @end
 
-AVcanvas::AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt, int fps, VideoFormat format)
-: aggCanvas(pixfmt), impl([[AVimpl alloc] initWithName: name data: bits
-                                             frameRate: static_cast<CMTimeScale>(fps)
-                                                format: format])
+@interface GIFimpl : Impl
 {
+    BitmapImageHolder                   *_imageData;
+    NSError                             *_error;
+    CGImageDestinationRef               _animatedGifFile;
+    NSDictionary                        *_imageProperties;
+}
+
+
+- (instancetype) initWithName: (NSString*)name
+                         data: (BitmapImageHolder*)bits
+                    frameRate: (CMTimeScale)fps
+                   frameCount: (int)count
+                    loopCount: (int)loops
+                       format: (AVcanvas::VideoFormat)fmt;
+
+- (void) addFrame;
+- (void) finishUp;
+- (NSError*) error;
+@end
+
+@implementation GIFimpl
+
+- (instancetype) initWithName: (NSString*)name
+                                    data: (BitmapImageHolder*)bits
+                               frameRate: (CMTimeScale)fps
+                              frameCount: (int)count
+                               loopCount: (int)loops
+                                  format: (AVcanvas::VideoFormat)fmt
+{
+    self = [super init];
+    if (!self) return self;
+    
+    _imageData = [bits retain];
+    
+    auto file = CFURLCreateWithFileSystemPath(NULL, (__bridge CFStringRef)name, kCFURLPOSIXPathStyle, NO);
+    _animatedGifFile = CGImageDestinationCreateWithURL(file, kUTTypeGIF, count, NULL);
+    if (!_animatedGifFile) {
+        _error = [[NSError alloc] initWithDomain: NSCocoaErrorDomain
+                                            code: NSFileWriteUnknownError
+                                        userInfo: nil];
+        return self;
+    }
+    
+    NSDictionary *fileProperties = nil;
+    if (loops == 1) {
+        fileProperties = @{
+            (__bridge id)kCGImagePropertyGIFDictionary: @{}
+        };
+    } else {
+        fileProperties = @{
+            (__bridge id)kCGImagePropertyGIFDictionary: @{
+                (__bridge id)kCGImagePropertyGIFLoopCount: [NSNumber numberWithInt: loops],
+            }
+        };
+
+    }
+    
+    _imageProperties = @{
+        (__bridge id)kCGImagePropertyGIFDictionary: @{
+            (__bridge id)kCGImagePropertyGIFDelayTime: [NSNumber numberWithFloat: 100.0f / fps],
+        }
+    };
+    [_imageProperties retain];
+    
+    CGImageDestinationSetProperties(_animatedGifFile, (__bridge CFDictionaryRef)fileProperties);
+    return self;
+}
+
+- (void) addFrame
+{
+    if (_error)
+        return;
+    
+    NSBitmapImageRep* bits = [_imageData getImageRep];
+    CGImageRef image = [bits CGImage];
+    if (bits == nil || image == nil) {
+        _error = [[NSError alloc] initWithDomain: NSCocoaErrorDomain code:kCVReturnError userInfo:nil];
+        return;
+    }
+    
+    CGImageDestinationAddImage(_animatedGifFile, image, (__bridge CFDictionaryRef)_imageProperties);
+}
+
+- (void) finishUp
+{
+    if (!CGImageDestinationFinalize(_animatedGifFile)) {
+        _error = [[NSError alloc] initWithDomain: NSCocoaErrorDomain
+                                            code: NSFileWriteUnknownError
+                                        userInfo: nil];
+    }
+}
+
+- (NSError*) error {return _error;}
+
+- (void)dealloc
+{
+    [_imageData release];           _imageData = nil;
+    [_error release];               _error = nil;
+    [_imageProperties release];     _imageProperties = nil;
+    
+    [super dealloc];
+}
+
+@end
+
+AVcanvas::AVcanvas(NSString* name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt,
+                   int fps, VideoFormat format, int frames, int loops)
+: aggCanvas(pixfmt), impl(nil)
+{
+    if (format == GIF) {
+        impl = [[GIFimpl alloc] initWithName: name data: bits
+                                   frameRate: static_cast<CMTimeScale>(fps)
+                                  frameCount: frames
+                                   loopCount: loops
+                                      format: format];
+    } else {
+        impl = [[AVimpl alloc] initWithName: name data: bits
+                                  frameRate: static_cast<CMTimeScale>(fps)
+                                 frameCount: frames
+                                  loopCount: loops
+                                     format: format];
+    }
+    
     if (bits)
         attach([bits bitmapData],
                static_cast<unsigned>([bits pixelsWide]),

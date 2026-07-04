@@ -671,6 +671,10 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
 
 - (IBAction) showAnimateSheet:(id)sender
 {
+    BOOL gif = [[NSUserDefaults standardUserDefaults] integerForKey: PrefKeyMovieFormat] == 4;
+    [mLoopLabel setEnabled: gif];
+    [mLoopValue setEnabled: gif];
+    [mLoopStepper setEnabled: gif];
     [mSheetLabel setStringValue: @"Start Animation"];
     [mFrameLabel setHidden: YES];
     [mAnimationFrame setHidden: YES];
@@ -687,7 +691,18 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     [mCodecLabel setHidden: YES];
     [mAnimationCodec setHidden: YES];
     [mAnimationFrame setIntValue: static_cast<int>([mGView animationFrame])];
+    [mLoopLabel setEnabled: NO];
+    [mLoopValue setEnabled: NO];
+    [mLoopStepper setEnabled: NO];
     [[(NSWindowController*)[[self windowControllers] lastObject] window] beginSheet: mAnimateSheet completionHandler: nil];
+}
+
+- (IBAction) setCodec:(id)sender
+{
+    BOOL gif = [mAnimationCodec selectedTag] == 4;
+    [mLoopLabel setEnabled: gif];
+    [mLoopValue setEnabled: gif];
+    [mLoopStepper setEnabled: gif];
 }
 
 - (IBAction) startAnimation:(id)sender
@@ -734,7 +749,7 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     }
 
     
-    [mGView startAnimation: movieFrame];
+    [mGView startAnimation: movieFrame loops: [mLoopStepper intValue]];
     [self cancelAnimation:sender];
 }
 
