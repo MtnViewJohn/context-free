@@ -21,7 +21,7 @@
 ;
 
 !define VER_MAJOR 3
-!define VER_MINOR 4
+!define VER_MINOR 5
 
 ;SetCompressor bzip2
 RequestExecutionLevel user
