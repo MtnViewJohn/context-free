@@ -116,26 +116,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-libx264;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

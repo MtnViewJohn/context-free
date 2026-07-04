@@ -106,7 +106,7 @@ void termination_handler(int)
 #endif
 
 struct options {
-    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 4 };
+    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 5, GIFfile = 4 };
     int   width;
     int   height;
     int   widthMult;
@@ -230,6 +230,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag makeJSON(parser, "JSON", "Generate JSON output of parsed cfdg file",
                        {'J', "json"});
     args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
+    args::Flag makeGIF(parser, "GIF", "Make GIF output", { 'G', "gif" });
     args::Flag makeProRes(parser, "ProRes", "Use ProRes codec for QuickTime output", { "prores" });
 #ifdef _WIN32
     args::Flag wallpaper(parser, "wallpaper", "Generate desktop wallpaper output",
@@ -309,6 +310,11 @@ processCommandLine(int argc, char* argv[], options& opt)
         if (makeSVG) bailout("Animation cannot output to SVG files.");
         if (crop) bailout("Animation cannot output cropped files.");
         if (makeQT) opt.format = options::MOVfile;
+        if (makeGIF) {
+            opt.format = options::GIFfile;
+            opt.animationCodec = ffCanvas::GIF;
+        }
+        if (makeQT && makeGIF) bailout("Cannot encode QuickTime and GIF at the same time.");
         if (makeProRes) opt.animationCodec = ffCanvas::ProRes;
         opt.animationZoom = zoom;
         int fps = 15, time = 0;
@@ -325,10 +331,10 @@ processCommandLine(int argc, char* argv[], options& opt)
             default:
                 bailout(nullptr);
         }
-        if (display && !makeQT)
-            bailout("Only QuickTime animations can be displayed.");
-        if (makeQT && !ffCanvas::Available())
-            bailout("FFmpeg DLLs not found, QuickTime output is unavailable.");
+        if (display && !(makeQT || makeGIF))
+            bailout("Only QuickTime/GIF animations can be displayed.");
+        if ((makeQT || makeGIF) && !ffCanvas::Available())
+            bailout("FFmpeg DLLs not found, QuickTime/GIF output is unavailable.");
         if (makeProRes && !makeQT)
             bailout("ProRes codec only available with QuickTime output.");
         if (frame) {
@@ -343,6 +349,8 @@ processCommandLine(int argc, char* argv[], options& opt)
     } else {
         if (makeQT)
             bailout("QuickTime output is only available when animating.");
+        if (makeGIF)
+            bailout("GIF output is only available when animating.");
         if (zoom)
             bailout("Zoomed output is only available when animating.");
         if (frame)
@@ -376,7 +384,9 @@ processCommandLine(int argc, char* argv[], options& opt)
         for (char c: args::get(outputFile)) {
             opt.output.append(c == '%' ? 2 : 1, c);
         }
-        if (opt.animationFrames && opt.animateFrame == 0 && opt.format != options::MOVfile) {
+        if (opt.animationFrames && opt.animateFrame == 0 && 
+            opt.format != options::MOVfile && opt.format != options::GIFfile)
+        {
             std::size_t ext = opt.output.find_last_of('.');
             std::size_t dir = opt.output.find_last_of(APP_DIRCHAR());
             if (ext != string::npos && (dir == string::npos || ext > dir)) {
@@ -506,7 +516,7 @@ int main (int argc, char* argv[]) {
     aggCanvas::PixelFormat pixfmt = aggCanvas::SuggestPixelFormat(myDesign.get());
     bool use16bit = (pixfmt & aggCanvas::Has_16bit_Color) != 0;
     bool usecustom = (pixfmt & aggCanvas::Has_Custom_Blend) != 0;
-    const char* fmtnames[4] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image" };
+    const char* fmtnames[5] = { "PNG image", "SVG vector output", "Quicktime movie", "Wallpaper BMP image", "Animated GIF" };
     
     *myCout << "Generating " << (use16bit ? "16bit " : "8bit ") 
         << (useRGBA ? "color" : "gray-scale")
@@ -570,6 +580,7 @@ int main (int argc, char* argv[]) {
                 cerr << "Failed to open SVG file." << endl;
             break;
         }
+        case options::GIFfile:
         case options::MOVfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
