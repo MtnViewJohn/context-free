@@ -34,6 +34,7 @@ public:
 	CEdit m_ctrlLength;
 	CComboBox m_ctrlFrameRate;
 	CComboBox m_ctrlCodec;
+	afx_msg void OnCodecChange();
 	CStatic m_ctrlFrameLabel;
 	CEdit m_ctrlFrame;
 	RenderParameters& params;
@@ -47,4 +48,8 @@ public:
 	CSpinButtonCtrl m_ctrlFrameSpin;
 	afx_msg void OnChangeLength();
 	afx_msg void OnChangeFramerate();
+	CStatic m_ctrlLoopLabel;
+	CEdit m_ctrlLoopValue;
+	CSpinButtonCtrl m_ctrlLoopSpin;
+	afx_msg void OnChangeLoop(NMHDR* pNMHDR, LRESULT* pResult);
 };

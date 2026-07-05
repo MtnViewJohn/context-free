@@ -46,6 +46,9 @@ void Animate::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FRAME, m_ctrlFrame);
 	DDX_Control(pDX, IDC_CODEC_LABEL, m_ctrlCodecLabel);
 	DDX_Control(pDX, IDC_FRAME_SPIN, m_ctrlFrameSpin);
+	DDX_Control(pDX, IDC_LOOP_LABEL, m_ctrlLoopLabel);
+	DDX_Control(pDX, IDC_LOOPVAL, m_ctrlLoopValue);
+	DDX_Control(pDX, IDC_LOOP_SPIN, m_ctrlLoopSpin);
 }
 
 
@@ -53,6 +56,8 @@ BEGIN_MESSAGE_MAP(Animate, CDialog)
 	ON_EN_CHANGE(IDC_MINSIZE, &Animate::OnChangeMinsize)
 	ON_EN_CHANGE(IDC_LENGTH, &Animate::OnChangeLength)
 	ON_CBN_SELCHANGE(IDC_FRAMERATE, &Animate::OnChangeFramerate)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_LOOP_SPIN, &Animate::OnChangeLoop)
+	ON_CBN_SELCHANGE(IDC_CODEC, &Animate::OnCodecChange)
 END_MESSAGE_MAP()
 
 
@@ -93,12 +98,21 @@ BOOL Animate::OnInitDialog()
 	m_ctrlCodec.SetCurSel((int)(params.Codec));
 	m_ctrlCodecLabel.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
 	m_ctrlCodec.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
+	if (!m_bFrame)
+		OnCodecChange();
 
 	m_ctrlFrameSpin.SetRange32(1, m_iLength * m_iFrameRate);
 	m_ctrlFrameSpin.SetPos32(params.MovieFrame);
 	m_ctrlFrameLabel.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
 	m_ctrlFrame.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
 	m_ctrlFrameSpin.ShowWindow(m_bFrame ? SW_SHOWNA : SW_HIDE);
+
+	m_ctrlLoopLabel.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
+	m_ctrlLoopValue.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
+	m_ctrlLoopSpin.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
+	m_ctrlLoopSpin.SetRange32(0, 65535);
+	m_ctrlLoopSpin.SetPos32(RenderParameters::MovieLoops);
+	OnChangeLoop(NULL, NULL);			// init value box
 
 	return TRUE;
 }
@@ -128,6 +142,7 @@ void Animate::OnOK()
 		params.Codec = (RenderParameters::Codecs)m_ctrlCodec.GetCurSel();
 
 	params.MovieFrame = m_ctrlFrameSpin.GetPos32();
+	params.MovieLoops = m_ctrlLoopSpin.GetPos32();
 
 	params.Save();
 
@@ -181,4 +196,39 @@ void Animate::OnChangeFramerate()
 	m_iFrameRate = *(Rates.begin() + m_ctrlFrameRate.GetCurSel());
 	m_ctrlFrameSpin.SetRange32(1, m_iLength * m_iFrameRate);
 	m_ctrlFrameSpin.SetPos32(std::clamp(m_ctrlFrameSpin.GetPos32(), 1, m_iLength * m_iFrameRate));
+}
+
+void Animate::OnChangeLoop(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	int newLoop = m_ctrlLoopSpin.GetPos32();
+
+	if (pNMHDR) {
+		LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+		newLoop += pNMUpDown->iDelta;
+		if (newLoop < 0 || newLoop > 65535) {
+			*pResult = 1;
+			return;
+		}
+	}
+
+	std::wstring value;
+	switch (newLoop) {
+	case 0:
+		value = L"endless";
+		break;
+	default:
+		value = std::to_wstring(newLoop);
+		break;
+	}
+	m_ctrlLoopValue.SetWindowTextW(value.c_str());
+	if (pResult)
+		*pResult = 0;
+}
+
+void Animate::OnCodecChange()
+{
+	bool gif = (RenderParameters::Codecs)m_ctrlCodec.GetCurSel() == RenderParameters::Codecs::GIF;
+	m_ctrlLoopLabel.EnableWindow(gif);
+	m_ctrlLoopValue.EnableWindow(gif);
+	m_ctrlLoopSpin.EnableWindow(gif);
 }

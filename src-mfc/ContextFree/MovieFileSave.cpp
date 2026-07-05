@@ -26,12 +26,14 @@ MovieFileSave::MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop, Render
 		p.Codec == RenderParameters::Codecs::GIF ?
 		_T("GIF files (*.gif)|*.gif|All files (*.*)|*.*||") :
 		_T("MOV files (*.mov)|*.mov|All files (*.*)|*.*||")),
-	  m_sTempName(temp),
-	  processInfo{},
-	  m_bLoop(loop)
+		processInfo{},
+		m_sTempName(temp),
+		m_bLoop(loop),
+		m_sParams(p)
 {
 	AddPushButton(IDC_PREVIEW, _T("Preview"));
-	AddCheckButton(IDC_PREVIEWLOOP, _T("Loop preview"), loop);
+	if (p.Codec != RenderParameters::Codecs::GIF)
+		AddCheckButton(IDC_PREVIEWLOOP, _T("Loop preview"), loop);
 }
 
 MovieFileSave::~MovieFileSave()
@@ -44,7 +46,8 @@ void MovieFileSave::OnButtonClicked(DWORD dwIDCtl)
 {
 	if (dwIDCtl == IDC_PREVIEW) {
 		SetControlState(IDC_PREVIEW, CDCONTROLSTATEF::CDCS_INACTIVE);
-		SetControlState(IDC_PREVIEWLOOP, CDCONTROLSTATEF::CDCS_INACTIVE);
+		if (m_sParams.Codec != RenderParameters::Codecs::GIF)
+			SetControlState(IDC_PREVIEWLOOP, CDCONTROLSTATEF::CDCS_INACTIVE);
 
 		TCHAR szFileName[MAX_PATH];
 		::GetModuleFileNameW(NULL, szFileName, MAX_PATH);
@@ -53,8 +56,12 @@ void MovieFileSave::OnButtonClicked(DWORD dwIDCtl)
 		app.resize(it + 1);
 		app.append(L"ffplay.exe");
 
-		const wchar_t* loop = m_bLoop ? L"-loop 0" : L"";
-		std::wstring args = std::format(L"\"{}\" {} \"{}\"", app, loop, m_sTempName);
+		std::wstring loopStr;
+		if (m_sParams.Codec == RenderParameters::Codecs::GIF)
+			loopStr = std::format(L"-loop {}", m_sParams.MovieLoops);
+		else
+			loopStr = m_bLoop ? L"-loop 0" : L"";
+		std::wstring args = std::format(L"\"{}\" {} \"{}\"", app, loopStr, m_sTempName);
 		STARTUPINFOW startupInfo = { sizeof(STARTUPINFO) };
 		if (!::CreateProcessW(app.c_str(), args.data(), NULL, NULL, FALSE, 
 			CREATE_NO_WINDOW, NULL, NULL, &startupInfo, &processInfo))

@@ -737,7 +737,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	{
 		m_AnimationCanvas = std::make_unique<ffCanvas>("", WinCanvas::SuggestPixelFormat(m_Engine.get()),
 			renderParams.AnimateWidth, renderParams.AnimateHeight,
-			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true);
+			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true,
+			renderParams.MovieLoops);
 
 		if (m_AnimationCanvas->mError) {
 			::MessageBoxA(GetSafeHwnd(), m_AnimationCanvas->mErrorMsg, "Animation Error", MB_ICONEXCLAMATION);

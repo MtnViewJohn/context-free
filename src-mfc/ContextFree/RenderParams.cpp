@@ -37,6 +37,7 @@ int      RenderParameters::AnimateHeight = 480;
 int      RenderParameters::MovieLength = 10;
 int      RenderParameters::MovieFrameRate = 15;
 int      RenderParameters::MovieFrame = 1;
+int      RenderParameters::MovieLoops = 0;
 RenderParameters::Codecs   RenderParameters::Codec = RenderParameters::Codecs::H264;
 
 RenderParameters::RenderParameters()

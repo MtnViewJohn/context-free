@@ -18,6 +18,7 @@ protected:
 	virtual void OnCheckButtonToggled(DWORD dwIDCtl, BOOL bChecked);
 	bool m_bLoop = false;
 	std::wstring& m_sTempName;
+	RenderParameters& m_sParams;
 	DECLARE_MESSAGE_MAP()
 public:
 };

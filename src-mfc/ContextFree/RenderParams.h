@@ -31,6 +31,7 @@ public:
     static int      MovieLength;
     static int      MovieFrameRate;
     static int      MovieFrame;
+    static int      MovieLoops;
     static Codecs   Codec;
 };
 

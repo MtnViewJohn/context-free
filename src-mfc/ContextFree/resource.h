@@ -181,6 +181,10 @@
 #define IDC_MULTSTATIC3                 1092
 #define IDC_BUTTON2                     1093
 #define IDC_SPIN1                       1094
+#define IDC_LOOP_SPIN                   1094
+#define IDC_EDIT2                       1095
+#define IDC_LOOPVAL                     1095
+#define IDC_LOOP_LABEL                  1096
 #define ID_RENDER_RENDER                32771
 #define ID_RENDER_RENDERTOSIZE          32772
 #define ID_RENDER_REPEATLASTRENDER      32773
@@ -308,7 +312,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        344
 #define _APS_NEXT_COMMAND_VALUE         32904
-#define _APS_NEXT_CONTROL_VALUE         1095
+#define _APS_NEXT_CONTROL_VALUE         1097
 #define _APS_NEXT_SYMED_VALUE           339
 #endif
 #endif
