@@ -107,45 +107,40 @@ void termination_handler(int)
 
 struct options {
     enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 5, GIFfile = 4 };
-    int   width;
-    int   height;
-    int   widthMult;
-    int   heightMult;
-    int   maxShapes;
-    double minSize;
-    double borderSize;
+    int   width = 500;
+    int   height = 500;
+    int   widthMult = 1;
+    int   heightMult = 1;
+    int   maxShapes = 0;
+    double minSize = 0.3F;
+    double borderSize = 2.0F;
     std::string definitions;
     
-    int   variation;
-    bool  crop;
-    bool  check;
-    int   animationFrames;
-    int   animationTime;
-    int   animationFPS;
-    bool  animationZoom;
-    int   animateFrame;
-    ffCanvas::QTcodec animationCodec;
+    int   variation = -1;
+    bool  crop = false;
+    bool  check = false;
+    int   animationFrames = 0;
+    int   animationTime = 0;
+    int   animationFPS = 15;
+    bool  animationZoom = false;
+    int   animateFrame = 0;
+    int   animationLoops = 0;
+    ffCanvas::QTcodec animationCodec = ffCanvas::H264;
     
     std::string input;
     std::string output;
-    OutputFormat format;
+    OutputFormat format = PNGfile;
     std::string displayExec;
     
-    bool quiet;
-    bool outputTime;
-    bool outputStdout;
-    bool outputTemp;
-    bool outputWallpaper;
-    bool paramTest;
-    bool deleteTemps;
+    bool quiet = false;
+    bool outputTime = false;
+    bool outputStdout = false;
+    bool outputTemp = false;
+    bool outputWallpaper = false;
+    bool paramTest = false;
+    bool deleteTemps = false;
     
     options()
-    : width(500), height(500), widthMult(1), heightMult(1), maxShapes(0), 
-      minSize(0.3F), borderSize(2.0F), variation(-1), crop(false), check(false), 
-      animationFrames(0), animationTime(0), animationFPS(15), animationZoom(false), 
-      animateFrame(0), animationCodec(ffCanvas::H264), format(PNGfile), quiet(false),
-      outputTime(false), outputStdout(false), outputTemp(false), outputWallpaper(false),
-      paramTest(false), deleteTemps(false)
     { }
 };
 
@@ -230,7 +225,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag makeJSON(parser, "JSON", "Generate JSON output of parsed cfdg file",
                        {'J', "json"});
     args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
-    args::Flag makeGIF(parser, "GIF", "Make GIF output", { 'G', "gif" });
+    args::ValueFlag<int> makeGIF(parser, "GIF LOOPS", "Make GIF output w/specified loops", { 'G', "gif" });
     args::Flag makeProRes(parser, "ProRes", "Use ProRes codec for QuickTime output", { "prores" });
 #ifdef _WIN32
     args::Flag wallpaper(parser, "wallpaper", "Generate desktop wallpaper output",
@@ -313,6 +308,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         if (makeGIF) {
             opt.format = options::GIFfile;
             opt.animationCodec = ffCanvas::GIF;
+            opt.animationLoops = makeGIF.Get();
         }
         if (makeQT && makeGIF) bailout("Cannot encode QuickTime and GIF at the same time.");
         if (makeProRes) opt.animationCodec = ffCanvas::ProRes;
