@@ -28,6 +28,7 @@
 #include <cassert>
 #include <vector>
 #include <array>
+#include <string>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -50,7 +51,7 @@ class ffCanvas::Impl
 {
 public:
     Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-        int fps, QTcodec codec);
+        int fps, QTcodec codec, int loops);
     ~Impl();
     
     void addFrame(bool end);
@@ -97,7 +98,7 @@ void log_callback_debug(void* ptr, int level, const char* fmt, va_list vl)
 
 
 ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, int stride,
-                     int fps, QTcodec _codec)
+                     int fps, QTcodec _codec, int loops)
 : mWidth(width), mHeight(height), mStride(stride), mBuffer(stride * height), mFrameRate(fps)
 {
 #if defined(_WIN32) && defined(_DEBUG)
@@ -192,9 +193,11 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
     if (int open_codec_stat = avcodec_open2(mEncCtx, codec, &opt)) {
         (void)open_codec_stat;
         mError = "could not open codec";
+        av_dict_free(&opt);
         return;
     }
-    
+    av_dict_free(&opt);
+
     avcodec_parameters_from_context(mStream->codecpar, mEncCtx);
 
     mSwsCtx = sws_getContext(mWidth, mHeight, srcFormat, 
@@ -226,13 +229,18 @@ ffCanvas::Impl::Impl(const char* name, PixelFormat fmt, int width, int height, i
         return;
     }
 
-    if (int write_stat = avformat_write_header(mOutputCtx, nullptr);
+    auto loopStr = std::to_string(loops);
+    av_dict_set(&opt, "loop", loopStr.c_str(), 0);
+
+    if (int write_stat = avformat_write_header(mOutputCtx, &opt);
         write_stat < 0)
     {
         avio_close(mOutputCtx->pb);
+        av_dict_free(&opt);
         mError = "failed to write video file header";
         return;
     }
+    av_dict_free(&opt);
 }
 
 ffCanvas::Impl::~Impl()
@@ -332,7 +340,7 @@ mapPixFmt(aggCanvas::PixelFormat in)
 }
 
 ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height, 
-                   int fps, QTcodec codec, bool temp)
+                   int fps, QTcodec codec, bool temp, int loops)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
     if (width <= 0 || height <= 0 || width & 7 || height & 1) {
@@ -361,7 +369,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
     
     int stride = width * aggCanvas::BytesPerPixel.at(mapPixFmt(fmt));
     
-    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, fps, codec);
+    impl = std::make_unique<Impl>(name, mapPixFmt(fmt), width, height, stride, fps, codec, loops);
     if (impl->mError) {
         mErrorMsg = impl->mError;
         impl.reset();
