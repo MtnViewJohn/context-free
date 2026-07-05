@@ -124,7 +124,7 @@ struct options {
     int   animationFPS = 15;
     bool  animationZoom = false;
     int   animateFrame = 0;
-    int   animationLoops = 0;
+    int   animationLoops = -1;
     ffCanvas::QTcodec animationCodec = ffCanvas::H264;
     
     std::string input;
@@ -309,6 +309,10 @@ processCommandLine(int argc, char* argv[], options& opt)
             opt.format = options::GIFfile;
             opt.animationCodec = ffCanvas::GIF;
             opt.animationLoops = makeGIF.Get();
+            if (opt.animationLoops == 1)
+                opt.animationLoops = -1;
+            if (opt.animationLoops > 1)
+                --opt.animationLoops;
         }
         if (makeQT && makeGIF) bailout("Cannot encode QuickTime and GIF at the same time.");
         if (makeProRes) opt.animationCodec = ffCanvas::ProRes;
@@ -581,7 +585,7 @@ int main (int argc, char* argv[]) {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
                                              opts.animationFPS, opts.animationCodec, 
-                                             opts.outputTemp);
+                                             opts.outputTemp, opts.animationLoops);
             if (mov->mErrorMsg) {
                 cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
                 exit(8);
