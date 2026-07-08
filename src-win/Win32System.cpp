@@ -133,6 +133,24 @@ Win32System::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 }
 
 std::string
+Win32System::tempDirectoryForWrite(const char* prefix)
+{
+    static std::array<char, 32768> tempPathBufferA;
+
+    GetTempPathA((DWORD)tempPathBufferW.size(), tempPathBufferA.data());
+    std::string t(tempPathBufferA);
+    if (t.back() != '/')
+        t.push_back('/');
+    t.append(prefix);
+    t.append("XXXXXX"); 
+
+    _mktemp(t.data());
+    if (t[0] == L'\0' || !CreateDirectoryA(t.c_str(), NULL))
+        t.clear();
+    return t;
+}
+
+std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
     std::wstring wbase = Utf8ToUtf16(base.c_str());

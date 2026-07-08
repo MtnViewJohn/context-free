@@ -128,6 +128,7 @@ class AbstractSystem {
         virtual istr_ptr tempFileForRead(const FileString& path);
         virtual ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) = 0;
         virtual const FileChar* tempFileDirectory() = 0;
+        virtual std::string tempDirectoryForWrite(const char* prefix) = 0;
             // caller must delete returned streams when done
         virtual std::vector<FileString> findTempFiles() = 0;
         virtual int deleteTempFile(const FileString& name) = 0;

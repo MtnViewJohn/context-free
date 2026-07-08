@@ -122,6 +122,21 @@ PosixSystem::tempFileForWrite(AbstractSystem::TempType tt, FileString& nameOut)
 }
 
 std::string
+PosixSystem::tempDirectoryForWrite(const char* prefix)
+{
+    std::string t(tempFileDirectory());
+    if (t.back() != '/')
+        t.push_back('/');
+    t.append(prefix);
+    t.append("XXXXXX"); 
+
+    if (mkdtemp(t.data()) != 0)
+        t.clear();
+
+    return t;
+}
+
+std::string
 PosixSystem::relativeFilePath(const std::string& base, const std::string& rel)
 {
     std::string s = base;

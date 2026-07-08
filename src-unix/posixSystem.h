@@ -48,7 +48,8 @@ public:
     ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) override;
     const FileChar* tempFileDirectory() override;
     std::vector<FileString> findTempFiles() override;
-    
+    std::string tempDirectoryForWrite(const char* prefix) override;
+
     std::string relativeFilePath(
         const std::string& base, const std::string& rel) override;
     int deleteTempFile(const FileString& name) override;

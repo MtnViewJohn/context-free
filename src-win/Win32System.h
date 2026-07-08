@@ -44,6 +44,7 @@ public:
     istr_ptr tempFileForRead(const FileString& path) override;
     ostr_ptr tempFileForWrite(TempType tt, FileString& nameOut) override;
     const FileChar* tempFileDirectory() override;
+    std::string tempDirectoryForWrite(const char* prefix) override;
     std::vector<FileString> findTempFiles() override;
     int deleteTempFile(const FileString& name) override;
     size_t getPhysicalMemory() override;
