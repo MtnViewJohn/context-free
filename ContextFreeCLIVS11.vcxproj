@@ -392,7 +392,7 @@
     <ClInclude Include="src-common\variation.h" />
     <ClInclude Include="src-common\version.h" />
     <ClInclude Include="src-win\Win32System.h" />
-    <ClInclude Include="src-win\WinPngCanvas.h" />
+    <ClInclude Include="src-win\WinBmpCanvas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-agg\src\agg_bezier_arc.cpp" />
@@ -446,7 +446,7 @@
     <ClCompile Include="src-common\tiledCanvas.cpp" />
     <ClCompile Include="src-common\variation.cpp" />
     <ClCompile Include="src-win\Win32System.cpp" />
-    <ClCompile Include="src-win\WinPngCanvas.cpp">
+    <ClCompile Include="src-win\WinBmpCanvas.cpp">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
