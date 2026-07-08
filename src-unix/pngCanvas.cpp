@@ -32,6 +32,7 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+#include <format>
 #include "prettyint.h"
 
 #ifndef _WIN32
@@ -77,6 +78,20 @@ namespace {
     };
 }
 
+pngCanvas::~pngCanvas()
+{
+    for (auto&& file: mTempFiles) {
+        remove(file.c_str());
+    }
+    if (!mTempDirectory.empty()) {
+#ifdef _WIN32
+        _wrmdir(mTempDirectory.c_str());
+#else
+        rmdir(mTempDirectory.c_str());
+#endif
+    }
+}
+
 void pngCanvas::output(const char* outfilename, int frame)
 {
     std::unique_ptr<std::FILE, FileCloser> out;
@@ -103,18 +118,39 @@ void pngCanvas::output(const char* outfilename, int frame)
             if (usetmpfile) {
 #ifdef _WIN32
                 FILE* fp = nullptr;
-                mFileName = "cfdg_temp_image_XXXXXX.png";
-                if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
-                    fopen_s(&fp, mFileName.c_str(), "wb"))
-                {
-                    out.reset(fp);
+                if (frame) {
+                    if (!mTempDirectory.empty()) {
+                        mFileName = std::format("{}/frame{:04d}.png",
+                            mTempDirectory, frame);
+                        if (fopen_s(&fp, mFileName.c_str(), "wb") == 0)
+                            out.reset(fp);
+                    }
+                } else {
+                    mFileName = std::format("{}/cfdg_temp_image_XXXXXX",
+                        mSystem.tempFileDirectory());
+                    if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
+                        fopen_s(&fp, mFileName.c_str(), "wb") == 0)
+                    {
+                        out.reset(fp);
+                    }
                 }
 #else
-                mFileName = "/tmp/cfdg_temp_image_XXXXXX.png";
-                int fd = mkstemps(mFileName.data(), 4);
-                if (fd != -1)
-                    out.reset(fdopen(fd, "w"));
+                if (frame) {
+                    if (!mTempDirectory.empty()) {
+                        mFileName = std::format("{}/frame{:04d}.png",
+                            mTempDirectory, frame);
+                        out.reset(std::fopen(mFileName.c_str(), "wb"));
+                    }
+                } else {
+                    mFileName = std::format("{}/cfdg_temp_image_XXXXXX.png",
+                        mSystem.tempFileDirectory());
+                    int fd = mkstemps(mFileName.data(), 4);
+                    if (fd != -1)
+                        out.reset(fdopen(fd, "w"));
+                }
 #endif
+                if (out)
+                    mTempFiles.push_back(mFileName);
             } else {
                 FILE* fp = nullptr;
 #ifdef _WIN32

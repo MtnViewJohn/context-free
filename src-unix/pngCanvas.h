@@ -29,20 +29,36 @@
 #include "abstractPngCanvas.h"
 #include <cstring>
 #include <string>
+#include "cfdg.h"
 
 class pngCanvas : public abstractPngCanvas
 {
 public:
     pngCanvas(const char* outfilename, bool quiet, int width, int height, 
               PixelFormat pixfmt, bool crop, int frameCount, int variation,
-              bool wallpaper, Renderer *r, int mx, int my, bool tmp)
+              bool wallpaper, Renderer *r, int mx, int my, bool tmp,
+              AbstractSystem& sys)
     : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop,
                         frameCount, variation, wallpaper, r, mx, my),
-      usetmpfile(tmp)
-    { }
+      usetmpfile(tmp),
+      mSystem(sys)
+    {
+        if (tmp && frameCount) {
+            mTempFiles.reserve(frameCount);
+            mTempDirectory = sys.tempDirectoryForWrite("cfdg-temp-GIFframes-");
+            if (mTempDirectory.empty())
+                std::cerr << "*** Cannot create temporary directory for GIF frames." << std::endl;
+        }
+    }
+    ~pngCanvas();
+
+    std::string mTempDirectory;
+    std::vector<std::string> mTempFiles;
 protected:
     virtual void output(const char * outfilename, int frame = -1) override;
 private:
 	bool usetmpfile;
+
+    AbstractSystem& mSystem;
 };
 

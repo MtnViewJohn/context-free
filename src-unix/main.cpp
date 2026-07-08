@@ -562,7 +562,7 @@ int main (int argc, char* argv[]) {
                                     opts.output.c_str(), opts.quiet, opts.width, opts.height,
                                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
                                     opts.format == options::BMPfile, TheRenderer.get(),
-                                    opts.widthMult, opts.heightMult, opts.outputTemp);
+                                    opts.widthMult, opts.heightMult, opts.outputTemp, system);
             myCanvas = static_cast<Canvas*>(png.get());
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
                 TheRenderer->resetSize(png->mWidth, png->mHeight);
