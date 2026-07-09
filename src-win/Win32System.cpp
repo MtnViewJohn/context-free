@@ -1,4 +1,4 @@
-// posixSystem.cpp
+// Win32System.cpp
 // Context Free
 // ---------------------
 // Copyright (C) 2005-2007 Mark Lentczner - markl@glyphic.com
@@ -35,6 +35,7 @@
 #include <sstream>
 #include <shlwapi.h>
 #include <array>
+#include <io.h>
 
 using std::cerr;
 using std::endl;
@@ -137,10 +138,10 @@ Win32System::tempDirectoryForWrite(const char* prefix)
 {
     static std::array<char, 32768> tempPathBufferA;
 
-    GetTempPathA((DWORD)tempPathBufferW.size(), tempPathBufferA.data());
-    std::string t(tempPathBufferA);
-    if (t.back() != '/')
-        t.push_back('/');
+    GetTempPathA((DWORD)tempPathBufferA.size(), tempPathBufferA.data());
+    std::string t(tempPathBufferA.data());
+    if (t.back() != '\\')
+        t.push_back('\\');
     t.append(prefix);
     t.append("XXXXXX"); 
 

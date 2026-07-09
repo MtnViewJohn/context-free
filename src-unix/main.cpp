@@ -38,10 +38,9 @@
 #include "cfdg.h"
 #include "variation.h"
 #ifdef _WIN32
-#include "WinPngCanvas.h"
-#else
-#include "pngCanvas.h"
+#include "WinBmpCanvas.h"
 #endif
+#include "pngCanvas.h"
 #include "SVGCanvas.h"
 #include "ffCanvas.h"
 #include "commandLineSystem.h"
@@ -531,6 +530,7 @@ int main (int argc, char* argv[]) {
     std::unique_ptr<pngCanvas> png;
     std::unique_ptr<SVGCanvas> svg;
     std::unique_ptr<ffCanvas>  mov;
+    std::unique_ptr<bmpCanvas> bmp;
     Canvas* myCanvas = nullptr;
         
     std::shared_ptr<Renderer> TheRenderer(myDesign->renderer(myDesign,
@@ -556,7 +556,20 @@ int main (int argc, char* argv[]) {
     opts.crop = opts.crop && !(myDesign->isTiled() || myDesign->isFrieze());
     
     switch (opts.format) {
-        case options::BMPfile:
+        case options::BMPfile: {
+            bmp = std::make_unique<bmpCanvas>(
+                    opts.output.c_str(), opts.quiet, opts.width, opts.height,
+                    pixfmt, opts.crop, opts.animationFrames, opts.variation,
+                    opts.format == options::BMPfile, TheRenderer.get(),
+                    opts.widthMult, opts.heightMult, opts.outputTemp);
+            myCanvas = static_cast<Canvas*>(bmp.get());
+            if (bmp->mWidth != opts.width || bmp->mHeight != opts.height) {
+                TheRenderer->resetSize(bmp->mWidth, bmp->mHeight);
+                opts.width = TheRenderer->m_width;
+                opts.height = TheRenderer->m_height;
+            }
+            break;
+        }
         case options::PNGfile: {
             png = std::make_unique<pngCanvas>(
                                     opts.output.c_str(), opts.quiet, opts.width, opts.height,

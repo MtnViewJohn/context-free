@@ -1,4 +1,4 @@
-// WinPngCanvas.h
+// WinBmpCanvas.h
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2012 John Horigan - john@glyphic.com
@@ -24,13 +24,13 @@
 
 #include "abstractPngCanvas.h"
 
-class pngCanvas : public abstractPngCanvas
+class bmpCanvas : public abstractPngCanvas
 {
 public:
-  pngCanvas(const char* outfilename, bool quiet, int width, int height, 
+    bmpCanvas(const char* outfilename, bool quiet, int width, int height,
             PixelFormat pixfmt, bool crop, int frameCount, int variation,
             bool wallpaper, Renderer *r, int mx, int my, bool temp);
-  ~pngCanvas() override;
+  ~bmpCanvas() override;
 
 protected:
   void output(const char * outfilename, int frame = -1) override;

@@ -40,6 +40,7 @@
 #include <unistd.h>
 #else
 #include <io.h>
+#include <direct.h>
 #include <fcntl.h>
 
 namespace {
@@ -85,7 +86,7 @@ pngCanvas::~pngCanvas()
     }
     if (!mTempDirectory.empty()) {
 #ifdef _WIN32
-        _wrmdir(mTempDirectory.c_str());
+        _rmdir(mTempDirectory.c_str());
 #else
         rmdir(mTempDirectory.c_str());
 #endif
@@ -120,14 +121,19 @@ void pngCanvas::output(const char* outfilename, int frame)
                 FILE* fp = nullptr;
                 if (frame) {
                     if (!mTempDirectory.empty()) {
-                        mFileName = std::format("{}/frame{:04d}.png",
+                        mFileName = std::format("{}\\frame{:04d}.png",
                             mTempDirectory, frame);
                         if (fopen_s(&fp, mFileName.c_str(), "wb") == 0)
                             out.reset(fp);
                     }
                 } else {
-                    mFileName = std::format("{}/cfdg_temp_image_XXXXXX",
+                    auto wTemplate = std::format(L"{}\\cfdg_temp_image_XXXXXX",
                         mSystem.tempFileDirectory());
+                    auto wLen = wTemplate.length() + 1;
+                    auto mbLen = ::wcstombs(NULL, wTemplate.data(), 0);
+                    std::vector<char> buf(mbLen);
+                    mbLen = ::wcstombs(buf.data(), wTemplate.c_str(), wLen);
+                    mFileName = buf.data();
                     if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
                         fopen_s(&fp, mFileName.c_str(), "wb") == 0)
                     {

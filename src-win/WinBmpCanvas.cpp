@@ -1,4 +1,4 @@
-// WinPngCanvas.cpp
+// WinBmpCanvas.cpp
 // this file is part of Context Free
 // ---------------------
 // Copyright (C) 2005-2013 John Horigan - john@glyphic.com
@@ -23,7 +23,7 @@
 //
 
 #include <windows.h>
-#include "WinPngCanvas.h"
+#include "WinBmpCanvas.h"
 #include <cstdlib>
 #include "makeCFfilename.h"
 #include <array>
@@ -49,9 +49,9 @@ static ColorPalette* GrayPalette = nullptr;
 static ULONG_PTR GdiPToken;
 static GdiplusStartupInput GdiPStartInput;
 static GdiplusStartupOutput GdiPStartOutput;
-int pngCanvas::CanvasCount = 0;
+int bmpCanvas::CanvasCount = 0;
 
-pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height, 
+bmpCanvas::bmpCanvas(const char* outfilename, bool quiet, int width, int height,
                      PixelFormat pixfmt, bool crop, int frameCount,
                      int variation, bool wallpaper, Renderer *r, int mx, int my,
                      bool temp)
@@ -75,7 +75,7 @@ pngCanvas::pngCanvas(const char* outfilename, bool quiet, int width, int height,
         GdiplusStartup(&GdiPToken, &GdiPStartInput, &GdiPStartOutput);
 }
 
-pngCanvas::~pngCanvas()
+bmpCanvas::~bmpCanvas()
 {
     if (--CanvasCount == 0) {
         GdiplusShutdown(GdiPToken);
@@ -142,7 +142,7 @@ static LPCSTR errorMsg[] = {
 
 static CLSID encClsid = CLSID_NULL;
 
-void pngCanvas::output(const char* outfilename, int frame)
+void bmpCanvas::output(const char* outfilename, int frame)
 {
     int width = mFullWidth;
     int height = mFullHeight;

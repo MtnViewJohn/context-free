@@ -107,35 +107,41 @@
     <TargetName>ContextFreeCLI</TargetName>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-i686-libx264;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>ContextFreeCLI</TargetName>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-i686-libx264;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -157,7 +163,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -186,7 +192,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -214,7 +220,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -243,7 +249,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -276,7 +282,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -308,7 +314,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -373,6 +379,7 @@
     <ClInclude Include="src-common\stacktype.h" />
     <ClInclude Include="src-common\xorshift64star.h" />
     <ClInclude Include="src-unix\args.hxx" />
+    <ClInclude Include="src-unix\pngCanvas.h" />
     <ClInclude Include="src-win\derived\cfdg.tab.hpp" />
     <ClInclude Include="src-common\cfdgimpl.h" />
     <ClInclude Include="src-win\derived\FlexLexer.h" />
@@ -423,6 +430,7 @@
     <ClCompile Include="src-common\prettyint.cpp" />
     <ClCompile Include="src-common\rendererAST.cpp" />
     <ClCompile Include="src-common\stacktype.cpp" />
+    <ClCompile Include="src-unix\pngCanvas.cpp" />
     <ClCompile Include="src-win\derived\cfdg.tab.cpp" />
     <ClCompile Include="src-common\cfdgimpl.cpp" />
     <ClCompile Include="src-common\HSBColor.cpp" />
