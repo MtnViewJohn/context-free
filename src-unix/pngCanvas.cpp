@@ -34,6 +34,7 @@
 #include <iostream>
 #include <format>
 #include "prettyint.h"
+#include <vector>
 
 #ifndef _WIN32
 #include <arpa/inet.h>
@@ -48,7 +49,15 @@ namespace {
     {
         return ((s & 0xff) << 8) | ((s & 0xff00) >> 8);
     }
+
+    // This fake implementation of a Posix function should never be called
+    // in either Windows or Posix
+    int mkstemps(char*, int)
+    { return -1; }
 }
+
+#include <filesystem>
+namespace fs = std::filesystem;
 #endif
 
 using std::cerr;
@@ -93,6 +102,91 @@ pngCanvas::~pngCanvas()
     }
 }
 
+#pragma warning(disable:4996)
+
+std::string pngCanvas::wcstomsb(const std::wstring& wstr)
+{
+    auto mblen = ::wcstombs(NULL, wstr.c_str(), 0);
+    std::vector<char> buf(mblen + 1);
+    ::wcstombs(buf.data(), wstr.c_str(), mblen + 1);
+    return std::string(buf.data(), mblen);
+}
+
+std::wstring pngCanvas::mbstowcs(const std::string& str)
+{
+    auto wlen = ::mbstowcs(NULL, str.c_str(), 0);
+    std::vector<wchar_t> wbuf(wlen + 1);
+    ::mbstowcs(wbuf.data(), str.c_str(), wlen + 1);
+    return std::wstring(wbuf.data(), wlen);
+}
+
+bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
+{
+    std::string tempfile = std::format("{}/outfile.mov", mTempDirectory);
+    std::string cmdline;
+
+    if (fmt == pngCanvas::GIFfile) {
+        if (loops == 1)
+            loops = -1;
+        if (loops > 1)
+            --loops;
+
+        tempfile = std::format("{}/outfile.gif", mTempDirectory);
+        cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {} outfile.gif",
+            fps, loops);
+    } else {
+        if (codec == H264) {
+            cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -vcodec libx264 -preset slow -crf 20.0 outfile.mov", fps);
+        } else {
+            if (alpha)
+                cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le outfile.mov", fps);
+            else
+                cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le outfile.mov", fps);
+        }
+
+        fs::path tempfile_p(tempfile);
+        fs::path outfile_p(mOrigName);
+        if (!std::system(cmdline.c_str()) && fs::exists(tempfile_p)) {
+            std::error_code ec;
+            try {
+                fs::rename(tempfile_p, outfile_p, ec);
+                if (!ec)
+                    return true;
+            }
+            catch (...) {
+            }
+        }
+        return false;
+    }
+    return true;
+}
+
+FILE* pngCanvas::makeTemp(int frame)
+{
+    if (frame) {
+        if (!mTempDirectory.empty()) {
+            mFileName = std::format("{}/{:04d}.png",
+                mTempDirectory, frame - 1);
+            return std::fopen(mFileName.c_str(), "wb");
+        }
+    } else {
+#ifndef _WIN32
+        // Doesn't compile on Windows, but is never used, so there
+        mFileName = std::format("{}/cfdg_temp_image_XXXXXX.png",
+            mSystem.tempFileDirectory());
+#endif
+        int fd = mkstemps(mFileName.data(), 4);
+        if (fd != -1)
+            return fdopen(fd, "w");
+    }
+    return nullptr;
+}
+
+bool pngCanvas::ffAvailable()
+{
+    return std::system("ffmpeg -version > /dev/null") == 0;
+}
+
 void pngCanvas::output(const char* outfilename, int frame)
 {
     std::unique_ptr<std::FILE, FileCloser> out;
@@ -117,44 +211,7 @@ void pngCanvas::output(const char* outfilename, int frame)
 
         if (*outfilename || usetmpfile) {
             if (usetmpfile) {
-#ifdef _WIN32
-                FILE* fp = nullptr;
-                if (frame) {
-                    if (!mTempDirectory.empty()) {
-                        mFileName = std::format("{}\\frame{:04d}.png",
-                            mTempDirectory, frame);
-                        if (fopen_s(&fp, mFileName.c_str(), "wb") == 0)
-                            out.reset(fp);
-                    }
-                } else {
-                    auto wTemplate = std::format(L"{}\\cfdg_temp_image_XXXXXX",
-                        mSystem.tempFileDirectory());
-                    auto wLen = wTemplate.length() + 1;
-                    auto mbLen = ::wcstombs(NULL, wTemplate.data(), 0);
-                    std::vector<char> buf(mbLen);
-                    mbLen = ::wcstombs(buf.data(), wTemplate.c_str(), wLen);
-                    mFileName = buf.data();
-                    if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
-                        fopen_s(&fp, mFileName.c_str(), "wb") == 0)
-                    {
-                        out.reset(fp);
-                    }
-                }
-#else
-                if (frame) {
-                    if (!mTempDirectory.empty()) {
-                        mFileName = std::format("{}/frame{:04d}.png",
-                            mTempDirectory, frame);
-                        out.reset(std::fopen(mFileName.c_str(), "wb"));
-                    }
-                } else {
-                    mFileName = std::format("{}/cfdg_temp_image_XXXXXX.png",
-                        mSystem.tempFileDirectory());
-                    int fd = mkstemps(mFileName.data(), 4);
-                    if (fd != -1)
-                        out.reset(fdopen(fd, "w"));
-                }
-#endif
+                out.reset(makeTemp(frame));
                 if (out)
                     mTempFiles.push_back(mFileName);
             } else {
@@ -178,6 +235,8 @@ void pngCanvas::output(const char* outfilename, int frame)
             throw false;
         }
         
+#pragma warning(disable:4611)
+
         if (setjmp(png_jmpbuf(png_ptr)))
             throw "Unspecified PNG output failure.";
 

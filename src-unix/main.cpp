@@ -39,15 +39,16 @@
 #include "variation.h"
 #ifdef _WIN32
 #include "WinBmpCanvas.h"
-#endif
+#include "WinPngCanvas.h"
+using canvas_t = WinPngCanvas;
+#else
 #include "pngCanvas.h"
+using canvas_t = pngCanvas;
+#endif
 #include "SVGCanvas.h"
-#include "ffCanvas.h"
 #include "commandLineSystem.h"
 #include "version.h"
-#include "Rand64.h"
 #include "makeCFfilename.h"
-#include <cassert>
 #include <memory>
 #include <string>
 #include "astexpression.h"
@@ -105,7 +106,6 @@ void termination_handler(int)
 #endif
 
 struct options {
-    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 5, GIFfile = 4 };
     int   width = 500;
     int   height = 500;
     int   widthMult = 1;
@@ -124,11 +124,11 @@ struct options {
     bool  animationZoom = false;
     int   animateFrame = 0;
     int   animationLoops = -1;
-    ffCanvas::QTcodec animationCodec = ffCanvas::H264;
+    pngCanvas::QTcodec animationCodec = pngCanvas::H264;
     
     std::string input;
     std::string output;
-    OutputFormat format = PNGfile;
+    pngCanvas::OutputFormat format = pngCanvas::PNGfile;
     std::string displayExec;
     
     bool quiet = false;
@@ -303,10 +303,10 @@ processCommandLine(int argc, char* argv[], options& opt)
     if (animation) {
         if (makeSVG) bailout("Animation cannot output to SVG files.");
         if (crop) bailout("Animation cannot output cropped files.");
-        if (makeQT) opt.format = options::MOVfile;
+        if (makeQT) opt.format = pngCanvas::MOVfile;
         if (makeGIF) {
-            opt.format = options::GIFfile;
-            opt.animationCodec = ffCanvas::GIF;
+            opt.format = pngCanvas::GIFfile;
+            opt.animationCodec = pngCanvas::GIF;
             opt.animationLoops = makeGIF.Get();
             if (opt.animationLoops == 1)
                 opt.animationLoops = -1;
@@ -314,7 +314,7 @@ processCommandLine(int argc, char* argv[], options& opt)
                 --opt.animationLoops;
         }
         if (makeQT && makeGIF) bailout("Cannot encode QuickTime and GIF at the same time.");
-        if (makeProRes) opt.animationCodec = ffCanvas::ProRes;
+        if (makeProRes) opt.animationCodec = pngCanvas::ProRes;
         opt.animationZoom = zoom;
         int fps = 15, time = 0;
         switch (intArg2(parser.ShortPrefix() + 'a', args::get(animation), time, fps)) {
@@ -332,8 +332,8 @@ processCommandLine(int argc, char* argv[], options& opt)
         }
         if (display && !(makeQT || makeGIF))
             bailout("Only QuickTime/GIF animations can be displayed.");
-        if ((makeQT || makeGIF) && !ffCanvas::Available())
-            bailout("FFmpeg DLLs not found, QuickTime/GIF output is unavailable.");
+        if ((makeQT || makeGIF) && !canvas_t::ffAvailable())
+            bailout("FFmpeg not found, QuickTime/GIF output is unavailable.");
         if (makeProRes && !makeQT)
             bailout("ProRes codec only available with QuickTime output.");
         if (frame) {
@@ -355,14 +355,14 @@ processCommandLine(int argc, char* argv[], options& opt)
         if (frame)
             bailout("Animation frame can only be rendered when animating.");
     }
-    if (makeSVG) opt.format = options::SVGfile;
+    if (makeSVG) opt.format = pngCanvas::SVGfile;
     if (wallpaper) {
         if (makeSVG || animation || crop)
             bailout("Wallpaper output must be uncropped, not animated, and not SVG.");
-        opt.format = options::BMPfile;
+        opt.format = pngCanvas::BMPfile;
         opt.outputWallpaper = true;
     }
-    if (makeJSON) opt.format = options::JSONfile;
+    if (makeJSON) opt.format = pngCanvas::JSONfile;
     opt.crop = crop;
     opt.check = check;
     opt.quiet = quiet;
@@ -384,7 +384,7 @@ processCommandLine(int argc, char* argv[], options& opt)
             opt.output.append(c == '%' ? 2 : 1, c);
         }
         if (opt.animationFrames && opt.animateFrame == 0 && 
-            opt.format != options::MOVfile && opt.format != options::GIFfile)
+            opt.format != pngCanvas::MOVfile && opt.format != pngCanvas::GIFfile)
         {
             std::size_t ext = opt.output.find_last_of('.');
             std::size_t dir = opt.output.find_last_of(APP_DIRCHAR());
@@ -486,12 +486,12 @@ int main (int argc, char* argv[]) {
         if (opts.input.empty()) exit(0);
     }
     
-    AST::ASTfunction::RandStaticIsConst = opts.format != options::JSONfile;
+    AST::ASTfunction::RandStaticIsConst = opts.format != pngCanvas::JSONfile;
     cfdg_ptr myDesign = CFDG::ParseFile(opts.input.c_str(), &system,
                                         opts.variation, opts.definitions);
     if (!myDesign) return 3;
     if (opts.check) return 0;
-    if (opts.format == options::JSONfile) {
+    if (opts.format == pngCanvas::JSONfile) {
         std::unique_ptr<std::ostream, OstreamCloser> out(nullptr);
         if (opts.outputStdout)
             out.reset(&std::cout);
@@ -505,7 +505,7 @@ int main (int argc, char* argv[]) {
             cerr << "Tiled output multiplication only allowed for tiled or frieze designs." << endl;
             return 6;
         }
-        if (opts.format != options::PNGfile && opts.format != options::BMPfile) {
+        if (opts.format != pngCanvas::PNGfile && opts.format != pngCanvas::BMPfile) {
             cerr << "Tiled output multiplication only allowed for PNG output." << endl;
             return 6;
         }
@@ -527,9 +527,8 @@ int main (int argc, char* argv[]) {
     std::string actualFileName;
 
     { // Scope for canvas & renderer
-    std::unique_ptr<pngCanvas> png;
+    std::unique_ptr<canvas_t> png;
     std::unique_ptr<SVGCanvas> svg;
-    std::unique_ptr<ffCanvas>  mov;
     std::unique_ptr<bmpCanvas> bmp;
     Canvas* myCanvas = nullptr;
         
@@ -554,13 +553,14 @@ int main (int argc, char* argv[]) {
     opts.width = TheRenderer->m_width;
     opts.height = TheRenderer->m_height;
     opts.crop = opts.crop && !(myDesign->isTiled() || myDesign->isFrieze());
+    string animfile;
     
     switch (opts.format) {
-        case options::BMPfile: {
+        case pngCanvas::BMPfile: {
             bmp = std::make_unique<bmpCanvas>(
                     opts.output.c_str(), opts.quiet, opts.width, opts.height,
                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
-                    opts.format == options::BMPfile, TheRenderer.get(),
+                    true, TheRenderer.get(),
                     opts.widthMult, opts.heightMult, opts.outputTemp);
             myCanvas = static_cast<Canvas*>(bmp.get());
             if (bmp->mWidth != opts.width || bmp->mHeight != opts.height) {
@@ -570,11 +570,11 @@ int main (int argc, char* argv[]) {
             }
             break;
         }
-        case options::PNGfile: {
-            png = std::make_unique<pngCanvas>(
+        case pngCanvas::PNGfile: {
+            png = std::make_unique<canvas_t>(
                                     opts.output.c_str(), opts.quiet, opts.width, opts.height,
                                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
-                                    opts.format == options::BMPfile, TheRenderer.get(),
+                                    false, TheRenderer.get(),
                                     opts.widthMult, opts.heightMult, opts.outputTemp, system);
             myCanvas = static_cast<Canvas*>(png.get());
             if (png->mWidth != opts.width || png->mHeight != opts.height) {
@@ -584,35 +584,41 @@ int main (int argc, char* argv[]) {
             }
             break;
         }
-        case options::SVGfile: {
+        case pngCanvas::SVGfile: {
             string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
             svg = std::make_unique<SVGCanvas>(name.c_str(), opts.width, opts.height, opts.crop, 
                                               nullptr, -1, opts.outputTemp);
             myCanvas = static_cast<Canvas*>(svg.get());
-            if (svg->mError)
-                cerr << "Failed to open SVG file." << endl;
             break;
         }
-        case options::GIFfile:
-        case options::MOVfile: {
-            string name = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
-            mov = std::make_unique<ffCanvas>(name.c_str(), pixfmt, opts.width, opts.height,
-                                             opts.animationFPS, opts.animationCodec, 
-                                             opts.outputTemp, opts.animationLoops);
-            if (mov->mErrorMsg) {
-                cerr << "Failed to create movie file: " << mov->mErrorMsg << endl;
-                exit(8);
-            }
-            myCanvas = static_cast<Canvas*>(mov.get());
+        case pngCanvas::GIFfile: {
+            animfile = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
+            png = std::make_unique<canvas_t>(
+                animfile.c_str(), opts.quiet, opts.width, opts.height,
+                pixfmt, opts.crop, opts.animationFrames, opts.variation,
+                false, TheRenderer.get(),
+                opts.widthMult, opts.heightMult, true, system);
+            myCanvas = static_cast<Canvas*>(png.get());
             break;
         }
-        case options::JSONfile:
+        case pngCanvas::MOVfile: {
+            animfile = makeCFfilename(opts.output.c_str(), 0, 0, opts.variation);
+            png = std::make_unique<canvas_t>(
+                animfile.c_str(), opts.quiet, opts.width, opts.height,
+                pixfmt, opts.crop, opts.animationFrames, opts.variation,
+                false, TheRenderer.get(),
+                opts.widthMult, opts.heightMult, true, system);
+            myCanvas = static_cast<Canvas*>(png.get());
+            break;
+        }
+        case pngCanvas::JSONfile:
             break;
     }
     
     if (myCanvas->mError || system.error(false) || TheRenderer->requestStop) {
         timer.Stop();
         Renderer::AbortEverything = true;
+        cerr << "Failed to create output file." << endl;
         return 5;
     }
     
@@ -625,6 +631,12 @@ int main (int argc, char* argv[]) {
     
     if (opts.animationFrames) {
         TheRenderer->animate(myCanvas, opts.animationFrames, opts.animateFrame, opts.animationZoom);
+        if (!png->completeMovie(opts.animationFPS, opts.animationLoops, 
+            opts.format, opts.animationCodec, myDesign->usesAlpha))
+        {
+            cerr << "\n\nError creating the output animation file.\n" << endl;
+            return 4;
+        }
     } else {
         TheRenderer->draw(myCanvas);
     }

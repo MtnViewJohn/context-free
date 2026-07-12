@@ -27,19 +27,22 @@
 //
 
 #include "abstractPngCanvas.h"
-#include <cstring>
 #include <string>
+#include <vector>
 #include "cfdg.h"
 
 class pngCanvas : public abstractPngCanvas
 {
 public:
-    pngCanvas(const char* outfilename, bool quiet, int width, int height, 
+    enum OutputFormat { PNGfile = 0, SVGfile = 1, MOVfile = 2, BMPfile = 3, JSONfile = 5, GIFfile = 4 };
+    enum QTcodec { H264 = 0, ProRes = 1, GIF = 2 };
+    pngCanvas(const char* outfilename, bool quiet, int width, int height,
               PixelFormat pixfmt, bool crop, int frameCount, int variation,
               bool wallpaper, Renderer *r, int mx, int my, bool tmp,
               AbstractSystem& sys)
     : abstractPngCanvas(outfilename, quiet, width, height, pixfmt, crop,
                         frameCount, variation, wallpaper, r, mx, my),
+      mOrigName(outfilename),
       usetmpfile(tmp),
       mSystem(sys)
     {
@@ -54,11 +57,19 @@ public:
 
     std::string mTempDirectory;
     std::vector<std::string> mTempFiles;
+
+    static std::string wcstomsb(const std::wstring& wstr);
+    static std::wstring mbstowcs(const std::string& str);
+
+    virtual bool completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha);
+    static bool ffAvailable();
 protected:
     virtual void output(const char * outfilename, int frame = -1) override;
+    virtual FILE* makeTemp(int frame);
+    std::string mOrigName;
 private:
 	bool usetmpfile;
-
+protected:
     AbstractSystem& mSystem;
 };
 

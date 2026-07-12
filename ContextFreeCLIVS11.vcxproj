@@ -400,6 +400,7 @@
     <ClInclude Include="src-common\version.h" />
     <ClInclude Include="src-win\Win32System.h" />
     <ClInclude Include="src-win\WinBmpCanvas.h" />
+    <ClInclude Include="src-win\WinPngCanvas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-agg\src\agg_bezier_arc.cpp" />
@@ -462,6 +463,7 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">4458;4146;4244;4100;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="src-win\WinPngCanvas.cpp" />
     <ClCompile Include="src-win\winTimer.cpp" />
     <ClCompile Include="src-win\winVersion.cpp" />
   </ItemGroup>

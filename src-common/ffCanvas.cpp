@@ -343,7 +343,7 @@ ffCanvas::ffCanvas(const char* name, PixelFormat fmt, int width, int height,
                    int fps, QTcodec codec, bool temp, int loops)
 : aggCanvas(mapPixFmt(fmt)), mErrorMsg(nullptr)
 {
-    if (width <= 0 || height <= 0 || width & 7 || height & 1) {
+    if (codec != GIF && (width <= 0 || height <= 0 || width & 7 || height & 1)) {
         mErrorMsg = "Dimensions must be multiples of (8,2) pixels";
         mError = true;
         return;
