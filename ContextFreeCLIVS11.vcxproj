@@ -118,7 +118,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -126,13 +126,13 @@
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>ContextFreeCLI</TargetName>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-x86_64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\src-png\lib\x64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -140,7 +140,7 @@
     <TargetName>ContextFreeCLI</TargetName>
     <OutDir>$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>$(Configuration)\$(PlatformName)\</IntDir>
-    <LibraryPath>$(SolutionDir)\src-ffmpeg\lib\ffmpeg-aarch64-BtbN;$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\src-png\lib\ARM64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);src-png/include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -163,7 +163,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -192,7 +192,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -220,7 +220,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -249,7 +249,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -282,7 +282,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -314,7 +314,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;zlib.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;zlib.lib;GdiPlus.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -371,7 +371,6 @@
     <ClInclude Include="src-common\CmdInfo.h" />
     <ClInclude Include="src-common\commandLineSystem.h" />
     <ClInclude Include="src-common\config.h" />
-    <ClInclude Include="src-common\ffCanvas.h" />
     <ClInclude Include="src-common\json3.hpp" />
     <ClInclude Include="src-common\pathIterator.h" />
     <ClInclude Include="src-common\prettyint.h" />
@@ -419,14 +418,6 @@
     <ClCompile Include="src-common\cfdg.cpp" />
     <ClCompile Include="src-common\CmdInfo.cpp" />
     <ClCompile Include="src-common\commandLineSystem.cpp" />
-    <ClCompile Include="src-common\ffCanvas.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src-common\pathIterator.cpp" />
     <ClCompile Include="src-common\prettyint.cpp" />
     <ClCompile Include="src-common\rendererAST.cpp" />
