@@ -44,6 +44,7 @@ using canvas_t = WinPngCanvas;
 #else
 #include "pngCanvas.h"
 using canvas_t = pngCanvas;
+using bmpCanvas = pngCanvas;
 #endif
 #include "SVGCanvas.h"
 #include "commandLineSystem.h"
@@ -561,7 +562,7 @@ int main (int argc, char* argv[]) {
                     opts.output.c_str(), opts.quiet, opts.width, opts.height,
                     pixfmt, opts.crop, opts.animationFrames, opts.variation,
                     true, TheRenderer.get(),
-                    opts.widthMult, opts.heightMult, opts.outputTemp);
+                    opts.widthMult, opts.heightMult, opts.outputTemp, system);
             myCanvas = static_cast<Canvas*>(bmp.get());
             if (bmp->mWidth != opts.width || bmp->mHeight != opts.height) {
                 TheRenderer->resetSize(bmp->mWidth, bmp->mHeight);

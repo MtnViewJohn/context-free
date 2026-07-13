@@ -130,7 +130,7 @@ PosixSystem::tempDirectoryForWrite(const char* prefix)
     t.append(prefix);
     t.append("XXXXXX"); 
 
-    if (mkdtemp(t.data()) != 0)
+    if (mkdtemp(t.data()) == 0)
         t.clear();
 
     return t;

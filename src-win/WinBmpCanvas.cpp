@@ -54,7 +54,7 @@ int bmpCanvas::CanvasCount = 0;
 bmpCanvas::bmpCanvas(const char* outfilename, bool quiet, int width, int height,
                      PixelFormat pixfmt, bool crop, int frameCount,
                      int variation, bool wallpaper, Renderer *r, int mx, int my,
-                     bool temp)
+                     bool temp, AbstractSystem&)
     : abstractPngCanvas(outfilename, quiet, 
                         wallpaper ? ::GetSystemMetrics(SM_CXFULLSCREEN) : width, 
                         wallpaper ? ::GetSystemMetrics(SM_CYFULLSCREEN) : height, 

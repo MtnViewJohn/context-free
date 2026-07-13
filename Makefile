@@ -12,7 +12,6 @@ COMMON_DIR = src-common
 UNIX_DIR = src-unix
 DERIVED_DIR = $(OBJ_DIR)
 AGG_DIR = src-agg
-FFMPEG_DIR = src-ffmpeg
 
 SRC_DIRS = $(COMMON_DIR) $(UNIX_DIR) $(DERIVED_DIR) $(AGG_DIR)/src
 vpath %.cpp $(SRC_DIRS)
@@ -31,7 +30,7 @@ BIN_DIR = $(DESTDIR)$(prefix)/bin
 MAN_DIR = $(DESTDIR)$(prefix)/share/man
 
 #
-# Library directories for FFmpeg and libpng
+# Library directories for libpng
 #
 
 LIB_DIRS = /usr/local/lib
@@ -76,23 +75,6 @@ ifeq ($(shell uname -s), Darwin)
   LIBS += c++ icucore
 else
   LIBS += stdc++ atomic icui18n icuuc icudata
-endif
-
-#
-# FFmpeg support
-ifdef CFDG_FFMPEG
-#
-# Define CFDG_FFMPEG to enable FFmpeg support
-#
-
- COMMON_SRCS += ffCanvas.cpp
- LIBS += avformat avcodec swscale swresample avutil z m x264 pthread dl
-else
-#
-# Comment out this line to enable FFmpeg support
-#
-
- COMMON_SRCS += ffCanvasDummy.cpp
 endif
 
 SRCS = $(DERIVED_SRCS) $(COMMON_SRCS) $(UNIX_SRCS)

@@ -29,7 +29,7 @@ class bmpCanvas : public abstractPngCanvas
 public:
     bmpCanvas(const char* outfilename, bool quiet, int width, int height,
             PixelFormat pixfmt, bool crop, int frameCount, int variation,
-            bool wallpaper, Renderer *r, int mx, int my, bool temp);
+            bool wallpaper, Renderer *r, int mx, int my, bool temp, AbstractSystem&);
   ~bmpCanvas() override;
 
 protected:

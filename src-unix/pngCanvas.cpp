@@ -55,10 +55,10 @@ namespace {
     int mkstemps(char*, int)
     { return -1; }
 }
+#endif
 
 #include <filesystem>
 namespace fs = std::filesystem;
-#endif
 
 using std::cerr;
 using std::endl;
@@ -132,33 +132,37 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
             --loops;
 
         tempfile = std::format("{}/outfile.gif", mTempDirectory);
-        cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {} outfile.gif",
-            fps, loops);
+        cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {2}/%04d.png -v warning -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {1} {2}/outfile.gif",
+            fps, loops, mTempDirectory);
     } else {
         if (codec == H264) {
-            cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -vcodec libx264 -preset slow -crf 20.0 outfile.mov", fps);
+            cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -vcodec libx264 -preset slow -crf 20.0 {1}/outfile.mov",
+                fps, mTempDirectory);
         } else {
             if (alpha)
-                cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le outfile.mov", fps);
+                cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le {1}/outfile.mov",
+                    fps, mTempDirectory);
             else
-                cmdline = std::format("ffmpeg -hide_banner -framerate {} -i %04d.png -c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le outfile.mov", fps);
+                cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le {1}/outfile.mov",
+                    fps, mTempDirectory);
         }
-
-        fs::path tempfile_p(tempfile);
-        fs::path outfile_p(mOrigName);
-        if (!std::system(cmdline.c_str()) && fs::exists(tempfile_p)) {
-            std::error_code ec;
-            try {
-                fs::rename(tempfile_p, outfile_p, ec);
-                if (!ec)
-                    return true;
-            }
-            catch (...) {
-            }
-        }
-        return false;
     }
-    return true;
+
+    fs::path tempfile_p(tempfile);
+    fs::path outfile_p(mOrigName);
+    if (!std::system(cmdline.c_str()) && fs::exists(tempfile_p)) {
+        std::error_code ec;
+        try {
+            if (!fs::copy_file(tempfile_p, outfile_p, fs::copy_options::overwrite_existing))
+                return false;
+            if (!fs::remove(tempfile_p))
+                cerr << "Failed to clean up temporary files." << endl;
+            return true;
+        }
+        catch (...) {
+        }
+    }
+    return false;
 }
 
 FILE* pngCanvas::makeTemp(int frame)
@@ -212,6 +216,7 @@ void pngCanvas::output(const char* outfilename, int frame)
         if (*outfilename || usetmpfile) {
             if (usetmpfile) {
                 out.reset(makeTemp(frame));
+
                 if (out)
                     mTempFiles.push_back(mFileName);
             } else {
