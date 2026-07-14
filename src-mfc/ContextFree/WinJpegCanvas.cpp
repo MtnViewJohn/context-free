@@ -1,19 +1,19 @@
 #include "pch.h"
-#include "WinPngCanvas.h"
+#include "WinJpegCanvas.h"
 #include "WinCanvas.h"
 
-WinPngCanvas::WinPngCanvas( const char* name, WinCanvas* canvas, bool crop,
-                            int variation, Renderer* r, int mx, int my)
+WinJpegCanvas::WinJpegCanvas( const char* name, WinCanvas* canvas, bool crop,
+                            int variation, Renderer* r, int mx, int my, AbstractSystem& sys)
 : pngCanvas(name, true, crop ? canvas->cropWidth() : canvas->mWidth,
     crop ? canvas->cropHeight() : canvas->mHeight, canvas->mPixelFormat,
-    crop, 0, variation, false, r, mx, my, false),
+    crop, 0, variation, false, r, mx, my, false, sys),
     m_Canvas(canvas), mEncoder(std::strlen(name) ? Encoder::libpng : Encoder::gdiplus)
 {
 }
 
-WinPngCanvas::~WinPngCanvas() = default;
+WinJpegCanvas::~WinJpegCanvas() = default;
 
-void WinPngCanvas::end()
+void WinJpegCanvas::end()
 {
     // Copy source WinCanvas to center of this canvas
     int bpp = BytesPerPixel.at(mPixelFormat);
@@ -101,14 +101,14 @@ void WinPngCanvas::end()
     pngCanvas::end();
 }
 
-void WinPngCanvas::output(const char* outfilename, int frame)
+void WinJpegCanvas::output(const char* outfilename, int frame)
 {
     // Skip PNG output for canvas that will be used for JPEG output
     if (std::strlen(outfilename))
         pngCanvas::output(outfilename, frame);
 }
 
-int WinPngCanvas::ActualWidth() const
+int WinJpegCanvas::ActualWidth() const
 {
     if (mRenderer && mRenderer->m_tiledCanvas)
         return mFullWidth;
@@ -118,7 +118,7 @@ int WinPngCanvas::ActualWidth() const
         return mWidth;
 }
 
-int WinPngCanvas::ActualHeight() const
+int WinJpegCanvas::ActualHeight() const
 {
     if (mRenderer && mRenderer->m_tiledCanvas)
         return mFullHeight;
@@ -128,7 +128,7 @@ int WinPngCanvas::ActualHeight() const
         return mHeight;
 }
 
-int WinPngCanvas::ActualOffset() const
+int WinJpegCanvas::ActualOffset() const
 {
     if (mRenderer && mRenderer->m_tiledCanvas)
         return 0;

@@ -18,7 +18,7 @@
 #include "Animate.h"
 #include "MovieFileSave.h"
 #include "ImageFileSave.h"
-#include "WinPngCanvas.h"
+#include "WinJpegCanvas.h"
 #include <Gdipluspixelformats.h>
 #include "Settings.h"
 #include <map>
@@ -511,9 +511,10 @@ void CChildFrame::OnSaveOutput()
 		std::string fileMB = Utf16ToUtf8(ifsDlg.m_ofn.lpstrFile);
 		switch (ifsDlg.m_ofn.nFilterIndex) {
 		case 1: {		// PNG
-			WinPngCanvas saveCanvas(fileMB.c_str(), m_WinCanvas.get(), 
+			WinJpegCanvas saveCanvas(fileMB.c_str(), m_WinCanvas.get(), 
 				m_bCropped || (m_Renderer && m_Renderer->m_tiledCanvas),
-				renderParams.variation, m_Renderer.get(), m_iMultWidth, m_iMultHeight);
+				renderParams.variation, m_Renderer.get(), m_iMultWidth, m_iMultHeight,
+				*m_System);
 			saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
 				m_WinCanvas->cropHeight());
 			saveCanvas.end();		// writes out the PNG file
@@ -552,8 +553,8 @@ void CChildFrame::OnSaveOutput()
 Gdiplus::Status CChildFrame::SaveJPEG(IStream* out, LPCTSTR file, bool crop, int iMultWidth, int iMultHeight, int qual)
 {
 	ASSERT((out == nullptr) != (file == nullptr));
-	WinPngCanvas saveCanvas("", m_WinCanvas.get(), crop,
-		renderParams.variation, m_Renderer.get(), iMultWidth, iMultHeight);
+	WinJpegCanvas saveCanvas("", m_WinCanvas.get(), crop,
+		renderParams.variation, m_Renderer.get(), iMultWidth, iMultHeight, *m_System);
 	saveCanvas.start(true, m_WinCanvas->mBackground, m_WinCanvas->cropWidth(),
 		m_WinCanvas->cropHeight());
 	saveCanvas.end();		// does not write a PNG file
@@ -735,25 +736,19 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	if (renderParams.action == RenderParameters::RenderActions::Animate &&
 		!renderParams.animateFrame)
 	{
-		int loops = renderParams.MovieLoops;
-		if (loops == 1)
-			loops = -1;
-		if (loops > 0)
-			--loops;
-		m_AnimationCanvas = std::make_unique<ffCanvas>("", WinCanvas::SuggestPixelFormat(m_Engine.get()),
-			renderParams.AnimateWidth, renderParams.AnimateHeight,
-			renderParams.MovieFrameRate, (ffCanvas::QTcodec)renderParams.Codec, true,
-			loops);
+		m_AnimationCanvas = std::make_unique<WinPngCanvas>("", true, 
+			renderParams.AnimateWidth, renderParams.AnimateHeight, 
+			WinCanvas::SuggestPixelFormat(m_Engine.get()), false,
+			renderParams.AnimateFrameCount, renderParams.variation,
+			false, m_Renderer.get(), 1, 1, true, *m_System);
 
 		if (m_AnimationCanvas->mError) {
-			::MessageBoxA(GetSafeHwnd(), m_AnimationCanvas->mErrorMsg, "Animation Error", MB_ICONEXCLAMATION);
+			::MessageBoxW(GetSafeHwnd(), L"Failed to initialize movie.", L"Animation Error", MB_ICONEXCLAMATION);
 			m_AnimationCanvas.reset();
 			return;
 		}
 
 		m_wndParent->ShowMessages();
-
-		m_strMovieFile = m_AnimationCanvas->mFileName;
 	}
 
 	SetPostRenderAction(PostRenderAction::DoNothing);
@@ -824,6 +819,15 @@ void CChildFrame::RunRenderThread()
 		} else {
 			renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
 				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
+			if (m_AnimationCanvas->completeMovie(rp.MovieFrameRate, rp.MovieLoops,
+					rp.Codec == RenderParameters::Codecs::GIF ? pngCanvas::GIFfile : pngCanvas::MOVfile,
+					static_cast<pngCanvas::QTcodec>(rp.Codec), m_Engine->usesAlpha))
+			{
+				m_strMovieFile = m_AnimationCanvas->mOrigName;
+			} else {
+				::MessageBoxW(GetSafeHwnd(), L"Failed to save movie.", L"Animation Error", MB_ICONEXCLAMATION);
+			}
+
 			m_AnimationCanvas.reset();
 		}
 		break;

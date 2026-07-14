@@ -3,11 +3,11 @@
 
 class WinCanvas;
 
-class WinPngCanvas : public pngCanvas
+class WinJpegCanvas : public pngCanvas
 {
 public:
-    WinPngCanvas(const char* name, WinCanvas* canvas, bool crop, int variation, Renderer* r, int mx, int my);
-    virtual ~WinPngCanvas();
+    WinJpegCanvas(const char* name, WinCanvas* canvas, bool crop, int variation, Renderer* r, int mx, int my, AbstractSystem& sys);
+    virtual ~WinJpegCanvas();
     virtual void end() override;
     virtual void output(const char* outfilename, int frame = -1) override;
     int ActualWidth() const;

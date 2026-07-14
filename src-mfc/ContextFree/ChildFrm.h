@@ -6,7 +6,7 @@
 #include "RenderParams.h"
 #include "cfdg.h"
 #include "WinCanvas.h"
-#include "ffCanvas.h"
+#include "WinPngCanvas.h"
 #include <set>
 #include "SVGCanvas.h"
 #include "winTimer.h"
@@ -16,6 +16,7 @@ class CContextFreeDoc;
 class WinSystem;
 class CMainFrame;
 class CFScintillaView;
+using WPngCanvas_ptr = std::unique_ptr<WinPngCanvas>;
 
 class CChildFrame : public CMDIChildWndEx
 {
@@ -86,7 +87,7 @@ protected:
 	cfdg_ptr m_Engine;
 	Canvas* m_Canvas = nullptr;
 	WinSystem* m_System = nullptr;
-	ffCanvas_ptr m_AnimationCanvas;
+	WPngCanvas_ptr m_AnimationCanvas;
 	svgCanvas_ptr m_SvgCanvas;
 	PostRenderAction m_ePostRenderAction = PostRenderAction::DoNothing;
 	void SetPostRenderAction(PostRenderAction v);

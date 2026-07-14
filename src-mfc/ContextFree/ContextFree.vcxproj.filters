@@ -93,9 +93,6 @@
     <ClInclude Include="..\..\src-common\examples.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src-common\ffCanvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src-common\HSBColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -207,9 +204,6 @@
     <ClInclude Include="..\..\src-unix\pngCanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WinPngCanvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessagePane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -253,6 +247,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CFDropTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinJpegCanvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src-win\WinPngCanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -401,9 +401,6 @@
     <ClCompile Include="Animate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src-common\ffCanvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MovieFileSave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -411,9 +408,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src-unix\pngCanvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WinPngCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MessagePane.cpp">
@@ -459,6 +453,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CFDropTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinJpegCanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src-win\WinPngCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -26,13 +26,13 @@
 //
 //
 
+#define _CRT_SECURE_NO_WARNINGS
 #include "Win32System.h"
 
 #include <Windows.h>
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
-#include <sstream>
 #include <shlwapi.h>
 #include <array>
 #include <io.h>
