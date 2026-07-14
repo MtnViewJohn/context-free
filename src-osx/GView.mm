@@ -37,7 +37,6 @@
 #include "cfdg.h"
 #include "SVGCanvas.h"
 #include "ImageCanvas.h"
-#include "AVcanvas.h"
 #include "tiledCanvas.h"
 #include "Rand64.h"
 #include <cmath>
@@ -1651,16 +1650,16 @@ long MakeColor(id v)
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     mLoopCount = loops;
-    auto fmt = AVcanvas::H264;
+    auto fmt = ImageCanvas::H264;
     switch ([defaults integerForKey: PrefKeyMovieFormat]) {
         case 2:
-            fmt = AVcanvas::ProRes422;
+            fmt = ImageCanvas::ProRes422;
             break;
         case 3:
-            fmt = AVcanvas::ProRes4444;
+            fmt = ImageCanvas::ProRes4444;
             break;
         case 4:
-            fmt = AVcanvas::GIF;
+            fmt = ImageCanvas::GIF;
             break;
         default:
             break;
@@ -1724,15 +1723,15 @@ long MakeColor(id v)
         
         [self tearDownPlayer];
         mMovieFile = std::make_unique<TempFile>([mDocument system],
-            fmt == AVcanvas::GIF ? AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, 0);
+            fmt == ImageCanvas::GIF ? AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, 0);
         auto stream = mMovieFile->forWrite();
         stream.reset();  // close the temp file, we need its name
-        NSString* path = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         
-        mCanvas = std::make_unique<AVcanvas>(path, [bits autorelease], pixfmt,
+        mCanvas = std::make_unique<ImageCanvas>(mMovieFile->name(), [bits autorelease], pixfmt,
                                              static_cast<int>(movieFrameRate), fmt,
-                                             parameters.animateFrameCount, loops);
-        
+                                             parameters.animateFrameCount, loops,
+                                                *[mDocument system]);
+
         if (!mCanvas->mError) {
             [self renderBegin: &parameters];
         } else {
@@ -1810,13 +1809,15 @@ long MakeColor(id v)
         if (parameters.render) 
             mScale = mRenderer->run(mCanvas.get(), parameters.periodicUpdate);
         else if (parameters.animate) {
-            assert(parameters.animateFrame  > 0 || dynamic_cast<AVcanvas*>(mCanvas.get()));
-            assert(parameters.animateFrame == 0 || dynamic_cast<ImageCanvas*>(mCanvas.get()));
+            ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas.get());
+            assert(ic != nullptr);
             mRenderer->animate(mCanvas.get(),
                                parameters.animateFrameCount,
                                parameters.animateFrame,
                                parameters.animateZoom);
             if (mCanvas->mError)
+                NSBeep();
+            else if (parameters.animateFrame == 0 && !ic->completeMovie())
                 NSBeep();
         }
         else {

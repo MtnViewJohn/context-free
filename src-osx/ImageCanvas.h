@@ -30,18 +30,36 @@
 @class BitmapImageHolder;
 
 #include "aggCanvas.h"
+#include <vector>
 
 class ImageCanvas : public aggCanvas
 {
 public:
+    enum VideoFormat {
+        H264, ProRes422, ProRes4444, GIF
+    };
     ImageCanvas(GView* view, BitmapImageHolder* bitmap, PixelFormat format);
+    ImageCanvas(const std::string& name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt,
+             int fps, VideoFormat format, int frames, int loops, AbstractSystem& sys);
     ~ImageCanvas() override;
     
     void start(bool clear, const agg::rgba& background,
                 int width, int height) override;
     void end() override;
-                
+    bool completeMovie();
+    
 private:
-    GView*   mView;
+    GView*   mView = nil;
+    const std::string& mOutputName;
+    BitmapImageHolder* mImageData = nil;
+    int     fps = 15;
+    VideoFormat mOutFormat = H264;
+    int      mFrameCount = 0;
+    int     mLoopCount = -1;
+    int     mCurrentFrame = 0;
+    std::string mTempDirectory;
+    std::vector<std::string> mTempFiles;
+    std::string mTemplate;
+    std::string ffmpegBinary;
 };
 
