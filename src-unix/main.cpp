@@ -246,7 +246,7 @@ processCommandLine(int argc, char* argv[], options& opt)
     
     auto bailout = [&](const char * msg) {
         if (msg && *msg)
-            cerr << msg << endl;
+            cerr << msg << '\n' << endl;
         cerr << parser;
         exit(2);
     };
@@ -338,7 +338,7 @@ processCommandLine(int argc, char* argv[], options& opt)
         if (makeProRes && !makeQT)
             bailout("ProRes codec only available with QuickTime output.");
         if (frame) {
-            if (makeQT)
+            if (makeQT || makeGIF)
                 bailout("Single frame animation only outputs PNG files.");
             opt.animateFrame = args::get(frame);
             if (opt.animateFrame < 1)
@@ -404,6 +404,14 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.outputStdout = true;
         opt.output = "-";
         opt.quiet = true;
+    }
+    if (makeQT || makeGIF) {
+        if (opt.outputStdout || (!outputFile && !outputFileTemplate))
+            bailout("QuickTime and GIF output require an output file.");
+        if (makeQT && !opt.output.ends_with(".mov"))
+            bailout("QuickTime files must end with .mov");
+        if (makeGIF && !opt.output.ends_with(".gif"))
+            bailout("GIF files must end with .gif");
     }
 }
 
