@@ -122,7 +122,6 @@ std::wstring pngCanvas::mbstowcs(const std::string& str)
 
 bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
 {
-    std::string tempfile = std::format("{}/outfile.mov", mTempDirectory);
     std::string cmdline;
 
     if (fmt == pngCanvas::GIFfile) {
@@ -131,38 +130,34 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
         if (loops > 1)
             --loops;
 
-        tempfile = std::format("{}/outfile.gif", mTempDirectory);
-        cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {2}/%04d.png -v warning -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {1} {2}/outfile.gif",
-            fps, loops, mTempDirectory);
+        cmdline = std::format("ffmpeg -hide_banner -framerate {} -i '{}/%04d.png' "
+            "-v warning -vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
+            "-loop {} -y '{}'", fps, mTempDirectory, loops, mOrigName);
     } else {
         if (codec == H264) {
-            cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -vcodec libx264 -preset slow -crf 20.0 {1}/outfile.mov",
-                fps, mTempDirectory);
+            cmdline = std::format("ffmpeg -hide_banner -framerate {} -i '{}/%04d.png' "
+                "-v warning -c:v libx264 -preset slow -crf 20.0 -pix_fmt yuv420p "
+                "-y '{}'", fps, mTempDirectory, mOrigName);
         } else {
             if (alpha)
-                cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le {1}/outfile.mov",
-                    fps, mTempDirectory);
+                cmdline = std::format("ffmpeg -hide_banner -framerate {} "
+                    "-i '{}/%04d.png' -v warning -c:v prores_ks -profile:v 4 "
+                    "-vendor apl0 -pix_fmt yuva444p10le -y '{}'",
+                    fps, mTempDirectory, mOrigName);
             else
-                cmdline = std::format("ffmpeg -hide_banner -framerate {0} -i {1}/%04d.png -v warning -c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le {1}/outfile.mov",
-                    fps, mTempDirectory);
+                cmdline = std::format("ffmpeg -hide_banner -framerate {} "
+                    "-i '{}/%04d.png' -v warning -c:v prores_ks -profile:v 2 "
+                    "-vendor apl0 -pix_fmt yuv422p10le -y '{}'",
+                    fps, mTempDirectory, mOrigName);
         }
     }
 
-    fs::path tempfile_p(tempfile);
     fs::path outfile_p(mOrigName);
-    if (!std::system(cmdline.c_str()) && fs::exists(tempfile_p)) {
-        std::error_code ec;
-        try {
-            if (!fs::copy_file(tempfile_p, outfile_p, fs::copy_options::overwrite_existing))
-                return false;
-            if (!fs::remove(tempfile_p))
-                cerr << "Failed to clean up temporary files." << endl;
-            return true;
-        }
-        catch (...) {
-        }
+    if (std::system(cmdline.c_str()) || !fs::exists(outfile_p)) {
+        mError = true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 FILE* pngCanvas::makeTemp(int frame)
