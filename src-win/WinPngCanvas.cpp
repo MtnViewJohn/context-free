@@ -27,28 +27,35 @@ bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec c
             --loops;
 
         wtempfile = std::format(L"{}\\outfile.gif", wtempdir);
-        cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i %04d.png -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {} outfile.gif",
-            fps, loops);
+        cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i %04d.png "
+            "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {} "
+            "-v warning outfile.gif", fps, loops);
     } else {
         if (codec == pngCanvas::H264) {
-            cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i %04d.png -vcodec libx264 -preset slow -crf 20.0 outfile.mov",
-                fps);
+            cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} "
+                "-i %04d.png -c:v libx264 -preset slow -crf 20.0 "
+                "-pix_fmt yuv420p -v warning outfile.mov", fps);
         } else {
             if (alpha)
-                cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i %04d.png -c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le outfile.mov",
-                    fps);
+                cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} "
+                    "-i %04d.png -c:v prores_ks -profile:v 4 -vendor apl0 "
+                    "-pix_fmt yuva444p10le -v warning outfile.mov", fps);
             else
-                cmdline = std::format(L"ffmpeg.exe -hide_banner  -framerate {} -i %04d.png -c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le outfile.mov",
-                    fps);
+                cmdline = std::format(L"ffmpeg.exe -hide_banner  -framerate {} "
+                    "-i %04d.png -c:v prores_ks -profile:v 2 -vendor apl0 "
+                    "-pix_fmt yuv422p10le -v warning outfile.mov", fps);
         }
     }
 
+    DWORD exitcode;
     PROCESS_INFORMATION processInfo;
     STARTUPINFOW startupInfo = { sizeof(STARTUPINFO) };
     if (::CreateProcessW(szFileName, cmdline.data(), NULL, NULL, FALSE,
         0, NULL, wtempdir.c_str(), &startupInfo, &processInfo) &&
         !::WaitForSingleObject(processInfo.hProcess, INFINITE) &&
-        ::PathFileExistsW(wtempfile.c_str()))
+        ::PathFileExistsW(wtempfile.c_str()) &&
+        ::GetExitCodeProcess(processInfo.hProcess, &exitcode) &&
+        exitcode == 0)
     {
         std::wstring outfile = pngCanvas::mbstowcs(mOrigName);
         ::MoveFileExW(wtempfile.c_str(), outfile.c_str(), MOVEFILE_REPLACE_EXISTING);
