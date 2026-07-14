@@ -17,7 +17,7 @@ bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec c
     ::PathRemoveFileSpecW(szFileName);
     ::PathAppendW(szFileName, L"ffmpeg.exe");
     std::wstring wtempdir = pngCanvas::mbstowcs(mTempDirectory);
-    std::wstring wtempfile = std::format(L"{}\\outfile.mov", wtempdir);
+    std::wstring outfile = pngCanvas::mbstowcs(mOrigName);
     std::wstring cmdline;
 
     if (fmt == pngCanvas::GIFfile) {
@@ -26,24 +26,23 @@ bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec c
         if (loops > 1)
             --loops;
 
-        wtempfile = std::format(L"{}\\outfile.gif", wtempdir);
-        cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i %04d.png "
+        cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} -i \"{}\\%04d.png\" "
             "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop {} "
-            "-v warning outfile.gif", fps, loops);
+            "-v warning -y \"{}\"", fps, wtempdir, loops, outfile);
     } else {
         if (codec == pngCanvas::H264) {
             cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} "
-                "-i %04d.png -c:v libx264 -preset slow -crf 20.0 "
-                "-pix_fmt yuv420p -v warning outfile.mov", fps);
+                "-i \"{}\\%04d.png\" -c:v libx264 -preset slow -crf 20.0 "
+                "-pix_fmt yuv420p -v warning -y \"{}\"", fps, wtempdir, outfile);
         } else {
             if (alpha)
                 cmdline = std::format(L"ffmpeg.exe -hide_banner -framerate {} "
-                    "-i %04d.png -c:v prores_ks -profile:v 4 -vendor apl0 "
-                    "-pix_fmt yuva444p10le -v warning outfile.mov", fps);
+                    "-i \"{}\\%04d.png\" -c:v prores_ks -profile:v 4 -vendor apl0 "
+                    "-pix_fmt yuva444p10le -v warning -y \"{}\"", fps, wtempdir, outfile);
             else
                 cmdline = std::format(L"ffmpeg.exe -hide_banner  -framerate {} "
-                    "-i %04d.png -c:v prores_ks -profile:v 2 -vendor apl0 "
-                    "-pix_fmt yuv422p10le -v warning outfile.mov", fps);
+                    "-i \"{}\\%04d.png\" -c:v prores_ks -profile:v 2 -vendor apl0 "
+                    "-pix_fmt yuv422p10le -v warning -y \"{}\"", fps, wtempdir, outfile);
         }
     }
 
@@ -51,19 +50,16 @@ bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec c
     PROCESS_INFORMATION processInfo;
     STARTUPINFOW startupInfo = { sizeof(STARTUPINFO) };
     if (::CreateProcessW(szFileName, cmdline.data(), NULL, NULL, FALSE,
-        0, NULL, wtempdir.c_str(), &startupInfo, &processInfo) &&
+        0, NULL, NULL, &startupInfo, &processInfo) &&
         !::WaitForSingleObject(processInfo.hProcess, INFINITE) &&
-        ::PathFileExistsW(wtempfile.c_str()) &&
+        ::PathFileExistsW(outfile.c_str()) &&
         ::GetExitCodeProcess(processInfo.hProcess, &exitcode) &&
         exitcode == 0)
     {
-        std::wstring outfile = pngCanvas::mbstowcs(mOrigName);
-        ::MoveFileExW(wtempfile.c_str(), outfile.c_str(), MOVEFILE_REPLACE_EXISTING);
+        return true;
     } else {
         return false;
     }
-
-    return true;
 }
 
 FILE* WinPngCanvas::makeTemp(int frame)
