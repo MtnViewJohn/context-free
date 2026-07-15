@@ -736,8 +736,12 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	if (renderParams.action == RenderParameters::RenderActions::Animate &&
 		!renderParams.animateFrame)
 	{
-		m_AnimationCanvas = std::make_unique<WinPngCanvas>("", true, 
-			renderParams.AnimateWidth, renderParams.AnimateHeight, 
+		std::wstring tempname;
+		auto outs = m_System->tempFileForWrite(renderParams.Codec == RenderParameters::Codecs::GIF ? 
+			AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
+		m_strMovieFile = pngCanvas::wcstomsb(tempname);
+		m_AnimationCanvas = std::make_unique<WinPngCanvas>(m_strMovieFile.c_str(), 
+			true, renderParams.AnimateWidth, renderParams.AnimateHeight, 
 			WinCanvas::SuggestPixelFormat(m_Engine.get()), false,
 			renderParams.AnimateFrameCount, renderParams.variation,
 			false, m_Renderer.get(), 1, 1, true, *m_System);
@@ -819,12 +823,10 @@ void CChildFrame::RunRenderThread()
 		} else {
 			renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
 				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
-			if (m_AnimationCanvas->completeMovie(rp.MovieFrameRate, rp.MovieLoops,
+			if (!m_AnimationCanvas->completeMovie(rp.MovieFrameRate, rp.MovieLoops,
 					rp.Codec == RenderParameters::Codecs::GIF ? pngCanvas::GIFfile : pngCanvas::MOVfile,
 					static_cast<pngCanvas::QTcodec>(rp.Codec), m_Engine->usesAlpha))
 			{
-				m_strMovieFile = m_AnimationCanvas->mOrigName;
-			} else {
 				::MessageBoxW(GetSafeHwnd(), L"Failed to save movie.", L"Animation Error", MB_ICONEXCLAMATION);
 			}
 

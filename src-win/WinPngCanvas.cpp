@@ -12,12 +12,6 @@
 
 bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
 {
-    if (mOrigName.empty()) {
-        std::wstring tempname;
-        auto outs = mSystem.tempFileForWrite(fmt == GIFfile ? AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
-        mOrigName = pngCanvas::wcstomsb(tempname);
-    }
-
     TCHAR szFileName[MAX_PATH];
     ::GetModuleFileNameW(NULL, szFileName, MAX_PATH);
     ::PathRemoveFileSpecW(szFileName);

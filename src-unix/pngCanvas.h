@@ -50,10 +50,8 @@ public:
         if (tmp && frameCount) {
             mTempFiles.reserve(frameCount);
             mTempDirectory = sys.tempDirectoryForWrite("cfdg-temp-GIFframes-");
-            if (mTempDirectory.empty()) {
+            if (mTempDirectory.empty())
                 mError = true;
-                std::cerr << "*** Cannot create temporary directory for GIF frames." << std::endl;
-            }
         }
     }
     ~pngCanvas();
@@ -69,7 +67,6 @@ public:
 protected:
     virtual void output(const char * outfilename, int frame = -1) override;
     virtual FILE* makeTemp(int frame);
-public:
     std::string mOrigName;
 private:
 	bool usetmpfile;
