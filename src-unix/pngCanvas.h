@@ -49,7 +49,7 @@ public:
     {
         if (tmp && frameCount) {
             mTempFiles.reserve(frameCount);
-            mTempDirectory = sys.tempDirectoryForWrite("cfdg-temp-GIFframes-");
+            mTempDirectory = sys.tempDirectoryForWrite("cfdg-temp-frames-");
             if (mTempDirectory.empty())
                 mError = true;
         }

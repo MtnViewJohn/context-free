@@ -27,6 +27,7 @@
 #include "UploadParams.h"
 #include "EditLock.h"
 #include "tiledCanvas.h"
+#include "makeCFFilename.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -355,6 +356,25 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 		if (!moved)
 			::DeleteFile(tempMovie16.c_str());	// clean up unsaved movies
 		m_strMovieFile.clear();					// file is moved or deleted
+		m_wndParent->ShowMessages(FALSE);
+	}
+
+	if (m_AnimationCanvas) {
+		std::wstring wtemp = Utf8ToUtf16(m_AnimationCanvas->mTempDirectory.c_str());
+		std::wstring name = (LPCWSTR)NameWithoutExtension();
+		name += L"%f";
+		MovieFileSave msave{ wtemp, name.c_str(), m_Engine->isLooped, renderParams};
+		if (msave.DoModal() == IDOK) {
+			std::string destTemplate = Utf16ToUtf8((LPCWSTR)msave.GetPathName());
+			for (int i = 0; i < (int)m_AnimationCanvas->mTempFiles.size(); ++i) {
+				auto dest = makeCFfilename(destTemplate.c_str(), i,
+					(int)m_AnimationCanvas->mTempFiles.size(), renderParams.variation);
+				BOOL ok = ::MoveFileExA(m_AnimationCanvas->mTempFiles[i].c_str(), dest.c_str(),
+					MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+				;
+			}
+		}
+		m_AnimationCanvas.reset();
 		m_wndParent->ShowMessages(FALSE);
 	}
 
@@ -736,10 +756,12 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	if (renderParams.action == RenderParameters::RenderActions::Animate &&
 		!renderParams.animateFrame)
 	{
-		std::wstring tempname;
-		auto outs = m_System->tempFileForWrite(renderParams.Codec == RenderParameters::Codecs::GIF ? 
-			AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
-		m_strMovieFile = pngCanvas::wcstomsb(tempname);
+		if (renderParams.Codec != RenderParameters::Codecs::PNG) {
+			std::wstring tempname;
+			auto outs = m_System->tempFileForWrite(renderParams.Codec == RenderParameters::Codecs::GIF ?
+				AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
+			m_strMovieFile = pngCanvas::wcstomsb(tempname);
+		}
 		m_AnimationCanvas = std::make_unique<WinPngCanvas>(m_strMovieFile.c_str(), 
 			true, renderParams.AnimateWidth, renderParams.AnimateHeight, 
 			WinCanvas::SuggestPixelFormat(m_Engine.get()), false,
@@ -821,16 +843,28 @@ void CChildFrame::RunRenderThread()
 			renderer->animate(m_Canvas, rp.AnimateFrameCount,
 				rp.MovieFrame, rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
 		} else {
+			static std::map<RenderParameters::Codecs, pngCanvas::OutputFormat> toFormat =
+			{
+				{RenderParameters::Codecs::PNG, pngCanvas::PNGfile},
+				{RenderParameters::Codecs::H264, pngCanvas::MOVfile},
+				{RenderParameters::Codecs::ProRes, pngCanvas::MOVfile},
+				{RenderParameters::Codecs::GIF, pngCanvas::GIFfile},
+			};
+
+			if (toFormat.find(rp.Codec) == toFormat.end()) {
+				::MessageBoxW(GetSafeHwnd(), L"Unknown movie encoding.", L"Animation Error", MB_ICONEXCLAMATION);
+				break;
+			}
 			renderer->animate(m_AnimationCanvas.get(), rp.AnimateFrameCount, 0,
 				rp.AnimateZoom && !m_Engine->isTiledOrFrieze());
-			if (!m_AnimationCanvas->completeMovie(rp.MovieFrameRate, rp.MovieLoops,
-					rp.Codec == RenderParameters::Codecs::GIF ? pngCanvas::GIFfile : pngCanvas::MOVfile,
+			if (!m_AnimationCanvas->completeMovie(rp.MovieFrameRate, rp.MovieLoops, toFormat[rp.Codec],
 					static_cast<pngCanvas::QTcodec>(rp.Codec), m_Engine->usesAlpha))
 			{
 				::MessageBoxW(GetSafeHwnd(), L"Failed to save movie.", L"Animation Error", MB_ICONEXCLAMATION);
 			}
 
-			m_AnimationCanvas.reset();
+			if (rp.Codec != RenderParameters::Codecs::PNG)
+				m_AnimationCanvas.reset();
 		}
 		break;
 	case RenderParameters::RenderActions::SaveSVG:

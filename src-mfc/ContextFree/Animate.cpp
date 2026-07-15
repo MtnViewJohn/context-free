@@ -95,6 +95,7 @@ BOOL Animate::OnInitDialog()
 	m_ctrlCodec.AddString(_T("H.264"));
 	m_ctrlCodec.AddString(_T("ProRes"));
 	m_ctrlCodec.AddString(_T("GIF"));
+	m_ctrlCodec.AddString(_T("PNG"));
 	m_ctrlCodec.SetCurSel((int)(params.Codec));
 	m_ctrlCodecLabel.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);
 	m_ctrlCodec.ShowWindow(m_bFrame ? SW_HIDE : SW_SHOWNA);

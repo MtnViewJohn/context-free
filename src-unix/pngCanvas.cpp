@@ -124,6 +124,9 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
 {
     std::string cmdline;
 
+    if (fmt == pngCanvas::PNGfile)
+        return true;
+
     if (fmt == pngCanvas::GIFfile) {
         if (loops == 1)
             loops = -1;

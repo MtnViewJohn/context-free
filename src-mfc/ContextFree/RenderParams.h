@@ -10,7 +10,7 @@ public:
     static void Modify(bool& param, bool v);
 
     enum class RenderActions { Render, Animate, SaveSVG };
-    enum class Codecs { H264 = 0, ProRes = 1, GIF = 2 };
+    enum class Codecs { H264 = 0, ProRes = 1, GIF = 2, PNG = 3 };
 
     RenderActions action = RenderActions::Render;
     int     width = 1000;

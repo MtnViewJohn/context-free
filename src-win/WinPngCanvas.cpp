@@ -12,6 +12,8 @@
 
 bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
 {
+    if (fmt == PNGfile)
+        return true;
     TCHAR szFileName[MAX_PATH];
     ::GetModuleFileNameW(NULL, szFileName, MAX_PATH);
     ::PathRemoveFileSpecW(szFileName);
