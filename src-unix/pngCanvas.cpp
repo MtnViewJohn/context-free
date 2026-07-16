@@ -102,7 +102,58 @@ pngCanvas::~pngCanvas()
     }
 }
 
-#pragma warning(disable:4996)
+std::string
+pngCanvas::CommandLine(std::string ffmpegBinary, double fps,
+                         std::string tempDirectory, int loopCount,
+                         std::string outputName, int outFormat)
+{
+    std::string cmdline;
+    const char* fmt = nullptr;
+    
+    switch (outFormat) {
+        case -1:
+        case 5:
+            break;
+        case 4: {
+            if (loopCount == 1)
+                loopCount = -1;
+            if (loopCount > 1)
+                --loopCount;
+            
+            fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                  "-vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
+                  "-loop %d -y '%s'";
+            auto sz = std::snprintf(nullptr, 0, fmt, ffmpegBinary.c_str(), fps,
+                                    tempDirectory.c_str(), loopCount, outputName.c_str());
+            std::vector<char> buf(sz + 1);
+            std::snprintf(buf.data(), sz + 1, fmt, ffmpegBinary.c_str(), fps,
+                          tempDirectory.c_str(), loopCount, outputName.c_str());
+            cmdline = buf.data();
+            break;
+        }
+        case 1:
+            fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                  "-c:v libx264 -preset slow -crf 20.0 -pix_fmt yuv420p -y '%s'";
+            break;
+        case 2:
+            fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                  "-c:v prores_ks -profile:v 2 -vendor apl0 -pix_fmt yuv422p10le -y '%s'";
+            break;
+        case 3:
+            fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                  "-c:v prores_ks -profile:v 4 -vendor apl0 -pix_fmt yuva444p10le -y '%s'";
+    }
+    if (fmt && cmdline.empty()) {
+        auto sz = std::snprintf(nullptr, 0, fmt, ffmpegBinary.c_str(), fps,
+                                tempDirectory.c_str(), outputName.c_str());
+        std::vector<char> buf(sz + 1);
+        std::snprintf(buf.data(), sz + 1, fmt, ffmpegBinary.c_str(), fps,
+                      tempDirectory.c_str(), outputName.c_str());
+        cmdline = buf.data();
+    }
+    return cmdline;
+}
+
 
 bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
 {
@@ -110,7 +161,24 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
 
     if (fmt == pngCanvas::PNGfile)
         return true;
-
+#ifdef __APPLE__
+    int ifmt;
+    switch (codec) {
+        case QTcodec::H264:
+            ifmt = 1;
+            break;
+        case QTcodec::ProRes:
+            ifmt = alpha ? 3 : 2;
+            break;
+        case QTcodec::GIF:
+            ifmt = 4;
+            break;
+    }
+    cmdline = CommandLine("ffmpeg", (double)fps, mTempDirectory.c_str(),
+                          loops, mOrigName.c_str(), ifmt);
+    if (cmdline.empty())
+        return false;
+#else
     if (fmt == pngCanvas::GIFfile) {
         if (loops == 1)
             loops = -1;
@@ -138,6 +206,7 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
                     fps, mTempDirectory, mOrigName);
         }
     }
+#endif
 
     fs::path outfile_p(mOrigName);
     if (std::system(cmdline.c_str()) || !fs::exists(outfile_p)) {
@@ -151,15 +220,16 @@ FILE* pngCanvas::makeTemp(int frame)
 {
     if (frame) {
         if (!mTempDirectory.empty()) {
-            mFileName = std::format("{}/{:04d}.png",
-                mTempDirectory, frame - 1);
+            std::vector<char> buf(mTempDirectory.length() + 16);
+            std::snprintf(buf.data(), mTempDirectory.length() + 16,
+                          "%s/%04d.png", mTempDirectory.c_str(), frame - 1);
+            mFileName = buf.data();
             return std::fopen(mFileName.c_str(), "wb");
         }
     } else {
 #ifndef _WIN32
         // Doesn't compile on Windows, but is never used, so there
-        mFileName = std::format("{}/cfdg_temp_image_XXXXXX.png",
-            mSystem.tempFileDirectory());
+        mFileName = std::string(mSystem.tempFileDirectory()) + "/cfdg_temp_image_XXXXXX.png";
 #endif
         int fd = mkstemps(mFileName.data(), 4);
         if (fd != -1)
@@ -222,7 +292,9 @@ void pngCanvas::output(const char* outfilename, int frame)
             throw false;
         }
         
+#ifdef _WIN32
 #pragma warning(disable:4611)
+#endif
 
         if (setjmp(png_jmpbuf(png_ptr)))
             throw "Unspecified PNG output failure.";

@@ -61,6 +61,9 @@ public:
 
     virtual bool completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha);
     static bool ffAvailable();
+    static std::string CommandLine(std::string ffmpegBinary, double fps,
+                                   std::string tempDirectory, int loopCount,
+                                   std::string outputName, int fmt);
 protected:
     virtual void output(const char * outfilename, int frame = -1) override;
     virtual FILE* makeTemp(int frame);
