@@ -136,6 +136,7 @@ cfdg_ptr     mEngine;
 renderer_ptr mRenderer;
 canvas_ptr   mCanvas;
 tempfile_ptr mMovieFile;
+bool         mMovieFramesReady;
 BitmapAndFormat*  mRenderBitmap;  // this bitmap must never be drawn
 }
 @end
@@ -199,6 +200,7 @@ typedef NS_ENUM(NSInteger, FindType) {
 - (void)saveTileImagetoFile:(NSURL*)filename;
 - (void)saveSvgtoFile:(NSURL*)filename;
 - (void)saveMovietoFile:(NSURL*)filename;
+- (void)saveMovieFrames:(NSURL*)filename;
 
 - (void)deleteRenderer;
 + (void)rendererDeleteThread:(id)arg;
@@ -497,6 +499,7 @@ height: %dpx;\
         mRestartRenderer = false;
         mUpdateTimer = nil;
         mMovieView = nil;
+        mMovieFramesReady = false;
         
         mRendering = false;
         mRestartRenderer = false;
@@ -874,7 +877,11 @@ height: %dpx;\
 
 - (IBAction)saveOutput:(id)sender
 {
-    if (mMovieFile) {
+    bool isMovie = false;
+    if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas.get()))
+        isMovie = ic->isMovie();
+    
+    if (mMovieFile) {                   // It's a GIF or MOV file
         if (!mMovieFile->written()) {
             [mDocument noteStatus: @"Movie file is already saved."];
             NSBeep();
@@ -884,9 +891,14 @@ height: %dpx;\
                         fileType: @[mMovieFile->type() == "GIF" ? @"gif" : @"mov"]
                    accessoryView: nil
                   didEndSelector: @selector(saveMovietoFile:)];
-    } else if (mTiled) {
+    } else if (isMovie) {               // It's a folder of PNG files
+        [self showSavePanelTitle: NSLocalizedString(@"Save as Animation Frames", @"")
+                        fileType: @[@"png"]
+                   accessoryView: mSaveFramesAccessory
+                  didEndSelector: @selector(saveMovieFrames:)];
+    } else if (mTiled) {                // Tiled image
         [self saveTileImage: sender];
-    } else {
+    } else {                            // Regular image
         [self showSavePanelTitle: NSLocalizedString(@"Save Image", @"")
                         fileType: @[@"png"]
                    accessoryView: mSaveImageAccessory
@@ -961,7 +973,7 @@ height: %dpx;\
         return !mRendering && mRenderBitmap && NSAppKitVersionNumber >= NSAppKitVersionNumber10_9;
     
     if (action == @selector(saveOutput:))
-        return !mRendering && (mRenderBitmap || mMovieFile);
+        return !mRendering && (mRenderBitmap || mMovieFile || mMovieFramesReady);
     
     if (action == @selector(findAction:) && std::find(findtags, findtags+5, tag) != findtags+5)
         return [[mFindText stringValue] length] > 0;
@@ -1650,20 +1662,9 @@ long MakeColor(id v)
     float movieLength = [defaults floatForKey: PrefKeyMovieLength];
     NSInteger movieFrameRate = [defaults integerForKey: PrefKeyMovieFrameRate];
     mLoopCount = loops;
-    auto fmt = ImageCanvas::H264;
-    switch ([defaults integerForKey: PrefKeyMovieFormat]) {
-        case 2:
-            fmt = ImageCanvas::ProRes422;
-            break;
-        case 3:
-            fmt = ImageCanvas::ProRes4444;
-            break;
-        case 4:
-            fmt = ImageCanvas::GIF;
-            break;
-        default:
-            break;
-    }
+    ImageCanvas::VideoFormat fmt = (ImageCanvas::VideoFormat)[defaults integerForKey: PrefKeyMovieFormat];
+    if ((int)fmt == 0)
+        fmt = ImageCanvas::H264;
     
     if ((int)movieWidth & 15 || (int)movieHeight & 1) {
         NSString* message =     parameters.animateFrame ?
@@ -1722,14 +1723,19 @@ long MakeColor(id v)
         }
         
         [self tearDownPlayer];
-        mMovieFile = std::make_unique<TempFile>([mDocument system],
-            fmt == ImageCanvas::GIF ? AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, 0);
-        auto stream = mMovieFile->forWrite();
-        stream.reset();  // close the temp file, we need its name
+        if (fmt != ImageCanvas::VideoFormat::PNG) {
+            mMovieFile = std::make_unique<TempFile>([mDocument system],
+                                                    fmt == ImageCanvas::GIF ? AbstractSystem::GIFtemp :
+                                                                              AbstractSystem::MovieTemp,
+                                                    0);
+            auto stream = mMovieFile->forWrite();
+            stream.reset();  // close the temp file, we need its name
+        }
         
-        mCanvas = std::make_unique<ImageCanvas>(mMovieFile->name(), [bits autorelease], pixfmt,
-                                             static_cast<int>(movieFrameRate), fmt,
-                                             parameters.animateFrameCount, loops,
+        mCanvas = std::make_unique<ImageCanvas>(mMovieFile ? mMovieFile->name() : "",
+                                                [bits autorelease], pixfmt,
+                                                static_cast<int>(movieFrameRate), fmt,
+                                                parameters.animateFrameCount, loops,
                                                 *[mDocument system]);
 
         if (!mCanvas->mError) {
@@ -1760,6 +1766,7 @@ long MakeColor(id v)
     mRestartRenderer = false;
     mRendererFinishing = false;
     mRendererStopping = false;
+    mMovieFramesReady = false;
     
     [mActionControl setLabel: NSLocalizedString(@"Stop", @"") forSegment: 0];
     
@@ -1819,6 +1826,8 @@ long MakeColor(id v)
                 NSBeep();
             else if (parameters.animateFrame == 0 && !ic->completeMovie())
                 NSBeep();
+            if (!ic->mError && ic->isMovie())
+                mMovieFramesReady = true;
         }
         else {
             mRenderer->draw(mCanvas.get());
@@ -1852,7 +1861,8 @@ long MakeColor(id v)
     mRendererFinishing = false;
     mRendererStopping = false;
 
-    mCanvas.reset();
+    if (!mMovieFramesReady)
+        mCanvas.reset();
     
 #ifndef PROGRESS_ANIMATE_DIRECTLY
     [mProgress stopAnimation: self];
@@ -1883,6 +1893,9 @@ long MakeColor(id v)
     
     if (mCloseOnRenderStopped)
         [[self window] performClose: self];
+    
+    if (mMovieFramesReady)
+        [self saveOutput: arg];
 }
 
 @end
@@ -2568,6 +2581,8 @@ long MakeColor(id v)
             stringByDeletingPathExtension] lastPathComponent];
     if ([name length] == 0)
         name = [[self window] title];
+    if ([title containsString: @"Frame"])
+        [sp setNameFieldLabel: @"Save As Template:"];
         
     if ([[NSUserDefaults standardUserDefaults]
             boolForKey: @"SaveWithVariationCode"])
@@ -2577,7 +2592,9 @@ long MakeColor(id v)
                             lowerCase: YES];
         name = [name stringByAppendingFormat: @"-%@", var];
     }
-    
+    if ([name length] > 0 && [title containsString: @"Frame"])
+        name = [name stringByAppendingString: @"%f"];
+
     [sp setDirectoryURL: saveImageDirectory];
     [sp setNameFieldStringValue: name];
     [sp beginWithCompletionHandler: ^(NSInteger result) {
@@ -2679,6 +2696,24 @@ long MakeColor(id v)
         [mDocument noteStatus: @"Movie save failed."];
         NSBeep();
     }
+}
+
+- (void)saveMovieFrames:(NSURL *)filename
+{
+    ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas.get());
+    if (ic == nullptr || !ic->isMovie()) {
+        [mDocument noteStatus: @"There are no movie frames to save."];
+        NSBeep();
+        return;
+    }
+    if (ic->saveFrames(filename, mCurrentVariation)) {
+        [mDocument noteStatus: @"Movie save complete."];
+    } else {
+        [mDocument noteStatus: @"Movie save failed."];
+        NSBeep();
+    }
+    mCanvas.reset();
+    mMovieFramesReady = false;
 }
 
 - (void)deleteRenderer

@@ -241,6 +241,7 @@
                                     <outlet property="mReplaceText" destination="e7S-vb-lWZ" id="Bpd-mB-0Oe"/>
                                     <outlet property="mRewindView" destination="cpk-DK-ad8" id="RQD-rd-aoK"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
+                                    <outlet property="mSaveFramesAccessory" destination="Kw5-k7-VSU" id="vMD-Eh-wac"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
                                     <outlet property="mSaveTileAccessory" destination="305" id="499"/>
                                     <outlet property="mSaveTileHeight" destination="507" id="511"/>
@@ -424,7 +425,7 @@ The variation code is a one to six letter sequence.</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="61">
-                                <rect key="frame" x="812" y="12" width="280" height="14"/>
+                                <rect key="frame" x="811" y="12" width="281" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
                                     <font key="font" metaFont="message" size="11"/>
@@ -679,6 +680,7 @@ To speed up the process of larger renders, no updates will occur in the window w
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="575" y="1892"/>
         </window>
         <numberFormatter formatterBehavior="10_0" positiveFormat="###0" negativeFormat="-###0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="145" userLabel="DimensionFormatter">
             <attributedString key="attributedStringForNil"/>
@@ -1221,15 +1223,18 @@ Gw
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YRu-Mv-rrL">
                         <rect key="frame" x="155" y="57" width="157" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Gbf-tD-ief" id="Vip-dp-Dwn">
+                        <popUpButtonCell key="cell" type="push" title="H.264" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="Gbf-tD-ief" id="Vip-dp-Dwn">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="message"/>
                             <menu key="menu" title="OtherViews" id="del-9h-lpq">
                                 <items>
-                                    <menuItem title="H.264" state="on" id="Gbf-tD-ief"/>
+                                    <menuItem title="H.264" state="on" tag="1" id="Gbf-tD-ief"/>
                                     <menuItem title="ProRes 422" tag="2" id="Qv7-kj-C9X"/>
                                     <menuItem title="ProRes 4444" tag="3" id="RCR-YZ-DQg"/>
                                     <menuItem title="GIF" tag="4" id="UQ9-CS-yaH">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="PNG" tag="5" id="3eZ-ZK-UYH">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                 </items>
@@ -1312,6 +1317,28 @@ Gw
             <real key="minimum" value="1"/>
             <real key="maximum" value="9999"/>
         </numberFormatter>
+        <window title="Save Frames Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="wqh-XY-ylv" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="171" y="114" width="650" height="193"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>
+            <view key="contentView" id="p6r-Cw-OOW">
+                <rect key="frame" x="0.0" y="0.0" width="650" height="193"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Kw5-k7-VSU">
+                        <rect key="frame" x="18" y="126" width="506" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="In the template, %f expands to the frame number. %v &amp; %V expand to the variation" id="NQX-V5-u7Z">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-120" y="1544.5"/>
+        </window>
     </objects>
     <resources>
         <image name="NSGoLeftTemplate" width="12" height="17"/>

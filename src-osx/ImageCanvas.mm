@@ -135,6 +135,10 @@ ImageCanvas::completeMovie()
     const char* fmt = nullptr;
     
     switch (mOutFormat) {
+        case NotVideo:
+            return false;
+        case PNG:
+            return true;
         case GIF: {
             if (mLoopCount == 1)
                 mLoopCount = -1;
@@ -180,4 +184,40 @@ ImageCanvas::completeMovie()
         return false;
     }
     return true;
+}
+
+bool
+ImageCanvas::saveFrames(NSURL* dest, int var)
+{
+    if ([[dest pathExtension] compare: @"png" options:NSCaseInsensitiveSearch] != NSOrderedSame)
+        return false;
+    std::string destStr = [dest fileSystemRepresentation];
+    if (destStr.find("%f") == std::string::npos) {
+        destStr.resize(destStr.length() - 4);
+        if (std::isdigit((int)destStr.back()))
+            destStr.append("_%f.png");
+        else
+            destStr.append("%f.png");
+    }
+    
+    auto nsfm = [NSFileManager defaultManager];
+    for (int i = 0; i < (int)mTempFiles.size(); ++i) {
+        std::string name = makeCFfilename(destStr.c_str(), i, mFrameCount, var);
+        NSString* from = [NSString stringWithUTF8String: mTempFiles[i].c_str()];
+        NSString* to = [NSString stringWithUTF8String: name.c_str()];
+        BOOL isDir;
+        if ([nsfm fileExistsAtPath: to isDirectory: &isDir] && !isDir)
+            [nsfm removeItemAtPath: to error: nil];
+        if (![nsfm moveItemAtPath: from toPath: to error: nil]) {
+            return false;
+        }
+    }
+    mTempFiles.clear();
+    return true;
+}
+
+bool
+ImageCanvas::isMovie() const
+{
+    return mOutFormat == PNG && mFrameCount > 0;
 }

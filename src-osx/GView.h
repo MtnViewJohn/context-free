@@ -73,9 +73,6 @@ long MakeColor(id v);
     int         mOutputProgressDelay;
     
     WKWebView*      mMovieView;
-    id              mTimeObserverToken;
-    bool            mAtEndofMovie;
-    id              mEndMovieToken;
     BOOL            mLoop;
     double          mFrameRate;
     int             mLoopCount;
@@ -121,6 +118,7 @@ long MakeColor(id v);
     IBOutlet NSTextField*           mRenderX;
 
     IBOutlet NSView*                mSaveImageAccessory;
+    IBOutlet NSView*                mSaveFramesAccessory;
     IBOutlet NSView*                mSaveTileAccessory;
     IBOutlet NSTextField*           mSaveTileWidth;
     IBOutlet NSTextField*           mSaveTileHeight;

@@ -36,7 +36,7 @@ class ImageCanvas : public aggCanvas
 {
 public:
     enum VideoFormat {
-        H264, ProRes422, ProRes4444, GIF
+        NotVideo = -1, H264 = 1, ProRes422 = 2, ProRes4444 = 3, GIF = 4, PNG = 5
     };
     ImageCanvas(GView* view, BitmapImageHolder* bitmap, PixelFormat format);
     ImageCanvas(const std::string& name, BitmapImageHolder* bits, aggCanvas::PixelFormat pixfmt,
@@ -47,13 +47,15 @@ public:
                 int width, int height) override;
     void end() override;
     bool completeMovie();
+    bool isMovie() const;
+    bool saveFrames(NSURL* dest, int var);
     
 private:
     GView*   mView = nil;
     const std::string& mOutputName;
     BitmapImageHolder* mImageData = nil;
     int     fps = 15;
-    VideoFormat mOutFormat = H264;
+    VideoFormat mOutFormat = NotVideo;
     int      mFrameCount = 0;
     int     mLoopCount = -1;
     int     mCurrentFrame = 0;
