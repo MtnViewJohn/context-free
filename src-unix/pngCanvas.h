@@ -59,9 +59,6 @@ public:
     std::string mTempDirectory;
     std::vector<std::string> mTempFiles;
 
-    static std::string wcstomsb(const std::wstring& wstr);
-    static std::wstring mbstowcs(const std::string& str);
-
     virtual bool completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha);
     static bool ffAvailable();
 protected:

@@ -760,7 +760,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			std::wstring tempname;
 			auto outs = m_System->tempFileForWrite(renderParams.Codec == RenderParameters::Codecs::GIF ?
 				AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
-			m_strMovieFile = pngCanvas::wcstomsb(tempname);
+			m_strMovieFile = Utf16ToUtf8(tempname.c_str());
 		}
 		m_AnimationCanvas = std::make_unique<WinPngCanvas>(m_strMovieFile.c_str(), 
 			true, renderParams.AnimateWidth, renderParams.AnimateHeight, 

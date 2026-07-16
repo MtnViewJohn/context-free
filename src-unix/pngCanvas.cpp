@@ -104,22 +104,6 @@ pngCanvas::~pngCanvas()
 
 #pragma warning(disable:4996)
 
-std::string pngCanvas::wcstomsb(const std::wstring& wstr)
-{
-    auto mblen = ::wcstombs(NULL, wstr.c_str(), 0);
-    std::vector<char> buf(mblen + 1);
-    ::wcstombs(buf.data(), wstr.c_str(), mblen + 1);
-    return std::string(buf.data(), mblen);
-}
-
-std::wstring pngCanvas::mbstowcs(const std::string& str)
-{
-    auto wlen = ::mbstowcs(NULL, str.c_str(), 0);
-    std::vector<wchar_t> wbuf(wlen + 1);
-    ::mbstowcs(wbuf.data(), str.c_str(), wlen + 1);
-    return std::wstring(wbuf.data(), wlen);
-}
-
 bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec codec, bool alpha)
 {
     std::string cmdline;
