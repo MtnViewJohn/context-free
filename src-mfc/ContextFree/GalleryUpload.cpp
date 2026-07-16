@@ -295,7 +295,7 @@ void GalleryUpload::OnClickedUpload()
 			m_ctrlTagEdit.AddString(tag);
 		if (!upload.mTags.empty())
 			upload.mTags.push_back(' ');
-		upload.mTags.append(Utf16ToUtf8(tag));
+		upload.mTags.append(Utf16ToUtf8((LPCTSTR)tag));
 	}
 
 	upload.mFileName = Utf16ToUtf8((LPCTSTR)m_sFilename) + ".cfdg";

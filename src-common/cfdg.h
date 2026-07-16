@@ -83,8 +83,9 @@ private:
 };
 
 #ifdef _WIN32
-std::string  Utf16ToUtf8(const wchar_t* wstr);
-std::wstring Utf8ToUtf16(const char* str);
+#include <string_view>
+std::string  Utf16ToUtf8(std::wstring_view wstr);
+std::wstring Utf8ToUtf16(std::string_view str);
 #endif
 
 class AbstractSystem {

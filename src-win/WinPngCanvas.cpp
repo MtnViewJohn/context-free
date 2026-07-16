@@ -18,8 +18,8 @@ bool WinPngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec c
     ::GetModuleFileNameW(NULL, szFileName, MAX_PATH);
     ::PathRemoveFileSpecW(szFileName);
     ::PathAppendW(szFileName, L"ffmpeg.exe");
-    std::wstring wtempdir = Utf8ToUtf16(mTempDirectory.c_str());
-    std::wstring outfile = Utf8ToUtf16(mOrigName.c_str());
+    std::wstring wtempdir = Utf8ToUtf16(mTempDirectory);
+    std::wstring outfile = Utf8ToUtf16(mOrigName);
     std::wstring cmdline;
 
     if (fmt == pngCanvas::GIFfile) {
@@ -77,7 +77,7 @@ FILE* WinPngCanvas::makeTemp(int frame)
     } else {
         auto wTemplate = std::format(L"{}\\cfdg_temp_image_XXXXXX",
             mSystem.tempFileDirectory());
-        mFileName = Utf16ToUtf8(wTemplate.c_str());
+        mFileName = Utf16ToUtf8(wTemplate);
         if (_mktemp_s(mFileName.data(), mFileName.length() + 1) == 0 &&
             fopen_s(&fp, mFileName.c_str(), "wb") == 0)
         {

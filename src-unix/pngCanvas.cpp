@@ -49,11 +49,6 @@ namespace {
     {
         return ((s & 0xff) << 8) | ((s & 0xff00) >> 8);
     }
-
-    // This fake implementation of a Posix function should never be called
-    // in either Windows or Posix
-    int mkstemps(char*, int)
-    { return -1; }
 }
 #endif
 
@@ -218,6 +213,7 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
 
 FILE* pngCanvas::makeTemp(int frame)
 {
+#ifndef _WIN32
     if (frame) {
         if (!mTempDirectory.empty()) {
             std::vector<char> buf(mTempDirectory.length() + 16);
@@ -227,14 +223,13 @@ FILE* pngCanvas::makeTemp(int frame)
             return std::fopen(mFileName.c_str(), "wb");
         }
     } else {
-#ifndef _WIN32
         // Doesn't compile on Windows, but is never used, so there
         mFileName = std::string(mSystem.tempFileDirectory()) + "/cfdg_temp_image_XXXXXX.png";
-#endif
         int fd = mkstemps(mFileName.data(), 4);
         if (fd != -1)
             return fdopen(fd, "w");
     }
+#endif
     return nullptr;
 }
 

@@ -40,14 +40,14 @@
 using std::cerr;
 using std::endl;
 
-std::string  Utf16ToUtf8(const wchar_t* wstr)
+std::string  Utf16ToUtf8(std::wstring_view wstr)
 {
     std::string str;
-    int wlen = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, NULL, NULL);
+    int wlen = ::WideCharToMultiByte(CP_UTF8, 0, wstr.data(), -1, nullptr, 0, NULL, NULL);
     if (wlen == 0)
         return str;
     str.resize(wlen - 1, ' ');
-    int len = ::WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str.data(), wlen, NULL, NULL);
+    int len = ::WideCharToMultiByte(CP_UTF8, 0, wstr.data(), -1, str.data(), wlen, NULL, NULL);
     if (len == 0) {
         str.clear();
         return str;
@@ -57,14 +57,14 @@ std::string  Utf16ToUtf8(const wchar_t* wstr)
     return str;
 }
 
-std::wstring Utf8ToUtf16(const char* str)
+std::wstring Utf8ToUtf16(std::string_view str)
 {
     std::wstring wstr;
-    int len = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, nullptr, 0);
+    int len = ::MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
     if (len == 0)
         return wstr;
     wstr.resize(len - 1, L' ');
-    int wlen = ::MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr.data(), len);
+    int wlen = ::MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, wstr.data(), len);
     if (wlen == 0) {
         wstr.clear();
         return wstr;
@@ -154,8 +154,8 @@ Win32System::tempDirectoryForWrite(const char* prefix)
 std::string
 Win32System::relativeFilePath(const std::string& base, const std::string& rel)
 {
-    std::wstring wbase = Utf8ToUtf16(base.c_str());
-    std::wstring wrel = Utf8ToUtf16(rel.c_str());
+    std::wstring wbase = Utf8ToUtf16(base);
+    std::wstring wrel = Utf8ToUtf16(rel);
 
     ::PathRemoveFileSpecW(wbase.data());        // modify wbase in-situ
     wbase.resize(wcslen(wbase.data()), L' ');   // update wbase to shunken size
@@ -166,7 +166,7 @@ Win32System::relativeFilePath(const std::string& base, const std::string& rel)
     wbase.append(wrel);
 
     if (::PathFileExistsW(wbase.c_str())) {
-        return Utf16ToUtf8(wbase.data());
+        return Utf16ToUtf8(wbase);
     } else {
         return rel;
     }
@@ -232,7 +232,7 @@ Win32System::normalize(const std::string& u8name)
         return std::wstring();
 
     // Convert from utf-8 to utf-16
-    std::wstring u16name = Utf8ToUtf16(u8name.c_str());
+    std::wstring u16name = Utf8ToUtf16(u8name);
 
     // normalize the utf-16 string
     int normLen = ::NormalizeString(NormalizationKC, u16name.c_str(), -1, NULL, 0);
