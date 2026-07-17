@@ -36,8 +36,9 @@
 #include <cerrno>
 
 int
-Variation::fromString(const char* str)
+Variation::fromString(std::string_view strv)
 {
+    const char* str = strv.data();
     while (std::isspace(static_cast<unsigned char>(*str))) ++str;
     errno = 0;
     if (!std::isalnum(static_cast<unsigned char>(*str))) return -1;

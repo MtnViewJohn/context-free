@@ -158,7 +158,7 @@ Upload::Upload(const char* jsonbuf, std::size_t jsonlen)
         mId = j.at("design").at("id").get<int>();
         mFileName = j.at("design").at("filelocation").get<std::string>();
         try {
-            mVariation = Variation::fromString(j.at("design").at("variation").get<std::string>().c_str());
+            mVariation = Variation::fromString(j.at("design").at("variation").get<std::string>());
         } catch (...) {}
         try {
             // Only present for gallery download

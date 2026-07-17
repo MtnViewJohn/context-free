@@ -650,7 +650,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 			c->renderParams.variation = 0;
 			c->m_bReuseVariation = true;
 		} else {
-			int v = Variation::fromString(buf.c_str());
+			int v = Variation::fromString(buf);
 			if (v == -1) {
 				auto str = Variation::toString(c->renderParams.variation, false);
 				::SetDlgItemTextA(hDlg, id, str.c_str());

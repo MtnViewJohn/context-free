@@ -285,7 +285,7 @@ processCommandLine(int argc, char* argv[], options& opt)
             bailout("Border size must be between -1 and 2");
     }
     if (variation) {
-        opt.variation = Variation::fromString(args::get(variation).c_str());
+        opt.variation = Variation::fromString(args::get(variation));
         if (opt.variation == -1)
             bailout("Error parsing variation");
     }
