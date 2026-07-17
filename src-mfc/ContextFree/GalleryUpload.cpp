@@ -408,7 +408,7 @@ UINT GalleryUpload::TagsControllingFunction(LPVOID pParam)
 			if (!response.empty()) {
 				AllTags = Upload::AllTags(response.c_str(), response.length());
 				for (const auto& tag : AllTags)
-					AllTagsL.insert(Utf8ToUtf16(tag.c_str()));
+					AllTagsL.insert(Utf8ToUtf16(tag));
 				::PostMessageW(hDlg, WM_USER_RENDER_COMPLETE, 1, 0);
 			}
 		}
@@ -430,7 +430,7 @@ void GalleryUpload::PerformPost()
 	HINTERNET hInetInit = nullptr;
 	HINTERNET hInetCnxn = nullptr;
 
-	std::wstring header = Utf8ToUtf16(Upload::generateContentType().c_str());
+	std::wstring header = Utf8ToUtf16(Upload::generateContentType());
 	header.insert(0, L"Content-Type: ");
 
 	hInetInit = ::InternetOpen(L"Context Free", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
@@ -505,7 +505,7 @@ LRESULT GalleryUpload::UploadDone(WPARAM wParam, LPARAM lParam)
 		m_ctrlUpload.SetWindowTextW(L"Upload");
 		m_ctrlUpload.EnableWindow();
 		if (!m_sErrorMessage.empty()) {
-			::MessageBox(GetSafeHwnd(), Utf8ToUtf16(m_sErrorMessage.c_str()).c_str(),
+			::MessageBox(GetSafeHwnd(), Utf8ToUtf16(m_sErrorMessage).c_str(),
 				L"Upload Failed", MB_ICONASTERISK);
 			m_sErrorMessage.clear();
 		} else {

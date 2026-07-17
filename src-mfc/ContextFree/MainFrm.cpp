@@ -117,7 +117,7 @@ namespace {
 						if (!download.mId)
 							return 1;
 						CMainFrame::NextString = std::move(download.mPassword);
-						CMainFrame::NextName = Utf8ToUtf16(download.mFileName.c_str()).c_str();
+						CMainFrame::NextName = Utf8ToUtf16(download.mFileName).c_str();
 						CMainFrame::NextVariation = download.mVariation;
 					}
 					// Trim path components and extension
@@ -526,7 +526,7 @@ void CMainFrame::OnUpdateRenderBar(CCmdUI* pCmdUI)
 			pCmdUI->SetText(_T(""));
 		} else {
 			std::string v = Variation::toString(c->renderParams.variation, false);
-			std::wstring v16 = Utf8ToUtf16(v.c_str());
+			std::wstring v16 = Utf8ToUtf16(v);
 			pCmdUI->SetText(v16.c_str());
 		}
 		break;

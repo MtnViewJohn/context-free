@@ -333,7 +333,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 	}
 
 	if (!m_strMovieFile.empty()) {
-		std::wstring tempMovie16 = Utf8ToUtf16(m_strMovieFile.c_str());
+		std::wstring tempMovie16 = Utf8ToUtf16(m_strMovieFile);
 		bool moved = false;
 		DWORD attr = ::GetFileAttributes(tempMovie16.c_str());
 		if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -360,7 +360,7 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 	}
 
 	if (m_AnimationCanvas) {
-		std::wstring wtemp = Utf8ToUtf16(m_AnimationCanvas->mTempDirectory.c_str());
+		std::wstring wtemp = Utf8ToUtf16(m_AnimationCanvas->mTempDirectory);
 		std::wstring name = (LPCWSTR)NameWithoutExtension();
 		name += L"%f";
 		MovieFileSave msave{ wtemp, name.c_str(), m_Engine->isLooped, renderParams};
@@ -614,7 +614,7 @@ void CChildFrame::OnUploadGallery()
 	auto& rCtrl{ m_vwCfdgEditor->GetCtrl() };
 	uParams.cfdgName = m_CFdoc->GetTitle();
 	uParams.variation = renderParams.variation;
-	uParams.variationText = Utf8ToUtf16(Variation::toString(renderParams.variation, false).c_str()).c_str();
+	uParams.variationText = Utf8ToUtf16(Variation::toString(renderParams.variation, false)).c_str();
 	uParams.cfdgText.resize(rCtrl.GetTextLength(), ' ');
 	rCtrl.GetText(uParams.cfdgText.length(), uParams.cfdgText.data());
 	uParams.Tiled = m_Engine->isFrieze();
@@ -764,7 +764,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 			std::wstring tempname;
 			auto outs = m_System->tempFileForWrite(renderParams.Codec == RenderParameters::Codecs::GIF ?
 				AbstractSystem::GIFtemp : AbstractSystem::MovieTemp, tempname);
-			m_strMovieFile = Utf16ToUtf8(tempname.c_str());
+			m_strMovieFile = Utf16ToUtf8(tempname);
 		}
 		m_AnimationCanvas = std::make_unique<WinPngCanvas>(m_strMovieFile.c_str(), 
 			true, renderParams.AnimateWidth, renderParams.AnimateHeight, 
