@@ -452,22 +452,22 @@ void CMainFrame::OnRenderBar(UINT id)
 	case ID_RB_RENDER:
 		c->renderParams.action = RenderParameters::RenderActions::Render;
 		c->renderParams.renderSize = false;
-		c->m_bReuseVariation = true;
+		c->m_bReuseVariation = TRUE;
 		break;
 	case ID_RB_SIZED:
 		c->renderParams.action = RenderParameters::RenderActions::Render;
 		c->renderParams.renderSize = true;
-		c->m_bReuseVariation = true;
+		c->m_bReuseVariation = TRUE;
 		break;
 	case ID_RB_ANIMATE:
 		c->renderParams.action = RenderParameters::RenderActions::Animate;
 		c->renderParams.animateFrame = false;
-		c->m_bReuseVariation = true;
+		c->m_bReuseVariation = TRUE;
 		break;
 	case ID_RB_FRAME:
 		c->renderParams.action = RenderParameters::RenderActions::Animate;
 		c->renderParams.animateFrame = true;
-		c->m_bReuseVariation = true;
+		c->m_bReuseVariation = TRUE;
 		break;
 	default:
 		break;
@@ -654,7 +654,7 @@ void CMainFrame::OnRenderEdits(UINT id)
 			if (v == -1) {
 				auto str = Variation::toString(c->renderParams.variation, false);
 				::SetDlgItemTextA(hDlg, id, str.c_str());
-			} else {
+			} else if (c->renderParams.variation != v) {
 				c->renderParams.variation = v;
 				c->m_bReuseVariation = true;
 			}

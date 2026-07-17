@@ -57,6 +57,7 @@ public:
 	bool m_bDirty;
 	void OnRenderAgain();
 	void OnSaveOutput();
+	void NextVariation();
 	void OnNextVariation();
 	void OnPrevVariation();
 	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);

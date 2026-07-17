@@ -646,12 +646,16 @@ void CChildFrame::OnUpdateSaveImage(CCmdUI* pCmdUI)
 	pCmdUI->Enable(m_WinCanvas && m_Renderer && !m_hRenderThread);
 }
 
-void CChildFrame::OnNextVariation()
+void CChildFrame::NextVariation()
 {
 	++renderParams.variation;
-	m_bReuseVariation = TRUE;
 	if (renderParams.variation > Variation::recommendedMax(6))
 		renderParams.variation = Variation::recommendedMin();
+}
+void CChildFrame::OnNextVariation()
+{
+	m_bReuseVariation = TRUE;
+	NextVariation();
 }
 void CChildFrame::OnPrevVariation()
 {
@@ -694,8 +698,8 @@ void CChildFrame::DoRender(bool shrinkTiled)
 
 	bool modifiedSinceRender = SyncToSystem();
 	if (!modifiedSinceRender && !m_bReuseVariation && renderParams.action != RenderParameters::RenderActions::Animate)
-		OnNextVariation();
-	m_bReuseVariation = false;
+		NextVariation();
+	m_bReuseVariation = FALSE;
 
 	if (renderParams.variation == 0)
 		OnNextVariation();
