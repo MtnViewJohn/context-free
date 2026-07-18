@@ -241,7 +241,7 @@
                                     <outlet property="mReplaceText" destination="e7S-vb-lWZ" id="Bpd-mB-0Oe"/>
                                     <outlet property="mRewindView" destination="cpk-DK-ad8" id="RQD-rd-aoK"/>
                                     <outlet property="mSaveAnimationAccessory" destination="218" id="226"/>
-                                    <outlet property="mSaveFramesAccessory" destination="Kw5-k7-VSU" id="vMD-Eh-wac"/>
+                                    <outlet property="mSaveFramesAccessory" destination="p6r-Cw-OOW" id="9zM-dd-All"/>
                                     <outlet property="mSaveImageAccessory" destination="139" id="144"/>
                                     <outlet property="mSaveTileAccessory" destination="305" id="499"/>
                                     <outlet property="mSaveTileHeight" destination="507" id="511"/>
@@ -425,7 +425,7 @@ The variation code is a one to six letter sequence.</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="61">
-                                <rect key="frame" x="811" y="12" width="281" height="14"/>
+                                <rect key="frame" x="811" y="12" width="280" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" placeholderString="image statistics" id="400">
                                     <font key="font" metaFont="message" size="11"/>
@@ -1317,8 +1317,8 @@ Gw
             <real key="minimum" value="1"/>
             <real key="maximum" value="9999"/>
         </numberFormatter>
-        <window title="Save Frames Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="wqh-XY-ylv" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+        <window title="Save Frames Accessory" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="wqh-XY-ylv" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="171" y="114" width="650" height="193"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1074"/>

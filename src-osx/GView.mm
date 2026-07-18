@@ -195,6 +195,9 @@ typedef NS_ENUM(NSInteger, FindType) {
                   fileType:(NSArray *)fileType
              accessoryView:(NSView *)view
             didEndSelector:(SEL)selector;
+- (BOOL) panel:(id) sender
+   validateURL:(NSURL *) url
+         error:(NSError **) outError;
 
 - (void)saveImagetoFile:(NSURL*)filename;
 - (void)saveTileImagetoFile:(NSURL*)filename;
@@ -892,6 +895,7 @@ height: %dpx;\
                    accessoryView: nil
                   didEndSelector: @selector(saveMovietoFile:)];
     } else if (isMovie) {               // It's a folder of PNG files
+        [mSaveFramesAccessory retain];  // for some reason, this is being released
         [self showSavePanelTitle: NSLocalizedString(@"Save as Animation Frames", @"")
                         fileType: @[@"png"]
                    accessoryView: mSaveFramesAccessory
@@ -2581,8 +2585,10 @@ long MakeColor(id v)
             stringByDeletingPathExtension] lastPathComponent];
     if ([name length] == 0)
         name = [[self window] title];
-    if ([title containsString: @"Frame"])
+    if ([title containsString: @"Frame"]) {
         [sp setNameFieldLabel: @"Save As Template:"];
+        [ sp setDelegate: self];
+    }
         
     if ([[NSUserDefaults standardUserDefaults]
             boolForKey: @"SaveWithVariationCode"])
@@ -2614,6 +2620,21 @@ long MakeColor(id v)
     }];
 }
 
+- (BOOL) panel:(id) sender
+   validateURL:(NSURL *) url
+         error:(NSError **) outError
+{
+    if (![[url lastPathComponent] containsString: @"%f"])
+    {
+        if (outError) {
+            *outError = [NSError errorWithDomain: NSCocoaErrorDomain
+                                            code: NSFileWriteInvalidFileNameError
+                                        userInfo: nil];
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
 
 - (void)saveImagetoFile:(NSURL*)filename
 {

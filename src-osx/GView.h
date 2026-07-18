@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, FindReplaceShowEnum) {
 
 long MakeColor(id v);
 
-@interface GView : NSView<NSWindowDelegate, ScintillaNotificationProtocol> {
+@interface GView : NSView<NSWindowDelegate, NSOpenSavePanelDelegate, ScintillaNotificationProtocol> {
     NSSize              mRenderSize;    // size we asked to render to
     NSRect              mRenderedRect;  // area that was actually rendered
 
