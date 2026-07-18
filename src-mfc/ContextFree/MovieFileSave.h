@@ -14,8 +14,9 @@ public:
 	PROCESS_INFORMATION processInfo;
 
 protected:
-	virtual void OnButtonClicked(DWORD dwIDCtl);
-	virtual void OnCheckButtonToggled(DWORD dwIDCtl, BOOL bChecked);
+	virtual void OnButtonClicked(DWORD dwIDCtl) override;
+	virtual void OnCheckButtonToggled(DWORD dwIDCtl, BOOL bChecked) override;
+	virtual BOOL OnFileNameOK() override;
 	bool m_bLoop = false;
 	std::wstring& m_sTempName;
 	RenderParameters& m_sParams;

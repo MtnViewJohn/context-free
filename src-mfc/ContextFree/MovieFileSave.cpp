@@ -61,6 +61,21 @@ MovieFileSave::MovieFileSave(std::wstring& temp, LPCTSTR name, BOOL loop, Render
 		m_sTempName += L"\\%04d.png";
 }
 
+BOOL MovieFileSave::OnFileNameOK()
+{
+	if (m_sParams.Codec == RenderParameters::Codecs::PNG) {
+		if (GetFileExt().CompareNoCase(L"png")) {
+			::MessageBoxW(GetSafeHwnd(), L"Template must have a .png extension.", L"Template Name Rejected", MB_ICONEXCLAMATION);
+			return 1;
+		}
+		if (GetFileName().Find(L"%f", 0) == -1) {
+			::MessageBoxW(GetSafeHwnd(), L"Template must have a %f frame parameter.", L"Template Name Rejected", MB_ICONEXCLAMATION);
+			return 1;
+		}
+	}
+	return 0;
+}
+
 MovieFileSave::~MovieFileSave()
 {
 	if (processInfo.dwProcessId)
