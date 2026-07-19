@@ -211,10 +211,6 @@ processCommandLine(int argc, char* argv[], options& opt)
         "Set the variation code (default is random)", {'v', "variation"}, "");
     args::ValueFlagList<string> definition(parser, "NAME=VALUE",
         "Define a variable, configuration, or function. Overrides definitions in the input file.", {'D'});
-    args::ValueFlag<string> outputFileTemplate(parser, "NAME TEMPLATE",
-        "Set the output file name, supports variable expansion %f expands to the "
-        "animation frame number, %v and %V expands to the variation code in lower "
-        "or upper case, %% expands to %", {'o', "outputtemplate"}, "");
     args::ValueFlag<string> animation(parser, "NUM or TIMExFPS",
         "Generate NUM animation frames at 15fps or TIMExFPS animation frames",
         {'a',"animate"}, "");
@@ -241,9 +237,13 @@ processCommandLine(int argc, char* argv[], options& opt)
     args::Flag paramDebug(parser, "param debug", "Parameter allocation debug, test "
         "whether all the parameter blocks were cleaned up", {'P', "paramdebug"});
     args::Flag cleanup(parser, "cleanup", "Delete old temporary files", {'d', "cleanup"});
-    args::Positional<std::string> inputFile(parser, "CFDG FILE", "Input cfdg file", "");
-    args::Positional<std::string> outputFile(parser, "OUTPUT FILE", "Output image file", "");
-    
+    args::Positional<std::string> inputFile(parser, "CFDG FILE", "Input cfdg file. "
+                                            "'-' takes input from standard input.", "");
+    args::Positional<std::string> outputFile(parser, "OUTPUT FILE TEMPLATE",
+         "Set the output file name, supports variable expansion %f expands to the "
+         "animation frame number, %v and %V expands to the variation code in lower "
+         "or upper case, %% expands to %. '-' sends output to standard output.", "");
+
     auto bailout = [&](const char * msg) {
         if (msg && *msg)
             cerr << msg << '\n' << endl;
@@ -299,7 +299,6 @@ processCommandLine(int argc, char* argv[], options& opt)
             opt.definitions += ' ';
         }
     }
-    if (outputFileTemplate) opt.output = args::get(outputFileTemplate);
     if (display) opt.displayExec = args::get(display);
     if (animation) {
         if (makeSVG) bailout("Animation cannot output to SVG files.");
@@ -373,41 +372,28 @@ processCommandLine(int argc, char* argv[], options& opt)
     if (quiet && cleanup)
         bailout("Cannot clean up temporary files quietly.");
     if (inputFile) opt.input = args::get(inputFile);
-    if (outputFile) {
-        if (!opt.output.empty())
-            bailout("Two output files specified.");
-        
-        // If a static output file name is provided then generate an output
-        // file name format string by escaping any '%' characters. If this is
-        // an animation run with PNG output then add "_%f" before the extension.
-        opt.output.reserve(args::get(outputFile).length());
-        for (char c: args::get(outputFile)) {
-            opt.output.append(c == '%' ? 2 : 1, c);
-        }
-        if (opt.animationFrames && opt.animateFrame == 0 && 
-            opt.format != pngCanvas::MOVfile && opt.format != pngCanvas::GIFfile)
-        {
-            std::size_t ext = opt.output.find_last_of('.');
-            std::size_t dir = opt.output.find_last_of(APP_DIRCHAR());
-            if (ext != string::npos && (dir == string::npos || ext > dir)) {
-                opt.output.insert(ext, "_%f");
-            } else {
-                opt.output.append("_%f");
-            }
-        }
-    }
+    if (outputFile) opt.output = args::get(outputFile);
     if (!inputFile && !cleanup)
         bailout("Missing input file.");
-    if (!outputFile && !outputFileTemplate && display) 
+    if (!outputFile && display)
         opt.outputTemp = true;
-    if ((!outputFile || opt.output == "-") && !outputFileTemplate && !check && !opt.outputTemp) {
+    if ((!outputFile || opt.output == "-") && !check && !opt.outputTemp) {
         opt.outputStdout = true;
         opt.output = "-";
         opt.quiet = true;
     }
+    if (opt.format == pngCanvas::PNGfile && animation && !frame) {
+        if (!opt.output.ends_with(".png"))
+            bailout("PNG animation frame files must end with .png");
+        if (opt.output.find("%f") == std::string::npos)
+            bailout("PNG animation frame template must contain %f");
+    }
+    if (opt.format != pngCanvas::PNGfile || !animation || frame)
+        if (opt.output.find("%f") != std::string::npos)
+            bailout("Only PNG animation frame templates can contain %f");
     if (makeQT || makeGIF) {
-        if (opt.outputStdout || (!outputFile && !outputFileTemplate))
-            bailout("QuickTime and GIF output require an output file.");
+        if (opt.outputStdout)
+            bailout("Animation output requires an output file.");
         if (makeQT && !opt.output.ends_with(".mov"))
             bailout("QuickTime files must end with .mov");
         if (makeGIF && !opt.output.ends_with(".gif"))
