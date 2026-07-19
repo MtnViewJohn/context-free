@@ -59,8 +59,10 @@ private:
     int      mFrameCount = 0;
     int     mLoopCount = -1;
     int     mCurrentFrame = 0;
+public:
     std::string mTempDirectory;
     std::vector<std::string> mTempFiles;
+private:
     std::string mTemplate;
     std::string ffmpegBinary;
 };

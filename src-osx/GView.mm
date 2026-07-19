@@ -314,6 +314,26 @@ height: %dpx;\
   </body>\
 </html>\
 ";
+    NSString* htmlpng = @"<!doctype html>\
+<html lang=\"en-US\">\
+  <head>\
+    <meta charset=\"utf-8\" />\
+    <title>Video preview</title>\
+    <style  type=\"text/css\">\
+body {\
+  display: flex;\
+  flex-wrap: wrap;\
+  align-items: center;\
+  justify-content: center;\
+  height: %dpx;\
+}\
+    </style>\
+  </head>\
+  <body>\
+%@\
+  </body>\
+</html>\
+";
 
 }
 
@@ -1888,8 +1908,10 @@ long MakeColor(id v)
         NSString* tempPath = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
         NSURL* tempURL = [NSURL fileURLWithPath: tempPath];
         [self performSelector:@selector(setupPlayer:) withObject:tempURL afterDelay:0.5];
+    } else if (mMovieFramesReady) {
+        [self performSelector:@selector(setupPlayer:) withObject:nil afterDelay:0.5];
     }
-    
+
     // can let everyone go if they really want
     [self release];
     [mDocument release];
@@ -1897,9 +1919,6 @@ long MakeColor(id v)
     
     if (mCloseOnRenderStopped)
         [[self window] performClose: self];
-    
-    if (mMovieFramesReady)
-        [self saveOutput: arg];
 }
 
 @end
@@ -2533,17 +2552,40 @@ long MakeColor(id v)
                                      configuration: [[WKWebViewConfiguration alloc] init]] retain];
     [self addSubview: mMovieView];
     
-    NSURL* htmlurl = [[movie URLByDeletingLastPathComponent] URLByAppendingPathComponent: @"preview.html"];
+    NSURL* htmlurl = nil;
     NSString* html = nil;
-    if ([[movie pathExtension] isEqualToString: @"mov"]) {
-        html = [NSString stringWithFormat: htmlmov,
+    if (movie) {
+        htmlurl = [[movie URLByDeletingLastPathComponent] URLByAppendingPathComponent: @"preview.html"];
+        if ([[movie pathExtension] isEqualToString: @"mov"]) {
+            html = [NSString stringWithFormat: htmlmov,
+                              (int)(fr.size.height)-16,
+                              [movie lastPathComponent],
+                              mEngine->isLooped ? @"loop" : @""];
+        } else {
+            html = [NSString stringWithFormat: htmlgif,
+                              (int)(fr.size.height)-16,
+                              [movie lastPathComponent]];
+        }
+    } else if (ImageCanvas* ic = dynamic_cast<ImageCanvas*>(mCanvas.get())) {
+        std::string htmlstr = ic->mTempDirectory + "/preview.html";
+        htmlurl = [NSURL fileURLWithFileSystemRepresentation: htmlstr.c_str()
+                                                 isDirectory: FALSE
+                                               relativeToURL: nil];
+        NSMutableString* frames = [NSMutableString stringWithCapacity: ic->mTempFiles.size()*50];
+        for (int i = 0; i < (int)ic->mTempFiles.size(); ++i) {
+            NSURL* frameUrl = [NSURL fileURLWithFileSystemRepresentation: ic->mTempFiles[i].c_str()
+                                                             isDirectory: NO
+                                                           relativeToURL: nil];
+            [frames appendFormat: @"    <img title=\"Frame %d\" src=\"%@\" />\n",
+                i + 1, [frameUrl lastPathComponent]];
+        }
+        html = [NSString stringWithFormat: htmlpng,
                           (int)(fr.size.height)-16,
-                          [movie lastPathComponent],
-                          mEngine->isLooped ? @"loop" : @""];
+                          frames];
+        ic->mTempFiles.push_back(std::move(htmlstr));
     } else {
-        html = [NSString stringWithFormat: htmlgif,
-                          (int)(fr.size.height)-16,
-                          [movie lastPathComponent]];
+        [mDocument system]->message("Failed to setup movie preview.");
+        return;
     }
     [html writeToURL: htmlurl atomically: NO encoding: NSASCIIStringEncoding error: nil];
     NSURLRequest* req = [NSURLRequest requestWithURL: htmlurl];

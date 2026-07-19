@@ -64,7 +64,7 @@ ImageCanvas::ImageCanvas(const std::string& name, BitmapImageHolder* bitmap, agg
     NSURL* ffUrl = [[NSBundle mainBundle] URLForAuxiliaryExecutable: @"ffmpeg"];
     ffmpegBinary = [ffUrl fileSystemRepresentation];
 
-    mTempFiles.reserve(frames);
+    mTempFiles.reserve(frames + 1);
     mTempDirectory = sys.tempDirectoryForWrite("cfdg-temp-frames-");
     if (mTempDirectory.empty()) {
         mError = true;
