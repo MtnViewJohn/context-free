@@ -49,7 +49,9 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "YES"
+      consoleMode = "1"
+      structuredConsoleMode = "3">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -66,8 +68,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-a150 -s640x480 --quicktime -vffgh input/mtree.cfdg output/mtree.mov"
+            argument = "-a5x15 -G0 input/mtree.cfdg -"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-a150 -s640x480 --quicktime -vffgh input/mtree.cfdg output/mtree.mov"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s 1000 -DCF::StartShape=Either input/mtree.cfdg output/test.png"

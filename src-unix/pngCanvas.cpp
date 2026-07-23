@@ -108,16 +108,20 @@ pngCanvas::CommandLine(std::string ffmpegBinary, double fps,
     switch (outFormat) {
         case -1:
         case 5:
-            break;
         case 4: {
-            if (loopCount == 1)
-                loopCount = -1;
-            if (loopCount > 1)
-                --loopCount;
-            
-            fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
-                  "-vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
-                  "-loop %d -y '%s'";
+            if (outFormat == 4) {
+                if (loopCount == 1)
+                    loopCount = -1;
+                if (loopCount > 1)
+                    --loopCount;
+                
+                fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                "-vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
+                "-loop %d -y -f gif '%s'";
+            } else {
+                fmt = "'%s' -hide_banner -framerate %.2f -i '%s/%%04d.png' -v warning "
+                      "-plays %d -y -f apng '%s'";
+            }
             auto sz = std::snprintf(nullptr, 0, fmt, ffmpegBinary.c_str(), fps,
                                     tempDirectory.c_str(), loopCount, outputName.c_str());
             std::vector<char> buf(sz + 1);
@@ -154,8 +158,10 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
 {
     std::string cmdline;
 
-    if (fmt == pngCanvas::PNGfile)
+    bool useStdout = mOrigName.empty();
+    if (fmt == pngCanvas::PNGfile && !useStdout)
         return true;
+    std::string name = stdout ? "-" : mOrigName;
 #ifdef __APPLE__
     int ifmt;
     switch (codec) {
@@ -169,8 +175,10 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
             ifmt = 4;
             break;
     }
+    if (fmt == pngCanvas::PNGfile)
+        ifmt = 5;
     cmdline = CommandLine("ffmpeg", (double)fps, mTempDirectory.c_str(),
-                          loops, mOrigName.c_str(), ifmt);
+                          loops, name.c_str(), ifmt);
     if (cmdline.empty())
         return false;
 #else
@@ -179,32 +187,37 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
             loops = -1;
         if (loops > 1)
             --loops;
-
+        
         cmdline = std::format("ffmpeg -hide_banner -framerate {} -i '{}/%04d.png' "
-            "-v warning -vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
-            "-loop {} -y '{}'", fps, mTempDirectory, loops, mOrigName);
+                              "-v warning -vf 'split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' "
+                              "-loop {} -y -f gif '{}'", fps, mTempDirectory, loops, name);
+    } else if (fmt == pngCanvas::PNGfile) {
+        cmdline = std::format("ffmpeg -hide_banner -framerate {} -i '{}/%04d.png' -v warning "
+                              "-plays {} -y -f apng '{}'", fps, mTempDirectory, loops, name);
     } else {
         if (codec == H264) {
             cmdline = std::format("ffmpeg -hide_banner -framerate {} -i '{}/%04d.png' "
                 "-v warning -c:v libx264 -preset slow -crf 20.0 -pix_fmt yuv420p "
-                "-y '{}'", fps, mTempDirectory, mOrigName);
+                "-y '{}'", fps, mTempDirectory, name);
         } else {
             if (alpha)
                 cmdline = std::format("ffmpeg -hide_banner -framerate {} "
                     "-i '{}/%04d.png' -v warning -c:v prores_ks -profile:v 4 "
                     "-vendor apl0 -pix_fmt yuva444p10le -y '{}'",
-                    fps, mTempDirectory, mOrigName);
+                    fps, mTempDirectory, name);
             else
                 cmdline = std::format("ffmpeg -hide_banner -framerate {} "
                     "-i '{}/%04d.png' -v warning -c:v prores_ks -profile:v 2 "
                     "-vendor apl0 -pix_fmt yuv422p10le -y '{}'",
-                    fps, mTempDirectory, mOrigName);
+                    fps, mTempDirectory, name);
         }
     }
 #endif
 
     fs::path outfile_p(mOrigName);
-    if (std::system(cmdline.c_str()) || !fs::exists(outfile_p)) {
+    if (std::system(cmdline.c_str()) ||
+        !(useStdout || fs::exists(outfile_p)))
+    {
         mError = true;
         return false;
     }

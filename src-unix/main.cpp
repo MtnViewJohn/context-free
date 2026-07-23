@@ -383,20 +383,20 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.quiet = true;
     }
     if (opt.format == pngCanvas::PNGfile && animation && !frame) {
-        if (!opt.output.ends_with(".png"))
+        if (!opt.outputStdout && !opt.output.ends_with(".png"))
             bailout("PNG animation frame files must end with .png");
-        if (opt.output.find("%f") == std::string::npos)
+        if (!opt.outputStdout && opt.output.find("%f") == std::string::npos)
             bailout("PNG animation frame template must contain %f");
     }
     if (opt.format != pngCanvas::PNGfile || !animation || frame)
         if (opt.output.find("%f") != std::string::npos)
             bailout("Only PNG animation frame templates can contain %f");
     if (makeQT || makeGIF) {
-        if (opt.outputStdout)
-            bailout("Animation output requires an output file.");
+        if (opt.outputStdout && makeQT)
+            bailout("Quicktime animation output requires an output file.");
         if (makeQT && !opt.output.ends_with(".mov"))
             bailout("QuickTime files must end with .mov");
-        if (makeGIF && !opt.output.ends_with(".gif"))
+        if (!opt.outputStdout && makeGIF && !opt.output.ends_with(".gif"))
             bailout("GIF files must end with .gif");
     }
 }
