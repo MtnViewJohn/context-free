@@ -2628,6 +2628,7 @@ namespace AST {
                         tupleSize = -1;
                     }
                     isNatural = isNatural && argument->isNatural;
+                    mLocality = CombineLocality(mLocality, argument->mLocality);
                 }
                 
                 if (ifSelect && arguments.size() != 2) {
@@ -2635,10 +2636,16 @@ namespace AST {
                 }
                 
                 if (selector->isConstant) {
-                    indexCache = getIndex();
-                    isConstant = arguments[indexCache]->isConstant;
-                    mLocality = arguments[indexCache]->mLocality;
-                    isNatural = arguments[indexCache]->isNatural;
+                    try {
+                        indexCache = getIndex();
+                        isConstant = arguments[indexCache]->isConstant;
+                        mLocality = arguments[indexCache]->mLocality;
+                        isNatural = arguments[indexCache]->isNatural;
+                    } catch (DeferUntilRuntime&) {
+                        indexCache = NotCached;
+                        isConstant = false;
+                        // mLocality & isNatural retain their computed values
+                    }
                 }
                 break;
             }
