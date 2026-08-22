@@ -1,0 +1,8 @@
+startshape scene
+
+dark=0
+CF::Background = [hue 0 sat 0 b if(dark, -1, 0)]
+
+shape scene {
+    CIRCLE[sat 0 b if(dark, 1, -1)]
+}

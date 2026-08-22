@@ -770,8 +770,13 @@ namespace AST {
         if (res && (length < count))
             return -1;
         if (res) {
-            if (!rti)
-                throw DeferUntilRuntime();
+            if (!rti) {
+                if (!isConstant)
+                    throw DeferUntilRuntime();
+                if (!bound.mDefinition || !bound.mDefinition->mExpression)
+                    CfdgError::Error(where, "Internal error.");
+                return bound.mDefinition->mExpression->evaluate(res, length, nullptr);
+            }
             if (stackIndex == IllegalStackIndex)
                 CfdgError::Error(where, "Non-stack variable accessed through stack.");
             
