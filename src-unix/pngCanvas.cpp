@@ -161,7 +161,7 @@ bool pngCanvas::completeMovie(int fps, int loops, OutputFormat fmt, QTcodec code
     bool useStdout = mOrigName.empty();
     if (fmt == pngCanvas::PNGfile && !useStdout)
         return true;
-    std::string name = stdout ? "-" : mOrigName;
+    std::string name = useStdout ? "-" : mOrigName;
 #ifdef __APPLE__
     int ifmt;
     switch (codec) {
