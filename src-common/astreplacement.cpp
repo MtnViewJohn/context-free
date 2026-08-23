@@ -55,7 +55,7 @@ namespace AST {
     }
     
     void to_json(json& j, const ASTreplacement& p) {
-        p.to_json(j);
+        p.v_to_json(j);
     }
     
     void to_json(json& j, const ASTrepContainer& p) {
@@ -1018,17 +1018,17 @@ namespace AST {
     }
     
     void
-    ASTreplacement::to_json(json& j) const
+    ASTreplacement::v_to_json(json& j) const
     {
         j = json{
             {"class", "ASTreplacement"},
-            {"replacement shape", mShapeSpec},
-            {"replacement adjustment", mChildChange}
+            {"replacement shape", (const ASTexpression&)mShapeSpec},
+            {"replacement adjustment", (const ASTexpression&)mChildChange}
         };
     }
     
     void
-    ASTloop::to_json(json& j) const
+    ASTloop::v_to_json(json& j) const
     {
         j = json{
             {"class", "ASTloop"},
@@ -1041,13 +1041,13 @@ namespace AST {
         } else {
             j["loop bounds"] = mLoopData;
         }
-        j["loop modification"] = mChildChange;
+        j["loop modification"] = (const ASTexpression&)mChildChange;
         j["loop body"] = mLoopBody;
         j["finally body"] = mFinallyBody;
     }
     
     void
-    ASTtransform::to_json(json& j) const
+    ASTtransform::v_to_json(json& j) const
     {
         j = json{
             {"class", mClone ? "ASTclone" : "ASTtransform"},
@@ -1059,7 +1059,7 @@ namespace AST {
     }
     
     void
-    ASTif::to_json(json& j) const
+    ASTif::v_to_json(json& j) const
     {
         j = json{
             {"class", "ASTif"},
@@ -1070,7 +1070,7 @@ namespace AST {
     }
     
     void
-    ASTswitch::to_json(json& j) const
+    ASTswitch::v_to_json(json& j) const
     {
         struct tempcase {
             std::vector<caseType> mCases;
@@ -1103,7 +1103,7 @@ namespace AST {
     }
     
     void
-    ASTdefine::to_json(json& j) const
+    ASTdefine::v_to_json(json& j) const
     {
         static std::map<define_t, std::string> defTypeName =
         {
@@ -1132,7 +1132,7 @@ namespace AST {
     }
     
     void
-    ASTrule::to_json(json& j) const
+    ASTrule::v_to_json(json& j) const
     {
         if (isPath) {
             j = {
@@ -1159,7 +1159,7 @@ namespace AST {
     }
     
     void
-    ASTpathOp::to_json(json& j) const
+    ASTpathOp::v_to_json(json& j) const
     {
         static const std::map<pathOpEnum, std::string> pathOpNames =
         {
@@ -1204,7 +1204,7 @@ namespace AST {
     }
     
     void
-    ASTpathCommand::to_json(json& j) const
+    ASTpathCommand::v_to_json(json& j) const
     {
         json_string flags;
         if (mFlags & CF_FILL) {

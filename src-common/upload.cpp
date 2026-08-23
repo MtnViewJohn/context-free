@@ -154,7 +154,7 @@ Upload::Upload(const char* jsonbuf, std::size_t jsonlen)
     // purposes. It tucks the cfdg text into the password field, which
     // is kind of janky.
     try {
-        auto j = json::parse({jsonbuf, jsonlen});
+        auto j = json::parse(jsonbuf, jsonbuf + jsonlen);
         mId = j.at("design").at("id").get<int>();
         mFileName = j.at("design").at("filelocation").get<std::string>();
         try {
@@ -176,7 +176,7 @@ Upload::AllTags(const char* jsonbuf, std::size_t jsonlen)
     std::vector<std::string> ret;
 
     try {
-        auto j = json::parse({jsonbuf, jsonlen});
+        auto j = json::parse(jsonbuf, jsonbuf + jsonlen);
         auto tags = j.at("tags");
         if (!tags.is_array())
             return ret;

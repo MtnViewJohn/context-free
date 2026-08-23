@@ -164,7 +164,7 @@ namespace AST {
         
         ASTexpression(const yy::location& loc) : isConstant(false), isNatural(false),
         mLocality(UnknownLocal), mType(NoType), where(loc) {};
-        ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType) 
+        ASTexpression(const yy::location& loc, bool c, bool n, expType t = NoType)
         : isConstant(c), isNatural(n), mLocality(UnknownLocal), mType(t), where(loc) {};
         virtual ~ASTexpression() = default;
         virtual int evaluate(double* = nullptr, int = 0, RendererAST* = nullptr) const
@@ -192,7 +192,8 @@ namespace AST {
         // with the returned object. Using the original object after type check
         // will fail.
         static ASTexpression* Append(ASTexpression* l, ASTexpression* r);
-        virtual void to_json(json& j) const;
+        virtual void v_to_json(json& j) const;
+        void base_to_json(json& j) const;
         ASTexp_iter begin() noexcept { return ASTexp_iter{this, 0};}
         ASTexp_iter begin() const noexcept {return ASTexp_iter{this, 0};}
         ASTexp_iter end() noexcept {return ASTexp_iter{this, size()};}
@@ -211,13 +212,13 @@ namespace AST {
     
     class ASTfunction final : public ASTexpression {
     public:
-        enum FuncType { NotAFunction, 
-            Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot, 
+        enum FuncType { NotAFunction,
+            Cos, Sin, Tan, Cot, Acos, Asin, Atan, Acot,
             Cosh, Sinh, Tanh, Acosh, Asinh, Atanh, Log, Log10,
             Sqrt, Exp, Abs, Floor, Ceiling, Infinity, Factorial, Sg, IsNatural,
             BitNot, BitOr, BitAnd, BitXOR, BitLeft, BitRight,
             Atan2, Mod, Divides, Div,
-            Dot, Cross, Hsb2Rgb, Rgb2Hsb, Vec, 
+            Dot, Cross, Hsb2Rgb, Rgb2Hsb, Vec,
             Min, Max, Ftime, Frame,
             Rand_Static, Rand, RandOp, Rand2, RandExponential, RandGamma, RandWeibull,
             RandExtremeValue, RandNormal, RandLogNormal, RandChiSquared,
@@ -240,7 +241,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
         ASTexpression* simplify(Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTselect final : public ASTexpression {
         enum consts_t: std::size_t { NotCached = static_cast<std::size_t>(-1) };
@@ -260,7 +261,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     private:
         //ASTselect(const yy::location& loc)
         //: ASTexpression(loc), tupleSize(-1), indexCache(0) {}
@@ -288,7 +289,7 @@ namespace AST {
         const ASTparameters* parentSignature = nullptr;
         ASTparameter bound;
         
-        ASTruleSpecifier(int t, std::string name, exp_ptr args, const yy::location& loc, 
+        ASTruleSpecifier(int t, std::string name, exp_ptr args, const yy::location& loc,
                          const ASTparameters* parent);
         ASTruleSpecifier(int t, std::string name, const yy::location& loc);
         ASTruleSpecifier(exp_ptr args, const yy::location& loc);
@@ -304,7 +305,7 @@ namespace AST {
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
         void grab(const ASTruleSpecifier* src);
-        void to_json(json& j) const override;
+        void v_to_json(json& j) const override;
     };
     class ASTstartSpecifier final : public ASTruleSpecifier {
     public:
@@ -321,7 +322,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTcons final : public ASTexpression {
     public:
@@ -338,7 +339,7 @@ namespace AST {
         const ASTexpression* getChild(std::size_t i) const final;
         std::size_t size() const final { return children.size(); }
         ASTexpression* append(ASTexpression* sib) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTreal final : public ASTexpression {
     public:
@@ -346,21 +347,21 @@ namespace AST {
         std::string text;
         ASTreal() = delete;
         ASTreal(std::string t, const yy::location& loc, bool negative = false)
-        : ASTexpression(loc, true, false, NumericType), text(std::move(t)) 
-        { 
+        : ASTexpression(loc, true, false, NumericType), text(std::move(t))
+        {
             if (negative) text.insert(0, 1, '-');
-            value = CFatof(text.c_str()); 
+            value = CFatof(text.c_str());
             isNatural = std::floor(value) == value && value >= 0.0 && value < MaxNatural;
             mLocality = PureLocal;
         };
-        ASTreal(double v, const yy::location& loc) 
-        : ASTexpression(loc, true, 
+        ASTreal(double v, const yy::location& loc)
+        : ASTexpression(loc, true,
                         std::floor(v) == v && v >= 0.0 && v < MaxNatural,
                         NumericType), value(v) { mLocality = PureLocal; };
         ~ASTreal() final = default;
         int evaluate(double* res = nullptr, int length = 0, RendererAST* rti = nullptr) const final;
         void entropy(std::string& e) const final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTvariable final : public ASTexpression {
     public:
@@ -379,7 +380,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTuserFunction : public ASTexpression {
     public:
@@ -396,7 +397,7 @@ namespace AST {
         void entropy(std::string&) const override;
         ASTexpression* simplify(Builder* b) override;
         ASTexpression* compile(CompilePhase ph, Builder* b) override;
-        void to_json(json& j) const override;
+        void v_to_json(json& j) const override;
     private:
         class StackSetup {
             friend class ASTuserFunction;
@@ -418,7 +419,7 @@ namespace AST {
         ~ASTlet() final;          // inherited definition ptr owns ASTdefine
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASToperator final : public ASTexpression {
     public:
@@ -433,7 +434,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTparen final : public ASTexpression {
     public:
@@ -450,17 +451,17 @@ namespace AST {
         void entropy(std::string& ent) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
 
     class ASTmodTerm final : public ASTexpression {
     public:
         enum modTypeEnum : unsigned {  unknownType, x, y, z, xyz, transform,
-            size, sizexyz, rot, skew, flip, 
-            zsize, blend, hue, sat, bright, alpha, 
-            hueTarg, satTarg, brightTarg, alphaTarg, 
+            size, sizexyz, rot, skew, flip,
+            zsize, blend, hue, sat, bright, alpha,
+            hueTarg, satTarg, brightTarg, alphaTarg,
             targHue, targSat, targBright, targAlpha,
-            time, timescale, 
+            time, timescale,
             stroke, param, x1, y1, x2, y2, xrad, yrad, modification };
         
         modTypeEnum modType;
@@ -481,7 +482,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     
     void to_json(json& j, const ASTmodTerm& m);
@@ -514,7 +515,7 @@ namespace AST {
         void addEntropy(const std::string& name);
         void makeCanonical();
         void grab(ASTmodification* m);
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     
     void to_json(json& j, const ASTmodification& m);
@@ -540,7 +541,7 @@ namespace AST {
         void entropy(std::string& e) const final;
         ASTexpression* simplify(Builder* b) final;
         ASTexpression* compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     
     inline void Compile(exp_ptr& exp, CompilePhase ph, Builder* b)
@@ -569,6 +570,7 @@ namespace AST {
             ret.emplace_back(std::move(exp));
         return ret;
     }
+
 }
 
 #endif //INCLUDE_ASTEXPRESSION_H

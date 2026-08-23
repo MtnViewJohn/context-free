@@ -73,7 +73,7 @@ namespace AST {
         virtual ~ASTreplacement();
         virtual void traverse(const Shape& parent, bool tr, RendererAST* r) const;
         virtual void compile(CompilePhase ph, Builder* b);
-        virtual void to_json(json& j) const;
+        virtual void v_to_json(json& j) const;
     };
 
     void to_json(json& j, const ASTreplacement& p);
@@ -131,7 +131,7 @@ namespace AST {
         void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
         void compileLoopMod(Builder* b);
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTtransform final: public ASTreplacement {
     public:
@@ -143,7 +143,7 @@ namespace AST {
         ~ASTtransform() final;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTif final: public ASTreplacement {
     public:
@@ -155,7 +155,7 @@ namespace AST {
         ~ASTif() final;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
 
     class ASTswitch final: public ASTreplacement {
@@ -180,7 +180,7 @@ namespace AST {
         void compile(CompilePhase ph, Builder* b) final;
         
         void unify();
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTdefine final : public ASTreplacement {
     public:
@@ -200,7 +200,7 @@ namespace AST {
         void compile(CompilePhase ph, Builder* b) final;
         ~ASTdefine() final = default;
         ASTdefine& operator=(const ASTdefine&) = delete;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTrule final : public ASTreplacement {
     public:
@@ -230,7 +230,7 @@ namespace AST {
         void traverseRule(Shape& parent, RendererAST* r) const;
         void traverse(const Shape& parent, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTpathOp final : public ASTreplacement {
     public:
@@ -251,7 +251,7 @@ namespace AST {
         void makePositional(Builder* b);
         void checkArguments(Builder* b);
     public:
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     };
     class ASTpathCommand final : public ASTreplacement {
     public:
@@ -272,7 +272,7 @@ namespace AST {
         void traverse(const Shape& s, bool tr, RendererAST* r) const final;
         void compile(CompilePhase ph, Builder* b) final;
         ~ASTpathCommand() final = default;
-        void to_json(json& j) const final;
+        void v_to_json(json& j) const final;
     private:
         mutable CommandInfo mInfoCache;
     };

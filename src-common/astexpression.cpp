@@ -61,9 +61,9 @@ void from_json(const json& j, json_float& f)
         else if (s == "-Infinity")
             f.value = -INFINITY;
         else
-            throw nlohmann::detail::type_error::create(302, "float string must be 'Nan', 'Infinity', or '-Infinity', but is " + s);
+            throw json::type_error::create(302, "float string must be 'Nan', 'Infinity', or '-Infinity', but is " + s, &j);
     } else {
-        throw nlohmann::detail::type_error::create(302, "type must be number or string, but is " + std::string(j.type_name()));
+        throw json::type_error::create(302, "type must be number or string, but is " + std::string(j.type_name()), &j);
     }
 }
 
@@ -172,7 +172,7 @@ void to_json(json& j, const StackRule& r)
 namespace AST {
     void to_json(json& j, const ASTexpression& e)
     {
-        e.to_json(j);
+        e.v_to_json(j);
     }
     
     void args_to_json(json& j, const ASTexpression& e)
@@ -188,12 +188,12 @@ namespace AST {
     
     void to_json(json& j, const ASTmodTerm& m)
     {
-        m.to_json(j);
+        m.v_to_json(j);
     }
     
     void to_json(json& j, const ASTmodification& m)
     {
-        m.to_json(j);
+        m.v_to_json(j);
     }
     
     bool ASTfunction::RandStaticIsConst = true;
@@ -3391,7 +3391,7 @@ namespace AST {
     }
     
     void
-    ASTexpression::to_json(json& j) const
+    ASTexpression::base_to_json(json& j) const
     {
         try {
             auto&& locName = ASTparameter::localityNames.at(mLocality);
@@ -3404,10 +3404,17 @@ namespace AST {
     }
     
     void
-    ASTfunction::to_json(json& j) const
+    ASTexpression::v_to_json(json &j) const
+    {
+        j = json{{"class", "ASTexpression"}};
+        ASTexpression::base_to_json(j);
+    }
+
+    void
+    ASTfunction::v_to_json(json& j) const
     {
         j = json{{"class", "ASTfunction"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["function"] = GetFuncName(functype);
         if (arguments) {
             json j2{};
@@ -3419,10 +3426,10 @@ namespace AST {
     }
     
     void
-    ASTselect::to_json(json& j) const
+    ASTselect::v_to_json(json& j) const
     {
         j = json{{"class", "ASTselect"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["select type"] = ifSelect ? "if" : "select";
         j["select tuple size"] = tupleSize;
         j["select selector"] = *selector;
@@ -3433,7 +3440,7 @@ namespace AST {
     }
     
     void
-    ASTruleSpecifier::to_json(json& j) const
+    ASTruleSpecifier::v_to_json(json& j) const
     {
         static const std::map<ArgSource, std::string> SourceName =
         {
@@ -3448,7 +3455,7 @@ namespace AST {
         try {
             auto sourceName = SourceName.at(argSource);
             j = json{{"class", "ASTruleSpecifier"}};
-            ASTexpression::to_json(j);
+            ASTexpression::base_to_json(j);
             j["shape name"] = CFDG::ShapeToString(shapeType);
             j["argument source"] = sourceName;
             switch (argSource) {
@@ -3474,9 +3481,9 @@ namespace AST {
     }
     
     void
-    ASTstartSpecifier::to_json(json& j) const
+    ASTstartSpecifier::v_to_json(json& j) const
     {
-        ASTruleSpecifier::to_json(j);
+        ASTruleSpecifier::v_to_json(j);
         j["class"] = "ASTstartSpecifier";
         if (mModification)
             j["startshape adjustment"] = *mModification;
@@ -3485,10 +3492,10 @@ namespace AST {
     }
     
     void
-    ASTcons::to_json(json& j) const
+    ASTcons::v_to_json(json& j) const
     {
         j = json{{"class", "ASTcons"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         json kids = json::array();
         for (auto&& kid: children)
             kids.push_back(*kid);
@@ -3497,10 +3504,10 @@ namespace AST {
     }
     
     void
-    ASTreal::to_json(json& j) const
+    ASTreal::v_to_json(json& j) const
     {
         j = json{{"class", "ASTreal"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         if (mType == NumericType) {
             j["value"] = json_float(value);
         } else {
@@ -3509,20 +3516,20 @@ namespace AST {
     }
     
     void
-    ASTvariable::to_json(json& j) const
+    ASTvariable::v_to_json(json& j) const
     {
         j = json{{"class", "ASTvariable"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         if (mType == NumericType)
             j["length"] = count;
         j["variable name"] = CFDG::ShapeToString(stringIndex);
     }
     
     void
-    ASTuserFunction::to_json(json& j) const
+    ASTuserFunction::v_to_json(json& j) const
     {
         j = json{{"class", "ASTuserFunction"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         if (mType == NumericType)
             j["length"] = definition->mTuplesize;
         j["userfunction name"] = CFDG::ShapeToString(nameIndex);
@@ -3533,7 +3540,7 @@ namespace AST {
     }
     
     void
-    ASTlet::to_json(json& j) const
+    ASTlet::v_to_json(json& j) const
     {
         j = json{{"class", "ASTlet"}};
         j["let expression"] = *(definition->mExpression);
@@ -3547,10 +3554,10 @@ namespace AST {
     }
     
     void
-    ASToperator::to_json(json& j) const
+    ASToperator::v_to_json(json& j) const
     {
         j = json{{"class", "ASToperator"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["operator"] = std::string(1, op);
         if (left)
             j["left"] = *left;
@@ -3563,15 +3570,15 @@ namespace AST {
     }
     
     void
-    ASTparen::to_json(json& j) const
+    ASTparen::v_to_json(json& j) const
     {
         j = json{{"class", "ASTparen"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["parenthetical expression"] = *e;
     }
     
     void
-    ASTmodTerm::to_json(json& j) const
+    ASTmodTerm::v_to_json(json& j) const
     {
         static const std::map<modTypeEnum, std::string> nameMap =
         {
@@ -3581,8 +3588,8 @@ namespace AST {
             {size, "size"}, {sizexyz, "sizexyz"}, {zsize, "zsize"},
             {rot, "rotation"}, {skew, "skew"}, {flip, "flip"},
             {hue, "hue"}, {sat, "saturation"}, {bright, "brightness"}, {alpha, "alpha"},
-            {hue, "hue target"}, {sat, "saturation target"}, {bright, "brightness target"}, {alpha, "alpha target"},
-            {hue, "target hue"}, {sat, "target saturation"}, {bright, "target brightness"}, {alpha, "target alpha"},
+            {hueTarg, "hue target"}, {satTarg, "saturation target"}, {brightTarg, "brightness target"}, {alphaTarg, "alpha target"},
+            {targHue, "target hue"}, {targSat, "target saturation"}, {targBright, "target brightness"}, {targAlpha, "target alpha"},
             {time, "time"}, {timescale, "timescale"},
             {stroke, "stroke width"}, {param, "parameter string"},
             {x1, "x1"}, {y1, "y1"}, {x2, "x2"}, {y2, "y2"}, {xrad, "radius x"}, {yrad, "radius y"},
@@ -3591,7 +3598,7 @@ namespace AST {
         try {
             auto termName = nameMap.at(modType);
             j = json{{"class", "ASTmodTerm"}};
-            ASTexpression::to_json(j);
+            ASTexpression::base_to_json(j);
             j["modterm type"] = termName;
             json j2{};
             args_to_json(j2, *args);
@@ -3600,10 +3607,10 @@ namespace AST {
     }
     
     void
-    ASTmodification::to_json(json& j) const
+    ASTmodification::v_to_json(json& j) const
     {
         j = json{{"class", "ASTmodification"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["modification constants"] = modData;
         j["modification non-constants"] = json::array();
         for (auto&& term: modExp)
@@ -3611,10 +3618,10 @@ namespace AST {
     }
     
     void
-    ASTarray::to_json(json& j) const
+    ASTarray::v_to_json(json& j) const
     {
         j = json{{"class", "ASTarray"}};
-        ASTexpression::to_json(j);
+        ASTexpression::base_to_json(j);
         j["array name"] = CFDG::ShapeToString(mName);
         j["array index"] = *mArgs;
         j["array length"] = mLength;

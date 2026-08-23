@@ -42,7 +42,8 @@ namespace AST {
         {NumericType, "numeric type"},
         {ModType, "adjustment type"},
         {RuleType, "rule type"},
-        {FlagType, "flag type"}
+        {FlagType, "flag type"},
+        {ReuseType, "Reuse parameters type"}
     };
     
     const std::map<Locality_t, std::string> ASTparameter::localityNames =
