@@ -16,3 +16,12 @@ foreach ($cfdg in $cfdgs) {
     Write-Host -foregroundcolor green "   pass"
   }
 }
+
+Write-Host -NoNewLine -foregroundcolor white "mtree.cfdg movie"
+.\Release\ARM64\ContextFreeCLI.exe /a150 /s640x480 //quicktime /vffgh input\mtree.cfdg output\mtree.mov
+if ($LastExitCode) {
+  Write-Host -foregroundcolor red "   fail"
+} else {
+  Write-Host -foregroundcolor green "   pass"
+}
+
