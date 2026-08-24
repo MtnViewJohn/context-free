@@ -195,7 +195,7 @@ class Canvas {
         
         int mWidth;
         int mHeight;
-        std::clock_t mTime = (std::clock_t)(-1);
+        std::clock_t mTime = static_cast<std::clock_t>(-1);
         bool mError;
         std::string mFileName;
 };

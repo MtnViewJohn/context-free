@@ -1022,8 +1022,8 @@ namespace AST {
     {
         j = json{
             {"class", "ASTreplacement"},
-            {"replacement shape", (const ASTexpression&)mShapeSpec},
-            {"replacement adjustment", (const ASTexpression&)mChildChange}
+            {"replacement shape", static_cast<const ASTexpression&>(mShapeSpec)},
+            {"replacement adjustment", static_cast<const ASTexpression&>(mChildChange)}
         };
     }
     
@@ -1041,7 +1041,7 @@ namespace AST {
         } else {
             j["loop bounds"] = mLoopData;
         }
-        j["loop modification"] = (const ASTexpression&)mChildChange;
+        j["loop modification"] = static_cast<const ASTexpression&>(mChildChange);
         j["loop body"] = mLoopBody;
         j["finally body"] = mFinallyBody;
     }

@@ -586,14 +586,14 @@ private:
     void push_back()
     {
         auto endVal = _alloc_back();
-        ::new((void*)endVal) value_type();
+        ::new(static_cast<void*>(endVal)) value_type();
         ++_end;
     }
     
     void push_front()
     {
         auto frontVal = _alloc_front();
-        ::new((void*)frontVal) value_type();
+        ::new(static_cast<void*>(frontVal)) value_type();
         --_start;
     }
     
