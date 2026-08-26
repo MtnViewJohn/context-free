@@ -2628,7 +2628,6 @@ namespace AST {
                         tupleSize = -1;
                     }
                     isNatural = isNatural && argument->isNatural;
-                    mLocality = CombineLocality(mLocality, argument->mLocality);
                 }
                 
                 if (ifSelect && arguments.size() != 2) {
