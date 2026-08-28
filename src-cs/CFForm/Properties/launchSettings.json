@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CFForm": {
-      "commandName": "Project",
-      "nativeDebugging": true
-    }
-  }
-}
