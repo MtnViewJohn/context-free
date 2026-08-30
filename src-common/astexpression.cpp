@@ -220,6 +220,7 @@ namespace AST {
             random = r.getDouble();
     }
     
+namespace {
     static const std::map<std::string, ASTfunction::FuncType> NameMap = {
         { "cos",        ASTfunction::Cos},
         { "sin",        ASTfunction::Sin },
@@ -287,6 +288,15 @@ namespace AST {
         { "randint::discrete",  ASTfunction::RandDiscrete },
         { "randint::geometric", ASTfunction::RandGeometric }
     };
+
+    // Invert NameMap
+    static auto TypeMap = [](){
+        std::map<ASTfunction::FuncType, std::string> outMap;
+        for (auto&& p: NameMap)
+            outMap.insert(std::make_pair(p.second, p.first));
+        return outMap;
+    }();
+}
     
     ASTfunction::FuncType
     ASTfunction::GetFuncType(const std::string& func) 
@@ -294,18 +304,19 @@ namespace AST {
         auto nameItem = NameMap.find(func);
         if (nameItem == NameMap.end())
             return NotAFunction;
-        const auto& [funcName, funcType] = *nameItem;
-        return funcType;
+        else
+            return nameItem->second;
     }
     
     const std::string&
     ASTfunction::GetFuncName(ASTfunction::FuncType t)
     {
-        static std::string naf = "not_a_function";
-        for (const auto& [name, type] : NameMap)
-            if (type == t)
-                return name;
-        return naf;
+        static const std::string naf = "not_a_function";
+        auto typeItem = TypeMap.find(t);
+        if (typeItem == TypeMap.end())
+            return naf;
+        else
+            return typeItem->second;
     }
     
     ASTruleSpecifier::ASTruleSpecifier(int t, std::string name, exp_ptr args, 
