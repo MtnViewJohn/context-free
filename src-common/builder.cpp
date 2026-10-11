@@ -677,6 +677,11 @@ Builder::MakeModTerm(ASTtermArray& dest, term_ptr t)
         timeWise();
     if (t->modType == ASTmodTerm::sat || t->modType == ASTmodTerm::satTarg)
         inColor();
+    if ((t->modType == ASTmodTerm::hue || t->modType == ASTmodTerm::hueTarg) &&
+        t->args->size() > 1)
+    {
+        inColor();
+    }
     if (t->modType == ASTmodTerm::blend)
         blended();
     
