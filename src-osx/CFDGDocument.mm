@@ -440,10 +440,11 @@ NSString* CFDGDocumentType = @"ContextFree Design Grammar";
     
     if (mStatusText != nil) {
         NSString* errorPath = [e path];
+        bool errorPathIsAbsolute = [errorPath hasPrefix: @"/"];
         
         [msg beginEditing];
         NSURL* myURL = [self fileURL];
-        if ((errorPath == nil && myURL == nil) ||
+        if ((!errorPathIsAbsolute && myURL == nil) ||
             ([[myURL path] isEqual: errorPath]))
         {
             NSRange r = NSMakeRange(start, [msg length] - (start + 1));
