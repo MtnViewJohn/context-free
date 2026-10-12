@@ -1847,10 +1847,17 @@ long MakeColor(id v)
                                parameters.animateFrameCount,
                                parameters.animateFrame,
                                parameters.animateZoom);
-            if (mCanvas->mError)
+            if (mCanvas->mError) {
+                [mDocument performSelectorOnMainThread: @selector(noteStatus:)
+                                            withObject: @"An error occured while saving the animation."
+                                         waitUntilDone: NO];
                 NSBeep();
-            else if (parameters.animateFrame == 0 && !ic->completeMovie())
+            } else if (parameters.animateFrame == 0 && !ic->completeMovie()) {
+                [mDocument performSelectorOnMainThread: @selector(noteStatus:)
+                                            withObject: @"An error occured while saving the movie file."
+                                         waitUntilDone: NO];
                 NSBeep();
+            }
             if (!ic->mError && ic->isMovie())
                 mMovieFramesReady = true;
         }
