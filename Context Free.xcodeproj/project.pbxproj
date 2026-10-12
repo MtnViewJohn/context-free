@@ -50,7 +50,6 @@
 		5260DC692144ED8D0099D906 /* GalleryUploader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5260DC672144ED8C0099D906 /* GalleryUploader.xib */; };
 		526271EF2140E4D300412E84 /* magnifying-glass.icns in Resources */ = {isa = PBXBuildFile; fileRef = 526271EE2140E4D200412E84 /* magnifying-glass.icns */; };
 		526271F4214312C700412E84 /* CFscintilla.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526271F3214312C700412E84 /* CFscintilla.cpp */; };
-		526500742847F15B00BA44F6 /* ffCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 526500732847F15B00BA44F6 /* ffCanvas.cpp */; };
 		526500762847F36B00BA44F6 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 526500752847F36B00BA44F6 /* CoreFoundation.framework */; };
 		526500772847F37500BA44F6 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9671D8C96F400F60731 /* CoreMedia.framework */; };
 		526500782847F37F00BA44F6 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200D9691D8C972C00F60731 /* CoreVideo.framework */; };
@@ -961,7 +960,6 @@
 				524D22C713BA0123002732C2 /* stacktype.cpp in Sources */,
 				524D22C813BA0123002732C2 /* SVGCanvas.cpp in Sources */,
 				524D22C913BA0123002732C2 /* tempfile.cpp in Sources */,
-				526500742847F15B00BA44F6 /* ffCanvas.cpp in Sources */,
 				524D22CA13BA0123002732C2 /* tiledCanvas.cpp in Sources */,
 				524D22CB13BA0123002732C2 /* upload.cpp in Sources */,
 				524D22CC13BA0123002732C2 /* variation.cpp in Sources */,
@@ -1101,12 +1099,6 @@
 					"-lpng",
 					"-lagg",
 					"-licucore",
-					"-lavformat",
-					"-lavcodec",
-					"-lswscale",
-					"-lswresample",
-					"-lavutil",
-					"-lx264",
 					"-lz",
 				);
 				PRODUCT_NAME = cfdg;
@@ -1153,12 +1145,6 @@
 					"-lpng",
 					"-lagg",
 					"-licucore",
-					"-lavformat",
-					"-lavcodec",
-					"-lswscale",
-					"-lswresample",
-					"-lavutil",
-					"-lx264",
 					"-lz",
 				);
 				PRODUCT_NAME = cfdg;
