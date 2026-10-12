@@ -52,7 +52,7 @@ public:
     
 private:
     GView*   mView = nil;
-    const std::string& mOutputName;
+    const std::string mOutputName;
     BitmapImageHolder* mImageData = nil;
     int     fps = 15;
     VideoFormat mOutFormat = NotVideo;
