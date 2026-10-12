@@ -1754,6 +1754,7 @@ long MakeColor(id v)
                                                     0);
             auto stream = mMovieFile->forWrite();
             stream.reset();  // close the temp file, we need its name
+            ::unlink(mMovieFile->name().c_str());
         }
         
         mCanvas = std::make_unique<ImageCanvas>(mMovieFile ? mMovieFile->name() : "",
