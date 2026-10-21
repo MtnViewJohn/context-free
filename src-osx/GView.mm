@@ -994,7 +994,8 @@ body {\
         return !mRendering && mRenderBitmap;
     
     if (action == @selector(uploadToGallery:))
-        return !mRendering && mRenderBitmap && NSAppKitVersionNumber >= NSAppKitVersionNumber10_9;
+        return !mRendering && ((mRenderBitmap && NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) ||
+                               (mMovieFile && mMovieFile->name().ends_with(".gif")));
     
     if (action == @selector(saveOutput:))
         return !mRendering && (mRenderBitmap || mMovieFile || mMovieFramesReady);
@@ -1125,16 +1126,29 @@ body {\
 
 -(bool)isTiled
 {
-    return mTiled;
+    return mTiled && !mMovieFile;
 }
 
 -(int)isFrieze
 {
-    return (mTiled && mEngine) ? mEngine->isFrieze() : 0;
+    return (mTiled && mEngine && !mMovieFile) ? mEngine->isFrieze() : 0;
+}
+
+-(bool)isGIF
+{
+    return mMovieFile && mMovieFile->name().ends_with(".gif");
 }
 
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult
 {
+    if (mMovieFile) {
+        if (mMovieFile->name().ends_with(".mov")) {
+            return nil;
+        }
+        NSString* gifFile = [NSString stringWithUTF8String: mMovieFile->name().c_str()];
+        return [NSData dataWithContentsOfFile: gifFile];
+    }
+    
     NSBitmapImageRep* bits;
     
     if (mult && (mult->width != 1.0 || mult->height != 1.0)) {

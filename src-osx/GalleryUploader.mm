@@ -71,14 +71,14 @@ namespace {
         @"https://www.contextfreeart.org/gallery/tags.php?t=tags";
 #else
     static NSString* uploadUrl =
-        @"http://localhost/~john/cfa2/gallery/upload.php";
+        @"http://192.168.42.165/gallery/upload.php";
     
     static NSString* displayUrl =
         //@"http://localhost:8000/main.html#design/%d";
-        @"http://localhost/~john/cfa2/gallery/view.php?id=%d";
+        @"http://192.168.42.165/gallery/view.php?id=%d";
     
     static NSString* tagsUrl =
-        @"http://localhost/~john/cfa2/gallery/tags.php?t=tags";
+        @"http://192.168.42.165/gallery/tags.php?t=tags";
 #endif
     
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
@@ -379,13 +379,15 @@ namespace {
     [mCompressionMatrix selectCellWithTag: bestCompression];
 
     bool tiled = [mView isTiled];
+    bool gifUpload = [mView isGIF];
     [mTiled setEnabled: tiled];
-    [mCropCheck setEnabled: !tiled];
+    [mCropCheck setEnabled: !tiled && !gifUpload];
     [mSaveTileWidth setHidden: !tiled];
     [mSaveTileHeight setHidden: !tiled];
     [mWidthLabel setHidden: !tiled];
     [mHeightLabel setHidden: !tiled];
     [mMultLabel setHidden: !tiled];
+    [mCompressionMatrix setEnabled: !gifUpload];
     [mTiled setState: (tiled ? NSControlStateValueOn : NSControlStateValueOff)];
     
     if (tiled) {

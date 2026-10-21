@@ -157,6 +157,7 @@ long MakeColor(id v);
 - (bool) canvasColor256;
 - (bool) isTiled;
 - (int) isFrieze;
+- (bool) isGIF;
 - (NSData*) pngImageDataCropped:(BOOL)cropped multiplier:(NSSize*) mult;
 
 - (void)controlTextDidChange:(NSNotification *)notification;
