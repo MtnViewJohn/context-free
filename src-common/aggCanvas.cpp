@@ -67,9 +67,6 @@ using custom64_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba16, agg::order_r
 using custom32_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_rgba>;
 using custom64_pixel_fmt = agg::pixfmt_custom_blend_rgba<custom64_blender, agg::rendering_buffer>;
 using custom32_pixel_fmt = agg::pixfmt_custom_blend_rgba<custom32_blender, agg::rendering_buffer>;
-
-using customav_blender = agg::comp_op_adaptor_rgba_pre<agg::rgba8, agg::order_bgra>;
-using customav_pixel_fmt = agg::pixfmt_custom_blend_rgba<customav_blender, agg::rendering_buffer>;
 #endif
 
 using ff_pixel_fmt = agg::pixfmt_argb32_pre;
@@ -99,11 +96,6 @@ const std::map<aggCanvas::PixelFormat, int> aggCanvas::BytesPerPixel = {
     { RGBA8_Blend, 4 },
     { RGBA8_Custom_Blend, 4 },
     { RGB8_Blend, 3 },
-    { FF_Blend, 4 },
-    { FF_Custom_Blend, 4 },
-    { FF24_Blend, 3 },
-    { AV_Blend, 4 },
-    { AV_Custom_Blend, 4 },
     { Gray16_Blend, 2 },
     { RGBA16_Blend, 8 },
     { RGBA16_Custom_Blend, 8 },
@@ -262,12 +254,6 @@ template<>
 void aggPixelPainter<custom64_pixel_fmt>::comp_op(agg::comp_op_e blend)
 { pixFmt.comp_op(static_cast<unsigned>(blend)); }
 
-#ifndef _WIN32
-template<>
-void aggPixelPainter<customav_pixel_fmt>::comp_op(agg::comp_op_e blend)
-{ pixFmt.comp_op(static_cast<unsigned>(blend)); }
-#endif
-
 template<>
 void aggPixelPainter<customff_pixel_fmt>::comp_op(agg::comp_op_e blend)
 { pixFmt.comp_op(static_cast<unsigned>(blend)); }
@@ -351,14 +337,6 @@ aggPixelPainter<pixel_fmt>::copy(void* data, unsigned width, unsigned height,
             break;
         }
         
-        case aggCanvas::FF_Blend:
-        case aggCanvas::FF24_Blend:
-        case aggCanvas::AV_Blend:
-        case aggCanvas::AV_Custom_Blend:
-        case aggCanvas::FF_Custom_Blend:
-            assert(false);
-            break;
-            
         default:
             break;
     }
@@ -380,19 +358,10 @@ aggCanvas::aggCanvas(PixelFormat pixfmt) : Canvas(0, 0) {
         case Gray16_Blend:  m = std::make_unique<aggPixelPainter<gray16_pixel_fmt>>(this); break;
         case RGBA16_Blend:  m = std::make_unique<aggPixelPainter<color64_pixel_fmt>>(this); break;
         case RGB16_Blend:   m = std::make_unique<aggPixelPainter<color48_pixel_fmt>>(this); break;
-        case FF_Blend:      m = std::make_unique<aggPixelPainter<ff_pixel_fmt>>(this); break;
-        case FF24_Blend:    m = std::make_unique<aggPixelPainter<ff24_pixel_fmt>>(this); break;
-        case AV_Blend:      m = std::make_unique<aggPixelPainter<av_pixel_fmt>>(this); break;
         case RGBA8_Custom_Blend:
             m = std::make_unique<aggPixelPainter<custom32_pixel_fmt>>(this); break;
         case RGBA16_Custom_Blend:
             m = std::make_unique<aggPixelPainter<custom64_pixel_fmt>>(this); break;
-        case FF_Custom_Blend:
-            m = std::make_unique<aggPixelPainter<customff_pixel_fmt>>(this); break;
-        case AV_Custom_Blend:
-#ifndef _WIN32
-            m = std::make_unique<aggPixelPainter<customav_pixel_fmt>>(this); break;
-#endif
         default: break;
     }
 }
@@ -505,14 +474,14 @@ aggCanvas::PixelFormat aggCanvas::SuggestPixelFormat(CFDG* engine)
     
     int ret = Gray8_Blend;
     
+    if (engine->usesBlendMode)
+        ret = RGBA8_Custom_Blend;
+    
     if (engine->usesAlpha)
         ret = RGBA8_Blend;
     else if (engine->usesColor)
         ret = RGB8_Blend;
 
-    if (engine->usesBlendMode)
-        ret = RGBA8_Custom_Blend;
-    
     if (engine->uses16bitColor)
         ret += Has_16bit_Color;
     

@@ -42,9 +42,6 @@ class aggCanvas : public Canvas {
             Gray8_Blend = 1, 
             RGBA8_Blend = 2, 
             RGB8_Blend = 3,
-            FF_Blend = 4,
-            FF24_Blend = 5,
-            AV_Blend = 6,
             Has_16bit_Color = 8,
             Has_Custom_Blend = 16,
             Gray16_Blend = Gray8_Blend | Has_16bit_Color, 
@@ -52,8 +49,6 @@ class aggCanvas : public Canvas {
             RGB16_Blend = RGB8_Blend | Has_16bit_Color,
             RGBA8_Custom_Blend = RGBA8_Blend | Has_Custom_Blend,
             RGBA16_Custom_Blend = RGBA16_Blend | Has_Custom_Blend,
-            FF_Custom_Blend = FF_Blend | Has_Custom_Blend,
-            AV_Custom_Blend = AV_Blend | Has_Custom_Blend
         };
         static const std::map<PixelFormat, int> BytesPerPixel;
         void start(bool clear, const agg::rgba& bk, int width, int height) override;
