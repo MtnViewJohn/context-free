@@ -82,8 +82,6 @@ extern NSInteger CurrentTabWidth;
     switch (fmt) {
         case aggCanvas::RGBA8_Blend:
         case aggCanvas::RGBA8_Custom_Blend:
-        case aggCanvas::AV_Blend:
-        case aggCanvas::AV_Custom_Blend:
         case aggCanvas::RGBA16_Blend:
         case aggCanvas::RGBA16_Custom_Blend:
             self = [super initWithBitmapDataPlanes: nullptr
@@ -1747,7 +1745,7 @@ long MakeColor(id v)
                                 mRenderer->m_width, mRenderer->m_height]];
 
     if (parameters.animateFrame == 0) {
-        auto pixfmt = mEngine->usesBlendMode ? aggCanvas::AV_Custom_Blend : aggCanvas::AV_Blend;
+        auto pixfmt = aggCanvas::SuggestPixelFormat(mEngine.get());
         [self setCurrentAction: ActionType::AnimateAction];
 
         BitmapAndFormat* bits = [BitmapAndFormat alloc];
