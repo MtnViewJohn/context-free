@@ -37,7 +37,12 @@ using std::endl;
 abstractPngCanvas::abstractPngCanvas(const char* outfilename, bool quiet, int width, int height, 
                                      aggCanvas::PixelFormat pixfmt, bool crop, int frameCount,
                                      int variation, bool wallpaper, Renderer *r, int mx, int my)
-: aggCanvas(pixfmt), mOutputFileName(outfilename), mFrameCount(frameCount), 
+#ifdef _WIN32
+    : aggCanvas((aggCanvas::PixelFormat)(pixfmt | aggCanvas::Has_RGB_Color)),
+#else
+: aggCanvas(pixfmt),
+#endif
+  mOutputFileName(outfilename), mFrameCount(frameCount), 
   mCurrentFrame(1), mVariation(variation), mPixelFormat(pixfmt),
   mCrop(crop), mQuiet(quiet), mWallpaper(wallpaper), mRenderer(r), mFullWidth(width), 
   mFullHeight(height), mOriginX(0), mOriginY(0)
