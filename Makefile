@@ -172,7 +172,7 @@ tars: # deb-clean
 	tar -cJvf ../$(TAR_NAME).orig.tar.xz --exclude=debian --exclude=src-osx \
 	  --exclude=src-win --exclude=src-agg --exclude=src-scintilla \
 	  --exclude=src-lexilla --exclude=src-mfc --exclude=src-png \
-	  --exclude=src-ffmpeg --exclude=objs --exclude=xcodeproj \
+	  --exclude=src-ffmpeg --exclude=objs --exclude=*xcodeproj \
           --transform "s,^,$(PROJECT_DIR)/,S" *
 	tar -cJvf ../$(TAR_NAME)-$(DEBIAN_VERSION).debian.tar.xz debian/
 
