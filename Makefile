@@ -121,7 +121,7 @@ endif
 # Derived
 #
 
-$(DERIVED_DIR)/lex.yy.cpp: $(COMMON_DIR)/cfdg.l
+$(DERIVED_DIR)/lex.yy.cpp: $(COMMON_DIR)/cfdg.l $(OBJ_DIR)/Sentry
 	flex -o $@ $^
 
 $(DERIVED_DIR)/cfdg.tab.hpp: $(DERIVED_DIR)/cfdg.tab.cpp
