@@ -155,7 +155,11 @@ Upload::Upload(const char* jsonbuf, std::size_t jsonlen)
     // is kind of janky.
     try {
         auto j = json::parse(jsonbuf, jsonbuf + jsonlen);
-        mId = j.at("design").at("id").get<int>();
+        try {
+            mId = j.at("design").at("id").get<int>();
+        } catch (...) {
+            mId = j.at("design").at("designid").get<int>();
+        }
         mFileName = j.at("design").at("filelocation").get<std::string>();
         try {
             mVariation = Variation::fromString(j.at("design").at("variation").get<std::string>());

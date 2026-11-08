@@ -387,9 +387,9 @@ static NSInteger OSXversion = 0;
     
     if ((![[pboardURL scheme] isEqualToString: @"http"] &&
          ![[pboardURL scheme] isEqualToString: @"https"]) ||
-        (![[pboardURL host] isEqualToString: @"www.contextfreeart.org"] &&
-         ![[pboardURL host] isEqualToString: @"contextfreeart.org"]) ||
-        ![[pboardURL pathComponents][1] isEqualToString: @"gallery"])
+        (![[pboardURL host] hasPrefix: @"192.168."] &&
+         ![[pboardURL host] hasSuffix: @"contextfreeart.org"]) ||
+        ![[pboardURL pathComponents][1] hasPrefix: @"gallery"])
     {
         NSBeep();
         return;
@@ -400,14 +400,14 @@ static NSInteger OSXversion = 0;
     NSString* frag = [pboardURL fragment];
     NSString* idStr = nil;
     NSRange idLoc = [query rangeOfString: @"id="];
-    if (idLoc.location != NSNotFound)
+    if (idLoc.length != 0)
         idStr = query;
-    else if ((idLoc = [frag rangeOfString: @"#design/"]).location != NSNotFound)
+    else if ((idLoc = [frag rangeOfString: @"design/"]).length != 0)
         idStr = frag;
     
-    if (idLoc.location != NSNotFound && idStr != nil) {
+    if (idLoc.length != 0 && idStr != nil) {
         int designID = [[idStr substringFromIndex: (idLoc.location + idLoc.length)] intValue];
-        [[GalleryDownloader alloc] initWithDesignID: designID];
+        [[GalleryDownloader alloc] initWithDesignID: designID url: pboardURL];
     } else if ([[pboardURL pathExtension] isEqualToString: @"cfdg"]) {
         [[GalleryDownloader alloc] initWithUrl: pboardURL];
     }

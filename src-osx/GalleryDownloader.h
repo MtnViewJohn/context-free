@@ -38,7 +38,7 @@
     NSURLSessionDataTask*   download;
 }
 
-- (id)initWithDesignID:(int)design;
+- (id)initWithDesignID:(int)design url:(NSURL*)_url;
 - (id)initWithUrl:(NSURL*)url;
 - (void)downloadDone: (id)obj;
 @end

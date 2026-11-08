@@ -44,24 +44,30 @@ void GalleryError(NSString* info)
 
 @implementation GalleryDownloader
 
-- (id)initWithDesignID:(int)design
+- (id)initWithDesignID:(int)design url:(NSURL*)_url
 {
     self = [super init];
     if (self) {
         designID = design;
         variation = Variation::random();
-#if 1
-        NSString* urlstring = [NSString stringWithFormat: @"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", designID];
-#else
-        NSString* urlstring = [NSString stringWithFormat: @"http://localhost/~john/cfa2/gallery/data.php/%d/info/foo.json", designID];
-#endif
-        NSURL* url = [NSURL URLWithString: urlstring];
         
+        NSString* urlformat = nil;
+        if ([[_url fragment] containsString: @"design"]) {
+            urlformat = @"%@://%@/gallery/gallerydb/cfdg/%d";
+        } else {
+            urlformat = @"%@://%@/gallery/data.php/%d/info/foo.json";
+        }
+        NSString* urlstring = [NSString stringWithFormat: urlformat, [_url scheme], [_url host], designID];
+        NSURL* url = [NSURL URLWithString: urlstring];
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest
+                                           requestWithURL: url];
+        [urlRequest setValue:@"Context Free" forHTTPHeaderField:@"User-Agent"];
+
         NSURLSessionDataTask* download = [[NSURLSession sharedSession]
-                                            dataTaskWithURL: url
-                                          completionHandler:^(NSData *data,
-                                                              NSURLResponse *response,
-                                                              NSError *error)
+                                            dataTaskWithRequest:urlRequest
+                                              completionHandler:^(NSData *data,
+                                                                  NSURLResponse *response,
+                                                                  NSError *error)
                                           {
                                               if (data) {
                                                   Upload response(static_cast<const char*>([data bytes]),
