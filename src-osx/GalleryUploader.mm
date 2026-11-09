@@ -62,23 +62,23 @@ namespace {
 
 #if 1
     static NSString* uploadUrl =
-        @"https://www.contextfreeart.org/gallery/upload.php";
+        @"https://www.contextfreeart.org/gallery/gallerydb/fpostdesign";
 
     static NSString* displayUrl =
-        @"https://www.contextfreeart.org/gallery/view.php?id=%d";
+        @"https://www.contextfreeart.org/gallery2/index.html#design/%d";
     
     static NSString* tagsUrl =
-        @"https://www.contextfreeart.org/gallery/tags.php?t=tags";
+        @"https://www.contextfreeart.org/gallery/gallerydb/tags";
 #else
     static NSString* uploadUrl =
-        @"http://192.168.42.165/gallery/upload.php";
+        @"http://192.168.42.165/gallery/gallerydb/fpostdesign";
     
     static NSString* displayUrl =
         //@"http://localhost:8000/main.html#design/%d";
-        @"http://192.168.42.165/gallery/view.php?id=%d";
+        @"http://192.168.42.165/gallery2/index.html#design/%d";
     
     static NSString* tagsUrl =
-        @"http://192.168.42.165/gallery/tags.php?t=tags";
+        @"http://192.168.42.165/gallery/gallerydb/tags";
 #endif
     
     SecKeychainItemRef getGalleryKeychainItem(NSString* name)
@@ -328,9 +328,9 @@ namespace {
                         timeoutInterval: 120.0
      ];
     [request setHTTPMethod: @"GET"];
-    [request setValue: @"application/json"
-        forHTTPHeaderField: @"Content-Type"];
-    
+    [request setValue: @"application/json" forHTTPHeaderField: @"Content-Type"];
+    [request setValue:@"Context Free" forHTTPHeaderField:@"User-Agent"];
+
     mTagsTask = [[NSURLSession sharedSession] dataTaskWithRequest: request
                                                 completionHandler:^(NSData *data,
                                                                     NSURLResponse *response,
@@ -535,7 +535,8 @@ namespace {
     [request setHTTPMethod: @"POST"];
     [request setValue: asNSString(Upload::generateContentType())
                 forHTTPHeaderField: @"Content-Type"];
-    
+    [request setValue:@"Context Free" forHTTPHeaderField:@"User-Agent"];
+
     mUploadTask = [[NSURLSession sharedSession] uploadTaskWithRequest: request
                                                              fromData: body
                                                     completionHandler:^(NSData *data,
