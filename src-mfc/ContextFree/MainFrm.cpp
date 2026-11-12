@@ -93,7 +93,8 @@ namespace {
 				(service == AFX_INET_SERVICE_HTTP ? 0 : INTERNET_FLAG_SECURE),
 				NULL));
 
-		if (hInetReq && ::HttpSendRequest(hInetReq.get(), NULL, 0, NULL, 0)) {
+		LPCWSTR szHeaders = L"User-Agent: Context Free";
+		if (hInetReq && ::HttpSendRequest(hInetReq.get(), szHeaders, -1, NULL, 0)) {
 			DWORD length = sizeof(DWORD);
 			DWORD status = 0;
 			HttpQueryInfo(hInetReq.get(), HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
@@ -285,20 +286,27 @@ void CMainFrame::DownLoadGallery(std::wstring_view wview)
 {
 	DownloadInfo* di = new DownloadInfo{ *this, L"" };
 	auto idx = wview.find(L"id=");
+	bool targetPHP = true;
 	if (idx != std::wstring_view::npos) {
 		idx += 3;
 	} else {
 		idx = wview.find(L"#design/");
-		if (idx != std::wstring_view::npos)
+		if (idx != std::wstring_view::npos) {
 			idx += 8;
+			targetPHP = false;
+		}
 	}
 	if (idx != std::wstring_view::npos) {
 		wchar_t* end = nullptr;
 		long id = std::wcstol(wview.data() + idx, &end, 10);
-		if (end != wview.data() + idx && id != 0 && id != LONG_MAX)
-			di->m_sUrl.Format(L"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", id);
-		else
+		if (end != wview.data() + idx && id != 0 && id != LONG_MAX) {
+			if (targetPHP)
+				di->m_sUrl.Format(L"https://www.contextfreeart.org/gallery/data.php/%d/info/foo.json", id);
+			else
+				di->m_sUrl.Format(L"https://www.contextfreeart.org/gallery/gallerydb/cfdg/%d", id);
+		} else {
 			return;
+		}
 	} else if (wview.ends_with(L".cfdg")) {
 		di->m_sUrl = wview.data();
 	} else {
