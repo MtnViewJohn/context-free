@@ -388,10 +388,11 @@ UINT GalleryUpload::TagsControllingFunction(LPVOID pParam)
 			INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL);
 
 	if (hInetCnxn)
-		hInetReq = ::HttpOpenRequest(hInetCnxn, L"GET", L"/gallery/tags.php?t=tags", L"HTTP/1.1",
+		hInetReq = ::HttpOpenRequest(hInetCnxn, L"GET", L"/gallery/gallerydb/tags", L"HTTP/1.1",
 			NULL, NULL, INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE, NULL);
 
-	if (hInetReq && ::HttpSendRequest(hInetReq, NULL, 0, NULL, 0)) {
+	LPCWSTR szHeaders = L"User-Agent: Context Free";
+	if (hInetReq && ::HttpSendRequest(hInetReq, szHeaders, -1, NULL, 0)) {
 		DWORD length = sizeof(DWORD);
 		DWORD status = 0;
 		HttpQueryInfo(hInetReq, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
@@ -431,7 +432,7 @@ void GalleryUpload::PerformPost()
 	HINTERNET hInetCnxn = nullptr;
 
 	std::wstring header = Utf8ToUtf16(Upload::generateContentType());
-	header.insert(0, L"Content-Type: ");
+	header.insert(0, L"User-Agent: Context Free\nContent-Type: ");
 
 	hInetInit = ::InternetOpen(L"Context Free", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
 
@@ -440,7 +441,7 @@ void GalleryUpload::PerformPost()
 			INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL);
 
 	if (hInetCnxn)
-		m_hInetPost = ::HttpOpenRequest(hInetCnxn, L"POST", L"/gallery/upload.php", L"HTTP/1.1",
+		m_hInetPost = ::HttpOpenRequest(hInetCnxn, L"POST", L"/gallery/gallerydb/fpostdesign", L"HTTP/1.1",
 			NULL, NULL, INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE, NULL);
 
 	if (m_hInetPost && ::HttpSendRequest(m_hInetPost, header.c_str(), (DWORD)header.length(),
@@ -497,14 +498,29 @@ LRESULT GalleryUpload::UploadDone(WPARAM wParam, LPARAM lParam)
 	}
 
 	if (m_iDesignID) {
+		this->SetWindowTextW(L"Upload Successfully Completed!");
 		m_ctrlCancel.SetWindowTextW(L"See Design");
 		m_ctrlCancel.SetMouseCursorHand();
 		m_ctrlUpload.SetWindowTextW(L"Done");
 		m_ctrlUpload.EnableWindow();
+		m_ctrlWidthSpin.EnableWindow(0);
+		m_ctrlHeightSpin.EnableWindow(0);
+		m_ctrlCropTile.EnableWindow(0);
+		m_ctrlLicense.EnableWindow(0);
+		m_ctrlCCimage.EnableWindow(0);
+		m_ctrlMultWidth.EnableWindow(0);
+		m_ctrlMultHeight.EnableWindow(0);
+		m_ctrlAccount.EnableWindow(0);
+		m_ctrlTagEdit.EnableWindow(0);
+		m_ctrlTagsList.EnableWindow(0);
+		m_ctrlTagMove.EnableWindow(0);
 	} else {
 		m_ctrlUpload.SetWindowTextW(L"Upload");
 		m_ctrlUpload.EnableWindow();
 		if (!m_sErrorMessage.empty()) {
+			auto ptag = m_sErrorMessage.find("<p>");
+			if (ptag != std::string::npos)
+				m_sErrorMessage.erase(0, ptag + 3);
 			::MessageBox(GetSafeHwnd(), Utf8ToUtf16(m_sErrorMessage).c_str(),
 				L"Upload Failed", MB_ICONASTERISK);
 			m_sErrorMessage.clear();
