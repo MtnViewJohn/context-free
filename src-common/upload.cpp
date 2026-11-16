@@ -120,7 +120,7 @@ std::string Upload::generateContentType()
 }
 
 void
-Upload::generatePayload(std::ostream& out)
+Upload::generatePayload(std::ostream& out, const char* imageName)
 {
     generateTextField(out, "screenname", mUserName);
     generateTextField(out, "password", mPassword);
@@ -129,7 +129,7 @@ Upload::generatePayload(std::ostream& out)
     
     generateTextField(out, "title", mTitle);
     generateFileField(out, "cfdgfile", mText, mTextLen, mFileName);
-    generateFileField(out, "imagefile", mImage, mImageLen, "image.png");
+    generateFileField(out, "imagefile", mImage, mImageLen, imageName);
     generateTextField(out, "compression", compressionName(mCompression));
     generateTextField(out, "ccURI", mccLicenseURI);
     generateTextField(out, "ccName", mccLicenseName);

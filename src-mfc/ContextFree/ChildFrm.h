@@ -61,6 +61,7 @@ public:
 	void OnNextVariation();
 	void OnPrevVariation();
 	afx_msg void OnUpdateSaveImage(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateUploadGallery(CCmdUI* pCmdUI);
 	CString NameWithoutExtension();
 	void RecvErrorLinkClick(LPCTSTR link);
 	void UpdateDirtyIndicator(bool dirty);
@@ -94,6 +95,7 @@ protected:
 	void SetPostRenderAction(PostRenderAction v);
 	bool m_bRenderAgain = false;
 	std::string m_strMovieFile;
+	std::wstring m_wstrSavedMovieFile;
 	int m_iJpegQuality = 80;
 	int m_iMultWidth = 1;
 	int m_iMultHeight = 1;

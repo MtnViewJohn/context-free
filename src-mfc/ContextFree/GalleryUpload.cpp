@@ -6,13 +6,15 @@
 #include "afxdialogex.h"
 #include "GalleryUpload.h"
 #include "UploadParams.h"
-#include "vector"
+#include <vector>
+#include <set>
 #include "upload.h"
 #include "cfdg.h"
 #include "ChildFrm.h"
 #include <sstream>
 #include "WinSystem.h"
 #include "EditLock.h"
+#include <memory>
 
 namespace {
 	std::vector<const wchar_t*> LicenseIndicators{
@@ -66,6 +68,13 @@ namespace {
 	
 	std::vector<std::string> AllTags;
 	std::set<std::wstring, AutoCmpWStr> AllTagsL;
+
+	struct IStreamReleaserFunctor {
+		void operator()(IStream* p) {
+			p->Release();
+		}
+	};
+	using IStream_ptr = std::unique_ptr<IStream, IStreamReleaserFunctor>;
 }
 
 bool GalleryUpload::Validate(CString name, CString license, CString image)
@@ -92,7 +101,7 @@ GalleryUpload::GalleryUpload(CChildFrame& child, UploadParams& params, CWnd* pPa
 	, m_sNotes(_T(""))
 	, m_sFilename(params.cfdgName)
 	, m_sVariation(params.variationText)
-	, m_iJPEGPNG(m_rChild.m_WinCanvas->colorCount256() ? 1 : 0)
+	, m_iJPEGPNG(!m_rParams.movieName.IsEmpty() || m_rChild.m_WinCanvas->colorCount256() ? 1 : 0)
 	, m_sCCname(_T(""))
 {
 	for (int i = 1; i < 8; ++i)
@@ -177,7 +186,7 @@ BOOL GalleryUpload::OnInitDialog()
 	m_ctrlHeightSpin.SetRange(1, 5);
 	m_ctrlHeightSpin.SetPos(1);
 
-	if (m_rParams.Tiled) {
+	if (m_rParams.Tiled && m_rParams.movieName.IsEmpty()) {
 		m_ctrlWidthSpin.EnableWindow(m_rParams.Tiled & 1);
 		m_ctrlHeightSpin.EnableWindow(m_rParams.Tiled & 2);
 		m_ctrlCropTile.SetWindowTextW(L"Tiled");
@@ -197,6 +206,11 @@ BOOL GalleryUpload::OnInitDialog()
 			SWP_HIDEWINDOW | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
 		m_ctrlMultHeight.SetWindowPos(NULL, 0, 0, 0, 0,
 			SWP_HIDEWINDOW | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+	}
+
+	if (!m_rParams.movieName.IsEmpty()) {
+		GetDlgItem(IDC_JPEG)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_PNG8)->ShowWindow(SW_HIDE);
 	}
 
 	for (auto indicator : LicenseIndicators)
@@ -310,41 +324,67 @@ void GalleryUpload::OnClickedUpload()
 
 	bool crop = m_rParams.Tiled || m_ctrlCropTile.GetCheck() == BST_CHECKED;
 
-	IStream* spStream = nullptr;
-	HRESULT hr = ::CreateStreamOnHGlobal(NULL, TRUE, &spStream);
-	if (!SUCCEEDED(hr)) {
-		::MessageBeep(MB_ICONASTERISK);
-		TRACE1("Couldn't create stream: %x\n", hr);
-		return;
-	}
-
-	auto stat = m_rChild.SaveJPEG(spStream, nullptr, crop, m_ctrlWidthSpin.GetPos(),
-		m_ctrlHeightSpin.GetPos(), m_iJPEGPNG == 0 ? 90 : 0);
-	if (stat != S_OK) {
-		::MessageBeep(MB_ICONASTERISK);
-		TRACE1("Image save failed: %d\n", stat);
-		return;
-	}
-
-	HGLOBAL hMem = NULL;
-	hr = ::GetHGlobalFromStream(spStream, &hMem);
-	if (!SUCCEEDED(hr)) {
-		::MessageBeep(MB_ICONASTERISK);
-		TRACE1("Couldn't get image data: %x\n", hr);
-		return;
-	}
-
-	if (!(upload.mImageLen = ::GlobalSize(hMem)) || !(upload.mImage = (const char*)::GlobalLock(hMem))) {
-		::MessageBeep(MB_ICONASTERISK);
-		TRACE1("Couldn't access image data: %d\n", GetLastError());
-		return;
-	}
-
 	std::ostringstream design;
-	upload.generatePayload(design);
 
-	::GlobalUnlock(hMem);
-	spStream->Release();
+	if (m_rParams.movieName.IsEmpty()) {
+		IStream* spStream = nullptr;
+		HRESULT hr = ::CreateStreamOnHGlobal(NULL, TRUE, &spStream);
+		if (!SUCCEEDED(hr)) {
+			::MessageBeep(MB_ICONASTERISK);
+			TRACE1("Couldn't create stream: %x\n", hr);
+			return;
+		}
+		IStream_ptr holder(spStream);
+
+		auto stat = m_rChild.SaveJPEG(spStream, nullptr, crop, m_ctrlWidthSpin.GetPos(),
+			m_ctrlHeightSpin.GetPos(), m_iJPEGPNG == 0 ? 90 : 0);
+		if (stat != S_OK) {
+			::MessageBeep(MB_ICONASTERISK);
+			TRACE1("Image save failed: %d\n", stat);
+			return;
+		}
+
+		HGLOBAL hMem = NULL;
+		hr = ::GetHGlobalFromStream(spStream, &hMem);
+		if (!SUCCEEDED(hr)) {
+			::MessageBeep(MB_ICONASTERISK);
+			TRACE1("Couldn't get image data: %x\n", hr);
+			return;
+		}
+
+		if (!(upload.mImageLen = ::GlobalSize(hMem)) || !(upload.mImage = (const char*)::GlobalLock(hMem))) {
+			::MessageBeep(MB_ICONASTERISK);
+			TRACE1("Couldn't access image data: %d\n", GetLastError());
+			return;
+		}
+
+		upload.generatePayload(design, "image.png");
+
+		::GlobalUnlock(hMem);
+		//spStream->Release();
+	} else {
+		auto hGifFile = ::CreateFileW(m_rParams.movieName, GENERIC_READ, 0, NULL, 
+									  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hGifFile != INVALID_HANDLE_VALUE) {
+			auto gifSize = ::GetFileSize(hGifFile, NULL);
+			std::vector<char> gifData((size_t)gifSize, '\0');
+			DWORD bytesRead = 0;
+			auto success = gifSize && ::ReadFile(hGifFile, gifData.data(), gifSize, &bytesRead, NULL);
+			::CloseHandle(hGifFile);
+			if (success && bytesRead == gifSize) {
+				upload.mImageLen = gifData.size();
+				upload.mImage = gifData.data();
+				upload.generatePayload(design, "image.gif");
+			} else {
+				hGifFile = INVALID_HANDLE_VALUE;
+			}
+		}
+		if (hGifFile == INVALID_HANDLE_VALUE) {
+			::MessageBeep(MB_ICONASTERISK);
+			TRACE1("Couldn't access image data: %d\n", GetLastError());
+			return;
+		}
+	}
 
 	m_sPayload = design.str();
 
@@ -498,6 +538,7 @@ LRESULT GalleryUpload::UploadDone(WPARAM wParam, LPARAM lParam)
 	}
 
 	if (m_iDesignID) {
+		::MessageBeep(MB_OK);
 		this->SetWindowTextW(L"Upload Successfully Completed!");
 		m_ctrlCancel.SetWindowTextW(L"See Design");
 		m_ctrlCancel.SetMouseCursorHand();

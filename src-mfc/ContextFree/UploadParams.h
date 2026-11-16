@@ -11,6 +11,7 @@ public:
     static void Modify(CString& param, CString v);
 
     CString cfdgName;
+    CString movieName;
     std::string cfdgText;
     int variation;
     CString variationText;

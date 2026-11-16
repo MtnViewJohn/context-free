@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_COMMAND(ID_RENDER_STOP, OnRenderStop)
 	ON_COMMAND(ID_SAVE_IMAGE, OnSaveOutput)
 	ON_UPDATE_COMMAND_UI(ID_SAVE_IMAGE, OnUpdateSaveImage)
+	ON_UPDATE_COMMAND_UI(ID_RENDER_UPLOADTOGALLERY, OnUpdateUploadGallery)
 	ON_UPDATE_COMMAND_UI(ID_RENDER_STOP, OnUpdateRenderStop)
 	ON_MESSAGE(WinSystem::WM_USER_STATUS_UPDATE, OnStatusUpdate)
 	ON_MESSAGE(WinSystem::WM_USER_MESSAGE_UPDATE, OnMessage)
@@ -343,9 +344,12 @@ LRESULT CChildFrame::OnRenderDone(WPARAM wParam, LPARAM lParam)
 				auto ofn = fsDlg.GetOFN();
 				if (::MoveFileEx(tempMovie16.c_str(), ofn.lpstrFile, MOVEFILE_REPLACE_EXISTING)) {
 					moved = true;
+					m_wstrSavedMovieFile = ofn.lpstrFile;
 				} else {
 					if (!::PathFileExists(ofn.lpstrFile) || ::DeleteFile(ofn.lpstrFile)) {
-						if (!::CopyFile(tempMovie16.c_str(), ofn.lpstrFile, FALSE))
+						if (::CopyFile(tempMovie16.c_str(), ofn.lpstrFile, FALSE))
+							m_wstrSavedMovieFile = ofn.lpstrFile;
+						else
 							::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
 					} else {
 						::MessageBoxW(GetSafeHwnd(), _T("Failed to save movie."), _T("Movie file error"), MB_ICONEXCLAMATION);
@@ -613,6 +617,7 @@ void CChildFrame::OnUploadGallery()
 	UploadParams uParams;
 	auto& rCtrl{ m_vwCfdgEditor->GetCtrl() };
 	uParams.cfdgName = m_CFdoc->GetTitle();
+	uParams.movieName = m_wstrSavedMovieFile.c_str();
 	uParams.variation = renderParams.variation;
 	uParams.variationText = Utf8ToUtf16(Variation::toString(renderParams.variation, false)).c_str();
 	uParams.cfdgText.resize(rCtrl.GetTextLength(), ' ');
@@ -644,6 +649,12 @@ void CChildFrame::OnUpdateRenderStop(CCmdUI* pCmdUI)
 void CChildFrame::OnUpdateSaveImage(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(m_WinCanvas && m_Renderer && !m_hRenderThread);
+}
+
+void CChildFrame::OnUpdateUploadGallery(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable((m_WinCanvas || m_wstrSavedMovieFile.ends_with(L".gif"))
+				   && m_Renderer && !m_hRenderThread);
 }
 
 void CChildFrame::NextVariation()
@@ -709,6 +720,7 @@ void CChildFrame::DoRender(bool shrinkTiled)
 	int height = useAnimateSize ? renderParams.AnimateHeight : renderParams.height;
 
 	m_vwOutputView->m_Renderer = nullptr;
+	m_wstrSavedMovieFile.clear();
 	m_Renderer.reset();		// TODO move deletion into async thread
 	m_Engine.reset();
 	if (renderParams.action != RenderParameters::RenderActions::Animate ||

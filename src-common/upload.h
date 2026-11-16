@@ -67,7 +67,7 @@ public:
     const char*         mImage;        // png data
     std::size_t         mImageLen;
     
-    void generatePayload(std::ostream&);
+    void generatePayload(std::ostream&, const char* imageName);
     
     static std::string generateHeader();
     static std::string generateContentType();
