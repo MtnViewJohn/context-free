@@ -38,6 +38,7 @@
     NSString*                   mOrigPassword;
     NSString*                   mOrigName;
     unsigned                    mSuccessId;
+    bool                        gifUpload;
 
     IBOutlet NSView*    mContentView;
 

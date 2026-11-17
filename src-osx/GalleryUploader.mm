@@ -268,7 +268,7 @@ namespace {
     upload.mImageLen    = [imageData length];
     
     std::ostringstream design;
-    upload.generatePayload(design);
+    upload.generatePayload(design, gifUpload ? "image.gif" : "image.png");
 
     return [NSData dataWithBytes: design.str().data()
                     length: design.str().length()];
@@ -379,7 +379,7 @@ namespace {
     [mCompressionMatrix selectCellWithTag: bestCompression];
 
     bool tiled = [mView isTiled];
-    bool gifUpload = [mView isGIF];
+    gifUpload = [mView isGIF];
     [mTiled setEnabled: tiled];
     [mCropCheck setEnabled: !tiled && !gifUpload];
     [mSaveTileWidth setHidden: !tiled];
