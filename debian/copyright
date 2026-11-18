@@ -2,7 +2,9 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: contextfree
 Upstream-Contact: John Horigan <john@glyphic.com>
 Source: https://www.contextfreeart.org/index.html
-Files-Excluded: src-net src-ffmpeg src-agg src-osx src-win src-scintilla
+Files-Excluded: src-ffmpeg src-agg src-osx src-win src-scintilla
+                src-lexilla src-png src-mfc Context?Free.xcodeproj
+                debian
 
 Files: *
 Copyright:

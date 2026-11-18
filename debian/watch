@@ -1,4 +1,6 @@
-version=4
-options="pgpsigurlmangle=s%$%.asc%,dversionmangle=s/\+dfsg[0-9]*//,repacksuffix=+dfsg1" \
-  https://www.contextfreeart.org/downloads.html \
-  download/ContextFreeSource([\d\.]+)\.tar\.xz debian
+Version: 5
+Mode: git
+Pgp-Mode: gittag
+Source: https://forge.glyphic.com/john/context-free.git
+Matching-Pattern: refs/tags/@STABLE_VERSION@
+Dversion-Mangle: auto

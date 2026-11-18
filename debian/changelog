@@ -1,3 +1,28 @@
+contextfree (3.5.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release, includes missing feature for v3.5
+
+ -- John Horigan <john@glyphic.com>  Tue, 17 Nov 2026 18:16:41 -0800
+
+contextfree (3.5.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control
+    - Dropped Priority and Rules-Requires-Root fields
+    - Dropped libavformat, libswscale, and libx264 from Build-Depends
+    - Added ffmpeg to Build-Depends and binary package Depends
+    - Raise Standards-Version to 4.7.4. (dropped control Priority and
+       Rules-Requires-Root fields)
+    - Update Vcs-* fields
+  * debian/copyright: updated Files-Excluded and dates
+  * debian/patches: removed, all moved to upstream
+  * debian/rules: superior method to use libagg instead of embedded AGG
+  * debian/upstream/metadata: upstream migrated from Github
+    to forge.glyphic.com/john/context-free
+  * debian/watch: migrated to version 5 using GPG-signed git tags
+
+ -- John Horigan <john@glyphic.com>  Fri, 30 Oct 2026 21:30:48 -0700
+
 contextfree (3.4.2+dfsg-1) unstable; urgency=medium
 
   * New upstream release (Closes: #1072407)

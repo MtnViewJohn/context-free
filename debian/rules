@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export CFDG_LIBAGG = 1
 
 %:
 	dh $@
