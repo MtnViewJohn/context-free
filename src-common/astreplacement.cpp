@@ -26,6 +26,7 @@
 #include "astreplacement.h"
 
 #include "agg2/agg_basics.h"
+#include "agg_curve_continuous.h"
 #include "pathIterator.h"
 #include "json3.hpp"
 #include <cassert>
@@ -1493,6 +1494,9 @@ namespace AST {
                     break;
                 }
                 switch (pop->mArgCount) {
+                    case 0:
+                        agg::curve4_continuous(mPath);
+                        break;
                     case 2:
                         mPath.curve3(data[0], data[1]);
                         break;
@@ -1631,6 +1635,9 @@ namespace AST {
             case CURVEREL:
                 if (mFlags & ~CF_CONTINUOUS) {
                     CfdgError::Error(mLocation, "Only CF::Continuous flag can be used with this operation", b);
+                } else if (mArgCount == 0) {
+                    // no-arg curves are implicitly continuous
+                    mFlags = CF_CONTINUOUS;
                 } else if (mFlags & CF_CONTINUOUS) {
                     if (mArgCount != 2 && mArgCount != 4)
                         CfdgError::Error(mLocation, "Continuous curve path operations require two or four arguments", b);
@@ -1759,7 +1766,9 @@ namespace AST {
         
         ASTexpression* xy = nullptr;
         if (mPathOp != CLOSEPOLY) {
-            xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation, b);
+            // CURVETO/REL has a special no-argument form
+            if (ax || ay || ax1 || ay1 || ax2 || ay2 || (mPathOp != CURVETO && mPathOp != CURVEREL))
+                xy = parseXY(std::move(ax), std::move(ay), 0.0, mLocation, b);
         } 
         
         switch (mPathOp) {
@@ -1804,7 +1813,12 @@ namespace AST {
                     xy2 = parseXY(std::move(ax2), std::move(ay2), 0.0, mLocation, b);
                 }
                 
-                mArguments.reset(xy->append(xy1)->append(xy2));
+                if (xy) {
+                    mArguments.reset(xy->append(xy1)->append(xy2));
+                } else {
+                    mArguments.reset();
+                    mFlags |= CF_CONTINUOUS;
+                }
                 break;
             }
             case CLOSEPOLY:

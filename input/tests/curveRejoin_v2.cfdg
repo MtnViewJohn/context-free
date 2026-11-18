@@ -1,0 +1,9 @@
+startshape foo
+
+path foo
+{
+  MOVETO{x 0 y 0}
+  CURVETO{x 1 y 0 x1 0.5 y1 1}
+  CURVETO{}
+  STROKE{}
+}

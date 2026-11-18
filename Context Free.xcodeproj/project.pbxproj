@@ -384,6 +384,7 @@
 		529049A20F3E4CC900484FED /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
 		529262B91FFCAAC800D00B7D /* prettyint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = prettyint.cpp; sourceTree = "<group>"; };
 		529262BA1FFCAAC800D00B7D /* prettyint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prettyint.h; sourceTree = "<group>"; };
+		5292AF4430AC1E9300CA9C54 /* agg_curve_continuous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = agg_curve_continuous.h; sourceTree = "<group>"; };
 		52954E60175EFCC700AE6516 /* GalleryDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GalleryDownloader.h; sourceTree = "<group>"; };
 		52954E61175EFCC700AE6516 /* GalleryDownloader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GalleryDownloader.mm; sourceTree = "<group>"; };
 		5298ED5216A216CB00C5726D /* chunk_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_vector.h; sourceTree = "<group>"; };
@@ -810,6 +811,7 @@
 		FD4A7987086FA1AA0033B409 /* agg-extras */ = {
 			isa = PBXGroup;
 			children = (
+				5292AF4430AC1E9300CA9C54 /* agg_curve_continuous.h */,
 				52F014EF108D6AEA00A329BE /* agg_trans_affine_1D.h */,
 				527107711027B79D00091D94 /* agg_trans_affine_time.h */,
 				FD4A7988086FA1AA0033B409 /* agg_fast_ellipse.h */,

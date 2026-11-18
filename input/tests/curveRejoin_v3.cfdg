@@ -1,0 +1,9 @@
+startshape foo
+
+path foo
+{
+  MOVETO(0,0)
+  CURVETO(1,0,0.5,1)
+  CURVETO()
+  STROKE()[]
+}
