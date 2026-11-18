@@ -1,7 +1,7 @@
 
 all: cfdg
 
-PROJECT_VERSION ?= 3.5.0
+PROJECT_VERSION ?= 3.5.1
 DEBIAN_VERSION ?= 1
 
 
