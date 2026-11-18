@@ -22,8 +22,8 @@ namespace agg
     {
         double x_to;
         double y_to;
-        double x_ctrl2;
-        double y_ctrl2;
+        double x_ctrl2 = 0.0;
+        double y_ctrl2 = 0.0;
         if (is_curve(path.last_vertex(&x_to, &y_to)))
         {
             for (unsigned idx = path.total_vertices() - 1; idx != UINT_MAX && is_vertex(path.command(idx)); --idx)
