@@ -1,0 +1,232 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xAA0EB3CD9E703357"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "randSquiggle",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "Scene",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op arguments": [
+                        {
+                            "class": "ASTfunction",
+                            "constant": false,
+                            "function": "rand.",
+                            "function arguments": [
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "1"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "5"
+                                }
+                            ],
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "5"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "9"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "2"
+                        }
+                    ],
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x7C3E93B48D8F5B2D"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "randSquiggle",
+            "path parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x7C3E93B48D8F5B2D"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "Squiggle",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "Scene",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

@@ -1,0 +1,149 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x50BEC6841C3436C2"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": "CF::Align"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "unknown locality",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xBEF9085F11CCF290"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "flower",
+            "path parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x215BB8D0B4D302F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "flower",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

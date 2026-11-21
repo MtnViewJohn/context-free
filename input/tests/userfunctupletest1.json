@@ -1,0 +1,269 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition name": "Sz",
+            "definition type": "function definition",
+            "function expression": {
+                "children": [
+                    {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": false,
+                        "type": "numeric type",
+                        "variable name": "n"
+                    },
+                    {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "2"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": "*",
+                        "right": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "n"
+                        },
+                        "type": "numeric type"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": false,
+                "length": 2,
+                "locality": "impure non-local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 2
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "Sz2",
+            "definition type": "function definition",
+            "function expression": {
+                "children": [
+                    {
+                        "class": "ASTfunction",
+                        "constant": false,
+                        "function": "rand.",
+                        "function arguments": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "1"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "4"
+                            }
+                        ],
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    {
+                        "class": "ASTfunction",
+                        "constant": false,
+                        "function": "rand.",
+                        "function arguments": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "1"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "4"
+                            }
+                        ],
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": false,
+                "length": 2,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "function parameters": [],
+            "length": 2
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x61A2E58E4283CF9D"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "2"
+                                            }
+                                        ],
+                                        "class": "ASTuserFunction",
+                                        "constant": false,
+                                        "length": 2,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "userfunction name": "Sz"
+                                    }
+                                ],
+                                "modterm type": "size",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xCCF568C530EFE0EF"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "arguments": [],
+                                        "class": "ASTuserFunction",
+                                        "constant": false,
+                                        "length": 2,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "userfunction name": "Sz2"
+                                    }
+                                ],
+                                "modterm type": "size",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

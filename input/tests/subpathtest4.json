@@ -1,0 +1,164 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTselect",
+                "constant": false,
+                "locality": "pure local",
+                "select choices": [
+                    {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    },
+                    {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    },
+                    {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "TRIANGLE",
+                        "type": "rule type"
+                    }
+                ],
+                "select selector": {
+                    "class": "ASTfunction",
+                    "constant": false,
+                    "function": "randint",
+                    "function arguments": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": ""
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "3"
+                        }
+                    ],
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type"
+                },
+                "select tuple size": 1,
+                "select type": "select",
+                "type": "rule type"
+            },
+            "definition name": "hole",
+            "definition type": "stack definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "ARCTO",
+                    "path op flags": "CF::ArcCW"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "ARCTO",
+                    "path op flags": "CF::ArcCW"
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x786EA87F3F9B4EF9"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "stack arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "hole",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "subpath",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "subpath",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

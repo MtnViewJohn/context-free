@@ -1,0 +1,138 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xA8B166408FDCAF22"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "TRIANGLE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xAA2342A66E097A70"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "tri",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "TRIANGLE",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "tri",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

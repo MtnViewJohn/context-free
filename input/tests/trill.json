@@ -1,0 +1,255 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x69FBD9F1D251DF75"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Background",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "CURVETO",
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x1DE6F68263905F97"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": "CF::Align"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "unknown locality",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::EvenOdd",
+                    "path command": "FILL"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "unknown locality",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x0395AF903980A00A"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "unknown locality",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x6A7CDFF49F648C06"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "class": "ASTpathCommand",
+                            "flags": "CF::EvenOdd",
+                            "path command": "FILL"
+                        },
+                        {
+                            "adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "unknown locality",
+                                "modification constants": {
+                                    "color": [
+                                        "HSBA",
+                                        "color"
+                                    ],
+                                    "random": {
+                                        "seed": "0xDC021E7C94EEC07A"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "class": "ASTpathCommand",
+                            "flags": "CF::MiterJoin+CF::ButtCap",
+                            "path command": "STROKE"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xADAB974279CEE4E6"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "path name": "trill",
+            "path parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x9FD6925349B24A8E"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "trill",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::Background": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "color": [
+                    "HSBA",
+                    "color"
+                ],
+                "random": {
+                    "seed": "0x80784A270084AACA"
+                }
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

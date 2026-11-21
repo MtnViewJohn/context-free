@@ -40,7 +40,9 @@ using namespace std::string_literals;
 
 void to_json(json& j, json_float f)
 {
-    if (std::isfinite(f.value))
+    if (!AST::ExactJSON)
+        j = "float";
+    else if (std::isfinite(f.value))
         j = f.value;
     else if (std::isnan(f.value))
         j = "NaN";
@@ -70,28 +72,40 @@ void from_json(const json& j, json_float& f)
 namespace agg {
     void to_json(json& j, const trans_affine& m)
     {
-        j = json{{"sx", m.sx}, {"shy", m.shy}, {"shx", m.shx},
-                 {"sy", m.sy}, {"tx", m.tx}, {"ty", m.ty}};
+        if (AST::ExactJSON)
+            j = json{{"sx", m.sx}, {"shy", m.shy}, {"shx", m.shx},
+                     {"sy", m.sy}, {"tx", m.tx}, {"ty", m.ty}};
+        else
+            j = json{"trans", "affine"};
     }
     void to_json(json& j, const trans_affine_1D& m)
     {
-        j = json{{"sz", m.sz}, {"tz", json_float(m.tz)}};
+        if (AST::ExactJSON)
+            j = json{{"sz", m.sz}, {"tz", json_float(m.tz)}};
+        else
+            j = json{"trans", "affine_1D"};
     }
     void to_json(json& j, const trans_affine_time& m)
     {
-        j = json{{"st", m.st}, {"tbegin", json_float(m.tbegin)}, {"tend", json_float(m.tend)}};
+        if (AST::ExactJSON)
+            j = json{{"st", m.st}, {"tbegin", json_float(m.tbegin)}, {"tend", json_float(m.tend)}};
+        else
+            j = json{"trans", "affine_time"};
     }
     
 };
 
 void to_json(json& j, const HSBColor& m)
 {
-    j = json {
-        {"hue", m.h},
-        {"saturation", m.s},
-        {"brightness", m.b},
-        {"alpha", m.a}
-    };
+    if (AST::ExactJSON)
+        j = json {
+            {"hue", m.h},
+            {"saturation", m.s},
+            {"brightness", m.b},
+            {"alpha", m.a}
+        };
+    else
+        j = json{"HSBA", "color"};
 }
 
 void to_json(json& j, const Rand64& m)
@@ -3519,7 +3533,10 @@ namespace {
         j = json{{"class", "ASTreal"}};
         ASTexpression::base_to_json(j);
         if (mType == NumericType) {
-            j["value"] = json_float(value);
+            if (ExactJSON)
+                j["value"] = json_float(value);
+            else
+                j["value"] = text;
         } else {
             j["flag"] = Builder::FlagToString(static_cast<int>(value));
         }

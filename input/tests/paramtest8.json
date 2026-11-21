@@ -1,0 +1,251 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure non-local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xDD869729E6020CF1"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure non-local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "height"
+                                    }
+                                ],
+                                "modterm type": "size",
+                                "type": "adjustment type"
+                            },
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "value": "0.5"
+                                    }
+                                ],
+                                "modterm type": "y",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "rect",
+            "rule parameters": [
+                {
+                    "natural": true,
+                    "parameter name": "height",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ]
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTif",
+                    "else body": [],
+                    "if condition": {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "variable name": "height"
+                    },
+                    "then body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xEC0660EB66EEC01F"
+                                    }
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "copy parent arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure non-local",
+                                "shape name": "rect",
+                                "type": "rule type"
+                            }
+                        },
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xE350218E2BF2B609"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "dynamic arguments",
+                                "arguments": [
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTvariable",
+                                            "constant": false,
+                                            "length": 1,
+                                            "locality": "pure non-local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "variable name": "height"
+                                        },
+                                        "locality": "impure non-local",
+                                        "natural": true,
+                                        "operator": "_",
+                                        "right": {
+                                            "class": "ASTreal",
+                                            "constant": true,
+                                            "locality": "pure local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "value": "1"
+                                        },
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "class": "ASTruleSpecifier",
+                                "constant": false,
+                                "locality": "impure non-local",
+                                "shape name": "foo",
+                                "type": "rule type"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": [
+                {
+                    "natural": true,
+                    "parameter name": "height",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ]
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "dynamic arguments",
+            "arguments": [
+                {
+                    "class": "ASTfunction",
+                    "constant": false,
+                    "function": "randint",
+                    "function arguments": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "6"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "9"
+                        }
+                    ],
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type"
+                }
+            ],
+            "class": "ASTstartSpecifier",
+            "constant": false,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

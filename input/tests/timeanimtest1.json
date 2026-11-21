@@ -1,0 +1,131 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x9421175586E47E87"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Time",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x2A50168F108F5776"
+                            },
+                            "transform time": [
+                                "trans",
+                                "affine_time"
+                            ]
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTfunction",
+                                        "constant": false,
+                                        "function": "ftime",
+                                        "function arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": ""
+                                            }
+                                        ],
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "modterm type": "hue",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        },
+        "CF::Time": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0x5586ECBBBBDAEA8E"
+                },
+                "transform time": [
+                    "trans",
+                    "affine_time"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        }
+    }
+}

@@ -220,6 +220,8 @@ processCommandLine(int argc, char* argv[], options& opt)
                        {'V', "svg"});
     args::Flag makeJSON(parser, "JSON", "Generate JSON output of parsed cfdg file",
                        {'J', "json"});
+    args::Flag makerJSON(parser, "JSON", "Generate redacted JSON output of parsed cfdg file",
+                       {"jsonredacted"});
     args::Flag makeQT(parser, "quicktime", "Make QuickTime output", {'Q', "quicktime"});
     args::ValueFlag<int> makeGIF(parser, "GIF LOOPS", "Make GIF output w/specified loops", { 'G', "gif" });
     args::Flag makeProRes(parser, "ProRes", "Use ProRes codec for QuickTime output", { "prores" });
@@ -362,7 +364,8 @@ processCommandLine(int argc, char* argv[], options& opt)
         opt.format = pngCanvas::BMPfile;
         opt.outputWallpaper = true;
     }
-    if (makeJSON) opt.format = pngCanvas::JSONfile;
+    if (makeJSON || makerJSON) opt.format = pngCanvas::JSONfile;
+    if (makerJSON) AST::ExactJSON = false;
     opt.crop = crop;
     opt.check = check;
     opt.quiet = quiet;

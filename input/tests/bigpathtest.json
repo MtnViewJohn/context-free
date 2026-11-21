@@ -1,0 +1,289 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x593A9236ACD1655B"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::MinimumSize",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x8BED5941E450F613"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::BorderDynamic",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "40"
+            },
+            "definition name": "M",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op arguments": [
+                                {
+                                    "class": "ASTvariable",
+                                    "constant": false,
+                                    "length": 1,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "variable name": "j"
+                                },
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "100"
+                                    },
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "operator": "*",
+                                    "right": {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTfunction",
+                                            "constant": false,
+                                            "function": "sin",
+                                            "function arguments": [
+                                                {
+                                                    "class": "ASToperator",
+                                                    "constant": false,
+                                                    "left": {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "variable name": "j"
+                                                    },
+                                                    "locality": "pure local",
+                                                    "natural": true,
+                                                    "operator": "*",
+                                                    "right": {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "value": "4"
+                                                    },
+                                                    "type": "numeric type"
+                                                }
+                                            ],
+                                            "locality": "pure local",
+                                            "natural": false,
+                                            "type": "numeric type"
+                                        },
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "operator": "+",
+                                        "right": {
+                                            "class": "ASTfunction",
+                                            "constant": false,
+                                            "function": "sin",
+                                            "function arguments": [
+                                                {
+                                                    "class": "ASToperator",
+                                                    "constant": false,
+                                                    "left": {
+                                                        "class": "ASToperator",
+                                                        "constant": false,
+                                                        "left": {
+                                                            "class": "ASTreal",
+                                                            "constant": true,
+                                                            "locality": "pure local",
+                                                            "natural": false,
+                                                            "type": "numeric type",
+                                                            "value": "1.1"
+                                                        },
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "operator": "*",
+                                                        "right": {
+                                                            "class": "ASTvariable",
+                                                            "constant": false,
+                                                            "length": 1,
+                                                            "locality": "pure local",
+                                                            "natural": true,
+                                                            "type": "numeric type",
+                                                            "variable name": "j"
+                                                        },
+                                                        "type": "numeric type"
+                                                    },
+                                                    "locality": "pure local",
+                                                    "natural": false,
+                                                    "operator": "*",
+                                                    "right": {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "value": "4"
+                                                    },
+                                                    "type": "numeric type"
+                                                }
+                                            ],
+                                            "locality": "pure local",
+                                            "natural": false,
+                                            "type": "numeric type"
+                                        },
+                                        "type": "numeric type"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xE38C203E14CD19CE"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "j"
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x5CDF5B208A83C1D5"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "SINO",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::BorderDynamic": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "0"
+        },
+        "CF::MinimumSize": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": false,
+            "type": "numeric type",
+            "value": "0.3"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "SINO",
+            "startshape adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xF00F6A15AF934C52"
+                    },
+                    "transform xy": [
+                        "trans",
+                        "affine"
+                    ]
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "type": "rule type"
+        }
+    }
+}

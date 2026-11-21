@@ -1,0 +1,197 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x92A0B2682C48FCB7"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xD1EB174E5B890473"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "SQ",
+            "path parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x6374A9369E903AF5"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQ",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x02AFA36615BD3B70"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "SQ",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xBBFE6BCE2DCF33DF"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xFF44E97D852C2FB1"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "sqgrid",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "sqgrid",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

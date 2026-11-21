@@ -1,0 +1,237 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "20"
+            },
+            "definition name": "gridsize",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type",
+                "value": "0.1"
+            },
+            "definition name": "width",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x9F9D7C6E65262712"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Tile",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0xF6EB752CF0B6A7B0"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "diag",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xCAD0D51CDCE5D955"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x1ABA010D6FA9C8E6"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "grid",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x81543872335C4C11"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "diag",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x60579687FE2D4650"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "diag",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "grid",
+            "startshape adjustment": null,
+            "type": "rule type"
+        },
+        "CF::Tile": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0x7994883574FE390B"
+                },
+                "transform xy": [
+                    "trans",
+                    "affine"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        }
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": "CF::Continuous"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": "CF::Continuous"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": "CF::Continuous"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "circ",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "circ",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

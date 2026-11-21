@@ -1,0 +1,428 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x8BED5941E450F613"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::BorderDynamic",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xC73A82EF49D5487D"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::BorderFixed",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x9F9D7C6E65262712"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Tile",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x0435AEBC9C44763E"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Symmetry",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3714E1D035DFCE25"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "foot",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x30ACE746FCE2CA0A"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ],
+                            "transform z": [
+                                "trans",
+                                "affine_1D"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "unit",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "F",
+            "path parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CURVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x5275A51A5425ABFA"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "foot",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::BorderDynamic": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "1"
+        },
+        "CF::BorderFixed": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "5"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "unit",
+            "startshape adjustment": null,
+            "type": "rule type"
+        },
+        "CF::Symmetry": {
+            "children": [
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "flag": "CF::p2mg",
+                    "locality": "pure local",
+                    "type": "flag type"
+                },
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "value": "0"
+                },
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "value": "0"
+                }
+            ],
+            "class": "ASTcons",
+            "constant": true,
+            "length": 3
+        },
+        "CF::Tile": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0x7E12AEE0CA472903"
+                },
+                "transform xy": [
+                    "trans",
+                    "affine"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        }
+    }
+}

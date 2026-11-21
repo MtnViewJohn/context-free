@@ -1,0 +1,266 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xFC39B0800BF73441"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "SQUARE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure non-local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xC40291A134A111F5"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure non-local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "variable name": "turn"
+                                    }
+                                ],
+                                "modterm type": "rotation",
+                                "type": "adjustment type"
+                            },
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure non-local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "variable name": "shrink"
+                                    }
+                                ],
+                                "modterm type": "size",
+                                "type": "adjustment type"
+                            },
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "value": "0.5"
+                                    }
+                                ],
+                                "modterm type": "y",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "simple copy parent arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "curve",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "curve",
+            "rule parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "shrink",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                },
+                {
+                    "natural": false,
+                    "parameter name": "turn",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ]
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "argument source": "dynamic arguments",
+                        "arguments": [
+                            {
+                                "class": "ASTfunction",
+                                "constant": false,
+                                "function": "rand",
+                                "function arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "value": "0.95"
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "value": "0.99"
+                                    }
+                                ],
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type"
+                            },
+                            {
+                                "class": "ASTfunction",
+                                "constant": false,
+                                "function": "rand",
+                                "function arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "value": ""
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "4"
+                                    }
+                                ],
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type"
+                            }
+                        ],
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "curve",
+                        "type": "rule type"
+                    },
+                    "definition name": "foo",
+                    "definition type": "stack definition"
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "argument source": "stack arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "foo",
+                        "type": "rule type"
+                    },
+                    "definition name": "bar",
+                    "definition type": "stack definition"
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x115F35354A38410C"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "stack arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "bar",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "GARDEN",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "GARDEN",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

@@ -1,0 +1,423 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x69FBD9F1D251DF75"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Background",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x8C3752D803965CE1"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Size",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "MOVETO",
+                            "path op arguments": [
+                                {
+                                    "class": "ASTvariable",
+                                    "constant": false,
+                                    "length": 1,
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "type": "numeric type",
+                                    "variable name": "i"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "0"
+                                }
+                            ],
+                            "path op flags": ""
+                        },
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "ARCTO",
+                            "path op arguments": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    },
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "operator": "N",
+                                    "right": null,
+                                    "type": "numeric type"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "0"
+                                },
+                                {
+                                    "class": "ASTvariable",
+                                    "constant": false,
+                                    "length": 1,
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "type": "numeric type",
+                                    "variable name": "i"
+                                }
+                            ],
+                            "path op flags": ""
+                        },
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "ARCTO",
+                            "path op arguments": [
+                                {
+                                    "class": "ASTvariable",
+                                    "constant": false,
+                                    "length": 1,
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "type": "numeric type",
+                                    "variable name": "i"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "0"
+                                },
+                                {
+                                    "class": "ASTvariable",
+                                    "constant": false,
+                                    "length": 1,
+                                    "locality": "pure local",
+                                    "natural": false,
+                                    "type": "numeric type",
+                                    "variable name": "i"
+                                }
+                            ],
+                            "path op flags": ""
+                        },
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "CLOSEPOLY",
+                            "path op flags": ""
+                        },
+                        {
+                            "adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x41C9A0E31A990624"
+                                    }
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "class": "ASTpathCommand",
+                            "flags": "CF::MiterJoin+CF::ButtCap",
+                            "path command": "STROKE"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xAE619DDA3A655B11"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "path name": "rings",
+            "path parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x2C133C24708DA131"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "rings",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "color": [
+                                        "HSBA",
+                                        "color"
+                                    ],
+                                    "random": {
+                                        "seed": "0x9AA440C9AFD24E9B"
+                                    }
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "class": "ASTfunction",
+                                                "constant": false,
+                                                "function": "rand",
+                                                "function arguments": [
+                                                    {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "value": ""
+                                                    },
+                                                    {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "value": "30"
+                                                    }
+                                                ],
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type"
+                                            },
+                                            {
+                                                "class": "ASTfunction",
+                                                "constant": false,
+                                                "function": "rand",
+                                                "function arguments": [
+                                                    {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "value": ""
+                                                    },
+                                                    {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "value": "30"
+                                                    }
+                                                ],
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type"
+                                            }
+                                        ],
+                                        "modterm type": "x",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "rings",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop bounds": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "1"
+                        },
+                        {
+                            "class": "ASTfunction",
+                            "constant": false,
+                            "function": "rand_static",
+                            "function arguments": [
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "1"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "3"
+                                }
+                            ],
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xFCDBD7BBF8DE3611"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "rule name": "scene",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::Background": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "color": [
+                    "HSBA",
+                    "color"
+                ],
+                "random": {
+                    "seed": "0x80784A270084AACA"
+                }
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        },
+        "CF::Size": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0xD5398A37687649B5"
+                },
+                "transform xy": [
+                    "trans",
+                    "affine"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "scene",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

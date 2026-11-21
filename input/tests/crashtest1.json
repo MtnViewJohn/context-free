@@ -1,0 +1,393 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "foo",
+            "definition type": "function definition",
+            "function expression": {
+                "class": "ASTselect",
+                "constant": false,
+                "locality": "impure non-local",
+                "natural": false,
+                "select choices": [
+                    {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "variable name": "n"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": "+",
+                        "right": {
+                            "arguments": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "n"
+                                    },
+                                    "locality": "impure non-local",
+                                    "natural": true,
+                                    "operator": "_",
+                                    "right": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "class": "ASTuserFunction",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "userfunction name": "bar"
+                        },
+                        "type": "numeric type"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "0"
+                    }
+                ],
+                "select selector": {
+                    "class": "ASTvariable",
+                    "constant": false,
+                    "length": 1,
+                    "locality": "pure non-local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "variable name": "n"
+                },
+                "select tuple size": 1,
+                "select type": "if",
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": true,
+                    "parameter name": "n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "bar",
+            "definition type": "function definition",
+            "function expression": {
+                "class": "ASTselect",
+                "constant": false,
+                "locality": "impure non-local",
+                "natural": false,
+                "select choices": [
+                    {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "variable name": "n"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": "+",
+                        "right": {
+                            "arguments": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "n"
+                                    },
+                                    "locality": "impure non-local",
+                                    "natural": true,
+                                    "operator": "_",
+                                    "right": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "class": "ASTuserFunction",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "userfunction name": "foo"
+                        },
+                        "type": "numeric type"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "0"
+                    }
+                ],
+                "select selector": {
+                    "class": "ASTvariable",
+                    "constant": false,
+                    "length": 1,
+                    "locality": "pure non-local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "variable name": "n"
+                },
+                "select tuple size": 1,
+                "select type": "if",
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": true,
+                    "parameter name": "n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x43AAF47B59F97884"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "stack arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure non-local",
+                        "shape name": "fizz",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "baz",
+            "rule parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "fizz",
+                    "parameter type": "rule type"
+                }
+            ]
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x0EA19B35BB48EBD4"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "dynamic arguments",
+                        "arguments": [
+                            {
+                                "argument source": "dynamic arguments",
+                                "arguments": [
+                                    {
+                                        "arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "4"
+                                            }
+                                        ],
+                                        "class": "ASTuserFunction",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "userfunction name": "foo"
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "42"
+                                    }
+                                ],
+                                "class": "ASTruleSpecifier",
+                                "constant": false,
+                                "locality": "pure local",
+                                "shape name": "CIRC",
+                                "type": "rule type"
+                            }
+                        ],
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "baz",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "PATHover",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "ARCREL",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "ARCREL",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE",
+                    "stroke width": {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": false,
+                        "type": "numeric type",
+                        "variable name": "STrK"
+                    }
+                }
+            ],
+            "path name": "CIRC",
+            "path parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "STrK",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                },
+                {
+                    "natural": false,
+                    "parameter name": "dummy",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ]
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "PATHover",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

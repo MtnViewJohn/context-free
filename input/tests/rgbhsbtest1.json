@@ -1,0 +1,279 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "children": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            }
+                        ],
+                        "class": "ASTcons",
+                        "constant": true,
+                        "length": 3,
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    "definition name": "hsb",
+                    "definition type": "constant definition",
+                    "length": 3
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x98486E34A91C81B0"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "children": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            }
+                        ],
+                        "class": "ASTcons",
+                        "constant": true,
+                        "length": 3,
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    "definition name": "rgb",
+                    "definition type": "constant definition",
+                    "length": 3
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "children": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "value": ""
+                            }
+                        ],
+                        "class": "ASTcons",
+                        "constant": true,
+                        "length": 3,
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    "definition name": "hsb2",
+                    "definition type": "constant definition",
+                    "length": 3
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xDEE227E7EF44E44D"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xC781E1FE440E2DF5"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x920BFB22242CDAD7"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

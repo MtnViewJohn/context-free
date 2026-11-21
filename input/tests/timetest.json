@@ -1,0 +1,396 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x4B62DEBC23BA680D"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xDFB26347409FD14D"
+                                    },
+                                    "transform time": [
+                                        "trans",
+                                        "affine_time"
+                                    ],
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xA562DD33CB9B03F3"
+                            },
+                            "transform time": [
+                                "trans",
+                                "affine_time"
+                            ],
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "timegrid",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x4B62DEBC23BA680D"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x723F72066107B6C2"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x5EA6B02C5459FC55"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "timegrid2",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x3A83534B84783856"
+                                            },
+                                            "transform time": [
+                                                "trans",
+                                                "affine_time"
+                                            ]
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x56CE98CF898F8685"
+                                    },
+                                    "transform time": [
+                                        "trans",
+                                        "affine_time"
+                                    ],
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x5CD016BF0DDA6CA6"
+                            },
+                            "transform time": [
+                                "trans",
+                                "affine_time"
+                            ],
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "timegrid3",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x09058B79D4673148"
+                                            },
+                                            "transform time": [
+                                                "trans",
+                                                "affine_time"
+                                            ]
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x3A83534B84783856"
+                                            },
+                                            "transform time": [
+                                                "trans",
+                                                "affine_time"
+                                            ]
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x1A629450AFD7D756"
+                                    },
+                                    "transform time": [
+                                        "trans",
+                                        "affine_time"
+                                    ],
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "~~inaccessiblevar~~"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x5CD016BF0DDA6CA6"
+                            },
+                            "transform time": [
+                                "trans",
+                                "affine_time"
+                            ],
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "timegrid4",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "timegrid4",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

@@ -1,0 +1,371 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "class": "ASTfunction",
+                        "constant": false,
+                        "function": "floor",
+                        "function arguments": [
+                            {
+                                "class": "ASTfunction",
+                                "constant": false,
+                                "function": "rand",
+                                "function arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "3"
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "13"
+                                    }
+                                ],
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type"
+                            }
+                        ],
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    "definition name": "sides",
+                    "definition type": "stack definition",
+                    "length": 1
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": true,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x3E4CCCDDADC029F3"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "TRIANGLE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop bounds": [
+                        {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "sides"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x367EA3828B8FBE3F"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTreal",
+                                            "constant": true,
+                                            "locality": "pure local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "value": "360"
+                                        },
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "operator": "/",
+                                        "right": {
+                                            "class": "ASTvariable",
+                                            "constant": false,
+                                            "length": 1,
+                                            "locality": "pure local",
+                                            "natural": false,
+                                            "type": "numeric type",
+                                            "variable name": "sides"
+                                        },
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "modterm type": "rotation",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                }
+            ],
+            "rule name": "test1",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "argument source": "no arguments",
+                "class": "ASTruleSpecifier",
+                "constant": true,
+                "locality": "pure local",
+                "shape name": "CIRCLE",
+                "type": "rule type"
+            },
+            "definition name": "draw",
+            "definition type": "constant definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x08A4B8AF5EA5EC84"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::AllowOverlap",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0x344B433D8AA8293A"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "CIRCLE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop bounds": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    },
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "operator": "+",
+                                    "right": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x63340676B3E4E0ED"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "i"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xF6321F9F01A66CB2"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "rule name": "test2",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x920E50D34E5F824B"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "test2",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xFC5AA7EA0F8EA65C"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "test1",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "test3",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::AllowOverlap": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "1"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "test3",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

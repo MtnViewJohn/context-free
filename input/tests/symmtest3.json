@@ -1,0 +1,127 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x0435AEBC9C44763E"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Symmetry",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x9F9D7C6E65262712"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Tile",
+            "definition type": "configuration definition"
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "TRIANGLE",
+            "startshape adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x6EDE07F764BE17FB"
+                    },
+                    "transform xy": [
+                        "trans",
+                        "affine"
+                    ]
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "type": "rule type"
+        },
+        "CF::Symmetry": {
+            "children": [
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "flag": "CF::p2mg",
+                    "locality": "pure local",
+                    "type": "flag type"
+                },
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": false,
+                    "type": "numeric type",
+                    "value": ""
+                },
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": false,
+                    "type": "numeric type",
+                    "value": ""
+                }
+            ],
+            "class": "ASTcons",
+            "constant": true,
+            "length": 3
+        },
+        "CF::Tile": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0xE022CE21A6A8CCD8"
+                },
+                "transform xy": [
+                    "trans",
+                    "affine"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        }
+    }
+}

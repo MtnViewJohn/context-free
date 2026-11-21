@@ -36,6 +36,8 @@
 #include <algorithm>
 
 namespace AST {
+    bool ExactJSON = true;
+
     const std::map<expType, std::string> ASTparameter::typeNames =
     {
         {NoType, "no type"},

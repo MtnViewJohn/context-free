@@ -1,0 +1,429 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x0435AEBC9C44763E"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Symmetry",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op arguments": [
+                        {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 2,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "sz"
+                        }
+                    ],
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op arguments": [
+                        {
+                            "class": "ASToperator",
+                            "constant": false,
+                            "left": {
+                                "array index": {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "0"
+                                },
+                                "array length": 1,
+                                "array name": "sz",
+                                "array stride": 1,
+                                "class": "ASTarray",
+                                "constant": false,
+                                "locality": "pure non-local",
+                                "natural": false,
+                                "type": "numeric type"
+                            },
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "operator": "N",
+                            "right": null,
+                            "type": "numeric type"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "0"
+                        }
+                    ],
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op arguments": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "0"
+                        },
+                        {
+                            "class": "ASToperator",
+                            "constant": false,
+                            "left": {
+                                "array index": {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "1"
+                                },
+                                "array length": 1,
+                                "array name": "sz",
+                                "array stride": 1,
+                                "class": "ASTarray",
+                                "constant": false,
+                                "locality": "pure non-local",
+                                "natural": false,
+                                "type": "numeric type"
+                            },
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "operator": "N",
+                            "right": null,
+                            "type": "numeric type"
+                        }
+                    ],
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINEREL",
+                    "path op arguments": [
+                        {
+                            "array index": {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "0"
+                            },
+                            "array length": 1,
+                            "array name": "sz",
+                            "array stride": 1,
+                            "class": "ASTarray",
+                            "constant": false,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "0"
+                        }
+                    ],
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x947E12EE86F32B82"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "rect",
+            "path parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "sz",
+                    "parameter tuple size": 2,
+                    "parameter type": "numeric type"
+                }
+            ]
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x8B9AF0FA7F11CFF2"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "dynamic arguments",
+                        "arguments": [
+                            {
+                                "children": [
+                                    {
+                                        "class": "ASTfunction",
+                                        "constant": false,
+                                        "function": "rand.",
+                                        "function arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "6"
+                                            }
+                                        ],
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type"
+                                    },
+                                    {
+                                        "class": "ASTfunction",
+                                        "constant": false,
+                                        "function": "rand.",
+                                        "function arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "6"
+                                            }
+                                        ],
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "class": "ASTcons",
+                                "constant": false,
+                                "length": 2,
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type"
+                            }
+                        ],
+                        "class": "ASTruleSpecifier",
+                        "constant": false,
+                        "locality": "pure local",
+                        "shape name": "rect",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "test",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "dynamic arguments",
+            "arguments": [
+                {
+                    "children": [
+                        {
+                            "class": "ASTfunction",
+                            "constant": false,
+                            "function": "rand.",
+                            "function arguments": [
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "3"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "6"
+                                }
+                            ],
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type"
+                        },
+                        {
+                            "class": "ASTfunction",
+                            "constant": false,
+                            "function": "rand.",
+                            "function arguments": [
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "3"
+                                },
+                                {
+                                    "class": "ASTreal",
+                                    "constant": true,
+                                    "locality": "pure local",
+                                    "natural": true,
+                                    "type": "numeric type",
+                                    "value": "6"
+                                }
+                            ],
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type"
+                        }
+                    ],
+                    "class": "ASTcons",
+                    "constant": false,
+                    "length": 2,
+                    "locality": "pure local",
+                    "natural": false,
+                    "type": "numeric type"
+                }
+            ],
+            "class": "ASTstartSpecifier",
+            "constant": false,
+            "locality": "pure local",
+            "shape name": "rect",
+            "startshape adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "color": [
+                        "HSBA",
+                        "color"
+                    ],
+                    "random": {
+                        "seed": "0x66520805DDF1C9BC"
+                    },
+                    "transform xy": [
+                        "trans",
+                        "affine"
+                    ]
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "type": "rule type"
+        },
+        "CF::Symmetry": {
+            "children": [
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "flag": "CF::Dihedral",
+                    "locality": "pure local",
+                    "type": "flag type"
+                },
+                {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "value": "6"
+                }
+            ],
+            "class": "ASTcons",
+            "constant": true,
+            "length": 2
+        }
+    }
+}

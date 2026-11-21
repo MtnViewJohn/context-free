@@ -1,0 +1,849 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "children": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "3"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "4"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "6"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "7"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "8"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": true,
+                "length": 8,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type"
+            },
+            "definition name": "vec0",
+            "definition type": "constant definition",
+            "length": 8
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "children": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "3"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "4"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "6"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "7"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "8"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "9"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": true,
+                "length": 9,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type"
+            },
+            "definition name": "vec1",
+            "definition type": "constant definition",
+            "length": 9
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "children": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "3"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "4"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "6"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "7"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "8"
+                    },
+                    {
+                        "class": "ASTfunction",
+                        "constant": false,
+                        "function": "rand.",
+                        "function arguments": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "9"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "12"
+                            }
+                        ],
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": false,
+                "length": 9,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "definition name": "vec2",
+            "definition type": "stack definition",
+            "length": 9
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "f1",
+            "definition type": "function definition",
+            "function expression": {
+                "children": [
+                    {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": false,
+                        "type": "numeric type",
+                        "variable name": "i"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": false,
+                "length": 3,
+                "locality": "pure non-local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "i",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 3
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    "definition name": "a¿",
+                    "definition type": "constant definition",
+                    "length": 1
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    "definition name": "b7",
+                    "definition type": "constant definition",
+                    "length": 1
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xF2DDF4C4D9028B16"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "definition name": "b9",
+                    "definition type": "constant definition"
+                },
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "children": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "1"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "2"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "3"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "4"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "5"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "6"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "7"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "8"
+                            },
+                            {
+                                "class": "ASTfunction",
+                                "constant": false,
+                                "function": "rand.",
+                                "function arguments": [
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "9"
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "12"
+                                    }
+                                ],
+                                "locality": "pure local",
+                                "natural": false,
+                                "type": "numeric type"
+                            }
+                        ],
+                        "class": "ASTcons",
+                        "constant": false,
+                        "length": 9,
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    },
+                    "definition name": "vec3",
+                    "definition type": "stack definition",
+                    "length": 9
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "color": [
+                                        "HSBA",
+                                        "color"
+                                    ],
+                                    "random": {
+                                        "seed": "0x9F69E3B0C327F371"
+                                    }
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "array constant data": [
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float",
+                                                    "float"
+                                                ],
+                                                "array index": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure local",
+                                                    "natural": true,
+                                                    "type": "numeric type",
+                                                    "variable name": "i"
+                                                },
+                                                "array length": 2,
+                                                "array name": "vec1",
+                                                "array stride": 1,
+                                                "class": "ASTarray",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type"
+                                            }
+                                        ],
+                                        "modterm type": "size",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "SQUARE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0x68B95E13B58B2E0F"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    },
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    }
+                                ],
+                                "modterm type": "x",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "color": [
+                                        "HSBA",
+                                        "color"
+                                    ],
+                                    "random": {
+                                        "seed": "0x97F2777697C0D83A"
+                                    }
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "array index": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure local",
+                                                    "natural": true,
+                                                    "type": "numeric type",
+                                                    "variable name": "i"
+                                                },
+                                                "array length": 2,
+                                                "array name": "vec2",
+                                                "array stride": 1,
+                                                "class": "ASTarray",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type"
+                                            }
+                                        ],
+                                        "modterm type": "size",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "SQUARE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xA4FB403281945691"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    }
+                                ],
+                                "modterm type": "x",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "color": [
+                                        "HSBA",
+                                        "color"
+                                    ],
+                                    "random": {
+                                        "seed": "0x6D4953A44AEF8D67"
+                                    }
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "array index": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure local",
+                                                    "natural": true,
+                                                    "type": "numeric type",
+                                                    "variable name": "i"
+                                                },
+                                                "array length": 2,
+                                                "array name": "vec3",
+                                                "array stride": 1,
+                                                "class": "ASTarray",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type"
+                                            }
+                                        ],
+                                        "modterm type": "size",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "SQUARE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "color": [
+                                "HSBA",
+                                "color"
+                            ],
+                            "random": {
+                                "seed": "0xDFE13195567D0839"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "i"
+                                    },
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTvariable",
+                                            "constant": false,
+                                            "length": 1,
+                                            "locality": "pure local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "variable name": "i"
+                                        },
+                                        "locality": "pure local",
+                                        "natural": false,
+                                        "operator": "N",
+                                        "right": null,
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "modterm type": "x",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "rule name": "foo",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "foo",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

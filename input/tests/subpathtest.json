@@ -1,0 +1,852 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type",
+                "value": ""
+            },
+            "definition name": "SQRT3",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type",
+                "value": ""
+            },
+            "definition name": "TTOP",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type",
+                "value": ""
+            },
+            "definition name": "HEXS",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "31"
+            },
+            "definition name": "GOLD",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "201"
+            },
+            "definition name": "BLUE",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "42"
+            },
+            "definition name": "MAGENTA",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "132"
+            },
+            "definition name": "GREEN",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "356"
+            },
+            "definition name": "RED",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x8C3752D803965CE1"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Size",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x69FBD9F1D251DF75"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::Background",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x08A4B8AF5EA5EC84"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::AllowOverlap",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTdefine",
+                                    "definition adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0xD0EC0AC18DBD8AF5"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "definition name": "BLUE",
+                                    "definition type": "constant definition"
+                                },
+                                {
+                                    "class": "ASTdefine",
+                                    "definition adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0x6505B1A9A776D464"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "definition name": "MAGENTA",
+                                    "definition type": "constant definition"
+                                },
+                                {
+                                    "class": "ASTdefine",
+                                    "definition adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0x8BE72FD164A75A0E"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "definition name": "RED",
+                                    "definition type": "constant definition"
+                                },
+                                {
+                                    "class": "ASTdefine",
+                                    "definition adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0xFA9E83D497CF39C9"
+                                            }
+                                        },
+                                        "modification non-constants": [],
+                                        "type": "adjustment type"
+                                    },
+                                    "definition name": "GREEN",
+                                    "definition type": "constant definition"
+                                },
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "random": {
+                                                "seed": "0xCF356DC2E9ACA041"
+                                            }
+                                        },
+                                        "modification non-constants": [
+                                            {
+                                                "class": "ASTmodTerm",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "modterm arguments": [
+                                                    {
+                                                        "class": "ASTselect",
+                                                        "constant": false,
+                                                        "locality": "pure local",
+                                                        "select choices": [
+                                                            {
+                                                                "class": "ASTmodification",
+                                                                "constant": true,
+                                                                "locality": "pure local",
+                                                                "modification constants": {
+                                                                    "color": [
+                                                                        "HSBA",
+                                                                        "color"
+                                                                    ],
+                                                                    "random": {
+                                                                        "seed": "0xD0EC0AC18DBD8AF5"
+                                                                    }
+                                                                },
+                                                                "modification non-constants": [],
+                                                                "type": "adjustment type"
+                                                            },
+                                                            {
+                                                                "class": "ASTmodification",
+                                                                "constant": true,
+                                                                "locality": "pure local",
+                                                                "modification constants": {
+                                                                    "color": [
+                                                                        "HSBA",
+                                                                        "color"
+                                                                    ],
+                                                                    "random": {
+                                                                        "seed": "0x6505B1A9A776D464"
+                                                                    }
+                                                                },
+                                                                "modification non-constants": [],
+                                                                "type": "adjustment type"
+                                                            },
+                                                            {
+                                                                "class": "ASTmodification",
+                                                                "constant": true,
+                                                                "locality": "pure local",
+                                                                "modification constants": {
+                                                                    "color": [
+                                                                        "HSBA",
+                                                                        "color"
+                                                                    ],
+                                                                    "random": {
+                                                                        "seed": "0x8BE72FD164A75A0E"
+                                                                    }
+                                                                },
+                                                                "modification non-constants": [],
+                                                                "type": "adjustment type"
+                                                            },
+                                                            {
+                                                                "class": "ASTmodification",
+                                                                "constant": true,
+                                                                "locality": "pure local",
+                                                                "modification constants": {
+                                                                    "color": [
+                                                                        "HSBA",
+                                                                        "color"
+                                                                    ],
+                                                                    "random": {
+                                                                        "seed": "0xFA9E83D497CF39C9"
+                                                                    }
+                                                                },
+                                                                "modification non-constants": [],
+                                                                "type": "adjustment type"
+                                                            }
+                                                        ],
+                                                        "select selector": {
+                                                            "class": "ASTfunction",
+                                                            "constant": false,
+                                                            "function": "mod",
+                                                            "function arguments": [
+                                                                {
+                                                                    "class": "ASTvariable",
+                                                                    "constant": false,
+                                                                    "length": 1,
+                                                                    "locality": "pure local",
+                                                                    "natural": true,
+                                                                    "type": "numeric type",
+                                                                    "variable name": "i"
+                                                                },
+                                                                {
+                                                                    "class": "ASTreal",
+                                                                    "constant": true,
+                                                                    "locality": "pure local",
+                                                                    "natural": true,
+                                                                    "type": "numeric type",
+                                                                    "value": "4"
+                                                                }
+                                                            ],
+                                                            "locality": "pure local",
+                                                            "natural": true,
+                                                            "type": "numeric type"
+                                                        },
+                                                        "select tuple size": 1,
+                                                        "select type": "select",
+                                                        "type": "adjustment type"
+                                                    }
+                                                ],
+                                                "modterm type": "modification",
+                                                "type": "adjustment type"
+                                            }
+                                        ],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "triangle",
+                                        "type": "rule type"
+                                    }
+                                },
+                                {
+                                    "class": "ASTswitch",
+                                    "switch cases": [
+                                        {
+                                            "case body": [
+                                                {
+                                                    "class": "ASTreplacement",
+                                                    "replacement adjustment": {
+                                                        "class": "ASTmodification",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "modification constants": {
+                                                            "color": [
+                                                                "HSBA",
+                                                                "color"
+                                                            ],
+                                                            "random": {
+                                                                "seed": "0xD1E6B372174AD970"
+                                                            },
+                                                            "transform xy": [
+                                                                "trans",
+                                                                "affine"
+                                                            ]
+                                                        },
+                                                        "modification non-constants": [],
+                                                        "type": "adjustment type"
+                                                    },
+                                                    "replacement shape": {
+                                                        "argument source": "no arguments",
+                                                        "class": "ASTruleSpecifier",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "shape name": "hexastar",
+                                                        "type": "rule type"
+                                                    }
+                                                }
+                                            ],
+                                            "cases": [
+                                                0
+                                            ]
+                                        },
+                                        {
+                                            "case body": [
+                                                {
+                                                    "class": "ASTreplacement",
+                                                    "replacement adjustment": {
+                                                        "class": "ASTmodification",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "modification constants": {
+                                                            "color": [
+                                                                "HSBA",
+                                                                "color"
+                                                            ],
+                                                            "random": {
+                                                                "seed": "0xCDDD60B35AFC7E59"
+                                                            },
+                                                            "transform xy": [
+                                                                "trans",
+                                                                "affine"
+                                                            ]
+                                                        },
+                                                        "modification non-constants": [],
+                                                        "type": "adjustment type"
+                                                    },
+                                                    "replacement shape": {
+                                                        "argument source": "no arguments",
+                                                        "class": "ASTruleSpecifier",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "shape name": "hexastar",
+                                                        "type": "rule type"
+                                                    }
+                                                }
+                                            ],
+                                            "cases": [
+                                                1
+                                            ]
+                                        }
+                                    ],
+                                    "switch else body": [],
+                                    "switch expression": {
+                                        "class": "ASTfunction",
+                                        "constant": false,
+                                        "function": "mod",
+                                        "function arguments": [
+                                            {
+                                                "class": "ASTvariable",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "variable name": "j"
+                                            },
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "2"
+                                            }
+                                        ],
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x0B72AB75ABCC25C6"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "j"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xECFA7E57863DCA68"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "rule name": "alhambraII",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x5680B8C4920E963D"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                }
+            ],
+            "path name": "hexagon",
+            "path parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "LINETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                }
+            ],
+            "path name": "SQ",
+            "path parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "CURVETO",
+                            "path op flags": ""
+                        },
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "CURVETO",
+                            "path op flags": "CF::Continuous"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x88F2A020467F5882"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xE07E94F18743197B"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "CIRCLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3DFEF25FBDE083F7"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "",
+                    "path command": "FILL"
+                }
+            ],
+            "path name": "triangle",
+            "path parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x7B8E300F9BEA2071"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "TRIANGLE",
+                        "type": "rule type"
+                    }
+                },
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xDB8096A5986F1761"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "no arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "locality": "pure local",
+                        "shape name": "TRIANGLE",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "hexastar",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::AllowOverlap": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "1"
+        },
+        "CF::Background": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "color": [
+                    "HSBA",
+                    "color"
+                ],
+                "random": {
+                    "seed": "0x5A92317B6DA2C0C9"
+                }
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        },
+        "CF::Size": {
+            "class": "ASTmodification",
+            "constant": true,
+            "locality": "pure local",
+            "modification constants": {
+                "random": {
+                    "seed": "0xFEC853595FD49EB6"
+                },
+                "transform xy": [
+                    "trans",
+                    "affine"
+                ]
+            },
+            "modification non-constants": [],
+            "type": "adjustment type"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "alhambraII",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

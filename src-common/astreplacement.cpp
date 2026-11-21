@@ -1040,7 +1040,8 @@ namespace AST {
             args_to_json(j2, *mLoopArgs);
             j["loop bounds"] = j2;
         } else {
-            j["loop bounds"] = mLoopData;
+            if (ExactJSON)
+                j["loop bounds"] = mLoopData;
         }
         j["loop modification"] = static_cast<const ASTexpression&>(mChildChange);
         j["loop body"] = mLoopBody;
@@ -1122,7 +1123,7 @@ namespace AST {
         if (mDefineType == FunctionDefine) {
             j["function parameters"] = mParameters;
             j["function expression"] = *mExpression;
-        } else if (mDefineType != ConfigDefine) {
+        } else {
             if (mExpression)
                 j["definition expression"] = *mExpression;
             else
@@ -1149,8 +1150,9 @@ namespace AST {
             j = {
                 {"class", "ASTrule"},
                 {"rule name", CFDG::ShapeToString(mNameIndex)},
-                {"rule weight", mWeight}
             };
+            if (ExactJSON)
+                j["rule weight"] = mWeight;
             if (auto params = CFDG::ShapeToParams(mNameIndex))
                 j["rule parameters"] = *params;
             else
@@ -1185,7 +1187,7 @@ namespace AST {
                 json j2{};
                 args_to_json(j2, *mArguments);
                 j["path op arguments"] = j2;
-            } else {
+            } else if (ExactJSON) {
                 std::vector<double> data(6);
                 mChildChange.modData.m_transform.store_to(data.data());
                 data.resize(mArgCount);
@@ -1232,7 +1234,7 @@ namespace AST {
             };
             if (mParameters)
                 j["stroke width"] = *mParameters;
-            else
+            else if (ExactJSON)
                 j["stroke width"] = mStrokeWidth;
         }
     }

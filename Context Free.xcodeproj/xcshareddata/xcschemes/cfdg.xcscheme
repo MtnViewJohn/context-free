@@ -69,7 +69,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-a5x15 -G0 input/mtree.cfdg -"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-a150 -s640x480 --quicktime -vffgh input/mtree.cfdg output/mtree.mov"
@@ -88,8 +88,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-J input/tests/xyztext1.cfdg -"
-            isEnabled = "NO">
+            argument = "--jsonredacted input/tests/xyztest1.cfdg -"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"

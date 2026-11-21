@@ -1,0 +1,1227 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0x74541EBE707AD573"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::MaxNatural",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "func::fib",
+            "definition type": "function definition",
+            "function expression": {
+                "class": "ASTselect",
+                "constant": false,
+                "locality": "impure non-local",
+                "natural": true,
+                "select choices": [
+                    {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "variable name": "func::n"
+                    },
+                    {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "arguments": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "func::n"
+                                    },
+                                    "locality": "impure non-local",
+                                    "natural": true,
+                                    "operator": "_",
+                                    "right": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "class": "ASTuserFunction",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "impure non-local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "userfunction name": "func::fib"
+                        },
+                        "locality": "impure non-local",
+                        "natural": true,
+                        "operator": "+",
+                        "right": {
+                            "arguments": [
+                                {
+                                    "class": "ASToperator",
+                                    "constant": false,
+                                    "left": {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "pure non-local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "variable name": "func::n"
+                                    },
+                                    "locality": "impure non-local",
+                                    "natural": true,
+                                    "operator": "_",
+                                    "right": {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "2"
+                                    },
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "class": "ASTuserFunction",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "impure non-local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "userfunction name": "func::fib"
+                        },
+                        "type": "numeric type"
+                    }
+                ],
+                "select selector": {
+                    "class": "ASToperator",
+                    "constant": false,
+                    "left": {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "variable name": "func::n"
+                    },
+                    "locality": "impure non-local",
+                    "natural": true,
+                    "operator": "L",
+                    "right": {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    "type": "numeric type"
+                },
+                "select tuple size": 1,
+                "select type": "if",
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": true,
+                    "parameter name": "func::n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "func::ack",
+            "definition type": "function definition",
+            "function expression": {
+                "class": "ASTselect",
+                "constant": false,
+                "locality": "impure non-local",
+                "natural": false,
+                "select choices": [
+                    {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "func::n"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": "+",
+                        "right": {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "1"
+                        },
+                        "type": "numeric type"
+                    },
+                    {
+                        "class": "ASTselect",
+                        "constant": false,
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "select choices": [
+                            {
+                                "arguments": [
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTvariable",
+                                            "constant": false,
+                                            "length": 1,
+                                            "locality": "pure non-local",
+                                            "natural": false,
+                                            "type": "numeric type",
+                                            "variable name": "func::m"
+                                        },
+                                        "locality": "impure non-local",
+                                        "natural": false,
+                                        "operator": "-",
+                                        "right": {
+                                            "class": "ASTreal",
+                                            "constant": true,
+                                            "locality": "pure local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "value": "1"
+                                        },
+                                        "type": "numeric type"
+                                    },
+                                    {
+                                        "class": "ASTreal",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "natural": true,
+                                        "type": "numeric type",
+                                        "value": "1"
+                                    }
+                                ],
+                                "class": "ASTuserFunction",
+                                "constant": false,
+                                "length": 1,
+                                "locality": "impure non-local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "userfunction name": "func::ack"
+                            },
+                            {
+                                "arguments": [
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASTvariable",
+                                            "constant": false,
+                                            "length": 1,
+                                            "locality": "pure non-local",
+                                            "natural": false,
+                                            "type": "numeric type",
+                                            "variable name": "func::m"
+                                        },
+                                        "locality": "impure non-local",
+                                        "natural": false,
+                                        "operator": "-",
+                                        "right": {
+                                            "class": "ASTreal",
+                                            "constant": true,
+                                            "locality": "pure local",
+                                            "natural": true,
+                                            "type": "numeric type",
+                                            "value": "1"
+                                        },
+                                        "type": "numeric type"
+                                    },
+                                    {
+                                        "arguments": [
+                                            {
+                                                "class": "ASTvariable",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "pure non-local",
+                                                "natural": false,
+                                                "type": "numeric type",
+                                                "variable name": "func::m"
+                                            },
+                                            {
+                                                "class": "ASToperator",
+                                                "constant": false,
+                                                "left": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure non-local",
+                                                    "natural": false,
+                                                    "type": "numeric type",
+                                                    "variable name": "func::n"
+                                                },
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "operator": "-",
+                                                "right": {
+                                                    "class": "ASTreal",
+                                                    "constant": true,
+                                                    "locality": "pure local",
+                                                    "natural": true,
+                                                    "type": "numeric type",
+                                                    "value": "1"
+                                                },
+                                                "type": "numeric type"
+                                            }
+                                        ],
+                                        "class": "ASTuserFunction",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "impure non-local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "userfunction name": "func::ack"
+                                    }
+                                ],
+                                "class": "ASTuserFunction",
+                                "constant": false,
+                                "length": 1,
+                                "locality": "impure non-local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "userfunction name": "func::ack"
+                            }
+                        ],
+                        "select selector": {
+                            "class": "ASToperator",
+                            "constant": false,
+                            "left": {
+                                "class": "ASTvariable",
+                                "constant": false,
+                                "length": 1,
+                                "locality": "pure non-local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "variable name": "func::n"
+                            },
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "operator": "=",
+                            "right": {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "0"
+                            },
+                            "type": "numeric type"
+                        },
+                        "select tuple size": 1,
+                        "select type": "if",
+                        "type": "numeric type"
+                    }
+                ],
+                "select selector": {
+                    "class": "ASToperator",
+                    "constant": false,
+                    "left": {
+                        "class": "ASTvariable",
+                        "constant": false,
+                        "length": 1,
+                        "locality": "pure non-local",
+                        "natural": false,
+                        "type": "numeric type",
+                        "variable name": "func::m"
+                    },
+                    "locality": "impure non-local",
+                    "natural": false,
+                    "operator": "=",
+                    "right": {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "0"
+                    },
+                    "type": "numeric type"
+                },
+                "select tuple size": 1,
+                "select type": "if",
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "func::m",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                },
+                {
+                    "natural": false,
+                    "parameter name": "func::n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "arguments": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    }
+                ],
+                "class": "ASTuserFunction",
+                "constant": false,
+                "length": 1,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type",
+                "userfunction name": "func::ack"
+            },
+            "definition name": "func::foo",
+            "definition type": "stack definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "func::erf",
+            "definition type": "function definition",
+            "function expression": {
+                "class": "ASToperator",
+                "constant": false,
+                "left": {
+                    "class": "ASTselect",
+                    "constant": false,
+                    "locality": "impure non-local",
+                    "natural": false,
+                    "select choices": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "1"
+                        },
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "value": ""
+                        }
+                    ],
+                    "select selector": {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "func::n"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": ">",
+                        "right": {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "0"
+                        },
+                        "type": "numeric type"
+                    },
+                    "select tuple size": 1,
+                    "select type": "if",
+                    "type": "numeric type"
+                },
+                "locality": "impure non-local",
+                "natural": false,
+                "operator": "*",
+                "right": {
+                    "class": "ASTfunction",
+                    "constant": false,
+                    "function": "sqrt",
+                    "function arguments": [
+                        {
+                            "class": "ASToperator",
+                            "constant": false,
+                            "left": {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "1"
+                            },
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "operator": "-",
+                            "right": {
+                                "class": "ASTfunction",
+                                "constant": false,
+                                "function": "exp",
+                                "function arguments": [
+                                    {
+                                        "class": "ASToperator",
+                                        "constant": false,
+                                        "left": {
+                                            "class": "ASToperator",
+                                            "constant": false,
+                                            "left": {
+                                                "class": "ASToperator",
+                                                "constant": false,
+                                                "left": {
+                                                    "class": "ASToperator",
+                                                    "constant": false,
+                                                    "left": {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure non-local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "variable name": "func::n"
+                                                    },
+                                                    "locality": "impure non-local",
+                                                    "natural": false,
+                                                    "operator": "N",
+                                                    "right": null,
+                                                    "type": "numeric type"
+                                                },
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "operator": "*",
+                                                "right": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure non-local",
+                                                    "natural": false,
+                                                    "type": "numeric type",
+                                                    "variable name": "func::n"
+                                                },
+                                                "type": "numeric type"
+                                            },
+                                            "locality": "impure non-local",
+                                            "natural": false,
+                                            "operator": "*",
+                                            "right": {
+                                                "class": "ASToperator",
+                                                "constant": false,
+                                                "left": {
+                                                    "class": "ASTreal",
+                                                    "constant": true,
+                                                    "locality": "pure local",
+                                                    "natural": false,
+                                                    "type": "numeric type",
+                                                    "value": ""
+                                                },
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "operator": "+",
+                                                "right": {
+                                                    "class": "ASToperator",
+                                                    "constant": false,
+                                                    "left": {
+                                                        "class": "ASToperator",
+                                                        "constant": false,
+                                                        "left": {
+                                                            "class": "ASTreal",
+                                                            "constant": true,
+                                                            "locality": "pure local",
+                                                            "natural": false,
+                                                            "type": "numeric type",
+                                                            "value": "0.147"
+                                                        },
+                                                        "locality": "impure non-local",
+                                                        "natural": false,
+                                                        "operator": "*",
+                                                        "right": {
+                                                            "class": "ASTvariable",
+                                                            "constant": false,
+                                                            "length": 1,
+                                                            "locality": "pure non-local",
+                                                            "natural": false,
+                                                            "type": "numeric type",
+                                                            "variable name": "func::n"
+                                                        },
+                                                        "type": "numeric type"
+                                                    },
+                                                    "locality": "impure non-local",
+                                                    "natural": false,
+                                                    "operator": "*",
+                                                    "right": {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure non-local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "variable name": "func::n"
+                                                    },
+                                                    "type": "numeric type"
+                                                },
+                                                "type": "numeric type"
+                                            },
+                                            "type": "numeric type"
+                                        },
+                                        "locality": "impure non-local",
+                                        "natural": false,
+                                        "operator": "/",
+                                        "right": {
+                                            "class": "ASToperator",
+                                            "constant": false,
+                                            "left": {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "1"
+                                            },
+                                            "locality": "impure non-local",
+                                            "natural": false,
+                                            "operator": "+",
+                                            "right": {
+                                                "class": "ASToperator",
+                                                "constant": false,
+                                                "left": {
+                                                    "class": "ASToperator",
+                                                    "constant": false,
+                                                    "left": {
+                                                        "class": "ASTreal",
+                                                        "constant": true,
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "value": "0.147"
+                                                    },
+                                                    "locality": "impure non-local",
+                                                    "natural": false,
+                                                    "operator": "*",
+                                                    "right": {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure non-local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "variable name": "func::n"
+                                                    },
+                                                    "type": "numeric type"
+                                                },
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "operator": "*",
+                                                "right": {
+                                                    "class": "ASTvariable",
+                                                    "constant": false,
+                                                    "length": 1,
+                                                    "locality": "pure non-local",
+                                                    "natural": false,
+                                                    "type": "numeric type",
+                                                    "variable name": "func::n"
+                                                },
+                                                "type": "numeric type"
+                                            },
+                                            "type": "numeric type"
+                                        },
+                                        "type": "numeric type"
+                                    }
+                                ],
+                                "locality": "impure non-local",
+                                "natural": false,
+                                "type": "numeric type"
+                            },
+                            "type": "numeric type"
+                        }
+                    ],
+                    "locality": "impure non-local",
+                    "natural": false,
+                    "type": "numeric type"
+                },
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "func::n",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x52110E1E796FC524"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "arguments": [
+                                                    {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "variable name": "func::i"
+                                                    }
+                                                ],
+                                                "class": "ASTuserFunction",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "userfunction name": "func::fib"
+                                            }
+                                        ],
+                                        "modterm type": "size",
+                                        "type": "adjustment type"
+                                    },
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type",
+                                                "value": "0.5"
+                                            }
+                                        ],
+                                        "modterm type": "y",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "SQUARE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xAE1533534A3686FB"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "func::i"
+                }
+            ],
+            "rule name": "func::test",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0x19487A167046F2FC"
+                                            }
+                                        },
+                                        "modification non-constants": [
+                                            {
+                                                "class": "ASTmodTerm",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "modterm arguments": [
+                                                    {
+                                                        "arguments": [
+                                                            {
+                                                                "class": "ASTvariable",
+                                                                "constant": false,
+                                                                "length": 1,
+                                                                "locality": "pure local",
+                                                                "natural": true,
+                                                                "type": "numeric type",
+                                                                "variable name": "func::m"
+                                                            },
+                                                            {
+                                                                "class": "ASTvariable",
+                                                                "constant": false,
+                                                                "length": 1,
+                                                                "locality": "pure local",
+                                                                "natural": true,
+                                                                "type": "numeric type",
+                                                                "variable name": "func::n"
+                                                            }
+                                                        ],
+                                                        "class": "ASTuserFunction",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "userfunction name": "func::ack"
+                                                    }
+                                                ],
+                                                "modterm type": "hue",
+                                                "type": "adjustment type"
+                                            }
+                                        ],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "SQUARE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xDAE3CC6CA718C981"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "func::n"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3529855879D57214"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "func::m"
+                }
+            ],
+            "rule name": "func::test2",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTreplacement",
+                            "replacement adjustment": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0x52110E1E796FC524"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "arguments": [
+                                                    {
+                                                        "class": "ASTvariable",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure local",
+                                                        "natural": true,
+                                                        "type": "numeric type",
+                                                        "variable name": "i"
+                                                    }
+                                                ],
+                                                "class": "ASTuserFunction",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "userfunction name": "func::fib"
+                                            }
+                                        ],
+                                        "modterm type": "size",
+                                        "type": "adjustment type"
+                                    },
+                                    {
+                                        "class": "ASTmodTerm",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "modterm arguments": [
+                                            {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": false,
+                                                "type": "numeric type",
+                                                "value": "0.5"
+                                            }
+                                        ],
+                                        "modterm type": "y",
+                                        "type": "adjustment type"
+                                    }
+                                ],
+                                "type": "adjustment type"
+                            },
+                            "replacement shape": {
+                                "argument source": "no arguments",
+                                "class": "ASTruleSpecifier",
+                                "constant": true,
+                                "locality": "pure local",
+                                "shape name": "SQUARE",
+                                "type": "rule type"
+                            }
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xAE1533534A3686FB"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "i"
+                }
+            ],
+            "rule name": "test3",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTloop",
+                            "finally body": [],
+                            "loop body": [
+                                {
+                                    "class": "ASTreplacement",
+                                    "replacement adjustment": {
+                                        "class": "ASTmodification",
+                                        "constant": false,
+                                        "locality": "pure local",
+                                        "modification constants": {
+                                            "color": [
+                                                "HSBA",
+                                                "color"
+                                            ],
+                                            "random": {
+                                                "seed": "0x19487A167046F2FC"
+                                            }
+                                        },
+                                        "modification non-constants": [
+                                            {
+                                                "class": "ASTmodTerm",
+                                                "constant": false,
+                                                "locality": "pure local",
+                                                "modterm arguments": [
+                                                    {
+                                                        "arguments": [
+                                                            {
+                                                                "class": "ASTvariable",
+                                                                "constant": false,
+                                                                "length": 1,
+                                                                "locality": "pure local",
+                                                                "natural": true,
+                                                                "type": "numeric type",
+                                                                "variable name": "m"
+                                                            },
+                                                            {
+                                                                "class": "ASTvariable",
+                                                                "constant": false,
+                                                                "length": 1,
+                                                                "locality": "pure local",
+                                                                "natural": true,
+                                                                "type": "numeric type",
+                                                                "variable name": "n"
+                                                            }
+                                                        ],
+                                                        "class": "ASTuserFunction",
+                                                        "constant": false,
+                                                        "length": 1,
+                                                        "locality": "pure local",
+                                                        "natural": false,
+                                                        "type": "numeric type",
+                                                        "userfunction name": "func::ack"
+                                                    }
+                                                ],
+                                                "modterm type": "hue",
+                                                "type": "adjustment type"
+                                            }
+                                        ],
+                                        "type": "adjustment type"
+                                    },
+                                    "replacement shape": {
+                                        "argument source": "no arguments",
+                                        "class": "ASTruleSpecifier",
+                                        "constant": true,
+                                        "locality": "pure local",
+                                        "shape name": "SQUARE",
+                                        "type": "rule type"
+                                    }
+                                }
+                            ],
+                            "loop modification": {
+                                "class": "ASTmodification",
+                                "constant": false,
+                                "locality": "pure local",
+                                "modification constants": {
+                                    "random": {
+                                        "seed": "0xDAE3CC6CA718C981"
+                                    },
+                                    "transform xy": [
+                                        "trans",
+                                        "affine"
+                                    ]
+                                },
+                                "modification non-constants": [],
+                                "type": "adjustment type"
+                            },
+                            "loop variable name": "n"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x3529855879D57214"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "m"
+                }
+            ],
+            "rule name": "test4",
+            "rule parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::MaxNatural": {
+            "class": "ASTreal",
+            "constant": true,
+            "locality": "pure local",
+            "natural": true,
+            "type": "numeric type",
+            "value": "10"
+        },
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "test4",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

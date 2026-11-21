@@ -1,0 +1,385 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "class": "ASToperator",
+                        "constant": false,
+                        "left": {
+                            "class": "ASToperator",
+                            "constant": false,
+                            "left": {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "360"
+                            },
+                            "locality": "impure non-local",
+                            "natural": false,
+                            "operator": "*",
+                            "right": {
+                                "class": "ASTvariable",
+                                "constant": false,
+                                "length": 1,
+                                "locality": "pure non-local",
+                                "natural": false,
+                                "type": "numeric type",
+                                "variable name": "skip"
+                            },
+                            "type": "numeric type"
+                        },
+                        "locality": "impure non-local",
+                        "natural": false,
+                        "operator": "/",
+                        "right": {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "points"
+                        },
+                        "type": "numeric type"
+                    },
+                    "definition name": "delta",
+                    "definition type": "stack definition",
+                    "length": 1
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op arguments": [
+                                {
+                                    "class": "ASTfunction",
+                                    "constant": false,
+                                    "function": "cos",
+                                    "function arguments": [
+                                        {
+                                            "class": "ASToperator",
+                                            "constant": false,
+                                            "left": {
+                                                "class": "ASTvariable",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "type": "numeric type",
+                                                "variable name": "delta"
+                                            },
+                                            "locality": "impure non-local",
+                                            "natural": false,
+                                            "operator": "+",
+                                            "right": {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "90"
+                                            },
+                                            "type": "numeric type"
+                                        }
+                                    ],
+                                    "locality": "impure non-local",
+                                    "natural": false,
+                                    "type": "numeric type"
+                                },
+                                {
+                                    "class": "ASTfunction",
+                                    "constant": false,
+                                    "function": "sin",
+                                    "function arguments": [
+                                        {
+                                            "class": "ASToperator",
+                                            "constant": false,
+                                            "left": {
+                                                "class": "ASTvariable",
+                                                "constant": false,
+                                                "length": 1,
+                                                "locality": "impure non-local",
+                                                "natural": false,
+                                                "type": "numeric type",
+                                                "variable name": "delta"
+                                            },
+                                            "locality": "impure non-local",
+                                            "natural": false,
+                                            "operator": "+",
+                                            "right": {
+                                                "class": "ASTreal",
+                                                "constant": true,
+                                                "locality": "pure local",
+                                                "natural": true,
+                                                "type": "numeric type",
+                                                "value": "90"
+                                            },
+                                            "type": "numeric type"
+                                        }
+                                    ],
+                                    "locality": "impure non-local",
+                                    "natural": false,
+                                    "type": "numeric type"
+                                }
+                            ],
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop bounds": [
+                        {
+                            "class": "ASTreal",
+                            "constant": true,
+                            "locality": "pure local",
+                            "natural": true,
+                            "type": "numeric type",
+                            "value": "1"
+                        },
+                        {
+                            "class": "ASTvariable",
+                            "constant": false,
+                            "length": 1,
+                            "locality": "pure non-local",
+                            "natural": false,
+                            "type": "numeric type",
+                            "variable name": "points"
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xF54E0AA474A7293D"
+                            }
+                        },
+                        "modification non-constants": [
+                            {
+                                "class": "ASTmodTerm",
+                                "constant": false,
+                                "locality": "impure non-local",
+                                "modterm arguments": [
+                                    {
+                                        "class": "ASTvariable",
+                                        "constant": false,
+                                        "length": 1,
+                                        "locality": "impure non-local",
+                                        "natural": false,
+                                        "type": "numeric type",
+                                        "variable name": "delta"
+                                    }
+                                ],
+                                "modterm type": "rotation",
+                                "type": "adjustment type"
+                            }
+                        ],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "star",
+            "path parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "points",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                },
+                {
+                    "natural": false,
+                    "parameter name": "skip",
+                    "parameter tuple size": 1,
+                    "parameter type": "numeric type"
+                }
+            ]
+        },
+        {
+            "class": "ASTrule",
+            "rule body": [
+                {
+                    "class": "ASTreplacement",
+                    "replacement adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x72F1CBA7CEC8BEC0"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "replacement shape": {
+                        "argument source": "constant arguments",
+                        "class": "ASTruleSpecifier",
+                        "constant": true,
+                        "constant arguments": [
+                            "star",
+                            [
+                                "float"
+                            ],
+                            [
+                                "float"
+                            ]
+                        ],
+                        "locality": "pure local",
+                        "shape name": "star",
+                        "type": "rule type"
+                    }
+                }
+            ],
+            "rule name": "go",
+            "rule parameters": []
+        },
+        {
+            "class": "ASTpath",
+            "path body": [
+                {
+                    "class": "ASTdefine",
+                    "definition expression": {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type",
+                        "value": ""
+                    },
+                    "definition name": "delta",
+                    "definition type": "constant definition",
+                    "length": 1
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "MOVETO",
+                    "path op flags": ""
+                },
+                {
+                    "class": "ASTloop",
+                    "finally body": [],
+                    "loop body": [
+                        {
+                            "class": "ASTpathOp",
+                            "path op": "LINETO",
+                            "path op flags": ""
+                        }
+                    ],
+                    "loop modification": {
+                        "class": "ASTmodification",
+                        "constant": false,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0xDD6328B615735B2F"
+                            },
+                            "transform xy": [
+                                "trans",
+                                "affine"
+                            ]
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "loop variable name": "~~inaccessiblevar~~"
+                },
+                {
+                    "class": "ASTpathOp",
+                    "path op": "CLOSEPOLY",
+                    "path op flags": ""
+                },
+                {
+                    "adjustment": {
+                        "class": "ASTmodification",
+                        "constant": true,
+                        "locality": "pure local",
+                        "modification constants": {
+                            "random": {
+                                "seed": "0x41C9A0E31A990624"
+                            }
+                        },
+                        "modification non-constants": [],
+                        "type": "adjustment type"
+                    },
+                    "class": "ASTpathCommand",
+                    "flags": "CF::MiterJoin+CF::ButtCap",
+                    "path command": "STROKE"
+                }
+            ],
+            "path name": "star_5_2",
+            "path parameters": []
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "constant arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "constant arguments": [
+                "star",
+                [
+                    "float"
+                ],
+                [
+                    "float"
+                ]
+            ],
+            "locality": "pure local",
+            "shape name": "star",
+            "startshape adjustment": null,
+            "type": "rule type"
+        }
+    }
+}

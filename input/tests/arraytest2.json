@@ -1,0 +1,303 @@
+{
+    "cfdg": [
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "children": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "3"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "4"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "6"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "7"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "8"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "9"
+                    },
+                    {
+                        "class": "ASTfunction",
+                        "constant": false,
+                        "function": "rand.",
+                        "function arguments": [
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "10"
+                            },
+                            {
+                                "class": "ASTreal",
+                                "constant": true,
+                                "locality": "pure local",
+                                "natural": true,
+                                "type": "numeric type",
+                                "value": "16"
+                            }
+                        ],
+                        "locality": "pure local",
+                        "natural": false,
+                        "type": "numeric type"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": false,
+                "length": 10,
+                "locality": "pure local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "definition name": "a6",
+            "definition type": "stack definition",
+            "length": 10
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "children": [
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "1"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "2"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "3"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "4"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "5"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "6"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "7"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "8"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "9"
+                    },
+                    {
+                        "class": "ASTreal",
+                        "constant": true,
+                        "locality": "pure local",
+                        "natural": true,
+                        "type": "numeric type",
+                        "value": "10"
+                    }
+                ],
+                "class": "ASTcons",
+                "constant": true,
+                "length": 10,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type"
+            },
+            "definition name": "a7",
+            "definition type": "constant definition",
+            "length": 10
+        },
+        {
+            "class": "ASTdefine",
+            "definition expression": {
+                "class": "ASTreal",
+                "constant": true,
+                "locality": "pure local",
+                "natural": true,
+                "type": "numeric type",
+                "value": "a75"
+            },
+            "definition name": "a8",
+            "definition type": "constant definition",
+            "length": 1
+        },
+        {
+            "class": "ASTdefine",
+            "definition adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xB3635E9C22DDB29C"
+                    }
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "definition name": "CF::StartShape",
+            "definition type": "configuration definition"
+        },
+        {
+            "class": "ASTdefine",
+            "definition name": "pick6",
+            "definition type": "function definition",
+            "function expression": {
+                "array index": {
+                    "class": "ASTreal",
+                    "constant": true,
+                    "locality": "pure local",
+                    "natural": true,
+                    "type": "numeric type",
+                    "value": "5"
+                },
+                "array length": 1,
+                "array name": "foo",
+                "array stride": 1,
+                "class": "ASTarray",
+                "constant": false,
+                "locality": "pure non-local",
+                "natural": false,
+                "type": "numeric type"
+            },
+            "function parameters": [
+                {
+                    "natural": false,
+                    "parameter name": "foo",
+                    "parameter tuple size": 10,
+                    "parameter type": "numeric type"
+                }
+            ],
+            "length": 1
+        }
+    ],
+    "configuration": {
+        "CF::StartShape": {
+            "argument source": "no arguments",
+            "class": "ASTstartSpecifier",
+            "constant": true,
+            "locality": "pure local",
+            "shape name": "CIRCLE",
+            "startshape adjustment": {
+                "class": "ASTmodification",
+                "constant": true,
+                "locality": "pure local",
+                "modification constants": {
+                    "random": {
+                        "seed": "0xE6C661668461673C"
+                    },
+                    "transform xy": [
+                        "trans",
+                        "affine"
+                    ]
+                },
+                "modification non-constants": [],
+                "type": "adjustment type"
+            },
+            "type": "rule type"
+        }
+    }
+}

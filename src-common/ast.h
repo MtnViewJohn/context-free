@@ -210,6 +210,7 @@ namespace AST {
     static constexpr double MaxNatural = 9007199254740992.;
     static constexpr double DefaultMiterLimit = 4.0;
     static constexpr double DefaultStrokeWidth = 0.1;
+    extern bool ExactJSON;
 
     Locality_t CombineLocality(Locality_t first, Locality_t second);
 
