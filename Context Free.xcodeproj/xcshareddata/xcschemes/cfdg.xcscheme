@@ -81,7 +81,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/demo2_v2.cfdg output/test.png"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-s100 /Users/john/Documents/Context\ Free/crashtest.cfdg output/test.png"
@@ -89,7 +89,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--jsonredacted input/tests/xyztest1.cfdg -"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-qP -vFXSHRXW /Users/john/Downloads/RECONSTRUCTED_TWISTY_THING.cfdg output/test.png"

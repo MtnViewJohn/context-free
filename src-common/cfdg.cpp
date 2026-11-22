@@ -360,5 +360,3 @@ CFDG::ParseFile(const char* fname, AbstractSystem* system, int variation,
     return cfdg_ptr(pCfdg);
 }
 
-// Sketchy as fuck, I know
-#include "examples.h"

@@ -1,6 +1,8 @@
+#include "cfdg.h"
+using namespace std::literals::string_literals;
 const std::map<std::string, std::pair<const char*, const char*>>
 AbstractSystem::ExamplesMap{
-    { "ciliasun.cfdg", {
+    { "ciliasun.cfdg"s, {
 "startshape SUN\n"
 "\n"
 "shape SUN\n"
@@ -115,7 +117,7 @@ AbstractSystem::ExamplesMap{
 "	ARM { y 0.1 s 0.9 r 2 }\n"
 "}\n"
     } },
-    { "demo1.cfdg", {
+    { "demo1.cfdg"s, {
 "startshape FOREST\n"
 "\n"
 "shape FOREST\n"
@@ -216,7 +218,7 @@ AbstractSystem::ExamplesMap{
 "     BRANCH {size 0.7 y 0.1 rotate -20}\n"
 "}\n"
     } },
-    { "demo2.cfdg", {
+    { "demo2.cfdg"s, {
 "#\n"
 "# An example, showing how to include another file.\n"
 "# Note that the include path has to be absolute OR\n"
@@ -265,7 +267,7 @@ AbstractSystem::ExamplesMap{
 "  point {y 2.0 x 2.5 rotate -20 size 0.6}\n"
 "}\n"
     } },
-    { "funky_flower.cfdg", {
+    { "funky_flower.cfdg"s, {
 "startshape GARDEN\n"
 "import i_curves.cfdg\n"
 "\n"
@@ -342,7 +344,7 @@ AbstractSystem::ExamplesMap{
 "   SEED {size 0.1 y 3}\n"
 "}\n"
     } },
-    { "i_curves.cfdg", {
+    { "i_curves.cfdg"s, {
 "// This is a library file that is included in other files\n"
 "// It offers a family of curves\n"
 "\n"
@@ -3214,7 +3216,7 @@ AbstractSystem::ExamplesMap{
 "    curveleft_0_99_5 { x -10 }\n"
 "}\n"
     } },
-    { "i_pix.cfdg", {
+    { "i_pix.cfdg"s, {
 "// This is a library file that is included in other files\n"
 "// It offers a dot-matix like alphabet based on a 5 by 5 grid\n"
 "\n"
@@ -4584,7 +4586,7 @@ AbstractSystem::ExamplesMap{
 "pix_5by5_43 {}\n"
 "}\n"
     } },
-    { "i_polygons.cfdg", {
+    { "i_polygons.cfdg"s, {
 "startshape polygontest\n"
 "\n"
 "// This is kind of a dumb way to define a general regular polygon path.\n"
@@ -4852,7 +4854,7 @@ AbstractSystem::ExamplesMap{
 "	12* {r 15} SQUARE [rotate 0 size 0.991445 0.130526]\n"
 "}\n"
     } },
-    { "lesson2.cfdg", {
+    { "lesson2.cfdg"s, {
 "/* CFDG Lesson */\n"
 "\n"
 "startshape TOC\n"
@@ -5216,7 +5218,7 @@ AbstractSystem::ExamplesMap{
 "	T_5by5 { x 4.8 }\n"
 "}\n"
     } },
-    { "lesson.cfdg", {
+    { "lesson.cfdg"s, {
 "/* CFDG Lesson */\n"
 "\n"
 "startshape TOC\n"
@@ -5670,7 +5672,7 @@ AbstractSystem::ExamplesMap{
 "	R_5by5 { x 3.6 }\n"
 "}\n"
     } },
-    { "mtree.cfdg", {
+    { "mtree.cfdg"s, {
 "startshape PLANT\n"
 "\n"
 "shape PLANT\n"
@@ -5735,7 +5737,7 @@ AbstractSystem::ExamplesMap{
 "rule WL {BL {rotate -10 flip 90}}\n"
 "\n"
     } },
-    { "octopi.cfdg", {
+    { "octopi.cfdg"s, {
 "startshape family\n"
 "\n"
 "shape family\n"
@@ -5829,7 +5831,7 @@ AbstractSystem::ExamplesMap{
 "CIRCLE {x 0.5}\n"
 "}\n"
     } },
-    { "quadcity.cfdg", {
+    { "quadcity.cfdg"s, {
 "startshape WHOLE\n"
 "\n"
 "shape WHOLE\n"
@@ -5883,7 +5885,7 @@ AbstractSystem::ExamplesMap{
 "	}\n"
 "}\n"
     } },
-    { "rose.cfdg", {
+    { "rose.cfdg"s, {
 "startshape plant\n"
 "\n"
 "shape rose1\n"
@@ -5970,7 +5972,7 @@ AbstractSystem::ExamplesMap{
 "	stem { b 0.4 sat 1 hue 120}\n"
 "}\n"
     } },
-    { "sierpinski.cfdg", {
+    { "sierpinski.cfdg"s, {
 "startshape Top\n"
 "\n"
 "shape Top\n"
@@ -6061,7 +6063,7 @@ AbstractSystem::ExamplesMap{
 "	Arm { y 0.1 s 0.9 }\n"
 "}\n"
     } },
-    { "snowflake.cfdg", {
+    { "snowflake.cfdg"s, {
 "startshape SPIKE\n"
 "\n"
 "CF::Symmetry = CF::Dihedral, 6\n"
@@ -6095,7 +6097,7 @@ AbstractSystem::ExamplesMap{
 "	SPIKE { y 0.95 s 0.97  }\n"
 "}\n"
     } },
-    { "tangle.cfdg", {
+    { "tangle.cfdg"s, {
 "startshape SPIKES\n"
 "\n"
 "shape SPIKES\n"
@@ -6145,7 +6147,7 @@ AbstractSystem::ExamplesMap{
 "	LSPIKE { y 0.98 s 0.99  r 1}\n"
 "}\n"
     } },
-    { "triples.cfdg", {
+    { "triples.cfdg"s, {
 "startshape TRIPLES\n"
 "\n"
 "shape TRIPLES\n"
@@ -6282,7 +6284,7 @@ AbstractSystem::ExamplesMap{
 "	ARM { y 0.1 s 0.9 r 2 }\n"
 "}\n"
     } },
-    { "underground.cfdg", {
+    { "underground.cfdg"s, {
 "startshape MAP\n"
 "\n"
 "shape MAP\n"
@@ -6422,7 +6424,7 @@ AbstractSystem::ExamplesMap{
 "	SQUARE { x  2.0 }\n"
 "}\n"
     } },
-    { "weighting_demo.cfdg", {
+    { "weighting_demo.cfdg"s, {
 "startshape SEED1\n"
 "\n"
 "shape SEED1\n"
@@ -6458,7 +6460,7 @@ AbstractSystem::ExamplesMap{
 "}\n"
 "\n"
     } },
-    { "welcome.cfdg", {
+    { "welcome.cfdg"s, {
 "startshape WELCOME\n"
 "\n"
 "shape WELCOME\n"
@@ -6685,7 +6687,7 @@ AbstractSystem::ExamplesMap{
 "}\n"
 "\n"
     } },
-    { "ziggy.cfdg", {
+    { "ziggy.cfdg"s, {
 "startshape Trident\n"
 "\n"
 "shape Trident\n"

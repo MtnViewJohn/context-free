@@ -16,6 +16,8 @@ def print_cfdg(cfdg_name):
 
 
 def print_examples(cfdg_files):
+    print('#include "cfdg.h"')
+    print('using namespace std::literals::string_literals;')
     print('const std::map<std::string, std::pair<const char*, const char*>>')
     print('AbstractSystem::ExamplesMap{')
 
@@ -23,7 +25,7 @@ def print_examples(cfdg_files):
         if cfdg.endswith('_v2.cfdg'):
             pass
         else:
-            print('    { "%s", {' % cfdg)
+            print('    { "%s"s, {' % cfdg)
             print_cfdg(cfdg)
             print(' ,')
             print_cfdg(cfdg.replace('.cfdg', '_v2.cfdg'))

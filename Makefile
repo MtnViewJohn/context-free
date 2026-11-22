@@ -49,7 +49,7 @@ COMMON_SRCS = cfdg.cpp Rand64.cpp makeCFfilename.cpp \
 	primShape.cpp bounds.cpp shape.cpp shapeSTL.cpp tiledCanvas.cpp \
 	astexpression.cpp astreplacement.cpp pathIterator.cpp \
 	stacktype.cpp CmdInfo.cpp abstractPngCanvas.cpp ast.cpp \
-	prettyint.cpp
+	prettyint.cpp examples.cpp
 
 UNIX_SRCS = pngCanvas.cpp posixSystem.cpp main.cpp posixTimer.cpp \
     posixVersion.cpp
@@ -131,8 +131,8 @@ $(DERIVED_DIR)/cfdg.tab.cpp: $(COMMON_DIR)/cfdg.ypp $(OBJ_DIR)/Sentry
 
 $(OBJ_DIR)/lex.yy.o: $(DERIVED_DIR)/cfdg.tab.hpp
 
-src-common/examples.h: $(INPUT_SRCS)
-	python3 makeexamples.py $(INPUT_SRCS) > src-common/examples.h
+src-common/examples.cpp: $(INPUT_SRCS)
+	python3 makeexamples.py $(INPUT_SRCS) > src-common/examples.cpp
 
 #
 # Utility
