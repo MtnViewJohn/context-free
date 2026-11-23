@@ -75,6 +75,8 @@
 		52BA888B155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52BA888C155F30490026AF04 /* ast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52BA888A155F30490026AF04 /* ast.cpp */; };
 		52C267B8154F26BD00230EB9 /* abstractPngCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52C267B7154F26BD00230EB9 /* abstractPngCanvas.cpp */; };
+		52D9C54330B4CC110074201F /* examples.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52D9C54230B4CC110074201F /* examples.cpp */; };
+		52D9C54430B4CC110074201F /* examples.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52D9C54230B4CC110074201F /* examples.cpp */; };
 		52FB6B9409ECB8A20008CE6E /* tiledCanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */; };
 		52FE5A741F00D44000B8ADD2 /* ciliasun_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A5F1F00D44000B8ADD2 /* ciliasun_v2.cfdg */; };
 		52FE5A751F00D44000B8ADD2 /* demo1_v2.cfdg in CopyFiles */ = {isa = PBXBuildFile; fileRef = 52FE5A601F00D44000B8ADD2 /* demo1_v2.cfdg */; };
@@ -402,6 +404,7 @@
 		52D06C1E17667BB400F8D94C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		52D5D8DA1ACB938B005109E5 /* myrandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myrandom.h; sourceTree = "<group>"; };
 		52D803671A69BCD800047742 /* xorshift64star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xorshift64star.h; sourceTree = "<group>"; };
+		52D9C54230B4CC110074201F /* examples.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples.cpp; sourceTree = "<group>"; };
 		52F014EF108D6AEA00A329BE /* agg_trans_affine_1D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = agg_trans_affine_1D.h; sourceTree = "<group>"; };
 		52FB6B8009ECB3E60008CE6E /* tiledCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiledCanvas.h; sourceTree = "<group>"; };
 		52FB6B9309ECB8A20008CE6E /* tiledCanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tiledCanvas.cpp; sourceTree = "<group>"; };
@@ -626,6 +629,7 @@
 		FD1EF08A0811ADE500FD38C6 /* src-common */ = {
 			isa = PBXGroup;
 			children = (
+				52D9C54230B4CC110074201F /* examples.cpp */,
 				529D6A9121516F5B00C9C74F /* attributes.h */,
 				5282F21C2031546300A45AA4 /* json_fwd.hpp */,
 				5249137A1FE7724A001A8371 /* json3.hpp */,
@@ -962,6 +966,7 @@
 				524D22C713BA0123002732C2 /* stacktype.cpp in Sources */,
 				524D22C813BA0123002732C2 /* SVGCanvas.cpp in Sources */,
 				524D22C913BA0123002732C2 /* tempfile.cpp in Sources */,
+				52D9C54330B4CC110074201F /* examples.cpp in Sources */,
 				524D22CA13BA0123002732C2 /* tiledCanvas.cpp in Sources */,
 				524D22CB13BA0123002732C2 /* upload.cpp in Sources */,
 				524D22CC13BA0123002732C2 /* variation.cpp in Sources */,
@@ -996,6 +1001,7 @@
 				FDA77E6D099C669E00EBA6BD /* SVGCanvas.cpp in Sources */,
 				FDB2FA78081B696300901B0E /* VariationFormatter.mm in Sources */,
 				FD29F41E082732FA005B4B87 /* TopBar.mm in Sources */,
+				52D9C54430B4CC110074201F /* examples.cpp in Sources */,
 				FD32F9D30892EFE100DB40F4 /* ColorCalc.mm in Sources */,
 				FD32FA2D08934E0900DB40F4 /* GrammarTextView.mm in Sources */,
 				FD1EF0A90811AE1900FD38C6 /* GView.mm in Sources */,
