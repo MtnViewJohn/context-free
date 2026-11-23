@@ -903,7 +903,7 @@ namespace {
                         return -1;
                 }
             }
-            return 1;
+            return leftnum;
         }
         
         if (res) {
