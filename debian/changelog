@@ -1,6 +1,10 @@
 contextfree (3.5.1+dfsg-1) unstable; urgency=medium
 
-  * New upstream release, includes missing feature for v3.5
+  * New upstream release, includes missing feature for v3.5 and bug fixes
+  *  Updated Makefile with proper output dependency for bison (Closes: #1154894)
+  * debian/control: bison build dependence against >=2:3.3 (was >=2:3)
+  * debian/docs: README.ffmpeg removed
+  * README.source: updated for current state of source tree
 
  -- John Horigan <john@glyphic.com>  Tue, 17 Nov 2026 18:16:41 -0800
 
