@@ -501,6 +501,10 @@ CFDGImpl::numRules()
 std::string
 CFDGImpl::decodeShapeName(int shapetype)
 {
+    if (shapetype < -1)
+        return "**Illegal shape**";
+    if (shapetype == -1)
+        return "**synthetic let function**";
     if (shapetype < int(m_shapeTypes.size()))
         return m_shapeTypes[shapetype].name;
     else

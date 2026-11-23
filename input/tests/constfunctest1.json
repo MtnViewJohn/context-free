@@ -655,7 +655,7 @@
                             "select type": "if",
                             "type": "rule type"
                         },
-                        "shape name": "",
+                        "shape name": "**synthetic let function**",
                         "type": "rule type"
                     }
                 },
@@ -759,7 +759,7 @@
                                 }
                             ]
                         },
-                        "shape name": "",
+                        "shape name": "**synthetic let function**",
                         "type": "rule type"
                     }
                 }
