@@ -169,6 +169,7 @@
 				"${DERIVED_FILES_DIR}/cfdg.tab.cpp",
 				"${DERIVED_FILES_DIR}/cfdg.tab.hpp",
 			);
+			runOncePerArchitecture = 0;
 			script = "/usr/local/bin/bison -o \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.tab.cpp\"  \"${INPUT_FILE_PATH}\"\n";
 		};
 		524D22EB13BA0318002732C2 /* PBXBuildRule */ = {
@@ -181,6 +182,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/lex.yy.cpp",
 			);
+			runOncePerArchitecture = 0;
 			script = "cd \"${DERIVED_FILES_DIR}\"\n/usr/local/bin/flex \"--outfile=${DERIVED_FILES_DIR}/lex.yy.cpp\" \"${INPUT_FILE_PATH}\"\n";
 		};
 		529049B90F3E9C9B00484FED /* PBXBuildRule */ = {
