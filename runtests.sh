@@ -7,7 +7,7 @@ do
     if [ $? -ne 0 ]
     then
         echo "$file          FAIL: $?"
-        exit
+        exit 1
     fi
     ./cfdg -qP "$file" output/test.png
     if [ $? -eq 0 ]
@@ -15,13 +15,13 @@ do
         echo "$file   pass"
     else
         echo "$file          FAIL: $?"
-        exit
+        exit 2
     fi
 done
 ./cfdg -a150 -s640x480 --quicktime -vffgh input/mtree.cfdg output/mtree.mov
 if [ $? -ne 0 ]
 then
     echo "$file          FAIL: $?"
-    exit
+    exit 3
 fi
 
