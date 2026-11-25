@@ -1,7 +1,11 @@
 #include "cfdg.h"
+#include <initializer_list>
 using namespace std::literals::string_literals;
+using ExamplesMap_t =
 const std::map<std::string, std::pair<const char*, const char*>>
-AbstractSystem::ExamplesMap{
+;
+namespace {
+std::initializer_list<ExamplesMap_t::value_type> examples{
     { "ciliasun.cfdg"s, {
 "startshape SUN\n"
 "\n"
@@ -6772,3 +6776,5 @@ AbstractSystem::ExamplesMap{
 "}\n"
     } },
 };
+}
+ExamplesMap_t AbstractSystem::ExamplesMap{examples.begin(), examples.end()};
