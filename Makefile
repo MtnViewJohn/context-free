@@ -103,7 +103,7 @@ LINKFLAGS += $(patsubst %,-L%,$(LIB_DIRS))
 LINKFLAGS += $(patsubst %,-l%,$(LIBS))
 LINKFLAGS += -fexceptions
 
-$(OBJS): $(OBJ_DIR)/Sentry
+$(OBJS): $(OBJ_DIR)/Sentry $(DERIVED_DIR)/cfdg.tab.hpp $(DERIVED_DIR)/location.hh
 
 #
 # Executable
