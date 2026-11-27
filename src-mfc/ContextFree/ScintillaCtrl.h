@@ -181,7 +181,6 @@ public:
   void MarginSetText(_In_ Line line, _In_z_ const wchar_t* text);
   void AnnotationSetText(_In_ Line line, _In_z_ const wchar_t* text);
   [[nodiscard]] StringW AutoCGetCurrentText();
-  [[nodiscard]] StringW GetLexerLanguage();
   [[nodiscard]] StringW PropertyNames();
   [[nodiscard]] TypeProperty PropertyType(_In_z_ const wchar_t* name);
   void ToggleFoldShowText(_In_ Line line, _In_ const wchar_t* text);
@@ -219,7 +218,6 @@ public:
   [[nodiscard]] StringA GetPropertyExpanded(_In_z_ const char* key);
   [[nodiscard]] StringA StyleGetFont(_In_ int style);
   [[nodiscard]] StringA AutoCGetCurrentText();
-  [[nodiscard]] StringA GetLexerLanguage();
   [[nodiscard]] StringA PropertyNames();
   [[nodiscard]] StringA EOLAnnotationGetText(_In_ Line line);
   [[nodiscard]] StringA DescribeProperty(_In_z_ const char* name);
@@ -969,7 +967,6 @@ public:
   void SwapMainAnchorCaret();
   void MultipleSelectAddNext();
   void MultipleSelectAddEach();
-  int ChangeLexerState(_In_ Position start, _In_ Position end);
   [[nodiscard]] Line ContractedFoldNext(_In_ Line lineStart);
   void VerticalCentreCaret();
   void MoveSelectedLinesUp();
@@ -1021,15 +1018,12 @@ public:
   [[nodiscard]] Position IndexPositionFromLine(_In_ Line line, _In_ LineCharacterIndexType lineCharacterIndex);
   void StartRecord();
   void StopRecord();
-  [[nodiscard]] int GetLexer();
   void Colourise(_In_ Position start, _In_ Position end);
   void SetSCIProperty(_In_z_ const char* key, _In_z_ const char* value);
   void SetKeyWords(_In_ int keyWordSet, _In_z_ const char* keyWords);
   int GetSCIProperty(_In_z_ const char* key, _Inout_opt_z_ char* value);
   int GetPropertyExpanded(_In_z_ const char* key, _Inout_opt_z_ char* value);
   [[nodiscard]] int GetPropertyInt(_In_z_ const char* key, _In_ int defaultValue);
-  int GetLexerLanguage(_Inout_opt_z_ char* language);
-  [[nodiscard]] void* PrivateLexerCall(_In_ int operation, _In_opt_ void* pointer);
   int PropertyNames(_Inout_opt_z_ char* names);
   [[nodiscard]] TypeProperty PropertyType(_In_z_ const char* name);
   int DescribeProperty(_In_z_ const char* name, _Inout_opt_z_ char* description);
@@ -1048,7 +1042,6 @@ public:
   int NameOfStyle(_In_ int style, _Inout_opt_z_ char* name);
   int TagsOfStyle(_In_ int style, _Inout_opt_z_ char* tags);
   int DescriptionOfStyle(_In_ int style, _Inout_opt_z_ char* description);
-  void SetILexer(_In_ void* ilexer);
   [[nodiscard]] Bidirectional GetBidirectional();
   void SetBidirectional(_In_ Bidirectional bidirectional);
 

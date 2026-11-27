@@ -34,8 +34,6 @@ public:
 	[[nodiscard]] CString GetModuleFileName(_Inout_opt_ DWORD* pdwLastError = nullptr);
 	[[nodiscard]] HMODULE LoadLibraryFromApplicationDirectory(_In_z_ LPCTSTR lpFileName);
 	HINSTANCE m_hScintilla{ nullptr };
-	HINSTANCE m_hLexilla{ nullptr };
-	Lexilla::CreateLexerFn m_pCreateLexer{ nullptr };
 	DECLARE_MESSAGE_MAP()
 };
 

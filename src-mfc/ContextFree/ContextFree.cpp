@@ -133,15 +133,6 @@ BOOL CContextFreeApp::InitInstance()
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
 	//Load the Scintilla \ Lexilla dlls
-	CString sLexillaDLL;
-	sLexillaDLL.Format(_T("%s%s"), _T(LEXILLA_LIB), _T(LEXILLA_EXTENSION));
-	m_hLexilla = LoadLibraryFromApplicationDirectory(sLexillaDLL);
-	if (m_hLexilla == nullptr) {
-		CString sMsg;
-		sMsg.Format(_T("%s is not installed, Please built the Scintilla '%s' and copy it into this application's directory\r\nError: %d"), sLexillaDLL.GetString(), sLexillaDLL.GetString(), GetLastError());
-		AfxMessageBox(sMsg);
-		return FALSE;
-	}
 	m_hScintilla = LoadLibraryFromApplicationDirectory(_T("Scintilla.dll"));
 	if (m_hScintilla == nullptr) {
 		AfxMessageBox(_T("Scintilla DLL is not installed, Please built the Scintilla 'Scintilla.dll' and copy it into this application's directory"));
@@ -227,10 +218,6 @@ int CContextFreeApp::ExitInstance()
 	if (m_hScintilla != nullptr) {
 		FreeLibrary(m_hScintilla);
 		m_hScintilla = nullptr;
-	}
-	if (m_hLexilla != nullptr) {
-		FreeLibrary(m_hLexilla);
-		m_hLexilla = nullptr;
 	}
 
 	Gdiplus::GdiplusShutdown(gdiplusToken);

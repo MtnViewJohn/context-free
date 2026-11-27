@@ -29,9 +29,6 @@
 #include <ScintillaCall.h>
 #include <ScintillaMessages.h>
 #include <ScintillaStructures.h>
-#include <ILexer.h>
-#include <Lexilla.h>
-#include <SciLexer.h>
 #include <ILoader.h>
 #include <Scintilla.h>
 

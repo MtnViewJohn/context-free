@@ -32,7 +32,6 @@ public:
 
 protected:
 //Member variables
-  Scintilla::ILexer5* m_pCLexer;
   SciFnDirect m_pDirectFn = nullptr;
   Scintilla::sptr_t m_pSciPtr = 0;
   Scintilla::Position m_iLastCaretPosition = -1;

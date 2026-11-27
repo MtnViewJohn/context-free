@@ -922,20 +922,6 @@ CScintillaCtrl::StringW CScintillaCtrl::AutoCGetCurrentText()
   return UTF82W(sUTF8, -1);
 }
 
-CScintillaCtrl::StringW CScintillaCtrl::GetLexerLanguage()
-{
-  //Work out the length of string to allocate
-  const int nUTF8Length{GetLexerLanguage(nullptr)};
-
-  //Call the function which does the work
-  StringA sUTF8;
-  GetLexerLanguage(sUTF8.GetBufferSetLength(nUTF8Length));
-  sUTF8.ReleaseBuffer();
-
-  //Now convert the UTF8 text back to Unicode
-  return UTF82W(sUTF8, -1);
-}
-
 CScintillaCtrl::StringW CScintillaCtrl::PropertyNames()
 {
   //Work out the length of string to allocate
@@ -1398,19 +1384,6 @@ CScintillaCtrl::StringA CScintillaCtrl::AutoCGetCurrentText()
   sText.ReleaseBuffer();
 
   return sText;
-}
-
-CScintillaCtrl::StringA CScintillaCtrl::GetLexerLanguage()
-{
-  //Work out the length of string to allocate
-  const int nValueLength{GetLexerLanguage(nullptr)};
-
-  //Call the function which does the work
-  StringA sLanguage;
-  GetLexerLanguage(sLanguage.GetBufferSetLength(nValueLength));
-  sLanguage.ReleaseBuffer();
-
-  return sLanguage;
 }
 
 CScintillaCtrl::StringA CScintillaCtrl::PropertyNames()
@@ -5329,11 +5302,6 @@ void CScintillaCtrl::MultipleSelectAddEach()
   Call(static_cast<UINT>(Message::MultipleSelectAddEach), 0, 0);
 }
 
-int CScintillaCtrl::ChangeLexerState(_In_ Position start, _In_ Position end)
-{
-  return static_cast<int>(Call(static_cast<UINT>(Message::ChangeLexerState), static_cast<WPARAM>(start), static_cast<LPARAM>(end)));
-}
-
 Line CScintillaCtrl::ContractedFoldNext(_In_ Line lineStart)
 {
   return static_cast<Line>(Call(static_cast<UINT>(Message::ContractedFoldNext), static_cast<WPARAM>(lineStart), 0));
@@ -5590,11 +5558,6 @@ void CScintillaCtrl::StopRecord()
   Call(static_cast<UINT>(Message::StopRecord), 0, 0);
 }
 
-int CScintillaCtrl::GetLexer()
-{
-  return static_cast<int>(Call(static_cast<UINT>(Message::GetLexer), 0, 0));
-}
-
 void CScintillaCtrl::Colourise(_In_ Position start, _In_ Position end)
 {
   Call(static_cast<UINT>(Message::Colourise), static_cast<WPARAM>(start), static_cast<LPARAM>(end));
@@ -5623,17 +5586,6 @@ int CScintillaCtrl::GetPropertyExpanded(_In_z_ const char* key, _Inout_opt_z_ ch
 int CScintillaCtrl::GetPropertyInt(_In_z_ const char* key, _In_ int defaultValue)
 {
   return static_cast<int>(Call(static_cast<UINT>(Message::GetPropertyInt), reinterpret_cast<WPARAM>(key), defaultValue));
-}
-
-int CScintillaCtrl::GetLexerLanguage(_Inout_opt_z_ char* language)
-{
-  return static_cast<int>(Call(static_cast<UINT>(Message::GetLexerLanguage), 0, reinterpret_cast<LPARAM>(language)));
-}
-
-void* CScintillaCtrl::PrivateLexerCall(_In_ int operation, _In_opt_ void* pointer)
-{
-#pragma warning(suppress: 26487)
-  return reinterpret_cast<void*>(Call(static_cast<UINT>(Message::PrivateLexerCall), static_cast<WPARAM>(operation), reinterpret_cast<LPARAM>(pointer)));
 }
 
 int CScintillaCtrl::PropertyNames(_Inout_opt_z_ char* names)
@@ -5724,11 +5676,6 @@ int CScintillaCtrl::TagsOfStyle(_In_ int style, _Inout_opt_z_ char* tags)
 int CScintillaCtrl::DescriptionOfStyle(_In_ int style, _Inout_opt_z_ char* description)
 {
   return static_cast<int>(Call(static_cast<UINT>(Message::DescriptionOfStyle), static_cast<WPARAM>(style), reinterpret_cast<LPARAM>(description)));
-}
-
-void CScintillaCtrl::SetILexer(_In_ void* ilexer)
-{
-  Call(static_cast<UINT>(Message::SetILexer), 0, reinterpret_cast<LPARAM>(ilexer));
 }
 
 Bidirectional CScintillaCtrl::GetBidirectional()

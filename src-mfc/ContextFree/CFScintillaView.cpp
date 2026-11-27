@@ -23,7 +23,7 @@ END_MESSAGE_MAP()
 
 
 #pragma warning(suppress: 26439 26455)
-CFScintillaView::CFScintillaView() : m_pCLexer{nullptr}
+CFScintillaView::CFScintillaView()
 {
   LoadMarginSettings();
 }
