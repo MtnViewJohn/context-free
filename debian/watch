@@ -4,3 +4,4 @@ Pgp-Mode: gittag
 Source: https://forge.glyphic.com/john/context-free.git
 Matching-Pattern: refs/tags/@STABLE_VERSION@
 Dversion-Mangle: auto
+Repacksuffix: +dfsg
